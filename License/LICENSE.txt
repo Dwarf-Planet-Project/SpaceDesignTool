@@ -1,0 +1,17 @@
+The Space Trajectory Analysis or STA software suite is Open Source software. 
+
+STA is distributed under the European Union Public License version 1.1 9 January 2009 (English link found below) in the spirit that it will be useful to academic and communities of space research.
+
+In no way the the members of the STA Steering Board shall be liable for any use of STA.
+
+The EUPL is the first European Free/Open Source Software (F/OSS) licence. It has been created on the initiative of the European Commission. It has been approved by the European Commission in 22 linguistic versions and can be used by anyone for software distribution. The EUPL was approved as a Licence to be used for the distribution of software developed in the framework of the IDA and IDABC programmes. Nevertheless, the text of the Licence is drafted in general terms, so the Licence may be used for other software applications, as the case may be, by other European Institutions, by national, regional or local administrations, other public entities as well as private entities and natural persons.
+
+To know more about how to use EUPL see the following URL:
+https://www.osor.eu/eupl/how-to-use-the-eupl
+
+EUPL PREAMBLE: http://ec.europa.eu/idabc/servlets/Doc?id=31999
+EUPL LICENSE TEXT: http://ec.europa.eu/idabc/servlets/Doc?id=31979
+
+
+
+

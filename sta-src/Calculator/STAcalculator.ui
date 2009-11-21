@@ -1,0 +1,1587 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>STACalculatorDialog</class>
+ <widget class="QDialog" name="STACalculatorDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>585</width>
+    <height>310</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>585</width>
+    <height>310</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>585</width>
+    <height>310</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>STA Calculator</string>
+  </property>
+  <widget class="QTabWidget" name="tabWidget">
+   <property name="geometry">
+    <rect>
+     <x>16</x>
+     <y>8</y>
+     <width>549</width>
+     <height>261</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <widget class="QWidget" name="Time">
+    <attribute name="title">
+     <string>Time</string>
+    </attribute>
+    <widget class="QWidget" name="formLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>92</x>
+       <y>20</y>
+       <width>337</width>
+       <height>187</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="1">
+       <widget class="QDateTimeEdit" name="dateTimeEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="dateTime">
+         <datetime>
+          <hour>0</hour>
+          <minute>0</minute>
+          <second>0</second>
+          <year>2014</year>
+          <month>1</month>
+          <day>1</day>
+         </datetime>
+        </property>
+        <property name="displayFormat">
+         <string>dd/mm/yyyy hh:mm:ss</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="JDUTCEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Julian date UTC:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Gregorian date:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Modified Julian date UTC:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="MJDUTCEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Julian date TDB:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Modified Julian date TDB:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="JDTDBEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="MJDTDBEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>Day fraction [s]:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLineEdit" name="DayFractionEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="Coordinates">
+    <attribute name="title">
+     <string>Coordinates</string>
+    </attribute>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="geometry">
+      <rect>
+       <x>8</x>
+       <y>0</y>
+       <width>281</width>
+       <height>221</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Orbital</string>
+     </property>
+     <widget class="QWidget" name="formLayoutWidget_3">
+      <property name="geometry">
+       <rect>
+        <x>4</x>
+        <y>24</y>
+        <width>273</width>
+        <height>191</height>
+       </rect>
+      </property>
+      <layout class="QFormLayout" name="formLayout_3">
+       <property name="labelAlignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="formAlignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <item row="1" column="0">
+        <widget class="QLabel" name="e_3">
+         <property name="text">
+          <string>Eccentricity [-]:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="i_3">
+         <property name="text">
+          <string>Inclination [deg]</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="raan_3">
+         <property name="text">
+          <string>RAAN [deg]:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="omega_3">
+         <property name="text">
+          <string>Argument of Periapsis [deg:]</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="semimajorAxisEdit">
+         <property name="toolTip">
+          <string>...similar to the radius of a circle, its length is the distance between 
+the geometric center of the orbital ellipse with the periapsis (point 
+of closest approach to the central body), passing through the focal 
+point where the center of mass resides.</string>
+         </property>
+         <property name="text">
+          <string>10000</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="eccentricityEdit">
+         <property name="toolTip">
+          <string>...shape of the ellipse, describing how flattened
+it is compared with a circle.</string>
+         </property>
+         <property name="text">
+          <string>0.0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="inclinationEdit">
+         <property name="toolTip">
+          <string>...vertical tilt of the ellipse with respect to the reference plane, 
+measured at the ascending node (where the orbit passes upward 
+through the reference plane).</string>
+         </property>
+         <property name="text">
+          <string>45.0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="raanEdit">
+         <property name="toolTip">
+          <string>...horizontally orients the ascending node of the ellipse 
+(where the orbit passes upward through the reference plane)
+with respect to the reference frame's vernal point.</string>
+         </property>
+         <property name="text">
+          <string>0.0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="argOfPeriapsisEdit">
+         <property name="toolTip">
+          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;...defines the orientation of the ellipse (in which direction it &lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;is flattened compared to a circle) in the orbital plane, as an angle&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:769;&quot;&gt;measured from the ascending node to the semimajor axis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string>0.0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QLineEdit" name="trueAnomalyEdit">
+         <property name="toolTip">
+          <string>...defines the position of the orbiting body along the ellipse 
+at a specific time (the &quot;epoch&quot;).</string>
+         </property>
+         <property name="text">
+          <string>0.0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QComboBox" name="comboBoxSemiMajor">
+         <property name="minimumSize">
+          <size>
+           <width>174</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>174</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <item>
+          <property name="text">
+           <string>Semimajor axis [Km]</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Altitude [Km]</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QComboBox" name="comboBoxTrueAnomaly">
+         <property name="minimumSize">
+          <size>
+           <width>174</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>174</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <item>
+          <property name="text">
+           <string>True anomaly [deg]</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Mean anomaly [deg]</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="geometry">
+      <rect>
+       <x>312</x>
+       <y>0</y>
+       <width>221</width>
+       <height>221</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Cartesian</string>
+     </property>
+     <widget class="QWidget" name="formLayoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>8</x>
+        <y>24</y>
+        <width>206</width>
+        <height>193</height>
+       </rect>
+      </property>
+      <layout class="QFormLayout" name="formLayout_2">
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+       </property>
+       <property name="formAlignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <item row="0" column="0">
+        <widget class="QComboBox" name="comboBoxX">
+         <property name="minimumSize">
+          <size>
+           <width>93</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>93</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <item>
+          <property name="text">
+           <string>X [Km]</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>X [m]</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="positionXEdit">
+         <property name="text">
+          <string>0.0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QComboBox" name="comboBoxY">
+         <property name="minimumSize">
+          <size>
+           <width>93</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>93</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <item>
+          <property name="text">
+           <string>Y [Km]</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Y [m]</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="positionYEdit">
+         <property name="text">
+          <string>0.0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="positionZEdit">
+         <property name="text">
+          <string>45.0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="velocityXEdit">
+         <property name="text">
+          <string>0.0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="velocityYEdit">
+         <property name="text">
+          <string>0.0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QLineEdit" name="velocityZEdit">
+         <property name="text">
+          <string>0.0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QComboBox" name="comboBoxZ">
+         <property name="minimumSize">
+          <size>
+           <width>93</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>93</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <item>
+          <property name="text">
+           <string>Z [Km]</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Z [m]</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QComboBox" name="comboBoxVx">
+         <property name="minimumSize">
+          <size>
+           <width>93</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>93</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <item>
+          <property name="text">
+           <string>Vx [Km]</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Vx [m]</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QComboBox" name="comboBoxVy">
+         <property name="minimumSize">
+          <size>
+           <width>93</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>93</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <item>
+          <property name="text">
+           <string>Vy [Km]</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Vy [m]</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QComboBox" name="comboBoxVz">
+         <property name="minimumSize">
+          <size>
+           <width>93</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>93</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <item>
+          <property name="text">
+           <string>Vz [Km]</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Vz [m]</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>Planets</string>
+    </attribute>
+    <widget class="QWidget" name="formLayoutWidget_5">
+     <property name="geometry">
+      <rect>
+       <x>12</x>
+       <y>16</y>
+       <width>521</width>
+       <height>197</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_5">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Central body: </string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="comboBoxPlanets">
+        <item>
+         <property name="text">
+          <string>Earth</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/ComboEarth.png</normaloff>:/icons/ComboEarth.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Moon</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/ComboMoon.png</normaloff>:/icons/ComboMoon.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Mercury</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/ComboMercury.png</normaloff>:/icons/ComboMercury.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Mars</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/ComboMars.png</normaloff>:/icons/ComboMars.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Jupiter</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/ComboJupiter.png</normaloff>:/icons/ComboJupiter.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Saturn</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/ComboSaturn.png</normaloff>:/icons/ComboSaturn.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Uranus</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/ComboUranus.png</normaloff>:/icons/ComboUranus.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Neptune</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/ComboNeptune.png</normaloff>:/icons/ComboNeptune.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Pluto</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/ComboPluto.png</normaloff>:/icons/ComboPluto.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sun</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/ComboSun.png</normaloff>:/icons/ComboSun.png</iconset>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Average radius [Km]:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Period [days]:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Inclination [deg]:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>Average distance to Sun [AU]:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="AverageRadiusEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="PeriodEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="InclinationEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="DistanceSunEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>476</x>
+     <y>272</y>
+     <width>93</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>dateTimeEdit</tabstop>
+  <tabstop>JDUTCEdit</tabstop>
+  <tabstop>MJDUTCEdit</tabstop>
+  <tabstop>JDTDBEdit</tabstop>
+  <tabstop>MJDTDBEdit</tabstop>
+  <tabstop>DayFractionEdit</tabstop>
+  <tabstop>pushButton</tabstop>
+  <tabstop>semimajorAxisEdit</tabstop>
+  <tabstop>eccentricityEdit</tabstop>
+  <tabstop>inclinationEdit</tabstop>
+  <tabstop>raanEdit</tabstop>
+  <tabstop>argOfPeriapsisEdit</tabstop>
+  <tabstop>trueAnomalyEdit</tabstop>
+  <tabstop>comboBoxX</tabstop>
+  <tabstop>comboBoxTrueAnomaly</tabstop>
+  <tabstop>positionXEdit</tabstop>
+  <tabstop>comboBoxY</tabstop>
+  <tabstop>positionYEdit</tabstop>
+  <tabstop>comboBoxZ</tabstop>
+  <tabstop>positionZEdit</tabstop>
+  <tabstop>comboBoxVx</tabstop>
+  <tabstop>velocityXEdit</tabstop>
+  <tabstop>comboBoxVy</tabstop>
+  <tabstop>velocityYEdit</tabstop>
+  <tabstop>comboBoxVz</tabstop>
+  <tabstop>velocityZEdit</tabstop>
+  <tabstop>DistanceSunEdit</tabstop>
+  <tabstop>comboBoxPlanets</tabstop>
+  <tabstop>AverageRadiusEdit</tabstop>
+  <tabstop>PeriodEdit</tabstop>
+  <tabstop>InclinationEdit</tabstop>
+  <tabstop>comboBoxSemiMajor</tabstop>
+  <tabstop>tabWidget</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../../iconary/sta-icons.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>dateTimeEdit</sender>
+   <signal>dateChanged(QDate)</signal>
+   <receiver>JDUTCEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>55</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>90</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dateTimeEdit</sender>
+   <signal>dateChanged(QDate)</signal>
+   <receiver>MJDUTCEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>311</x>
+     <y>64</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>308</x>
+     <y>129</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dateTimeEdit</sender>
+   <signal>dateChanged(QDate)</signal>
+   <receiver>JDTDBEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>55</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>154</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dateTimeEdit</sender>
+   <signal>dateChanged(QDate)</signal>
+   <receiver>MJDTDBEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>55</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>186</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dateTimeEdit</sender>
+   <signal>dateChanged(QDate)</signal>
+   <receiver>DayFractionEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>328</x>
+     <y>63</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>218</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>JDUTCEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>dateTimeEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>318</x>
+     <y>92</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>332</x>
+     <y>61</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>JDUTCEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>MJDUTCEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>90</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>JDUTCEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>JDTDBEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>90</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>154</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>JDUTCEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>MJDTDBEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>90</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>186</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>JDUTCEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>DayFractionEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>299</x>
+     <y>94</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>218</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MJDUTCEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>dateTimeEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>122</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>291</x>
+     <y>65</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MJDUTCEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>JDUTCEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>122</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>90</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MJDUTCEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>MJDTDBEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>122</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>186</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MJDUTCEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>JDTDBEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>122</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>154</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MJDUTCEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>DayFractionEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>321</x>
+     <y>125</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>218</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>JDTDBEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>dateTimeEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>154</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>55</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>JDTDBEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>JDUTCEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>154</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>90</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>JDTDBEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>MJDUTCEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>154</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>JDTDBEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>MJDTDBEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>161</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>186</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>JDTDBEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>DayFractionEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>322</x>
+     <y>164</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>218</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MJDTDBEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>dateTimeEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>186</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>55</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MJDTDBEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>JDUTCEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>186</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>90</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MJDTDBEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>JDTDBEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>186</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>154</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MJDTDBEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>DayFractionEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>186</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>218</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>semimajorAxisEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>positionXEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>277</x>
+     <y>72</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>451</x>
+     <y>75</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>semimajorAxisEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>positionYEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>284</x>
+     <y>76</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>456</x>
+     <y>102</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>semimajorAxisEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>positionZEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>274</x>
+     <y>75</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>461</x>
+     <y>136</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>semimajorAxisEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>velocityXEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>266</x>
+     <y>68</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>457</x>
+     <y>169</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>semimajorAxisEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>velocityYEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>249</x>
+     <y>75</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>458</x>
+     <y>201</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>semimajorAxisEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>velocityZEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>263</x>
+     <y>72</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>448</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>eccentricityEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>positionXEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>108</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>450</x>
+     <y>80</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>inclinationEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>positionXEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>278</x>
+     <y>138</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>486</x>
+     <y>72</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>raanEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>positionXEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>235</x>
+     <y>170</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>467</x>
+     <y>73</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>argOfPeriapsisEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>positionXEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>263</x>
+     <y>201</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>497</x>
+     <y>80</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>trueAnomalyEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>positionXEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>269</x>
+     <y>233</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>520</x>
+     <y>79</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>positionXEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>semimajorAxisEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>471</x>
+     <y>73</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>292</x>
+     <y>75</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>positionXEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>eccentricityEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>453</x>
+     <y>78</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>293</x>
+     <y>104</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>positionXEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>inclinationEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>453</x>
+     <y>77</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>295</x>
+     <y>136</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>positionXEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>raanEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>485</x>
+     <y>73</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>284</x>
+     <y>169</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>positionXEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>argOfPeriapsisEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>463</x>
+     <y>72</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>278</x>
+     <y>207</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>positionXEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>trueAnomalyEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>476</x>
+     <y>71</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>288</x>
+     <y>227</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBoxPlanets</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>AverageRadiusEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>369</x>
+     <y>60</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>369</x>
+     <y>85</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBoxPlanets</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>PeriodEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>392</x>
+     <y>59</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>387</x>
+     <y>125</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBoxPlanets</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>InclinationEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>404</x>
+     <y>62</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>406</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBoxPlanets</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>DistanceSunEdit</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>421</x>
+     <y>65</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>179</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>STACalculatorDialog</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>495</x>
+     <y>284</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>402</x>
+     <y>278</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

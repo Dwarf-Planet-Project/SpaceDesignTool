@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <author>Guillermo Ortega (ESA)</author>
+ <class>LoiteringTLEDialogClass</class>
+ <widget class="QDialog" name="LoiteringTLEDialogClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>595</width>
+    <height>346</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>595</width>
+    <height>346</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>595</width>
+    <height>346</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Loitering TLE</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../../iconary/sta-icons.qrc">
+    <normaloff>:/icons/TLE-icon-small.png</normaloff>:/icons/TLE-icon-small.png</iconset>
+  </property>
+  <widget class="QDialogButtonBox" name="buttonBoxOKCancel">
+   <property name="geometry">
+    <rect>
+     <x>405</x>
+     <y>310</y>
+     <width>176</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QWidget" name="gridLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>30</y>
+     <width>286</width>
+     <height>66</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayoutEpochs">
+    <item row="0" column="0">
+     <widget class="QLabel" name="StartingDatelabel">
+      <property name="text">
+       <string>Starting epoch:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="EndingDatelabel">
+      <property name="text">
+       <string>Ending epoch:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QDateTimeEdit" name="StartDateTimeEdit">
+      <property name="toolTip">
+       <string>The starting epoch of this participant</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="dateTime">
+       <datetime>
+        <hour>0</hour>
+        <minute>0</minute>
+        <second>0</second>
+        <year>2010</year>
+        <month>1</month>
+        <day>1</day>
+       </datetime>
+      </property>
+      <property name="displayFormat">
+       <string>dd/MM/yyyy hh:mm:ss</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QDateTimeEdit" name="EndDateTimeEdit">
+      <property name="toolTip">
+       <string>The ending epoch of this participant</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="dateTime">
+       <datetime>
+        <hour>0</hour>
+        <minute>0</minute>
+        <second>0</second>
+        <year>2010</year>
+        <month>1</month>
+        <day>1</day>
+       </datetime>
+      </property>
+      <property name="displayFormat">
+       <string>dd/MM/yyyy hh:mm:ss</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="horizontalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>105</x>
+     <y>115</y>
+     <width>201</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayoutStepSize">
+    <item>
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Results step size [s]: </string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="TimeStepLineEdit">
+      <property name="toolTip">
+       <string>Step size of the visualization of the participant's trajectory</string>
+      </property>
+      <property name="text">
+       <string>60</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="Line" name="lineSeparator1">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>165</y>
+     <width>566</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="TLEgroupBox">
+   <property name="geometry">
+    <rect>
+     <x>325</x>
+     <y>5</y>
+     <width>251</width>
+     <height>151</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Two-Line Elements input</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_3">
+    <item row="0" column="0">
+     <layout class="QGridLayout" name="TLEgridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="FileTELlabel">
+        <property name="text">
+         <string>File: </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="LoadTLEpushButton">
+        <property name="text">
+         <string>Load</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="DragandDrpTLElabel">
+        <property name="text">
+         <string>Drag'n drop: </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <layout class="QFormLayout" name="DropTLEhere">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+       </layout>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="Line" name="lineSeparator2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>295</y>
+     <width>566</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QWidget" name="gridLayoutWidget_3">
+   <property name="geometry">
+    <rect>
+     <x>25</x>
+     <y>220</y>
+     <width>531</width>
+     <height>66</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayoutTLElines1and2">
+    <item row="0" column="0">
+     <widget class="QLineEdit" name="TLEline1Edit">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLineEdit" name="TLEline2Edit"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="gridLayoutWidget_4">
+   <property name="geometry">
+    <rect>
+     <x>25</x>
+     <y>185</y>
+     <width>146</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayoutTLELine0">
+    <item row="0" column="0">
+     <widget class="QLineEdit" name="TLEline0Edit">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>StartDateTimeEdit</tabstop>
+  <tabstop>EndDateTimeEdit</tabstop>
+  <tabstop>TimeStepLineEdit</tabstop>
+  <tabstop>LoadTLEpushButton</tabstop>
+  <tabstop>buttonBoxOKCancel</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../../iconary/sta-icons.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBoxOKCancel</sender>
+   <signal>accepted()</signal>
+   <receiver>LoiteringTLEDialogClass</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>278</x>
+     <y>352</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>323</x>
+     <y>250</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBoxOKCancel</sender>
+   <signal>rejected()</signal>
+   <receiver>LoiteringTLEDialogClass</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>206</x>
+     <y>354</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>135</x>
+     <y>0</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <designerdata>
+  <property name="gridDeltaX">
+   <number>5</number>
+  </property>
+  <property name="gridDeltaY">
+   <number>5</number>
+  </property>
+  <property name="gridSnapX">
+   <bool>true</bool>
+  </property>
+  <property name="gridSnapY">
+   <bool>true</bool>
+  </property>
+  <property name="gridVisible">
+   <bool>true</bool>
+  </property>
+ </designerdata>
+</ui>

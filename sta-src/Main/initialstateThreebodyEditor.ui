@@ -1,0 +1,478 @@
+<ui version="4.0" >
+ <class>InitialState_threebody_Editor</class>
+ <widget class="QDialog" name="InitialState_threebody_Editor" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>458</width>
+    <height>384</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Initial State (Position)</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2" >
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout" >
+     <item>
+      <widget class="QLabel" name="label" >
+       <property name="text" >
+        <string>Inital State Type</string>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignRight|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="initialStateTypeCombo" >
+       <item>
+        <property name="text" >
+         <string>State Vector</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>Keplerian Elements</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2" >
+     <item>
+      <widget class="QLabel" name="label_2" >
+       <property name="text" >
+        <string>Coordinate System</string>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignRight|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="coordinateSystemCombo" />
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QStackedWidget" name="initialStateStack" >
+     <property name="currentIndex" >
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="stateVectorPage" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>434</width>
+        <height>248</height>
+       </rect>
+      </property>
+      <widget class="QWidget" name="layoutWidget" >
+       <property name="geometry" >
+        <rect>
+         <x>21</x>
+         <y>10</y>
+         <width>399</width>
+         <height>196</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_3" >
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_4" >
+          <item>
+           <widget class="QGroupBox" name="groupBox" >
+            <property name="title" >
+             <string>Position [km]:</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_3" >
+             <item>
+              <layout class="QGridLayout" name="gridLayout_2" >
+               <item row="0" column="0" >
+                <widget class="QLabel" name="label_9" >
+                 <property name="text" >
+                  <string>X</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1" >
+                <widget class="QLineEdit" name="positionXEdit" >
+                 <property name="text" >
+                  <string>0.00</string>
+                 </property>
+                 <property name="alignment" >
+                  <set>Qt::AlignRight|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0" >
+                <widget class="QLabel" name="label_10" >
+                 <property name="text" >
+                  <string>Y</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1" >
+                <widget class="QLineEdit" name="positionYEdit" >
+                 <property name="text" >
+                  <string>0.00</string>
+                 </property>
+                 <property name="alignment" >
+                  <set>Qt::AlignRight|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0" >
+                <widget class="QLabel" name="label_11" >
+                 <property name="text" >
+                  <string>Z</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1" >
+                <widget class="QLineEdit" name="positionZEdit" >
+                 <property name="text" >
+                  <string>0.00</string>
+                 </property>
+                 <property name="alignment" >
+                  <set>Qt::AlignRight|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_2" >
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0" >
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_6" >
+          <item>
+           <widget class="QGroupBox" name="groupBox_2" >
+            <property name="title" >
+             <string>Velocity [km/s]:</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_5" >
+             <item>
+              <layout class="QGridLayout" name="gridLayout_3" >
+               <item row="0" column="0" >
+                <widget class="QLabel" name="label_12" >
+                 <property name="text" >
+                  <string>X</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1" >
+                <widget class="QLineEdit" name="velocityXEdit" >
+                 <property name="text" >
+                  <string>0.00</string>
+                 </property>
+                 <property name="alignment" >
+                  <set>Qt::AlignRight|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0" >
+                <widget class="QLabel" name="label_13" >
+                 <property name="text" >
+                  <string>Y</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1" >
+                <widget class="QLineEdit" name="velocityYEdit" >
+                 <property name="text" >
+                  <string>0.00</string>
+                 </property>
+                 <property name="alignment" >
+                  <set>Qt::AlignRight|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0" >
+                <widget class="QLabel" name="label_14" >
+                 <property name="text" >
+                  <string>Z</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1" >
+                <widget class="QLineEdit" name="velocityZEdit" >
+                 <property name="text" >
+                  <string>0.00</string>
+                 </property>
+                 <property name="alignment" >
+                  <set>Qt::AlignRight|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_3" >
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0" >
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="keplerianElementsPage" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>434</width>
+        <height>248</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout" >
+       <item>
+        <layout class="QGridLayout" name="gridLayout" >
+         <item row="1" column="2" >
+          <widget class="QLineEdit" name="semimajorAxisEdit" >
+           <property name="text" >
+            <string>3452.21</string>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignRight|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="2" >
+          <widget class="QLineEdit" name="inclinationEdit" >
+           <property name="text" >
+            <string>-51.6</string>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignRight|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="2" >
+          <widget class="QLineEdit" name="raanEdit" >
+           <property name="text" >
+            <string>0.00</string>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignRight|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="2" >
+          <widget class="QLineEdit" name="argOfPeriapsisEdit" >
+           <property name="text" >
+            <string>0.00</string>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignRight|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="2" >
+          <widget class="QLineEdit" name="trueAnomalyEdit" >
+           <property name="text" >
+            <string>0.00</string>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignRight|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2" >
+          <widget class="QLineEdit" name="eccentricityEdit" >
+           <property name="text" >
+            <string>0.00</string>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignRight|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" >
+          <widget class="QLabel" name="label_3" >
+           <property name="text" >
+            <string>Semimajor Axis [km]:</string>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignRight|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1" >
+          <widget class="QLabel" name="label_4" >
+           <property name="text" >
+            <string>Eccentricity</string>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignRight|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1" >
+          <widget class="QLabel" name="label_5" >
+           <property name="text" >
+            <string>Inclination [deg]:</string>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignRight|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1" >
+          <widget class="QLabel" name="label_6" >
+           <property name="text" >
+            <string>RAAN [deg]:</string>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignRight|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1" >
+          <widget class="QLabel" name="label_7" >
+           <property name="text" >
+            <string>Argument of Periapsis [deg]:</string>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignRight|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1" >
+          <widget class="QLabel" name="label_8" >
+           <property name="text" >
+            <string>True Anomaly [deg]:</string>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignRight|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" >
+          <spacer name="horizontalSpacer" >
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0" >
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer" >
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0" >
+          <size>
+           <width>20</width>
+           <height>14</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>InitialState_threebody_Editor</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>InitialState_threebody_Editor</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>initialStateTypeCombo</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>initialStateStack</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>337</x>
+     <y>24</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>228</x>
+     <y>201</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
+

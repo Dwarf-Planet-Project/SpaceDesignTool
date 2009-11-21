@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>419</width>
+    <height>322</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>STA</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>419</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionNewScenario"/>
+    <addaction name="actionOpenScenario"/>
+    <addaction name="actionRecent_Scenarios"/>
+    <addaction name="separator"/>
+    <addaction name="actionSaveScenario"/>
+    <addaction name="actionSaveScenarioAs"/>
+    <addaction name="actionExport"/>
+    <addaction name="separator"/>
+    <addaction name="actionOpenScript"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionCut"/>
+    <addaction name="actionCopy"/>
+    <addaction name="actionPaste"/>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuCalculate">
+    <property name="title">
+     <string>Calculate</string>
+    </property>
+    <addaction name="actionPropagate_Scenario"/>
+    <addaction name="actionSystem_Engineering"/>
+    <addaction name="actionAnalyse"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionSTA_Web"/>
+    <addaction name="actionSTA_Wiki"/>
+    <addaction name="separator"/>
+    <addaction name="actionSTA_Downloads"/>
+    <addaction name="actionSTA_Forums"/>
+    <addaction name="actionSTA_bugtracker"/>
+   </widget>
+   <widget class="QMenu" name="menuWindow">
+    <property name="title">
+     <string>Window</string>
+    </property>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuCalculate"/>
+   <addaction name="menuTools"/>
+   <addaction name="menuWindow"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <action name="action2D_Plot">
+   <property name="text">
+    <string>2D Plot</string>
+   </property>
+  </action>
+  <action name="action3D_Plot">
+   <property name="text">
+    <string>3D Plot</string>
+   </property>
+  </action>
+  <action name="actionAscent">
+   <property name="text">
+    <string>Ascent</string>
+   </property>
+  </action>
+  <action name="actionEntry">
+   <property name="text">
+    <string>Entry</string>
+   </property>
+  </action>
+  <action name="actionFly_by">
+   <property name="text">
+    <string>Fly-by</string>
+   </property>
+  </action>
+  <action name="actionLagrangian">
+   <property name="text">
+    <string>Lagrangian</string>
+   </property>
+  </action>
+  <action name="actionOrbit">
+   <property name="text">
+    <string>Orbit</string>
+   </property>
+  </action>
+  <action name="actionRendezvous">
+   <property name="text">
+    <string>Rendezvous</string>
+   </property>
+  </action>
+  <action name="actionCalculator">
+   <property name="text">
+    <string>Calculator</string>
+   </property>
+  </action>
+  <action name="actionCoverage">
+   <property name="text">
+    <string>Coverage</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionNewScenario">
+   <property name="text">
+    <string>New Scenario</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actionOpenScenario">
+   <property name="text">
+    <string>Open Scenario...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionRecent_Scenarios">
+   <property name="text">
+    <string>Recent Scenarios</string>
+   </property>
+  </action>
+  <action name="actionSaveScenario">
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionSaveScenarioAs">
+   <property name="text">
+    <string>Save As...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="actionPropagate_Scenario">
+   <property name="text">
+    <string>Propagate</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionScenarioElements">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Scenario Elements</string>
+   </property>
+  </action>
+  <action name="action3dViewPreferences">
+   <property name="text">
+    <string>3D View Preferences...</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="text">
+    <string>Redo</string>
+   </property>
+  </action>
+  <action name="actionCut">
+   <property name="text">
+    <string>Cut</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="actionCopy">
+   <property name="text">
+    <string>Copy</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionPaste">
+   <property name="text">
+    <string>Paste</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="actionDelete">
+   <property name="text">
+    <string>Delete</string>
+   </property>
+  </action>
+  <action name="actionSelect_All">
+   <property name="text">
+    <string>Select All</string>
+   </property>
+  </action>
+  <action name="action2D_View_Preferences">
+   <property name="text">
+    <string>2D View Preferences</string>
+   </property>
+  </action>
+  <action name="actionSTA_Web">
+   <property name="text">
+    <string>STA Web</string>
+   </property>
+  </action>
+  <action name="actionSTA_bugtracker">
+   <property name="text">
+    <string>STA Bug Tracker</string>
+   </property>
+  </action>
+  <action name="actionSTA_User_s_Manual">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>STA User's Manual</string>
+   </property>
+  </action>
+  <action name="actionSTA_Wiki">
+   <property name="text">
+    <string>STA User's Manual</string>
+   </property>
+  </action>
+  <action name="actionOpenScript">
+   <property name="text">
+    <string>Open Script...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionSystem_Engineering">
+   <property name="text">
+    <string>Engineer</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="actionSTA_Forums">
+   <property name="text">
+    <string>STA Forums</string>
+   </property>
+  </action>
+  <action name="actionSTA_Downloads">
+   <property name="text">
+    <string>STA Downloads</string>
+   </property>
+  </action>
+  <action name="actionExport">
+   <property name="text">
+    <string>Export...</string>
+   </property>
+  </action>
+  <action name="actionAnalyse">
+   <property name="text">
+    <string>Plot</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionActivateSTACalculator">
+   <property name="text">
+    <string>Calculator</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+C</string>
+   </property>
+  </action>
+  <action name="actionActivateSTACalc">
+   <property name="text">
+    <string>Calculator</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

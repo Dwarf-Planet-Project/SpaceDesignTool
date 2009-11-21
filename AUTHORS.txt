@@ -1,0 +1,46 @@
+Authors
+-------
+
+  G. Ortega         <ESA> 
+  C. Laurel         <Celestia team>
+  S. Erb            <ESA>
+  A. Bavandi        <ESA>
+  G. Schouten       <Delft University of Netherlands>
+  T. Paulino        <ESA>
+  I. Huertas        <Delft University of Netherlands>
+  N. Filipe         <ESA>
+  T. Sabatini       <Politecnico di Milano>
+  M. Volkaert       <Delft University of Netherlands>
+  A. Martinez       <ESA>
+  V. Zuccarelli     <Politecnico di Milano>
+  B. Naessens       <Delft University of Netherlands>
+  F. Castellini     <Politecnico di Milano>
+  G. Ridolfi        <Delft University of Netherlands>
+  C. Yabar          <ESA>
+  A. Manno          <University of Palermo>
+  A. Riccardi       <University of Milano>
+
+STA email address:
+  <space.trajectory.analyis@gmail.com>
+
+Contributors
+------------
+  A. Benoit          <ESA>
+  E. Mooij           <Delft University of Netherlands>
+  M. Lavagna         <Politecnico di Milano>
+  J. M. Giron        <University of Madrid>
+  C. Bueskens        <University of Bremen>
+  R. Martinez        <Technical University of Madrid>
+  M. Gerdts          <University of Wuerzburg>
+  L. N. Vicente      <University of Coimbra>
+  J. Fliege          <University of Southampton>
+  J. J. Ruckmann     <University of Birmingham>
+  J. Melman          <Delft University of Netherlands>
+  A. Blasco          <ESA>
+  F. Lau             <Instituto Superior TŽcnico Lisbon>
+  C. Lopez           <ESA>
+  M. Burchell        <University of Kent>
+  P. Gil             <Instituto Superior TŽcnico Lisbon>
+  K. Schilling       <University of Wuerzburg>
+  D. Ponz            <ESA>
+

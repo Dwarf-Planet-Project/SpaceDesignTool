@@ -1,0 +1,2034 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LagrangianDialogClass</class>
+ <widget class="QDialog" name="LagrangianDialogClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>706</width>
+    <height>547</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>706</width>
+    <height>547</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>706</width>
+    <height>547</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Lagrangian</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../../iconary/sta-icons.qrc">
+    <normaloff>:/icons/3rdbody_icon.png</normaloff>:/icons/3rdbody_icon.png</iconset>
+  </property>
+  <widget class="QDialogButtonBox" name="buttonBox">
+   <property name="geometry">
+    <rect>
+     <x>352</x>
+     <y>510</y>
+     <width>341</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QTabWidget" name="tabWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>5</y>
+     <width>685</width>
+     <height>501</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>685</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>685</width>
+     <height>501</height>
+    </size>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>Simulation</string>
+    </attribute>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="geometry">
+      <rect>
+       <x>12</x>
+       <y>124</y>
+       <width>333</width>
+       <height>341</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Initial Orbital Vector</string>
+     </property>
+     <widget class="QStackedWidget" name="InitialStateStackedWidget">
+      <property name="geometry">
+       <rect>
+        <x>5</x>
+        <y>120</y>
+        <width>321</width>
+        <height>211</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
+      </property>
+      <property name="lineWidth">
+       <number>0</number>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="keplerianPage">
+       <widget class="QGroupBox" name="KeplerianGroupBox">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>317</width>
+          <height>225</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>Orbital elements are the parameters required to uniquely identify a specific orbit.
+In celestial mechanics these elements are generally considered in classical two-body 
+systems, where a Kepler orbit is used (derived from Newton's laws of motion and 
+Newton's law of universal gravitation). There are many different ways to 
+mathematically describe the same orbit, but certain schemes each consisting of 
+a set of six parameters are commonly used in astronomy and orbital mechanics.</string>
+        </property>
+        <property name="title">
+         <string>Keplerian Elements</string>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+        <widget class="QWidget" name="formLayoutWidget_3">
+         <property name="geometry">
+          <rect>
+           <x>5</x>
+           <y>30</y>
+           <width>305</width>
+           <height>184</height>
+          </rect>
+         </property>
+         <layout class="QFormLayout" name="formLayout_3">
+          <property name="labelAlignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="formAlignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="a_3">
+            <property name="text">
+             <string>Semimajor Axis [km]:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="e_3">
+            <property name="text">
+             <string>Eccentricity [-]:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="i_3">
+            <property name="text">
+             <string>Inclination [deg]</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="raan_3">
+            <property name="text">
+             <string>RAAN [deg]:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="omega_3">
+            <property name="text">
+             <string>Argument of Periapsis [deg:]</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="nu_3">
+            <property name="text">
+             <string>True Anomaly [deg]:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="semimajorAxisEdit">
+            <property name="toolTip">
+             <string>...similar to the radius of a circle, its length is the distance between 
+the geometric center of the orbital ellipse with the periapsis (point 
+of closest approach to the central body), passing through the focal 
+point where the center of mass resides.</string>
+            </property>
+            <property name="text">
+             <string>10000</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="eccentricityEdit">
+            <property name="toolTip">
+             <string>...shape of the ellipse, describing how flattened
+it is compared with a circle.</string>
+            </property>
+            <property name="text">
+             <string>0.0</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="inclinationEdit">
+            <property name="toolTip">
+             <string>...vertical tilt of the ellipse with respect to the reference plane, 
+measured at the ascending node (where the orbit passes upward 
+through the reference plane).</string>
+            </property>
+            <property name="text">
+             <string>45.0</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="raanEdit">
+            <property name="toolTip">
+             <string>...horizontally orients the ascending node of the ellipse 
+(where the orbit passes upward through the reference plane)
+with respect to the reference frame's vernal point.</string>
+            </property>
+            <property name="text">
+             <string>0.0</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QLineEdit" name="argOfPeriapsisEdit">
+            <property name="toolTip">
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;...defines the orientation of the ellipse (in which direction it &lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;is flattened compared to a circle) in the orbital plane, as an angle&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; -qt-user-state:769;&quot;&gt;measured from the ascending node to the semimajor axis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="text">
+             <string>0.0</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QLineEdit" name="trueAnomalyEdit">
+            <property name="toolTip">
+             <string>...defines the position of the orbiting body along the ellipse 
+at a specific time (the &quot;epoch&quot;).</string>
+            </property>
+            <property name="text">
+             <string>0.0</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="stateVectorPage">
+       <widget class="QGroupBox" name="groupBox_2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>10</y>
+          <width>301</width>
+          <height>191</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>State Vector</string>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="0" column="0">
+          <layout class="QFormLayout" name="formLayout_2">
+           <property name="fieldGrowthPolicy">
+            <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+           </property>
+           <property name="formAlignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <item row="0" column="0">
+            <widget class="QLabel" name="a">
+             <property name="text">
+              <string>X [Km]: </string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="positionXEdit">
+             <property name="text">
+              <string>0.0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="e">
+             <property name="text">
+              <string>Y [Km]: </string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="positionYEdit">
+             <property name="text">
+              <string>0.0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="i">
+             <property name="text">
+              <string>Z [Km]: </string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLineEdit" name="positionZEdit">
+             <property name="text">
+              <string>45.0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="raan">
+             <property name="text">
+              <string>Vx [Km/s]: </string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QLineEdit" name="velocityXEdit">
+             <property name="text">
+              <string>0.0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="omega">
+             <property name="text">
+              <string>Vy [Km/s]: </string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QLineEdit" name="velocityYEdit">
+             <property name="text">
+              <string>0.0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="nu">
+             <property name="text">
+              <string>Vz [Km/s]: </string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="QLineEdit" name="velocityZEdit">
+             <property name="text">
+              <string>0.0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="gridLayoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>20</y>
+        <width>311</width>
+        <height>86</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QLabel" name="CoordSystlabel">
+         <property name="text">
+          <string>System: </string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="InitialStateTypeLabel">
+         <property name="text">
+          <string>Type:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="CoordSystemComboBox">
+         <property name="toolTip">
+          <string>Coordinate system in which the initial orbital vector will be given</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="InitialStateComboBox">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <item>
+          <property name="text">
+           <string>Keplerian elements</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>State vector</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="CentralBodyComboBox"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="CentralBodyLabel">
+         <property name="text">
+          <string>Central body:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>240</y>
+       <width>271</width>
+       <height>226</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>deltaV</string>
+     </property>
+     <widget class="QWidget" name="horizontalLayoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>25</y>
+        <width>251</width>
+        <height>46</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLabel" name="label_13">
+         <property name="text">
+          <string>Epoch:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDateTimeEdit" name="dateTimeEdit_3">
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="displayFormat">
+          <string>dd/MM/yyyy hh:mm:ss</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>75</y>
+        <width>206</width>
+        <height>141</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_15">
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="velocityYEdit_2">
+         <property name="text">
+          <string>0.0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="velocityXEdit_2">
+         <property name="text">
+          <string>0.0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="velocityZEdit_2">
+         <property name="text">
+          <string>0.0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_11">
+         <property name="text">
+          <string>deltaVy (km/s):</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_12">
+         <property name="text">
+          <string>deltaVz (km/s):</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_10">
+         <property name="text">
+          <string>deltaVx (km/s):</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="gridLayoutWidget_3">
+     <property name="geometry">
+      <rect>
+       <x>334</x>
+       <y>4</y>
+       <width>338</width>
+       <height>161</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_91">
+        <property name="text">
+         <string>System:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="SystemComboBox">
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+        </property>
+        <item>
+         <property name="text">
+          <string/>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sun-Mercury</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sun-Venus</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sun-Earth</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sun-Mars</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sun-Jupiter</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sun-Saturn</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sun-Uranus</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sun-Neptune</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Earth-Moon</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Saturn-Titan</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Neptune-Triton</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>user system</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>1st Grav Param. [km3/s2]:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="firstMIlineEdit">
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>2nd Grav Param. [km3/s2]:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="secondMIlineEdit">
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_22">
+        <property name="text">
+         <string>Primaries distance [km]:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="primariesDistancelineEdit">
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_92">
+        <property name="text">
+         <string>3B Grav Param.:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="threeBodyMIlineEdit">
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="gridLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>4</x>
+       <y>4</y>
+       <width>314</width>
+       <height>66</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="StartingDatelabel">
+        <property name="text">
+         <string>Starting epoch:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="StartingDatelabel_2">
+        <property name="text">
+         <string>Ending epoch:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QDateTimeEdit" name="dateTimeEdit">
+        <property name="toolTip">
+         <string>The starting epoch of this participant</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="dateTime">
+         <datetime>
+          <hour>0</hour>
+          <minute>0</minute>
+          <second>0</second>
+          <year>2010</year>
+          <month>1</month>
+          <day>1</day>
+         </datetime>
+        </property>
+        <property name="displayFormat">
+         <string>dd/MM/yyyy hh:mm:ss</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QDateTimeEdit" name="dateTimeEdit_2">
+        <property name="toolTip">
+         <string>The ending epoch of this participant</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="dateTime">
+         <datetime>
+          <hour>0</hour>
+          <minute>0</minute>
+          <second>0</second>
+          <year>2010</year>
+          <month>1</month>
+          <day>1</day>
+         </datetime>
+        </property>
+        <property name="displayFormat">
+         <string>dd/MM/yyyy hh:mm:ss</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_5">
+    <attribute name="title">
+     <string>Environment</string>
+    </attribute>
+    <widget class="QGroupBox" name="groupBoxPerturbations">
+     <property name="geometry">
+      <rect>
+       <x>25</x>
+       <y>80</y>
+       <width>616</width>
+       <height>376</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Perurbations are not yet enabled...</string>
+     </property>
+     <property name="title">
+      <string>Perturbations</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <widget class="QWidget" name="layoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>320</x>
+        <y>85</y>
+        <width>286</width>
+        <height>276</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QListWidget" name="BodyListWidget">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ExtendedSelection</enum>
+         </property>
+         <item>
+          <property name="text">
+           <string>SUN</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>EARTH</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>MERCURY</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>VENUS</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>MARS</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>JUPITER</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SATURN</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>URANUS</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>NEPTUNE</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>PLUTO</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>MOON</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>DEIMOS</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>EUROPA</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>TITAN</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>ENCELADUS</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>TRITON</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QPushButton" name="AddPushButton">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Add</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="RemovePushButton">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Remove</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QListWidget" name="PertBodyListWidget">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ExtendedSelection</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QRadioButton" name="PertBodyRadioButton">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>325</x>
+        <y>25</y>
+        <width>201</width>
+        <height>44</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Perturbing Body</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normalon>:/icons/3rdbody_icon.png</normalon>
+       </iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>40</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="autoExclusive">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="GravLabel">
+      <property name="geometry">
+       <rect>
+        <x>38</x>
+        <y>37</y>
+        <width>90</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Gravity Model:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="GravLineEdit">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>135</x>
+        <y>35</y>
+        <width>141</width>
+        <height>26</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>EGM96.txt</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="ZonalsLabel">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>70</y>
+        <width>111</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Gravity Zonals: </string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="TesseralLabel">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>105</y>
+        <width>121</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Gravity Tesserals: </string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="ZonalsSpinBox">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>135</x>
+        <y>70</y>
+        <width>51</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+      <property name="minimum">
+       <number>2</number>
+      </property>
+      <property name="maximum">
+       <number>70</number>
+      </property>
+      <property name="value">
+       <number>2</number>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="TesseralSpinBox">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>135</x>
+        <y>105</y>
+        <width>51</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+      <property name="maximum">
+       <number>70</number>
+      </property>
+      <property name="value">
+       <number>0</number>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="AthmLineEdit">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>135</x>
+        <y>311</y>
+        <width>136</width>
+        <height>26</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>EarthGRAM99.stad</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="AthmDragRadioButton">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>266</y>
+        <width>183</width>
+        <height>44</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Atmospheric Drag</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normalon>:/icons/Mydrag.png</normalon>
+       </iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>40</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="autoExclusive">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="AthmLabel">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>301</y>
+        <width>61</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Model: </string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="SolarPressureRadioButton">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>176</y>
+        <width>161</width>
+        <height>44</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Solar Pressure</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normalon>:/icons/Solar_pressure_icon.png</normalon>
+       </iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>40</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="autoExclusive">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="horizontalLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>8</y>
+       <width>611</width>
+       <height>45</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QLabel" name="label_94">
+        <property name="text">
+         <string>System: </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="SystemComboBox_2">
+        <property name="layoutDirection">
+         <enum>Qt::RightToLeft</enum>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_9">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_24">
+        <property name="text">
+         <string>Primaries distance (km):</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="primariesDistancelineEdit_2">
+        <property name="layoutDirection">
+         <enum>Qt::RightToLeft</enum>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_6">
+    <attribute name="title">
+     <string>Propagation</string>
+    </attribute>
+    <widget class="QGroupBox" name="AttitudepropagationGroupBox">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>141</x>
+       <y>220</y>
+       <width>405</width>
+       <height>231</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Attitude is not yet enabled...</string>
+     </property>
+     <property name="title">
+      <string>Attitude Propagation</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_17">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QComboBox" name="AttitudePropagationComboBox">
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="sizeAdjustPolicy">
+           <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+          </property>
+          <item>
+           <property name="text">
+            <string>Integration</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Interpolation</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <widget class="QStackedWidget" name="stackedWidget_3">
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="page_8">
+           <layout class="QHBoxLayout" name="horizontalLayout_14">
+            <item>
+             <layout class="QGridLayout" name="gridLayout_14">
+              <item row="0" column="1">
+               <widget class="QLabel" name="ExtCouplesLabel">
+                <property name="text">
+                 <string>External couples</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLabel" name="IntegratorL">
+                <property name="text">
+                 <string>IntegratorType</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QComboBox" name="IntegratorComboBox_2">
+                <property name="sizeAdjustPolicy">
+                 <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Runge-Kutta 3-4</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Runge-Kutta 7-8</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLabel" name="IntStepLabel_2">
+                <property name="text">
+                 <string>Integration step [s]</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <widget class="QLineEdit" name="IntStepEdit_2">
+                <property name="text">
+                 <string>0.0</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QComboBox" name="ExtCouplesComboBox">
+                <property name="maximumSize">
+                 <size>
+                  <width>200</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="sizeAdjustPolicy">
+                 <enum>QComboBox::AdjustToContents</enum>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>None</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Gravity gradient</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Magnetic</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Atmospheric drag</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Solar pressure</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_14">
+                <property name="maximumSize">
+                 <size>
+                  <width>32</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="pixmap">
+                 <pixmap resource="../../iconary/sta-icons.qrc">:/icons/integrator.png</pixmap>
+                </property>
+                <property name="scaledContents">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_15">
+                <property name="maximumSize">
+                 <size>
+                  <width>32</width>
+                  <height>32</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="pixmap">
+                 <pixmap resource="../../iconary/sta-icons.qrc">:/icons/compute.png</pixmap>
+                </property>
+                <property name="scaledContents">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_18">
+                <property name="maximumSize">
+                 <size>
+                  <width>32</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="pixmap">
+                 <pixmap resource="../../iconary/sta-icons.qrc">:/icons/drag-force.png</pixmap>
+                </property>
+                <property name="scaledContents">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="page_9">
+           <layout class="QHBoxLayout" name="horizontalLayout_15">
+            <item>
+             <layout class="QGridLayout" name="gridLayout_16">
+              <item row="0" column="1">
+               <widget class="QLabel" name="AttitudeFileLabel">
+                <property name="text">
+                 <string>Attitude File</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLabel" name="InterpolationLabel">
+                <property name="text">
+                 <string>InterpolatorType</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QComboBox" name="InterpolatorComboBox">
+                <property name="sizeAdjustPolicy">
+                 <enum>QComboBox::AdjustToContents</enum>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>LAGRANGE</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>HERMITE</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>POLYNOMIAL</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLabel" name="OrderLabel">
+                <property name="text">
+                 <string>Order</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLineEdit" name="lineEdit_7">
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <widget class="QSpinBox" name="OrderSpinBox">
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_17">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="pixmap">
+                 <pixmap resource="../../iconary/sta-icons.qrc">:/icons/compute.png</pixmap>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_16">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="pixmap">
+                 <pixmap>:/icons/file.png</pixmap>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_19">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="pixmap">
+                 <pixmap resource="../../iconary/sta-icons.qrc">:/icons/AttitudeInterpolation.png</pixmap>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="TrajectorypropagationGroupBox">
+     <property name="geometry">
+      <rect>
+       <x>144</x>
+       <y>20</y>
+       <width>401</width>
+       <height>176</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Orbit Propagation</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_16">
+      <item>
+       <layout class="QGridLayout" name="gridLayout_13">
+        <item row="0" column="0">
+         <widget class="QLabel" name="PropagatorLabel">
+          <property name="text">
+           <string>Propagator Type: </string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="PropagatorComboBox">
+          <property name="sizeAdjustPolicy">
+           <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+          </property>
+          <item>
+           <property name="text">
+            <string>3rd Body</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="IntegratorLabel">
+          <property name="text">
+           <string>IntegratorType: </string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="IntegratorComboBox">
+          <property name="sizeAdjustPolicy">
+           <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+          </property>
+          <item>
+           <property name="text">
+            <string>Runge-Kutta-Felhberg 4-5</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="IntStepLabel">
+          <property name="maximumSize">
+           <size>
+            <width>141</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Integration step [s]: </string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="TimeStepLineEdit">
+            <property name="maximumSize">
+             <size>
+              <width>65</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Step size of the visualization of the participant's trajectory</string>
+            </property>
+            <property name="text">
+             <string>300</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="AdvancedpushButton">
+   <property name="geometry">
+    <rect>
+     <x>12</x>
+     <y>508</y>
+     <width>113</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Advanced</string>
+   </property>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>dateTimeEdit</tabstop>
+  <tabstop>dateTimeEdit_2</tabstop>
+  <tabstop>SystemComboBox</tabstop>
+  <tabstop>firstMIlineEdit</tabstop>
+  <tabstop>secondMIlineEdit</tabstop>
+  <tabstop>primariesDistancelineEdit</tabstop>
+  <tabstop>threeBodyMIlineEdit</tabstop>
+  <tabstop>CoordSystemComboBox</tabstop>
+  <tabstop>InitialStateComboBox</tabstop>
+  <tabstop>CentralBodyComboBox</tabstop>
+  <tabstop>semimajorAxisEdit</tabstop>
+  <tabstop>eccentricityEdit</tabstop>
+  <tabstop>inclinationEdit</tabstop>
+  <tabstop>raanEdit</tabstop>
+  <tabstop>argOfPeriapsisEdit</tabstop>
+  <tabstop>trueAnomalyEdit</tabstop>
+  <tabstop>dateTimeEdit_3</tabstop>
+  <tabstop>velocityXEdit_2</tabstop>
+  <tabstop>velocityYEdit_2</tabstop>
+  <tabstop>velocityZEdit_2</tabstop>
+  <tabstop>AdvancedpushButton</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>velocityYEdit</tabstop>
+  <tabstop>positionXEdit</tabstop>
+  <tabstop>positionYEdit</tabstop>
+  <tabstop>positionZEdit</tabstop>
+  <tabstop>velocityXEdit</tabstop>
+  <tabstop>velocityZEdit</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>BodyListWidget</tabstop>
+  <tabstop>AddPushButton</tabstop>
+  <tabstop>RemovePushButton</tabstop>
+  <tabstop>PertBodyListWidget</tabstop>
+  <tabstop>PertBodyRadioButton</tabstop>
+  <tabstop>GravLineEdit</tabstop>
+  <tabstop>ZonalsSpinBox</tabstop>
+  <tabstop>TesseralSpinBox</tabstop>
+  <tabstop>AthmLineEdit</tabstop>
+  <tabstop>AthmDragRadioButton</tabstop>
+  <tabstop>SolarPressureRadioButton</tabstop>
+  <tabstop>SystemComboBox_2</tabstop>
+  <tabstop>primariesDistancelineEdit_2</tabstop>
+  <tabstop>AttitudePropagationComboBox</tabstop>
+  <tabstop>IntegratorComboBox_2</tabstop>
+  <tabstop>IntStepEdit_2</tabstop>
+  <tabstop>ExtCouplesComboBox</tabstop>
+  <tabstop>InterpolatorComboBox</tabstop>
+  <tabstop>lineEdit_7</tabstop>
+  <tabstop>OrderSpinBox</tabstop>
+  <tabstop>PropagatorComboBox</tabstop>
+  <tabstop>IntegratorComboBox</tabstop>
+  <tabstop>TimeStepLineEdit</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../../iconary/sta-icons.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>LagrangianDialogClass</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>LagrangianDialogClass</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>InitialStateComboBox</sender>
+   <signal>activated(int)</signal>
+   <receiver>InitialStateStackedWidget</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>310</x>
+     <y>227</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>326</x>
+     <y>304</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PertBodyRadioButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>BodyListWidget</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>426</x>
+     <y>198</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>423</x>
+     <y>235</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PertBodyRadioButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>PertBodyListWidget</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>497</x>
+     <y>204</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>588</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PertBodyRadioButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>AddPushButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>475</x>
+     <y>215</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>498</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PertBodyRadioButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>RemovePushButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>467</x>
+     <y>198</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>497</x>
+     <y>421</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

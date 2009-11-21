@@ -1,0 +1,134 @@
+{
+#-------------------------------------------------------------------------
+# ESA_tour.cel V1.00: Touring the European Space Agency.
+#
+# Original script written by G. Ortega on 9th April 2006.
+#
+# Duration: approx. 5 Min.
+#
+# NOTICE: This package and all contents are provided for your PRIVATE USE ONLY!     
+#         Any Public performance or distribution of this script is strictly         
+#         prohibited without the WRITTEN permission of the author!                  
+#                                                                                   
+#         ANY Commercial use is prohibited!                                         
+#                                                                                   
+# All contents (C)opyright 2006 by ESA              
+#                                                                                   
+# Please respect this copyright and inform ESA if you wish to show this script in    
+# a planned public performance or if you wish to distribute it.  
+# Thank you!  
+#-------------------------------------------------------------------------
+# Set the Julian Date to 20 December 2004 at 15.00 UT.
+#  time {jd 2453360.125}
+# Do not render the following objects...
+  renderflags { clear "pointstars|nightmaps|galaxies|cloudmaps" }
+  labels {clear "planets|moons|asteroids|constellations|stars|galaxies"}
+
+# Preloading textures for the Earth   
+preloadtex {object "earth.*"}  
+
+# Pause the time
+timerate  { rate 0 }
+  
+# Start the tour...
+print {text "European Space Agency tour..." row -4 column 1}
+wait {duration 2.0}
+preloadtex {object "Sol/Earth"}
+# Set Ambient Light Level (0.0 to 1.0 is a good Lo-Hi range)...
+  set { name "AmbientLightLevel" value 1.0 }
+# Set Field of View (Celestia 1.3.2 Pre1 default = 25)...
+# Set up Celestia for 1024 x 768 display.
+# NOTE: You MAY wish to change this value depending on your
+#       screen resolution. A value of 45 works well for 1024x768.
+#  set { name "FOV" value 45.0}
+
+#
+#-------------------------------------------------------------------------
+# Go to ESA Head Office in Paris, France
+#-------------------------------------------------------------------------
+#
+select {object "Sol/Earth"}
+center {time 1.0}
+wait {duration 1.0}
+follow {}
+goto {time 1.0 distance 7.0}
+wait {duration 1.0}
+gotolonglat {time 2.0 distance 3.0 longitude 2.33 latitude 48.87} ##-- Rue des Cosmonauts in Paris
+wait {duration 2.0}
+# Place a Read square marker around Paris...mark      { object "Sol/Earth/Paris"              size   8.0              color  [1 0 0]              symbol "circle" }
+print {text "Paris, France is the site of \n the Head Office of ESA." row -4 column 1 duration 4.0}
+wait {duration 8.0}
+
+
+#
+#-------------------------------------------------------------------------
+# Go to ESTEC in Netherlands  
+#-------------------------------------------------------------------------
+#
+select {object "Sol/Earth"}
+center {time 1.0}
+wait {duration 1.0}
+follow {}
+goto {time 1.0 distance 7.0}
+wait {duration 1.0}
+gotolonglat {time 2.0 distance 3.0 longitude 4.43 latitude 52.25} ##-- Keplerlaan 1 in Noordwijk, The Netherlands
+wait {duration 2.0}
+mark      { object "Sol/Earth/Noordwijk"              size   8.0              color  [1 0 0]              symbol "circle" }
+print {text "ESTEC, The Netherlands is the site of \n the Technology Research Center of ESA." row -4 column 1 duration 4.0}
+wait {duration 8.0}
+
+
+#
+#-------------------------------------------------------------------------
+# Go to ESOC in Germany  
+#-------------------------------------------------------------------------
+#
+select {object "Sol/Earth"}
+center {time 1.0}
+wait {duration 1.0}
+follow {}
+goto {time 1.0 distance 7.0}
+wait {duration 1.0}
+gotolonglat {time 2.0 distance 3.0 longitude 8.64 latitude 49.87} ##-- Roberth Bosch str in Darmstadt, Germany
+wait {duration 2.0}
+mark      { object "Sol/Earth/Darmstadt"              size   8.0              color  [1 0 0]              symbol "circle" }
+print {text "ESOC, Germany s is the site of \n the satellite operations of ESA." row -4 column 1 duration 4.0}
+wait {duration 8.0}
+
+#
+#-------------------------------------------------------------------------
+# Go to ESRIN in Italy  
+#-------------------------------------------------------------------------
+#
+select {object "Sol/Earth"}
+center {time 1.0}
+wait {duration 1.0}
+follow {}
+goto {time 1.0 distance 7.0}
+wait {duration 1.0}
+gotolonglat {time 2.0 distance 3.0 longitude 12.68 latitude 41.81} ##-- Frascati, Italy
+wait {duration 2.0}
+mark      { object "Sol/Earth/Frascati"              size   8.0              color  [1 0 0]              symbol "circle" }
+print {text "ESRIN, Italy is the site of \n the data management of ESA." row -4 column 1 duration 4.0}
+wait {duration 8.0}
+
+
+
+
+#
+#-------------------------------------------------------------------------
+# View of Europe with all markers  
+#-------------------------------------------------------------------------
+#
+gotolonglat {time 1.0 distance 4.0 longitude 0.0 latitude 45.0} ##-- Center Europe
+set { name "FOV" value 25.0}
+gotoloc   { time 1              position [7000 9000 11000]              xrot 13              yrot 32              zrot -95 }
+#
+#-------------------------------------------------------------------------
+# End of tour
+#-------------------------------------------------------------------------
+#
+print {text "ESA hopes you have enjoyed this special tour... \n This was ESA presentation from \n TEC-ECM trajectory team at ESTEC, (c) 2006." row -4 column 1 duration 4.0}
+wait {duration 10.0}
+
+}

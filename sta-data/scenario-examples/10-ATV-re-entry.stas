@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SpaceScenario Name="ATV re-entry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SpaceScenario1.0.xsd">
+ <Participants>
+  <SpaceVehicle Name="ATV" Type="Satellite">
+   <Properties>
+    <PhysicalProperties>
+     <PhysicalCharacteristics>
+      <volume units="m^3">1</volume>
+      <mass units="Kg">100</mass>
+      <surface units="m^2">1</surface>
+     </PhysicalCharacteristics>
+     <GeometricalCharacteristics>
+      <radiusBase units="m">0.5</radiusBase>
+      <radiusNose units="m">0.33</radiusNose>
+     </GeometricalCharacteristics>
+    </PhysicalProperties>
+    <AerodynamicProperties>
+     <CDCoefficients>CdM.stad</CDCoefficients>
+     <GLoadLimit units="-">40</GLoadLimit>
+     <SPHeatRateLimit units="MJ/m2">1200</SPHeatRateLimit>
+     <ParachuteProperties>
+      <SurfaceArea units="m2">0</SurfaceArea>
+      <CDCoefficients>CdMp.stad</CDCoefficients>
+      <DeploymentMach units="-">0</DeploymentMach>
+     </ParachuteProperties>
+    </AerodynamicProperties>
+    <PropulsionProperties>
+     <NumberOfEngines>1</NumberOfEngines>
+     <Isp>0</Isp>
+     <ThrustPerEngine>0</ThrustPerEngine>
+     <PropellantMass>0</PropellantMass>
+     <Dv>0</Dv>
+     <Type></Type>
+    </PropulsionProperties>
+    <PayloadProperties>
+     <PayloadMass>0</PayloadMass>
+     <PayloadPower>0</PayloadPower>
+    </PayloadProperties>
+   </Properties>
+   <Appearance>
+    <Model></Model>
+   </Appearance>
+   <TrajectoryPlan>
+    <ReEntry>
+     <Environment>
+      <CentralBody Name="Earth"/>
+      <AtmosphericDragPerturbation>
+       <ModelName>gram99.stad</ModelName>
+      </AtmosphericDragPerturbation>
+     </Environment>
+     <SimulationMode>
+      <SimulationParameters>
+       <Timeline>
+        <StartTime>2011-01-01T12:00:00</StartTime>
+        <StepTime units="s">1</StepTime>
+       </Timeline>
+       <InitialStatePosition>
+        <CoordinateSystem>INERTIAL J2000</CoordinateSystem>
+        <SphericalCoordinates>
+         <Altitude units="km">400</Altitude>
+         <Longitude units="deg">178.56</Longitude>
+         <Latitude units="deg">-25</Latitude>
+         <InertialVelocity units="Km/s">7.3</InertialVelocity>
+         <InertialFlightPathAngle units="deg">-4.5</InertialFlightPathAngle>
+         <InertialHeading units="deg">-215</InertialHeading>
+        </SphericalCoordinates>
+        <CentralsystemBody Name="Earth"/>
+       </InitialStatePosition>
+      </SimulationParameters>
+     </SimulationMode>
+     <TrajectoryPropagation>
+      <IntegratorType>RK4</IntegratorType>
+      <Timestep units="s">5</Timestep>
+      <PropagatorType>COWELL</PropagatorType>
+     </TrajectoryPropagation>
+    </ReEntry>
+   </TrajectoryPlan>
+  </SpaceVehicle>
+ </Participants>
+</SpaceScenario>

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ScenarioElementBox</class>
+ <widget class="QWidget" name="ScenarioElementBox">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>324</width>
+    <height>349</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Scenario Element Box</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTreeWidget" name="ScenarioElementTree">
+     <property name="font">
+      <font>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="dragDropMode">
+      <enum>QAbstractItemView::DragOnly</enum>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+     <property name="rootIsDecorated">
+      <bool>false</bool>
+     </property>
+     <property name="headerHidden">
+      <bool>true</bool>
+     </property>
+     <column>
+      <property name="text">
+       <string>1</string>
+      </property>
+     </column>
+     <item>
+      <property name="text">
+       <string>Participants</string>
+      </property>
+      <item>
+       <property name="text">
+        <string>Satellite</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../iconary/sta-icons.qrc">
+         <normaloff>:/icons/button-satellite.png</normaloff>
+         <normalon>:/icons/button-satellite.png</normalon>:/icons/button-satellite.png</iconset>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Target</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../iconary/sta-icons.qrc">
+         <normaloff>:/icons/button-target.png</normaloff>
+         <normalon>:/icons/button-target.png</normalon>:/icons/button-target.png</iconset>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Launch Pad</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../iconary/sta-icons.qrc">
+         <normaloff>:/icons/button-launchpad.png</normaloff>
+         <normalon>:/icons/button-launchpad.png</normalon>:/icons/button-launchpad.png</iconset>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Launcher</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../iconary/sta-icons.qrc">
+         <normaloff>:/icons/button-rocket.png</normaloff>
+         <normalon>:/icons/button-rocket.png</normalon>:/icons/button-rocket.png</iconset>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Re-Entry Vehicle</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../iconary/sta-icons.qrc">
+         <normaloff>:/icons/button-re-entry.png</normaloff>
+         <normalon>:/icons/button-reentry.png</normalon>:/icons/button-re-entry.png</iconset>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Ground Station</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../iconary/sta-icons.qrc">
+         <normaloff>:/icons/button-antenna.png</normaloff>
+         <normalon>:/icons/button-antenna.png</normalon>:/icons/button-antenna.png</iconset>
+       </property>
+      </item>
+     </item>
+     <item>
+      <property name="text">
+       <string>Mission arcs</string>
+      </property>
+      <item>
+       <property name="text">
+        <string>Ascent</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../iconary/sta-icons.qrc">
+         <normaloff>:/icons/mission-arcs-ascent.png</normaloff>
+         <normalon>:/icons/mission-arcs-ascent.png</normalon>:/icons/mission-arcs-ascent.png</iconset>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Loitering</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../iconary/sta-icons.qrc">
+         <normaloff>:/icons/mission-arcs-loitering.png</normaloff>
+         <normalon>:/icons/mission-arcs-loitering.png</normalon>
+         <disabledon>:/icons/mission-arcs-loitering.png</disabledon>:/icons/mission-arcs-loitering.png</iconset>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Fly-by</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../iconary/sta-icons.qrc">
+         <normaloff>:/icons/mission-arcs-flyby.png</normaloff>
+         <normalon>:/icons/mission-arcs-flyby.png</normalon>:/icons/mission-arcs-flyby.png</iconset>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Entry</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../iconary/sta-icons.qrc">
+         <normaloff>:/icons/mission-arcs-reentry.png</normaloff>
+         <normalon>:/icons/mission-arcs-reentry.png</normalon>
+         <disabledon>:/icons/mission-arcs-reentry.png</disabledon>:/icons/mission-arcs-reentry.png</iconset>
+       </property>
+      </item>
+     </item>
+     <item>
+      <property name="text">
+       <string>Manoeuvres</string>
+      </property>
+      <item>
+       <property name="text">
+        <string>Single impulse</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../iconary/sta-icons.qrc">
+         <normaloff>:/icons/engine.png</normaloff>
+         <normalon>:/icons/engine.png</normalon>:/icons/engine.png</iconset>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Rendezvous plan</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../iconary/sta-icons.qrc">
+         <normaloff>:/icons/mission-arcs-rendezvous.png</normaloff>
+         <normalon>:/icons/mission-arcs-rendezvous.png</normalon>
+         <disabledon>:/icons/mission-arcs-rendezvous.png</disabledon>
+         <activeoff>:/icons/mission-arcs-rendezvous.png</activeoff>
+         <selectedon>:/icons/mission-arcs-rendezvous.png</selectedon>:/icons/mission-arcs-rendezvous.png</iconset>
+       </property>
+      </item>
+     </item>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../../iconary/sta-icons.qrc"/>
+ </resources>
+ <connections/>
+</ui>
