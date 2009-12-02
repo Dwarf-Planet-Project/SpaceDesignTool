@@ -1,0 +1,3203 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head>
+  
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=utf-8">
+  <title>STA User's Guide "ARCHEAN"</title>
+
+  
+  
+  <meta name="GENERATOR" content="NeoOffice 3.0.1  (Unix)">
+
+  
+  <meta name="AUTHOR" content="Guillermo Ortega">
+
+  
+  <meta name="CREATED" content="20091130;16190600">
+
+  
+  <meta name="CHANGEDBY" content="Guillermo Ortega">
+
+  
+  <meta name="CHANGED" content="20091130;16475200">
+
+</head><body dir="ltr" lang="en-US">
+<br style="font-family: Times New Roman,Times,serif;">
+
+<div style="text-align: center; font-family: Times New Roman,Times,serif;"><big style="font-weight: bold;"><big><big><font size="2"><big><big><big>Space
+Trajectory Analysis "ARCHEAN" User's Manual<br>
+</big></big></big></font><font size="2"><big><big><big>November 2009</big></big></big></font></big></big></big><br>
+</div>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="center">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="left">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="center">
+</p>
+
+<div style="font-family: Times New Roman,Times,serif;" id="Table of Contents1" dir="ltr"><br>
+<ol id="mozToc">
+<!--mozToc h1 1 h2 2 h3 3 h4 4 h5 5 h6 6-->
+  <li><a href="#mozTocId367632">STA BACKGROUND AND HISTORY</a>
+    <ol>
+      <li><a href="#mozTocId204643">STA
+Partners and Team</a></li>
+      <li><a href="#mozTocId95537">STA Users</a></li>
+    </ol>
+  </li>
+  <li><a href="#mozTocId226926">STA BINARIES</a>
+    <ol>
+      <li><a href="#mozTocId853337">Requirements
+to run STA</a></li>
+      <li><a href="#mozTocId362310">Installing
+STA</a></li>
+      <li><a href="#mozTocId47846">Understanding where STA files are
+located in your system after
+installation</a></li>
+    </ol>
+  </li>
+  <li><a href="#mozTocId507357">USING STA</a>
+    <ol>
+      <li><a href="#mozTocId274849">Docking and Un-docking Windows</a></li>
+    </ol>
+  </li>
+  <li><a href="#mozTocId687997">WORKING WITH SPACE SCENARIOS</a>
+    <ol>
+      <li><a href="#mozTocId853245">Understanding the Space Scenario
+Concept in STA</a></li>
+      <li><a href="#mozTocId682647">Creating, Saving, and Loading
+Scenarios</a></li>
+      <li><a href="#mozTocId518801">Other Mission Arcs in ARCHEAN</a></li>
+      <li><a href="#mozTocId320935">Implementation of maneuvers in
+ARCHEAN</a></li>
+      <li><a href="#mozTocId732845">Pre-defined ground stations</a></li>
+      <li><a href="#mozTocId458602">Propagating Trajectories in STA</a></li>
+      <li><a href="#mozTocId580637">STA 2D View: Ground Tracks</a></li>
+      <li><a href="#mozTocId783432">STA 3D View: Orthogonal Trajectories</a></li>
+      <li><a href="#mozTocId445486">STA
+Time-Lines</a></li>
+      <li><a href="#mozTocId822938">STA
+Controls area</a></li>
+    </ol>
+  </li>
+  <li><a href="#mozTocId978633">3D Window
+Visuals</a>
+    <ol>
+      <li><a href="#mozTocId521755">Understanding
+3D views</a></li>
+      <li><a href="#mozTocId412798">Traveling the Universe</a></li>
+      <li><a href="#mozTocId520522">High
+resolution rendering</a></li>
+      <li><a href="#mozTocId950968">Obtaining more from participants in
+3D view</a></li>
+    </ol>
+  </li>
+  <li><a href="#mozTocId299558">Entry</a></li>
+  <li><a href="#mozTocId904064">System's
+Engineering</a></li>
+  <li><a href="#mozTocId916340">3rd-Body
+Module (3BM)</a>
+    <ol>
+      <li><a href="#mozTocId944680">3-body problem</a></li>
+      <li><a href="#mozTocId448054">STA 3BM inputs and functionalities</a></li>
+      <li><a href="#mozTocId423022">General overview of the 3BM</a></li>
+      <li><a href="#mozTocId996946">Common features of the four modes,
+3BM GUI</a></li>
+      <li><a href="#mozTocId179733">Features of mode 1</a></li>
+      <li><a href="#mozTocId290576">Advanced 3BM GUI</a></li>
+      <li><a href="#mozTocId853748">Features of mode 2</a></li>
+      <li><a href="#mozTocId340273">Features of mode 3</a></li>
+      <li><a href="#mozTocId877090">Features of mode 4</a></li>
+      <li><a href="#mozTocId153917">STA 3BM obtention of results</a></li>
+      <li><a href="#mozTocId369078">Results of mode 1</a></li>
+      <li><a href="#mozTocId244016">Results of mode 2</a></li>
+    </ol>
+  </li>
+  <li><a href="#mozTocId76617">STA
+Perturbations Service</a>
+    <ol>
+      <li><a href="#mozTocId254806">How to use the Perturbations Layer</a>
+        <ol>
+          <li><a href="#mozTocId582549">Loitering
+trajectory</a></li>
+          <li><a href="#mozTocId844393">Entry
+trajectories</a></li>
+          <li><a href="#mozTocId838775">Spacecraft properties parameters</a></li>
+        </ol>
+      </li>
+      <li><a href="#mozTocId407115">Perturbations
+layer GUI</a></li>
+    </ol>
+  </li>
+  <li><a href="#mozTocId933647">STA LICENCING AND COPYRIGHT</a>
+    <ol>
+      <li><a href="#mozTocId979972">GNU GENERAL PUBLIC LICENSE, Version
+2, June 1991</a>
+        <ol>
+          <li><a href="#mozTocId23505">How to Apply These Terms to New
+Programs based on
+STA</a></li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+  <li><a href="#mozTocId933852">How to Participate on STA development</a></li>
+  <li><a href="#mozTocId836164">LIST OF
+ACRONYMS</a></li>
+</ol>
+<br>
+<br>
+<br>
+</div>
+
+<p style="margin-top: 0.08in; margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<h1 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH1" name="mozTocId367632"></a><a name="2.STA BACKGROUND AND HISTORY|outline"></a><a name="1.INTRODUCTION|outline"></a>
+STA BACKGROUND AND HISTORY</h1>
+
+<p style="font-family: Times New Roman,Times,serif;">The European Space
+Agency (ESA) initiated in 2005 an internal
+activity to develop an open source astrodynamics software suite
+involving university science departments and research institutions.
+This project is called the “Space Trajectory Analysis” or STA. </p>
+
+<p style="font-family: Times New Roman,Times,serif;">The objectives of
+STA are threefold: first, to build an education
+environment in areas like astrodynamics, space sciences, mathematics,
+and informatics where teachers and students can interact towards
+Master, PhD, and postdoctoral degrees. Second, to promote the
+exchange of technical ideas, and raise knowledge and competence in
+these fields at University level. Last to provide a software suite for
+the purposes of test bed research for the verification and validation of new ideas,
+technologies, and techniques. </p>
+
+<p style="font-family: Times New Roman,Times,serif;">Conceived as a
+education and research tool to support the analysis
+phase of a space mission, STA is able to visualise a wide range of
+space trajectories. These include among others re-entry, descent and
+landing trajectories, orbits around planets and moons, rendezvous
+trajectories, etc.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The STA project is
+an original idea of the Technical Directorate
+of ESA. It was born in August 2005 to provide a framework in
+astrodynamics research at University level. As research and education
+software applicable to Academia, a number of Universities support
+this development partnering with ESA. STA partners are organised
+around the STA Steering Board. The STA Steering Board is composed of:
+European Space Agency, University of Delft, University of Bremen,
+University of Kent, University of Coimbra, Complutense University of
+Madrid, University of Birmingham, Instituto Superior Técnico Lisbon,
+University of Southampton, Technical University of Madrid,
+Politecnico di Milano, University of Wuerzburg, Celestia</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The STA development
+is open source and it is based on the state of
+the art astrodynamics routines that are grouped into modules. The
+modules are programmed using the C++ language. The different STA
+modules are designed, developed, tested and verified by the different
+Universities. Software integration and overall validation is
+performed by ESA. Students are chosen to work in STA modules as part
+of their Master or PhD thesis programs. As part of their growing
+experience, the students learn how to write documentation for a space
+project using European Cooperation on Space Standardisation (ECSS)
+standards, how to test and verify the software modules they write
+and, how to interact with ESA and each other in this process.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The STA project
+allows a strong link among applied mathematics,
+space engineering, and informatics disciplines by reinforcing the
+academic community with requirements and needs coming from space
+agencies and industry real needs and missions.</p>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId204643"></a><a name="2.1.STA Partners and Team|outline"></a>STA
+Partners and Team</h2>
+
+<p style="font-family: Times New Roman,Times,serif;">Universities and
+entities partnering with ESA to date are as
+follows:</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li>
+    <p>Technical University of Delft (Netherlands)</p>
+  </li>
+  <li>
+    <p>University of Bremen (Germany)</p>
+  </li>
+  <li>
+    <p>University of Wuerzburg (Germany)</p>
+  </li>
+  <li>
+    <p>University of Kent (United Kingdom)</p>
+  </li>
+  <li>
+    <p>University of Coimbra (Portugal)</p>
+  </li>
+  <li>
+    <p>Complutense University (Spain)</p>
+  </li>
+  <li>
+    <p>University of Birmingham (United Kingdom)</p>
+  </li>
+  <li>
+    <p>Instituto Superior Technico de Lisboa (Portugal)</p>
+  </li>
+  <li>
+    <p>University of Southampton (United Kingdom)</p>
+  </li>
+  <li>
+    <p>Technical University of Madrid (Spain)</p>
+  </li>
+  <li>
+    <p>Politecnico di Milano (Italy)</p>
+  </li>
+  <li>
+    <p>Celestia team</p>
+  </li>
+</ul>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId95537"></a><a name="2.2.STA Users|outline"></a>STA Users</h2>
+
+<p style="font-family: Times New Roman,Times,serif;">The target user
+community of STA is listed as follows:</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li>
+    <p><b>Space Engineering Student: </b><span style="font-weight: normal;">The student user is in the process of
+obtaining the knowledge on astrodynamics and orbital mechanics that is
+necessary to fully understand the models and properties of the software.</span></p>
+  </li>
+  <li>
+    <p><b>Space Engineering Teacher</b><span style="font-weight: normal;">: interested in the use of STA in the
+classroom as a tool for education. His/her key objective is to use the
+tool as a mean to explain the principles and applications of flight
+dynamics, orbital analysis, applied mathematics, informatics, etc.</span></p>
+  </li>
+  <li>
+    <p><b>Astrodynamics Specialist</b>: The Astrodynamics Engineer user
+has knowledge in the area of astrodynamics and orbital mechanics. </p>
+  </li>
+  <li>
+    <p><b>Mathematical analyst</b>: utilises the STA software suite as
+a test bench to proof-concept new ideas and algorithms in the area of
+the applied mathematics for space problems (propagators, integrators,
+interpolators, etc.). </p>
+  </li>
+</ul>
+
+<h1 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH1" name="mozTocId226926"></a><a name="3.STA BINARIES|outline"></a>STA BINARIES</h1>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+STA versioning system names are
+taken from the Earth geological EONS. “HADEAN” corresponds to
+version 1. “ARCHEAN” corresponds to version 2. The version 3 will
+be named “CAMBRIAN”. Intermediate versions are released every
+quartal in between major releases. The present user's manual explains
+the features available for the ARCHEAN version of STA only.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">STA
+comes in three flavours: Windows,
+Linux and MAC OS X (see figure 2.1).</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">Identical
+functionality is provided in
+all operating systems supported. The widgets are operating system
+native and provide the user the same look and feel of the rest of the
+applications of the operating system used.</p>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId853337"></a><a name="3.1.Requirements to run STA|outline"></a>Requirements
+to run STA</h2>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">STA
+has been tested to work on the
+following variants of the 3 operating system families supported:</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li>
+    <p style="margin-bottom: 0in;">Windows XP, Windows VISTA, and
+Windows 7</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;">Linux Ubuntu 8.10, Linux OpenSUSE
+11.1, Linux Fedora 10, Linux OpenSUSE 11.2, Ubuntu 9.1, Linux Mint KDE
+7 Gloria</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;">MAC OS X 10.4, MAC OS X 10.5, MAC OS
+X 10.6</p>
+  </li>
+</ul>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">All
+versions of STA require that the
+user has Open-GL installed. Windows and MAC OSX come with Open-GL
+drivers pre-installed. For linux, more and more distributions are
+shipping with Open-GL, so if you’ve recently installed or
+re-installed Linux, there’s a good chance that you already have a
+working Open-GL configuration.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">For
+a full functionality of STA, the
+binaries need to have LUA libraries installed. Those come with the
+binary installations of STA in Windows, MAC, and Linux.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">In
+general, to run STA, the computer
+should have a CPU (processor) that has a speed of at least 800
+million cycles per second (800 MHz). Typically, computers bought new
+within the last 4 years have adequate CPU speeds. If your computer is
+more than 4 years old or is a Pentium III or equivalent with a
+processor speed slower than 800 MHz, STA 3D visuals may run slowly. </p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+3D visuals of STA require an
+Open-GL compatible graphical card to run the 3D visualisation
+graphics. It is required to have a computer with a minimum of 128 Mb
+RAM and 500 Mb hard disk. </p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">STA
+ARCHEAN is a 32-bit application.
+However, STA ARCHEAN will run on 64-bits operating systems. Support
+for 64-bits is currently the target of the CAMBRIAN version.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">STA
+ARCHEAN only runs on Intel-i386
+compatible computers. At this moment, STA has not been compiled on
+PPC, or Solaris computers. However, the MAC OS X version is
+“Universal Binary” and hence it will run on PPC computers as
+well.</p>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId362310"></a><a name="3.2.Installing STA|outline"></a>Installing
+STA</h2>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+web site of STA allows the download
+of both the source code and the current binaries. </p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+STA binary install packages allow
+the user to perform basic installations quickly and without hassle.
+Just run the installer package and follow its instructions (see
+figure 2.2).</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+installation of the STA from source
+code requires the use of a SVN (subversion) client in the user's
+machine and a suitable compiler to compile the code:</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li>
+    <p style="margin-bottom: 0in;">In Windows it is recommended o use TortoiseSVN.</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;">Most Linux distributions have SVN
+client install by default.</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;">MAC OS X 10.4, 10.5, and 10.6 has a
+SVN client install by default.</p>
+  </li>
+</ul>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">To
+download the source, from the SVN it
+will be just required to type in the following command in the desired
+folder that will accommodate the files: </p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Courier New,Courier,monospace; font-weight: bold;" align="center"><font style="font-size: 11pt;" size="2">svn
+co http://sta.svn.sourceforge.net/svnroot/sta STA</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">Once
+the source code has been checked
+out of the SVN STA repository, the user needs to compile it. STA uses
+Qt technology to allow fast compilation in the three operating system
+families supported. The Qt open source edition can be downloaded from
+the Qt web site. Qt will
+install in the three families of operating system supported by STA.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">If
+the installation of Qt was
+successful, the user needs to run a simple command to compile the
+entire source code. The command has to be issued in the folder
+“sta-src” of the STA source code hierarchy:</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Courier New,Courier,monospace; font-weight: bold;" align="center"><font style="font-size: 11pt;" size="2">qmake
+-config release; make</font></p>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId47846"></a><a name="3.3.Understanding where STA files are located in your system after installation|outline"></a>
+Understanding where STA files are located in your system after
+installation</h2>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">After
+the installation has taken place,
+the STA installer created a set of files inside some folder as
+follows:</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+binaries of STA along with required
+pre-compiled libraries are stored under any folder the user may
+choose. For example:</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li>
+    <p style="margin-bottom: 0in;">In Windows, the installer offers the
+user to install under “<font style="font-size: 11pt;" size="2">C:\Program
+Files\STA</font>”</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;">In Linux, the installer installs STA
+under “<font style="font-size: 11pt;" size="2">/usr/local/STA</font>”</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;">In MAC OS X, the installer offers
+the user to install under “<font style="font-size: 11pt;" size="2">/Applications</font>”</p>
+  </li>
+</ul>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">To
+function properly, STA requires some
+extra data files that are grouped in a particular folder. This folder
+contains start-up scripts of STA, textures of planets and moons,
+spacecraft 3D models, etc.</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li>
+    <p style="margin-bottom: 0in;">In Windows, the installer will
+install the data folder under “<font style="font-size: 11pt;" size="2">C:\Program
+Files\STA\sta-data</font>”</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;">In Linux, the installer will install
+the data folder under “<font style="font-size: 11pt;" size="2">/usr/local/STA/sta-data</font>”</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;">In MAC OS X, the binary application
+contains already the required data inside the bundle.</p>
+  </li>
+</ul>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">While
+you can change the location of
+the STA binaries, you need to change the location of the data files
+with the binary. Otherwise, STA will report and error at run time.</p>
+
+<h1 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH1" name="mozTocId507357"></a><a name="4.USING STA|outline"></a>USING STA</h1>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">Once,
+STA is run for the first time,
+the screen of figure 3.1 appears to the user.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+main screen contains 5 areas:</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li>
+    <p style="margin-bottom: 0in;">The <b>SCENARIO VIEW</b> area. This
+area allows to add and remove all the elements that form part of a
+given scenario. The sum of all elements for the current scenario view.</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;">The <b>SCENARIO ELEMENT</b> area.
+This area contains all allowable elements of a given scenario, like
+spacecraft, ground stations, </p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;">The <b>RENDERING</b> area. This
+area displays 2D and 2D trajectory visualisations of the elements that
+contain the scenario.</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;">The <b>TIME-LINE</b> area. This
+area displays and controls the time of live of the elements of the
+scenario. It allows to play back the movement of the spacecraft in the
+scenario.</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;">The <b>CONTROLS</b> area controls
+certain visualisation features of the 2D and 3D rendering area.</p>
+  </li>
+</ul>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+figure 3.2 shows the same
+screenshot of figure 3.1 but with the different areas labelled.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId274849"></a><a name="4.1.Docking and Un-docking Windows|outline"></a>
+Docking and Un-docking Windows</h2>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">In
+STA all working areas mentioned
+earlier can be docked and un-docked from the main rendering area (see
+figure 3.3). This feature allows the use to maximise the screen real
+state when concentrating on a particular area or type of work.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">To
+undock an area from the main
+rendering area it is enough to click twice on the upper frame
+(banner) of the area the user wishes to undock. It is also possible
+to undock an area by clicking on the undock icon. </p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">To
+dock back the undocked area to its
+original position, it is sufficient to click twice on the upper frame
+(banner) of the area the user wishes to dock back.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+rendering area undocks in a
+different manner: the user must explicitly click on the pull-down
+menu “<b>Undock Ground Track View</b>”. This produces the undock
+of the 2D view window from the 3D view window. To dock back the
+window, the user must click again on the pull down menu “<b>Dock
+Ground Track View</b>”.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<h1 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH1" name="mozTocId687997"></a><a name="5.WORKING WITH SPACE SCENARIOS|outline"></a>
+WORKING WITH SPACE SCENARIOS</h1>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId853245"></a><a name="5.1.Understanding the Space Scenario Concept in STA|outline"></a>
+Understanding the Space Scenario Concept in STA</h2>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">STA
+implements the concept of Space
+Scenario Paradigm (SSP). The SSP of the STA software suite implements
+the central idea of scenario in which elements can interact to allow
+the user detailed analysis of these elements.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">STA
+defines the concept of Space
+Scenario (SS) as “a set of elements that play a role in the
+analysis of trajectory path in a given Universe”.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">Following
+the previous definition, the
+components of a Space Scenario could be active participants (e.g.
+spacecraft, ground stations, sensors etc.) and also planets,
+aerodynamics database of a vehicle, co-ordinate systems, etc.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">Every
+participant is composed of active
+and non-active elements and they are divided in two big groups: </p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li>
+    <p style="margin-bottom: 0in;">Ground elements (like launch pads,
+ground stations, points, etc.)</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;">Space Vehicles (like satellites,
+rockets, re-entry vehicles, etc.)</p>
+  </li>
+</ul>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">Ground
+elements are characterised by a
+ground position and a central body. </p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">Space
+Vehicles are characterised by:</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li>
+    <p style="margin-bottom: 0in;">Properties (both physical and
+technical).</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;">Additional components (optional,
+like for example sensors).</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;">Trajectory plan, a set of
+trajectories which model the entire life of the element. In every
+trajectory the user needs to specify all the information needed to
+define (or optimise) its evolution uniquely in space and time.</p>
+  </li>
+</ul>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+Space Scenario Paradigm is
+implemented using XML descriptions. XML is an extensible mark-up
+language which easily permits to describe the tree structure of the
+scenario. Every XML file has to be validated by an XML Schema which
+define the constraints on the structure and content of documents of
+that type. </p>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId682647"></a><a name="5.2.Creating, Saving, and Loading Scenarios|outline"></a>
+Creating, Saving, and Loading Scenarios</h2>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">To
+create from scratch a new scenario,
+the user must click on the pull-down menu “File -&gt; New
+Scenario”. </p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">STA
+responds by creating a new scenario
+with an empty scenario view (figure 4.1).</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">Next,
+the user needs to place some
+participants in our new scenario. To do this, the user needs to drag
+a participant from the Scenario Element area (box) and drop it on top
+of the word “Scenario” in the Scenario View area. STA responds by
+creating a new participant. In the case of figure 4.2, the new
+participant is a satellite.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">Our
+scenario contains now a single
+participant. To be able to calculate a trajectory the user needs to
+drag and drop a mission arc into our participant. In the example of
+figure 4.2, we have dragged the mission arc “Loitering” into the
+words “Trajectory Plan” of the participant satellite. </p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">At
+this point in time, the user is now
+ready to edit the properties of the Loitering arc. Clicking twice on
+the word “Loitering” in the Scenario View area, the user can edit
+the properties of this mission arc (see figure 4.3).</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">More
+participants can be introduced now
+in our scenario. Simply drag and drop any of the participants icons
+on the word “Scenario”.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">Saving
+an scenario is easily done using
+the STA pull-down menus: File -&gt; Save as</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">All
+STA scenarios must have the file
+extension *.stas</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">STA
+will not recognise any file with a
+different file extension.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">Loading
+a previously saved scenario is
+also easily done using the STA pull-down menus: File -&gt; Open
+scenario</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">STA
+comes with several examples
+prepared for the user. Look into the STA data folder for a sub-folder
+name “scenario-examples”.</p>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId518801"></a>Other Mission Arcs in
+ARCHEAN</h2>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+re-entry and Lagrangian mission
+arcs graphical user interface are enabled in ARCHEAN. The
+corresponding implementation code has been enabled in this version.
+See here after for more details on this arcs.</p>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId320935"></a>Implementation of maneuvers
+in ARCHEAN</h2>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+implementation of manoeuvres in
+ARCHEAN is not enabled yet. However as preview, the user can select
+one type of manoeuvres (“single impulse”) by dragging and
+drooping them onto the trajectory plan of a participant. If this
+action is triggered, STA ARCHEAN does not yet calculate the
+corresponding manoeuvre.</p>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId732845"></a><a name="5.5.Pre-defined ground stations|outline"></a>
+Pre-defined ground stations</h2>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">Among
+all possible ARCHEAN
+participants, STA allows ground stations to be placed on a given
+scenario. ARCHEAN however, allows the user to select a particular set
+of ground stations: the ESTRACK network. The ESTRACK network is the
+set of tracking stations of the European Space Agency. The location
+of these stations on Earth has been predefined in STA so the user
+does not need to introduce this information when creating a new
+participant ground station.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+user can include a new ESTRACK
+ground station on a given scenario by dragging and dropping the
+station icon on the word “Scenario”. After the user has placed
+the new station it will render on the 2D view window once the user
+run a “propagation” (see more on propagating on the next
+section).</p>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId458602"></a><a name="5.6.Propagating Trajectories in STA|outline"></a>
+Propagating Trajectories in STA</h2>
+
+<p style="margin-bottom: 0in; widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" align="justify">Once
+the trajectory plan data of a particular space vehicle has been
+entered into STA, the user must “propagate” the trajectory. This
+is performed by means of the STA pull-down menu “<font style="font-size: 11pt;" size="2">Propagate</font>”
+of by entering the keystrokes &lt;<font color="#000000"><font style="font-size: 11pt;" size="2">Ctr+P</font></font>&gt;
+(Windows and Linux) or &lt;<font color="#000000"><font style="font-size: 11pt;" size="2">Command+P</font></font>&gt;
+(MAC).</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">STA
+will respond by propagating the
+trajectory and creating the necessary files that will contain the
+history of the state vectors of the space vehicle concerned.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+ephemeris files generated after the
+propagation are placed on the root of the STA data folder.</p>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId580637"></a><a name="5.7.STA 2D View: Ground Tracks|outline"></a>
+STA 2D View: Ground Tracks</h2>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">Any
+propagated trajectory will be
+immediately displayed by STA on the rendering area in 2D view. The 2D
+view is a Miller projection of the ground track of the calculated
+trajectory.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+figure 4.4 shows a ground track of
+a Molnya orbit that is provided as example in the “scenario-examples”
+folder of the STA installation. </p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId783432"></a><a name="5.8.STA 3D View: Orthogonal Trajectories|outline"></a>
+STA 3D View: Orthogonal Trajectories</h2>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+3D visuals of STA uses the
+rendering engine of Celestia [R1][R2][R3]. This means that almost all
+features of this rendering engine available in Celestia are available
+to STA as well.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">When
+the user calculates a trajectory
+and this is rendered on the 2D view as a ground track, STA also
+displays the trajectory on the 3D view immediately as a orthogonal
+view.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+figure 4.5 shows the rendered 3D
+view of the Molnya trajectory.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+3D window accepts the following
+<u>mouse</u> functions:</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Left
+– click on object: </b>select object</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Right
+drag: </b>orbit the selected object in any direction</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Left
+drag: </b>orient scene in any direction</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Rotate
+Mouse Wheel: </b>adjust distance to selection</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Right
++ Left drag: </b>adjust distance to selection</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Ctrl
++ Left drag: </b>adjust distance to selection</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Shift
++ Left drag: </b>change field of view (FOV) (e.g. =&gt; telescopic
+view)</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Wheel
+(middle button) click:</b> toggle field of view between 45 degrees
+and the previous field</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Left
+double click centre</b> selection</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Right
+- click </b>bring up context/select menu</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font size="3">The 3D
+window accepts the following <u>keyboard</u> functions:</font></p>
+
+<p style="margin-top: 0.08in; margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>LABEL
+FUNCTIONS</b></font></p>
+
+<p style="margin-top: 0.08in; margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>R
+</b>Decrease texture resolution</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Shift+R</b>
+Increase texture resolution</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>P
+</b>Toggle (turns on or off) planet labels</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>M
+</b>Toggle moon labels</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>E
+</b>Toggle galaxy and nebula labels</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>B
+</b>Toggle star labels</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>W</b>
+Toggle asteroid and comet labels</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>N
+</b>Toggle spacecraft labels</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>=
+</b>Toggle constellation labels</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Shift
++ &amp;</b> Toggle Location labels</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Ctrl
++ K</b> Toggle Markers</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Ctrl
++ P</b> Set a Marker</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>V
+</b>Toggle info text </font>
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<p style="margin-top: 0.08in; margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>RENDER
+FUNCTIONS</b></font></p>
+
+<p style="margin-top: 0.08in; margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>U
+</b>Toggle galaxy rendering </font>
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>O
+</b>Toggle planet orbits </font>
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>I
+</b>Toggle clouds </font>
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Ctrl+A</b></font>
+<font style="font-size: 11pt;" size="2">Toggle atmospheres</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Ctrl+B</b></font>
+<font style="font-size: 11pt;" size="2">Toggle constellation boundaries</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Ctrl+E</b></font>
+<font style="font-size: 11pt;" size="2">Toggle eclipse shadows</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Ctrl+L
+</b></font><font style="font-size: 11pt;" size="2">Toggle night-side
+lights</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Ctrl+S
+</b></font><font style="font-size: 11pt;" size="2">Toggle stars as
+points, discs or fuzzy points</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Ctrl+T</b></font>
+<font style="font-size: 11pt;" size="2">Toggle comet tails</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Ctrl+V</b></font>
+<font style="font-size: 11pt;" size="2">Cycle through vertex shading
+options</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Ctrl+X</b></font>
+<font style="font-size: 11pt;" size="2">Toggle antialias lines mode</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Ctrl+Y
+</b></font><font style="font-size: 11pt;" size="2">Toggle autoMag =
+auto
+adaptation of star visibility to field of view</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Shift
++ ^</b></font> <font style="font-size: 11pt;" size="2">Toggle Nebula
+on
+or off </font>
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Shift
+</b>+ <b>{</b> Decrease ambient light</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Shift
++ }</b> Increase ambient light</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Shift
++ (</b> Decrease galaxy brightness</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Shift
++ )</b> Increase galaxy brightness</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Shift
++ %</b> Toggle Star Colour highlights</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Shift
++ “+”</b> Toggle Limit of Knowledge textures</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Alt+Enter
+</b></font><font style="font-size: 11pt;" size="2">Toggle full screen
+display mode on or off </font>
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font size="3"><font style="font-size: 11pt;" size="2"><b>Esc</b></font>
+<font style="font-size: 11pt;" size="2">cancels command, cancels
+script,
+cancels movement or lock commands </font></font>
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>NAVIGATION
+FUNCTIONS</b></font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>H
+</b>Select the Sun (Home)</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>C</b>
+Centre on selected object</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>G</b>
+Goto selected object</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Ctrl+G</b>
+Goto surface of the object</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>F</b>
+Follow selected object</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>ENTER
+</b>Select a star or planet by typing its name, then press <b>Enter</b>
+again</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Y</b>
+Orbit the selected object at a rate synchronised to its rotation</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Shift
++ :</b> Lock on selected object. Point at 2<sup>nd</sup> object and
+press again to pair the two.</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Shift
++</b> <b>"</b> Chase selected object (orientation is based on
+selection's velocity)</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>T</b>
+Track selected object (keep selected object centred in view)</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>HOME</b>
+Move closer to object</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>END</b>
+Move farther from object</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Up
+arrow </b>Your view pitches downward (also see <b># 8</b> key on
+numerical keypad)</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Down
+arrow </b>Your view pitches upward (also see <b># 2</b> key on
+numerical keypad)</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Left
+arrow </b>Your view rolls counter-clockwise (also see <b># 7</b> key
+on numerical keypad)</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Right
+arrow </b>Your view rolls clockwise (also see <b># 9</b> on numerical
+keypad)</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Shift+arrow
+keys</b> Orbit around the object automatically</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Shift
++ *</b> Look back view (rear view)</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>1-9</b>
+Select planets around nearby Sun</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Esc</b>
+Cancel hold on object, cancel command or script action</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font size="3"><font style="font-size: 11pt;" size="2"><b>Backspace</b></font>
+<font style="font-size: 11pt;" size="2">Cancel current selection</font></font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>TIME
+FUNCTIONS</b></font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Spacebar</b></font>
+<font style="font-size: 11pt;" size="2">Stop or pause time (or if
+paused, resume time)</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>L
+</b></font><font style="font-size: 11pt;" size="2">Time 10x faster
+(repeat for faster time) </font>
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>K
+</b></font><font style="font-size: 11pt;" size="2">Time 10x slower
+(repeat for slower time)</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>J
+</b></font><font style="font-size: 11pt;" size="2">Reverse time (it
+flows backward)</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>MULTIVIEW
+FUNCTIONS</b></font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Ctrl+R
+</b></font><font style="font-size: 11pt;" size="2">Split view vertically</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>Ctrl+U
+</b></font><font style="font-size: 11pt;" size="2">Split view
+horizontally</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>TAB
+</b></font><font style="font-size: 11pt;" size="2">Cycle active view</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font style="font-size: 11pt;" size="2"><b>DEL
+</b></font><font style="font-size: 11pt;" size="2">Delete active view</font></p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="justify"><font size="3"><font style="font-size: 11pt;" size="2"><b>Ctrl+D
+</b></font><font style="font-size: 11pt;" size="2">Delete all views
+except active one</font></font></p>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId445486"></a><a name="5.9.STA Time-Lines|outline"></a>STA
+Time-Lines</h2>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+“Time-Line” area allows the
+user to control the movement of the space vehicles on a given
+scenario by playing-back a previously propagated session with space
+vehicles, ground stations, etc.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+time-line displays a set of bars in
+different colours. Each bar corresponds to a space vehicle (see
+figure 4.6).</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">Orthogonal
+to the time-liner bars of
+each space vehicle, STA shows a red line crossing all of them. This
+red line represents the “time now” line of a given scenario
+playback. The user can drag the bar left and right to accelerate of
+backward the time of a simulation session.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+lower left part of the time-line
+area contains the playback controls of the simulation (see figure
+4.7).</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+controls allow the user to “play”,
+“accelerate”, “retard”, or “play backwards” the movement
+of the space vehicles in the scenario along the time-line simulation.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+lower right part of the time-line
+area contains the zoom controls of the simulation time-line (see
+figure ??).</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+zoom allows the user to enlarge or
+shorten a given time line by effectible zoom it in and out. This
+provides a good tool to observe the granularity of a given simulation
+time-line.</p>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId822938"></a><a name="5.10.STA Controls area|outline"></a>STA
+Controls area</h2>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+STA controls area is initially
+located on the right most part of the STA main window. The user,
+however, can move the toolbar and locate it on top, down or right of
+the main STA window. Once the change has been committed, the next
+time STA starts the toolbar will be located at that particular
+position. </p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+control area is composed of two
+distinctive toolbars (see figure 4.9 and 4.10).</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+“Display Features Control”
+toolbar in figure 4.9 allows the user to modify certain attributes of
+the 3D visualisation rendering window: </p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li>
+    <p style="margin-bottom: 0in;"><b>Eq</b> allows to show and hide
+the equatorial co-ordinates grid</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;"><b>Ecl</b> allows to show and hide
+the ecliptic co-ordinates grid. STA places an equatorial co-ordinate
+grid on the screen showing the celestial position and direction you are
+facing in space. The grid follows the standard convention of Right
+Ascension and Declination used in Astronomy. </p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;"><b>M</b> allows to mark and un-mark
+participants objects with 4 red small coned shaped arrows located in
+the four cardinal points of the participant. When turned-on, this
+feature allows the user to see and follow clearly marked participants. </p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;"><b>C</b> allows to show and hide
+constellations. Since STA is based on the rendering engine of Celestia,
+STA is able to display constellations boundaries from its star
+catalogue. The STA star catalogue is based on the Hipparcos ESA star
+catalogue. STA will display both constellation borders [Ctrl + B] and
+their “asterism shapes” [ / ] for each of the 88 constellations in the
+sky. In the second Options menu, you can also turn on constellation
+labels [ = ]. </p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;"><b>O</b> this is a click-in small
+menu with that allows to show or hide the <b>Orbits</b> of objects:
+star, planets, asteroids, comets, moons, spacecraft, etc.</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;"><b>L</b> this is a click-in small
+menu with that allows to show or hide the <b>Locations </b><span style="font-weight: normal;">(e.g. names or labels) </span>of
+objects: star, planets, asteroids, comets, moons, spacecraft, etc.</p>
+  </li>
+</ul>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+“Participant Features Control”
+toolbar in figure 4.10 allows the user to modify move around
+viewpoints of a participant in the 3D visualisation rendering window:</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li>
+    <p style="margin-bottom: 0in;"><b>Ctr</b> allows to centre the 3D
+window in the current follow up object (can be a planet, spacecraft,
+etc.).</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;"><b>F</b> allows to focus on the
+selected object. This is equivalent to the keyboard key “F”.</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;"><b>Fix</b> allow to fix the view on
+the selected object.</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;"><b>G</b> orders STA to go to a
+previously selected object</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;"><b>Z</b> orders STA to zoom into a
+previously selected object</p>
+  </li>
+</ul>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<h1 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH1" name="mozTocId978633"></a><a name="6.3D Window Visuals|outline"></a>3D Window
+Visuals</h1>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">STA
+inherits 3D visuals from Celestia.
+One of the most interesting features of Celestia is the ability to
+navigate in the Universe at a speed faster than the speed of light! </p>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId521755"></a><a name="6.1.Understanding 3D views|outline"></a>Understanding
+3D views</h2>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">3D
+view of the universe are displayed
+on the 3D rendering window. As example, the figure 5.1 shows a
+screenshot of a 3D view of Saturn.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">In
+the top left corner STA displays
+information about our target (Saturn) (if you see no text, press the
+[V] key once on your keyboard to turn on your text display).
+“Distance” gives the distance from the surface of the object to
+our viewpoint. The Radius of the object will be listed in kilometres.
+The Apparent Diameter will be a value in degrees representing the
+size of the object in front of us as seen from our current viewpoint.
+If we move closer or farther away from the object, its apparent
+diameter will get larger or smaller respectively.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">In
+the lower left corner STA shows our
+speed through space. At the moment, our view is stopped (relative to
+Saturn) so our speed is zero. Later, we will begin to fly on our own
+and our speed will be listed here (see next section on travelling
+through space).</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">In
+the top right corner STA displays
+the current date and time. In Astronomy, times are given in Universal
+Time (UTC) (commonly referred to as Greenwich Mean Time), and this is
+what STA uses by default. The date and time are in the format (Year,
+Month, Day, Hours: Minutes: Sec). Thus, 2005 10 19 14:10:06 UTC means
+that the time is October (the 10th month) 19 (19th day), 2005 at
+2:10:06 PM. If the user finds it more convenient, it is possible to
+access the Time menu at the top of the program screen and command STA
+to show our local time zone instead. STA can also speed up, slow down
+time, or travel forward or backward in time with the touch of a
+button. Now, you are experiencing the program in “Stopped” mode.</p>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId412798"></a>Traveling the Universe</h2>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">STA
+can travel from the vicinity of one
+participant to another in matter of milliseconds. This is
+particularly useful when dealing with complex scenarios in which the
+user requires to quickly view for example a planet and then move to
+the proximity of a spacecraft, then go to another planet, etc.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">As
+an example, the figure 5.2 shows how
+to move from the Earth quickly to Saturn. </p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+user needs to enter “Return”
+then write the name of the participant wished to visit (called here
+“Target name”) and then press the key “G” from go or click on
+the control “G” of the controls area.</p>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId520522"></a><a name="6.3.High resolution rendering|outline"></a>High
+resolution rendering</h2>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">STA
+contains a sophisticated graphic
+drawing and rendering engine that draws objects using “models”
+from a database. To display the models dressed up with textures, STA
+wraps various graphic textures and images around those models.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">There
+are three levels of textures STA
+can use:</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li>
+    <p style="margin-bottom: 0in;">High-Resolution Textures (known as
+“hires” textures), </p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;">Medium Resolution Textures (known as
+“medres” textures)</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;">Low Resolution Textures (known as
+“lores” textures). </p>
+  </li>
+</ul>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+user can find those graphic files
+in the STA data folder, inside a sub-folder named “textures”. The
+program model patterns can be found in a STA folder named “models”.</p>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId950968"></a><a name="6.4.Obtaining more from participants in 3D view|outline"></a>
+Obtaining more from participants in 3D view</h2>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">More
+options can be obtained by
+right-clicking on a given participant. The figure 5.3 shows an
+example of right-clicking on the participant “Saturn”. This new
+appearing pull down menu provides the user with some similar features
+as the controls area but new ones are also available:</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li>
+    <p style="margin-bottom: 0in;">The user can bring up the moons of a
+given planet (“Moons”).</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;">The user can visualise reference
+systems centred on the participant concerned (very useful in the case
+of spacecraft attitude).</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;">The user can “Mark” the participant
+with a given mark.</p>
+  </li>
+</ul>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<h1 style="page-break-before: always; font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH1" name="mozTocId299558"></a><a name="7.Entry|outline"></a>
+Entry</h1>
+
+<p style="font-family: Times New Roman,Times,serif;">This chapter
+describes all the functionality's of STA Entry (some
+times called Re-Entry) Module as an integrated STA module; as due to
+its integration in STA some features of the module have been
+modified, this document aims to help the user simulating re-entry
+trajectories.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The procedure that
+must be followed by the user when trying to
+simulate a re-entry trajectory is the following:</p>
+
+<ol style="font-family: Times New Roman,Times,serif;">
+
+  <li>
+    <p>Open a new scenario; </p>
+  </li>
+  <li>
+    <p>Add a satellite/re-entry vehicle to the scenario by dragging and
+dropping the correspondent icon to the scenario tree item; </p>
+  </li>
+  <li>
+    <p>Add a re-entry trajectory to the satellite/re-entry vehicle by
+dragging the correspondent icon to the trajectory plan item; </p>
+  </li>
+  <li>
+    <p>Supply the GUI with the proper parameters; </p>
+  </li>
+  <li>
+    <p>Click the propagate button in Calculate menu. </p>
+  </li>
+</ol>
+
+<p style="font-family: Times New Roman,Times,serif;">Further comments
+and recommendations should be made about point 3,
+i.e. the inputs that the user must specify in the GUI.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">In the first
+instance, inputs in the re-entry GUI are not the only
+values that intervene in the trajectory simulation; the user should
+also specify the following values in the (aerodynamic and physical)
+properties GUI:</p>
+
+<ul style="font-family: Times New Roman,Times,serif;" type="disc">
+
+  <li>
+    <p>Physical/geometrical properties GUI: </p>
+    <ul type="circle">
+      <li>
+        <p>S/C Mass value : is the vehicle mass value; a default value
+of 1000 kg is already set in the S/C Mass box. A mass equal to zero
+will generate an error message when propagating; </p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<ul style="font-family: Times New Roman,Times,serif;" type="disc">
+
+  <ul type="circle">
+    <li>
+      <p>Radius base : a radius base equal to zero will generate an
+error message when propagating </p>
+    </li>
+  </ul>
+</ul>
+
+<ul style="font-family: Times New Roman,Times,serif;" type="disc">
+
+  <ul type="circle">
+    <li>
+      <p>Radius nose : this value should be set when the user wants to
+perform a thermal analysis of the re-entry trajectory; a radius nose
+equal to zero will not generate an error message and will not influence
+the trajectory. </p>
+    </li>
+  </ul>
+</ul>
+
+<ul style="font-family: Times New Roman,Times,serif;" type="disc">
+
+  <li>
+    <p>Aerodynamic/thermal properties GUI: </p>
+    <ul type="circle">
+      <li>
+        <p>CD coefficients: the user shall write the name of the file
+that contains the vehicle CD coefficients (without considering the
+parachute if existing); the user can also find the file in the system
+by clicking on the button “Load file”. The file name should not include
+the path. If the user wants to load an external file, he shall include
+that file in the STA folder <i>\sta-data\data\aerodynamics</i>. </p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p style="margin-left: 1in; font-family: Times New Roman,Times,serif;">A
+Cd coefficients file name not existing
+(i.e. not in the <i>\sta-data\data\aerodynamics</i> folder) or an
+empty case will generate an error message when propagating.</p>
+
+<p style="margin-left: 1in; font-family: Times New Roman,Times,serif;">The
+Cd coefficients file should
+imperatively be a .stad file with the following structure:</p>
+
+<p style="margin-left: 1in; font-family: Times New Roman,Times,serif;">First
+column Second column</p>
+
+<p style="font-family: Times New Roman,Times,serif;">Altitude [km] cd
+coefficients [-]</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The following is an
+example:</p>
+
+<p style="margin-left: 1in; text-indent: 0.5in; font-family: Times New Roman,Times,serif;"><font size="2">1
+1.375</font></p>
+
+<p style="margin-left: 1in; text-indent: 0.5in; font-family: Times New Roman,Times,serif;"><font size="2">2
+1.375</font></p>
+
+<p style="margin-left: 1in; text-indent: 0.5in; font-family: Times New Roman,Times,serif;"><font size="2">3
+1.375</font></p>
+
+<p style="margin-left: 1in; text-indent: 0.5in; font-family: Times New Roman,Times,serif;"><font size="2">5
+1.375</font></p>
+
+<p style="margin-left: 1in; text-indent: 0.5in; font-family: Times New Roman,Times,serif;"><font size="2">7
+1.375</font></p>
+
+<p style="margin-left: 1in; text-indent: 0.5in; font-family: Times New Roman,Times,serif;"><font size="2">10
+1.375</font></p>
+
+<p style="margin-left: 1in; text-indent: 0.5in; font-family: Times New Roman,Times,serif;"><font size="2">15
+1.375</font></p>
+
+<p style="margin-left: 1in; text-indent: 0.5in; font-family: Times New Roman,Times,serif;">20
+1.375</p>
+
+<p style="margin-left: 0.75in; text-indent: -0.25in; font-family: Times New Roman,Times,serif;">o
+G load limit: the user shall insert the maximum value of the G Load;
+as the simulation will stop when this value is reached, the user
+shall take into account the possible influence of a low value on the
+trajectory propagation. A G load limit value equal to zero will
+generate an error message.</p>
+
+<p style="margin-left: 0.75in; text-indent: -0.25in; font-family: Times New Roman,Times,serif;">O
+SP heat rate limit
+: the user shall insert the maximum value of the SP heat rate; as the
+simulation will stop when this value is reached, the user shall take
+into account the possible influence of a low value on the trajectory
+propagation. A SP heat rate equal to zero will generate an error
+message.</p>
+
+<p style="margin-left: 0.75in; text-indent: -0.25in; font-family: Times New Roman,Times,serif;">O
+CD parachute coefficients: the user shall write the name of the file
+that contains the vehicle CD only parachute coefficients. The user
+can also find the file in the system by clicking on the button “Load
+file”. The file name should not include the path. If the user wants
+to load an external file, he shall include that file in the STA
+folder <i>\sta-data\data\aerodynamics</i>.</p>
+
+<p style="margin-left: 0.74in; font-family: Times New Roman,Times,serif;">A
+Cd parachute coefficients file name
+not existing (i.e. not in the <i>\sta- data\data\aerodynamics</i>
+folder) or an empty case will generate an error message when
+propagating.</p>
+
+<p style="margin-left: 0.74in; font-family: Times New Roman,Times,serif;">The
+Cd parachute coefficients file
+should imperatively be a .stad file with the same structure of the Cd
+coefficients file.</p>
+
+<p style="margin-left: 0.74in; font-family: Times New Roman,Times,serif;">Even
+if the vehicle is not supplied
+with a parachute, the user shall specify a file name for the Cd
+parachute coefficients (in order to avoid an error message); to
+nullify its influence on the propagation it is enough to set the
+parachute surface value and/or the deployment&nbsp; Mach number value
+equal to zero.</p>
+
+<p style="margin-left: 0.75in; text-indent: -0.25in; font-family: Times New Roman,Times,serif;">O
+Parachute surface: the user shall insert the parachute surface value;
+a value equal to zero will not generate an error message.</p>
+
+<p style="margin-left: 0.75in; text-indent: -0.25in; font-family: Times New Roman,Times,serif;">O
+Deployment Mach number: the user shall insert the parachute
+deployment Mach number value; a value equal to zero will not generate
+an error message.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">As regards with the
+re-entry GUI, the values the user shall insert
+are the following:</p>
+
+<ul style="font-family: Times New Roman,Times,serif;" type="disc">
+
+  <li>
+    <p>Simulation Tab (see Figure 1): </p>
+    <ul type="circle">
+      <li>
+        <p>Starting epoch: the user shall specify the initial time of
+the simulation; default time is J2000 reference time. </p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<ul style="font-family: Times New Roman,Times,serif;" type="disc">
+
+  <ul type="circle">
+    <li>
+      <p>Co-ordinate system type : the user shall choose between 3
+types of co-ordinates systems; the initial orbital state window will
+automatically change accordingly to his choice. The default type is
+keplerian co-ordinates;</p>
+    </li>
+  </ul>
+</ul>
+
+<ul style="font-family: Times New Roman,Times,serif;" type="disc">
+
+  <ul type="circle">
+    <li>
+      <p>Initial orbital state: the user shall specify the initial
+state of the spacecraft; depending on the inserted values the
+trajectory could be a re-entry trajectory or the simulation could stop
+immediately or after some time. </p>
+    </li>
+  </ul>
+</ul>
+
+<ul style="font-family: Times New Roman,Times,serif;" type="disc">
+
+  <li>
+    <p>Propagation tab (see Figure 2): </p>
+    <ul type="circle">
+      <li>
+        <p>Central body: the user shall select the central body between
+Earth and Mars; default body is Earth. </p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<ul style="font-family: Times New Roman,Times,serif;" type="disc">
+
+  <ul type="circle">
+    <li>
+      <p>Atmosphere Model: the user shall select from the list the
+atmosphere model he intends to use; the default model is gram-99. </p>
+    </li>
+  </ul>
+</ul>
+
+<ul style="font-family: Times New Roman,Times,serif;" type="disc">
+
+  <ul type="circle">
+    <li>
+      <p>Gravity model, zonal and tesseral boxes: these inputs are not
+active yet (they will be after the perturbations layer development) </p>
+    </li>
+  </ul>
+</ul>
+
+<ul style="font-family: Times New Roman,Times,serif;" type="disc">
+
+  <ul type="circle">
+    <li>
+      <p>Integrator type: this mode is not active (it will be after the
+integrators box development) </p>
+    </li>
+  </ul>
+</ul>
+
+<ul style="font-family: Times New Roman,Times,serif;" type="disc">
+
+  <ul type="circle">
+    <li>
+      <p>Integration step: the user shall select the integration step
+value; a value equal to zero will generate a message error. </p>
+    </li>
+  </ul>
+</ul>
+
+<h1 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH1" name="mozTocId904064"></a><a name="8.System's Engineering|outline"></a>System's
+Engineering</h1>
+
+<p style="font-family: Times New Roman,Times,serif;">This module allows
+the user to conduct a preliminary system
+engineering analysis out of a given satellite participant.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The procedure that
+must be followed by the user when trying to
+perform a system engineering analysis is the following:</p>
+
+<ol style="font-family: Times New Roman,Times,serif;">
+
+  <li>
+    <p>Open a new scenario; </p>
+  </li>
+  <li>
+    <p>Add one or more satellite to the scenario by dragging and
+dropping the correspondent icon to the scenario tree item; </p>
+  </li>
+  <li>
+    <p>Add, if wanted, some inputs to the satellite properties GUI; </p>
+  </li>
+  <li>
+    <p>Click the system engineering button in Calculate menu. </p>
+  </li>
+  <li>
+    <p>Choose in the list in the new dialogue window the satellite for
+whom the system engineering analysis will be performed. </p>
+  </li>
+</ol>
+
+<p style="font-family: Times New Roman,Times,serif;">The inputs added by
+the user in satellites properties GUI will be
+recorded and displayed by the SEM GUI when it will be opened. The
+user will have also the possibility to change them in the SEM GUI.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The first tab of
+the SEM module is used to gather data of the
+given satellite from the scenario. The user needs to input which kind
+of satellite is the one being pre-designed. Hence, STA will
+automatically fill out the most common figure of merit of the given
+satellite.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The second tab is
+the definition of the mission. In this tab, the
+user can obtain the most common orbital parameters and relation of
+the trajectory of the satellite under design. </p>
+
+<p style="font-family: Times New Roman,Times,serif;">It contains also
+the mission geometry and the mission dynamics.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The payload
+definition tab allows the user to establish a
+preliminary design of the payload of the satellite. The user s asked
+to fill in which kind of payload mission the satellite carries. Based
+on this input, STA will provide the most common design parameters for
+the desired payload.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The launcher's
+selection tab allows the user to show case a
+possible good launcher based on geometrical and structural
+considerations. STA Sem includes as well restrictions like vibration
+and mass payload capacity of the chosen launcher.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The tab of the
+Subsystem Analysis has not been implemented yet in
+this version of STA. It will be implemented for the version 3.0
+code-named CAMBRIAN.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The last tab
+provides an overview of the preliminary design of the
+satellite concerned. It provides the main parameters of the platform
+as well as for the payload.</p>
+
+<h1 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH1" name="mozTocId916340"></a><a name="9.3rd-Body Module (3BM)|outline"></a>3rd-Body
+Module (3BM)</h1>
+
+<p style="font-family: Times New Roman,Times,serif;">In this chapter, an
+overview of this module will be given in order
+to let the user understand the potential and possible applications
+for this module. Therefore a general explanation of the 3<sup>rd</sup>
+Body problem (3BP) will be given as well as an introduction to the
+main features of the 3BM.</p>
+
+<h2 style="widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId944680"></a><a name="9.1.3-body problem|outline"></a>
+3-body problem</h2>
+
+<p style="font-family: Times New Roman,Times,serif;">In this paragraph,
+a general explanation is given of what the 3BP
+is and for which applications it can be used.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The most used model
+for trajectories design is the 2-body problem,
+where a satellite, with negligible mass, is gravitating around a
+central body. In order to improve this simple model, usually some
+perturbations are considered (drag, effects due to gravity field
+asymmetry, third body effect, radiation pressure, etc.). Amongst
+them, for interplanetary trajectories, the third body effect becomes
+very relevant. This perturbation is determined by the gravity field
+of another main body disturbing the motion around the first body.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">In this way the
+third body is considered just as a perturbation,
+while its gravity field creates a complete different environment for
+the satellite.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">Therefore the idea
+is to include this third body directly within
+the model in order to use the advantages given by this adjunctive
+mass. This model (called 3-body problem) becomes very important when
+a S/C moves far away its main body, actually for interplanetary
+trajectories.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The deep space can
+be considered as divided in spheres of
+influence. In each of them the centre is occupied by a main body and
+the main force acting on a S/C is given by its gravity field. As a
+first approximation, interplanetary trajectories can be computed by
+using the 2-body model, switching the central body when transiting
+from one sphere to another. Typically, spheres are located within
+other spheres and frequently the effect of the outer spheres main
+body is not negligible at all. It’s the case of the Earth-Moon
+system, where the effect of the Sun is quite relevant.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">Therefore this
+module wants to deal with this “advanced”
+model, in order to improve designs of those missions interested by
+this problem. For this reason this module allows the user to
+propagate a trajectory in the 3-body problem.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">Besides the use of
+such a model brings new fancy features, not
+present in the 2-body problem. The most evident is the availability
+of new trajectories. Amongst them the Halo orbits are the most
+attractive for space missions, they are quasi-stable orbits around
+the Lagrangian points. Actually if a S/C is sent to one of them it
+could remain there for many orbits requiring just very small
+correction manoeuvres to keep the initial orbit. It’s clear that
+applications for these orbits are numerous and for this reason in the
+last few years many missions focused on these trajectories, have been
+planned and already started.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">Moreover these
+orbits have another interesting property. If the
+S/C is a bit perturbed from the reference orbit, it can escape from
+the Halo orbit and can follow a trajectory guiding the S/C towards
+the centre of the system (occupied by the most massive body) or
+outward the system. All these trajectories can be seen as a stream of
+trajectories (because from each point of the Halo orbit departs a
+different trajectory for both the directions), and they are called
+manifolds. On the other way around it could be possible to follow
+them in the opposite way, from outside the system towards the orbit
+itself. </p>
+
+<p style="font-family: Times New Roman,Times,serif;">It’s intuitive that
+it could be possible to use this manifolds
+trajectories in order to get the Halo orbits from a parking orbit
+around a main body or to jump from one system to another one. For
+this reason the 3BM allows the user to compute these particular
+orbits and to optimise the transfer between a parking orbit around a
+main body and the Halo orbit desired, minimising the TOF or the
+propellant consumption or both of them.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">Finally the 3BM
+allows the user to design a transfer trajectory
+able to connect a parking orbit around the Earth and another one
+around the Moon by patching two different 3-body systems: Sun-Earth
+and Earth-Moon. In this way, manifolds are used as a highway able to
+link the Earth and the Moon.</p>
+
+<h2 style="widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId448054"></a><a name="9.2.STA 3BM inputs and functionalities|outline"></a>
+STA 3BM inputs and functionalities</h2>
+
+<p style="font-family: Times New Roman,Times,serif;">Four different main
+functionalities (modes) have been developed in
+this module. A brief description for each mode is here reported [A6]:</p>
+
+<ol style="font-family: Times New Roman,Times,serif;">
+
+  <li>
+    <p><i>Trajectory propagator - </i>for the simple simulation of
+trajectories, known the initial conditions (the three components of
+position and velocity) given by the user in the GUI. Moreover the user
+will be able to select what kinds of perturbations (solar radiation
+pressure, J<sub>2</sub>, third bodies) should be included in the
+integration process.</p>
+  </li>
+  <li>
+    <p><i>Halo orbit (&amp; manifolds) computation -</i> for the design
+of Halo orbits and their relative manifolds systems. The user will be
+able to construct the desired Halo orbit selecting proper initial
+conditions. Moreover the user will be able to design also manifolds
+systems departing from the designed Halo orbit</p>
+  </li>
+  <li>
+    <p><i>Transfer orbit optimisation -</i> for the design of a
+complete mission from a main body of the 3body-system to a designed (by
+using the previous mode) Halo orbit. A GO process will be used in order
+to optimise the mission (TOF and/or total ΔV).</p>
+  </li>
+  <li>
+    <p><i>Earth-Moon transfer orbit -</i> for the design of a transfer
+orbit from the Earth to the Moon, by using a heteroclinic connection
+between the L2 points of the Earth-Sun and the Earth-Moon systems.</p>
+  </li>
+</ol>
+
+<p style="font-family: Times New Roman,Times,serif;">Besides there is a
+common part for all the modes that has to be
+filled by the user in order to let the computations start.</p>
+
+<h2 style="widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId423022"></a><a name="9.3.General overview of the 3BM|outline"></a>
+General overview of the 3BM</h2>
+
+<p style="font-family: Times New Roman,Times,serif;">This chapter
+describes all the functionalities of the STA 3BM and
+how the user can input the required model data and select the
+different options.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">All the inputs and
+the functionalities of the 3BM will be
+discussed and explained by following the division in modes, because
+it’s the same one used to design the GUI. Since the first contact
+for the user is actually the GUI itself, it makes sense to explain
+the 3BM functionalities following that structure.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">Besides there is a
+common part for all the modes that has to be
+filled by the user in order to let the computations start. This part
+sets the simulation environment and the integration properties.
+Before explaining this common part and then all the different modes,
+a general overview on the structure of the 3BM will be given.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The 3BM GUI is
+divided in two different windows, the first one
+(Figure 8.1) is the main GUI, that allows the user to set the
+environment of the problem and to use the first mode. Then clicking
+on the button “advanced” it’s possible to have access to the
+advanced GUI, where the other three modes are available.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">It’s worth
+emphasising that <b>the choice of the mode in use is
+done indirectly by the user</b>. It depends on which GUI has been
+activated and on the last window used by the user. It means if the
+user didn’t open at all the advanced GUI, the mode in use would be
+the first one.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">On the other hand,
+if the advanced GUI has been opened, the mode
+in use is not the first one anymore, unless the user will close and
+reopen the main GUI.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">How the user has to
+select the other three modes (mode 2, 3 and 4)
+will be shown in the apposite sections.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">By the way, in
+order to launch the 3BM in the main GUI of STA, the
+user has to open a new scenario and drag on it a satellite. Hereafter
+the user can drag the 3BM on the trajectory plan. In this way the 3BM
+is ready to be launched and used.</p>
+
+<p style="margin-bottom: 0in; widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<h2 style="widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId996946"></a><a name="9.4.Common features of the four modes, 3BM GUI|outline"></a>
+Common features of the four modes, 3BM GUI</h2>
+
+<p style="font-family: Times New Roman,Times,serif;">In this paragraph,
+the 3BM GUI will be analysed, considering only
+the common features that should be set in any case for all the modes.
+</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The 3BM GUI is
+divided in three different sub-windows:</p>
+
+<ol style="font-family: Times New Roman,Times,serif;">
+
+  <li>
+    <p>simulation</p>
+  </li>
+  <li>
+    <p>environment</p>
+  </li>
+  <li>
+    <p>propagation.</p>
+  </li>
+</ol>
+
+<p style="font-family: Times New Roman,Times,serif;">In the <b>Simulation</b>
+part, there are all the settings related
+to the 3-body system in use and to mode 1. Therefore this window will
+be partially discussed now (for the part about the general settings
+of the 3BM, shown in Figure 8.2) and partially in the next paragraph
+(for the features related to mode 1). </p>
+
+<p style="margin-top: 0.08in; font-family: Times New Roman,Times,serif;" align="center"><a name="_Ref235336482"></a>
+<b>Figure 8.2 3BM main GUI: common features in Simulation window</b>
+</p>
+
+<p style="font-family: Times New Roman,Times,serif;">In <u>panel 1</u>,
+the simulation timeline is defined. Here the
+user has to specify the starting and the final epochs of the
+simulation. It regards the propagator mode, but also the other ones.
+It means, for instance, that a Halo orbit, designed by using mode 2,
+is plotted in the epoch defined in this panel (starting epoch).</p>
+
+<p style="font-family: Times New Roman,Times,serif;">In <u>panel 2</u>,
+the 3-body system is selected. In the first box
+the user can select the specific system that wants to work with (as
+defined in A5). Below all the main parameters are listed: the
+Gravitational parameters of each body, the distance between them and
+the resulting 3-body Gravitational parameters. These values can’t
+be changed by the user.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The other panels
+relate to mode 1, and for this reason they will
+be discussed in the next paragraph.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">Other parameters,
+needing to be specified for all the different
+modes, are collected in the page called <b>Propagation </b>(see
+Figure 8.3). </p>
+
+<p style="margin-top: 0.08in; font-family: Times New Roman,Times,serif;" align="center"><a name="_Ref235358986"></a>
+<b>Figure 8.3 3BM main GUI: Propagation window</b></p>
+
+<p style="margin-bottom: 0in; widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<p style="font-family: Times New Roman,Times,serif;">This register card
+contains two panels: <u>orbit</u> propagation
+and <u>attitude</u> propagation. The second one is disabled, because
+in the module the attitude propagation is not allowed. In the first
+one the user can select the integrator type (so far only the RKF45
+has been implemented) and the integration step (in sec), while the
+propagator type obviously is the 3<sup>rd</sup> body.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The E<b>nvironment</b>
+window depends on inputs from another STA
+module, intended to add propagations in the equations of motions.
+Development of that module had not been completed by the time the 3BM
+was released ad this UM written. For this reason the discussion of
+this part will be tackled once that module will be available.</p>
+
+<h2 style="widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId179733"></a>Features of
+mode 1</h2>
+
+<p style="font-family: Times New Roman,Times,serif;">This first mode
+allows the user to propagate a trajectory within
+the 3-body model after having specified the initial conditions. By
+using the previous parts of the GUI, the user has been able to select
+the system and the integration step to use. Now the initial
+conditions have to be provided, by using the again the <b>Simulation</b>
+window of the main GUI. In Figure 8.4 and the panels to use are
+shown.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">In the <u>Initial
+Orbital Vector panel,</u> the user can select
+from two different sets of initial conditions that can be used to
+describe the initial state for the 3BM simulation:</p>
+
+<ol style="font-family: Times New Roman,Times,serif;">
+
+  <li value="1">
+    <p>keplerian elements</p>
+  </li>
+  <li>
+    <p>Cartesian state vector.</p>
+  </li>
+</ol>
+
+<p style="font-family: Times New Roman,Times,serif;">In the first case
+(Figure 8.4) a parking orbit around the main
+body is specified, and in the other one (Figure 8.5) a state vector,
+representing the initial position and velocity has to be provided.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">In case the
+keplerian elements are given by the user, the
+reference frame (RF) adopted is the Ecliptic J2000. This frame is
+defined by the Earth equator at epoch J2000 (1<sup>st</sup> January,
+2000, 11:58:55.816) as the fundamental plane. The x-axis points along
+the J2000 vernal equinox, the z-axis is the mean north pole, and the
+y-axis completes the right-handed system.</p>
+
+<p style="margin-top: 0.08in; font-family: Times New Roman,Times,serif;" align="center"><a name="_Ref235349673"></a>
+<b>Figure 8.4 3BM main GUI: initial conditions panel for mode 1
+(keplerian elements)</b></p>
+
+<p style="margin-bottom: 0in; widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<p style="font-family: Times New Roman,Times,serif;">In the other case
+three different reference frames can be used:</p>
+
+<ol style="font-family: Times New Roman,Times,serif;">
+
+  <li value="1">
+    <p>Ecliptic J2000</p>
+  </li>
+  <li>
+    <p>Rotating normalised RF (shown in Figure 8.5)</p>
+  </li>
+  <li>
+    <p>Rotating RF</p>
+  </li>
+</ol>
+
+<p style="font-family: Times New Roman,Times,serif;">The rotating
+normalised RF is the classical RF used for the 3-body
+problem. It is rotating around the mass centre of the system with a
+constant angular velocity of 2π/T<sub> </sub>(where T is the time
+needed for the second body to complete a revolution around the mass
+centre). This RF can be normalised by using the distance between the
+primaries, the linear velocity of the second body and T*2*π. Here
+it’s the difference between the rotating normalised and the
+rotating RF.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">In case a state
+vector is provided to the integrator as initial
+conditions, all the components of the position (three) and the
+velocity (three) have to be provided.</p>
+
+<p style="margin-top: 0.08in; font-family: Times New Roman,Times,serif;" align="center"><a name="_Ref235352168"></a>
+<b>Figure 8.5 3BM main GUI: initial conditions panel for mode 1
+(state vector)</b></p>
+
+<p style="margin-bottom: 0in; widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The last panel of
+Figure 8.1 is used to execute a maneuver during
+the trajectory propagation. Actually during a trajectory can be
+useful/interesting/required to check how it changes after an
+impulsive ΔV is given to the S/C.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">Therefore the 3BM
+allows the user to do such a computation. The
+inputs required are the epoch when the maneuver is executed, and the
+magnitudes of the ΔV (as shown in Figure 8.6). If in the previous
+panel the normalized system has been chosen, also in this case
+normalized magnitudes have to be provided.</p>
+
+<p style="margin-bottom: 0in; widows: 2; orphans: 2; page-break-after: avoid; font-family: Times New Roman,Times,serif;" align="center">
+</p>
+
+<p style="margin-top: 0.08in; font-family: Times New Roman,Times,serif;" align="center"><a name="_Ref235358162"></a>
+<b>Figure 8.6 3BM main GUI: deltaV panel for mode 1</b></p>
+
+<h2 style="widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId290576"></a><a name="9.6.Advanced 3BM GUI|outline"></a>
+Advanced 3BM GUI</h2>
+
+<p style="font-family: Times New Roman,Times,serif;">As already
+explained, the 3BM main GUI has to be used to insert
+the common parameters for all the modes and to propagate a general
+trajectory in the 3-body problem (mode 1).</p>
+
+<p style="font-family: Times New Roman,Times,serif;">Besides, in order
+to use the other features of the 3BM, the user
+has to make use of the advanced GUI that is divided in four different
+windows:</p>
+
+<ol style="font-family: Times New Roman,Times,serif;">
+
+  <li value="1">
+    <p>Halo orbit (mode 2)</p>
+  </li>
+  <li>
+    <p>Manifolds (mode 2)</p>
+  </li>
+  <li>
+    <p>Transfer trajectory (mode 3)</p>
+  </li>
+  <li>
+    <p>Earth-Moon transfer (mode 4)</p>
+  </li>
+</ol>
+
+<p style="font-family: Times New Roman,Times,serif;">Each of them
+represents a different process of the 3BM. For this
+reason, depending on the actual window opened when the user pushes
+the button “OK”, the 3BM is able to understand which
+functionality has been requested by the user.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">It means if the
+user will fill all the inputs for all these four
+different windows, the 3BM will compute only the trajectory(ies)
+required by the window that is open at that time.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">Therefore mode by
+mode (actually window by window), all the
+interactions required by the advanced GUI will be discussed in the
+next paragraphs.</p>
+
+<h2 style="widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId853748"></a>Features of
+mode 2</h2>
+
+<p style="font-family: Times New Roman,Times,serif;">This mode aims to
+compute Halo orbits and trajectory manifolds.
+The entire procedure for these computations is reported in [A6]. Here
+only the inputs/outputs flows regarding the GUI will be analysed.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">For the computation
+of Halo orbits, a first guess is required to
+let the computation starts. Thereto the user can insert directly this
+first guess by using panel 2 (see Figure 8.7). The initial guess has
+the following layout:</p>
+
+<ol style="font-family: Times New Roman,Times,serif;">
+
+  <li value="1">
+    <p>x-position (given by the user)</p>
+  </li>
+  <li>
+    <p>y-position = 0</p>
+  </li>
+  <li>
+    <p>z-position (given by the user)</p>
+  </li>
+  <li>
+    <p>x-velocity = 0</p>
+  </li>
+  <li>
+    <p>y-velocity (given by the user)</p>
+  </li>
+  <li>
+    <p>z-velocity = 0</p>
+  </li>
+</ol>
+
+<p style="font-family: Times New Roman,Times,serif;">It could happen
+that the user doesn’t know anything about the
+Halo orbit. In this case, selecting the check box “research first
+guess values for the initial conditions”, the user can design that
+orbit just specifying the location (in the L point selection box the
+user can select the Lagrangian point where the Halo orbit will take
+place) and the amplitudes (only in the x and z-direction, because for
+Halo orbits the y one is determined by the x amplitude). Therefore by
+using the first panel the user can get the first guess required to
+start the computation. </p>
+
+<p style="font-family: Times New Roman,Times,serif;">Once a first guess
+has been given/computed, the user should select
+how many positions he wants to know and the maximum computational
+time for the Halo orbit. Actually that orbit is obtained by using an
+iterative method that can last for quite a long time, depending on
+the precision of the first guess. In order to avoid the 3BM to run
+for so long, the user can select a maximum computational time.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">When the
+computation has been completed, the results are shown in
+panel 3. The real initial conditions are printed as well as the real
+amplitudes and the period of such orbit. It could happen the orbit
+computed is too different from the one required, in this case an
+error box communicates it to the user.</p>
+
+<p style="margin-bottom: 0in; widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<p style="margin-top: 0.08in; font-family: Times New Roman,Times,serif;" align="center"><a name="_Ref235416551"></a>
+<b>Figure 8.7 3BM advanced GUI: Halo orbit window</b></p>
+
+<p style="font-family: Times New Roman,Times,serif;"><span style="font-weight: normal;">The second feature of mode 2 is
+the computation of trajectory. It’s worth emphasizing that in order
+to use this functionality </span>the user has to compute a Halo orbit
+<span style="font-weight: normal;">by using the previous window.
+Manifolds trajectories are designed by perturbing a Halo orbit,
+therefore that one has to be provided to the 3BM.</span></p>
+
+<p style="font-family: Times New Roman,Times,serif;">In the Manifolds
+window of the advanced GUI (Figure 8.8), the user
+can select the deviation relative to the initial Halo orbit. Moreover
+the user has to select which manifolds he wants to compute, checking
+the apposite checkboxes (first column on the left). Then the final
+conditions for the manifold branches selected have to be determined.
+They can be computed until intersecting with a main body or can be
+propagated specifying a certain time of integration.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The first case is
+available only for some particular combinations,
+depending on the geometry of the problem:</p>
+
+<ol style="font-family: Times New Roman,Times,serif;">
+
+  <li value="1">
+    <p>L1  right branch</p>
+  </li>
+  <li>
+    <p>L1  left branch</p>
+  </li>
+  <li>
+    <p>L2  left branch</p>
+  </li>
+</ol>
+
+<p style="font-family: Times New Roman,Times,serif;">In the other cases,
+propagating till the intersection of a main
+body makes no sense (for instance on the right side of L2 there are
+no main bodies)</p>
+
+<p style="font-family: Times New Roman,Times,serif;">In case a time of
+integration is specified (in normalized units as
+explained in 8.5), the user shall specify also how many positions he
+wants to know for each trajectory, while the number of trajectories
+is determined by the number of position known (selected in panel 2 of
+the Halo orbit window, Figure 8.7)</p>
+
+<p style="margin-bottom: 0in; widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<p style="margin-bottom: 0in; widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<p style="margin-top: 0.08in; font-family: Times New Roman,Times,serif;" align="center"><a name="_Ref235418850"></a>
+<b>Figure 8.8 3BM advanced GUI: manifold window</b></p>
+
+<p style="margin-bottom: 0in; widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<h2 style="widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId340273"></a>Features of
+mode 3</h2>
+
+<p style="font-family: Times New Roman,Times,serif;">Mode 3 is intended
+to find the best connection between a parking
+orbit around a main body and a Halo orbit. It means that three
+different sets of inputs are required:</p>
+
+<ol style="font-family: Times New Roman,Times,serif;">
+
+  <li value="1">
+    <p>parking orbit</p>
+  </li>
+  <li>
+    <p>Halo orbit</p>
+  </li>
+  <li>
+    <p>optimization settings</p>
+  </li>
+</ol>
+
+<p style="font-family: Times New Roman,Times,serif;">Actually these
+three sets represent the three different panels
+present in the advanced GUI dedicated to this mode (Figure 8.9).</p>
+
+<p style="font-family: Times New Roman,Times,serif;">In the first panel
+a parking orbit has to be specified, by using
+keplerian elements. Moreover the central body has to be selected
+between the two bodies of the system selected in the main GUI.
+Finally a launch window has to be selected. So far the optimization
+process is able to optimize only the daily launch window of the day
+selected as the starting epoch (indeed it’s possible to find the
+optimized RAAN), but the 3BM has been created in such a way that
+setting the optimizer in the correct way allows the optimization of
+the annually launch window (in order to optimize the relative
+inclination between the Earth rotational axis and the Halo orbit,
+that varies over a period of one year).</p>
+
+<p style="font-family: Times New Roman,Times,serif;">In the second panel
+the initial conditions for the Halo orbit have
+to be provided. It’s possible to import them from the previous
+window of the advanced GUI just selecting the apposite checkbox.
+Anyway the 3BM runs again the computation of the Halo orbit in order
+to work with the real Halo orbit. Moreover the user shall specify the
+deviation from that orbit in order to compute transfer orbits. This
+value is left to the user, because it depends on the mission
+requirements. Actually this mode guides the S/C till the perturbed
+position, therefore the S/C should execute some mid-course manoeuvres
+in order to get the Halo orbit (not considered in this module).</p>
+
+<p style="font-family: Times New Roman,Times,serif;">Finally in the
+third panel all the settings about the optimization
+process are collected. The user has to specify if the total ΔV, the
+ToF or both of them have to be optimized. In any case, also the
+maximum allowable ToF has to be selected, in order to exclude those
+solutions not acceptable. </p>
+
+<p style="font-family: Times New Roman,Times,serif;">Then the user shall
+select the number of populations for the
+optimizer. The size of them is by default equal to 200, but the user
+can decide how many times the optimizer is launched.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">Finally the user
+can select also what kind of optimizer he wants
+to use. For the mono-objective problem, the optimizer is by default
+the NSGA-II (Non-Sorting Genetic Algorithm), because for that problem
+gave the best performances. For the multi-objective problem, the user
+can use either the NSGA-II or the DG-MOPSO (Double-Grid
+Multi-Objective Particle Swarm Optimisation).</p>
+
+<p style="margin-bottom: 0in; widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<p style="margin-bottom: 0in; widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<p style="margin-top: 0.08in; font-family: Times New Roman,Times,serif;" align="center"><a name="_Ref235420783"></a>
+<b>Figure 8.9 3BM advanced GUI: Transfer trajectory window</b></p>
+
+<p style="margin-bottom: 0in; widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<h2 style="widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId877090"></a>Features of
+mode 4</h2>
+
+<p style="margin-bottom: 0in; widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;">This
+mode is not
+yet implemented. It will be implemented in the version 3 of STA
+code-named CAMBRIAN.</p>
+
+<p style="margin-bottom: 0in; widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId153917"></a><a name="9.10.STA 3BM obtention of results|outline"></a>
+STA 3BM obtention of results</h2>
+
+<p style="font-family: Times New Roman,Times,serif;">After having
+explaining all the 3BM GUI structure and indeed
+having let the user be able to interact with it, some examples of
+what results the 3BM is able to deliver will be shown in this
+section. An example for each mode will be given by using some
+screenshots of the 3BM.</p>
+
+<p style="margin-bottom: 0in; widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<h2 style="widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId369078"></a><a name="9.11.Results of mode 1|outline"></a>
+Results of mode 1</h2>
+
+<p style="font-family: Times New Roman,Times,serif;">For this mode a
+trajectory around the Earth has been propagated.
+After some hours an impulse shot has been given to the S/C in order
+to show how the trajectory is changed.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">In the next two
+figures the inputs given (Figure 8.10) and the
+trajectory obtained (Figure 8.11) are shown:</p>
+
+<p style="margin-bottom: 0in; widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<p style="margin-top: 0.08in; font-family: Times New Roman,Times,serif;" align="center"><a name="_Ref235441640"></a>
+<b>Figure 8.10 GUI screenshot for an example case for Mode 1</b></p>
+
+<p style="margin-bottom: 0in; widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<p style="margin-top: 0.08in; font-family: Times New Roman,Times,serif;" align="center"><a name="_Ref235441647"></a>
+<b>Figure 8.11 Trajectory screenshot for an example case for Mode 1</b></p>
+
+<h2 style="widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId244016"></a><a name="9.12.Results of mode 2|outline"></a>
+Results of mode 2</h2>
+
+<p style="font-family: Times New Roman,Times,serif;">Two different
+results are shown here. The first one is about the
+computation of a Halo orbit around L1 of the Sun-Earth system (Figure
+8.13). Hereafter the manifolds trajectories departing from this orbit
+are shown as well (Figure 8.15). Again the inputs given are reported
+respectively in Figure 8.12 and Figure 8.14.</p>
+
+<p style="margin-bottom: 0in; widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<p style="margin-top: 0.08in; font-family: Times New Roman,Times,serif;" align="center"><a name="_Ref235441983"></a>
+<b>Figure 8.12 GUI screenshot for an example case of Halo orbit for
+Mode 2</b></p>
+
+<p style="margin-top: 0.08in; font-family: Times New Roman,Times,serif;" align="center"><a name="_Ref235441972"></a>
+<b>Figure 8.13 Trajectory screenshot for an example case of Halo
+orbit for Mode 2</b></p>
+
+<p style="margin-bottom: 0in; widows: 2; orphans: 2; font-family: Times New Roman,Times,serif;" align="justify">
+</p>
+
+<p style="margin-top: 0.08in; font-family: Times New Roman,Times,serif;" align="center"><a name="_Ref235441984"></a>
+<b>Figure 8.14 GUI screenshot for an example case of manifolds
+trajectories for Mode 2</b></p>
+
+<p style="margin-top: 0.08in; font-family: Times New Roman,Times,serif;" align="center"><a name="_Ref235441978"></a>
+<b>Figure 8.15 Trajectories screenshot for an example case of
+manifolds for Mode 2</b></p>
+
+<h1 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH1" name="mozTocId76617"></a><a name="10.STA Perturbations Service|outline"></a>STA
+Perturbations Service</h1>
+
+<p style="font-family: Times New Roman,Times,serif;">In this chapter an
+overview of this service layer will be given in
+order to let the user understand the potential and possible
+applications for this STA components. Therefore a general explanation
+of the Perturbations Layer will be given as well as an introduction
+to the main features.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The most used model
+for trajectories design is the 2-body problem,
+where a satellite, with negligible mass, is gravitating around a
+central body.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The propagation of
+this kind of orbit, when only the central
+body's influence is considered, can be easily done by incrementing
+the true anomaly at each time step when keeping constant all the
+other orbital parameters, obtaining the exact solution. This
+operation is done by the Loitering Module.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">However this kind
+of trajectories are only theoretical, because
+this simple model is complicated by the effects of orbital
+perturbations (generated by different causes), that exert a
+perturbing acceleration on the spacecraft (the magnitude of these
+accelerations is some degree smaller with respect to the acceleration
+due to central body attraction).</p>
+
+<p style="font-family: Times New Roman,Times,serif;">Introducing the
+orbital perturbation implies the necessity to
+solve a differential equation for the calculation of the spacecraft
+position and velocity at each time step.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The orbital
+perturbations that have been treated by the layer are
+:</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li>
+    <p>Aerodynamic drag due to the central body's atmosphere;</p>
+  </li>
+  <li>
+    <p>Solar pressure radiation perturbation;</p>
+  </li>
+  <li>
+    <p>Gravity of the third body perturbation;</p>
+  </li>
+  <li>
+    <p>Central body's gravity field perturbation;</p>
+  </li>
+  <li>
+    <p>Debris and micrometeorids collisions perturbation.</p>
+  </li>
+</ul>
+
+<p style="font-family: Times New Roman,Times,serif;">Adding one or more
+of these perturbations allow solving the
+equations of motion taking into account these perturbing factors. </p>
+
+<p style="font-family: Times New Roman,Times,serif;">Not only the
+Loitering trajectory can be influenced by
+perturbations: theoretically all kinds of trajectory, from re-entry
+to rendez-vous, are affected by perturbations, but in certain cases
+the perturbing effects are so small compared to the main forces
+acting on the spacecraft that they can be ignored without committing
+significant errors.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">This is the reason
+why, while in the Loitering module it will be
+possible to add all the perturbations listed above, in the REM only
+the central body's gravity field perturbation can be added; moreover,
+in the REM the aerodynamic drag will not be treated as a perturbation
+but as the main force acting on the spacecraft.</p>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId254806"></a>How to use the
+Perturbations Layer</h2>
+
+<p style="font-family: Times New Roman,Times,serif;">As explained in the
+previous paragraph, the user shall use the
+Perturbations Layer when he wants to simulate a trajectory
+considering the effects of orbital perturbations; the inputs related
+to perturbations will be added in a dedicate tab contained in the GUI
+of the specific trajectory he wants to propagate.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">In this paragraph
+the user will be guided in the process of
+properly filling the section of the GUI dedicated to perturbations.
+It should be noted that this procedures will concern only the
+perturbation problem definition, but as perturbations is only an
+aspect of the astrodynamics problem, they will not be sufficient to
+properly propagate a trajectory. </p>
+
+<p style="font-family: Times New Roman,Times,serif;">The distinction
+between loitering and re-entry trajectory
+propagation will be done.</p>
+
+<h3 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH3" name="mozTocId582549"></a><a name="10.1.1.Loitering trajectory|outline"></a>Loitering
+trajectory</h3>
+
+<p style="font-family: Times New Roman,Times,serif;">The information
+related to perturbations has to be added in the
+loitering GUI.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The user must open
+the tab “Environment”.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">He can firstly
+select the central body from the menu and then pass
+to the “Perturbations” section.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">Here the selection
+of the perturbations wanted to be taken into
+account in the propagation shall be made by clicking the radio button
+associated to every perturbation;</p>
+
+<p style="font-family: Times New Roman,Times,serif;">when selecting it,
+the corresponding field enables and the user
+can insert in it some other values, when possible.</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li value="1">
+    <p>Aerodynamic drag due to the central body's atmosphere;</p>
+  </li>
+</ul>
+
+<p style="font-family: Times New Roman,Times,serif;">The button to be
+clicked is “Atmospheric Drag”. The inputs to
+be inserted are the following:</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li>
+    <p><i>atmospheric model </i>: it refers to a file containing a
+list of densities as function of the altitudes, necessary for the
+calculation of the atmosphere effect on the spacecraft. The user can
+choose from a list of models; so far the models are:</p>
+    <p>- gram99 (Global Reference Atmospheric Model),</p>
+    <p>- exponential model, based on the simple exponential formula for
+density calculation; </p>
+    <p>- USSA1976 (U.S. Standard Atmosphere 1976) </p>
+    <p>- mars_emcd (European Mars Climate Database).</p>
+  </li>
+</ul>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li value="1">
+    <p>Solar pressure radiation perturbation;</p>
+  </li>
+</ul>
+
+<p style="font-family: Times New Roman,Times,serif;">The button to be
+clicked is “Solar Pressure”. The inputs to be
+inserted are the following:</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li value="1">
+    <p><i>reflectivity </i>: it refers to the reflectivity constant of
+the surface of the spacecraft; the user shall insert a number from 0 to
+1 (0 : no reflectivity, 1 : completely reflective).</p>
+  </li>
+  <li>
+    <p>Albedo : <span style="font-style: normal;">the user shall
+select this case if he wants to simulate the albedo radiation from the
+central body.</span></p>
+  </li>
+  <li>
+    <p>IR <span style="font-style: normal;">: the user shall select
+this case if he wants to simulate the infra-red radiation from the
+central body.</span></p>
+  </li>
+</ul>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li value="1">
+    <p>Central body's gravity field perturbation;</p>
+  </li>
+</ul>
+
+<p style="font-family: Times New Roman,Times,serif;">The button to be
+clicked is “Gravity Field”. The inputs to be
+inserted are the following:</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li value="1">
+    <p><i>gravity model </i>: it refers to a file containing a list of
+harmonic coefficients representing the potential of the gravity field
+(depending on the actual shape of the celestial body). Every file
+refers to a particular central body; the available models are :</p>
+    <p>- EGM2008 (Earth Gravitational Model 2008);</p>
+  </li>
+</ul>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <p>- GTM090 (Mars Gravity Model deducted from Mars Global Surveyor
+mission), </p>
+  <p>- SHGJ180 (Venus Gravity Model deducted from Magellan mission), </p>
+</ul>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <p>- JGL165 (Moon Gravity Model deducted from Lunar Prospector
+mission, see).</p>
+  <li>
+    <p><i>gravity zonals</i> : it represents the number of zonal
+harmonics the user wants to take into account in the simulation: higher
+the number, better the approximation of the gravity perturbation. The
+user can put a integer from 2 to 20.</p>
+  </li>
+  <li>
+    <p><i>gravity tesserals</i> : it represents the number of tesseral
+harmonics the user wants to take into account in the simulation: higher
+the number, better the approximation of the gravity perturbation. The
+user can put a integer from 2 to the current value of the gravity
+zonals.</p>
+  </li>
+</ul>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li value="1">
+    <p>Gravity of the third body perturbation;</p>
+  </li>
+</ul>
+
+<p style="font-family: Times New Roman,Times,serif;">The button to be
+clicked is “Third Body”. The inputs to be
+inserted are the following:</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li value="1">
+    <p>Once decided which celestial bodies will be considered as
+exerting an influence on the spacecraft, select them from the list on
+the left and put them in the list on the right by double-clicking them.</p>
+  </li>
+</ul>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li value="1">
+    <p>Debris and micrometeoroids collisions perturbation.</p>
+    <p>The button to be clicked is “MMOD”. There are no inputs to be
+added.</p>
+  </li>
+</ul>
+
+<h3 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH3" name="mozTocId844393"></a><a name="10.1.2.Entry trajectories|outline"></a>Entry
+trajectories</h3>
+
+<p style="font-family: Times New Roman,Times,serif;">The information
+related to perturbations has to be added in the
+re-entry GUI.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">The user must open
+the tab “Propagation”.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">He can firstly
+select the central body from the menu and then pass
+to the “Perturbations” section.</p>
+
+<p style="font-family: Times New Roman,Times,serif;">Just one
+perturbation is available, and its selection shall be
+made by clicking the radio button associated to it; when selecting
+it, the corresponding field enables and the user can insert in it
+some other value.</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li value="1">
+    <p>Central body's gravity field perturbation;</p>
+  </li>
+</ul>
+
+<p style="font-family: Times New Roman,Times,serif;">The button to be
+clicked is “Gravity Field”. The inputs to be
+inserted are the following:</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li>
+    <p><i>gravity model </i>: it refers to a file containing a list of
+harmonic coefficients representing the potential of the gravity field
+(depending on the actual shape of the celestial body). Every file
+refers to a particular central body; the available models are : </p>
+    <p>- EGM2008 (Earth Gravitational Model 2008);</p>
+    <p>- GTM090 (Mars Gravity Model deducted from Mars Global Surveyor
+mission).</p>
+  </li>
+  <li>
+    <p><i>gravity zonals</i> : it represents the number of zonal
+harmonics the user wants to take into account in the simulation: higher
+the number, better the approximation of the gravity perturbation. The
+user can put a integer from 2 to 20.</p>
+  </li>
+  <li>
+    <p><i>gravity tesserals</i> : it represents the number of tesseral
+harmonics the user wants to take into account in the simulation: higher
+the number, better the approximation of the gravity perturbation. The
+user can put a integer from 2 to the current value of the gravity
+zonals.</p>
+  </li>
+</ul>
+
+<h3 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH3" name="mozTocId838775"></a><a name="10.1.3.Spacecraft properties parameters|outline"></a>
+Spacecraft properties parameters</h3>
+
+<p style="font-family: Times New Roman,Times,serif;">When selecting a
+perturbation, other parameters shall be
+imperatively added to allow the perturbing accelerations being
+calculated and consequently the trajectory being simulated; these
+parameters shall not be inserted in the Loitering / Re-Entry GUI but
+in the spacecraft properties GUI. </p>
+
+<p style="font-family: Times New Roman,Times,serif;">These inputs will
+be briefly listed :</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li value="1">
+    <p>Aerodynamic drag due to the central body's atmosphere;</p>
+    <p>- mass of the spacecraft;</p>
+    <p>- surface of the spacecraft;</p>
+    <p>- spacecraft CD coefficients file; </p>
+  </li>
+  <li>
+    <p>Solar pressure radiation perturbation;</p>
+  </li>
+</ul>
+
+<p style="font-family: Times New Roman,Times,serif;">- mass of the
+spacecraft;</p>
+
+<p style="font-family: Times New Roman,Times,serif;">- surface of the
+spacecraft;</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li value="1">
+    <p>Gravity of the third body perturbation;</p>
+    <p>none</p>
+  </li>
+  <li>
+    <p>Central body's gravity field perturbation;</p>
+    <p>none</p>
+  </li>
+  <li>
+    <p>Debris and micrometeoroids collisions perturbation.</p>
+  </li>
+</ul>
+
+<p style="font-family: Times New Roman,Times,serif;">- mass of the
+spacecraft;</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <p>- surface of the spacecraft;</p>
+</ul>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId407115"></a><a name="10.2.Perturbations layer GUI|outline"></a>Perturbations
+layer GUI</h2>
+
+<p style="font-family: Times New Roman,Times,serif;">Figure 9.1 shows
+the tab “environment” of the Loitering GUI.
+The perturbations information shall be added in the proper section.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="font-family: Times New Roman,Times,serif;">Figure 9.2 shows
+the tab “Propagation” of the REM GUI; the
+perturbation section is reduced with respect to the Loitering one,
+and containing only Gravity Field perturbation.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<h1 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH1" name="mozTocId933647"></a><a name="11.STA LICENCING AND COPYRIGHT|outline"></a>
+STA LICENCING AND COPYRIGHT</h1>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">STA
+is distributed under the GNU public
+license (found below) in the spirit that it will be useful to
+academic and industrial communities of space research.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">In
+no way the STA Steering Board or any
+of its members shall be liable for any use of STA or its source code.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">STA
+code is open source. The code in
+the STA project is license under the GENERAL PUBLIC LICENSE, Version
+2, June 1991 of the Free Software Foundation, commonly known as GNU
+GPL. </p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+STA code, logo, and web site are
+copyright of the STA Steering Board. </p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">In
+the STA project, all Intellectual
+Property Rights (IPRs) are assigned to the STA Steering Board.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<h2 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH2" name="mozTocId979972"></a><a name="11.1.GNU GENERAL PUBLIC LICENSE, Version 2, June 1991|outline"></a>
+GNU GENERAL PUBLIC LICENSE, Version 2, June 1991</h2>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">Copyright
+(C) 1989, 1991 Free Software
+Foundation, Inc. </p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">51
+Franklin Street, Fifth Floor,
+Boston, MA 02110-1301, USA</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">Everyone
+is permitted to copy and
+distribute verbatim copies of this license document, but changing it
+is not allowed.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<h3 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH3" name="mozTocId23505"></a>How to Apply These Terms to
+New Programs based on
+STA</h3>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">If
+you develop a new program based on
+STA, and you want it to be of the greatest possible use to the
+public, the best way to achieve this is to make it free software
+which everyone can redistribute and change under these terms. </p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">This
+General Public License does not
+permit incorporating STA in its totality or its parts into
+proprietary programs without making the source code available.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<h1 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH1" name="mozTocId933852"></a>How to Participate on STA
+development</h1>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+STA development team is composed of
+a group of enthusiast in astrodynamics, informatics, and applied
+mathematics. Developers are teaming up from Universities or Academia
+(Master thesis, PhDs students) to enthusiast volunteers and space
+agencies officers that want simply to help.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+organization of the STA project is
+lead by the STA Steering Board (SB).</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">The
+STA project allows the
+partner-shipping with space Agencies, Academia, Industry and free
+volunteers.</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">Individuals
+wishing to contribute to
+STA can do it in several ways: </p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<ul style="font-family: Times New Roman,Times,serif;">
+
+  <li>
+    <p style="margin-bottom: 0in;">By sending a note to the central STA
+e-mail address requesting participation on the STA project: Space.Trajectory.Analysis@gmail.com</p>
+  </li>
+  <li>
+    <p style="margin-bottom: 0in;">By contacting a Steering Board
+member from one of the Institutions listed in our site and establishing
+a link with this person. The list of the requested modules for
+development is made available to all Board members.</p>
+  </li>
+</ul>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">Developers
+are persons that participate
+actively in STA code by creating, modifying, and maintaining code. </p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">Contributors
+are occasionally
+participants on the forums and discussion list that have been
+following the developers email discussion list, or have downloaded
+the source code found in the nightly build repository. Contributors
+can become developers by writing patches for some features of the
+code that they think needs tweaking, etc.</p>
+
+<h1 style="font-family: Times New Roman,Times,serif;" lang="en-AU"><a class="mozTocH1" name="mozTocId836164"></a><a name="12.LIST OF ACRONYMS|outline"></a>LIST OF
+ACRONYMS</h1>
+
+<table style="font-family: Times New Roman,Times,serif;" border="1" bordercolor="#000000" cellpadding="4" cellspacing="0" width="384">
+
+  <col width="121"> <col width="245"> <tbody>
+    <tr valign="top">
+      <td width="121">
+      <p>DoF</p>
+      </td>
+      <td width="245">
+      <p>Degrees of Freedom</p>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="121">
+      <p>ESA</p>
+      </td>
+      <td width="245">
+      <p>European Space Agency</p>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="121">
+      <p>ICD</p>
+      </td>
+      <td width="245">
+      <p>Interface Control Document</p>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="121">
+      <p>SB</p>
+      </td>
+      <td width="245">
+      <p>Steering Board</p>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="121">
+      <p>STA</p>
+      </td>
+      <td width="245">
+      <p>Space Trajectory Analysis</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;">
+</p>
+
+<p style="margin-bottom: 0in; font-family: Times New Roman,Times,serif;" align="center"><font color="#000080">*
+End *</font></p>
+
+</body></html>

@@ -359,6 +359,11 @@ CONSTELLATIONS_SOURCES = sta-src/Constellations/cwizard.cpp
 CONSTELLATIONS_HEADERS = sta-src/Constellations/cwizard.h
 CONSTELLATIONS_FORMS = sta-src/Constellations/cwizard.ui
 
+############## Help Browser Module ##############
+HELPBROWSER_SOURCES = sta-src/Help/HelpBrowser.cpp
+HELPBROWSER_HEADERS = sta-src/Help/HelpBrowser.h
+HELPBROWSER_FORMS =
+
 ################ Celestia sources ####################
 UTIL_SOURCES = $$CEL/celutil/bigfix.cpp \
     $$CEL/celutil/color.cpp \
@@ -794,8 +799,8 @@ NORAD_SOURCES += \
     thirdparty/noradtle/sgp8.cpp
 
 
-THIRDPARTY_SOURCES = $$GLEW_SOURCES $$CURVEPLOT_SOURCES $$QWT3D_SOURCES $$NORAD_SOURCES
-THIRDPARTY_HEADERS = $$GLEW_HEADERS $$CURVEPLOT_HEADERS $$QWT3D_HEADERS $$NORAD_HEADERS
+#THIRDPARTY_SOURCES = $$GLEW_SOURCES $$CURVEPLOT_SOURCES $$QWT3D_SOURCES $$NORAD_SOURCES
+#THIRDPARTY_HEADERS = $$GLEW_HEADERS $$CURVEPLOT_HEADERS $$QWT3D_HEADERS $$NORAD_HEADERS
 
 DEFINES += GLEW_STATIC
 
@@ -815,7 +820,11 @@ SOURCES = $$MAIN_SOURCES \
     $$OPTIMIZATION_SOURCES \
     $$CALCULATOR_SOURCES \
     $$CELESTIA_SOURCES \
-    $$THIRDPARTY_SOURCES
+    $$GLEW_SOURCES \
+    $$CURVEPLOT_SOURCES \
+    $$QWT3D_SOURCES \
+    $$NORAD_SOURCES \
+    $$HELPBROWSER_SOURCES
 HEADERS = $$MAIN_HEADERS \
     $$ASTROCORE_HEADERS \
     $$SEM_HEADERS \
@@ -830,7 +839,11 @@ HEADERS = $$MAIN_HEADERS \
     $$OPTIMIZATION_HEADER \
     $$CALCULATOR_HEADERS \
     $$CELESTIA_HEADERS \
-    $$THIRDPARTY_HEADERS
+    $$GLEW_HEADERS \
+    $$CURVEPLOT_HEADERS \
+    $$QWT3D_HEADERS \
+    $$NORAD_HEADERS \
+    $$HELPBROWSER_HEADERS
 FORMS = \
     $$MAIN_FORMS \
     $$ASTROCORE_FORMS \
@@ -843,7 +856,12 @@ FORMS = \
     $$EXTERNAL_FORMS \
     $$RENDEZVOUS_FORMS \
     $$LAGRANGIAN_FORMS \
-    $$CELESTIA_FORMS
+    $$CELESTIA_FORMS \
+    $$GLEW_FORMS \
+    $$CURVEPLOT_FORMS \
+    $$QWT3D_FORMS \
+    $$NORAD_FORMS \
+    $$HELPBROWSER_FORMS
 
 RESOURCES = $$CELESTIA_RESOURCES iconary/sta-icons.qrc
 
@@ -998,7 +1016,7 @@ EXAMPLES_SOURCE = sta-data/scenario-examples
 EXAMPLES_FILES =
 MACOSXIconFiles_SOURCE = iconary
 MACOSXIconFiles_FILES =
-USERMANUAL_SOURCE = sta-data/UM
+USERMANUAL_SOURCE = sta-data/help
 USERMANUAL_FILES =
 
 ################ MAC OS X bundle ########################
@@ -1076,7 +1094,7 @@ macx {
     TLEs.files = $$TLEs_FILES
     EXAMPLES.path = Contents/Resources/STAResources/scenario-examples
     EXAMPLES.files = $$EXAMPLES_FILES
-    USERMANUAL.path = Contents/Resources/STAResources/UM
+    USERMANUAL.path = Contents/Resources/STAResources/help
     USERMANUAL.files = $$USERMANUAL_FILES
     MACOSXIconFiles.path = Contents/Resources
     MACOSXIconFiles.files = $$MACOSXIconFiles_FILES

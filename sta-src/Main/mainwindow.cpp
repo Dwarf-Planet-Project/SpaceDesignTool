@@ -59,6 +59,8 @@ This program is free software; you can redistribute it and/or modify it under
 
 #include "Calculator/STAcalculator.h"
 
+#include "Help/HelpBrowser.h"
+
 #include "about.h"
 
 // Celestia headers
@@ -620,24 +622,31 @@ void MainWindow::on_actionSTA_bugtracker_triggered()
 void MainWindow::on_actionSTA_Wiki_triggered()
 {
     //QDesktopServices::openUrl(STAWiki);  // Not any longer a web site but a PDF inside the hundle
+    /*
     QMessageBox::about(this, tr("User's Manual"),
 			     tr("\n"
 				"The STA User's maual is a PDF file\n"
 				 "STA-ARCHEAN-UM.pdf\n"
 				 "installed in your\n"
 				 "sta-data resources folder"));
+    */
+    HelpBrowser::showPage("index.html");
 }
 
 
 void MainWindow::on_actionSTA_User_s_Manual_triggered()
 {
     //QDesktopServices::openUrl(STAUserManual);   // Not any longer a web site but a PDF inside the hundle
+    /*
     QMessageBox::about(this, tr("User's Manual"),
 			     tr("STA 'Archean' v2.0, November 2009\n"
 				"The STA User's maual is a PDF file\n"
 				 "STA-ARCHEAN-UM.pdf installed in your\n"
 				 "sta-data resources folder"));
+     */
+
 }
+
 
 void MainWindow::on_actionSTA_Downloads_triggered()
 {
@@ -1583,5 +1592,4 @@ void ContextMenu(float x, float y, Selection sel)
 {
     MainWindowInstance->contextMenu(x, y, sel);
 }
-
 
