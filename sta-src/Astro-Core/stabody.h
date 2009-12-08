@@ -87,10 +87,10 @@ public:
         m_linearV(linearV),
         m_distance(distance),
         m_orbitalPeriod (orbitalPeriod),
+        m_inclination (inclination),
         m_ephemeris(NULL),
         m_rotationState(NULL),
-        m_gravityModel(mu),
-        m_inclination (inclination)
+        m_gravityModel(mu)
     {
     }
     
