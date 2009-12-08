@@ -1053,6 +1053,10 @@ macx {
 macx { 
     #QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.4u.sdk
     #CONFIG += x86 ppc
+
+    # Necessary with Qt 4.6
+    QMAKE_LFLAGS += -framework CoreFoundation -framework ApplicationServices
+
     message( "Warning: building on MAC OS X for x86 architecture only" )
     CONFIG += x86
     INCLUDEPATH += $$MACOSX_LIBRARIES_DIR
