@@ -386,12 +386,14 @@ PlottingTool::setPlotDimension(unsigned int dimension)
         m_plot->coordinates()->setAutoDecoration(false);
         m_plot->coordinates()->setStyle(FRAME_2D, X1, Y1, Z1);
         m_plot->setRotation(90, 0, 0);
+        m_plot->disableMouse();
     }
     else if (dimension == 3)
     {
         m_plot->coordinates()->setAutoDecoration(true);
         m_plot->coordinates()->setStyle(FRAME);
         m_plot->setRotation(-60.0, 0.0, 30.0);
+        m_plot->enableMouse();
     }
 }
 
