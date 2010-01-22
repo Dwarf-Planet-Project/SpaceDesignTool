@@ -25,6 +25,11 @@
 #ifndef EIGEN_MATRIX_H
 #define EIGEN_MATRIX_H
 
+#ifdef EIGEN_INITIALIZE_MATRICES_BY_ZERO
+# define EIGEN_INITIALIZE_BY_ZERO_IF_THAT_OPTION_IS_ENABLED for(int i=0;i<base().size();++i) coeffRef(i)=Scalar(0);
+#else
+# define EIGEN_INITIALIZE_BY_ZERO_IF_THAT_OPTION_IS_ENABLED
+#endif
 
 /** \class Matrix
   *
@@ -137,6 +142,9 @@ class Matrix
     enum { NeedsToAlign = (Options&AutoAlign) == AutoAlign
                           && SizeAtCompileTime!=Dynamic && ((sizeof(Scalar)*SizeAtCompileTime)%16)==0 };
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF(NeedsToAlign)
+    
+    Base& base() { return *static_cast<Base*>(this); }
+    const Base& base() const { return *static_cast<const Base*>(this); }
 
     EIGEN_STRONG_INLINE int rows() const { return m_storage.rows(); }
     EIGEN_STRONG_INLINE int cols() const { return m_storage.cols(); }
@@ -230,7 +238,14 @@ class Matrix
              && (RowsAtCompileTime == Dynamic || RowsAtCompileTime == rows)
              && (MaxColsAtCompileTime == Dynamic || MaxColsAtCompileTime >= cols)
              && (ColsAtCompileTime == Dynamic || ColsAtCompileTime == cols));
-      m_storage.resize(rows * cols, rows, cols);
+      #ifdef EIGEN_INITIALIZE_MATRICES_BY_ZERO
+        int size = rows*cols;
+        bool size_changed = size != this->size();
+        m_storage.resize(size, rows, cols);
+        if(size_changed) EIGEN_INITIALIZE_BY_ZERO_IF_THAT_OPTION_IS_ENABLED
+      #else
+        m_storage.resize(rows*cols, rows, cols);
+      #endif
     }
 
     /** Resizes \c *this to a vector of length \a size
@@ -240,10 +255,17 @@ class Matrix
     inline void resize(int size)
     {
       EIGEN_STATIC_ASSERT_VECTOR_ONLY(Matrix)
+      ei_assert(SizeAtCompileTime == Dynamic || SizeAtCompileTime == size);
+      #ifdef EIGEN_INITIALIZE_MATRICES_BY_ZERO
+        bool size_changed = size != this->size();
+      #endif
       if(RowsAtCompileTime == 1)
         m_storage.resize(size, 1, size);
       else
         m_storage.resize(size, size, 1);
+      #ifdef EIGEN_INITIALIZE_MATRICES_BY_ZERO
+        if(size_changed) EIGEN_INITIALIZE_BY_ZERO_IF_THAT_OPTION_IS_ENABLED
+      #endif
     }
 
     /** Copies the value of the expression \a other into \c *this with automatic resizing.
@@ -287,13 +309,14 @@ class Matrix
     EIGEN_STRONG_INLINE explicit Matrix() : m_storage()
     {
       _check_template_params();
+      EIGEN_INITIALIZE_BY_ZERO_IF_THAT_OPTION_IS_ENABLED
     }
 
 #ifndef EIGEN_PARSED_BY_DOXYGEN
     /** \internal */
     Matrix(ei_constructor_without_unaligned_array_assert)
       : m_storage(ei_constructor_without_unaligned_array_assert())
-    {}
+    {EIGEN_INITIALIZE_BY_ZERO_IF_THAT_OPTION_IS_ENABLED}
 #endif
 
     /** Constructs a vector or row-vector with given dimension. \only_for_vectors
@@ -309,6 +332,7 @@ class Matrix
       EIGEN_STATIC_ASSERT_VECTOR_ONLY(Matrix)
       ei_assert(dim > 0);
       ei_assert(SizeAtCompileTime == Dynamic || SizeAtCompileTime == dim);
+      EIGEN_INITIALIZE_BY_ZERO_IF_THAT_OPTION_IS_ENABLED
     }
 
     /** This constructor has two very different behaviors, depending on the type of *this.
@@ -334,6 +358,7 @@ class Matrix
       {
         ei_assert(x > 0 && (RowsAtCompileTime == Dynamic || RowsAtCompileTime == x)
                && y > 0 && (ColsAtCompileTime == Dynamic || ColsAtCompileTime == y));
+        EIGEN_INITIALIZE_BY_ZERO_IF_THAT_OPTION_IS_ENABLED
       }
     }
     /** constructs an initialized 2D vector with given coefficients */
@@ -395,18 +420,14 @@ class Matrix
     /** Override MatrixBase::swap() since for dynamic-sized matrices of same type it is enough to swap the
       * data pointers.
       */
-    inline void swap(Matrix& other)
-    {
-      if (Base::SizeAtCompileTime==Dynamic)
-        m_storage.swap(other.m_storage);
-      else
-        this->Base::swap(other);
-    }
+    template<typename OtherDerived>
+    void swap(const MatrixBase<OtherDerived>& other);
 
     /** \name Map
-      * These are convenience functions returning Map objects. The Map() static functions return unaligned Map objects,
-      * while the AlignedMap() functions return aligned Map objects and thus should be called only with 16-byte-aligned
-      * \a data pointers.
+      * These are convenience functions returning Map objects.
+      *
+      * \warning Do not use MapAligned in the Eigen 2.0. Mapping aligned arrays will be fully
+      * supported in Eigen 3.0 (already implemented in the development branch)
       *
       * \see class Map
       */
@@ -507,9 +528,17 @@ class Matrix
     template<typename OtherDerived>
     EIGEN_STRONG_INLINE Matrix& _set(const MatrixBase<OtherDerived>& other)
     {
-      _resize_to_match(other);
-      return Base::operator=(other);
+      // this enum introduced to fix compilation with gcc 3.3
+      enum { cond = int(OtherDerived::Flags) & EvalBeforeAssigningBit };
+      _set_selector(other.derived(), typename ei_meta_if<bool(cond), ei_meta_true, ei_meta_false>::ret());
+      return *this;
     }
+
+    template<typename OtherDerived>
+    EIGEN_STRONG_INLINE void _set_selector(const OtherDerived& other, const ei_meta_true&) { _set_noalias(other.eval()); }
+
+    template<typename OtherDerived>
+    EIGEN_STRONG_INLINE void _set_selector(const OtherDerived& other, const ei_meta_false&) { _set_noalias(other); }
 
     /** \internal Like _set() but additionally makes the assumption that no aliasing effect can happen (which
       * is the case when creating a new matrix) so one can enforce lazy evaluation.
@@ -534,7 +563,38 @@ class Matrix
                         && (_Options & (AutoAlign|RowMajor)) == _Options),
           INVALID_MATRIX_TEMPLATE_PARAMETERS)
     }
+    
+    template<typename MatrixType, typename OtherDerived, bool IsSameType, bool IsDynamicSize>
+    friend struct ei_matrix_swap_impl;
 };
+
+template<typename MatrixType, typename OtherDerived,
+         bool IsSameType = ei_is_same_type<MatrixType, OtherDerived>::ret,
+         bool IsDynamicSize = MatrixType::SizeAtCompileTime==Dynamic>
+struct ei_matrix_swap_impl
+{
+  static inline void run(MatrixType& matrix, MatrixBase<OtherDerived>& other)
+  {
+    matrix.base().swap(other);
+  }
+};
+
+template<typename MatrixType, typename OtherDerived>
+struct ei_matrix_swap_impl<MatrixType, OtherDerived, true, true>
+{
+  static inline void run(MatrixType& matrix, MatrixBase<OtherDerived>& other)
+  {
+    matrix.m_storage.swap(other.derived().m_storage);
+  }
+};
+
+template<typename _Scalar, int _Rows, int _Cols, int _Options, int _MaxRows, int _MaxCols>
+template<typename OtherDerived>
+inline void Matrix<_Scalar, _Rows, _Cols, _Options, _MaxRows, _MaxCols>::swap(const MatrixBase<OtherDerived>& other)
+{
+  ei_matrix_swap_impl<Matrix, OtherDerived>::run(*this, *const_cast<MatrixBase<OtherDerived>*>(&other));
+}
+
 
 /** \defgroup matrixtypedefs Global matrix typedefs
   *

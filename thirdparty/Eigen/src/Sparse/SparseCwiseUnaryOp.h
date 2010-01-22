@@ -89,7 +89,10 @@ class SparseCwiseUnaryOp<UnaryOp,MatrixType>::InnerIterator
 
   protected:
     MatrixTypeIterator m_iter;
-    const UnaryOp& m_functor;
+    const UnaryOp m_functor;
+
+  private:
+    InnerIterator& operator=(const InnerIterator&);
 };
 
 template<typename Derived>
