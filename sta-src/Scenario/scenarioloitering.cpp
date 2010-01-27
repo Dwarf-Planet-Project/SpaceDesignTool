@@ -188,14 +188,14 @@ ScenarioLoiteringTrajectory::propagate(PropagationFeedback& propFeedback,
     double meanAnomaly    = foundKeplerianElements.MeanAnomaly;
 
     double perigee = sma * (1-e);
-
+#if 0
     if (perigee<centralBody()->meanRadius())
     {
         QMessageBox::warning(NULL, QObject::tr("The trajectory has been not propagated"),
                                    QObject::tr("The perigee distance is smaller than the main body radius."));
         return initialState.zero();
     }
-
+#endif
     sta::StateVector stateVector = initialState;
 
     // deviation, reference, and q will be used only in Encke propagation
@@ -339,7 +339,8 @@ const sta::CoordinateSystem
 ScenarioLoiteringTrajectory::coordinateSystem() const
 {
     // TODO: should this be the initial state coord sys?
-    return sta::CoordinateSystem(sta::COORDSYS_EME_J2000);
+    // return sta::CoordinateSystem(sta::COORDSYS_EME_J2000);
+    return this->simulationParameters()->initialStatePosition()->coordinateSystem();
 }
 
 

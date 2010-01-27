@@ -903,18 +903,22 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
                                         spaceObject->addMissionArc(arc);
                                         propScenario->addSpaceObject(spaceObject);
                         }
-                        if (Lagrmode!=2)
+
+                        if (Lagrmode != 2)
                         {
-                            MissionArc*arc= new MissionArc(trajectory->centralBody(),
-                                                         trajectory->coordinateSystem(),
-                                                         sampleTimes,
-                                                         samples);
+                            MissionArc* arc = new MissionArc(trajectory->centralBody(),
+                                                             trajectory->coordinateSystem(),
+                                                             sampleTimes,
+                                                             samples);
                             spaceObject->addMissionArc(arc);
                         }
                     }
                 }
-                if (Lagrmode!=2)
+
+                if (Lagrmode != 2)
+                {
                     propScenario->addSpaceObject(spaceObject);
+                }
             }
         }
         else if (dynamic_cast<ScenarioGroundElement*>(participant))
