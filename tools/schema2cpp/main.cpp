@@ -1,3 +1,32 @@
+/*
+
+ This program is free software; you can redistribute it and/or modify it under
+ the terms of the GNU General Public License as published by the Free Software
+ Foundation; either version 2 of the License, or (at your option) any later
+ version.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ details.
+
+ You should have received a copy of the GNU General Public License along with
+ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+ Place - Suite 330, Boston, MA 02111-1307, USA.
+ Further information about the GNU General Public License can also be found on
+ the world wide web at http://www.gnu.org.
+ */
+
+
+/*
+ --- Copyright (C) 2009 STA Steering Board (space.trajectory.analysis AT gmail.com) ---
+*/
+
+/*
+ ------------------ Author: Chris Laurel  -------------------------------------------------
+ ------------------ E-mail: (claurel@gmail.com) ----------------------------
+ */
+
 #include <QtCore/QCoreApplication>
 #include <QTextStream>
 #include <QDomDocument>
@@ -9,6 +38,19 @@
 #include <QSet>
 #include <iostream>
 
+/*
+  schema2cpp is a tool that converts STA's Space Scenario XML schema into C++ classes
+  that can be used to read, write, and manipulate space scenarios. Only a subset of
+  of XML Schema functionality is handled, for two reasons:
+     1. Not all of the possible data models describable in and XML Schema can be
+        conveniently represented in statically typed languages like C++.
+     2. A data binding tool that can handle any XML Schema would simply take too
+        long to develop.
+
+   schema2cpp emits code that is Qt-friendly: QStrings are used to represent strings,
+   QDateTime is used for dates, and the QtXML framework is used for converting to and
+   from XML.
+*/
 
 const QString INDENT = "    ";
 const QString INDENT2 = INDENT + INDENT;
@@ -17,6 +59,7 @@ const QString INDENT3 = INDENT2 + INDENT;
 const QString CLASS_PREFIX = "Scenario";
 
 
+// String utility function
 QString capitalizeFirst(const QString& s)
 {
     if (s.isEmpty())
@@ -486,6 +529,7 @@ private:
     void writePublicInterface(QTextStream& out);
     void writeDefaultConstructor(QTextStream& out);
     void writeDomLoader(QTextStream& out);
+    void writeDomSaver(QTextStream& out);
 
 private:
     QString m_name;
@@ -526,6 +570,8 @@ ComplexType::writeMethodDefinitions(QTextStream& out)
     writeDefaultConstructor(out);
     out << "\n";
     writeDomLoader(out);
+    out << "\n";
+    writeDomSaver(out);
     out << "\n\n";
 }
 
@@ -684,6 +730,45 @@ ComplexType::writeDomLoader(QTextStream& out)
                 out << ".text()";
             }
             out << ");\n";
+        }
+    }
+
+    out << "}\n";
+}
+
+
+void
+ComplexType::writeDomSaver(QTextStream& out)
+{
+    out << "QDomElement " << className() << "::toDomElement(QDomDocument& doc) const\n";
+    out << "{\n";
+
+    out << INDENT << "QDomElement e = " << baseClassName() << "::toDomElement(doc);\n";
+
+    foreach (Property p, m_properties)
+    {
+        if (p.type().isCustom())
+        {
+            if (p.multipleOccurrencesAllowed())
+            {
+            }
+            else
+            {
+                out << INDENT  << "if (!" << p.memberVariableName() << ".isNull())\n";
+                out << INDENT  << "{\n";
+                out << INDENT2 << "QDomElement child = " << p.memberVariableName() << "->toDomElement(doc);\n";
+                out << INDENT2 << "child.setTagName(" << quoteString(p.name()) << ");\n";
+                out << INDENT2 << "e.appendChild(child);\n";
+                out << INDENT  << "}\n";
+            }
+        }
+        else
+        {
+            out << INDENT  << "{\n";
+            out << INDENT2 << "QDomElement child = doc.createElement(" << quoteString(p.name()) << ");\n";
+            out << INDENT2 << "child.appendChild(doc.createTextNode(convertToString(" << p.memberVariableName() << ");\n";
+            out << INDENT2 << "e.appendChild(child);\n";
+            out << INDENT  << "}\n";
         }
     }
 
@@ -957,6 +1042,10 @@ int main(int argc, char *argv[])
     header << "{\n";
     header << INDENT << "public:\n";
     header << INDENT << "void load(const QDomElement& /* e */) {}\n";
+    header << INDENT << "QDomElement toDomElement(QDomDocument& doc)\n";
+    header << INDENT << "{\n";
+    header << INDENT2 << "return doc.createElement(\"Object\");\n";
+    header << INDENT << "}\n";
     header << "};\n";
     header << "\n";
 

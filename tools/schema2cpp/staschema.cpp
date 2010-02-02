@@ -12,6 +12,16 @@ void ScenarioParticipantsType::load(const QDomElement& e)
     m_Name = (e.firstChildElement("Name").text());
 }
 
+QDomElement ScenarioParticipantsType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("Name");
+        child.appendChild(doc.createTextNode(convertToString(m_Name);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -31,6 +41,26 @@ void ScenarioOptVarDouble::load(const QDomElement& e)
     m_max = parseDouble(e.firstChildElement("max").text());
 }
 
+QDomElement ScenarioOptVarDouble::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("min");
+        child.appendChild(doc.createTextNode(convertToString(m_min);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("value");
+        child.appendChild(doc.createTextNode(convertToString(m_value);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("max");
+        child.appendChild(doc.createTextNode(convertToString(m_max);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -47,6 +77,21 @@ void ScenarioOptVarInt::load(const QDomElement& e)
     m_value = parseInt(e.firstChildElement("value").text());
 }
 
+QDomElement ScenarioOptVarInt::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("list");
+        child.appendChild(doc.createTextNode(convertToString(m_list);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("value");
+        child.appendChild(doc.createTextNode(convertToString(m_value);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -59,6 +104,16 @@ void ScenarioOptVarBool::load(const QDomElement& e)
 {
     ScenarioObject::load(e);
     m_value = parseBoolean(e.firstChildElement("value").text());
+}
+
+QDomElement ScenarioOptVarBool::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("value");
+        child.appendChild(doc.createTextNode(convertToString(m_value);
+        e.appendChild(child);
+    }
 }
 
 
@@ -74,6 +129,21 @@ void ScenarioOptVarString::load(const QDomElement& e)
     ScenarioObject::load(e);
     m_list = parseStringList(e.firstChildElement("list").text());
     m_value = (e.firstChildElement("value").text());
+}
+
+QDomElement ScenarioOptVarString::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("list");
+        child.appendChild(doc.createTextNode(convertToString(m_list);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("value");
+        child.appendChild(doc.createTextNode(convertToString(m_value);
+        e.appendChild(child);
+    }
 }
 
 
@@ -93,6 +163,26 @@ void ScenarioTimeLine::load(const QDomElement& e)
     m_EndTime = parseDateTime(e.firstChildElement("EndTime").text());
 }
 
+QDomElement ScenarioTimeLine::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("StartTime");
+        child.appendChild(doc.createTextNode(convertToString(m_StartTime);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("StepTime");
+        child.appendChild(doc.createTextNode(convertToString(m_StepTime);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("EndTime");
+        child.appendChild(doc.createTextNode(convertToString(m_EndTime);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -105,6 +195,16 @@ void ScenarioPropagation::load(const QDomElement& e)
 {
     ScenarioObject::load(e);
     m_propagator = (e.firstChildElement("propagator").text());
+}
+
+QDomElement ScenarioPropagation::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("propagator");
+        child.appendChild(doc.createTextNode(convertToString(m_propagator);
+        e.appendChild(child);
+    }
 }
 
 
@@ -122,6 +222,17 @@ void ScenarioEnvironmentType::load(const QDomElement& e)
     m_CentralBody->load(e.firstChildElement("CentralBody"));
 }
 
+QDomElement ScenarioEnvironmentType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_CentralBody.isNull())
+    {
+        QDomElement child = m_CentralBody->toDomElement(doc);
+        child.setTagName("CentralBody");
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -137,6 +248,27 @@ void ScenarioCentralBodyType::load(const QDomElement& e)
     m_GravityModel->load(e.firstChildElement("GravityModel"));
     m_atmosphere = (e.firstChildElement("atmosphere").text());
     m_ellipticity = parseBoolean(e.firstChildElement("ellipticity").text());
+}
+
+QDomElement ScenarioCentralBodyType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_GravityModel.isNull())
+    {
+        QDomElement child = m_GravityModel->toDomElement(doc);
+        child.setTagName("GravityModel");
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("atmosphere");
+        child.appendChild(doc.createTextNode(convertToString(m_atmosphere);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("ellipticity");
+        child.appendChild(doc.createTextNode(convertToString(m_ellipticity);
+        e.appendChild(child);
+    }
 }
 
 
@@ -157,6 +289,26 @@ void ScenarioGravityModel::load(const QDomElement& e)
     m_numberOfTesserals = parseInt(e.firstChildElement("numberOfTesserals").text());
 }
 
+QDomElement ScenarioGravityModel::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("modelName");
+        child.appendChild(doc.createTextNode(convertToString(m_modelName);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("numberOfZonals");
+        child.appendChild(doc.createTextNode(convertToString(m_numberOfZonals);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("numberOfTesserals");
+        child.appendChild(doc.createTextNode(convertToString(m_numberOfTesserals);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -170,6 +322,11 @@ void ScenarioAbstract3DOFPositionType::load(const QDomElement& e)
     ScenarioObject::load(e);
 }
 
+QDomElement ScenarioAbstract3DOFPositionType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+}
+
 
 
 
@@ -181,6 +338,11 @@ ScenarioAbstract6DOFPositionType::ScenarioAbstract6DOFPositionType()
 void ScenarioAbstract6DOFPositionType::load(const QDomElement& e)
 {
     ScenarioObject::load(e);
+}
+
+QDomElement ScenarioAbstract6DOFPositionType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
 }
 
 
@@ -200,6 +362,26 @@ void ScenarioGroundPositionType::load(const QDomElement& e)
     m_latitude = parseDouble(e.firstChildElement("latitude").text());
     m_longitude = parseDouble(e.firstChildElement("longitude").text());
     m_altitude = parseDouble(e.firstChildElement("altitude").text());
+}
+
+QDomElement ScenarioGroundPositionType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioAbstract3DOFPositionType::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("latitude");
+        child.appendChild(doc.createTextNode(convertToString(m_latitude);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("longitude");
+        child.appendChild(doc.createTextNode(convertToString(m_longitude);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("altitude");
+        child.appendChild(doc.createTextNode(convertToString(m_altitude);
+        e.appendChild(child);
+    }
 }
 
 
@@ -227,6 +409,41 @@ void ScenarioStateVectorType::load(const QDomElement& e)
     m_vz = parseDouble(e.firstChildElement("vz").text());
 }
 
+QDomElement ScenarioStateVectorType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioAbstract6DOFPositionType::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("x");
+        child.appendChild(doc.createTextNode(convertToString(m_x);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("y");
+        child.appendChild(doc.createTextNode(convertToString(m_y);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("z");
+        child.appendChild(doc.createTextNode(convertToString(m_z);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("vx");
+        child.appendChild(doc.createTextNode(convertToString(m_vx);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("vy");
+        child.appendChild(doc.createTextNode(convertToString(m_vy);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("vz");
+        child.appendChild(doc.createTextNode(convertToString(m_vz);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -250,6 +467,41 @@ void ScenarioKeplerianElementsType::load(const QDomElement& e)
     m_RAAN = parseDouble(e.firstChildElement("RAAN").text());
     m_argumentOfPeriapsis = parseDouble(e.firstChildElement("argumentOfPeriapsis").text());
     m_trueAnomaly = parseDouble(e.firstChildElement("trueAnomaly").text());
+}
+
+QDomElement ScenarioKeplerianElementsType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioAbstract6DOFPositionType::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("semiMajorAxis");
+        child.appendChild(doc.createTextNode(convertToString(m_semiMajorAxis);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("eccentricity");
+        child.appendChild(doc.createTextNode(convertToString(m_eccentricity);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("inclination");
+        child.appendChild(doc.createTextNode(convertToString(m_inclination);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("RAAN");
+        child.appendChild(doc.createTextNode(convertToString(m_RAAN);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("argumentOfPeriapsis");
+        child.appendChild(doc.createTextNode(convertToString(m_argumentOfPeriapsis);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("trueAnomaly");
+        child.appendChild(doc.createTextNode(convertToString(m_trueAnomaly);
+        e.appendChild(child);
+    }
 }
 
 
@@ -277,6 +529,41 @@ void ScenarioSphericalCoordinatesType::load(const QDomElement& e)
     m_headingAngle = parseDouble(e.firstChildElement("headingAngle").text());
 }
 
+QDomElement ScenarioSphericalCoordinatesType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioAbstract6DOFPositionType::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("radialDistance");
+        child.appendChild(doc.createTextNode(convertToString(m_radialDistance);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("longitude");
+        child.appendChild(doc.createTextNode(convertToString(m_longitude);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("latitude");
+        child.appendChild(doc.createTextNode(convertToString(m_latitude);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("flightPathVelocity");
+        child.appendChild(doc.createTextNode(convertToString(m_flightPathVelocity);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("flightPathAngle");
+        child.appendChild(doc.createTextNode(convertToString(m_flightPathAngle);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("headingAngle");
+        child.appendChild(doc.createTextNode(convertToString(m_headingAngle);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -288,6 +575,11 @@ ScenarioAbstract6DOFAttitudeType::ScenarioAbstract6DOFAttitudeType()
 void ScenarioAbstract6DOFAttitudeType::load(const QDomElement& e)
 {
     ScenarioObject::load(e);
+}
+
+QDomElement ScenarioAbstract6DOFAttitudeType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
 }
 
 
@@ -315,6 +607,41 @@ void ScenarioEulerBLVLHType::load(const QDomElement& e)
     m_psiDot = parseDouble(e.firstChildElement("psiDot").text());
 }
 
+QDomElement ScenarioEulerBLVLHType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioAbstract6DOFAttitudeType::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("phi");
+        child.appendChild(doc.createTextNode(convertToString(m_phi);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("theta");
+        child.appendChild(doc.createTextNode(convertToString(m_theta);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("psi");
+        child.appendChild(doc.createTextNode(convertToString(m_psi);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("phiDot");
+        child.appendChild(doc.createTextNode(convertToString(m_phiDot);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("thetaDot");
+        child.appendChild(doc.createTextNode(convertToString(m_thetaDot);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("psiDot");
+        child.appendChild(doc.createTextNode(convertToString(m_psiDot);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -338,6 +665,41 @@ void ScenarioEulerBIType::load(const QDomElement& e)
     m_phiDot = parseDouble(e.firstChildElement("phiDot").text());
     m_thetaDot = parseDouble(e.firstChildElement("thetaDot").text());
     m_psiDot = parseDouble(e.firstChildElement("psiDot").text());
+}
+
+QDomElement ScenarioEulerBIType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioAbstract6DOFAttitudeType::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("phi");
+        child.appendChild(doc.createTextNode(convertToString(m_phi);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("theta");
+        child.appendChild(doc.createTextNode(convertToString(m_theta);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("psi");
+        child.appendChild(doc.createTextNode(convertToString(m_psi);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("phiDot");
+        child.appendChild(doc.createTextNode(convertToString(m_phiDot);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("thetaDot");
+        child.appendChild(doc.createTextNode(convertToString(m_thetaDot);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("psiDot");
+        child.appendChild(doc.createTextNode(convertToString(m_psiDot);
+        e.appendChild(child);
+    }
 }
 
 
@@ -369,6 +731,51 @@ void ScenarioqBLVLHType::load(const QDomElement& e)
     m_q4Dot = parseDouble(e.firstChildElement("q4Dot").text());
 }
 
+QDomElement ScenarioqBLVLHType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioAbstract6DOFAttitudeType::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("q1");
+        child.appendChild(doc.createTextNode(convertToString(m_q1);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("q2");
+        child.appendChild(doc.createTextNode(convertToString(m_q2);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("q3");
+        child.appendChild(doc.createTextNode(convertToString(m_q3);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("q4");
+        child.appendChild(doc.createTextNode(convertToString(m_q4);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("q1Dot");
+        child.appendChild(doc.createTextNode(convertToString(m_q1Dot);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("q2Dot");
+        child.appendChild(doc.createTextNode(convertToString(m_q2Dot);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("q3Dot");
+        child.appendChild(doc.createTextNode(convertToString(m_q3Dot);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("q4Dot");
+        child.appendChild(doc.createTextNode(convertToString(m_q4Dot);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -398,6 +805,51 @@ void ScenarioqBIType::load(const QDomElement& e)
     m_q4Dot = parseDouble(e.firstChildElement("q4Dot").text());
 }
 
+QDomElement ScenarioqBIType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioAbstract6DOFAttitudeType::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("q1");
+        child.appendChild(doc.createTextNode(convertToString(m_q1);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("q2");
+        child.appendChild(doc.createTextNode(convertToString(m_q2);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("q3");
+        child.appendChild(doc.createTextNode(convertToString(m_q3);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("q4");
+        child.appendChild(doc.createTextNode(convertToString(m_q4);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("q1Dot");
+        child.appendChild(doc.createTextNode(convertToString(m_q1Dot);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("q2Dot");
+        child.appendChild(doc.createTextNode(convertToString(m_q2Dot);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("q3Dot");
+        child.appendChild(doc.createTextNode(convertToString(m_q3Dot);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("q4Dot");
+        child.appendChild(doc.createTextNode(convertToString(m_q4Dot);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -409,6 +861,11 @@ ScenarioAbstract12DOFStateType::ScenarioAbstract12DOFStateType()
 void ScenarioAbstract12DOFStateType::load(const QDomElement& e)
 {
     ScenarioObject::load(e);
+}
+
+QDomElement ScenarioAbstract12DOFStateType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
 }
 
 
@@ -426,6 +883,23 @@ void ScenarioState12DOF::load(const QDomElement& e)
     m_Abstract6DOFPosition->load(e.firstChildElement("Abstract6DOFPosition"));
     m_Abstract6DOFAttitude = QSharedPointer<ScenarioAbstract6DOFAttitudeType>(new ScenarioAbstract6DOFAttitudeType());
     m_Abstract6DOFAttitude->load(e.firstChildElement("Abstract6DOFAttitude"));
+}
+
+QDomElement ScenarioState12DOF::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioAbstract12DOFStateType::toDomElement(doc);
+    if (!m_Abstract6DOFPosition.isNull())
+    {
+        QDomElement child = m_Abstract6DOFPosition->toDomElement(doc);
+        child.setTagName("Abstract6DOFPosition");
+        e.appendChild(child);
+    }
+    if (!m_Abstract6DOFAttitude.isNull())
+    {
+        QDomElement child = m_Abstract6DOFAttitude->toDomElement(doc);
+        child.setTagName("Abstract6DOFAttitude");
+        e.appendChild(child);
+    }
 }
 
 
@@ -455,6 +929,66 @@ void ScenarioOptimization::load(const QDomElement& e)
     m_algorithmParameters = parseDoubleList(e.firstChildElement("algorithmParameters").text());
 }
 
+QDomElement ScenarioOptimization::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("nVariables");
+        child.appendChild(doc.createTextNode(convertToString(m_nVariables);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("variables");
+        child.appendChild(doc.createTextNode(convertToString(m_variables);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("variablesMatrix");
+        child.appendChild(doc.createTextNode(convertToString(m_variablesMatrix);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("nObjectives");
+        child.appendChild(doc.createTextNode(convertToString(m_nObjectives);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("objectives");
+        child.appendChild(doc.createTextNode(convertToString(m_objectives);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("objectivesMatrix");
+        child.appendChild(doc.createTextNode(convertToString(m_objectivesMatrix);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("nConstraints");
+        child.appendChild(doc.createTextNode(convertToString(m_nConstraints);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("constraints");
+        child.appendChild(doc.createTextNode(convertToString(m_constraints);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("constraintsMatrix");
+        child.appendChild(doc.createTextNode(convertToString(m_constraintsMatrix);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("algorithm");
+        child.appendChild(doc.createTextNode(convertToString(m_algorithm);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("algorithmParameters");
+        child.appendChild(doc.createTextNode(convertToString(m_algorithmParameters);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -476,6 +1010,51 @@ void ScenarioOutputFiles::load(const QDomElement& e)
     m_successProbabilityFileName = (e.firstChildElement("successProbabilityFileName").text());
 }
 
+QDomElement ScenarioOutputFiles::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("paretoFrontVarsFileName");
+        child.appendChild(doc.createTextNode(convertToString(m_paretoFrontVarsFileName);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("paretoFrontCstrsFileName");
+        child.appendChild(doc.createTextNode(convertToString(m_paretoFrontCstrsFileName);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("paretoFrontObjsFileName");
+        child.appendChild(doc.createTextNode(convertToString(m_paretoFrontObjsFileName);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("geometryFileName");
+        child.appendChild(doc.createTextNode(convertToString(m_geometryFileName);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("trajPostionFileName");
+        child.appendChild(doc.createTextNode(convertToString(m_trajPostionFileName);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("trajAttitudeFileName");
+        child.appendChild(doc.createTextNode(convertToString(m_trajAttitudeFileName);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("trajMiscFileName");
+        child.appendChild(doc.createTextNode(convertToString(m_trajMiscFileName);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("successProbabilityFileName");
+        child.appendChild(doc.createTextNode(convertToString(m_successProbabilityFileName);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -487,6 +1066,11 @@ ScenarioAbstractConeType::ScenarioAbstractConeType()
 void ScenarioAbstractConeType::load(const QDomElement& e)
 {
     ScenarioObject::load(e);
+}
+
+QDomElement ScenarioAbstractConeType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
 }
 
 
@@ -502,6 +1086,16 @@ void ScenarioCircularCone::load(const QDomElement& e)
 {
     ScenarioAbstractConeType::load(e);
     m_coneAngle = parseDouble(e.firstChildElement("coneAngle").text());
+}
+
+QDomElement ScenarioCircularCone::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioAbstractConeType::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("coneAngle");
+        child.appendChild(doc.createTextNode(convertToString(m_coneAngle);
+        e.appendChild(child);
+    }
 }
 
 
@@ -521,6 +1115,21 @@ void ScenarioRectangularConeType::load(const QDomElement& e)
     m_coneAngle2 = parseDouble(e.firstChildElement("coneAngle2").text());
 }
 
+QDomElement ScenarioRectangularConeType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioAbstractConeType::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("coneAngle1");
+        child.appendChild(doc.createTextNode(convertToString(m_coneAngle1);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("coneAngle2");
+        child.appendChild(doc.createTextNode(convertToString(m_coneAngle2);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -532,6 +1141,11 @@ ScenarioOvalConeType::ScenarioOvalConeType()
 void ScenarioOvalConeType::load(const QDomElement& e)
 {
     ScenarioAbstractConeType::load(e);
+}
+
+QDomElement ScenarioOvalConeType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioAbstractConeType::toDomElement(doc);
 }
 
 
@@ -549,6 +1163,23 @@ void ScenarioAntenna::load(const QDomElement& e)
     m_AbstractCone->load(e.firstChildElement("AbstractCone"));
     m_PointingDirection = QSharedPointer<ScenarioPointingDirection>(new ScenarioPointingDirection());
     m_PointingDirection->load(e.firstChildElement("PointingDirection"));
+}
+
+QDomElement ScenarioAntenna::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_AbstractCone.isNull())
+    {
+        QDomElement child = m_AbstractCone->toDomElement(doc);
+        child.setTagName("AbstractCone");
+        e.appendChild(child);
+    }
+    if (!m_PointingDirection.isNull())
+    {
+        QDomElement child = m_PointingDirection->toDomElement(doc);
+        child.setTagName("PointingDirection");
+        e.appendChild(child);
+    }
 }
 
 
@@ -573,6 +1204,36 @@ void ScenarioPointingDirection::load(const QDomElement& e)
     m_elevationDot = parseDouble(e.firstChildElement("elevationDot").text());
 }
 
+QDomElement ScenarioPointingDirection::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("referenceSystem");
+        child.appendChild(doc.createTextNode(convertToString(m_referenceSystem);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("azimuth");
+        child.appendChild(doc.createTextNode(convertToString(m_azimuth);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("elevation");
+        child.appendChild(doc.createTextNode(convertToString(m_elevation);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("azimuthDot");
+        child.appendChild(doc.createTextNode(convertToString(m_azimuthDot);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("elevationDot");
+        child.appendChild(doc.createTextNode(convertToString(m_elevationDot);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -586,6 +1247,11 @@ void ScenarioCommunicationAntenna::load(const QDomElement& e)
     ScenarioAntenna::load(e);
 }
 
+QDomElement ScenarioCommunicationAntenna::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioAntenna::toDomElement(doc);
+}
+
 
 
 
@@ -597,6 +1263,11 @@ ScenarioObservationAntenna::ScenarioObservationAntenna()
 void ScenarioObservationAntenna::load(const QDomElement& e)
 {
     ScenarioAntenna::load(e);
+}
+
+QDomElement ScenarioObservationAntenna::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioAntenna::toDomElement(doc);
 }
 
 
@@ -613,6 +1284,22 @@ void ScenarioLocationType::load(const QDomElement& e)
     m_CentralBody = (e.firstChildElement("CentralBody").text());
     m_Abstract3DOFPosition = QSharedPointer<ScenarioAbstract3DOFPositionType>(new ScenarioAbstract3DOFPositionType());
     m_Abstract3DOFPosition->load(e.firstChildElement("Abstract3DOFPosition"));
+}
+
+QDomElement ScenarioLocationType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("CentralBody");
+        child.appendChild(doc.createTextNode(convertToString(m_CentralBody);
+        e.appendChild(child);
+    }
+    if (!m_Abstract3DOFPosition.isNull())
+    {
+        QDomElement child = m_Abstract3DOFPosition->toDomElement(doc);
+        child.setTagName("Abstract3DOFPosition");
+        e.appendChild(child);
+    }
 }
 
 
@@ -632,6 +1319,23 @@ void ScenarioGroundStation::load(const QDomElement& e)
     m_CommunicationAntenna->load(e.firstChildElement("CommunicationAntenna"));
 }
 
+QDomElement ScenarioGroundStation::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioParticipantsType::toDomElement(doc);
+    if (!m_Location.isNull())
+    {
+        QDomElement child = m_Location->toDomElement(doc);
+        child.setTagName("Location");
+        e.appendChild(child);
+    }
+    if (!m_CommunicationAntenna.isNull())
+    {
+        QDomElement child = m_CommunicationAntenna->toDomElement(doc);
+        child.setTagName("CommunicationAntenna");
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -649,6 +1353,22 @@ void ScenarioLaunchPad::load(const QDomElement& e)
     m_clearingAltitude = parseDouble(e.firstChildElement("clearingAltitude").text());
 }
 
+QDomElement ScenarioLaunchPad::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioParticipantsType::toDomElement(doc);
+    if (!m_Location.isNull())
+    {
+        QDomElement child = m_Location->toDomElement(doc);
+        child.setTagName("Location");
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("clearingAltitude");
+        child.appendChild(doc.createTextNode(convertToString(m_clearingAltitude);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -664,6 +1384,17 @@ void ScenarioPoint::load(const QDomElement& e)
     m_Location->load(e.firstChildElement("Location"));
 }
 
+QDomElement ScenarioPoint::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioParticipantsType::toDomElement(doc);
+    if (!m_Location.isNull())
+    {
+        QDomElement child = m_Location->toDomElement(doc);
+        child.setTagName("Location");
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -675,6 +1406,11 @@ ScenarioLocation::ScenarioLocation()
 void ScenarioLocation::load(const QDomElement& e)
 {
     ScenarioObject::load(e);
+}
+
+QDomElement ScenarioLocation::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
 }
 
 
@@ -699,6 +1435,46 @@ void ScenarioLV::load(const QDomElement& e)
     m_OutputFiles = QSharedPointer<ScenarioOutputFiles>(new ScenarioOutputFiles());
     m_OutputFiles->load(e.firstChildElement("OutputFiles"));
     m_appearance = (e.firstChildElement("appearance").text());
+}
+
+QDomElement ScenarioLV::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioParticipantsType::toDomElement(doc);
+    if (!m_LVProgram.isNull())
+    {
+        QDomElement child = m_LVProgram->toDomElement(doc);
+        child.setTagName("LVProgram");
+        e.appendChild(child);
+    }
+    if (!m_LVMission.isNull())
+    {
+        QDomElement child = m_LVMission->toDomElement(doc);
+        child.setTagName("LVMission");
+        e.appendChild(child);
+    }
+    if (!m_System.isNull())
+    {
+        QDomElement child = m_System->toDomElement(doc);
+        child.setTagName("System");
+        e.appendChild(child);
+    }
+    if (!m_Optimization.isNull())
+    {
+        QDomElement child = m_Optimization->toDomElement(doc);
+        child.setTagName("Optimization");
+        e.appendChild(child);
+    }
+    if (!m_OutputFiles.isNull())
+    {
+        QDomElement child = m_OutputFiles->toDomElement(doc);
+        child.setTagName("OutputFiles");
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("appearance");
+        child.appendChild(doc.createTextNode(convertToString(m_appearance);
+        e.appendChild(child);
+    }
 }
 
 
@@ -726,6 +1502,53 @@ void ScenarioPropulsionSystem::load(const QDomElement& e)
     m_Nozzle->load(e.firstChildElement("Nozzle"));
     m_Performance = QSharedPointer<ScenarioPerformance>(new ScenarioPerformance());
     m_Performance->load(e.firstChildElement("Performance"));
+}
+
+QDomElement ScenarioPropulsionSystem::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_System.isNull())
+    {
+        QDomElement child = m_System->toDomElement(doc);
+        child.setTagName("System");
+        e.appendChild(child);
+    }
+    if (!m_LiquidTanks.isNull())
+    {
+        QDomElement child = m_LiquidTanks->toDomElement(doc);
+        child.setTagName("LiquidTanks");
+        e.appendChild(child);
+    }
+    if (!m_SolidGrain.isNull())
+    {
+        QDomElement child = m_SolidGrain->toDomElement(doc);
+        child.setTagName("SolidGrain");
+        e.appendChild(child);
+    }
+    if (!m_FeedSystem.isNull())
+    {
+        QDomElement child = m_FeedSystem->toDomElement(doc);
+        child.setTagName("FeedSystem");
+        e.appendChild(child);
+    }
+    if (!m_CombustionChamber.isNull())
+    {
+        QDomElement child = m_CombustionChamber->toDomElement(doc);
+        child.setTagName("CombustionChamber");
+        e.appendChild(child);
+    }
+    if (!m_Nozzle.isNull())
+    {
+        QDomElement child = m_Nozzle->toDomElement(doc);
+        child.setTagName("Nozzle");
+        e.appendChild(child);
+    }
+    if (!m_Performance.isNull())
+    {
+        QDomElement child = m_Performance->toDomElement(doc);
+        child.setTagName("Performance");
+        e.appendChild(child);
+    }
 }
 
 
@@ -768,6 +1591,96 @@ void ScenarioSystem::load(const QDomElement& e)
     m_nozzleOptAlt->load(e.firstChildElement("nozzleOptAlt"));
 }
 
+QDomElement ScenarioSystem::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_propType.isNull())
+    {
+        QDomElement child = m_propType->toDomElement(doc);
+        child.setTagName("propType");
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("fuelType");
+        child.appendChild(doc.createTextNode(convertToString(m_fuelType);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("oxType");
+        child.appendChild(doc.createTextNode(convertToString(m_oxType);
+        e.appendChild(child);
+    }
+    if (!m_numberOfEngines.isNull())
+    {
+        QDomElement child = m_numberOfEngines->toDomElement(doc);
+        child.setTagName("numberOfEngines");
+        e.appendChild(child);
+    }
+    if (!m_nominalThrust.isNull())
+    {
+        QDomElement child = m_nominalThrust->toDomElement(doc);
+        child.setTagName("nominalThrust");
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("totalEngineDryMass");
+        child.appendChild(doc.createTextNode(convertToString(m_totalEngineDryMass);
+        e.appendChild(child);
+    }
+    if (!m_propMass.isNull())
+    {
+        QDomElement child = m_propMass->toDomElement(doc);
+        child.setTagName("propMass");
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("engineCoGLongPosition");
+        child.appendChild(doc.createTextNode(convertToString(m_engineCoGLongPosition);
+        e.appendChild(child);
+    }
+    if (!m_lengthOverDiam.isNull())
+    {
+        QDomElement child = m_lengthOverDiam->toDomElement(doc);
+        child.setTagName("lengthOverDiam");
+        e.appendChild(child);
+    }
+    if (!m_offTheShelf.isNull())
+    {
+        QDomElement child = m_offTheShelf->toDomElement(doc);
+        child.setTagName("offTheShelf");
+        e.appendChild(child);
+    }
+    if (!m_offTheShelfEngineType.isNull())
+    {
+        QDomElement child = m_offTheShelfEngineType->toDomElement(doc);
+        child.setTagName("offTheShelfEngineType");
+        e.appendChild(child);
+    }
+    if (!m_feedType.isNull())
+    {
+        QDomElement child = m_feedType->toDomElement(doc);
+        child.setTagName("feedType");
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("coolingType");
+        child.appendChild(doc.createTextNode(convertToString(m_coolingType);
+        e.appendChild(child);
+    }
+    if (!m_mixtureRatio.isNull())
+    {
+        QDomElement child = m_mixtureRatio->toDomElement(doc);
+        child.setTagName("mixtureRatio");
+        e.appendChild(child);
+    }
+    if (!m_nozzleOptAlt.isNull())
+    {
+        QDomElement child = m_nozzleOptAlt->toDomElement(doc);
+        child.setTagName("nozzleOptAlt");
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -795,6 +1708,47 @@ void ScenarioLiquidTanks::load(const QDomElement& e)
     m_fuelTankPressure = parseDouble(e.firstChildElement("fuelTankPressure").text());
 }
 
+QDomElement ScenarioLiquidTanks::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_tanksPressureNorm.isNull())
+    {
+        QDomElement child = m_tanksPressureNorm->toDomElement(doc);
+        child.setTagName("tanksPressureNorm");
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("oxTankLength");
+        child.appendChild(doc.createTextNode(convertToString(m_oxTankLength);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("oxTankDiam");
+        child.appendChild(doc.createTextNode(convertToString(m_oxTankDiam);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("oxTankPressure");
+        child.appendChild(doc.createTextNode(convertToString(m_oxTankPressure);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("fuelTankLength");
+        child.appendChild(doc.createTextNode(convertToString(m_fuelTankLength);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("fuelTankDiam");
+        child.appendChild(doc.createTextNode(convertToString(m_fuelTankDiam);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("fuelTankPressure");
+        child.appendChild(doc.createTextNode(convertToString(m_fuelTankPressure);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -820,6 +1774,46 @@ void ScenarioSolidGrain::load(const QDomElement& e)
     m_igniterMass = parseDouble(e.firstChildElement("igniterMass").text());
     m_sliverMass = parseDouble(e.firstChildElement("sliverMass").text());
     m_cavityVolume = parseDouble(e.firstChildElement("cavityVolume").text());
+}
+
+QDomElement ScenarioSolidGrain::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("grainLength");
+        child.appendChild(doc.createTextNode(convertToString(m_grainLength);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("grainDiam");
+        child.appendChild(doc.createTextNode(convertToString(m_grainDiam);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("igniterLength");
+        child.appendChild(doc.createTextNode(convertToString(m_igniterLength);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("igniterDiam");
+        child.appendChild(doc.createTextNode(convertToString(m_igniterDiam);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("igniterMass");
+        child.appendChild(doc.createTextNode(convertToString(m_igniterMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("sliverMass");
+        child.appendChild(doc.createTextNode(convertToString(m_sliverMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("cavityVolume");
+        child.appendChild(doc.createTextNode(convertToString(m_cavityVolume);
+        e.appendChild(child);
+    }
 }
 
 
@@ -853,6 +1847,56 @@ void ScenarioFeedSystem::load(const QDomElement& e)
     m_totalFeedSystemDiameter = parseDouble(e.firstChildElement("totalFeedSystemDiameter").text());
 }
 
+QDomElement ScenarioFeedSystem::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("pressurizerTankPressure");
+        child.appendChild(doc.createTextNode(convertToString(m_pressurizerTankPressure);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("pressurizerTankRadius");
+        child.appendChild(doc.createTextNode(convertToString(m_pressurizerTankRadius);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("pressurizerTankMass");
+        child.appendChild(doc.createTextNode(convertToString(m_pressurizerTankMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("pressurizerGasMass");
+        child.appendChild(doc.createTextNode(convertToString(m_pressurizerGasMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("linesValvesMass");
+        child.appendChild(doc.createTextNode(convertToString(m_linesValvesMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("trappedPropMass");
+        child.appendChild(doc.createTextNode(convertToString(m_trappedPropMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("totalFeedSystemMass");
+        child.appendChild(doc.createTextNode(convertToString(m_totalFeedSystemMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("totalFeedSystemLength");
+        child.appendChild(doc.createTextNode(convertToString(m_totalFeedSystemLength);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("totalFeedSystemDiameter");
+        child.appendChild(doc.createTextNode(convertToString(m_totalFeedSystemDiameter);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -884,6 +1928,64 @@ void ScenarioCombustionChamber::load(const QDomElement& e)
     m_chamberLength = parseDouble(e.firstChildElement("chamberLength").text());
     m_chamberDiameter = parseDouble(e.firstChildElement("chamberDiameter").text());
     m_chamberMass = parseDouble(e.firstChildElement("chamberMass").text());
+}
+
+QDomElement ScenarioCombustionChamber::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_abOverAt.isNull())
+    {
+        QDomElement child = m_abOverAt->toDomElement(doc);
+        child.setTagName("abOverAt");
+        e.appendChild(child);
+    }
+    if (!m_accOverAt.isNull())
+    {
+        QDomElement child = m_accOverAt->toDomElement(doc);
+        child.setTagName("accOverAt");
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("ab");
+        child.appendChild(doc.createTextNode(convertToString(m_ab);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("acc");
+        child.appendChild(doc.createTextNode(convertToString(m_acc);
+        e.appendChild(child);
+    }
+    if (!m_chamberPressureNorm.isNull())
+    {
+        QDomElement child = m_chamberPressureNorm->toDomElement(doc);
+        child.setTagName("chamberPressureNorm");
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("chamberPressure");
+        child.appendChild(doc.createTextNode(convertToString(m_chamberPressure);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("chamberCharactLength");
+        child.appendChild(doc.createTextNode(convertToString(m_chamberCharactLength);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("chamberLength");
+        child.appendChild(doc.createTextNode(convertToString(m_chamberLength);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("chamberDiameter");
+        child.appendChild(doc.createTextNode(convertToString(m_chamberDiameter);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("chamberMass");
+        child.appendChild(doc.createTextNode(convertToString(m_chamberMass);
+        e.appendChild(child);
+    }
 }
 
 
@@ -924,6 +2026,80 @@ void ScenarioNozzle::load(const QDomElement& e)
     m_nozzleShape = (e.firstChildElement("nozzleShape").text());
 }
 
+QDomElement ScenarioNozzle::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("at");
+        child.appendChild(doc.createTextNode(convertToString(m_at);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("ae");
+        child.appendChild(doc.createTextNode(convertToString(m_ae);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("aeOverat");
+        child.appendChild(doc.createTextNode(convertToString(m_aeOverat);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("nozzleLength");
+        child.appendChild(doc.createTextNode(convertToString(m_nozzleLength);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("nozzleDiameter");
+        child.appendChild(doc.createTextNode(convertToString(m_nozzleDiameter);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("nozzleMass");
+        child.appendChild(doc.createTextNode(convertToString(m_nozzleMass);
+        e.appendChild(child);
+    }
+    if (!m_nozzleType.isNull())
+    {
+        QDomElement child = m_nozzleType->toDomElement(doc);
+        child.setTagName("nozzleType");
+        e.appendChild(child);
+    }
+    if (!m_divAngle.isNull())
+    {
+        QDomElement child = m_divAngle->toDomElement(doc);
+        child.setTagName("divAngle");
+        e.appendChild(child);
+    }
+    if (!m_tvcType.isNull())
+    {
+        QDomElement child = m_tvcType->toDomElement(doc);
+        child.setTagName("tvcType");
+        e.appendChild(child);
+    }
+    if (!m_tvcAngle.isNull())
+    {
+        QDomElement child = m_tvcAngle->toDomElement(doc);
+        child.setTagName("tvcAngle");
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("tvcMass");
+        child.appendChild(doc.createTextNode(convertToString(m_tvcMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("nozzleCantAngle");
+        child.appendChild(doc.createTextNode(convertToString(m_nozzleCantAngle);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("nozzleShape");
+        child.appendChild(doc.createTextNode(convertToString(m_nozzleShape);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -961,6 +2137,73 @@ void ScenarioPerformance::load(const QDomElement& e)
     m_restart->load(e.firstChildElement("restart"));
 }
 
+QDomElement ScenarioPerformance::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("theoOptIsp");
+        child.appendChild(doc.createTextNode(convertToString(m_theoOptIsp);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("realOptIsp");
+        child.appendChild(doc.createTextNode(convertToString(m_realOptIsp);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("realSeeIsp");
+        child.appendChild(doc.createTextNode(convertToString(m_realSeeIsp);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("realVacuumIsp");
+        child.appendChild(doc.createTextNode(convertToString(m_realVacuumIsp);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("thrustCoeff");
+        child.appendChild(doc.createTextNode(convertToString(m_thrustCoeff);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("charactVelocity");
+        child.appendChild(doc.createTextNode(convertToString(m_charactVelocity);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("thrustCoeffEff");
+        child.appendChild(doc.createTextNode(convertToString(m_thrustCoeffEff);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("charactVelocityEff");
+        child.appendChild(doc.createTextNode(convertToString(m_charactVelocityEff);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("nominalMassFlow");
+        child.appendChild(doc.createTextNode(convertToString(m_nominalMassFlow);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("minOperativeAlt");
+        child.appendChild(doc.createTextNode(convertToString(m_minOperativeAlt);
+        e.appendChild(child);
+    }
+    if (!m_throttle.isNull())
+    {
+        QDomElement child = m_throttle->toDomElement(doc);
+        child.setTagName("throttle");
+        e.appendChild(child);
+    }
+    if (!m_restart.isNull())
+    {
+        QDomElement child = m_restart->toDomElement(doc);
+        child.setTagName("restart");
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -980,6 +2223,32 @@ void ScenarioLVProgram::load(const QDomElement& e)
     m_nLaunchesPerYear = parseInt(e.firstChildElement("nLaunchesPerYear").text());
     m_programCostFactors = QSharedPointer<ScenarioprogramCostFactors>(new ScenarioprogramCostFactors());
     m_programCostFactors->load(e.firstChildElement("programCostFactors"));
+}
+
+QDomElement ScenarioLVProgram::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("nLaunches");
+        child.appendChild(doc.createTextNode(convertToString(m_nLaunches);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("nYearsOps");
+        child.appendChild(doc.createTextNode(convertToString(m_nYearsOps);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("nLaunchesPerYear");
+        child.appendChild(doc.createTextNode(convertToString(m_nLaunchesPerYear);
+        e.appendChild(child);
+    }
+    if (!m_programCostFactors.isNull())
+    {
+        QDomElement child = m_programCostFactors->toDomElement(doc);
+        child.setTagName("programCostFactors");
+        e.appendChild(child);
+    }
 }
 
 
@@ -1006,6 +2275,46 @@ void ScenarioprogramCostFactors::load(const QDomElement& e)
     m_f7 = parseDouble(e.firstChildElement("f7").text());
 }
 
+QDomElement ScenarioprogramCostFactors::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("f0");
+        child.appendChild(doc.createTextNode(convertToString(m_f0);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("launcherDesignComplexity");
+        child.appendChild(doc.createTextNode(convertToString(m_launcherDesignComplexity);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("f1");
+        child.appendChild(doc.createTextNode(convertToString(m_f1);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("teamExpertise");
+        child.appendChild(doc.createTextNode(convertToString(m_teamExpertise);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("f3");
+        child.appendChild(doc.createTextNode(convertToString(m_f3);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("contractorsStructure");
+        child.appendChild(doc.createTextNode(convertToString(m_contractorsStructure);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("f7");
+        child.appendChild(doc.createTextNode(convertToString(m_f7);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -1027,6 +2336,41 @@ void ScenarioLVMission::load(const QDomElement& e)
     m_TargetOrbit->load(e.firstChildElement("TargetOrbit"));
     m_Trajectory = QSharedPointer<ScenarioTrajectory>(new ScenarioTrajectory());
     m_Trajectory->load(e.firstChildElement("Trajectory"));
+}
+
+QDomElement ScenarioLVMission::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_LVPayload.isNull())
+    {
+        QDomElement child = m_LVPayload->toDomElement(doc);
+        child.setTagName("LVPayload");
+        e.appendChild(child);
+    }
+    if (!m_Environment.isNull())
+    {
+        QDomElement child = m_Environment->toDomElement(doc);
+        child.setTagName("Environment");
+        e.appendChild(child);
+    }
+    if (!m_LaunchSite.isNull())
+    {
+        QDomElement child = m_LaunchSite->toDomElement(doc);
+        child.setTagName("LaunchSite");
+        e.appendChild(child);
+    }
+    if (!m_TargetOrbit.isNull())
+    {
+        QDomElement child = m_TargetOrbit->toDomElement(doc);
+        child.setTagName("TargetOrbit");
+        e.appendChild(child);
+    }
+    if (!m_Trajectory.isNull())
+    {
+        QDomElement child = m_Trajectory->toDomElement(doc);
+        child.setTagName("Trajectory");
+        e.appendChild(child);
+    }
 }
 
 
@@ -1054,6 +2398,41 @@ void ScenarioLVPayload::load(const QDomElement& e)
     m_maxHeatFlux = parseDouble(e.firstChildElement("maxHeatFlux").text());
 }
 
+QDomElement ScenarioLVPayload::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("mass");
+        child.appendChild(doc.createTextNode(convertToString(m_mass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("length");
+        child.appendChild(doc.createTextNode(convertToString(m_length);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("diameter");
+        child.appendChild(doc.createTextNode(convertToString(m_diameter);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("CoGLongPosition");
+        child.appendChild(doc.createTextNode(convertToString(m_CoGLongPosition);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("maxAxialAcc");
+        child.appendChild(doc.createTextNode(convertToString(m_maxAxialAcc);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("maxHeatFlux");
+        child.appendChild(doc.createTextNode(convertToString(m_maxHeatFlux);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -1068,6 +2447,22 @@ void ScenarioLaunchSite::load(const QDomElement& e)
     m_Abstract3DOFPosition = QSharedPointer<ScenarioAbstract3DOFPositionType>(new ScenarioAbstract3DOFPositionType());
     m_Abstract3DOFPosition->load(e.firstChildElement("Abstract3DOFPosition"));
     m_allowedAzimuths = parseDoubleList(e.firstChildElement("allowedAzimuths").text());
+}
+
+QDomElement ScenarioLaunchSite::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_Abstract3DOFPosition.isNull())
+    {
+        QDomElement child = m_Abstract3DOFPosition->toDomElement(doc);
+        child.setTagName("Abstract3DOFPosition");
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("allowedAzimuths");
+        child.appendChild(doc.createTextNode(convertToString(m_allowedAzimuths);
+        e.appendChild(child);
+    }
 }
 
 
@@ -1093,6 +2488,41 @@ void ScenarioTargetOrbit::load(const QDomElement& e)
     m_semiaxisTol = parseDouble(e.firstChildElement("semiaxisTol").text());
     m_eccentricityTol = parseDouble(e.firstChildElement("eccentricityTol").text());
     m_inclinationTol = parseDouble(e.firstChildElement("inclinationTol").text());
+}
+
+QDomElement ScenarioTargetOrbit::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("semiaxis");
+        child.appendChild(doc.createTextNode(convertToString(m_semiaxis);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("eccentricity");
+        child.appendChild(doc.createTextNode(convertToString(m_eccentricity);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("inclination");
+        child.appendChild(doc.createTextNode(convertToString(m_inclination);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("semiaxisTol");
+        child.appendChild(doc.createTextNode(convertToString(m_semiaxisTol);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("eccentricityTol");
+        child.appendChild(doc.createTextNode(convertToString(m_eccentricityTol);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("inclinationTol");
+        child.appendChild(doc.createTextNode(convertToString(m_inclinationTol);
+        e.appendChild(child);
+    }
 }
 
 
@@ -1136,6 +2566,53 @@ void ScenarioLVSystemType::load(const QDomElement& e)
     m_DiscretizationSettings->load(e.firstChildElement("DiscretizationSettings"));
 }
 
+QDomElement ScenarioLVSystemType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_Architecture.isNull())
+    {
+        QDomElement child = m_Architecture->toDomElement(doc);
+        child.setTagName("Architecture");
+        e.appendChild(child);
+    }
+    if (!m_UpperStage.isNull())
+    {
+        QDomElement child = m_UpperStage->toDomElement(doc);
+        child.setTagName("UpperStage");
+        e.appendChild(child);
+    }
+    if (!m_SystemWeights.isNull())
+    {
+        QDomElement child = m_SystemWeights->toDomElement(doc);
+        child.setTagName("SystemWeights");
+        e.appendChild(child);
+    }
+    if (!m_SystemCosts.isNull())
+    {
+        QDomElement child = m_SystemCosts->toDomElement(doc);
+        child.setTagName("SystemCosts");
+        e.appendChild(child);
+    }
+    if (!m_SystemReliability.isNull())
+    {
+        QDomElement child = m_SystemReliability->toDomElement(doc);
+        child.setTagName("SystemReliability");
+        e.appendChild(child);
+    }
+    if (!m_LVAerodynamics.isNull())
+    {
+        QDomElement child = m_LVAerodynamics->toDomElement(doc);
+        child.setTagName("LVAerodynamics");
+        e.appendChild(child);
+    }
+    if (!m_DiscretizationSettings.isNull())
+    {
+        QDomElement child = m_DiscretizationSettings->toDomElement(doc);
+        child.setTagName("DiscretizationSettings");
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -1155,6 +2632,35 @@ void ScenarioArchitecture::load(const QDomElement& e)
     m_nBoosters->load(e.firstChildElement("nBoosters"));
     m_singleEngineType = QSharedPointer<ScenarioOptVarBool>(new ScenarioOptVarBool());
     m_singleEngineType->load(e.firstChildElement("singleEngineType"));
+}
+
+QDomElement ScenarioArchitecture::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_boosterConf.isNull())
+    {
+        QDomElement child = m_boosterConf->toDomElement(doc);
+        child.setTagName("boosterConf");
+        e.appendChild(child);
+    }
+    if (!m_nStages.isNull())
+    {
+        QDomElement child = m_nStages->toDomElement(doc);
+        child.setTagName("nStages");
+        e.appendChild(child);
+    }
+    if (!m_nBoosters.isNull())
+    {
+        QDomElement child = m_nBoosters->toDomElement(doc);
+        child.setTagName("nBoosters");
+        e.appendChild(child);
+    }
+    if (!m_singleEngineType.isNull())
+    {
+        QDomElement child = m_singleEngineType->toDomElement(doc);
+        child.setTagName("singleEngineType");
+        e.appendChild(child);
+    }
 }
 
 
@@ -1180,6 +2686,41 @@ void ScenarioLowerStage::load(const QDomElement& e)
     m_ComponentReliability->load(e.firstChildElement("ComponentReliability"));
 }
 
+QDomElement ScenarioLowerStage::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_Geometry.isNull())
+    {
+        QDomElement child = m_Geometry->toDomElement(doc);
+        child.setTagName("Geometry");
+        e.appendChild(child);
+    }
+    if (!m_PropulsionSystem.isNull())
+    {
+        QDomElement child = m_PropulsionSystem->toDomElement(doc);
+        child.setTagName("PropulsionSystem");
+        e.appendChild(child);
+    }
+    if (!m_ComponentWeights.isNull())
+    {
+        QDomElement child = m_ComponentWeights->toDomElement(doc);
+        child.setTagName("ComponentWeights");
+        e.appendChild(child);
+    }
+    if (!m_ComponentCosts.isNull())
+    {
+        QDomElement child = m_ComponentCosts->toDomElement(doc);
+        child.setTagName("ComponentCosts");
+        e.appendChild(child);
+    }
+    if (!m_ComponentReliability.isNull())
+    {
+        QDomElement child = m_ComponentReliability->toDomElement(doc);
+        child.setTagName("ComponentReliability");
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -1203,6 +2744,41 @@ void ScenarioUpperStage::load(const QDomElement& e)
     m_ComponentReliability->load(e.firstChildElement("ComponentReliability"));
 }
 
+QDomElement ScenarioUpperStage::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_Geometry.isNull())
+    {
+        QDomElement child = m_Geometry->toDomElement(doc);
+        child.setTagName("Geometry");
+        e.appendChild(child);
+    }
+    if (!m_PropulsionSystem.isNull())
+    {
+        QDomElement child = m_PropulsionSystem->toDomElement(doc);
+        child.setTagName("PropulsionSystem");
+        e.appendChild(child);
+    }
+    if (!m_ComponentWeights.isNull())
+    {
+        QDomElement child = m_ComponentWeights->toDomElement(doc);
+        child.setTagName("ComponentWeights");
+        e.appendChild(child);
+    }
+    if (!m_ComponentCosts.isNull())
+    {
+        QDomElement child = m_ComponentCosts->toDomElement(doc);
+        child.setTagName("ComponentCosts");
+        e.appendChild(child);
+    }
+    if (!m_ComponentReliability.isNull())
+    {
+        QDomElement child = m_ComponentReliability->toDomElement(doc);
+        child.setTagName("ComponentReliability");
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -1224,6 +2800,41 @@ void ScenarioBoosters::load(const QDomElement& e)
     m_ComponentCosts->load(e.firstChildElement("ComponentCosts"));
     m_ComponentReliability = QSharedPointer<ScenarioComponentReliability>(new ScenarioComponentReliability());
     m_ComponentReliability->load(e.firstChildElement("ComponentReliability"));
+}
+
+QDomElement ScenarioBoosters::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_Geometry.isNull())
+    {
+        QDomElement child = m_Geometry->toDomElement(doc);
+        child.setTagName("Geometry");
+        e.appendChild(child);
+    }
+    if (!m_PropulsionSystem.isNull())
+    {
+        QDomElement child = m_PropulsionSystem->toDomElement(doc);
+        child.setTagName("PropulsionSystem");
+        e.appendChild(child);
+    }
+    if (!m_ComponentWeights.isNull())
+    {
+        QDomElement child = m_ComponentWeights->toDomElement(doc);
+        child.setTagName("ComponentWeights");
+        e.appendChild(child);
+    }
+    if (!m_ComponentCosts.isNull())
+    {
+        QDomElement child = m_ComponentCosts->toDomElement(doc);
+        child.setTagName("ComponentCosts");
+        e.appendChild(child);
+    }
+    if (!m_ComponentReliability.isNull())
+    {
+        QDomElement child = m_ComponentReliability->toDomElement(doc);
+        child.setTagName("ComponentReliability");
+        e.appendChild(child);
+    }
 }
 
 
@@ -1257,6 +2868,56 @@ void ScenarioDiscretizationSettings::load(const QDomElement& e)
     m_nThrustControlNodes = parseInt(e.firstChildElement("nThrustControlNodes").text());
 }
 
+QDomElement ScenarioDiscretizationSettings::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("nMachPointsCl");
+        child.appendChild(doc.createTextNode(convertToString(m_nMachPointsCl);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("nAlfaPointsCl");
+        child.appendChild(doc.createTextNode(convertToString(m_nAlfaPointsCl);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("nMachPointsCd");
+        child.appendChild(doc.createTextNode(convertToString(m_nMachPointsCd);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("nAlfaPointsCd");
+        child.appendChild(doc.createTextNode(convertToString(m_nAlfaPointsCd);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("nMachPointsCm");
+        child.appendChild(doc.createTextNode(convertToString(m_nMachPointsCm);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("nAlfaPointsCm");
+        child.appendChild(doc.createTextNode(convertToString(m_nAlfaPointsCm);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("nPitchControlNodes");
+        child.appendChild(doc.createTextNode(convertToString(m_nPitchControlNodes);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("nYawControlNodes");
+        child.appendChild(doc.createTextNode(convertToString(m_nYawControlNodes);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("nThrustControlNodes");
+        child.appendChild(doc.createTextNode(convertToString(m_nThrustControlNodes);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -1283,6 +2944,47 @@ void ScenarioGeometry::load(const QDomElement& e)
     m_constraintInterference = parseDouble(e.firstChildElement("constraintInterference").text());
 }
 
+QDomElement ScenarioGeometry::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("length");
+        child.appendChild(doc.createTextNode(convertToString(m_length);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("diameter");
+        child.appendChild(doc.createTextNode(convertToString(m_diameter);
+        e.appendChild(child);
+    }
+    if (!m_diameterEqualToUpper.isNull())
+    {
+        QDomElement child = m_diameterEqualToUpper->toDomElement(doc);
+        child.setTagName("diameterEqualToUpper");
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("frontShape");
+        child.appendChild(doc.createTextNode(convertToString(m_frontShape);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("baseLongPosition");
+        child.appendChild(doc.createTextNode(convertToString(m_baseLongPosition);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("constraintEngine");
+        child.appendChild(doc.createTextNode(convertToString(m_constraintEngine);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("constraintInterference");
+        child.appendChild(doc.createTextNode(convertToString(m_constraintInterference);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -1302,6 +3004,41 @@ void ScenarioLVAerodynamics::load(const QDomElement& e)
     m_clFileName = (e.firstChildElement("clFileName").text());
     m_cdFileName = (e.firstChildElement("cdFileName").text());
     m_cmFileName = (e.firstChildElement("cmFileName").text());
+}
+
+QDomElement ScenarioLVAerodynamics::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("userDefinedAero");
+        child.appendChild(doc.createTextNode(convertToString(m_userDefinedAero);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("referenceArea");
+        child.appendChild(doc.createTextNode(convertToString(m_referenceArea);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("referenceLength");
+        child.appendChild(doc.createTextNode(convertToString(m_referenceLength);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("clFileName");
+        child.appendChild(doc.createTextNode(convertToString(m_clFileName);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("cdFileName");
+        child.appendChild(doc.createTextNode(convertToString(m_cdFileName);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("cmFileName");
+        child.appendChild(doc.createTextNode(convertToString(m_cmFileName);
+        e.appendChild(child);
+    }
 }
 
 
@@ -1341,6 +3078,71 @@ void ScenarioComponentWeights::load(const QDomElement& e)
     m_interstageMass = parseDouble(e.firstChildElement("interstageMass").text());
 }
 
+QDomElement ScenarioComponentWeights::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("dryMass");
+        child.appendChild(doc.createTextNode(convertToString(m_dryMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("dryCoGLongPosition");
+        child.appendChild(doc.createTextNode(convertToString(m_dryCoGLongPosition);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("wetMass");
+        child.appendChild(doc.createTextNode(convertToString(m_wetMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("mainStructMass");
+        child.appendChild(doc.createTextNode(convertToString(m_mainStructMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("oxTankMass");
+        child.appendChild(doc.createTextNode(convertToString(m_oxTankMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("fuelTankMass");
+        child.appendChild(doc.createTextNode(convertToString(m_fuelTankMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("tpsMass");
+        child.appendChild(doc.createTextNode(convertToString(m_tpsMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("avionicsMass");
+        child.appendChild(doc.createTextNode(convertToString(m_avionicsMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("epsMass");
+        child.appendChild(doc.createTextNode(convertToString(m_epsMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("plAdapterMass");
+        child.appendChild(doc.createTextNode(convertToString(m_plAdapterMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("padInterfaceMass");
+        child.appendChild(doc.createTextNode(convertToString(m_padInterfaceMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("interstageMass");
+        child.appendChild(doc.createTextNode(convertToString(m_interstageMass);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -1376,6 +3178,74 @@ void ScenarioSystemWeights::load(const QDomElement& e)
     m_structuralSafetyMargin->load(e.firstChildElement("structuralSafetyMargin"));
 }
 
+QDomElement ScenarioSystemWeights::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("totalDryMass");
+        child.appendChild(doc.createTextNode(convertToString(m_totalDryMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("totalWetMass");
+        child.appendChild(doc.createTextNode(convertToString(m_totalWetMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("takeoffThrustOverWeight");
+        child.appendChild(doc.createTextNode(convertToString(m_takeoffThrustOverWeight);
+        e.appendChild(child);
+    }
+    if (!m_maxAxialAcc.isNull())
+    {
+        QDomElement child = m_maxAxialAcc->toDomElement(doc);
+        child.setTagName("maxAxialAcc");
+        e.appendChild(child);
+    }
+    if (!m_maxHeatFlux.isNull())
+    {
+        QDomElement child = m_maxHeatFlux->toDomElement(doc);
+        child.setTagName("maxHeatFlux");
+        e.appendChild(child);
+    }
+    if (!m_maxDynPressure.isNull())
+    {
+        QDomElement child = m_maxDynPressure->toDomElement(doc);
+        child.setTagName("maxDynPressure");
+        e.appendChild(child);
+    }
+    if (!m_mainStructuralMaterial.isNull())
+    {
+        QDomElement child = m_mainStructuralMaterial->toDomElement(doc);
+        child.setTagName("mainStructuralMaterial");
+        e.appendChild(child);
+    }
+    if (!m_tanksArrangement.isNull())
+    {
+        QDomElement child = m_tanksArrangement->toDomElement(doc);
+        child.setTagName("tanksArrangement");
+        e.appendChild(child);
+    }
+    if (!m_tanksType.isNull())
+    {
+        QDomElement child = m_tanksType->toDomElement(doc);
+        child.setTagName("tanksType");
+        e.appendChild(child);
+    }
+    if (!m_redundancyLevel.isNull())
+    {
+        QDomElement child = m_redundancyLevel->toDomElement(doc);
+        child.setTagName("redundancyLevel");
+        e.appendChild(child);
+    }
+    if (!m_structuralSafetyMargin.isNull())
+    {
+        QDomElement child = m_structuralSafetyMargin->toDomElement(doc);
+        child.setTagName("structuralSafetyMargin");
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -1393,6 +3263,29 @@ void ScenarioComponentCosts::load(const QDomElement& e)
     m_DevelopmentCosts->load(e.firstChildElement("DevelopmentCosts"));
     m_ProductionCosts = QSharedPointer<ScenarioProductionCosts>(new ScenarioProductionCosts());
     m_ProductionCosts->load(e.firstChildElement("ProductionCosts"));
+}
+
+QDomElement ScenarioComponentCosts::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_nEngineTests.isNull())
+    {
+        QDomElement child = m_nEngineTests->toDomElement(doc);
+        child.setTagName("nEngineTests");
+        e.appendChild(child);
+    }
+    if (!m_DevelopmentCosts.isNull())
+    {
+        QDomElement child = m_DevelopmentCosts->toDomElement(doc);
+        child.setTagName("DevelopmentCosts");
+        e.appendChild(child);
+    }
+    if (!m_ProductionCosts.isNull())
+    {
+        QDomElement child = m_ProductionCosts->toDomElement(doc);
+        child.setTagName("ProductionCosts");
+        e.appendChild(child);
+    }
 }
 
 
@@ -1416,6 +3309,36 @@ void ScenarioDevelopmentCosts::load(const QDomElement& e)
     m_engineDevelopmentCost = parseDouble(e.firstChildElement("engineDevelopmentCost").text());
     m_systemf2 = parseDouble(e.firstChildElement("systemf2").text());
     m_systemDevelopmentCost = parseDouble(e.firstChildElement("systemDevelopmentCost").text());
+}
+
+QDomElement ScenarioDevelopmentCosts::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("enginef2");
+        child.appendChild(doc.createTextNode(convertToString(m_enginef2);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("enginef5");
+        child.appendChild(doc.createTextNode(convertToString(m_enginef5);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("engineDevelopmentCost");
+        child.appendChild(doc.createTextNode(convertToString(m_engineDevelopmentCost);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("systemf2");
+        child.appendChild(doc.createTextNode(convertToString(m_systemf2);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("systemDevelopmentCost");
+        child.appendChild(doc.createTextNode(convertToString(m_systemDevelopmentCost);
+        e.appendChild(child);
+    }
 }
 
 
@@ -1443,6 +3366,41 @@ void ScenarioProductionCosts::load(const QDomElement& e)
     m_totalSystemProductionCost = parseDouble(e.firstChildElement("totalSystemProductionCost").text());
 }
 
+QDomElement ScenarioProductionCosts::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("totalNumberOfEngines");
+        child.appendChild(doc.createTextNode(convertToString(m_totalNumberOfEngines);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("enginesLearningFactor");
+        child.appendChild(doc.createTextNode(convertToString(m_enginesLearningFactor);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("totalNumberOfSystems");
+        child.appendChild(doc.createTextNode(convertToString(m_totalNumberOfSystems);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("systemsLearningFactor");
+        child.appendChild(doc.createTextNode(convertToString(m_systemsLearningFactor);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("totalEngineProductionCost");
+        child.appendChild(doc.createTextNode(convertToString(m_totalEngineProductionCost);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("totalSystemProductionCost");
+        child.appendChild(doc.createTextNode(convertToString(m_totalSystemProductionCost);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -1462,6 +3420,34 @@ void ScenarioSystemCosts::load(const QDomElement& e)
     m_DirectOperationsCosts->load(e.firstChildElement("DirectOperationsCosts"));
     m_IndirectOperationsCosts = QSharedPointer<ScenarioIndirectOperationsCosts>(new ScenarioIndirectOperationsCosts());
     m_IndirectOperationsCosts->load(e.firstChildElement("IndirectOperationsCosts"));
+}
+
+QDomElement ScenarioSystemCosts::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_TotalProgramCosts.isNull())
+    {
+        QDomElement child = m_TotalProgramCosts->toDomElement(doc);
+        child.setTagName("TotalProgramCosts");
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("developmentTime");
+        child.appendChild(doc.createTextNode(convertToString(m_developmentTime);
+        e.appendChild(child);
+    }
+    if (!m_DirectOperationsCosts.isNull())
+    {
+        QDomElement child = m_DirectOperationsCosts->toDomElement(doc);
+        child.setTagName("DirectOperationsCosts");
+        e.appendChild(child);
+    }
+    if (!m_IndirectOperationsCosts.isNull())
+    {
+        QDomElement child = m_IndirectOperationsCosts->toDomElement(doc);
+        child.setTagName("IndirectOperationsCosts");
+        e.appendChild(child);
+    }
 }
 
 
@@ -1491,6 +3477,51 @@ void ScenarioTotalProgramCosts::load(const QDomElement& e)
     m_lifeCycleCostFYEuros = parseDouble(e.firstChildElement("lifeCycleCostFYEuros").text());
     m_costPerLaunchFYEuros = parseDouble(e.firstChildElement("costPerLaunchFYEuros").text());
     m_costPerKiloFYEuros = parseDouble(e.firstChildElement("costPerKiloFYEuros").text());
+}
+
+QDomElement ScenarioTotalProgramCosts::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("lifeCycleCostMY");
+        child.appendChild(doc.createTextNode(convertToString(m_lifeCycleCostMY);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("costPerLaunchMY");
+        child.appendChild(doc.createTextNode(convertToString(m_costPerLaunchMY);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("costPerKiloMY");
+        child.appendChild(doc.createTextNode(convertToString(m_costPerKiloMY);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("FYref");
+        child.appendChild(doc.createTextNode(convertToString(m_FYref);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("MYtoFYEuros");
+        child.appendChild(doc.createTextNode(convertToString(m_MYtoFYEuros);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("lifeCycleCostFYEuros");
+        child.appendChild(doc.createTextNode(convertToString(m_lifeCycleCostFYEuros);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("costPerLaunchFYEuros");
+        child.appendChild(doc.createTextNode(convertToString(m_costPerLaunchFYEuros);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("costPerKiloFYEuros");
+        child.appendChild(doc.createTextNode(convertToString(m_costPerKiloFYEuros);
+        e.appendChild(child);
+    }
 }
 
 
@@ -1524,6 +3555,57 @@ void ScenarioDirectOperationsCosts::load(const QDomElement& e)
     m_insuranceFee = parseDouble(e.firstChildElement("insuranceFee").text());
 }
 
+QDomElement ScenarioDirectOperationsCosts::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("transportCost");
+        child.appendChild(doc.createTextNode(convertToString(m_transportCost);
+        e.appendChild(child);
+    }
+    if (!m_processingType.isNull())
+    {
+        QDomElement child = m_processingType->toDomElement(doc);
+        child.setTagName("processingType");
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("fv");
+        child.appendChild(doc.createTextNode(convertToString(m_fv);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("fc");
+        child.appendChild(doc.createTextNode(convertToString(m_fc);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("groundOperationsCost");
+        child.appendChild(doc.createTextNode(convertToString(m_groundOperationsCost);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("Qn");
+        child.appendChild(doc.createTextNode(convertToString(m_Qn);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("flightOperationsCost");
+        child.appendChild(doc.createTextNode(convertToString(m_flightOperationsCost);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("propellantsCost");
+        child.appendChild(doc.createTextNode(convertToString(m_propellantsCost);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("insuranceFee");
+        child.appendChild(doc.createTextNode(convertToString(m_insuranceFee);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -1541,6 +3623,26 @@ void ScenarioIndirectOperationsCosts::load(const QDomElement& e)
     m_groundFacilitiesBuildingCost = parseDouble(e.firstChildElement("groundFacilitiesBuildingCost").text());
     m_launchSiteCostPerYear = parseDouble(e.firstChildElement("launchSiteCostPerYear").text());
     m_personnelCostPerYear = parseDouble(e.firstChildElement("personnelCostPerYear").text());
+}
+
+QDomElement ScenarioIndirectOperationsCosts::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("groundFacilitiesBuildingCost");
+        child.appendChild(doc.createTextNode(convertToString(m_groundFacilitiesBuildingCost);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("launchSiteCostPerYear");
+        child.appendChild(doc.createTextNode(convertToString(m_launchSiteCostPerYear);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("personnelCostPerYear");
+        child.appendChild(doc.createTextNode(convertToString(m_personnelCostPerYear);
+        e.appendChild(child);
+    }
 }
 
 
@@ -1568,6 +3670,43 @@ void ScenarioComponentReliability::load(const QDomElement& e)
     m_overallComponentFailureRate = parseDouble(e.firstChildElement("overallComponentFailureRate").text());
 }
 
+QDomElement ScenarioComponentReliability::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_Separation.isNull())
+    {
+        QDomElement child = m_Separation->toDomElement(doc);
+        child.setTagName("Separation");
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("avionicsFailureRate");
+        child.appendChild(doc.createTextNode(convertToString(m_avionicsFailureRate);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("structureFailureRate");
+        child.appendChild(doc.createTextNode(convertToString(m_structureFailureRate);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("tpsFailureRate");
+        child.appendChild(doc.createTextNode(convertToString(m_tpsFailureRate);
+        e.appendChild(child);
+    }
+    if (!m_PropulsionReliability.isNull())
+    {
+        QDomElement child = m_PropulsionReliability->toDomElement(doc);
+        child.setTagName("PropulsionReliability");
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("overallComponentFailureRate");
+        child.appendChild(doc.createTextNode(convertToString(m_overallComponentFailureRate);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -1587,6 +3726,31 @@ void ScenarioSeparation::load(const QDomElement& e)
     m_boostersSetSeparationReliability = parseDouble(e.firstChildElement("boostersSetSeparationReliability").text());
     m_fairingSeparationReliability = parseDouble(e.firstChildElement("fairingSeparationReliability").text());
     m_payloadSeparationReliability = parseDouble(e.firstChildElement("payloadSeparationReliability").text());
+}
+
+QDomElement ScenarioSeparation::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("stageSeparationReliability");
+        child.appendChild(doc.createTextNode(convertToString(m_stageSeparationReliability);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("boostersSetSeparationReliability");
+        child.appendChild(doc.createTextNode(convertToString(m_boostersSetSeparationReliability);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("fairingSeparationReliability");
+        child.appendChild(doc.createTextNode(convertToString(m_fairingSeparationReliability);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("payloadSeparationReliability");
+        child.appendChild(doc.createTextNode(convertToString(m_payloadSeparationReliability);
+        e.appendChild(child);
+    }
 }
 
 
@@ -1618,6 +3782,51 @@ void ScenarioPropulsionReliability::load(const QDomElement& e)
     m_propulsionOverallFailureRate = parseDouble(e.firstChildElement("propulsionOverallFailureRate").text());
 }
 
+QDomElement ScenarioPropulsionReliability::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("igniterReliability");
+        child.appendChild(doc.createTextNode(convertToString(m_igniterReliability);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("feedFailureRate");
+        child.appendChild(doc.createTextNode(convertToString(m_feedFailureRate);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("grainFailureRate");
+        child.appendChild(doc.createTextNode(convertToString(m_grainFailureRate);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("chamberFailureRate");
+        child.appendChild(doc.createTextNode(convertToString(m_chamberFailureRate);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("nozzleFailureRate");
+        child.appendChild(doc.createTextNode(convertToString(m_nozzleFailureRate);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("tvcFailureRate");
+        child.appendChild(doc.createTextNode(convertToString(m_tvcFailureRate);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("singleEngineOverallFailureRate");
+        child.appendChild(doc.createTextNode(convertToString(m_singleEngineOverallFailureRate);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("propulsionOverallFailureRate");
+        child.appendChild(doc.createTextNode(convertToString(m_propulsionOverallFailureRate);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -1645,6 +3854,52 @@ void ScenarioSystemReliability::load(const QDomElement& e)
     m_ascentPhasesFailureRate = parseDoubleList(e.firstChildElement("ascentPhasesFailureRate").text());
 }
 
+QDomElement ScenarioSystemReliability::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("globalVehicleReliability");
+        child.appendChild(doc.createTextNode(convertToString(m_globalVehicleReliability);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("selfDestructReliability");
+        child.appendChild(doc.createTextNode(convertToString(m_selfDestructReliability);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("missionSafety");
+        child.appendChild(doc.createTextNode(convertToString(m_missionSafety);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("preLaunchReliability");
+        child.appendChild(doc.createTextNode(convertToString(m_preLaunchReliability);
+        e.appendChild(child);
+    }
+    if (!m_Launch.isNull())
+    {
+        QDomElement child = m_Launch->toDomElement(doc);
+        child.setTagName("Launch");
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("numberOfAscentPhases");
+        child.appendChild(doc.createTextNode(convertToString(m_numberOfAscentPhases);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("ascentPhasesDurations");
+        child.appendChild(doc.createTextNode(convertToString(m_ascentPhasesDurations);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("ascentPhasesFailureRate");
+        child.appendChild(doc.createTextNode(convertToString(m_ascentPhasesFailureRate);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -1664,6 +3919,31 @@ void ScenarioLaunch::load(const QDomElement& e)
     m_ignitionReliability = parseDouble(e.firstChildElement("ignitionReliability").text());
     m_controlMarginReliability = parseDouble(e.firstChildElement("controlMarginReliability").text());
     m_launchOverallReliability = parseDouble(e.firstChildElement("launchOverallReliability").text());
+}
+
+QDomElement ScenarioLaunch::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("launchSiteReliability");
+        child.appendChild(doc.createTextNode(convertToString(m_launchSiteReliability);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("ignitionReliability");
+        child.appendChild(doc.createTextNode(convertToString(m_ignitionReliability);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("controlMarginReliability");
+        child.appendChild(doc.createTextNode(convertToString(m_controlMarginReliability);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("launchOverallReliability");
+        child.appendChild(doc.createTextNode(convertToString(m_launchOverallReliability);
+        e.appendChild(child);
+    }
 }
 
 
@@ -1689,6 +3969,41 @@ void ScenarioTrajectory::load(const QDomElement& e)
     m_Constraints->load(e.firstChildElement("Constraints"));
 }
 
+QDomElement ScenarioTrajectory::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_TakeOff.isNull())
+    {
+        QDomElement child = m_TakeOff->toDomElement(doc);
+        child.setTagName("TakeOff");
+        e.appendChild(child);
+    }
+    if (!m_Ignitions.isNull())
+    {
+        QDomElement child = m_Ignitions->toDomElement(doc);
+        child.setTagName("Ignitions");
+        e.appendChild(child);
+    }
+    if (!m_AtmosphericFlight.isNull())
+    {
+        QDomElement child = m_AtmosphericFlight->toDomElement(doc);
+        child.setTagName("AtmosphericFlight");
+        e.appendChild(child);
+    }
+    if (!m_ExoatmosphericFlight.isNull())
+    {
+        QDomElement child = m_ExoatmosphericFlight->toDomElement(doc);
+        child.setTagName("ExoatmosphericFlight");
+        e.appendChild(child);
+    }
+    if (!m_Constraints.isNull())
+    {
+        QDomElement child = m_Constraints->toDomElement(doc);
+        child.setTagName("Constraints");
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -1712,6 +4027,36 @@ void ScenarioTakeOff::load(const QDomElement& e)
     m_pitchOverHeadingAngle = parseDouble(e.firstChildElement("pitchOverHeadingAngle").text());
 }
 
+QDomElement ScenarioTakeOff::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("padClearingAlt");
+        child.appendChild(doc.createTextNode(convertToString(m_padClearingAlt);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("maxPitchOverAngle");
+        child.appendChild(doc.createTextNode(convertToString(m_maxPitchOverAngle);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("pitchOverDuration");
+        child.appendChild(doc.createTextNode(convertToString(m_pitchOverDuration);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("pitchOverDecayTime");
+        child.appendChild(doc.createTextNode(convertToString(m_pitchOverDecayTime);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("pitchOverHeadingAngle");
+        child.appendChild(doc.createTextNode(convertToString(m_pitchOverHeadingAngle);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -1731,6 +4076,31 @@ void ScenarioIgnitions::load(const QDomElement& e)
     m_secondBoostersSetIgnitionDelayTime = parseDouble(e.firstChildElement("secondBoostersSetIgnitionDelayTime").text());
 }
 
+QDomElement ScenarioIgnitions::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("coreIgnitionDelayOption");
+        child.appendChild(doc.createTextNode(convertToString(m_coreIgnitionDelayOption);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("coreIgnitionDelayTime");
+        child.appendChild(doc.createTextNode(convertToString(m_coreIgnitionDelayTime);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("secondBoostersSetIgnitionDelayOption");
+        child.appendChild(doc.createTextNode(convertToString(m_secondBoostersSetIgnitionDelayOption);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("secondBoostersSetIgnitionDelayTime");
+        child.appendChild(doc.createTextNode(convertToString(m_secondBoostersSetIgnitionDelayTime);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -1745,6 +4115,26 @@ void ScenarioAtmosphericFlight::load(const QDomElement& e)
     m_optimizedPitchValues = parseDoubleList(e.firstChildElement("optimizedPitchValues").text());
     m_optimizedYawValues = parseDoubleList(e.firstChildElement("optimizedYawValues").text());
     m_optimizedThrustValues = parseDoubleList(e.firstChildElement("optimizedThrustValues").text());
+}
+
+QDomElement ScenarioAtmosphericFlight::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("optimizedPitchValues");
+        child.appendChild(doc.createTextNode(convertToString(m_optimizedPitchValues);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("optimizedYawValues");
+        child.appendChild(doc.createTextNode(convertToString(m_optimizedYawValues);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("optimizedThrustValues");
+        child.appendChild(doc.createTextNode(convertToString(m_optimizedThrustValues);
+        e.appendChild(child);
+    }
 }
 
 
@@ -1767,6 +4157,36 @@ void ScenarioExoatmosphericFlight::load(const QDomElement& e)
     m_bilinearLawParam = parseDouble(e.firstChildElement("bilinearLawParam").text());
     m_circBurnOption = parseBoolean(e.firstChildElement("circBurnOption").text());
     m_circBurnTime = parseDouble(e.firstChildElement("circBurnTime").text());
+}
+
+QDomElement ScenarioExoatmosphericFlight::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("bilinearLawInitPitch");
+        child.appendChild(doc.createTextNode(convertToString(m_bilinearLawInitPitch);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("bilinearLawFinalPitch");
+        child.appendChild(doc.createTextNode(convertToString(m_bilinearLawFinalPitch);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("bilinearLawParam");
+        child.appendChild(doc.createTextNode(convertToString(m_bilinearLawParam);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("circBurnOption");
+        child.appendChild(doc.createTextNode(convertToString(m_circBurnOption);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("circBurnTime");
+        child.appendChild(doc.createTextNode(convertToString(m_circBurnTime);
+        e.appendChild(child);
+    }
 }
 
 
@@ -1796,6 +4216,46 @@ void ScenarioConstraints::load(const QDomElement& e)
     m_controllabilityCstrViolation = parseDouble(e.firstChildElement("controllabilityCstrViolation").text());
 }
 
+QDomElement ScenarioConstraints::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("finalSemiaxisError");
+        child.appendChild(doc.createTextNode(convertToString(m_finalSemiaxisError);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("finalEccError");
+        child.appendChild(doc.createTextNode(convertToString(m_finalEccError);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("finalInclError");
+        child.appendChild(doc.createTextNode(convertToString(m_finalInclError);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("axialAccCstrViolation");
+        child.appendChild(doc.createTextNode(convertToString(m_axialAccCstrViolation);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("heatFluxCstrViolation");
+        child.appendChild(doc.createTextNode(convertToString(m_heatFluxCstrViolation);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("dynPressCstrViolation");
+        child.appendChild(doc.createTextNode(convertToString(m_dynPressCstrViolation);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("controllabilityCstrViolation");
+        child.appendChild(doc.createTextNode(convertToString(m_controllabilityCstrViolation);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -1810,6 +4270,22 @@ void ScenarioInitialPositionType::load(const QDomElement& e)
     m_CoordinateSystem = (e.firstChildElement("CoordinateSystem").text());
     m_Abstract6DOFPosition = QSharedPointer<ScenarioAbstract6DOFPositionType>(new ScenarioAbstract6DOFPositionType());
     m_Abstract6DOFPosition->load(e.firstChildElement("Abstract6DOFPosition"));
+}
+
+QDomElement ScenarioInitialPositionType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("CoordinateSystem");
+        child.appendChild(doc.createTextNode(convertToString(m_CoordinateSystem);
+        e.appendChild(child);
+    }
+    if (!m_Abstract6DOFPosition.isNull())
+    {
+        QDomElement child = m_Abstract6DOFPosition->toDomElement(doc);
+        child.setTagName("Abstract6DOFPosition");
+        e.appendChild(child);
+    }
 }
 
 
@@ -1835,6 +4311,41 @@ void ScenarioSC::load(const QDomElement& e)
     m_OutputFiles->load(e.firstChildElement("OutputFiles"));
 }
 
+QDomElement ScenarioSC::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioParticipantsType::toDomElement(doc);
+    if (!m_SCProgram.isNull())
+    {
+        QDomElement child = m_SCProgram->toDomElement(doc);
+        child.setTagName("SCProgram");
+        e.appendChild(child);
+    }
+    if (!m_SCMission.isNull())
+    {
+        QDomElement child = m_SCMission->toDomElement(doc);
+        child.setTagName("SCMission");
+        e.appendChild(child);
+    }
+    if (!m_System.isNull())
+    {
+        QDomElement child = m_System->toDomElement(doc);
+        child.setTagName("System");
+        e.appendChild(child);
+    }
+    if (!m_Optimization.isNull())
+    {
+        QDomElement child = m_Optimization->toDomElement(doc);
+        child.setTagName("Optimization");
+        e.appendChild(child);
+    }
+    if (!m_OutputFiles.isNull())
+    {
+        QDomElement child = m_OutputFiles->toDomElement(doc);
+        child.setTagName("OutputFiles");
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -1846,6 +4357,11 @@ ScenarioSCProgram::ScenarioSCProgram()
 void ScenarioSCProgram::load(const QDomElement& e)
 {
     ScenarioObject::load(e);
+}
+
+QDomElement ScenarioSCProgram::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
 }
 
 
@@ -1865,6 +4381,23 @@ void ScenarioSCMission::load(const QDomElement& e)
     m_TrajectoryPlan->load(e.firstChildElement("TrajectoryPlan"));
 }
 
+QDomElement ScenarioSCMission::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_Payload.isNull())
+    {
+        QDomElement child = m_Payload->toDomElement(doc);
+        child.setTagName("Payload");
+        e.appendChild(child);
+    }
+    if (!m_TrajectoryPlan.isNull())
+    {
+        QDomElement child = m_TrajectoryPlan->toDomElement(doc);
+        child.setTagName("TrajectoryPlan");
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -1882,6 +4415,27 @@ void ScenarioPayload::load(const QDomElement& e)
     m_power = parseDouble(e.firstChildElement("power").text());
     m_ObservationAntenna = QSharedPointer<ScenarioObservationAntenna>(new ScenarioObservationAntenna());
     m_ObservationAntenna->load(e.firstChildElement("ObservationAntenna"));
+}
+
+QDomElement ScenarioPayload::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("mass");
+        child.appendChild(doc.createTextNode(convertToString(m_mass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("power");
+        child.appendChild(doc.createTextNode(convertToString(m_power);
+        e.appendChild(child);
+    }
+    if (!m_ObservationAntenna.isNull())
+    {
+        QDomElement child = m_ObservationAntenna->toDomElement(doc);
+        child.setTagName("ObservationAntenna");
+        e.appendChild(child);
+    }
 }
 
 
@@ -1904,6 +4458,11 @@ void ScenarioTrajectoryPlan::load(const QDomElement& e)
         }
 }
 
+QDomElement ScenarioTrajectoryPlan::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+}
+
 
 
 
@@ -1915,6 +4474,11 @@ ScenarioAbstractTrajectoryType::ScenarioAbstractTrajectoryType()
 void ScenarioAbstractTrajectoryType::load(const QDomElement& e)
 {
     ScenarioObject::load(e);
+}
+
+QDomElement ScenarioAbstractTrajectoryType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
 }
 
 
@@ -1931,6 +4495,26 @@ void ScenarioSCEnvironmentType::load(const QDomElement& e)
     m_perturbingBody = parseStringList(e.firstChildElement("perturbingBody").text());
     m_atmosphericDrag = parseBoolean(e.firstChildElement("atmosphericDrag").text());
     m_solarPressure = parseBoolean(e.firstChildElement("solarPressure").text());
+}
+
+QDomElement ScenarioSCEnvironmentType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioEnvironmentType::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("perturbingBody");
+        child.appendChild(doc.createTextNode(convertToString(m_perturbingBody);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("atmosphericDrag");
+        child.appendChild(doc.createTextNode(convertToString(m_atmosphericDrag);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("solarPressure");
+        child.appendChild(doc.createTextNode(convertToString(m_solarPressure);
+        e.appendChild(child);
+    }
 }
 
 
@@ -1958,6 +4542,47 @@ void ScenarioLoiteringType::load(const QDomElement& e)
     m_PropagationAttitude->load(e.firstChildElement("PropagationAttitude"));
 }
 
+QDomElement ScenarioLoiteringType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc);
+    if (!m_Environment.isNull())
+    {
+        QDomElement child = m_Environment->toDomElement(doc);
+        child.setTagName("Environment");
+        e.appendChild(child);
+    }
+    if (!m_TimeLine.isNull())
+    {
+        QDomElement child = m_TimeLine->toDomElement(doc);
+        child.setTagName("TimeLine");
+        e.appendChild(child);
+    }
+    if (!m_InitialPosition.isNull())
+    {
+        QDomElement child = m_InitialPosition->toDomElement(doc);
+        child.setTagName("InitialPosition");
+        e.appendChild(child);
+    }
+    if (!m_InitialAttitude.isNull())
+    {
+        QDomElement child = m_InitialAttitude->toDomElement(doc);
+        child.setTagName("InitialAttitude");
+        e.appendChild(child);
+    }
+    if (!m_PropagationPosition.isNull())
+    {
+        QDomElement child = m_PropagationPosition->toDomElement(doc);
+        child.setTagName("PropagationPosition");
+        e.appendChild(child);
+    }
+    if (!m_PropagationAttitude.isNull())
+    {
+        QDomElement child = m_PropagationAttitude->toDomElement(doc);
+        child.setTagName("PropagationAttitude");
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -1972,6 +4597,22 @@ void ScenarioInitialAttitude::load(const QDomElement& e)
     m_CoordinateSystem = (e.firstChildElement("CoordinateSystem").text());
     m_Abstract6DOFAttitude = QSharedPointer<ScenarioAbstract6DOFAttitudeType>(new ScenarioAbstract6DOFAttitudeType());
     m_Abstract6DOFAttitude->load(e.firstChildElement("Abstract6DOFAttitude"));
+}
+
+QDomElement ScenarioInitialAttitude::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("CoordinateSystem");
+        child.appendChild(doc.createTextNode(convertToString(m_CoordinateSystem);
+        e.appendChild(child);
+    }
+    if (!m_Abstract6DOFAttitude.isNull())
+    {
+        QDomElement child = m_Abstract6DOFAttitude->toDomElement(doc);
+        child.setTagName("Abstract6DOFAttitude");
+        e.appendChild(child);
+    }
 }
 
 
@@ -1991,6 +4632,26 @@ void ScenarioPropagationPosition::load(const QDomElement& e)
     m_timeStep = parseDouble(e.firstChildElement("timeStep").text());
 }
 
+QDomElement ScenarioPropagationPosition::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("propagator");
+        child.appendChild(doc.createTextNode(convertToString(m_propagator);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("integrator");
+        child.appendChild(doc.createTextNode(convertToString(m_integrator);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("timeStep");
+        child.appendChild(doc.createTextNode(convertToString(m_timeStep);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -2005,6 +4666,21 @@ void ScenarioPropagationAttitude::load(const QDomElement& e)
     ScenarioObject::load(e);
     m_integrator = (e.firstChildElement("integrator").text());
     m_timeStep = parseDouble(e.firstChildElement("timeStep").text());
+}
+
+QDomElement ScenarioPropagationAttitude::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("integrator");
+        child.appendChild(doc.createTextNode(convertToString(m_integrator);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("timeStep");
+        child.appendChild(doc.createTextNode(convertToString(m_timeStep);
+        e.appendChild(child);
+    }
 }
 
 
@@ -2027,6 +4703,34 @@ void ScenarioRendezvousType::load(const QDomElement& e)
     m_ManoeuvrePlan->load(e.firstChildElement("ManoeuvrePlan"));
 }
 
+QDomElement ScenarioRendezvousType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc);
+    if (!m_Environment.isNull())
+    {
+        QDomElement child = m_Environment->toDomElement(doc);
+        child.setTagName("Environment");
+        e.appendChild(child);
+    }
+    if (!m_Parameters.isNull())
+    {
+        QDomElement child = m_Parameters->toDomElement(doc);
+        child.setTagName("Parameters");
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("Target");
+        child.appendChild(doc.createTextNode(convertToString(m_Target);
+        e.appendChild(child);
+    }
+    if (!m_ManoeuvrePlan.isNull())
+    {
+        QDomElement child = m_ManoeuvrePlan->toDomElement(doc);
+        child.setTagName("ManoeuvrePlan");
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -2042,6 +4746,23 @@ void ScenarioParameters::load(const QDomElement& e)
     m_TimeLine->load(e.firstChildElement("TimeLine"));
     m_InitialPosition = QSharedPointer<ScenarioInitialPositionType>(new ScenarioInitialPositionType());
     m_InitialPosition->load(e.firstChildElement("InitialPosition"));
+}
+
+QDomElement ScenarioParameters::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_TimeLine.isNull())
+    {
+        QDomElement child = m_TimeLine->toDomElement(doc);
+        child.setTagName("TimeLine");
+        e.appendChild(child);
+    }
+    if (!m_InitialPosition.isNull())
+    {
+        QDomElement child = m_InitialPosition->toDomElement(doc);
+        child.setTagName("InitialPosition");
+        e.appendChild(child);
+    }
 }
 
 
@@ -2064,6 +4785,11 @@ void ScenarioManoeuvrePlan::load(const QDomElement& e)
         }
 }
 
+QDomElement ScenarioManoeuvrePlan::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+}
+
 
 
 
@@ -2075,6 +4801,11 @@ ScenarioManoeuvreType::ScenarioManoeuvreType()
 void ScenarioManoeuvreType::load(const QDomElement& e)
 {
     ScenarioObject::load(e);
+}
+
+QDomElement ScenarioManoeuvreType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
 }
 
 
@@ -2090,6 +4821,16 @@ void ScenarioSTA_MANOEUVRE_DURATION::load(const QDomElement& e)
 {
     ScenarioManoeuvreType::load(e);
     m_Duration = parseDouble(e.firstChildElement("Duration").text());
+}
+
+QDomElement ScenarioSTA_MANOEUVRE_DURATION::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioManoeuvreType::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("Duration");
+        child.appendChild(doc.createTextNode(convertToString(m_Duration);
+        e.appendChild(child);
+    }
 }
 
 
@@ -2113,6 +4854,31 @@ void ScenarioSTA_MANOEUVRE_DELTAV::load(const QDomElement& e)
     m_Duration = parseDouble(e.firstChildElement("Duration").text());
 }
 
+QDomElement ScenarioSTA_MANOEUVRE_DELTAV::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioManoeuvreType::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("DeltaVx");
+        child.appendChild(doc.createTextNode(convertToString(m_DeltaVx);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("DeltaVy");
+        child.appendChild(doc.createTextNode(convertToString(m_DeltaVy);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("DeltaVz");
+        child.appendChild(doc.createTextNode(convertToString(m_DeltaVz);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("Duration");
+        child.appendChild(doc.createTextNode(convertToString(m_Duration);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -2126,6 +4892,16 @@ void ScenarioSTA_MANOEUVRE_V_POSITION::load(const QDomElement& e)
 {
     ScenarioManoeuvreType::load(e);
     m_DisplacementVbar = parseDouble(e.firstChildElement("DisplacementVbar").text());
+}
+
+QDomElement ScenarioSTA_MANOEUVRE_V_POSITION::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioManoeuvreType::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("DisplacementVbar");
+        child.appendChild(doc.createTextNode(convertToString(m_DisplacementVbar);
+        e.appendChild(child);
+    }
 }
 
 
@@ -2143,6 +4919,16 @@ void ScenarioSTA_MANOEUVRE_R_POSITION::load(const QDomElement& e)
     m_DisplacementRbar = parseDouble(e.firstChildElement("DisplacementRbar").text());
 }
 
+QDomElement ScenarioSTA_MANOEUVRE_R_POSITION::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioManoeuvreType::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("DisplacementRbar");
+        child.appendChild(doc.createTextNode(convertToString(m_DisplacementRbar);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -2158,6 +4944,21 @@ void ScenarioSTA_MANOEUVRE_V_R_POSITION::load(const QDomElement& e)
     ScenarioManoeuvreType::load(e);
     m_DisplacementVbar = parseDouble(e.firstChildElement("DisplacementVbar").text());
     m_DisplacementRbar = parseDouble(e.firstChildElement("DisplacementRbar").text());
+}
+
+QDomElement ScenarioSTA_MANOEUVRE_V_R_POSITION::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioManoeuvreType::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("DisplacementVbar");
+        child.appendChild(doc.createTextNode(convertToString(m_DisplacementVbar);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("DisplacementRbar");
+        child.appendChild(doc.createTextNode(convertToString(m_DisplacementRbar);
+        e.appendChild(child);
+    }
 }
 
 
@@ -2179,6 +4980,26 @@ void ScenarioSTA_MANOEUVRE_V_R_DURATION::load(const QDomElement& e)
     m_Duration = parseDouble(e.firstChildElement("Duration").text());
 }
 
+QDomElement ScenarioSTA_MANOEUVRE_V_R_DURATION::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioManoeuvreType::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("DisplacementVbar");
+        child.appendChild(doc.createTextNode(convertToString(m_DisplacementVbar);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("DisplacementRbar");
+        child.appendChild(doc.createTextNode(convertToString(m_DisplacementRbar);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("Duration");
+        child.appendChild(doc.createTextNode(convertToString(m_Duration);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -2192,6 +5013,11 @@ void ScenarioLagrangianType::load(const QDomElement& e)
     ScenarioAbstractTrajectoryType::load(e);
 }
 
+QDomElement ScenarioLagrangianType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc);
+}
+
 
 
 
@@ -2203,6 +5029,11 @@ ScenarioFlyByType::ScenarioFlyByType()
 void ScenarioFlyByType::load(const QDomElement& e)
 {
     ScenarioAbstractTrajectoryType::load(e);
+}
+
+QDomElement ScenarioFlyByType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc);
 }
 
 
@@ -2236,6 +5067,65 @@ void ScenarioSCSystemType::load(const QDomElement& e)
     m_OBDH->load(e.firstChildElement("OBDH"));
 }
 
+QDomElement ScenarioSCSystemType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_SystemBudgets.isNull())
+    {
+        QDomElement child = m_SystemBudgets->toDomElement(doc);
+        child.setTagName("SystemBudgets");
+        e.appendChild(child);
+    }
+    if (!m_SCAerodynamics.isNull())
+    {
+        QDomElement child = m_SCAerodynamics->toDomElement(doc);
+        child.setTagName("SCAerodynamics");
+        e.appendChild(child);
+    }
+    if (!m_Propulsion.isNull())
+    {
+        QDomElement child = m_Propulsion->toDomElement(doc);
+        child.setTagName("Propulsion");
+        e.appendChild(child);
+    }
+    if (!m_Structure.isNull())
+    {
+        QDomElement child = m_Structure->toDomElement(doc);
+        child.setTagName("Structure");
+        e.appendChild(child);
+    }
+    if (!m_TCS.isNull())
+    {
+        QDomElement child = m_TCS->toDomElement(doc);
+        child.setTagName("TCS");
+        e.appendChild(child);
+    }
+    if (!m_EPS.isNull())
+    {
+        QDomElement child = m_EPS->toDomElement(doc);
+        child.setTagName("EPS");
+        e.appendChild(child);
+    }
+    if (!m_TTC.isNull())
+    {
+        QDomElement child = m_TTC->toDomElement(doc);
+        child.setTagName("TTC");
+        e.appendChild(child);
+    }
+    if (!m_AOCS.isNull())
+    {
+        QDomElement child = m_AOCS->toDomElement(doc);
+        child.setTagName("AOCS");
+        e.appendChild(child);
+    }
+    if (!m_OBDH.isNull())
+    {
+        QDomElement child = m_OBDH->toDomElement(doc);
+        child.setTagName("OBDH");
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -2255,6 +5145,29 @@ void ScenarioSystemBudgets::load(const QDomElement& e)
     m_Link->load(e.firstChildElement("Link"));
 }
 
+QDomElement ScenarioSystemBudgets::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    if (!m_Mass.isNull())
+    {
+        QDomElement child = m_Mass->toDomElement(doc);
+        child.setTagName("Mass");
+        e.appendChild(child);
+    }
+    if (!m_Power.isNull())
+    {
+        QDomElement child = m_Power->toDomElement(doc);
+        child.setTagName("Power");
+        e.appendChild(child);
+    }
+    if (!m_Link.isNull())
+    {
+        QDomElement child = m_Link->toDomElement(doc);
+        child.setTagName("Link");
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -2270,6 +5183,21 @@ void ScenarioMass::load(const QDomElement& e)
     ScenarioObject::load(e);
     m_dryMass = parseDouble(e.firstChildElement("dryMass").text());
     m_wetMass = parseDouble(e.firstChildElement("wetMass").text());
+}
+
+QDomElement ScenarioMass::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("dryMass");
+        child.appendChild(doc.createTextNode(convertToString(m_dryMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("wetMass");
+        child.appendChild(doc.createTextNode(convertToString(m_wetMass);
+        e.appendChild(child);
+    }
 }
 
 
@@ -2289,6 +5217,21 @@ void ScenarioPower::load(const QDomElement& e)
     m_totalPowerEoL = parseDouble(e.firstChildElement("totalPowerEoL").text());
 }
 
+QDomElement ScenarioPower::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("totalPowerBoL");
+        child.appendChild(doc.createTextNode(convertToString(m_totalPowerBoL);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("totalPowerEoL");
+        child.appendChild(doc.createTextNode(convertToString(m_totalPowerEoL);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -2306,6 +5249,21 @@ void ScenarioLink::load(const QDomElement& e)
     m_downlinkMargin = parseDouble(e.firstChildElement("downlinkMargin").text());
 }
 
+QDomElement ScenarioLink::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("uplinkMargin");
+        child.appendChild(doc.createTextNode(convertToString(m_uplinkMargin);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("downlinkMargin");
+        child.appendChild(doc.createTextNode(convertToString(m_downlinkMargin);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -2321,6 +5279,21 @@ void ScenarioSCAerodynamics::load(const QDomElement& e)
     ScenarioObject::load(e);
     m_surfaceArea = parseDouble(e.firstChildElement("surfaceArea").text());
     m_Cd = parseDouble(e.firstChildElement("Cd").text());
+}
+
+QDomElement ScenarioSCAerodynamics::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("surfaceArea");
+        child.appendChild(doc.createTextNode(convertToString(m_surfaceArea);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("Cd");
+        child.appendChild(doc.createTextNode(convertToString(m_Cd);
+        e.appendChild(child);
+    }
 }
 
 
@@ -2346,6 +5319,36 @@ void ScenarioPropulsion::load(const QDomElement& e)
     m_totalPropulsionDryMass = parseDouble(e.firstChildElement("totalPropulsionDryMass").text());
 }
 
+QDomElement ScenarioPropulsion::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("numberOfEngines");
+        child.appendChild(doc.createTextNode(convertToString(m_numberOfEngines);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("thrustPerEngine");
+        child.appendChild(doc.createTextNode(convertToString(m_thrustPerEngine);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("specificImpulse");
+        child.appendChild(doc.createTextNode(convertToString(m_specificImpulse);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("propellantMass");
+        child.appendChild(doc.createTextNode(convertToString(m_propellantMass);
+        e.appendChild(child);
+    }
+    {
+        QDomElement child = doc.createElement("totalPropulsionDryMass");
+        child.appendChild(doc.createTextNode(convertToString(m_totalPropulsionDryMass);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -2359,6 +5362,16 @@ void ScenarioStructure::load(const QDomElement& e)
 {
     ScenarioObject::load(e);
     m_totalStructureMass = parseDouble(e.firstChildElement("totalStructureMass").text());
+}
+
+QDomElement ScenarioStructure::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("totalStructureMass");
+        child.appendChild(doc.createTextNode(convertToString(m_totalStructureMass);
+        e.appendChild(child);
+    }
 }
 
 
@@ -2376,6 +5389,16 @@ void ScenarioTCS::load(const QDomElement& e)
     m_totalTCSMass = parseDouble(e.firstChildElement("totalTCSMass").text());
 }
 
+QDomElement ScenarioTCS::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("totalTCSMass");
+        child.appendChild(doc.createTextNode(convertToString(m_totalTCSMass);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -2389,6 +5412,16 @@ void ScenarioEPS::load(const QDomElement& e)
 {
     ScenarioObject::load(e);
     m_totalEPSMass = parseDouble(e.firstChildElement("totalEPSMass").text());
+}
+
+QDomElement ScenarioEPS::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("totalEPSMass");
+        child.appendChild(doc.createTextNode(convertToString(m_totalEPSMass);
+        e.appendChild(child);
+    }
 }
 
 
@@ -2413,6 +5446,16 @@ void ScenarioTTC::load(const QDomElement& e)
         }
 }
 
+QDomElement ScenarioTTC::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("totalTTCMass");
+        child.appendChild(doc.createTextNode(convertToString(m_totalTTCMass);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -2428,6 +5471,16 @@ void ScenarioAOCS::load(const QDomElement& e)
     m_totalAOCSMass = parseDouble(e.firstChildElement("totalAOCSMass").text());
 }
 
+QDomElement ScenarioAOCS::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("totalAOCSMass");
+        child.appendChild(doc.createTextNode(convertToString(m_totalAOCSMass);
+        e.appendChild(child);
+    }
+}
+
 
 
 
@@ -2441,6 +5494,16 @@ void ScenarioOBDH::load(const QDomElement& e)
 {
     ScenarioObject::load(e);
     m_totalOBDHMass = parseDouble(e.firstChildElement("totalOBDHMass").text());
+}
+
+QDomElement ScenarioOBDH::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
+    {
+        QDomElement child = doc.createElement("totalOBDHMass");
+        child.appendChild(doc.createTextNode(convertToString(m_totalOBDHMass);
+        e.appendChild(child);
+    }
 }
 
 
@@ -2461,6 +5524,11 @@ void ScenarioSpaceScenario::load(const QDomElement& e)
             v->load(e.firstChildElement("AbstractParticipants"));
             m_AbstractParticipants << v;
         }
+}
+
+QDomElement ScenarioSpaceScenario::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc);
 }
 
 

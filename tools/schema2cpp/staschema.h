@@ -5,6 +5,10 @@ class ScenarioObject
 {
     public:
     void load(const QDomElement& /* e */) {}
+    QDomElement toDomElement(QDomDocument& doc)
+    {
+        return doc.createElement("Object");
+    }
 };
 
 // Forward declarations
