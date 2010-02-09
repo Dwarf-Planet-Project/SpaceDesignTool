@@ -57,7 +57,7 @@ const QString INDENT2 = INDENT + INDENT;
 const QString INDENT3 = INDENT2 + INDENT;
 
 const QString CLASS_PREFIX = "Scenario";
-
+const QString XMLNS = "tns";
 
 // String utility function
 QString capitalizeFirst(const QString& s)
@@ -103,6 +103,8 @@ QString stripNamespace(const QString& s)
 }
 
 
+class ComplexType;
+
 class SchemaType
 {
 public:
@@ -116,7 +118,7 @@ public:
         DoubleList,
         IntegerList,
         StringList,
-        Custom
+        Complex
     };
 
     SchemaType(Type type) :
@@ -124,22 +126,22 @@ public:
     {
     }
 
-    SchemaType(QString customType) :
-        m_type(Custom),
-        m_customType(customType)
+    SchemaType(QString complexTypeName) :
+        m_type(Complex),
+        m_complexTypeName(complexTypeName)
     {
     }
 
     SchemaType(const SchemaType& other) :
         m_type(other.m_type),
-        m_customType(other.m_customType)
+        m_complexTypeName(other.m_complexTypeName)
     {
     }
 
     SchemaType operator=(const SchemaType& other)
     {
         m_type = other.m_type;
-        m_customType = other.m_customType;
+        m_complexTypeName = other.m_complexTypeName;
 
         return *this;
     }
@@ -149,9 +151,9 @@ public:
         return m_type;
     }
 
-    bool isCustom() const
+    bool isComplex() const
     {
-        return type() == Custom;
+        return type() == Complex;
     }
 
     bool isArrayType() const
@@ -167,37 +169,16 @@ public:
         }
     }
 
-    QString ctype() const
+    QString complexTypeName() const
     {
-        switch (m_type)
-        {
-        case Boolean:
-            return "bool";
-        case Double:
-            return "double";
-        case Integer:
-            return "int";
-        case DateTime:
-            return "QDateTime";
-        case String:
-            return "QString";
-        case DoubleList:
-            return "QList<double>";
-        case StringList:
-            return "QList<QString>";
-        case IntegerList:
-            return "QList<int>";
-        case Custom:
-            return CLASS_PREFIX + m_customType;
-        default:
-            Q_ASSERT(0);
-            return "BAD";
-        }
+        return m_complexTypeName;
     }
+
+    QString ctype() const;
 
     QString memberVariableType() const
     {
-        if (isCustom())
+        if (isComplex())
         {
             return "QSharedPointer<" + ctype() + ">";
         }
@@ -209,7 +190,7 @@ public:
 
     QString memberVariableVectorType() const
     {
-        if (isCustom())
+        if (isComplex())
         {
             return "QList<QSharedPointer<" + ctype() + "> >";
         }
@@ -244,62 +225,11 @@ public:
         }
     }
 
-    static SchemaType CreateFromTypeName(const QString& name)
-    {
-        SchemaType::Type propType = SchemaType::Custom;
-        QString customTypeName;
-
-        if (name == "double")
-        {
-            propType = SchemaType::Double;
-        }
-        else if (name == "string")
-        {
-            propType = SchemaType::String;
-        }
-        else if (name == "boolean")
-        {
-            propType = SchemaType::Boolean;
-        }
-        else if (name == "int")
-        {
-            propType = SchemaType::Integer;
-        }
-        else if (name == "dateTime")
-        {
-            propType = SchemaType::DateTime;
-        }
-        else if (name == "ListOfDouble")
-        {
-            propType = SchemaType::DoubleList;
-        }
-        else if (name == "ListOfString")
-        {
-            propType = SchemaType::StringList;
-        }
-        else if (name == "ListOfInt")
-        {
-            propType = SchemaType::IntegerList;
-        }
-        else
-        {
-            customTypeName = name;
-            propType = SchemaType::Custom;
-        }
-
-        if (propType == SchemaType::Custom)
-        {
-            return SchemaType(customTypeName);
-        }
-        else
-        {
-            return SchemaType(propType);
-        }
-    }
+    static SchemaType CreateFromTypeName(const QString& name);
 
 private:
     Type m_type;
-    QString m_customType;
+    QString m_complexTypeName;
 };
 
 
@@ -376,6 +306,11 @@ public:
         return m_maxOccurs == UNBOUNDED || m_maxOccurs > 1;
     }
 
+    bool isOptional() const
+    {
+        return m_minOccurs == 0;
+    }
+
 private:
     SchemaType m_type;
     QString m_name;
@@ -392,7 +327,9 @@ public:
         m_type(type),
         m_defaultValue(""),
         m_minOccurs(1),
-        m_maxOccurs(1)
+        m_maxOccurs(1),
+        m_substitutionGroup(NULL),
+        m_isAbstract(false)
     {
     }
 
@@ -401,7 +338,10 @@ public:
         m_type(other.m_type),
         m_defaultValue(other.m_defaultValue),
         m_minOccurs(other.m_minOccurs),
-        m_maxOccurs(other.m_maxOccurs)
+        m_maxOccurs(other.m_maxOccurs),
+        m_substitutionGroup(other.m_substitutionGroup),
+        m_isAbstract(other.m_isAbstract),
+        m_substitutes(other.m_substitutes)
     {
     }
 
@@ -412,6 +352,9 @@ public:
         m_defaultValue = other.m_defaultValue;
         m_minOccurs     = other.m_minOccurs;
         m_maxOccurs     = other.m_maxOccurs;
+        m_substitutionGroup = other.m_substitutionGroup;
+        m_isAbstract    = other.m_isAbstract;
+        m_substitutes   = other.m_substitutes;
 
         return *this;
     }
@@ -456,6 +399,36 @@ public:
         m_maxOccurs = maxOccurs;
     }
 
+    Element* substitutionGroup() const
+    {
+        return m_substitutionGroup;
+    }
+
+    void setSubstitutionGroup(Element* subgroup)
+    {
+        m_substitutionGroup = subgroup;
+    }
+
+    bool isAbstract() const
+    {
+        return m_isAbstract;
+    }
+
+    void setAbstract(bool isAbstract)
+    {
+        m_isAbstract = isAbstract;
+    }
+
+    QList<QSharedPointer<Element> > substitutes()
+    {
+        return m_substitutes;
+    }
+
+    void addSubstitute(QSharedPointer<Element> e)
+    {
+        m_substitutes << e;
+    }
+
     enum {
         UNBOUNDED = -1
     };
@@ -466,15 +439,19 @@ private:
     QString m_defaultValue;
     int m_minOccurs;
     int m_maxOccurs;
+    Element* m_substitutionGroup;
+    bool m_isAbstract;
+    QList<QSharedPointer<Element> > m_substitutes;
 };
 
 
 class ComplexType
 {
 public:
-    ComplexType(const QString& name, const QString& baseTypeName = "") :
+    ComplexType(const QString& name, const QSharedPointer<SchemaType> baseType = QSharedPointer<SchemaType>()) :
         m_name(name),
-        m_baseTypeName(baseTypeName)
+        m_baseType(baseType),
+        m_isAbstract(false)
     {
     }
 
@@ -488,9 +465,9 @@ public:
         return m_name;
     }
 
-    QString baseTypeName() const
+    QSharedPointer<SchemaType> baseType() const
     {
-        return m_baseTypeName;
+        return m_baseType;
     }
 
     QString className() const
@@ -500,13 +477,13 @@ public:
 
     QString baseClassName() const
     {
-        if (baseTypeName().isEmpty())
+        if (baseType().isNull())
         {
             return CLASS_PREFIX + "Object";
         }
         else
         {
-            return CLASS_PREFIX + baseTypeName();
+            return baseType()->ctype();
         }
     }
 
@@ -520,6 +497,26 @@ public:
         m_properties << property;
     }
 
+    const QList<QSharedPointer<ComplexType> > subclasses() const
+    {
+        return m_subclasses;
+    }
+
+    void addSubclass(QSharedPointer<ComplexType> subclass)
+    {
+        m_subclasses << subclass;
+    }
+
+    bool isAbstract() const
+    {
+        return m_isAbstract;
+    }
+
+    void setAbstract(bool isAbstract)
+    {
+        m_isAbstract = isAbstract;
+    }
+
     void writeClassDefinition(QTextStream& out);
     void writeMethodDefinitions(QTextStream& out);
     void writeForwardDeclaration(QTextStream& out);
@@ -528,19 +525,108 @@ private:
     void writeMemberVariables(QTextStream& out);
     void writePublicInterface(QTextStream& out);
     void writeDefaultConstructor(QTextStream& out);
+    void writeDomFactory(QTextStream& out);
     void writeDomLoader(QTextStream& out);
     void writeDomSaver(QTextStream& out);
 
 private:
     QString m_name;
-    QString m_baseTypeName;
+    QSharedPointer<SchemaType> m_baseType;
     QList<Property> m_properties;
+    QList<QSharedPointer<ComplexType> > m_subclasses;
+    bool m_isAbstract;
 };
 
 
 QHash<QString, QSharedPointer<SchemaType> > g_GlobalTypes;
+QHash<QString, QSharedPointer<ComplexType> > g_GlobalComplexTypes;
 QHash<QString, QSharedPointer<Element> > g_GlobalElements;
 QList<QSharedPointer<ComplexType> > g_AllSchemaTypes;
+
+
+QString
+SchemaType::ctype() const
+{
+    switch (m_type)
+    {
+    case Boolean:
+        return "bool";
+    case Double:
+        return "double";
+    case Integer:
+        return "int";
+    case DateTime:
+        return "QDateTime";
+    case String:
+        return "QString";
+    case DoubleList:
+        return "QList<double>";
+    case StringList:
+        return "QList<QString>";
+    case IntegerList:
+        return "QList<int>";
+    case Complex:
+        return CLASS_PREFIX + m_complexTypeName;
+    default:
+        Q_ASSERT(0);
+        return "BAD";
+    }
+}
+
+
+SchemaType
+SchemaType::CreateFromTypeName(const QString& name)
+{
+    SchemaType::Type propType = SchemaType::Complex;
+    QString complexTypeName;
+
+    if (name == "double")
+    {
+        propType = SchemaType::Double;
+    }
+    else if (name == "string")
+    {
+        propType = SchemaType::String;
+    }
+    else if (name == "boolean")
+    {
+        propType = SchemaType::Boolean;
+    }
+    else if (name == "int")
+    {
+        propType = SchemaType::Integer;
+    }
+    else if (name == "dateTime")
+    {
+        propType = SchemaType::DateTime;
+    }
+    else if (name == "ListOfDouble")
+    {
+        propType = SchemaType::DoubleList;
+    }
+    else if (name == "ListOfString")
+    {
+        propType = SchemaType::StringList;
+    }
+    else if (name == "ListOfInt")
+    {
+        propType = SchemaType::IntegerList;
+    }
+    else
+    {
+        complexTypeName = name;
+        propType = SchemaType::Complex;
+    }
+
+    if (propType == SchemaType::Complex)
+    {
+        return SchemaType(complexTypeName);
+    }
+    else
+    {
+        return SchemaType(propType);
+    }
+}
 
 
 void
@@ -568,6 +654,8 @@ void
 ComplexType::writeMethodDefinitions(QTextStream& out)
 {
     writeDefaultConstructor(out);
+    out << "\n";
+    writeDomFactory(out);
     out << "\n";
     writeDomLoader(out);
     out << "\n";
@@ -602,8 +690,14 @@ ComplexType::writePublicInterface(QTextStream& out)
     // Default constructor
     out << INDENT << className() << "();\n";
 
+    // Factory method
+    out << INDENT << "static " << className() << "* create(const QDomElement& e);\n";
+
     // DOM Node loader
-    out << INDENT << "void " << "load(const QDomElement& e);\n";
+    out << INDENT << "virtual bool " << "load(const QDomElement& e, QDomElement* nextElement);\n";
+
+    // DOM Node writer
+    out << INDENT << "virtual QDomElement toDomElement(QDomDocument&) const;\n";
     out << "\n";
 
     // Accessors and mutators are all defined inline
@@ -645,7 +739,6 @@ ComplexType::writePublicInterface(QTextStream& out)
         }
     }
 }
-
 
 
 void
@@ -693,28 +786,106 @@ ComplexType::writeDefaultConstructor(QTextStream& out)
 
 
 void
+ComplexType::writeDomFactory(QTextStream& out)
+{
+    QString returnType = className() + "*";
+
+    out << returnType << " " << className() << "::create(const QDomElement& e)\n";
+    out << "{\n";
+    out << INDENT << returnType << " v;\n";
+    if (!isAbstract())
+    {
+        out << INDENT << "if (e.tagName() == " << quoteString(XMLNS + ":" + this->name()) << ")\n";
+        out << INDENT << "{\n";
+        out << INDENT2 << "v = new " << className() << ";\n";
+        out << INDENT2 << "QDomElement nextElement = e.firstChildElement();\n";
+        out << INDENT2 << "v->load(e, &nextElement);\n";
+        out << INDENT2 << "return v;\n";
+        out << INDENT << "}\n";
+    }
+
+    foreach (QSharedPointer<ComplexType> subType, subclasses())
+    {
+        out << INDENT << "if (e.tagName() == " << quoteString(subType->name()) << ")\n";
+        out << INDENT2 << "return " << subType->className() << "::create(e);\n";
+    }
+
+    out << INDENT << "return NULL;\n";
+    out << "}\n";
+}
+
+
+void
 ComplexType::writeDomLoader(QTextStream& out)
 {
-    out << "void " << className() << "::load(const QDomElement& e)\n";
+    const QString ADVANCE = "*next = next->nextSiblingElement()";
+
+    out << "bool " << className() << "::load(const QDomElement& e, QDomElement* next)\n";
     out << "{\n";
 
-    out << INDENT << baseClassName() << "::load(e);\n";
+    out << INDENT << baseClassName() << "::load(e, next);\n";
 
     foreach (Property p, m_properties)
     {
+        if (p.type().isComplex())
+        {
+            if (p.multipleOccurrencesAllowed())
+            {
+                out << INDENT << "for (;;)\n";
+                out << INDENT << "{\n";
+                out << INDENT2 << p.type().memberVariableType() << " v(" << p.type().ctype() << "::create(*next));\n";
+                out << INDENT2 << "if (v.isNull()) break; else {\n";
+                out << INDENT3 << p.memberVariableName() << " << v;\n";
+                out << INDENT3 << ADVANCE << ";\n";
+                out << INDENT2 << "}\n";
+                out << INDENT << "}\n";
+            }
+            else
+            {
+                out << INDENT << p.memberVariableName() << " = " <<
+                                 p.type().memberVariableType() << "(" << p.type().ctype() << "::create(*next));\n";
+                if (p.isOptional())
+                {
+                    // Only advance if the read was successful
+                    out << "if (!" << p.memberVariableName() << ".isNull())\n" << INDENT;
+                }
+                out << INDENT << ADVANCE << ";\n";
+            }
+        }
+        else
+        {
+            out << INDENT << p.memberVariableName() << " = " << p.type().parsingFunction() << "(next->text());\n";
+            out << INDENT << ADVANCE << ";\n";
+        }
+    }
+
+    out << INDENT << "return true;\n";
+    out << "}\n";
+
+#if 0
+    foreach (Property p, m_properties)
+    {
         QString child = "e.firstChildElement(" + quoteString(p.name()) + ")";
-        if (p.type().isCustom())
+        if (p.isOptional() && !p.multipleOccurrencesAllowed())
+        {
+            out << INDENT << "if (!" << child << ".isNull())\n";
+            out << INDENT << "{\n";
+        }
+
+        if (p.type().isComplex())
         {
             if (p.multipleOccurrencesAllowed())
             {
                 out << INDENT << "{\n";
-                out << INDENT2 << "QDomElement f = " << child << ";";
+                out << INDENT2 << "QDomElement f = " << child << ";\n";
                 out << INDENT2 << "while (!f.isNull())\n";
                 out << INDENT2 << "{\n";
                 out << INDENT3 << p.type().memberVariableType() << " v = " << p.type().memberVariableType() << "(new " << p.type().ctype() << "());\n";
                 out << INDENT3 << "v->load(" << child << ");\n";
                 out << INDENT3 << p.memberVariableName() << " << v;\n";
+                out << INDENT3 << "f = f.nextSiblingElement(" + quoteString(p.name()) + ");\n";
                 out << INDENT2 << "}\n";
+                out << INDENT << "}\n";
             }
             else
             {
@@ -725,15 +896,21 @@ ComplexType::writeDomLoader(QTextStream& out)
         else
         {
             out << INDENT << p.memberVariableName() << " = " << p.type().parsingFunction() << "(" << child;
-            if (!p.type().isCustom())
+            if (!p.type().isComplex())
             {
                 out << ".text()";
             }
             out << ");\n";
         }
+
+        if (p.isOptional() && !p.multipleOccurrencesAllowed())
+        {
+            out << INDENT << "}\n";
+        }
     }
 
     out << "}\n";
+#endif
 }
 
 
@@ -747,7 +924,7 @@ ComplexType::writeDomSaver(QTextStream& out)
 
     foreach (Property p, m_properties)
     {
-        if (p.type().isCustom())
+        if (p.type().isComplex())
         {
             if (p.multipleOccurrencesAllowed())
             {
@@ -766,12 +943,13 @@ ComplexType::writeDomSaver(QTextStream& out)
         {
             out << INDENT  << "{\n";
             out << INDENT2 << "QDomElement child = doc.createElement(" << quoteString(p.name()) << ");\n";
-            out << INDENT2 << "child.appendChild(doc.createTextNode(convertToString(" << p.memberVariableName() << ");\n";
+            out << INDENT2 << "child.appendChild(doc.createTextNode(convertToString(" << p.memberVariableName() << ")));\n";
             out << INDENT2 << "e.appendChild(child);\n";
             out << INDENT  << "}\n";
         }
     }
 
+    out << INDENT << "return e;\n";
     out << "}\n";
 }
 
@@ -832,7 +1010,26 @@ ComplexType* CreateComplexType(QDomElement e)
         }
     }
 
-    ComplexType* complexType = new ComplexType(typeName, base);
+    QSharedPointer<SchemaType> baseType;
+    if (!base.isEmpty())
+    {
+        if (g_GlobalTypes.contains(base))
+        {
+            baseType = g_GlobalTypes[base];
+            if (!baseType->isComplex())
+            {
+                std::cerr << "Extension of simple types is not supported.\n";
+                return NULL;
+            }            
+        }
+        else
+        {
+            std::cerr << "Base type " << base.toAscii().data() << " is not defined.\n";
+            return NULL;
+        }
+    }
+
+    ComplexType* complexType = new ComplexType(typeName, baseType);
 
 
     QDomNodeList children = sequence.childNodes();
@@ -966,6 +1163,23 @@ bool ParseSchemaFile(const QString& filename)
 
                 SchemaType schemaType = SchemaType::CreateFromTypeName(type);
                 QSharedPointer<Element> element(new Element(name, schemaType));
+
+                QString substitutionGroup = stripNamespace(e.attribute("substitutionGroup"));
+                if (!substitutionGroup.isEmpty())
+                {
+                    if (g_GlobalElements.contains(substitutionGroup))
+                    {
+                        QSharedPointer<Element> subElement = g_GlobalElements[substitutionGroup];
+                        element->setSubstitutionGroup(subElement.data());
+                        subElement->addSubstitute(element);                        
+                    }
+                    else
+                    {
+                        std::cerr << "Substitution group " << substitutionGroup.toAscii().data() << " not defined!\n";
+                    }
+                }
+                element->setAbstract(e.attribute("abstract") == "true");
+
                 g_GlobalElements.insert(name, element);
                 //std::cerr << "ELEMENT: " << name.toAscii().data() << " => " << type.toAscii().data() << std::endl;
             }
@@ -981,13 +1195,38 @@ bool ParseSchemaFile(const QString& filename)
         if (!complexType.isNull())
         {
             g_AllSchemaTypes << complexType;
+            QSharedPointer<SchemaType> baseType = complexType->baseType();
+            if (!baseType.isNull())
+            {
+                QString complexBaseName = baseType->complexTypeName();
+                if (complexBaseName.isEmpty())
+                {
+                    std::cerr << "Invalid base type\n";
+                }
+                else
+                {
+                    if (!g_GlobalComplexTypes.contains(complexBaseName))
+                    {
+                        std::cerr << "Undefined base type " << complexBaseName.toAscii().data() << std::endl;
+                    }
+                    else
+                    {
+                        QSharedPointer<ComplexType> complexBase = g_GlobalComplexTypes[complexBaseName];
+                        complexBase->addSubclass(complexType);
+                    }
+                }
+            }
         }
 
         if (e.parentNode().toElement().tagName() == "schema")
         {
             QString name = e.attribute("name");
-            QSharedPointer<SchemaType> schemaType(new SchemaType(complexType->name()));
+            QSharedPointer<SchemaType> schemaType(new SchemaType(name));
             g_GlobalTypes.insert(name, schemaType);
+            if (!complexType.isNull())
+            {
+                g_GlobalComplexTypes.insert(name, complexType);
+            }
         }
     }
 
@@ -1041,8 +1280,13 @@ int main(int argc, char *argv[])
     header << "class ScenarioObject\n";
     header << "{\n";
     header << INDENT << "public:\n";
-    header << INDENT << "void load(const QDomElement& /* e */) {}\n";
-    header << INDENT << "QDomElement toDomElement(QDomDocument& doc)\n";
+    header << INDENT << "virtual bool load(const QDomElement& e, QDomElement* nextElement)\n";
+    header << INDENT << "{\n";
+    header << INDENT2 << "*nextElement = e.firstChildElement();\n";
+    header << INDENT2 << "return true;\n";
+    header << INDENT << "}\n";
+    header << "\n";
+    header << INDENT << "virtual QDomElement toDomElement(QDomDocument& doc) const\n";
     header << INDENT << "{\n";
     header << INDENT2 << "return doc.createElement(\"Object\");\n";
     header << INDENT << "}\n";
