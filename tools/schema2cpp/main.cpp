@@ -59,6 +59,8 @@ const QString INDENT3 = INDENT2 + INDENT;
 const QString CLASS_PREFIX = "Scenario";
 const QString XMLNS = "tns";
 
+#define SHOW_DEBUG_INFO 0
+
 // String utility function
 QString capitalizeFirst(const QString& s)
 {
@@ -236,11 +238,12 @@ private:
 class Property
 {
 public:
-    Property(const QString& name, const SchemaType& type, int minOccurs = 1, int maxOccurs = 1) :
+    Property(const QString& name, const SchemaType& type, int minOccurs = 1, int maxOccurs = 1, bool isReference = false) :
        m_type(type),
        m_name(name),
        m_minOccurs(minOccurs),
-       m_maxOccurs(maxOccurs)
+       m_maxOccurs(maxOccurs),
+       m_isReference(isReference)
     {
     }
 
@@ -248,7 +251,8 @@ public:
         m_type(other.m_type),
         m_name(other.m_name),
         m_minOccurs(other.m_minOccurs),
-        m_maxOccurs(other.m_maxOccurs)
+        m_maxOccurs(other.m_maxOccurs),
+        m_isReference(other.m_isReference)
     {
     }
 
@@ -258,6 +262,7 @@ public:
         m_name = other.m_name;
         m_minOccurs = other.m_minOccurs;
         m_maxOccurs = other.m_maxOccurs;
+        m_isReference = other.m_isReference;
 
         return *this;
     }
@@ -311,11 +316,17 @@ public:
         return m_minOccurs == 0;
     }
 
+    bool isReference() const
+    {
+        return m_isReference;
+    }
+
 private:
     SchemaType m_type;
     QString m_name;
     int m_minOccurs;
     int m_maxOccurs;
+    bool m_isReference;
 };
 
 
@@ -806,7 +817,7 @@ ComplexType::writeDomFactory(QTextStream& out)
 
     foreach (QSharedPointer<ComplexType> subType, subclasses())
     {
-        out << INDENT << "if (e.tagName() == " << quoteString(subType->name()) << ")\n";
+        out << INDENT << "if (e.tagName() == " << quoteString(XMLNS + ":" + subType->name()) << ")\n";
         out << INDENT2 << "return " << subType->className() << "::create(e);\n";
     }
 
@@ -824,6 +835,10 @@ ComplexType::writeDomLoader(QTextStream& out)
     out << "{\n";
 
     out << INDENT << baseClassName() << "::load(e, next);\n";
+
+#if SHOW_DEBUG_INFO
+    out << INDENT << "cerr << " << quoteString(name()) << " << endl;\n";
+#endif
 
     foreach (Property p, m_properties)
     {
@@ -854,63 +869,25 @@ ComplexType::writeDomLoader(QTextStream& out)
         }
         else
         {
-            out << INDENT << p.memberVariableName() << " = " << p.type().parsingFunction() << "(next->text());\n";
-            out << INDENT << ADVANCE << ";\n";
+            if (p.isOptional())
+            {
+                out << INDENT << "if (next->tagName() == " << quoteString(XMLNS + ":" + p.name()) << ")\n";
+                out << INDENT << "{\n";
+            }
+
+            //out << "cerr << \"OPT:\" << next->text().toAscii().data() << endl;";
+            out << INDENT2 << p.memberVariableName() << " = " << p.type().parsingFunction() << "(next->firstChild().toText().data());\n";
+            out << INDENT2 << ADVANCE << ";\n";
+
+            if (p.isOptional())
+            {
+                out << INDENT << "}\n";
+            }
         }
     }
 
     out << INDENT << "return true;\n";
     out << "}\n";
-
-#if 0
-    foreach (Property p, m_properties)
-    {
-        QString child = "e.firstChildElement(" + quoteString(p.name()) + ")";
-        if (p.isOptional() && !p.multipleOccurrencesAllowed())
-        {
-            out << INDENT << "if (!" << child << ".isNull())\n";
-            out << INDENT << "{\n";
-        }
-
-        if (p.type().isComplex())
-        {
-            if (p.multipleOccurrencesAllowed())
-            {
-                out << INDENT << "{\n";
-                out << INDENT2 << "QDomElement f = " << child << ";\n";
-                out << INDENT2 << "while (!f.isNull())\n";
-                out << INDENT2 << "{\n";
-                out << INDENT3 << p.type().memberVariableType() << " v = " << p.type().memberVariableType() << "(new " << p.type().ctype() << "());\n";
-                out << INDENT3 << "v->load(" << child << ");\n";
-                out << INDENT3 << p.memberVariableName() << " << v;\n";
-                out << INDENT3 << "f = f.nextSiblingElement(" + quoteString(p.name()) + ");\n";
-                out << INDENT2 << "}\n";
-                out << INDENT << "}\n";
-            }
-            else
-            {
-                out << INDENT << p.memberVariableName() << " = " << p.type().memberVariableType() << "(new " << p.type().ctype() << "());\n";
-                out << INDENT << p.memberVariableName() << "->load(" << child << ");\n";
-            }
-        }
-        else
-        {
-            out << INDENT << p.memberVariableName() << " = " << p.type().parsingFunction() << "(" << child;
-            if (!p.type().isComplex())
-            {
-                out << ".text()";
-            }
-            out << ");\n";
-        }
-
-        if (p.isOptional() && !p.multipleOccurrencesAllowed())
-        {
-            out << INDENT << "}\n";
-        }
-    }
-
-    out << "}\n";
-#endif
 }
 
 
@@ -921,20 +898,27 @@ ComplexType::writeDomSaver(QTextStream& out)
     out << "{\n";
 
     out << INDENT << "QDomElement e = " << baseClassName() << "::toDomElement(doc);\n";
-
+    out << INDENT << "e.setTagName(" << quoteString(name()) << ");\n";
     foreach (Property p, m_properties)
     {
         if (p.type().isComplex())
         {
             if (p.multipleOccurrencesAllowed())
             {
+                out << INDENT << "foreach (" << p.type().memberVariableType() << " p, " << p.memberVariableName() << ")\n";
+                out << INDENT << "{\n";
+                out << INDENT2 << "e.appendChild(" << "p->toDomElement(doc));\n";
+                out << INDENT << "}\n";
             }
             else
             {
                 out << INDENT  << "if (!" << p.memberVariableName() << ".isNull())\n";
                 out << INDENT  << "{\n";
                 out << INDENT2 << "QDomElement child = " << p.memberVariableName() << "->toDomElement(doc);\n";
-                out << INDENT2 << "child.setTagName(" << quoteString(p.name()) << ");\n";
+                if (!p.isReference())
+                {
+                    out << INDENT2 << "child.setTagName(" << quoteString(p.name()) << ");\n";
+                }
                 out << INDENT2 << "e.appendChild(child);\n";
                 out << INDENT  << "}\n";
             }
@@ -1072,7 +1056,7 @@ ComplexType* CreateComplexType(QDomElement e)
                     else
                     {
                         QSharedPointer<Element> refElement = g_GlobalElements[refElementName];
-                        Property property(refElement->name(), refElement->type(), minOccurs, maxOccurs);
+                        Property property(refElement->name(), refElement->type(), minOccurs, maxOccurs, true);
                         complexType->addProperty(property);
                     }
                 }
@@ -1274,7 +1258,7 @@ int main(int argc, char *argv[])
     // Write the header file preamble
     header << "class QDomElement;\n";
 
-    header << "#include \"ScenarioParse.h\"\n";
+    header << "#include \"stascenarioutil.h\"\n";
     header << "\n";
 
     header << "class ScenarioObject\n";
@@ -1301,6 +1285,8 @@ int main(int argc, char *argv[])
     header << "\n\n";
 
     header << "// Space scenario class definitions\n\n";
+    header << "// Automatically generated by schema2cpp - DO NOT EDIT!\n\n";
+
     foreach (QSharedPointer<ComplexType> e, g_AllSchemaTypes)
     {
         header << "// " << e->className() << "\n";
@@ -1316,9 +1302,17 @@ int main(int argc, char *argv[])
     QTextStream source(&sourceFile);
 
     // Write the preamble
+    source << "// Space scenario class implementations\n\n";
+    source << "// Automatically generated by schema2cpp - DO NOT EDIT!\n\n";
+
     source << "#include <QtXml>\n";
     source << "#include " << quoteString(headerFileName) << "\n";
     source << "\n";
+
+#if SHOW_DEBUG_INFO
+    source << "#include <iostream>\n";
+    source << "using namespace std;\n";
+#endif
 
     foreach (QSharedPointer<ComplexType> e, g_AllSchemaTypes)
     {
