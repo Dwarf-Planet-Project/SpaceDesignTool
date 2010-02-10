@@ -11,10 +11,10 @@
 	<element name="SpaceScenario">
 		<complexType>
 			<sequence>
+                <element name="Name" type="string" use="required"></element>
 				<element ref="tns:AbstractParticipant" minOccurs="0"
 					maxOccurs="unbounded"></element>
 			</sequence>
-			<attribute name="Name" type="string" use="required"></attribute>
 		</complexType>
 	</element>
 

@@ -72,6 +72,8 @@
 		type="tns:RendezvousType"></element>
 	<element name="FlyBy" substitutionGroup="tns:AbstractTrajectory"
 		type="tns:FlyByType"></element>
+	<element name="LoiteringTLE" substitutionGroup="tns:AbstractTrajectory"
+		type="tns:LoiteringTLEType"></element>
 
 	<complexType name="SCEnvironmentType">
 	  <complexContent>
@@ -144,6 +146,19 @@
 				</sequence>
 			  </complexType>
 			</element>
+		  </sequence>
+        </extension>
+      </complexContent>
+	</complexType>
+
+	<complexType name="LoiteringTLEType">
+      <complexContent>
+        <extension base="tns:AbstractTrajectoryType">
+		  <sequence>
+			<element ref="tns:TimeLine"></element>
+			<element name="tleLine0" type="string"></element>
+			<element name="tleLine1" type="string"></element>
+			<element name="tleLine2" type="string"></element>
 		  </sequence>
         </extension>
       </complexContent>

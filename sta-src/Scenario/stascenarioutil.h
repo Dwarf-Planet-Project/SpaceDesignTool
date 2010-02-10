@@ -22,4 +22,14 @@ extern QString convertToString(const QList<double>& l);
 extern QString convertToString(const QList<int>& l);
 extern QString convertToString(const QList<QString>& l);
 
+// Create a new element with a single text node as a child. The text node
+// contains the string representation of the value.
+template<typename T>
+QDomElement createSimpleElement(const QDomDocument& doc, const QString& tagName, T value)
+{
+    QDomElement child = doc.createElement(tagName);
+    child.appendChild(doc.createTextNode(convertToString(value)));
+    return child;
+}
+
 #endif // _STA_SCENARIO_UTIL_H_

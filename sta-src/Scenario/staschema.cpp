@@ -45,11 +45,7 @@ QDomElement ScenarioParticipantType::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("ParticipantType");
-    {
-        QDomElement child = doc.createElement("Name");
-        child.appendChild(doc.createTextNode(convertToString(m_Name)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "Name", m_Name));
     return e;
 }
 
@@ -99,21 +95,9 @@ QDomElement ScenarioOptVarDouble::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("OptVarDouble");
-    {
-        QDomElement child = doc.createElement("min");
-        child.appendChild(doc.createTextNode(convertToString(m_min)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("value");
-        child.appendChild(doc.createTextNode(convertToString(m_value)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("max");
-        child.appendChild(doc.createTextNode(convertToString(m_max)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "min", m_min));
+    e.appendChild(createSimpleElement(doc, "value", m_value));
+    e.appendChild(createSimpleElement(doc, "max", m_max));
     return e;
 }
 
@@ -156,16 +140,8 @@ QDomElement ScenarioOptVarInt::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("OptVarInt");
-    {
-        QDomElement child = doc.createElement("list");
-        child.appendChild(doc.createTextNode(convertToString(m_list)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("value");
-        child.appendChild(doc.createTextNode(convertToString(m_value)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "list", m_list));
+    e.appendChild(createSimpleElement(doc, "value", m_value));
     return e;
 }
 
@@ -202,11 +178,7 @@ QDomElement ScenarioOptVarBool::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("OptVarBool");
-    {
-        QDomElement child = doc.createElement("value");
-        child.appendChild(doc.createTextNode(convertToString(m_value)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "value", m_value));
     return e;
 }
 
@@ -248,16 +220,8 @@ QDomElement ScenarioOptVarString::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("OptVarString");
-    {
-        QDomElement child = doc.createElement("list");
-        child.appendChild(doc.createTextNode(convertToString(m_list)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("value");
-        child.appendChild(doc.createTextNode(convertToString(m_value)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "list", m_list));
+    e.appendChild(createSimpleElement(doc, "value", m_value));
     return e;
 }
 
@@ -302,21 +266,9 @@ QDomElement ScenarioTimeLine::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("TimeLine");
-    {
-        QDomElement child = doc.createElement("StartTime");
-        child.appendChild(doc.createTextNode(convertToString(m_StartTime)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("StepTime");
-        child.appendChild(doc.createTextNode(convertToString(m_StepTime)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("EndTime");
-        child.appendChild(doc.createTextNode(convertToString(m_EndTime)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "StartTime", m_StartTime));
+    e.appendChild(createSimpleElement(doc, "StepTime", m_StepTime));
+    e.appendChild(createSimpleElement(doc, "EndTime", m_EndTime));
     return e;
 }
 
@@ -353,11 +305,7 @@ QDomElement ScenarioPropagation::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("Propagation");
-    {
-        QDomElement child = doc.createElement("propagator");
-        child.appendChild(doc.createTextNode(convertToString(m_propagator)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "propagator", m_propagator));
     return e;
 }
 
@@ -454,16 +402,8 @@ QDomElement ScenarioCentralBodyType::toDomElement(QDomDocument& doc) const
         child.setTagName("GravityModel");
         e.appendChild(child);
     }
-    {
-        QDomElement child = doc.createElement("atmosphere");
-        child.appendChild(doc.createTextNode(convertToString(m_atmosphere)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("ellipticity");
-        child.appendChild(doc.createTextNode(convertToString(m_ellipticity)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "atmosphere", m_atmosphere));
+    e.appendChild(createSimpleElement(doc, "ellipticity", m_ellipticity));
     return e;
 }
 
@@ -506,21 +446,9 @@ QDomElement ScenarioGravityModel::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("GravityModel");
-    {
-        QDomElement child = doc.createElement("modelName");
-        child.appendChild(doc.createTextNode(convertToString(m_modelName)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("numberOfZonals");
-        child.appendChild(doc.createTextNode(convertToString(m_numberOfZonals)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("numberOfTesserals");
-        child.appendChild(doc.createTextNode(convertToString(m_numberOfTesserals)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "modelName", m_modelName));
+    e.appendChild(createSimpleElement(doc, "numberOfZonals", m_numberOfZonals));
+    e.appendChild(createSimpleElement(doc, "numberOfTesserals", m_numberOfTesserals));
     return e;
 }
 
@@ -640,21 +568,9 @@ QDomElement ScenarioGroundPositionType::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioAbstract3DOFPositionType::toDomElement(doc);
     e.setTagName("GroundPositionType");
-    {
-        QDomElement child = doc.createElement("latitude");
-        child.appendChild(doc.createTextNode(convertToString(m_latitude)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("longitude");
-        child.appendChild(doc.createTextNode(convertToString(m_longitude)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("altitude");
-        child.appendChild(doc.createTextNode(convertToString(m_altitude)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "latitude", m_latitude));
+    e.appendChild(createSimpleElement(doc, "longitude", m_longitude));
+    e.appendChild(createSimpleElement(doc, "altitude", m_altitude));
     return e;
 }
 
@@ -707,36 +623,12 @@ QDomElement ScenarioStateVectorType::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioAbstract6DOFPositionType::toDomElement(doc);
     e.setTagName("StateVectorType");
-    {
-        QDomElement child = doc.createElement("x");
-        child.appendChild(doc.createTextNode(convertToString(m_x)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("y");
-        child.appendChild(doc.createTextNode(convertToString(m_y)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("z");
-        child.appendChild(doc.createTextNode(convertToString(m_z)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("vx");
-        child.appendChild(doc.createTextNode(convertToString(m_vx)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("vy");
-        child.appendChild(doc.createTextNode(convertToString(m_vy)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("vz");
-        child.appendChild(doc.createTextNode(convertToString(m_vz)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "x", m_x));
+    e.appendChild(createSimpleElement(doc, "y", m_y));
+    e.appendChild(createSimpleElement(doc, "z", m_z));
+    e.appendChild(createSimpleElement(doc, "vx", m_vx));
+    e.appendChild(createSimpleElement(doc, "vy", m_vy));
+    e.appendChild(createSimpleElement(doc, "vz", m_vz));
     return e;
 }
 
@@ -789,36 +681,12 @@ QDomElement ScenarioKeplerianElementsType::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioAbstract6DOFPositionType::toDomElement(doc);
     e.setTagName("KeplerianElementsType");
-    {
-        QDomElement child = doc.createElement("semiMajorAxis");
-        child.appendChild(doc.createTextNode(convertToString(m_semiMajorAxis)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("eccentricity");
-        child.appendChild(doc.createTextNode(convertToString(m_eccentricity)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("inclination");
-        child.appendChild(doc.createTextNode(convertToString(m_inclination)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("RAAN");
-        child.appendChild(doc.createTextNode(convertToString(m_RAAN)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("argumentOfPeriapsis");
-        child.appendChild(doc.createTextNode(convertToString(m_argumentOfPeriapsis)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("trueAnomaly");
-        child.appendChild(doc.createTextNode(convertToString(m_trueAnomaly)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "semiMajorAxis", m_semiMajorAxis));
+    e.appendChild(createSimpleElement(doc, "eccentricity", m_eccentricity));
+    e.appendChild(createSimpleElement(doc, "inclination", m_inclination));
+    e.appendChild(createSimpleElement(doc, "RAAN", m_RAAN));
+    e.appendChild(createSimpleElement(doc, "argumentOfPeriapsis", m_argumentOfPeriapsis));
+    e.appendChild(createSimpleElement(doc, "trueAnomaly", m_trueAnomaly));
     return e;
 }
 
@@ -871,36 +739,12 @@ QDomElement ScenarioSphericalCoordinatesType::toDomElement(QDomDocument& doc) co
 {
     QDomElement e = ScenarioAbstract6DOFPositionType::toDomElement(doc);
     e.setTagName("SphericalCoordinatesType");
-    {
-        QDomElement child = doc.createElement("radialDistance");
-        child.appendChild(doc.createTextNode(convertToString(m_radialDistance)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("longitude");
-        child.appendChild(doc.createTextNode(convertToString(m_longitude)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("latitude");
-        child.appendChild(doc.createTextNode(convertToString(m_latitude)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("flightPathVelocity");
-        child.appendChild(doc.createTextNode(convertToString(m_flightPathVelocity)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("flightPathAngle");
-        child.appendChild(doc.createTextNode(convertToString(m_flightPathAngle)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("headingAngle");
-        child.appendChild(doc.createTextNode(convertToString(m_headingAngle)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "radialDistance", m_radialDistance));
+    e.appendChild(createSimpleElement(doc, "longitude", m_longitude));
+    e.appendChild(createSimpleElement(doc, "latitude", m_latitude));
+    e.appendChild(createSimpleElement(doc, "flightPathVelocity", m_flightPathVelocity));
+    e.appendChild(createSimpleElement(doc, "flightPathAngle", m_flightPathAngle));
+    e.appendChild(createSimpleElement(doc, "headingAngle", m_headingAngle));
     return e;
 }
 
@@ -995,36 +839,12 @@ QDomElement ScenarioEulerBLVLHType::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioAbstract6DOFAttitudeType::toDomElement(doc);
     e.setTagName("EulerBLVLHType");
-    {
-        QDomElement child = doc.createElement("phi");
-        child.appendChild(doc.createTextNode(convertToString(m_phi)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("theta");
-        child.appendChild(doc.createTextNode(convertToString(m_theta)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("psi");
-        child.appendChild(doc.createTextNode(convertToString(m_psi)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("phiDot");
-        child.appendChild(doc.createTextNode(convertToString(m_phiDot)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("thetaDot");
-        child.appendChild(doc.createTextNode(convertToString(m_thetaDot)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("psiDot");
-        child.appendChild(doc.createTextNode(convertToString(m_psiDot)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "phi", m_phi));
+    e.appendChild(createSimpleElement(doc, "theta", m_theta));
+    e.appendChild(createSimpleElement(doc, "psi", m_psi));
+    e.appendChild(createSimpleElement(doc, "phiDot", m_phiDot));
+    e.appendChild(createSimpleElement(doc, "thetaDot", m_thetaDot));
+    e.appendChild(createSimpleElement(doc, "psiDot", m_psiDot));
     return e;
 }
 
@@ -1077,36 +897,12 @@ QDomElement ScenarioEulerBIType::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioAbstract6DOFAttitudeType::toDomElement(doc);
     e.setTagName("EulerBIType");
-    {
-        QDomElement child = doc.createElement("phi");
-        child.appendChild(doc.createTextNode(convertToString(m_phi)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("theta");
-        child.appendChild(doc.createTextNode(convertToString(m_theta)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("psi");
-        child.appendChild(doc.createTextNode(convertToString(m_psi)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("phiDot");
-        child.appendChild(doc.createTextNode(convertToString(m_phiDot)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("thetaDot");
-        child.appendChild(doc.createTextNode(convertToString(m_thetaDot)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("psiDot");
-        child.appendChild(doc.createTextNode(convertToString(m_psiDot)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "phi", m_phi));
+    e.appendChild(createSimpleElement(doc, "theta", m_theta));
+    e.appendChild(createSimpleElement(doc, "psi", m_psi));
+    e.appendChild(createSimpleElement(doc, "phiDot", m_phiDot));
+    e.appendChild(createSimpleElement(doc, "thetaDot", m_thetaDot));
+    e.appendChild(createSimpleElement(doc, "psiDot", m_psiDot));
     return e;
 }
 
@@ -1165,46 +961,14 @@ QDomElement ScenarioqBLVLHType::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioAbstract6DOFAttitudeType::toDomElement(doc);
     e.setTagName("qBLVLHType");
-    {
-        QDomElement child = doc.createElement("q1");
-        child.appendChild(doc.createTextNode(convertToString(m_q1)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("q2");
-        child.appendChild(doc.createTextNode(convertToString(m_q2)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("q3");
-        child.appendChild(doc.createTextNode(convertToString(m_q3)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("q4");
-        child.appendChild(doc.createTextNode(convertToString(m_q4)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("q1Dot");
-        child.appendChild(doc.createTextNode(convertToString(m_q1Dot)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("q2Dot");
-        child.appendChild(doc.createTextNode(convertToString(m_q2Dot)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("q3Dot");
-        child.appendChild(doc.createTextNode(convertToString(m_q3Dot)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("q4Dot");
-        child.appendChild(doc.createTextNode(convertToString(m_q4Dot)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "q1", m_q1));
+    e.appendChild(createSimpleElement(doc, "q2", m_q2));
+    e.appendChild(createSimpleElement(doc, "q3", m_q3));
+    e.appendChild(createSimpleElement(doc, "q4", m_q4));
+    e.appendChild(createSimpleElement(doc, "q1Dot", m_q1Dot));
+    e.appendChild(createSimpleElement(doc, "q2Dot", m_q2Dot));
+    e.appendChild(createSimpleElement(doc, "q3Dot", m_q3Dot));
+    e.appendChild(createSimpleElement(doc, "q4Dot", m_q4Dot));
     return e;
 }
 
@@ -1263,46 +1027,14 @@ QDomElement ScenarioqBIType::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioAbstract6DOFAttitudeType::toDomElement(doc);
     e.setTagName("qBIType");
-    {
-        QDomElement child = doc.createElement("q1");
-        child.appendChild(doc.createTextNode(convertToString(m_q1)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("q2");
-        child.appendChild(doc.createTextNode(convertToString(m_q2)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("q3");
-        child.appendChild(doc.createTextNode(convertToString(m_q3)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("q4");
-        child.appendChild(doc.createTextNode(convertToString(m_q4)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("q1Dot");
-        child.appendChild(doc.createTextNode(convertToString(m_q1Dot)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("q2Dot");
-        child.appendChild(doc.createTextNode(convertToString(m_q2Dot)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("q3Dot");
-        child.appendChild(doc.createTextNode(convertToString(m_q3Dot)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("q4Dot");
-        child.appendChild(doc.createTextNode(convertToString(m_q4Dot)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "q1", m_q1));
+    e.appendChild(createSimpleElement(doc, "q2", m_q2));
+    e.appendChild(createSimpleElement(doc, "q3", m_q3));
+    e.appendChild(createSimpleElement(doc, "q4", m_q4));
+    e.appendChild(createSimpleElement(doc, "q1Dot", m_q1Dot));
+    e.appendChild(createSimpleElement(doc, "q2Dot", m_q2Dot));
+    e.appendChild(createSimpleElement(doc, "q3Dot", m_q3Dot));
+    e.appendChild(createSimpleElement(doc, "q4Dot", m_q4Dot));
     return e;
 }
 
@@ -1446,61 +1178,17 @@ QDomElement ScenarioOptimization::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("Optimization");
-    {
-        QDomElement child = doc.createElement("nVariables");
-        child.appendChild(doc.createTextNode(convertToString(m_nVariables)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("variables");
-        child.appendChild(doc.createTextNode(convertToString(m_variables)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("variablesMatrix");
-        child.appendChild(doc.createTextNode(convertToString(m_variablesMatrix)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("nObjectives");
-        child.appendChild(doc.createTextNode(convertToString(m_nObjectives)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("objectives");
-        child.appendChild(doc.createTextNode(convertToString(m_objectives)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("objectivesMatrix");
-        child.appendChild(doc.createTextNode(convertToString(m_objectivesMatrix)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("nConstraints");
-        child.appendChild(doc.createTextNode(convertToString(m_nConstraints)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("constraints");
-        child.appendChild(doc.createTextNode(convertToString(m_constraints)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("constraintsMatrix");
-        child.appendChild(doc.createTextNode(convertToString(m_constraintsMatrix)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("algorithm");
-        child.appendChild(doc.createTextNode(convertToString(m_algorithm)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("algorithmParameters");
-        child.appendChild(doc.createTextNode(convertToString(m_algorithmParameters)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "nVariables", m_nVariables));
+    e.appendChild(createSimpleElement(doc, "variables", m_variables));
+    e.appendChild(createSimpleElement(doc, "variablesMatrix", m_variablesMatrix));
+    e.appendChild(createSimpleElement(doc, "nObjectives", m_nObjectives));
+    e.appendChild(createSimpleElement(doc, "objectives", m_objectives));
+    e.appendChild(createSimpleElement(doc, "objectivesMatrix", m_objectivesMatrix));
+    e.appendChild(createSimpleElement(doc, "nConstraints", m_nConstraints));
+    e.appendChild(createSimpleElement(doc, "constraints", m_constraints));
+    e.appendChild(createSimpleElement(doc, "constraintsMatrix", m_constraintsMatrix));
+    e.appendChild(createSimpleElement(doc, "algorithm", m_algorithm));
+    e.appendChild(createSimpleElement(doc, "algorithmParameters", m_algorithmParameters));
     return e;
 }
 
@@ -1569,46 +1257,14 @@ QDomElement ScenarioOutputFiles::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("OutputFiles");
-    {
-        QDomElement child = doc.createElement("paretoFrontVarsFileName");
-        child.appendChild(doc.createTextNode(convertToString(m_paretoFrontVarsFileName)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("paretoFrontCstrsFileName");
-        child.appendChild(doc.createTextNode(convertToString(m_paretoFrontCstrsFileName)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("paretoFrontObjsFileName");
-        child.appendChild(doc.createTextNode(convertToString(m_paretoFrontObjsFileName)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("geometryFileName");
-        child.appendChild(doc.createTextNode(convertToString(m_geometryFileName)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("trajPostionFileName");
-        child.appendChild(doc.createTextNode(convertToString(m_trajPostionFileName)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("trajAttitudeFileName");
-        child.appendChild(doc.createTextNode(convertToString(m_trajAttitudeFileName)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("trajMiscFileName");
-        child.appendChild(doc.createTextNode(convertToString(m_trajMiscFileName)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("successProbabilityFileName");
-        child.appendChild(doc.createTextNode(convertToString(m_successProbabilityFileName)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "paretoFrontVarsFileName", m_paretoFrontVarsFileName));
+    e.appendChild(createSimpleElement(doc, "paretoFrontCstrsFileName", m_paretoFrontCstrsFileName));
+    e.appendChild(createSimpleElement(doc, "paretoFrontObjsFileName", m_paretoFrontObjsFileName));
+    e.appendChild(createSimpleElement(doc, "geometryFileName", m_geometryFileName));
+    e.appendChild(createSimpleElement(doc, "trajPostionFileName", m_trajPostionFileName));
+    e.appendChild(createSimpleElement(doc, "trajAttitudeFileName", m_trajAttitudeFileName));
+    e.appendChild(createSimpleElement(doc, "trajMiscFileName", m_trajMiscFileName));
+    e.appendChild(createSimpleElement(doc, "successProbabilityFileName", m_successProbabilityFileName));
     return e;
 }
 
@@ -1686,11 +1342,7 @@ QDomElement ScenarioCircularCone::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioAbstractConeType::toDomElement(doc);
     e.setTagName("CircularCone");
-    {
-        QDomElement child = doc.createElement("coneAngle");
-        child.appendChild(doc.createTextNode(convertToString(m_coneAngle)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "coneAngle", m_coneAngle));
     return e;
 }
 
@@ -1731,16 +1383,8 @@ QDomElement ScenarioRectangularConeType::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioAbstractConeType::toDomElement(doc);
     e.setTagName("RectangularConeType");
-    {
-        QDomElement child = doc.createElement("coneAngle1");
-        child.appendChild(doc.createTextNode(convertToString(m_coneAngle1)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("coneAngle2");
-        child.appendChild(doc.createTextNode(convertToString(m_coneAngle2)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "coneAngle1", m_coneAngle1));
+    e.appendChild(createSimpleElement(doc, "coneAngle2", m_coneAngle2));
     return e;
 }
 
@@ -1885,31 +1529,11 @@ QDomElement ScenarioPointingDirection::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("PointingDirection");
-    {
-        QDomElement child = doc.createElement("referenceSystem");
-        child.appendChild(doc.createTextNode(convertToString(m_referenceSystem)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("azimuth");
-        child.appendChild(doc.createTextNode(convertToString(m_azimuth)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("elevation");
-        child.appendChild(doc.createTextNode(convertToString(m_elevation)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("azimuthDot");
-        child.appendChild(doc.createTextNode(convertToString(m_azimuthDot)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("elevationDot");
-        child.appendChild(doc.createTextNode(convertToString(m_elevationDot)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "referenceSystem", m_referenceSystem));
+    e.appendChild(createSimpleElement(doc, "azimuth", m_azimuth));
+    e.appendChild(createSimpleElement(doc, "elevation", m_elevation));
+    e.appendChild(createSimpleElement(doc, "azimuthDot", m_azimuthDot));
+    e.appendChild(createSimpleElement(doc, "elevationDot", m_elevationDot));
     return e;
 }
 
@@ -2016,11 +1640,7 @@ QDomElement ScenarioLocationType::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("LocationType");
-    {
-        QDomElement child = doc.createElement("CentralBody");
-        child.appendChild(doc.createTextNode(convertToString(m_CentralBody)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "CentralBody", m_CentralBody));
     if (!m_Abstract3DOFPosition.isNull())
     {
         QDomElement child = m_Abstract3DOFPosition->toDomElement(doc);
@@ -2120,11 +1740,7 @@ QDomElement ScenarioLaunchPad::toDomElement(QDomDocument& doc) const
         child.setTagName("Location");
         e.appendChild(child);
     }
-    {
-        QDomElement child = doc.createElement("clearingAltitude");
-        child.appendChild(doc.createTextNode(convertToString(m_clearingAltitude)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "clearingAltitude", m_clearingAltitude));
     return e;
 }
 
@@ -2273,11 +1889,7 @@ QDomElement ScenarioLV::toDomElement(QDomDocument& doc) const
         QDomElement child = m_OutputFiles->toDomElement(doc);
         e.appendChild(child);
     }
-    {
-        QDomElement child = doc.createElement("Appearance");
-        child.appendChild(doc.createTextNode(convertToString(m_Appearance)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "Appearance", m_Appearance));
     return e;
 }
 
@@ -2449,16 +2061,8 @@ QDomElement ScenarioSystem::toDomElement(QDomDocument& doc) const
         child.setTagName("propType");
         e.appendChild(child);
     }
-    {
-        QDomElement child = doc.createElement("fuelType");
-        child.appendChild(doc.createTextNode(convertToString(m_fuelType)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("oxType");
-        child.appendChild(doc.createTextNode(convertToString(m_oxType)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "fuelType", m_fuelType));
+    e.appendChild(createSimpleElement(doc, "oxType", m_oxType));
     if (!m_numberOfEngines.isNull())
     {
         QDomElement child = m_numberOfEngines->toDomElement(doc);
@@ -2471,22 +2075,14 @@ QDomElement ScenarioSystem::toDomElement(QDomDocument& doc) const
         child.setTagName("nominalThrust");
         e.appendChild(child);
     }
-    {
-        QDomElement child = doc.createElement("totalEngineDryMass");
-        child.appendChild(doc.createTextNode(convertToString(m_totalEngineDryMass)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "totalEngineDryMass", m_totalEngineDryMass));
     if (!m_propMass.isNull())
     {
         QDomElement child = m_propMass->toDomElement(doc);
         child.setTagName("propMass");
         e.appendChild(child);
     }
-    {
-        QDomElement child = doc.createElement("engineCoGLongPosition");
-        child.appendChild(doc.createTextNode(convertToString(m_engineCoGLongPosition)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "engineCoGLongPosition", m_engineCoGLongPosition));
     if (!m_lengthOverDiam.isNull())
     {
         QDomElement child = m_lengthOverDiam->toDomElement(doc);
@@ -2511,11 +2107,7 @@ QDomElement ScenarioSystem::toDomElement(QDomDocument& doc) const
         child.setTagName("feedType");
         e.appendChild(child);
     }
-    {
-        QDomElement child = doc.createElement("coolingType");
-        child.appendChild(doc.createTextNode(convertToString(m_coolingType)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "coolingType", m_coolingType));
     if (!m_mixtureRatio.isNull())
     {
         QDomElement child = m_mixtureRatio->toDomElement(doc);
@@ -2588,36 +2180,12 @@ QDomElement ScenarioLiquidTanks::toDomElement(QDomDocument& doc) const
         child.setTagName("tanksPressureNorm");
         e.appendChild(child);
     }
-    {
-        QDomElement child = doc.createElement("oxTankLength");
-        child.appendChild(doc.createTextNode(convertToString(m_oxTankLength)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("oxTankDiam");
-        child.appendChild(doc.createTextNode(convertToString(m_oxTankDiam)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("oxTankPressure");
-        child.appendChild(doc.createTextNode(convertToString(m_oxTankPressure)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("fuelTankLength");
-        child.appendChild(doc.createTextNode(convertToString(m_fuelTankLength)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("fuelTankDiam");
-        child.appendChild(doc.createTextNode(convertToString(m_fuelTankDiam)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("fuelTankPressure");
-        child.appendChild(doc.createTextNode(convertToString(m_fuelTankPressure)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "oxTankLength", m_oxTankLength));
+    e.appendChild(createSimpleElement(doc, "oxTankDiam", m_oxTankDiam));
+    e.appendChild(createSimpleElement(doc, "oxTankPressure", m_oxTankPressure));
+    e.appendChild(createSimpleElement(doc, "fuelTankLength", m_fuelTankLength));
+    e.appendChild(createSimpleElement(doc, "fuelTankDiam", m_fuelTankDiam));
+    e.appendChild(createSimpleElement(doc, "fuelTankPressure", m_fuelTankPressure));
     return e;
 }
 
@@ -2673,41 +2241,13 @@ QDomElement ScenarioSolidGrain::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("SolidGrain");
-    {
-        QDomElement child = doc.createElement("grainLength");
-        child.appendChild(doc.createTextNode(convertToString(m_grainLength)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("grainDiam");
-        child.appendChild(doc.createTextNode(convertToString(m_grainDiam)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("igniterLength");
-        child.appendChild(doc.createTextNode(convertToString(m_igniterLength)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("igniterDiam");
-        child.appendChild(doc.createTextNode(convertToString(m_igniterDiam)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("igniterMass");
-        child.appendChild(doc.createTextNode(convertToString(m_igniterMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("sliverMass");
-        child.appendChild(doc.createTextNode(convertToString(m_sliverMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("cavityVolume");
-        child.appendChild(doc.createTextNode(convertToString(m_cavityVolume)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "grainLength", m_grainLength));
+    e.appendChild(createSimpleElement(doc, "grainDiam", m_grainDiam));
+    e.appendChild(createSimpleElement(doc, "igniterLength", m_igniterLength));
+    e.appendChild(createSimpleElement(doc, "igniterDiam", m_igniterDiam));
+    e.appendChild(createSimpleElement(doc, "igniterMass", m_igniterMass));
+    e.appendChild(createSimpleElement(doc, "sliverMass", m_sliverMass));
+    e.appendChild(createSimpleElement(doc, "cavityVolume", m_cavityVolume));
     return e;
 }
 
@@ -2781,51 +2321,15 @@ QDomElement ScenarioFeedSystem::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("FeedSystem");
-    {
-        QDomElement child = doc.createElement("pressurizerTankPressure");
-        child.appendChild(doc.createTextNode(convertToString(m_pressurizerTankPressure)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("pressurizerTankRadius");
-        child.appendChild(doc.createTextNode(convertToString(m_pressurizerTankRadius)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("pressurizerTankMass");
-        child.appendChild(doc.createTextNode(convertToString(m_pressurizerTankMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("pressurizerGasMass");
-        child.appendChild(doc.createTextNode(convertToString(m_pressurizerGasMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("linesValvesMass");
-        child.appendChild(doc.createTextNode(convertToString(m_linesValvesMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("trappedPropMass");
-        child.appendChild(doc.createTextNode(convertToString(m_trappedPropMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("totalFeedSystemMass");
-        child.appendChild(doc.createTextNode(convertToString(m_totalFeedSystemMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("totalFeedSystemLength");
-        child.appendChild(doc.createTextNode(convertToString(m_totalFeedSystemLength)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("totalFeedSystemDiameter");
-        child.appendChild(doc.createTextNode(convertToString(m_totalFeedSystemDiameter)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "pressurizerTankPressure", m_pressurizerTankPressure));
+    e.appendChild(createSimpleElement(doc, "pressurizerTankRadius", m_pressurizerTankRadius));
+    e.appendChild(createSimpleElement(doc, "pressurizerTankMass", m_pressurizerTankMass));
+    e.appendChild(createSimpleElement(doc, "pressurizerGasMass", m_pressurizerGasMass));
+    e.appendChild(createSimpleElement(doc, "linesValvesMass", m_linesValvesMass));
+    e.appendChild(createSimpleElement(doc, "trappedPropMass", m_trappedPropMass));
+    e.appendChild(createSimpleElement(doc, "totalFeedSystemMass", m_totalFeedSystemMass));
+    e.appendChild(createSimpleElement(doc, "totalFeedSystemLength", m_totalFeedSystemLength));
+    e.appendChild(createSimpleElement(doc, "totalFeedSystemDiameter", m_totalFeedSystemDiameter));
     return e;
 }
 
@@ -2916,47 +2420,19 @@ QDomElement ScenarioCombustionChamber::toDomElement(QDomDocument& doc) const
         child.setTagName("accOverAt");
         e.appendChild(child);
     }
-    {
-        QDomElement child = doc.createElement("ab");
-        child.appendChild(doc.createTextNode(convertToString(m_ab)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("acc");
-        child.appendChild(doc.createTextNode(convertToString(m_acc)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "ab", m_ab));
+    e.appendChild(createSimpleElement(doc, "acc", m_acc));
     if (!m_chamberPressureNorm.isNull())
     {
         QDomElement child = m_chamberPressureNorm->toDomElement(doc);
         child.setTagName("chamberPressureNorm");
         e.appendChild(child);
     }
-    {
-        QDomElement child = doc.createElement("chamberPressure");
-        child.appendChild(doc.createTextNode(convertToString(m_chamberPressure)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("chamberCharactLength");
-        child.appendChild(doc.createTextNode(convertToString(m_chamberCharactLength)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("chamberLength");
-        child.appendChild(doc.createTextNode(convertToString(m_chamberLength)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("chamberDiameter");
-        child.appendChild(doc.createTextNode(convertToString(m_chamberDiameter)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("chamberMass");
-        child.appendChild(doc.createTextNode(convertToString(m_chamberMass)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "chamberPressure", m_chamberPressure));
+    e.appendChild(createSimpleElement(doc, "chamberCharactLength", m_chamberCharactLength));
+    e.appendChild(createSimpleElement(doc, "chamberLength", m_chamberLength));
+    e.appendChild(createSimpleElement(doc, "chamberDiameter", m_chamberDiameter));
+    e.appendChild(createSimpleElement(doc, "chamberMass", m_chamberMass));
     return e;
 }
 
@@ -3025,36 +2501,12 @@ QDomElement ScenarioNozzle::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("Nozzle");
-    {
-        QDomElement child = doc.createElement("at");
-        child.appendChild(doc.createTextNode(convertToString(m_at)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("ae");
-        child.appendChild(doc.createTextNode(convertToString(m_ae)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("aeOverat");
-        child.appendChild(doc.createTextNode(convertToString(m_aeOverat)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("nozzleLength");
-        child.appendChild(doc.createTextNode(convertToString(m_nozzleLength)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("nozzleDiameter");
-        child.appendChild(doc.createTextNode(convertToString(m_nozzleDiameter)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("nozzleMass");
-        child.appendChild(doc.createTextNode(convertToString(m_nozzleMass)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "at", m_at));
+    e.appendChild(createSimpleElement(doc, "ae", m_ae));
+    e.appendChild(createSimpleElement(doc, "aeOverat", m_aeOverat));
+    e.appendChild(createSimpleElement(doc, "nozzleLength", m_nozzleLength));
+    e.appendChild(createSimpleElement(doc, "nozzleDiameter", m_nozzleDiameter));
+    e.appendChild(createSimpleElement(doc, "nozzleMass", m_nozzleMass));
     if (!m_nozzleType.isNull())
     {
         QDomElement child = m_nozzleType->toDomElement(doc);
@@ -3079,21 +2531,9 @@ QDomElement ScenarioNozzle::toDomElement(QDomDocument& doc) const
         child.setTagName("tvcAngle");
         e.appendChild(child);
     }
-    {
-        QDomElement child = doc.createElement("tvcMass");
-        child.appendChild(doc.createTextNode(convertToString(m_tvcMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("nozzleCantAngle");
-        child.appendChild(doc.createTextNode(convertToString(m_nozzleCantAngle)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("nozzleShape");
-        child.appendChild(doc.createTextNode(convertToString(m_nozzleShape)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "tvcMass", m_tvcMass));
+    e.appendChild(createSimpleElement(doc, "nozzleCantAngle", m_nozzleCantAngle));
+    e.appendChild(createSimpleElement(doc, "nozzleShape", m_nozzleShape));
     return e;
 }
 
@@ -3164,56 +2604,16 @@ QDomElement ScenarioPerformance::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("Performance");
-    {
-        QDomElement child = doc.createElement("theoOptIsp");
-        child.appendChild(doc.createTextNode(convertToString(m_theoOptIsp)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("realOptIsp");
-        child.appendChild(doc.createTextNode(convertToString(m_realOptIsp)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("realSeeIsp");
-        child.appendChild(doc.createTextNode(convertToString(m_realSeeIsp)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("realVacuumIsp");
-        child.appendChild(doc.createTextNode(convertToString(m_realVacuumIsp)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("thrustCoeff");
-        child.appendChild(doc.createTextNode(convertToString(m_thrustCoeff)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("charactVelocity");
-        child.appendChild(doc.createTextNode(convertToString(m_charactVelocity)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("thrustCoeffEff");
-        child.appendChild(doc.createTextNode(convertToString(m_thrustCoeffEff)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("charactVelocityEff");
-        child.appendChild(doc.createTextNode(convertToString(m_charactVelocityEff)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("nominalMassFlow");
-        child.appendChild(doc.createTextNode(convertToString(m_nominalMassFlow)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("minOperativeAlt");
-        child.appendChild(doc.createTextNode(convertToString(m_minOperativeAlt)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "theoOptIsp", m_theoOptIsp));
+    e.appendChild(createSimpleElement(doc, "realOptIsp", m_realOptIsp));
+    e.appendChild(createSimpleElement(doc, "realSeeIsp", m_realSeeIsp));
+    e.appendChild(createSimpleElement(doc, "realVacuumIsp", m_realVacuumIsp));
+    e.appendChild(createSimpleElement(doc, "thrustCoeff", m_thrustCoeff));
+    e.appendChild(createSimpleElement(doc, "charactVelocity", m_charactVelocity));
+    e.appendChild(createSimpleElement(doc, "thrustCoeffEff", m_thrustCoeffEff));
+    e.appendChild(createSimpleElement(doc, "charactVelocityEff", m_charactVelocityEff));
+    e.appendChild(createSimpleElement(doc, "nominalMassFlow", m_nominalMassFlow));
+    e.appendChild(createSimpleElement(doc, "minOperativeAlt", m_minOperativeAlt));
     if (!m_throttle.isNull())
     {
         QDomElement child = m_throttle->toDomElement(doc);
@@ -3271,21 +2671,9 @@ QDomElement ScenarioLVProgram::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("LVProgram");
-    {
-        QDomElement child = doc.createElement("nLaunches");
-        child.appendChild(doc.createTextNode(convertToString(m_nLaunches)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("nYearsOps");
-        child.appendChild(doc.createTextNode(convertToString(m_nYearsOps)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("nLaunchesPerYear");
-        child.appendChild(doc.createTextNode(convertToString(m_nLaunchesPerYear)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "nLaunches", m_nLaunches));
+    e.appendChild(createSimpleElement(doc, "nYearsOps", m_nYearsOps));
+    e.appendChild(createSimpleElement(doc, "nLaunchesPerYear", m_nLaunchesPerYear));
     if (!m_programCostFactors.isNull())
     {
         QDomElement child = m_programCostFactors->toDomElement(doc);
@@ -3344,41 +2732,13 @@ QDomElement ScenarioprogramCostFactors::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("programCostFactors");
-    {
-        QDomElement child = doc.createElement("f0");
-        child.appendChild(doc.createTextNode(convertToString(m_f0)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("launcherDesignComplexity");
-        child.appendChild(doc.createTextNode(convertToString(m_launcherDesignComplexity)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("f1");
-        child.appendChild(doc.createTextNode(convertToString(m_f1)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("teamExpertise");
-        child.appendChild(doc.createTextNode(convertToString(m_teamExpertise)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("f3");
-        child.appendChild(doc.createTextNode(convertToString(m_f3)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("contractorsStructure");
-        child.appendChild(doc.createTextNode(convertToString(m_contractorsStructure)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("f7");
-        child.appendChild(doc.createTextNode(convertToString(m_f7)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "f0", m_f0));
+    e.appendChild(createSimpleElement(doc, "launcherDesignComplexity", m_launcherDesignComplexity));
+    e.appendChild(createSimpleElement(doc, "f1", m_f1));
+    e.appendChild(createSimpleElement(doc, "teamExpertise", m_teamExpertise));
+    e.appendChild(createSimpleElement(doc, "f3", m_f3));
+    e.appendChild(createSimpleElement(doc, "contractorsStructure", m_contractorsStructure));
+    e.appendChild(createSimpleElement(doc, "f7", m_f7));
     return e;
 }
 
@@ -3503,36 +2863,12 @@ QDomElement ScenarioLVPayload::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("LVPayload");
-    {
-        QDomElement child = doc.createElement("mass");
-        child.appendChild(doc.createTextNode(convertToString(m_mass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("length");
-        child.appendChild(doc.createTextNode(convertToString(m_length)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("diameter");
-        child.appendChild(doc.createTextNode(convertToString(m_diameter)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("CoGLongPosition");
-        child.appendChild(doc.createTextNode(convertToString(m_CoGLongPosition)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("maxAxialAcc");
-        child.appendChild(doc.createTextNode(convertToString(m_maxAxialAcc)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("maxHeatFlux");
-        child.appendChild(doc.createTextNode(convertToString(m_maxHeatFlux)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "mass", m_mass));
+    e.appendChild(createSimpleElement(doc, "length", m_length));
+    e.appendChild(createSimpleElement(doc, "diameter", m_diameter));
+    e.appendChild(createSimpleElement(doc, "CoGLongPosition", m_CoGLongPosition));
+    e.appendChild(createSimpleElement(doc, "maxAxialAcc", m_maxAxialAcc));
+    e.appendChild(createSimpleElement(doc, "maxHeatFlux", m_maxHeatFlux));
     return e;
 }
 
@@ -3576,11 +2912,7 @@ QDomElement ScenarioLaunchSite::toDomElement(QDomDocument& doc) const
         QDomElement child = m_Abstract3DOFPosition->toDomElement(doc);
         e.appendChild(child);
     }
-    {
-        QDomElement child = doc.createElement("allowedAzimuths");
-        child.appendChild(doc.createTextNode(convertToString(m_allowedAzimuths)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "allowedAzimuths", m_allowedAzimuths));
     return e;
 }
 
@@ -3633,36 +2965,12 @@ QDomElement ScenarioTargetOrbit::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("TargetOrbit");
-    {
-        QDomElement child = doc.createElement("semiaxis");
-        child.appendChild(doc.createTextNode(convertToString(m_semiaxis)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("eccentricity");
-        child.appendChild(doc.createTextNode(convertToString(m_eccentricity)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("inclination");
-        child.appendChild(doc.createTextNode(convertToString(m_inclination)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("semiaxisTol");
-        child.appendChild(doc.createTextNode(convertToString(m_semiaxisTol)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("eccentricityTol");
-        child.appendChild(doc.createTextNode(convertToString(m_eccentricityTol)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("inclinationTol");
-        child.appendChild(doc.createTextNode(convertToString(m_inclinationTol)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "semiaxis", m_semiaxis));
+    e.appendChild(createSimpleElement(doc, "eccentricity", m_eccentricity));
+    e.appendChild(createSimpleElement(doc, "inclination", m_inclination));
+    e.appendChild(createSimpleElement(doc, "semiaxisTol", m_semiaxisTol));
+    e.appendChild(createSimpleElement(doc, "eccentricityTol", m_eccentricityTol));
+    e.appendChild(createSimpleElement(doc, "inclinationTol", m_inclinationTol));
     return e;
 }
 
@@ -4107,51 +3415,15 @@ QDomElement ScenarioDiscretizationSettings::toDomElement(QDomDocument& doc) cons
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("DiscretizationSettings");
-    {
-        QDomElement child = doc.createElement("nMachPointsCl");
-        child.appendChild(doc.createTextNode(convertToString(m_nMachPointsCl)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("nAlfaPointsCl");
-        child.appendChild(doc.createTextNode(convertToString(m_nAlfaPointsCl)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("nMachPointsCd");
-        child.appendChild(doc.createTextNode(convertToString(m_nMachPointsCd)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("nAlfaPointsCd");
-        child.appendChild(doc.createTextNode(convertToString(m_nAlfaPointsCd)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("nMachPointsCm");
-        child.appendChild(doc.createTextNode(convertToString(m_nMachPointsCm)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("nAlfaPointsCm");
-        child.appendChild(doc.createTextNode(convertToString(m_nAlfaPointsCm)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("nPitchControlNodes");
-        child.appendChild(doc.createTextNode(convertToString(m_nPitchControlNodes)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("nYawControlNodes");
-        child.appendChild(doc.createTextNode(convertToString(m_nYawControlNodes)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("nThrustControlNodes");
-        child.appendChild(doc.createTextNode(convertToString(m_nThrustControlNodes)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "nMachPointsCl", m_nMachPointsCl));
+    e.appendChild(createSimpleElement(doc, "nAlfaPointsCl", m_nAlfaPointsCl));
+    e.appendChild(createSimpleElement(doc, "nMachPointsCd", m_nMachPointsCd));
+    e.appendChild(createSimpleElement(doc, "nAlfaPointsCd", m_nAlfaPointsCd));
+    e.appendChild(createSimpleElement(doc, "nMachPointsCm", m_nMachPointsCm));
+    e.appendChild(createSimpleElement(doc, "nAlfaPointsCm", m_nAlfaPointsCm));
+    e.appendChild(createSimpleElement(doc, "nPitchControlNodes", m_nPitchControlNodes));
+    e.appendChild(createSimpleElement(doc, "nYawControlNodes", m_nYawControlNodes));
+    e.appendChild(createSimpleElement(doc, "nThrustControlNodes", m_nThrustControlNodes));
     return e;
 }
 
@@ -4205,42 +3477,18 @@ QDomElement ScenarioGeometry::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("Geometry");
-    {
-        QDomElement child = doc.createElement("length");
-        child.appendChild(doc.createTextNode(convertToString(m_length)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("diameter");
-        child.appendChild(doc.createTextNode(convertToString(m_diameter)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "length", m_length));
+    e.appendChild(createSimpleElement(doc, "diameter", m_diameter));
     if (!m_diameterEqualToUpper.isNull())
     {
         QDomElement child = m_diameterEqualToUpper->toDomElement(doc);
         child.setTagName("diameterEqualToUpper");
         e.appendChild(child);
     }
-    {
-        QDomElement child = doc.createElement("frontShape");
-        child.appendChild(doc.createTextNode(convertToString(m_frontShape)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("baseLongPosition");
-        child.appendChild(doc.createTextNode(convertToString(m_baseLongPosition)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("constraintEngine");
-        child.appendChild(doc.createTextNode(convertToString(m_constraintEngine)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("constraintInterference");
-        child.appendChild(doc.createTextNode(convertToString(m_constraintInterference)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "frontShape", m_frontShape));
+    e.appendChild(createSimpleElement(doc, "baseLongPosition", m_baseLongPosition));
+    e.appendChild(createSimpleElement(doc, "constraintEngine", m_constraintEngine));
+    e.appendChild(createSimpleElement(doc, "constraintInterference", m_constraintInterference));
     return e;
 }
 
@@ -4289,36 +3537,12 @@ QDomElement ScenarioLVAerodynamics::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("LVAerodynamics");
-    {
-        QDomElement child = doc.createElement("userDefinedAero");
-        child.appendChild(doc.createTextNode(convertToString(m_userDefinedAero)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("referenceArea");
-        child.appendChild(doc.createTextNode(convertToString(m_referenceArea)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("referenceLength");
-        child.appendChild(doc.createTextNode(convertToString(m_referenceLength)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("clFileName");
-        child.appendChild(doc.createTextNode(convertToString(m_clFileName)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("cdFileName");
-        child.appendChild(doc.createTextNode(convertToString(m_cdFileName)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("cmFileName");
-        child.appendChild(doc.createTextNode(convertToString(m_cmFileName)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "userDefinedAero", m_userDefinedAero));
+    e.appendChild(createSimpleElement(doc, "referenceArea", m_referenceArea));
+    e.appendChild(createSimpleElement(doc, "referenceLength", m_referenceLength));
+    e.appendChild(createSimpleElement(doc, "clFileName", m_clFileName));
+    e.appendChild(createSimpleElement(doc, "cdFileName", m_cdFileName));
+    e.appendChild(createSimpleElement(doc, "cmFileName", m_cmFileName));
     return e;
 }
 
@@ -4407,66 +3631,18 @@ QDomElement ScenarioComponentWeights::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("ComponentWeights");
-    {
-        QDomElement child = doc.createElement("dryMass");
-        child.appendChild(doc.createTextNode(convertToString(m_dryMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("dryCoGLongPosition");
-        child.appendChild(doc.createTextNode(convertToString(m_dryCoGLongPosition)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("wetMass");
-        child.appendChild(doc.createTextNode(convertToString(m_wetMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("mainStructMass");
-        child.appendChild(doc.createTextNode(convertToString(m_mainStructMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("oxTankMass");
-        child.appendChild(doc.createTextNode(convertToString(m_oxTankMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("fuelTankMass");
-        child.appendChild(doc.createTextNode(convertToString(m_fuelTankMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("tpsMass");
-        child.appendChild(doc.createTextNode(convertToString(m_tpsMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("avionicsMass");
-        child.appendChild(doc.createTextNode(convertToString(m_avionicsMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("epsMass");
-        child.appendChild(doc.createTextNode(convertToString(m_epsMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("plAdapterMass");
-        child.appendChild(doc.createTextNode(convertToString(m_plAdapterMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("padInterfaceMass");
-        child.appendChild(doc.createTextNode(convertToString(m_padInterfaceMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("interstageMass");
-        child.appendChild(doc.createTextNode(convertToString(m_interstageMass)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "dryMass", m_dryMass));
+    e.appendChild(createSimpleElement(doc, "dryCoGLongPosition", m_dryCoGLongPosition));
+    e.appendChild(createSimpleElement(doc, "wetMass", m_wetMass));
+    e.appendChild(createSimpleElement(doc, "mainStructMass", m_mainStructMass));
+    e.appendChild(createSimpleElement(doc, "oxTankMass", m_oxTankMass));
+    e.appendChild(createSimpleElement(doc, "fuelTankMass", m_fuelTankMass));
+    e.appendChild(createSimpleElement(doc, "tpsMass", m_tpsMass));
+    e.appendChild(createSimpleElement(doc, "avionicsMass", m_avionicsMass));
+    e.appendChild(createSimpleElement(doc, "epsMass", m_epsMass));
+    e.appendChild(createSimpleElement(doc, "plAdapterMass", m_plAdapterMass));
+    e.appendChild(createSimpleElement(doc, "padInterfaceMass", m_padInterfaceMass));
+    e.appendChild(createSimpleElement(doc, "interstageMass", m_interstageMass));
     return e;
 }
 
@@ -4526,21 +3702,9 @@ QDomElement ScenarioSystemWeights::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("SystemWeights");
-    {
-        QDomElement child = doc.createElement("totalDryMass");
-        child.appendChild(doc.createTextNode(convertToString(m_totalDryMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("totalWetMass");
-        child.appendChild(doc.createTextNode(convertToString(m_totalWetMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("takeoffThrustOverWeight");
-        child.appendChild(doc.createTextNode(convertToString(m_takeoffThrustOverWeight)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "totalDryMass", m_totalDryMass));
+    e.appendChild(createSimpleElement(doc, "totalWetMass", m_totalWetMass));
+    e.appendChild(createSimpleElement(doc, "takeoffThrustOverWeight", m_takeoffThrustOverWeight));
     if (!m_maxAxialAcc.isNull())
     {
         QDomElement child = m_maxAxialAcc->toDomElement(doc);
@@ -4696,31 +3860,11 @@ QDomElement ScenarioDevelopmentCosts::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("DevelopmentCosts");
-    {
-        QDomElement child = doc.createElement("enginef2");
-        child.appendChild(doc.createTextNode(convertToString(m_enginef2)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("enginef5");
-        child.appendChild(doc.createTextNode(convertToString(m_enginef5)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("engineDevelopmentCost");
-        child.appendChild(doc.createTextNode(convertToString(m_engineDevelopmentCost)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("systemf2");
-        child.appendChild(doc.createTextNode(convertToString(m_systemf2)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("systemDevelopmentCost");
-        child.appendChild(doc.createTextNode(convertToString(m_systemDevelopmentCost)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "enginef2", m_enginef2));
+    e.appendChild(createSimpleElement(doc, "enginef5", m_enginef5));
+    e.appendChild(createSimpleElement(doc, "engineDevelopmentCost", m_engineDevelopmentCost));
+    e.appendChild(createSimpleElement(doc, "systemf2", m_systemf2));
+    e.appendChild(createSimpleElement(doc, "systemDevelopmentCost", m_systemDevelopmentCost));
     return e;
 }
 
@@ -4773,36 +3917,12 @@ QDomElement ScenarioProductionCosts::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("ProductionCosts");
-    {
-        QDomElement child = doc.createElement("totalNumberOfEngines");
-        child.appendChild(doc.createTextNode(convertToString(m_totalNumberOfEngines)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("enginesLearningFactor");
-        child.appendChild(doc.createTextNode(convertToString(m_enginesLearningFactor)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("totalNumberOfSystems");
-        child.appendChild(doc.createTextNode(convertToString(m_totalNumberOfSystems)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("systemsLearningFactor");
-        child.appendChild(doc.createTextNode(convertToString(m_systemsLearningFactor)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("totalEngineProductionCost");
-        child.appendChild(doc.createTextNode(convertToString(m_totalEngineProductionCost)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("totalSystemProductionCost");
-        child.appendChild(doc.createTextNode(convertToString(m_totalSystemProductionCost)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "totalNumberOfEngines", m_totalNumberOfEngines));
+    e.appendChild(createSimpleElement(doc, "enginesLearningFactor", m_enginesLearningFactor));
+    e.appendChild(createSimpleElement(doc, "totalNumberOfSystems", m_totalNumberOfSystems));
+    e.appendChild(createSimpleElement(doc, "systemsLearningFactor", m_systemsLearningFactor));
+    e.appendChild(createSimpleElement(doc, "totalEngineProductionCost", m_totalEngineProductionCost));
+    e.appendChild(createSimpleElement(doc, "totalSystemProductionCost", m_totalSystemProductionCost));
     return e;
 }
 
@@ -4852,11 +3972,7 @@ QDomElement ScenarioSystemCosts::toDomElement(QDomDocument& doc) const
         child.setTagName("TotalProgramCosts");
         e.appendChild(child);
     }
-    {
-        QDomElement child = doc.createElement("developmentTime");
-        child.appendChild(doc.createTextNode(convertToString(m_developmentTime)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "developmentTime", m_developmentTime));
     if (!m_DirectOperationsCosts.isNull())
     {
         QDomElement child = m_DirectOperationsCosts->toDomElement(doc);
@@ -4927,46 +4043,14 @@ QDomElement ScenarioTotalProgramCosts::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("TotalProgramCosts");
-    {
-        QDomElement child = doc.createElement("lifeCycleCostMY");
-        child.appendChild(doc.createTextNode(convertToString(m_lifeCycleCostMY)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("costPerLaunchMY");
-        child.appendChild(doc.createTextNode(convertToString(m_costPerLaunchMY)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("costPerKiloMY");
-        child.appendChild(doc.createTextNode(convertToString(m_costPerKiloMY)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("FYref");
-        child.appendChild(doc.createTextNode(convertToString(m_FYref)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("MYtoFYEuros");
-        child.appendChild(doc.createTextNode(convertToString(m_MYtoFYEuros)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("lifeCycleCostFYEuros");
-        child.appendChild(doc.createTextNode(convertToString(m_lifeCycleCostFYEuros)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("costPerLaunchFYEuros");
-        child.appendChild(doc.createTextNode(convertToString(m_costPerLaunchFYEuros)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("costPerKiloFYEuros");
-        child.appendChild(doc.createTextNode(convertToString(m_costPerKiloFYEuros)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "lifeCycleCostMY", m_lifeCycleCostMY));
+    e.appendChild(createSimpleElement(doc, "costPerLaunchMY", m_costPerLaunchMY));
+    e.appendChild(createSimpleElement(doc, "costPerKiloMY", m_costPerKiloMY));
+    e.appendChild(createSimpleElement(doc, "FYref", m_FYref));
+    e.appendChild(createSimpleElement(doc, "MYtoFYEuros", m_MYtoFYEuros));
+    e.appendChild(createSimpleElement(doc, "lifeCycleCostFYEuros", m_lifeCycleCostFYEuros));
+    e.appendChild(createSimpleElement(doc, "costPerLaunchFYEuros", m_costPerLaunchFYEuros));
+    e.appendChild(createSimpleElement(doc, "costPerKiloFYEuros", m_costPerKiloFYEuros));
     return e;
 }
 
@@ -5027,52 +4111,20 @@ QDomElement ScenarioDirectOperationsCosts::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("DirectOperationsCosts");
-    {
-        QDomElement child = doc.createElement("transportCost");
-        child.appendChild(doc.createTextNode(convertToString(m_transportCost)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "transportCost", m_transportCost));
     if (!m_processingType.isNull())
     {
         QDomElement child = m_processingType->toDomElement(doc);
         child.setTagName("processingType");
         e.appendChild(child);
     }
-    {
-        QDomElement child = doc.createElement("fv");
-        child.appendChild(doc.createTextNode(convertToString(m_fv)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("fc");
-        child.appendChild(doc.createTextNode(convertToString(m_fc)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("groundOperationsCost");
-        child.appendChild(doc.createTextNode(convertToString(m_groundOperationsCost)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("Qn");
-        child.appendChild(doc.createTextNode(convertToString(m_Qn)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("flightOperationsCost");
-        child.appendChild(doc.createTextNode(convertToString(m_flightOperationsCost)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("propellantsCost");
-        child.appendChild(doc.createTextNode(convertToString(m_propellantsCost)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("insuranceFee");
-        child.appendChild(doc.createTextNode(convertToString(m_insuranceFee)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "fv", m_fv));
+    e.appendChild(createSimpleElement(doc, "fc", m_fc));
+    e.appendChild(createSimpleElement(doc, "groundOperationsCost", m_groundOperationsCost));
+    e.appendChild(createSimpleElement(doc, "Qn", m_Qn));
+    e.appendChild(createSimpleElement(doc, "flightOperationsCost", m_flightOperationsCost));
+    e.appendChild(createSimpleElement(doc, "propellantsCost", m_propellantsCost));
+    e.appendChild(createSimpleElement(doc, "insuranceFee", m_insuranceFee));
     return e;
 }
 
@@ -5116,21 +4168,9 @@ QDomElement ScenarioIndirectOperationsCosts::toDomElement(QDomDocument& doc) con
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("IndirectOperationsCosts");
-    {
-        QDomElement child = doc.createElement("groundFacilitiesBuildingCost");
-        child.appendChild(doc.createTextNode(convertToString(m_groundFacilitiesBuildingCost)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("launchSiteCostPerYear");
-        child.appendChild(doc.createTextNode(convertToString(m_launchSiteCostPerYear)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("personnelCostPerYear");
-        child.appendChild(doc.createTextNode(convertToString(m_personnelCostPerYear)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "groundFacilitiesBuildingCost", m_groundFacilitiesBuildingCost));
+    e.appendChild(createSimpleElement(doc, "launchSiteCostPerYear", m_launchSiteCostPerYear));
+    e.appendChild(createSimpleElement(doc, "personnelCostPerYear", m_personnelCostPerYear));
     return e;
 }
 
@@ -5187,32 +4227,16 @@ QDomElement ScenarioComponentReliability::toDomElement(QDomDocument& doc) const
         child.setTagName("Separation");
         e.appendChild(child);
     }
-    {
-        QDomElement child = doc.createElement("avionicsFailureRate");
-        child.appendChild(doc.createTextNode(convertToString(m_avionicsFailureRate)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("structureFailureRate");
-        child.appendChild(doc.createTextNode(convertToString(m_structureFailureRate)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("tpsFailureRate");
-        child.appendChild(doc.createTextNode(convertToString(m_tpsFailureRate)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "avionicsFailureRate", m_avionicsFailureRate));
+    e.appendChild(createSimpleElement(doc, "structureFailureRate", m_structureFailureRate));
+    e.appendChild(createSimpleElement(doc, "tpsFailureRate", m_tpsFailureRate));
     if (!m_PropulsionReliability.isNull())
     {
         QDomElement child = m_PropulsionReliability->toDomElement(doc);
         child.setTagName("PropulsionReliability");
         e.appendChild(child);
     }
-    {
-        QDomElement child = doc.createElement("overallComponentFailureRate");
-        child.appendChild(doc.createTextNode(convertToString(m_overallComponentFailureRate)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "overallComponentFailureRate", m_overallComponentFailureRate));
     return e;
 }
 
@@ -5259,26 +4283,10 @@ QDomElement ScenarioSeparation::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("Separation");
-    {
-        QDomElement child = doc.createElement("stageSeparationReliability");
-        child.appendChild(doc.createTextNode(convertToString(m_stageSeparationReliability)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("boostersSetSeparationReliability");
-        child.appendChild(doc.createTextNode(convertToString(m_boostersSetSeparationReliability)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("fairingSeparationReliability");
-        child.appendChild(doc.createTextNode(convertToString(m_fairingSeparationReliability)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("payloadSeparationReliability");
-        child.appendChild(doc.createTextNode(convertToString(m_payloadSeparationReliability)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "stageSeparationReliability", m_stageSeparationReliability));
+    e.appendChild(createSimpleElement(doc, "boostersSetSeparationReliability", m_boostersSetSeparationReliability));
+    e.appendChild(createSimpleElement(doc, "fairingSeparationReliability", m_fairingSeparationReliability));
+    e.appendChild(createSimpleElement(doc, "payloadSeparationReliability", m_payloadSeparationReliability));
     return e;
 }
 
@@ -5337,46 +4345,14 @@ QDomElement ScenarioPropulsionReliability::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("PropulsionReliability");
-    {
-        QDomElement child = doc.createElement("igniterReliability");
-        child.appendChild(doc.createTextNode(convertToString(m_igniterReliability)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("feedFailureRate");
-        child.appendChild(doc.createTextNode(convertToString(m_feedFailureRate)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("grainFailureRate");
-        child.appendChild(doc.createTextNode(convertToString(m_grainFailureRate)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("chamberFailureRate");
-        child.appendChild(doc.createTextNode(convertToString(m_chamberFailureRate)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("nozzleFailureRate");
-        child.appendChild(doc.createTextNode(convertToString(m_nozzleFailureRate)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("tvcFailureRate");
-        child.appendChild(doc.createTextNode(convertToString(m_tvcFailureRate)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("singleEngineOverallFailureRate");
-        child.appendChild(doc.createTextNode(convertToString(m_singleEngineOverallFailureRate)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("propulsionOverallFailureRate");
-        child.appendChild(doc.createTextNode(convertToString(m_propulsionOverallFailureRate)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "igniterReliability", m_igniterReliability));
+    e.appendChild(createSimpleElement(doc, "feedFailureRate", m_feedFailureRate));
+    e.appendChild(createSimpleElement(doc, "grainFailureRate", m_grainFailureRate));
+    e.appendChild(createSimpleElement(doc, "chamberFailureRate", m_chamberFailureRate));
+    e.appendChild(createSimpleElement(doc, "nozzleFailureRate", m_nozzleFailureRate));
+    e.appendChild(createSimpleElement(doc, "tvcFailureRate", m_tvcFailureRate));
+    e.appendChild(createSimpleElement(doc, "singleEngineOverallFailureRate", m_singleEngineOverallFailureRate));
+    e.appendChild(createSimpleElement(doc, "propulsionOverallFailureRate", m_propulsionOverallFailureRate));
     return e;
 }
 
@@ -5432,47 +4408,19 @@ QDomElement ScenarioSystemReliability::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("SystemReliability");
-    {
-        QDomElement child = doc.createElement("globalVehicleReliability");
-        child.appendChild(doc.createTextNode(convertToString(m_globalVehicleReliability)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("selfDestructReliability");
-        child.appendChild(doc.createTextNode(convertToString(m_selfDestructReliability)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("missionSafety");
-        child.appendChild(doc.createTextNode(convertToString(m_missionSafety)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("preLaunchReliability");
-        child.appendChild(doc.createTextNode(convertToString(m_preLaunchReliability)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "globalVehicleReliability", m_globalVehicleReliability));
+    e.appendChild(createSimpleElement(doc, "selfDestructReliability", m_selfDestructReliability));
+    e.appendChild(createSimpleElement(doc, "missionSafety", m_missionSafety));
+    e.appendChild(createSimpleElement(doc, "preLaunchReliability", m_preLaunchReliability));
     if (!m_Launch.isNull())
     {
         QDomElement child = m_Launch->toDomElement(doc);
         child.setTagName("Launch");
         e.appendChild(child);
     }
-    {
-        QDomElement child = doc.createElement("numberOfAscentPhases");
-        child.appendChild(doc.createTextNode(convertToString(m_numberOfAscentPhases)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("ascentPhasesDurations");
-        child.appendChild(doc.createTextNode(convertToString(m_ascentPhasesDurations)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("ascentPhasesFailureRate");
-        child.appendChild(doc.createTextNode(convertToString(m_ascentPhasesFailureRate)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "numberOfAscentPhases", m_numberOfAscentPhases));
+    e.appendChild(createSimpleElement(doc, "ascentPhasesDurations", m_ascentPhasesDurations));
+    e.appendChild(createSimpleElement(doc, "ascentPhasesFailureRate", m_ascentPhasesFailureRate));
     return e;
 }
 
@@ -5519,26 +4467,10 @@ QDomElement ScenarioLaunch::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("Launch");
-    {
-        QDomElement child = doc.createElement("launchSiteReliability");
-        child.appendChild(doc.createTextNode(convertToString(m_launchSiteReliability)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("ignitionReliability");
-        child.appendChild(doc.createTextNode(convertToString(m_ignitionReliability)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("controlMarginReliability");
-        child.appendChild(doc.createTextNode(convertToString(m_controlMarginReliability)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("launchOverallReliability");
-        child.appendChild(doc.createTextNode(convertToString(m_launchOverallReliability)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "launchSiteReliability", m_launchSiteReliability));
+    e.appendChild(createSimpleElement(doc, "ignitionReliability", m_ignitionReliability));
+    e.appendChild(createSimpleElement(doc, "controlMarginReliability", m_controlMarginReliability));
+    e.appendChild(createSimpleElement(doc, "launchOverallReliability", m_launchOverallReliability));
     return e;
 }
 
@@ -5662,31 +4594,11 @@ QDomElement ScenarioTakeOff::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("TakeOff");
-    {
-        QDomElement child = doc.createElement("padClearingAlt");
-        child.appendChild(doc.createTextNode(convertToString(m_padClearingAlt)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("maxPitchOverAngle");
-        child.appendChild(doc.createTextNode(convertToString(m_maxPitchOverAngle)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("pitchOverDuration");
-        child.appendChild(doc.createTextNode(convertToString(m_pitchOverDuration)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("pitchOverDecayTime");
-        child.appendChild(doc.createTextNode(convertToString(m_pitchOverDecayTime)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("pitchOverHeadingAngle");
-        child.appendChild(doc.createTextNode(convertToString(m_pitchOverHeadingAngle)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "padClearingAlt", m_padClearingAlt));
+    e.appendChild(createSimpleElement(doc, "maxPitchOverAngle", m_maxPitchOverAngle));
+    e.appendChild(createSimpleElement(doc, "pitchOverDuration", m_pitchOverDuration));
+    e.appendChild(createSimpleElement(doc, "pitchOverDecayTime", m_pitchOverDecayTime));
+    e.appendChild(createSimpleElement(doc, "pitchOverHeadingAngle", m_pitchOverHeadingAngle));
     return e;
 }
 
@@ -5743,26 +4655,10 @@ QDomElement ScenarioIgnitions::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("Ignitions");
-    {
-        QDomElement child = doc.createElement("coreIgnitionDelayOption");
-        child.appendChild(doc.createTextNode(convertToString(m_coreIgnitionDelayOption)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("coreIgnitionDelayTime");
-        child.appendChild(doc.createTextNode(convertToString(m_coreIgnitionDelayTime)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("secondBoostersSetIgnitionDelayOption");
-        child.appendChild(doc.createTextNode(convertToString(m_secondBoostersSetIgnitionDelayOption)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("secondBoostersSetIgnitionDelayTime");
-        child.appendChild(doc.createTextNode(convertToString(m_secondBoostersSetIgnitionDelayTime)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "coreIgnitionDelayOption", m_coreIgnitionDelayOption));
+    e.appendChild(createSimpleElement(doc, "coreIgnitionDelayTime", m_coreIgnitionDelayTime));
+    e.appendChild(createSimpleElement(doc, "secondBoostersSetIgnitionDelayOption", m_secondBoostersSetIgnitionDelayOption));
+    e.appendChild(createSimpleElement(doc, "secondBoostersSetIgnitionDelayTime", m_secondBoostersSetIgnitionDelayTime));
     return e;
 }
 
@@ -5806,21 +4702,9 @@ QDomElement ScenarioAtmosphericFlight::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("AtmosphericFlight");
-    {
-        QDomElement child = doc.createElement("optimizedPitchValues");
-        child.appendChild(doc.createTextNode(convertToString(m_optimizedPitchValues)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("optimizedYawValues");
-        child.appendChild(doc.createTextNode(convertToString(m_optimizedYawValues)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("optimizedThrustValues");
-        child.appendChild(doc.createTextNode(convertToString(m_optimizedThrustValues)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "optimizedPitchValues", m_optimizedPitchValues));
+    e.appendChild(createSimpleElement(doc, "optimizedYawValues", m_optimizedYawValues));
+    e.appendChild(createSimpleElement(doc, "optimizedThrustValues", m_optimizedThrustValues));
     return e;
 }
 
@@ -5872,31 +4756,11 @@ QDomElement ScenarioExoatmosphericFlight::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("ExoatmosphericFlight");
-    {
-        QDomElement child = doc.createElement("bilinearLawInitPitch");
-        child.appendChild(doc.createTextNode(convertToString(m_bilinearLawInitPitch)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("bilinearLawFinalPitch");
-        child.appendChild(doc.createTextNode(convertToString(m_bilinearLawFinalPitch)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("bilinearLawParam");
-        child.appendChild(doc.createTextNode(convertToString(m_bilinearLawParam)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("circBurnOption");
-        child.appendChild(doc.createTextNode(convertToString(m_circBurnOption)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("circBurnTime");
-        child.appendChild(doc.createTextNode(convertToString(m_circBurnTime)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "bilinearLawInitPitch", m_bilinearLawInitPitch));
+    e.appendChild(createSimpleElement(doc, "bilinearLawFinalPitch", m_bilinearLawFinalPitch));
+    e.appendChild(createSimpleElement(doc, "bilinearLawParam", m_bilinearLawParam));
+    e.appendChild(createSimpleElement(doc, "circBurnOption", m_circBurnOption));
+    e.appendChild(createSimpleElement(doc, "circBurnTime", m_circBurnTime));
     return e;
 }
 
@@ -5952,41 +4816,13 @@ QDomElement ScenarioConstraints::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("Constraints");
-    {
-        QDomElement child = doc.createElement("finalSemiaxisError");
-        child.appendChild(doc.createTextNode(convertToString(m_finalSemiaxisError)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("finalEccError");
-        child.appendChild(doc.createTextNode(convertToString(m_finalEccError)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("finalInclError");
-        child.appendChild(doc.createTextNode(convertToString(m_finalInclError)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("axialAccCstrViolation");
-        child.appendChild(doc.createTextNode(convertToString(m_axialAccCstrViolation)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("heatFluxCstrViolation");
-        child.appendChild(doc.createTextNode(convertToString(m_heatFluxCstrViolation)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("dynPressCstrViolation");
-        child.appendChild(doc.createTextNode(convertToString(m_dynPressCstrViolation)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("controllabilityCstrViolation");
-        child.appendChild(doc.createTextNode(convertToString(m_controllabilityCstrViolation)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "finalSemiaxisError", m_finalSemiaxisError));
+    e.appendChild(createSimpleElement(doc, "finalEccError", m_finalEccError));
+    e.appendChild(createSimpleElement(doc, "finalInclError", m_finalInclError));
+    e.appendChild(createSimpleElement(doc, "axialAccCstrViolation", m_axialAccCstrViolation));
+    e.appendChild(createSimpleElement(doc, "heatFluxCstrViolation", m_heatFluxCstrViolation));
+    e.appendChild(createSimpleElement(doc, "dynPressCstrViolation", m_dynPressCstrViolation));
+    e.appendChild(createSimpleElement(doc, "controllabilityCstrViolation", m_controllabilityCstrViolation));
     return e;
 }
 
@@ -6025,11 +4861,7 @@ QDomElement ScenarioInitialPositionType::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("InitialPositionType");
-    {
-        QDomElement child = doc.createElement("CoordinateSystem");
-        child.appendChild(doc.createTextNode(convertToString(m_CoordinateSystem)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "CoordinateSystem", m_CoordinateSystem));
     if (!m_Abstract6DOFPosition.isNull())
     {
         QDomElement child = m_Abstract6DOFPosition->toDomElement(doc);
@@ -6232,16 +5064,8 @@ QDomElement ScenarioPayload::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("Payload");
-    {
-        QDomElement child = doc.createElement("mass");
-        child.appendChild(doc.createTextNode(convertToString(m_mass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("power");
-        child.appendChild(doc.createTextNode(convertToString(m_power)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "mass", m_mass));
+    e.appendChild(createSimpleElement(doc, "power", m_power));
     if (!m_ObservationAntenna.isNull())
     {
         QDomElement child = m_ObservationAntenna->toDomElement(doc);
@@ -6318,6 +5142,8 @@ ScenarioAbstractTrajectoryType* ScenarioAbstractTrajectoryType::create(const QDo
         return ScenarioLoiteringType::create(e);
     if (e.tagName() == "tns:RendezvousType")
         return ScenarioRendezvousType::create(e);
+    if (e.tagName() == "tns:LoiteringTLEType")
+        return ScenarioLoiteringTLEType::create(e);
     if (e.tagName() == "tns:LagrangianType")
         return ScenarioLagrangianType::create(e);
     if (e.tagName() == "tns:FlyByType")
@@ -6375,21 +5201,9 @@ QDomElement ScenarioSCEnvironmentType::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioEnvironmentType::toDomElement(doc);
     e.setTagName("SCEnvironmentType");
-    {
-        QDomElement child = doc.createElement("perturbingBody");
-        child.appendChild(doc.createTextNode(convertToString(m_perturbingBody)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("atmosphericDrag");
-        child.appendChild(doc.createTextNode(convertToString(m_atmosphericDrag)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("solarPressure");
-        child.appendChild(doc.createTextNode(convertToString(m_solarPressure)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "perturbingBody", m_perturbingBody));
+    e.appendChild(createSimpleElement(doc, "atmosphericDrag", m_atmosphericDrag));
+    e.appendChild(createSimpleElement(doc, "solarPressure", m_solarPressure));
     return e;
 }
 
@@ -6508,11 +5322,7 @@ QDomElement ScenarioInitialAttitude::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("InitialAttitude");
-    {
-        QDomElement child = doc.createElement("CoordinateSystem");
-        child.appendChild(doc.createTextNode(convertToString(m_CoordinateSystem)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "CoordinateSystem", m_CoordinateSystem));
     if (!m_Abstract6DOFAttitude.isNull())
     {
         QDomElement child = m_Abstract6DOFAttitude->toDomElement(doc);
@@ -6559,21 +5369,9 @@ QDomElement ScenarioPropagationPosition::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("PropagationPosition");
-    {
-        QDomElement child = doc.createElement("propagator");
-        child.appendChild(doc.createTextNode(convertToString(m_propagator)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("integrator");
-        child.appendChild(doc.createTextNode(convertToString(m_integrator)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("timeStep");
-        child.appendChild(doc.createTextNode(convertToString(m_timeStep)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "propagator", m_propagator));
+    e.appendChild(createSimpleElement(doc, "integrator", m_integrator));
+    e.appendChild(createSimpleElement(doc, "timeStep", m_timeStep));
     return e;
 }
 
@@ -6613,16 +5411,8 @@ QDomElement ScenarioPropagationAttitude::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("PropagationAttitude");
-    {
-        QDomElement child = doc.createElement("integrator");
-        child.appendChild(doc.createTextNode(convertToString(m_integrator)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("timeStep");
-        child.appendChild(doc.createTextNode(convertToString(m_timeStep)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "integrator", m_integrator));
+    e.appendChild(createSimpleElement(doc, "timeStep", m_timeStep));
     return e;
 }
 
@@ -6677,11 +5467,7 @@ QDomElement ScenarioRendezvousType::toDomElement(QDomDocument& doc) const
         child.setTagName("Parameters");
         e.appendChild(child);
     }
-    {
-        QDomElement child = doc.createElement("Target");
-        child.appendChild(doc.createTextNode(convertToString(m_Target)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "Target", m_Target));
     if (!m_ManoeuvrePlan.isNull())
     {
         QDomElement child = m_ManoeuvrePlan->toDomElement(doc);
@@ -6788,6 +5574,56 @@ QDomElement ScenarioManoeuvrePlan::toDomElement(QDomDocument& doc) const
 
 
 
+// ScenarioLoiteringTLEType
+ScenarioLoiteringTLEType::ScenarioLoiteringTLEType()
+{
+}
+
+ScenarioLoiteringTLEType* ScenarioLoiteringTLEType::create(const QDomElement& e)
+{
+    ScenarioLoiteringTLEType* v;
+    if (e.tagName() == "tns:LoiteringTLEType")
+    {
+        v = new ScenarioLoiteringTLEType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioLoiteringTLEType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioAbstractTrajectoryType::load(e, next);
+    m_TimeLine = QSharedPointer<ScenarioTimeLine>(ScenarioTimeLine::create(*next));
+    *next = next->nextSiblingElement();
+        m_tleLine0 = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_tleLine1 = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_tleLine2 = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioLoiteringTLEType::toDomElement(QDomDocument& doc) const
+{
+    QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc);
+    e.setTagName("LoiteringTLEType");
+    if (!m_TimeLine.isNull())
+    {
+        QDomElement child = m_TimeLine->toDomElement(doc);
+        e.appendChild(child);
+    }
+    e.appendChild(createSimpleElement(doc, "tleLine0", m_tleLine0));
+    e.appendChild(createSimpleElement(doc, "tleLine1", m_tleLine1));
+    e.appendChild(createSimpleElement(doc, "tleLine2", m_tleLine2));
+    return e;
+}
+
+
+
+
 // ScenarioManoeuvreType
 ScenarioManoeuvreType::ScenarioManoeuvreType()
 {
@@ -6865,11 +5701,7 @@ QDomElement ScenarioSTA_MANOEUVRE_DURATION::toDomElement(QDomDocument& doc) cons
 {
     QDomElement e = ScenarioManoeuvreType::toDomElement(doc);
     e.setTagName("STA_MANOEUVRE_DURATION");
-    {
-        QDomElement child = doc.createElement("Duration");
-        child.appendChild(doc.createTextNode(convertToString(m_Duration)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "Duration", m_Duration));
     return e;
 }
 
@@ -6916,26 +5748,10 @@ QDomElement ScenarioSTA_MANOEUVRE_DELTAV::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioManoeuvreType::toDomElement(doc);
     e.setTagName("STA_MANOEUVRE_DELTAV");
-    {
-        QDomElement child = doc.createElement("DeltaVx");
-        child.appendChild(doc.createTextNode(convertToString(m_DeltaVx)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("DeltaVy");
-        child.appendChild(doc.createTextNode(convertToString(m_DeltaVy)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("DeltaVz");
-        child.appendChild(doc.createTextNode(convertToString(m_DeltaVz)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("Duration");
-        child.appendChild(doc.createTextNode(convertToString(m_Duration)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "DeltaVx", m_DeltaVx));
+    e.appendChild(createSimpleElement(doc, "DeltaVy", m_DeltaVy));
+    e.appendChild(createSimpleElement(doc, "DeltaVz", m_DeltaVz));
+    e.appendChild(createSimpleElement(doc, "Duration", m_Duration));
     return e;
 }
 
@@ -6973,11 +5789,7 @@ QDomElement ScenarioSTA_MANOEUVRE_V_POSITION::toDomElement(QDomDocument& doc) co
 {
     QDomElement e = ScenarioManoeuvreType::toDomElement(doc);
     e.setTagName("STA_MANOEUVRE_V_POSITION");
-    {
-        QDomElement child = doc.createElement("DisplacementVbar");
-        child.appendChild(doc.createTextNode(convertToString(m_DisplacementVbar)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "DisplacementVbar", m_DisplacementVbar));
     return e;
 }
 
@@ -7015,11 +5827,7 @@ QDomElement ScenarioSTA_MANOEUVRE_R_POSITION::toDomElement(QDomDocument& doc) co
 {
     QDomElement e = ScenarioManoeuvreType::toDomElement(doc);
     e.setTagName("STA_MANOEUVRE_R_POSITION");
-    {
-        QDomElement child = doc.createElement("DisplacementRbar");
-        child.appendChild(doc.createTextNode(convertToString(m_DisplacementRbar)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "DisplacementRbar", m_DisplacementRbar));
     return e;
 }
 
@@ -7060,16 +5868,8 @@ QDomElement ScenarioSTA_MANOEUVRE_V_R_POSITION::toDomElement(QDomDocument& doc) 
 {
     QDomElement e = ScenarioManoeuvreType::toDomElement(doc);
     e.setTagName("STA_MANOEUVRE_V_R_POSITION");
-    {
-        QDomElement child = doc.createElement("DisplacementVbar");
-        child.appendChild(doc.createTextNode(convertToString(m_DisplacementVbar)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("DisplacementRbar");
-        child.appendChild(doc.createTextNode(convertToString(m_DisplacementRbar)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "DisplacementVbar", m_DisplacementVbar));
+    e.appendChild(createSimpleElement(doc, "DisplacementRbar", m_DisplacementRbar));
     return e;
 }
 
@@ -7113,21 +5913,9 @@ QDomElement ScenarioSTA_MANOEUVRE_V_R_DURATION::toDomElement(QDomDocument& doc) 
 {
     QDomElement e = ScenarioManoeuvreType::toDomElement(doc);
     e.setTagName("STA_MANOEUVRE_V_R_DURATION");
-    {
-        QDomElement child = doc.createElement("DisplacementVbar");
-        child.appendChild(doc.createTextNode(convertToString(m_DisplacementVbar)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("DisplacementRbar");
-        child.appendChild(doc.createTextNode(convertToString(m_DisplacementRbar)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("Duration");
-        child.appendChild(doc.createTextNode(convertToString(m_Duration)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "DisplacementVbar", m_DisplacementVbar));
+    e.appendChild(createSimpleElement(doc, "DisplacementRbar", m_DisplacementRbar));
+    e.appendChild(createSimpleElement(doc, "Duration", m_Duration));
     return e;
 }
 
@@ -7400,16 +6188,8 @@ QDomElement ScenarioMass::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("Mass");
-    {
-        QDomElement child = doc.createElement("dryMass");
-        child.appendChild(doc.createTextNode(convertToString(m_dryMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("wetMass");
-        child.appendChild(doc.createTextNode(convertToString(m_wetMass)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "dryMass", m_dryMass));
+    e.appendChild(createSimpleElement(doc, "wetMass", m_wetMass));
     return e;
 }
 
@@ -7450,16 +6230,8 @@ QDomElement ScenarioPower::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("Power");
-    {
-        QDomElement child = doc.createElement("totalPowerBoL");
-        child.appendChild(doc.createTextNode(convertToString(m_totalPowerBoL)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("totalPowerEoL");
-        child.appendChild(doc.createTextNode(convertToString(m_totalPowerEoL)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "totalPowerBoL", m_totalPowerBoL));
+    e.appendChild(createSimpleElement(doc, "totalPowerEoL", m_totalPowerEoL));
     return e;
 }
 
@@ -7500,16 +6272,8 @@ QDomElement ScenarioLink::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("Link");
-    {
-        QDomElement child = doc.createElement("uplinkMargin");
-        child.appendChild(doc.createTextNode(convertToString(m_uplinkMargin)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("downlinkMargin");
-        child.appendChild(doc.createTextNode(convertToString(m_downlinkMargin)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "uplinkMargin", m_uplinkMargin));
+    e.appendChild(createSimpleElement(doc, "downlinkMargin", m_downlinkMargin));
     return e;
 }
 
@@ -7550,16 +6314,8 @@ QDomElement ScenarioSCAerodynamics::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("SCAerodynamics");
-    {
-        QDomElement child = doc.createElement("surfaceArea");
-        child.appendChild(doc.createTextNode(convertToString(m_surfaceArea)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("Cd");
-        child.appendChild(doc.createTextNode(convertToString(m_Cd)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "surfaceArea", m_surfaceArea));
+    e.appendChild(createSimpleElement(doc, "Cd", m_Cd));
     return e;
 }
 
@@ -7609,31 +6365,11 @@ QDomElement ScenarioPropulsion::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("Propulsion");
-    {
-        QDomElement child = doc.createElement("numberOfEngines");
-        child.appendChild(doc.createTextNode(convertToString(m_numberOfEngines)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("thrustPerEngine");
-        child.appendChild(doc.createTextNode(convertToString(m_thrustPerEngine)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("specificImpulse");
-        child.appendChild(doc.createTextNode(convertToString(m_specificImpulse)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("propellantMass");
-        child.appendChild(doc.createTextNode(convertToString(m_propellantMass)));
-        e.appendChild(child);
-    }
-    {
-        QDomElement child = doc.createElement("totalPropulsionDryMass");
-        child.appendChild(doc.createTextNode(convertToString(m_totalPropulsionDryMass)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "numberOfEngines", m_numberOfEngines));
+    e.appendChild(createSimpleElement(doc, "thrustPerEngine", m_thrustPerEngine));
+    e.appendChild(createSimpleElement(doc, "specificImpulse", m_specificImpulse));
+    e.appendChild(createSimpleElement(doc, "propellantMass", m_propellantMass));
+    e.appendChild(createSimpleElement(doc, "totalPropulsionDryMass", m_totalPropulsionDryMass));
     return e;
 }
 
@@ -7671,11 +6407,7 @@ QDomElement ScenarioStructure::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("Structure");
-    {
-        QDomElement child = doc.createElement("totalStructureMass");
-        child.appendChild(doc.createTextNode(convertToString(m_totalStructureMass)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "totalStructureMass", m_totalStructureMass));
     return e;
 }
 
@@ -7713,11 +6445,7 @@ QDomElement ScenarioTCS::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("TCS");
-    {
-        QDomElement child = doc.createElement("totalTCSMass");
-        child.appendChild(doc.createTextNode(convertToString(m_totalTCSMass)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "totalTCSMass", m_totalTCSMass));
     return e;
 }
 
@@ -7755,11 +6483,7 @@ QDomElement ScenarioEPS::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("EPS");
-    {
-        QDomElement child = doc.createElement("totalEPSMass");
-        child.appendChild(doc.createTextNode(convertToString(m_totalEPSMass)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "totalEPSMass", m_totalEPSMass));
     return e;
 }
 
@@ -7805,11 +6529,7 @@ QDomElement ScenarioTTC::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("TTC");
-    {
-        QDomElement child = doc.createElement("totalTTCMass");
-        child.appendChild(doc.createTextNode(convertToString(m_totalTTCMass)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "totalTTCMass", m_totalTTCMass));
     foreach (QSharedPointer<ScenarioCommunicationAntenna> p, m_CommunicationAntenna)
     {
         e.appendChild(p->toDomElement(doc));
@@ -7851,11 +6571,7 @@ QDomElement ScenarioAOCS::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("AOCS");
-    {
-        QDomElement child = doc.createElement("totalAOCSMass");
-        child.appendChild(doc.createTextNode(convertToString(m_totalAOCSMass)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "totalAOCSMass", m_totalAOCSMass));
     return e;
 }
 
@@ -7893,28 +6609,24 @@ QDomElement ScenarioOBDH::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("OBDH");
-    {
-        QDomElement child = doc.createElement("totalOBDHMass");
-        child.appendChild(doc.createTextNode(convertToString(m_totalOBDHMass)));
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "totalOBDHMass", m_totalOBDHMass));
     return e;
 }
 
 
 
 
-// ScenarioSpaceScenario
-ScenarioSpaceScenario::ScenarioSpaceScenario()
+// SpaceScenario
+SpaceScenario::SpaceScenario()
 {
 }
 
-ScenarioSpaceScenario* ScenarioSpaceScenario::create(const QDomElement& e)
+SpaceScenario* SpaceScenario::create(const QDomElement& e)
 {
-    ScenarioSpaceScenario* v;
+    SpaceScenario* v;
     if (e.tagName() == "tns:SpaceScenario")
     {
-        v = new ScenarioSpaceScenario;
+        v = new SpaceScenario;
         QDomElement nextElement = e.firstChildElement();
         v->load(e, &nextElement);
         return v;
@@ -7922,9 +6634,11 @@ ScenarioSpaceScenario* ScenarioSpaceScenario::create(const QDomElement& e)
     return NULL;
 }
 
-bool ScenarioSpaceScenario::load(const QDomElement& e, QDomElement* next)
+bool SpaceScenario::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
+        m_Name = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
     for (;;)
     {
         QSharedPointer<ScenarioParticipantType> v(ScenarioParticipantType::create(*next));
@@ -7936,10 +6650,11 @@ bool ScenarioSpaceScenario::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioSpaceScenario::toDomElement(QDomDocument& doc) const
+QDomElement SpaceScenario::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("SpaceScenario");
+    e.appendChild(createSimpleElement(doc, "Name", m_Name));
     foreach (QSharedPointer<ScenarioParticipantType> p, m_AbstractParticipant)
     {
         e.appendChild(p->toDomElement(doc));
