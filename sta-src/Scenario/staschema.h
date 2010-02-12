@@ -341,6 +341,10 @@ public:
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument&) const;
 
+    QString Name() const
+    { return m_Name; }
+    void setName(QString Name)
+    { m_Name = Name; }
     QSharedPointer<ScenarioGravityModel> GravityModel() const
     { return m_GravityModel; }
     void setGravityModel(QSharedPointer<ScenarioGravityModel> GravityModel)
@@ -355,6 +359,7 @@ public:
     { m_ellipticity = ellipticity; }
 
 private:
+    QString m_Name;
     QSharedPointer<ScenarioGravityModel> m_GravityModel;
     QString m_atmosphere;
     bool m_ellipticity;

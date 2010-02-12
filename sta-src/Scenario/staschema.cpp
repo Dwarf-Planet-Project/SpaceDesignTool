@@ -377,6 +377,8 @@ ScenarioCentralBodyType* ScenarioCentralBodyType::create(const QDomElement& e)
 bool ScenarioCentralBodyType::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
+        m_Name = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
     m_GravityModel = QSharedPointer<ScenarioGravityModel>(ScenarioGravityModel::create(*next));
     *next = next->nextSiblingElement();
     if (next->tagName() == "tns:atmosphere")
@@ -396,6 +398,7 @@ QDomElement ScenarioCentralBodyType::toDomElement(QDomDocument& doc) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc);
     e.setTagName("CentralBodyType");
+    e.appendChild(createSimpleElement(doc, "Name", m_Name));
     if (!m_GravityModel.isNull())
     {
         QDomElement child = m_GravityModel->toDomElement(doc);

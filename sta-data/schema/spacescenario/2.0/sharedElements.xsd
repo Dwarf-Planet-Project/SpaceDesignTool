@@ -91,6 +91,7 @@
 
 	<complexType name="CentralBodyType">
 		<sequence>
+		    <element name="Name" type="string"></element>
 			<element name="GravityModel">
 				<complexType>
 					<sequence>
@@ -103,7 +104,6 @@
 			<element name="atmosphere" type="string" minOccurs="0"></element> <!-- file name OR "exponential" -->
 			<element name="ellipticity" type="boolean" minOccurs="0"></element>
 		</sequence>
-		<attribute name="Name" type="string"></attribute>
 	</complexType>
 
 
