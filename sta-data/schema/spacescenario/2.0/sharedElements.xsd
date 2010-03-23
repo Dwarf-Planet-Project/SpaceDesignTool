@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/scenario"
+	xmlns:tns="http://www.example.org/scenario" elementFormDefault="qualified">
+
+	<element name="AbstractParticipant" abstract="true" type="tns:ParticipantType"></element>
+
+	<complexType name="ParticipantType" abstract="true">
+      <sequence>
+	    <element name="Name" type="string"></element>
+      </sequence>
+	</complexType>
+
+
+	<!-- NEW DEFINED VECTORS -->
+
+	<simpleType name="ListOfInt">
+		<list itemType="int"></list>
+	</simpleType>
+	<simpleType name="ListOfDouble">
+		<list itemType="double"></list>
+	</simpleType>
+	<simpleType name="ListOfString">
+		<list itemType="string"></list>
+	</simpleType>
+
+
+	<!-- OPTIMIZATION VARIABLES -->
+	<complexType name="OptVarDouble">
+		<sequence>
+			<element name="min" type="double" minOccurs="0"></element>
+			<element name="value" type="double"></element>
+			<element name="max" type="double" minOccurs="0"></element>
+		</sequence>
+		<attribute name="fromFirstGuess" type="boolean"></attribute>
+		<!--
+			0 if the user defines the box constraints for the variable, 1 if the
+			first guess module defines the box constraints for the variable
+		-->
+	</complexType>
+
+	<complexType name="OptVarInt">
+		<sequence>
+			<element name="list" type="tns:ListOfInt"></element>
+			<element name="value" type="int"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="OptVarBool">
+		<sequence>
+			<element name="value" type="boolean"></element>
+		</sequence>
+		<attribute name="optimized" type="boolean"></attribute>
+		<!-- 0 not optimization variable, 1 optimization variable -->
+	</complexType>
+
+	<complexType name="OptVarString">
+		<sequence>
+			<element name="list" type="tns:ListOfString"></element>
+			<element name="value" type="string"></element>
+		</sequence>
+	</complexType>
+
+	<!-- COMMON ELEMENTS -->
+
+	<element name="TimeLine">
+		<complexType>
+			<sequence>
+				<element name="StartTime" type="dateTime" />
+				<element name="StepTime" type="double"></element>
+				<element name="EndTime" type="dateTime" minOccurs="0"></element>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="Propagation">
+		<complexType>
+			<sequence>
+				<element name="propagator" type="string"></element>
+			</sequence>
+		</complexType>
+	</element>
+
+
+	<element name="Environment" type="tns:EnvironmentType"></element>
+
+	<complexType name="EnvironmentType">
+		<sequence>
+			<element name="CentralBody" type="tns:CentralBodyType"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="CentralBodyType">
+		<sequence>
+		    <element name="Name" type="string"></element>
+			<element name="GravityModel">
+				<complexType>
+					<sequence>
+						<element name="modelName" type="string"></element>
+						<element name="numberOfZonals" type="int"></element>
+						<element name="numberOfTesserals" type="int"></element>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="atmosphere" type="string" minOccurs="0"></element> <!-- file name OR "exponential" -->
+			<element name="ellipticity" type="boolean" minOccurs="0"></element>
+		</sequence>
+	</complexType>
+
+
+
+	<!-- INITIAL STATE TYPES -->
+
+    <complexType name="Abstract3DOFPositionType">
+      <sequence>
+      </sequence>
+    </complexType>
+	<element name="Abstract3DOFPosition" type="tns:Abstract3DOFPositionType" abstract="true"></element>
+
+    <complexType name="Abstract6DOFPositionType">
+      <sequence>
+      </sequence>
+    </complexType>
+	<element name="Abstract6DOFPosition" type="tns:Abstract6DOFPositionType" abstract="true"></element>
+
+	<element name="GroundPosition" type="tns:GroundPositionType" substitutionGroup="tns:Abstract3DOFPosition"></element>
+	<complexType name="GroundPositionType">
+      <complexContent>
+        <extension base="tns:Abstract3DOFPositionType">
+		  <sequence>
+			<element name="latitude" type="double"></element>
+			<element name="longitude" type="double"></element>
+			<element name="altitude" type="double"></element>
+		  </sequence>
+		  <attribute name="siteName" type="string"></attribute>
+        </extension>
+      </complexContent>
+	</complexType>
+
+	<element name="StateVector" substitutionGroup="tns:Abstract6DOFPosition"
+		type="tns:StateVectorType"></element>
+	<complexType name="StateVectorType">
+      <complexContent>
+        <extension base="tns:Abstract6DOFPositionType">
+		  <sequence>
+			<element name="x" type="double"></element>
+			<element name="y" type="double"></element>
+			<element name="z" type="double"></element>
+			<element name="vx" type="double"></element>
+			<element name="vy" type="double"></element>
+			<element name="vz" type="double"></element>
+		  </sequence>
+        </extension>
+      </complexContent>
+	</complexType>
+
+	<element name="KeplerianElements" substitutionGroup="tns:Abstract6DOFPosition"
+		type="tns:KeplerianElementsType"></element>
+	<complexType name="KeplerianElementsType">
+      <complexContent>
+        <extension base="tns:Abstract6DOFPositionType">
+		  <sequence>
+			<element name="semiMajorAxis" type="double"></element>
+			<element name="eccentricity" type="double" />
+			<element name="inclination" type="double" />
+			<element name="RAAN" type="double" />
+			<element name="argumentOfPeriapsis" type="double" />
+			<element name="trueAnomaly" type="double" />
+		  </sequence>
+        </extension>
+      </complexContent>
+	</complexType>
+
+	<element name="SphericalCoordinates" substitutionGroup="tns:Abstract6DOFPosition"
+		type="tns:SphericalCoordinatesType"></element>
+	<complexType name="SphericalCoordinatesType">
+      <complexContent>
+        <extension base="tns:Abstract6DOFPositionType">
+		  <sequence>
+			<element name="radialDistance" type="double"></element>
+			<element name="longitude" type="double"></element>
+			<element name="latitude" type="double"></element>
+			<element name="flightPathVelocity" type="double"></element>
+			<element name="flightPathAngle" type="double"></element>
+			<element name="headingAngle" type="double"></element>
+		  </sequence>
+        </extension>
+      </complexContent>
+	</complexType>
+
+	<!-- INITIAL ATTITUDE TYPE -->
+	<element name="Abstract6DOFAttitude" abstract="true" type="tns:Abstract6DOFAttitudeType"></element>
+    <complexType name="Abstract6DOFAttitudeType">
+    </complexType>
+
+	<element name="EulerBLVLH" substitutionGroup="tns:Abstract6DOFAttitude"
+		type="tns:EulerBLVLHType"></element>
+	<complexType name="EulerBLVLHType">
+      <complexContent>
+        <extension base="tns:Abstract6DOFAttitudeType">
+		  <sequence>
+			<element name="phi" type="double"></element>
+			<element name="theta" type="double"></element>
+			<element name="psi" type="double"></element>
+			<element name="phiDot" type="double"></element>
+			<element name="thetaDot" type="double"></element>
+			<element name="psiDot" type="double"></element>
+		  </sequence>
+        </extension>
+      </complexContent>
+	</complexType>
+
+	<element name="EulerBI" substitutionGroup="tns:Abstract6DOFAttitude"
+		type="tns:EulerBIType"></element>
+	<complexType name="EulerBIType">
+      <complexContent>
+        <extension base="tns:Abstract6DOFAttitudeType">
+		  <sequence>
+			<element name="phi" type="double"></element>
+			<element name="theta" type="double"></element>
+			<element name="psi" type="double"></element>
+			<element name="phiDot" type="double"></element>
+			<element name="thetaDot" type="double"></element>
+			<element name="psiDot" type="double"></element>
+		  </sequence>
+        </extension>
+      </complexContent>
+	</complexType>
+
+	<element name="qBLVLH" substitutionGroup="tns:Abstract6DOFAttitude"
+		type="tns:qBLVLHType"></element>
+	<complexType name="qBLVLHType">
+      <complexContent>
+        <extension base="tns:Abstract6DOFAttitudeType">
+		  <sequence>
+			<element name="q1" type="double"></element>
+			<element name="q2" type="double"></element>
+			<element name="q3" type="double"></element>
+			<element name="q4" type="double"></element>
+			<element name="q1Dot" type="double"></element>
+			<element name="q2Dot" type="double"></element>
+			<element name="q3Dot" type="double"></element>
+			<element name="q4Dot" type="double"></element>
+		  </sequence>
+        </extension>
+      </complexContent>
+	</complexType>
+
+	<element name="qBI" substitutionGroup="tns:Abstract6DOFAttitude"
+		type="tns:qBIType"></element>
+	<complexType name="qBIType">
+      <complexContent>
+        <extension base="tns:Abstract6DOFAttitudeType">
+		  <sequence>
+			<element name="q1" type="double"></element>
+			<element name="q2" type="double"></element>
+			<element name="q3" type="double"></element>
+			<element name="q4" type="double"></element>
+			<element name="q1Dot" type="double"></element>
+			<element name="q2Dot" type="double"></element>
+			<element name="q3Dot" type="double"></element>
+			<element name="q4Dot" type="double"></element>
+		  </sequence>
+        </extension>
+      </complexContent>
+	</complexType>
+
+
+	<element name="Abstract12DOFState" abstract="true" type="tns:Abstract12DOFStateType"></element>
+    <complexType name="Abstract12DOFStateType">
+      <sequence/>
+    </complexType>
+
+	<element name="State12DOF" substitutionGroup="tns:Abstract12DOFState">
+	  <complexType>
+        <complexContent>
+          <extension base="tns:Abstract12DOFStateType">
+		    <sequence>
+		      <element ref="tns:Abstract6DOFPosition"></element>
+		      <element ref="tns:Abstract6DOFAttitude"></element>
+		    </sequence>
+          </extension>
+        </complexContent>
+	  </complexType>
+	</element>
+
+	<!-- OPTIMIZATION SETTINGS -->
+	<element name="Optimization">
+		<complexType>
+			<sequence>
+				<element name="nVariables" type="int"></element>
+				<element name="variables" type="tns:ListOfString"></element>
+				<element name="variablesMatrix" type="tns:ListOfDouble"></element>
+				<element name="nObjectives" type="int"></element>
+				<element name="objectives" type="tns:ListOfString"></element>
+				<element name="objectivesMatrix" type="tns:ListOfDouble"></element>
+				<element name="nConstraints" type="int"></element>
+				<element name="constraints" type="tns:ListOfString"></element>
+				<element name="constraintsMatrix" type="tns:ListOfDouble"></element>
+				<element name="algorithm" type="string"></element>
+				<element name="algorithmParameters" type="tns:ListOfDouble"></element>
+			</sequence>
+		</complexType>
+	</element>
+
+	<!-- OOUTPUTFILES LIST -->
+	<element name="OutputFiles">
+		<complexType>
+			<sequence>
+				<element name="paretoFrontVarsFileName" type="string"
+					minOccurs="0"></element>
+				<element name="paretoFrontCstrsFileName" type="string"
+					minOccurs="0"></element>
+				<element name="paretoFrontObjsFileName" type="string"
+					minOccurs="0"></element>
+				<element name="geometryFileName" type="string" minOccurs="0"></element>
+				<element name="trajPostionFileName" type="string"></element>
+				<element name="trajAttitudeFileName" type="string"
+					minOccurs="0"></element>
+				<element name="trajMiscFileName" type="string"></element>
+				<element name="successProbabilityFileName" type="string"
+					minOccurs="0"></element>
+			</sequence>
+		</complexType>
+	</element>
+
+	<!-- ANTENNA -->
+    <complexType name="AbstractConeType">
+      <sequence/>
+    </complexType>
+
+	<element name="AbstractCone" type="tns:AbstractConeType" abstract="true"></element>
+
+	<element name="CircularCone" substitutionGroup="tns:AbstractCone">
+	  <complexType>
+        <complexContent>
+          <extension base="tns:AbstractConeType">
+			<sequence>
+			  <element name="coneAngle" type="double"></element>
+			</sequence>
+          </extension>
+        </complexContent>
+	  </complexType>
+	</element>
+
+	<element name="RectangularCone" substitutionGroup="tns:AbstractCone" type="tns:RectangularConeType"/>
+	<complexType name="RectangularConeType">
+      <complexContent>
+        <extension base="tns:AbstractConeType">
+		  <sequence>
+		    <element name="coneAngle1" type="double"></element>
+		    <element name="coneAngle2" type="double"></element>
+		  </sequence>
+        </extension>
+      </complexContent>
+	</complexType>
+
+	<element name="OvalCone" substitutionGroup="tns:AbstractCone" type="tns:OvalConeType"/>
+	<complexType name="OvalConeType">
+      <complexContent>
+        <extension base="tns:AbstractConeType">
+		  <sequence>
+		  </sequence>
+        </extension>
+      </complexContent>
+	</complexType>
+
+	<element name="Radar" substitutionGroup="tns:AbstractCone" type="tns:AbstractConeType">
+    </element>
+
+	<complexType name="Antenna">
+	  <sequence>
+		<element ref="tns:AbstractCone"></element>
+		<element name="PointingDirection">
+		  <complexType>
+			<sequence>
+			  <element name="referenceSystem" type="string" minOccurs="0"></element>
+			  <element name="azimuth" type="double"></element>
+			  <element name="elevation" type="double"></element>
+			  <element name="azimuthDot" type="double" minOccurs="0"></element>
+			  <element name="elevationDot" type="double" minOccurs="0"></element>
+			</sequence>
+		  </complexType>
+		</element>
+	  </sequence>
+	</complexType>
+
+	<element name="CommunicationAntenna">
+	  <complexType>
+		<complexContent>
+		  <extension base="tns:Antenna"></extension>
+		</complexContent>
+	  </complexType>
+	</element>
+
+	<element name="ObservationAntenna">
+		<complexType>
+			<complexContent>
+				<extension base="tns:Antenna"></extension>
+			</complexContent>
+		</complexType>
+	</element>
+
+
+
+</schema>
