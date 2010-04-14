@@ -54,7 +54,7 @@ This program is free software; you can redistribute it and/or modify it under
 #include "Entry/reentry.h"
 #include "Loitering/loitering.h"
 #include "Loitering/loiteringTLE.h"
-#include "SEM/semvehicle.h"
+#include "SEM/sem.h"
 #include "exportdialog.h"
 
 #include "Calculator/STAcalculator.h"
@@ -988,11 +988,17 @@ void MainWindow::on_actionSystem_Engineering_triggered()
     if (!scenario())
     return;
 
-    SEMVehicleDialog* editDialog = new SEMVehicleDialog(this);
-    if (editDialog->exec() == QDialog::Accepted)
-    {
+    //SEMVehicleDialog* editDialog = new SEMVehicleDialog(this);
+    //SEMVehicleDialog* editDialog = new sem(this);
 
-    }
+    sem* SEMWidget = new sem(this);  // Creating the widget as a tool
+    SEMWidget->show(); // Creating the window modeless. This requires the declaration of the variable on the *.h file
+    SEMWidget->raise(); // Required to keep the modeless window alive
+    SEMWidget->activateWindow(); // Required to keep the modeless window alive
+
+    //if (on_buttonBox_accepted->exec() == QDialog::Accepted)
+    //{
+    //}
 }
 
 

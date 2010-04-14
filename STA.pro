@@ -213,16 +213,9 @@ COVERAGE_HEADERS = sta-src/Coverage/coverage.h
 COVERAGE_FORMS = sta-src/Coverage/coverage.ui
 
 # ############# SEM Module ##############
-SEM_SOURCES = sta-src/SEM/Planets.cpp \
-    sta-src/SEM/preliminaryTables.cpp \
-    sta-src/SEM/sem.cpp \
-    sta-src/SEM/semvehicle.cpp
-SEM_HEADERS = sta-src/SEM/Planets.h \
-    sta-src/SEM/preliminaryTables.h \
-    sta-src/SEM/sem.h \
-    sta-src/SEM/semvehicle.h
-SEM_FORMS = sta-src/SEM/semvehicle.ui \
-    sta-src/SEM/sem.ui
+SEM_SOURCES = sta-src/SEM/sem.cpp
+SEM_HEADERS = sta-src/SEM/sem.h
+SEM_FORMS = sta-src/SEM/sem.ui
 
 # ############# 3-Body Module ##############
 LAGRANGIAN_SOURCES = sta-src/Lagrangian/trajectoryprinting.cpp \
