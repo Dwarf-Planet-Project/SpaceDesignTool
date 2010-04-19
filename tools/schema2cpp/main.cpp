@@ -729,7 +729,7 @@ ComplexType::writePublicInterface(QTextStream& out)
     out << INDENT << "virtual bool " << "load(const QDomElement& e, QDomElement* nextElement);\n";
 
     // DOM Node writer
-    out << INDENT << "virtual QDomElement toDomElement(QDomDocument&) const;\n";
+    out << INDENT << "virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;\n";
     out << "\n";
 
     //out << INDENT << "virtual unsigned int childCount();\n";
@@ -996,34 +996,87 @@ ComplexType::writeDomLoader(QTextStream& out)
 }
 
 
+static void
+SetTagName(QTextStream& out, const QString& property, QList<QSharedPointer<Element> > substitutes)
+{
+    // The name of the element may be different than the name of the type. If the
+    // child element belongs to a substitution group, check its C++ type in order
+    // to determine the appropriate tag name to write.
+    if (!substitutes.empty())
+    {
+        bool first = true;
+        foreach (QSharedPointer<Element> e, substitutes)
+        {
+            out << INDENT2 << (first ? "" : "else ") << "if (dynamic_cast<" << e->type().ctype() << "*>(" << property << ".data()))\n";
+            out << INDENT3 << "tagName = " << quoteString(e->name()) << ";\n";
+            first = false;
+        }
+    }
+
+}
+
 void
 ComplexType::writeDomSaver(QTextStream& out)
 {
-    out << "QDomElement " << className() << "::toDomElement(QDomDocument& doc) const\n";
+    out << "QDomElement " << className() << "::toDomElement(QDomDocument& doc, const QString& elementName) const\n";
     out << "{\n";
 
-    out << INDENT << "QDomElement e = " << baseClassName() << "::toDomElement(doc);\n";
-    out << INDENT << "e.setTagName(" << quoteString(XMLNS + ":" + name()) << ");\n";
+    out << INDENT << "QDomElement e = " << baseClassName() << "::toDomElement(doc, elementName);\n";
     foreach (Property p, m_properties)
     {
         if (p.type().isComplex())
         {
+            QList<QSharedPointer<Element> > substitutes;
+            if (g_GlobalElements.contains(p.name()))
+            {
+                substitutes = g_GlobalElements[p.name()]->substitutes();
+            }
+
             if (p.multipleOccurrencesAllowed())
             {
                 out << INDENT << "foreach (" << p.type().memberVariableType() << " p, " << p.memberVariableName() << ")\n";
                 out << INDENT << "{\n";
-                out << INDENT2 << "e.appendChild(" << "p->toDomElement(doc));\n";
+                out << INDENT2 << "QString tagName = " << quoteString(p.name()) << ";\n";
+
+                // The name of the element may be different than the name of the type. If the
+                // child element belongs to a substitution group, check its C++ type in order
+                // to determine the appropriate tag name to write.
+                if (!substitutes.empty())
+                {
+                    bool first = true;
+                    foreach (QSharedPointer<Element> e, substitutes)
+                    {
+                        out << INDENT2 << (first ? "" : "else ") << "if (dynamic_cast<" << e->type().ctype() << "*>(p.data()))\n";
+                        out << INDENT3 << "tagName = " << quoteString(e->name()) << ";\n";
+                        first = false;
+                    }
+                }
+                out << INDENT2 << "QDomElement child = p->toDomElement(doc, tagName);\n";
+
+                out << INDENT2 << "e.appendChild(child);\n";
                 out << INDENT << "}\n";
             }
             else
             {
                 out << INDENT  << "if (!" << p.memberVariableName() << ".isNull())\n";
                 out << INDENT  << "{\n";
-                out << INDENT2 << "QDomElement child = " << p.memberVariableName() << "->toDomElement(doc);\n";
+#if 0
+                out << INDENT2 << "QDomElement child = " << p.memberVariableName() << "->toDomElement(doc, " << quoteString(p.name()) << ");\n";
+#endif
+                out << INDENT2 << "QString tagName = " << quoteString(p.name()) << ";\n";
+
+                if (!substitutes.empty())
+                {
+                    SetTagName(out, p.memberVariableName(), substitutes);
+                }
+                out << INDENT2 << "QDomElement child = " << p.memberVariableName() << "->toDomElement(doc, tagName);\n";
+
+#if 0
                 if (!p.isReference())
                 {
                     out << INDENT2 << "child.setTagName(" << quoteString(XMLNS + ":" + p.name()) << ");\n";
                 }
+#endif
                 out << INDENT2 << "e.appendChild(child);\n";
                 out << INDENT  << "}\n";
             }
@@ -1427,9 +1480,13 @@ int main(int argc, char *argv[])
     header << INDENT2 << "return true;\n";
     header << INDENT << "}\n";
     header << "\n";
-    header << INDENT << "virtual QDomElement toDomElement(QDomDocument& doc) const\n";
+    header << INDENT << "virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const\n";
     header << INDENT << "{\n";
-    header << INDENT2 << "return doc.createElement(\"Object\");\n";
+    header << INDENT2 << "QDomElement e = doc.createElement(\"Object\");\n";
+    header << INDENT2 << "e.setTagName(" << QString("\"%1:\"").arg(XMLNS) << " + elementName);\n";
+    header << INDENT2 << "return e;\n";
+    header << INDENT2 << ";\n";
+
     header << INDENT << "}\n";
     header << INDENT << "virtual QString elementName() const = 0;\n";
     header << INDENT << "virtual QList<QSharedPointer<ScenarioObject> > children() const = 0;\n";
@@ -1453,6 +1510,15 @@ int main(int argc, char *argv[])
         header << "// " << e->className() << "\n";
         e->writeClassDefinition(header);
         header << "\n\n";
+    }
+
+    // Write factory functions for all global element types
+    foreach (QSharedPointer<Element> e, g_GlobalElements)
+    {
+        if (!e->isAbstract())
+        {
+            header << "QDomElement Create" << e->name() << "Element(" << e->type().ctype() << "* e, QDomDocument& doc);\n";
+        }
     }
 
     header << "\n#endif // _STASCHEMA_H_\n";
@@ -1482,6 +1548,18 @@ int main(int argc, char *argv[])
         source << "// " << e->className() << "\n";
         e->writeMethodDefinitions(source);
         source << "\n\n";
+    }
+
+    // Write factory functions for all global element types
+    foreach (QSharedPointer<Element> e, g_GlobalElements)
+    {
+        if (!e->isAbstract())
+        {
+            source << "QDomElement Create" << e->name() << "Element(" << e->type().ctype() << "* e, QDomDocument& doc)\n";
+            source << "{\n";
+            source << INDENT << "return e->toDomElement(doc, " << quoteString(e->name()) << ");\n";
+            source << "}\n\n";
+        }
     }
 
     sourceFile.close();
