@@ -19,6 +19,13 @@ Authors
   C. Yabar          <ESA>
   A. Manno          <University of Palermo>
   A. Riccardi       <University of Milano>
+  A. Raposo         <Instituto Superior TŽcnico of Lisbon>
+  N. Filipe         <ESA>
+  R. Noriega        <Technical University of Madrid>
+  C. Yabar          <ESA>
+  O. Yilmaz         <University of Wuerzburg>
+  I. Huertas        <ESA>
+  
 
 STA email address:
   <space.trajectory.analyis@gmail.com>
@@ -43,4 +50,5 @@ Contributors
   P. Gil             <Instituto Superior TŽcnico Lisbon>
   K. Schilling       <University of Wuerzburg>
   D. Ponz            <ESA>
+  C. Bernal          <ESA>
 
