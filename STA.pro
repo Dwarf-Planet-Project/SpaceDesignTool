@@ -1,17 +1,17 @@
 message(Qt version: $$[QT_VERSION])
 message(Qt is installed in $$[QT_INSTALL_PREFIX])
-#target.path =
-#INSTALLS += target
 
+# target.path =
+# INSTALLS += target
 CONFIG += debug_and_release
 CONFIG += release
-
 TEMPLATE = app
 TARGET = STA
 QT += opengl
-QT += xml
+QT += xml \
+    xmlpatterns
 
-### Specifiying folders on the tree #####
+# ## Specifiying folders on the tree #####
 WINDOWS_LIBRARIES_DIR = thirdparty/windows
 MACOSX_LIBRARIES_DIR = thirdparty/macosx
 LINUX_LIBRARIES_DIR = thirdparty/linux
@@ -20,8 +20,7 @@ QWT3D_DIR = thirdparty/qwtplot3d
 CATALOG_SOURCE = sta-data/data
 EIGEN_DIR = thirdparty/Eigen
 
-
-#################### Main files ################################
+# ################### Main files ################################
 MAIN_SOURCES = sta-src/Main/celestiainterface.cpp \
     sta-src/Main/initialstateeditor.cpp \
     sta-src/Main/main.cpp \
@@ -66,12 +65,11 @@ MAIN_FORMS = sta-src/Main/initialstateeditor.ui \
     sta-src/Main/payloadproperties.ui \
     sta-src/Main/propulsionproperties.ui \
     sta-src/Main/initialstateThreebodyEditor.ui \
-    sta-src/Main/exportdialog.ui\
+    sta-src/Main/exportdialog.ui \
     sta-src/Main/about.ui
 
-###################### Astro Core ############################
-ASTROCORE_SOURCES = \
-    sta-src/Astro-Core/calendarTOjulian.cpp \
+# ##################### Astro Core ############################
+ASTROCORE_SOURCES = sta-src/Astro-Core/calendarTOjulian.cpp \
     sta-src/Astro-Core/date.cpp \
     sta-src/Astro-Core/EarthRotationState.cpp \
     sta-src/Astro-Core/ephparms.cpp \
@@ -113,8 +111,7 @@ ASTROCORE_SOURCES = \
     sta-src/Astro-Core/rotatingTOcartesian.cpp \
     sta-src/Astro-Core/Interpolators.cpp \
     sta-src/Astro-Core/trueAnomalyTOmeanAnomaly.cpp
-ASTROCORE_HEADERS = \
-    sta-src/Astro-Core/calendarTOjulian.h \
+ASTROCORE_HEADERS = sta-src/Astro-Core/calendarTOjulian.h \
     sta-src/Astro-Core/date.h \
     sta-src/Astro-Core/EarthRotationState.h \
     sta-src/Astro-Core/ephemeris.h \
@@ -162,7 +159,7 @@ ASTROCORE_HEADERS = \
     sta-src/Astro-Core/trueAnomalyTOmeanAnomaly.h
 ASTROCORE_FORMS = sta-src/Astro-Core/trajectorypropagation.ui
 
-############## Entry module ##################
+# ############# Entry module ##################
 ENTRY_SOURCES = sta-src/Entry/reentry.cpp \
     sta-src/Entry/reentrystructures.cpp \
     sta-src/Entry/capsule.cpp \
@@ -233,7 +230,7 @@ LAGRANGIAN_HEADERS = sta-src/Lagrangian/halorbitcomputation.h \
 LAGRANGIAN_FORMS = sta-src/Lagrangian/lagrangian.ui \
     sta-src/Lagrangian/lagrangianAdvanced.ui
 
-############## Optimization ##############
+# ############# Optimization ##############
 OPTIMIZATION_SOURCES = sta-src/Optimization/pso1D.cpp \
     sta-src/Optimization/nsga2.cpp \
     sta-src/Optimization/dgmopso.cpp \
@@ -257,107 +254,44 @@ OPTIMIZATION_HEADERS = sta-src/Optimization/GlobalOptimizers.h \
     sta-src/Optimization/realmut1.h \
     sta-src/Optimization/keepaliven.h
 
-############## Plotting Module ##############
-PLOT_SOURCES = \
-    sta-src/Plotting/groundtrackplottool.cpp \
+# ############# Plotting Module ##############
+PLOT_SOURCES = sta-src/Plotting/groundtrackplottool.cpp \
     sta-src/Plotting/plottingtool.cpp \
     sta-src/Plotting/threedvisualizationtool.cpp \
     sta-src/Plotting/visualizationtoolbar.cpp
-PLOT_HEADERS = \
-    sta-src/Plotting/groundtrackplottool.h \
+PLOT_HEADERS = sta-src/Plotting/groundtrackplottool.h \
     sta-src/Plotting/plottingtool.h \
     sta-src/Plotting/threedvisualizationtool.h \
     sta-src/Plotting/visualizationtoolbar.h
-PLOT_FORMS = \
-    sta-src/Plotting/plottingtool.ui
+PLOT_FORMS = sta-src/Plotting/plottingtool.ui
 
-########################### Scenario  #################################
-SCENARIO_SOURCES = sta-src/Scenario/scenarioabstracttrajectory.cpp \
-    sta-src/Scenario/scenarioappearance.cpp \
-    sta-src/Scenario/scenarioascent.cpp \
-    sta-src/Scenario/scenariobody.cpp \
-    sta-src/Scenario/scenariodesignoverview.cpp \
-    sta-src/Scenario/scenarioenvironment.cpp \
-    sta-src/Scenario/scenariogroundelement.cpp \
-    sta-src/Scenario/scenarioinitialstate.cpp \
-    sta-src/Scenario/scenariogravitymodel.cpp \
-    sta-src/Scenario/scenariomanoeuvre.cpp \
-    sta-src/Scenario/scenariomanoeuvreplan.cpp \
-    sta-src/Scenario/scenariolocation.cpp \
-    sta-src/Scenario/scenarioloitering.cpp \
-    sta-src/Scenario/scenarioloiteringtle.cpp \
-    sta-src/Scenario/scenarioobject.cpp \
-    sta-src/Scenario/scenarioparticipant.cpp \
-    sta-src/Scenario/scenariopayload.cpp \
-    sta-src/Scenario/scenarioproperties.cpp \
-    sta-src/Scenario/scenariopropulsion.cpp \
-    sta-src/Scenario/scenarioreentry.cpp \
-    sta-src/Scenario/scenarioreentrymode.cpp \
-    sta-src/Scenario/scenarioreentryproperties.cpp \
-    sta-src/Scenario/scenariorendezvous.cpp \
-    sta-src/Scenario/scenariosimulationparameters.cpp \
-    sta-src/Scenario/scenariospacevehicle.cpp \
-    sta-src/Scenario/scenariotrajectoryplan.cpp \
-    sta-src/Scenario/scenariotrajectorypropagation.cpp \
-    sta-src/Scenario/spacescenario.cpp \
-    sta-src/Scenario/spacescenarioreader.cpp \
-    sta-src/Scenario/scenariothreebodyenvironment.cpp \
-    sta-src/Scenario/scenariothreebodytransfer.cpp \
-    sta-src/Scenario/scenariolagrangian.cpp \
-    sta-src/Scenario/scenariohalo.cpp \
-    sta-src/Scenario/scenariomanifold.cpp \
-    sta-src/Scenario/scenarioperturbations.cpp \
-    sta-src/Scenario/scenarioexternal.cpp
-SCENARIO_HEADERS = sta-src/Scenario/propagationfeedback.h \
-    sta-src/Scenario/scenario.h \
-    sta-src/Scenario/scenarioabstracttrajectory.h \
-    sta-src/Scenario/scenarioappearance.h \
-    sta-src/Scenario/scenarioascent.h \
-    sta-src/Scenario/scenariobody.h \
-    sta-src/Scenario/scenariodesignoverview.h \
-    sta-src/Scenario/scenarioenvironment.h \
-    sta-src/Scenario/scenariogravitymodel.h \
-    sta-src/Scenario/scenariogroundelement.h \
-    sta-src/Scenario/scenarioinitialstate.h \
-    sta-src/Scenario/scenariolocation.h \
-    sta-src/Scenario/scenarioloitering.h \
-    sta-src/Scenario/scenarioloiteringtle.h \
-    sta-src/Scenario/scenariomanoeuvre.h \
-    sta-src/Scenario/scenariomanoeuvreplan.h \
-    sta-src/Scenario/scenarioobject.h \
-    sta-src/Scenario/scenarioparticipant.h \
-    sta-src/Scenario/scenariopayload.h \
-    sta-src/Scenario/scenarioproperties.h \
-    sta-src/Scenario/scenarioreentry.h \
-    sta-src/Scenario/scenarioreentrymode.h \
-    sta-src/Scenario/scenarioreentryproperties.h \
-    sta-src/Scenario/scenariopropulsion.h \
-    sta-src/Scenario/scenariorendezvous.h \
-    sta-src/Scenario/scenariosimulationparameters.h \
-    sta-src/Scenario/scenariospacevehicle.h \
-    sta-src/Scenario/scenariotrajectoryplan.h \
-    sta-src/Scenario/scenariotrajectorypropagation.h \
-    sta-src/Scenario/spacescenario.h \
-    sta-src/Scenario/spacescenarioreader.h \
-    sta-src/Scenario/scenariothreebodyenvironment.h \
-    sta-src/Scenario/scenariothreebodytransfer.h \
-    sta-src/Scenario/scenariolagrangian.h \
-    sta-src/Scenario/scenariohalo.h \
-    sta-src/Scenario/scenariomanifold.h \
-    sta-src/Scenario/scenarioperturbations.h \
-    sta-src/Scenario/scenarioexternal.h
+# ################ RAM ############
+RAM_SOURCES = sta-src/RAM/parametrization.cpp \
+    sta-src/RAM/aerodynamicmethods.cpp
+RAM_HEADERS = sta-src/RAM/parametrization.h \
+    sta-src/RAM/aerodynamicmethods.h
+RAM_FORMS = sta-src/RAM/parametrizedgeometry.ui \
+    sta-src/RAM/aerodynamicmethods.ui
 
-############## Constellations Module ##############
+# ########################## Scenario  #################################
+SCENARIO_SOURCES = sta-src/Scenario/staschema.cpp \
+    sta-src/Scenario/stascenarioutil.cpp
+SCENARIO_HEADERS = sta-src/Scenario/staschema.h \
+    sta-src/Scenario/stascenarioutil.h \
+    sta-src/Scenario/propagationfeedback.h \
+    sta-src/Scenario/scenario.h
+
+# ############# Constellations Module ##############
 CONSTELLATIONS_SOURCES = sta-src/Constellations/cwizard.cpp
 CONSTELLATIONS_HEADERS = sta-src/Constellations/cwizard.h
 CONSTELLATIONS_FORMS = sta-src/Constellations/cwizard.ui
 
-############## Help Browser Module ##############
+# ############# Help Browser Module ##############
 HELPBROWSER_SOURCES = sta-src/Help/HelpBrowser.cpp
 HELPBROWSER_HEADERS = sta-src/Help/HelpBrowser.h
-HELPBROWSER_FORMS =
+HELPBROWSER_FORMS = 
 
-################ Celestia sources ####################
+# ############### Celestia sources ####################
 UTIL_SOURCES = $$CEL/celutil/bigfix.cpp \
     $$CEL/celutil/color.cpp \
     $$CEL/celutil/debug.cpp \
@@ -380,7 +314,6 @@ UTIL_HEADERS = $$CEL/celutil/basictypes.h \
     $$CEL/celutil/utf8.h \
     $$CEL/celutil/util.h \
     $$CEL/celutil/watcher.h
-
 win32 { 
     UTIL_SOURCES += $$CEL/celutil/windirectory.cpp \
         $$CEL/celutil/wintimer.cpp
@@ -389,7 +322,7 @@ win32 {
 unix:UTIL_SOURCES += $$CEL/celutil/unixdirectory.cpp \
     $$CEL/celutil/unixtimer.cpp
 
-############# Celestia Math library ################
+# ############ Celestia Math library ################
 MATH_SOURCES = $$CEL/celmath/frustum.cpp \
     $$CEL/celmath/perlin.cpp
 MATH_HEADERS = $$CEL/celmath/aabox.h \
@@ -407,18 +340,18 @@ MATH_HEADERS = $$CEL/celmath/aabox.h \
     $$CEL/celmath/sphere.h \
     $$CEL/celmath/vecmath.h
 
-############ Celestia 3DS Mesh library ##########
+# ########### Celestia 3DS Mesh library ##########
 TDS_SOURCES = $$CEL/cel3ds/3dsmodel.cpp \
     $$CEL/cel3ds/3dsread.cpp
 TDS_HEADERS = $$CEL/cel3ds/3dschunk.h \
     $$CEL/cel3ds/3dsmodel.h \
     $$CEL/cel3ds/3dsread.h
 
-############# Celestia Texture font library #########
+# ############ Celestia Texture font library #########
 TXF_SOURCES = $$CEL/celtxf/texturefont.cpp
 TXF_HEADERS = $$CEL/celtxf/texturefont.h
 
-################## Celestia Engine ############
+# ################# Celestia Engine ############
 ENGINE_SOURCES = $$CEL/celengine/asterism.cpp \
     $$CEL/celengine/astro.cpp \
     $$CEL/celengine/axisarrow.cpp \
@@ -605,7 +538,7 @@ CELESTIA_SPICE_HEADERS = $$CEL/celengine/spiceinterface.h \
     $$CEL/celengine/spiceorbit.h \
     $$CEL/celengine/spicerotation.h
 
-############### Celestia App sources ##################
+# ############## Celestia App sources ##################
 CELESTIA_APP_SOURCES = $$CEL/celestia/celestiacore.cpp \
     $$CEL/celestia/configfile.cpp \
     $$CEL/celestia/destination.cpp \
@@ -649,7 +582,7 @@ macx {
     CELESTIA_APP_HEADERS += $$MACOSX_LIBRARIES_DIR/POSupport.h
 }
 
-############# Celestia Qt4 front-end sources ###############
+# ############ Celestia Qt4 front-end sources ###############
 CELESTIA_QTAPP_SOURCES = $$CEL/celestia/qt/qtbookmark.cpp \
     $$CEL/celestia/qt/qtglwidget.cpp \
     $$CEL/celestia/qt/qtpreferencesdialog.cpp \
@@ -698,23 +631,18 @@ CELESTIA_HEADERS = $$UTIL_HEADERS \
     $$CELESTIA_APP_HEADERS \
     $$CELESTIA_QTAPP_HEADERS
 
-############ GL extension wrangler ################
-GLEW_SOURCES = \
-    thirdparty/glew/src/glew.c
-GLEW_HEADERS = \
-    thirdparty/glew/include/GL/glew.h \
+# ########### GL extension wrangler ################
+GLEW_SOURCES = thirdparty/glew/src/glew.c
+GLEW_HEADERS = thirdparty/glew/include/GL/glew.h \
     thirdparty/glew/include/GL/glxew.h \
     thirdparty/glew/include/GL/wglew.h
 
-############ CurvePlot (high precision OpenGL curve drawing) ###########
-CURVEPLOT_SOURCES = \
-    thirdparty/curveplot/src/curveplot.cpp
-CURVEPLOT_HEADERS = \
-    thirdparty/curveplot/include/curveplot.h
+# ########### CurvePlot (high precision OpenGL curve drawing) ###########
+CURVEPLOT_SOURCES = thirdparty/curveplot/src/curveplot.cpp
+CURVEPLOT_HEADERS = thirdparty/curveplot/include/curveplot.h
 
-############## QwtPlot3d main ####################
-QWT3D_SOURCES += \
-    $$QWT3D_DIR/src/qwt3d_axis.cpp \
+# ############# QwtPlot3d main ####################
+QWT3D_SOURCES += $$QWT3D_DIR/src/qwt3d_axis.cpp \
     $$QWT3D_DIR/src/qwt3d_color.cpp \
     $$QWT3D_DIR/src/qwt3d_coordsys.cpp \
     $$QWT3D_DIR/src/qwt3d_drawable.cpp \
@@ -730,16 +658,13 @@ QWT3D_SOURCES += \
     $$QWT3D_DIR/src/qwt3d_io_reader.cpp \
     $$QWT3D_DIR/src/qwt3d_io.cpp \
     $$QWT3D_DIR/src/qwt3d_scale.cpp
-QWT3D_SOURCES += \
-    $$QWT3D_DIR/src/qwt3d_gridmapping.cpp \
+QWT3D_SOURCES += $$QWT3D_DIR/src/qwt3d_gridmapping.cpp \
     $$QWT3D_DIR/src/qwt3d_parametricsurface.cpp \
     $$QWT3D_DIR/src/qwt3d_function.cpp
-QWT3D_SOURCES += \
-    $$QWT3D_DIR/src/qwt3d_surfaceplot.cpp \
+QWT3D_SOURCES += $$QWT3D_DIR/src/qwt3d_surfaceplot.cpp \
     $$QWT3D_DIR/src/qwt3d_gridplot.cpp \
     $$QWT3D_DIR/src/qwt3d_meshplot.cpp
-QWT3D_HEADERS += \
-    $$QWT3D_DIR/include/qwt3d_color.h \
+QWT3D_HEADERS += $$QWT3D_DIR/include/qwt3d_color.h \
     $$QWT3D_DIR/include/qwt3d_global.h \
     $$QWT3D_DIR/include/qwt3d_types.h \
     $$QWT3D_DIR/include/qwt3d_axis.h \
@@ -758,30 +683,24 @@ QWT3D_HEADERS += \
     $$QWT3D_DIR/include/qwt3d_io_reader.h \
     $$QWT3D_DIR/include/qwt3d_scale.h \
     $$QWT3D_DIR/include/qwt3d_portability.h
-QWT3D_HEADERS += \
-    $$QWT3D_DIR/include/qwt3d_mapping.h \
+QWT3D_HEADERS += $$QWT3D_DIR/include/qwt3d_mapping.h \
     $$QWT3D_DIR/include/qwt3d_gridmapping.h \
     $$QWT3D_DIR/include/qwt3d_parametricsurface.h \
     $$QWT3D_DIR/include/qwt3d_function.h
-QWT3D_HEADERS += \
-    $$QWT3D_DIR/include/qwt3d_surfaceplot.h \
+QWT3D_HEADERS += $$QWT3D_DIR/include/qwt3d_surfaceplot.h \
     $$QWT3D_DIR/include/qwt3d_volumeplot.h \
     $$QWT3D_DIR/include/qwt3d_graphplot.h \
     $$QWT3D_DIR/include/qwt3d_multiplot.h
 
-############## QwtPlot3d gl2ps support ##############
-QWT3D_HEADERS += \
-    $$QWT3D_DIR/3rdparty/gl2ps/gl2ps.h \
+# ############# QwtPlot3d gl2ps support ##############
+QWT3D_HEADERS += $$QWT3D_DIR/3rdparty/gl2ps/gl2ps.h \
     $$QWT3D_DIR/include/qwt3d_io_gl2ps.h
-QWT3D_SOURCES += \
-    $$QWT3D_DIR/src/qwt3d_io_gl2ps.cpp \
+QWT3D_SOURCES += $$QWT3D_DIR/src/qwt3d_io_gl2ps.cpp \
     $$QWT3D_DIR/3rdparty/gl2ps/gl2ps.c
 
-############## TLEs support ##############
-NORAD_HEADERS += \
-    thirdparty/noradtle/norad.h
-NORAD_SOURCES += \
-    thirdparty/noradtle/basics.cpp \
+# ############# TLEs support ##############
+NORAD_HEADERS += thirdparty/noradtle/norad.h
+NORAD_SOURCES += thirdparty/noradtle/basics.cpp \
     thirdparty/noradtle/common.cpp \
     thirdparty/noradtle/deep.cpp \
     thirdparty/noradtle/get_el.cpp \
@@ -791,14 +710,11 @@ NORAD_SOURCES += \
     thirdparty/noradtle/sgp4.cpp \
     thirdparty/noradtle/sgp8.cpp
 
-
-#THIRDPARTY_SOURCES = $$GLEW_SOURCES $$CURVEPLOT_SOURCES $$QWT3D_SOURCES $$NORAD_SOURCES
-#THIRDPARTY_HEADERS = $$GLEW_HEADERS $$CURVEPLOT_HEADERS $$QWT3D_HEADERS $$NORAD_HEADERS
-
+# THIRDPARTY_SOURCES = $$GLEW_SOURCES $$CURVEPLOT_SOURCES $$QWT3D_SOURCES $$NORAD_SOURCES
+# THIRDPARTY_HEADERS = $$GLEW_HEADERS $$CURVEPLOT_HEADERS $$QWT3D_HEADERS $$NORAD_HEADERS
 DEFINES += GLEW_STATIC
 
-
-################ All app sources, headers, and forms ############
+# ############### All app sources, headers, and forms ############
 SOURCES = $$MAIN_SOURCES \
     $$ASTROCORE_SOURCES \
     $$SEM_SOURCES \
@@ -809,6 +725,7 @@ SOURCES = $$MAIN_SOURCES \
     $$LOITERING_SOURCES \
     $$EXTERNAL_SOURCES \
     $$RENDEZVOUS_SOURCES \
+    $$RAM_SOURCES \
     $$LAGRANGIAN_SOURCES \
     $$OPTIMIZATION_SOURCES \
     $$CALCULATOR_SOURCES \
@@ -827,6 +744,7 @@ HEADERS = $$MAIN_HEADERS \
     $$LOCATIONS_HEADERS \
     $$LOITERING_HEADERS \
     $$EXTERNAL_HEADERS \
+    $$RAM_HEADERS \
     $$RENDEZVOUS_HEADERS \
     $$LAGRANGIAN_HEADERS \
     $$OPTIMIZATION_HEADER \
@@ -837,11 +755,11 @@ HEADERS = $$MAIN_HEADERS \
     $$QWT3D_HEADERS \
     $$NORAD_HEADERS \
     $$HELPBROWSER_HEADERS
-FORMS = \
-    $$MAIN_FORMS \
+FORMS = $$MAIN_FORMS \
     $$ASTROCORE_FORMS \
     $$SEM_FORMS \
     $$PLOT_FORMS \
+    $$RAM_FORMS \
     $$ENTRY_FORMS \
     $$LOCATIONS_FORMS \
     $$CALCULATOR_FORMS \
@@ -855,12 +773,10 @@ FORMS = \
     $$QWT3D_FORMS \
     $$NORAD_FORMS \
     $$HELPBROWSER_FORMS
-
-RESOURCES = $$CELESTIA_RESOURCES iconary/sta-icons.qrc
-
+RESOURCES = $$CELESTIA_RESOURCES \
+    iconary/sta-icons.qrc
 UI_HEADERS_DIR = sta-src/ui/include
 UI_SOURCES_DIR = sta-src/ui/src
-
 INCLUDEPATH += .
 INCLUDEPATH += sta-src
 INCLUDEPATH += thirdparty
@@ -869,8 +785,6 @@ INCLUDEPATH += thirdparty/glew/include
 INCLUDEPATH += thirdparty/curveplot/include
 INCLUDEPATH += thirdparty/qwtplot3d/include
 INCLUDEPATH += thirdparty/noradtle
-
-
 win32 { 
     # SPICE support
     # SOURCES += $$SPICE_SOURCES
@@ -890,77 +804,62 @@ win32 {
         -llua5.1
     RC_FILE = sta-src/sta.rc
     DEFINES += _CRT_SECURE_NO_WARNINGS
-
+    
     # Disable the regrettable min and max macros in windows.h
     DEFINES += NOMINMAX
 }
-
 win32-g++ { 
     # Work around alignment problems with MinGW. Fixed-size Eigen matrices
     # are sometimes allocated on the stack at unaligned addresses even though
     # __alignof e.g. Vector4d is 16. Until we figure out what's going on, we'll
     # just disable the assertions. Since Eigen never generates SSE2 instructions
     # for the g++ 3.4 compiler in MinGW, this should be harmless.
-    #message("Warning: Disabling Eigen unaligned memory assertion")
-    #DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+    # message("Warning: Disabling Eigen unaligned memory assertion")
+    # DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
     message("Enabling Eigen in Windows")
     QMAKE_CXXFLAGS += -mincoming-stack-boundary=2
-
-    QMAKE_CXXFLAGS_RELEASE = \
-        -ffast-math \
+    QMAKE_CXXFLAGS_RELEASE = -ffast-math \
         -fexpensive-optimizations \
         -O3 \
         -Bdynamic
 }
 
 # Application icon
-macx:ICON = iconary/STAlogoARCHEAN.icns
-
-macx{
-    QMAKE_CXXFLAGS_RELEASE = \
-        -ffast-math \
-        -fexpensive-optimizations \
-        -O3 \
-        -Bdynamic
-}
-
-linux-g++ {
+macx:ICON = iconary/STAlogo.icns
+macx:QMAKE_CXXFLAGS_RELEASE = -ffast-math \
+    -fexpensive-optimizations \
+    -O3 \
+    -Bdynamic
+linux-g++ { 
     message("Warning: compiling a linux version")
-
-    QMAKE_CXXFLAGS_RELEASE = \
-        -ffast-math \
+    QMAKE_CXXFLAGS_RELEASE = -ffast-math \
         -fexpensive-optimizations \
         -O3 \
         -Bdynamic
-
     INCLUDEPATH += $$LINUX_LIBRARIES_DIR
     INCLUDEPATH += /usr/include
-
     LIBS += -ljpeg
     LIBS += -lpng
-
-    exists( /usr/include/lua5.1/lua.h ) {
-       message( " - Configuring LUA for Debian-type installation..." )
-       INCLUDEPATH += /usr/include/lua5.1
-       LIBS += -llua5.1
+    exists( /usr/include/lua5.1/lua.h ) { 
+        message( " - Configuring LUA for Debian-type installation..." )
+        INCLUDEPATH += /usr/include/lua5.1
+        LIBS += -llua5.1
     }
-    exists( /usr/include/lua.h ) {
-       message( " - Configuring LUA for RPM-type installation..." )
-       LIBS += -llua
+    exists( /usr/include/lua.h ) { 
+        message( " - Configuring LUA for RPM-type installation..." )
+        LIBS += -llua
     }
 }
 
-################### Package files ###################
+# ################## Package files ###################
 CATALOG_FILES = $$CATALOG_SOURCE/stars.dat \
     $$CATALOG_SOURCE/starnames.dat \
     $$CATALOG_SOURCE/saoxindex.dat \
     $$CATALOG_SOURCE/hdxindex.dat \
     $$CATALOG_SOURCE/nearstars.stc \
-    $$CATALOG_SOURCE/extrasolar.stc \
-#    $$CATALOG_SOURCE/visualbins.stc \
-#    $$CATALOG_SOURCE/spectbins.stc \
-    $$CATALOG_SOURCE/revised.stc \
-#    $$CATALOG_SOURCE/deepsky.dsc \
+    $$CATALOG_SOURCE/extrasolar.stc \ # $$CATALOG_SOURCE/visualbins.stc \
+# $$CATALOG_SOURCE/spectbins.stc \
+    $$CATALOG_SOURCE/revised.stc \ # $$CATALOG_SOURCE/deepsky.dsc \
     $$CATALOG_SOURCE/solarsys.ssc \
     $$CATALOG_SOURCE/asteroids.ssc \
     $$CATALOG_SOURCE/comets.ssc \
@@ -984,7 +883,6 @@ CONFIGURATION_SOURCE = sta-data
 CONFIGURATION_FILES = $$CONFIGURATION_SOURCE/STA.cfg \
     $$CONFIGURATION_SOURCE/ESA_tour.cel \
     $$CONFIGURATION_SOURCE/start.cel
-
 EPHEMERIS_SOURCE = sta-data/ephemerides
 EPHEMERIS_FILES = sta-data/ephemerides/de406_1800-2100.dat
 TEXTURE_SOURCE = sta-data/textures/medres
@@ -1003,16 +901,18 @@ ATMOSPHERES_SOURCE = sta-data/data/atmospheres
 ATMOSPHERES_FILES = 
 BODIES_SOURCE = sta-data/data/bodies
 BODIES_FILES = 
+SCHEMA_SOURCE = sta-data/schema/spacescenario/2.0
+SCHEMA_FILES = 
 TLEs_SOURCE = sta-data/TLEs
-TLEs_FILES =
+TLEs_FILES = 
 EXAMPLES_SOURCE = sta-data/scenario-examples
-EXAMPLES_FILES =
+EXAMPLES_FILES = 
 MACOSXIconFiles_SOURCE = iconary
-MACOSXIconFiles_FILES =
+MACOSXIconFiles_FILES = 
 USERMANUAL_SOURCE = sta-data/help
-USERMANUAL_FILES =
+USERMANUAL_FILES = 
 
-################ MAC OS X bundle ########################
+# ############### MAC OS X bundle ########################
 macx { 
     # Scan directories for files for Mac bundle
     FILES = $$system(ls $$TEXTURE_SOURCE)
@@ -1031,6 +931,8 @@ macx {
     ATMOSPHERES_FILES = $$join(FILES, " $$ATMOSPHERES_SOURCE/", $$ATMOSPHERES_SOURCE/)
     FILES = $$system(ls $$BODIES_SOURCE)
     BODIES_FILES = $$join(FILES, " $$BODIES_SOURCE/", $$BODIES_SOURCE/)
+    FILES = $$system(ls $$SCHEMA_SOURCE)
+    SCHEMA_FILES = $$join(FILES, " $$SCHEMA_SOURCE/", $$SCHEMA_SOURCE/)
     FILES = $$system(ls $$TLEs_SOURCE)
     TLEs_FILES = $$join(FILES, " $$TLEs_SOURCE/", $$TLEs_SOURCE/)
     FILES = $$system(ls $$EXAMPLES_SOURCE)
@@ -1044,12 +946,13 @@ macx {
 # INCLUDEPATH += /usr/local/cspice/include
 # LIBS += -ljpeg -llua /usr/local/cspice/lib/cspice.a
 macx { 
-    #QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.4u.sdk
-    #CONFIG += x86 ppc
-
+    # QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.4u.sdk
+    # CONFIG += x86 ppc
     # Necessary with Qt 4.6
-    QMAKE_LFLAGS += -framework CoreFoundation -framework ApplicationServices
-
+    QMAKE_LFLAGS += -framework \
+        CoreFoundation \
+        -framework \
+        ApplicationServices
     message( "Warning: building on MAC OS X for x86 architecture only" )
     CONFIG += x86
     INCLUDEPATH += $$MACOSX_LIBRARIES_DIR
@@ -1062,7 +965,7 @@ macx {
     LIBS += -L$$FRAMEWORKPATH
     DEFINES += PNG_SUPPORT
     FRAMEWORKS.files = $$FRAMEWORKPATH/liblua.dylib \
-                       $$FRAMEWORKPATH/libpng.dylib
+        $$FRAMEWORKPATH/libpng.dylib
     FRAMEWORKS.path = Contents/Frameworks
     QMAKE_BUNDLE_DATA += FRAMEWORKS
     CONFIGURATION.path = Contents/Resources/STAResources
@@ -1085,6 +988,8 @@ macx {
     AERODYNAMICS.files = $$AERO_FILES
     ATMOSPHERES.path = Contents/Resources/STAResources/data/atmospheres
     ATMOSPHERES.files = $$ATMOSPHERES_FILES
+    SCHEMA.path = Contents/Resources/STAResources/schema/spacescenario/2.0
+    SCHEMA.files = $$SCHEMA_FILES
     BODIES.path = Contents/Resources/STAResources/data/bodies
     BODIES.files = $$BODIES_FILES
     TLEs.path = Contents/Resources/STAResources/TLEs
@@ -1103,6 +1008,7 @@ macx {
         SHADERS \
         EPHEMERIDES \
         TLEs \
+        SCHEMA \
         EXAMPLES \
         USERMANUAL \
         MACOSXIconFiles
@@ -1111,6 +1017,5 @@ macx {
         ATMOSPHERES \
         BODIES
 }
-
 DEFINES += CELX \
     LUA_VER=0x050100

@@ -4,7 +4,7 @@
 
 	<include schemaLocation="scenarioGE.xsd" />
 	<include schemaLocation="scenarioLV.xsd" />
-	<!-- <include schemaLocation="scenarioREV.xsd" /> -->
+	<include schemaLocation="scenarioREV.xsd" />
 	<include schemaLocation="scenarioSC.xsd" />
 
 

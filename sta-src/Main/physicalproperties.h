@@ -26,7 +26,9 @@
 #define PHYSICALPROPERTIES_H
 
 #include <QDialog>
+#include <QFileDialog>
 #include "ui_physicalproperties.h"
+#include "Scenario/staschema.h"
 
 class ScenarioTree;
 class ScenarioPhysicalProperties;
@@ -39,8 +41,15 @@ public:
     PhysicalPropertiesDialog(ScenarioTree* parent=NULL);
     ~PhysicalPropertiesDialog(){}
 
-    bool loadValues(ScenarioPhysicalProperties* physicalProperties);
-    bool saveValues(ScenarioPhysicalProperties* physicalProperties);
+    bool loadValues(ScenarioREVGeometryType* REVgeometry);
+    bool saveValues(ScenarioREVGeometryType* REVgeometry);
+
+public slots:
+    void writeGeomFile(QString filename);
+    void on_geomParaButton_clicked();
+
+private:
+    QFileDialog* loadGeomDialog;
 
 };
 

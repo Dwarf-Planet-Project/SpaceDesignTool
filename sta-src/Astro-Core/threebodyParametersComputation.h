@@ -22,12 +22,14 @@ the world wide web at http://www.gnu.org.
  */
 
 
-#include "Scenario/scenariobody.h"
+#include "Scenario/scenario.h"
 
 double getGravParam_user (double mi_1, double mi_2);
 int getSystem (int id_1, int id_2);
+#if OLDSCENARIO
 ScenarioBody* getBody1 (int System);
 ScenarioBody* getBody2 (int System);
+#endif
 void radiusss (double mi, double x, double y, double z, double &R1, double &R2);
 
 void Jacobi (double mi, double x, double y, double z, double vx, double vy, double vz, double &C);

@@ -37,12 +37,13 @@
 #include "Main/treeItemDelegate.h"
 #include "Astro-Core/date.h"
 #include "Astro-Core/stacoordsys.h"
+#include "Astro-Core/stabody.h"
 
 const char* RVD_INPUT_FILE_NAME = "rendezvouspipe.stap";
 
 QTreeWidgetItem* invisibleRoot;
-QList<ScenarioParticipant*> spacevehicles;
-bool flag, dragdropflag;
+QList<ScenarioSC*> spacevehicles;
+static bool flag, dragdropflag;
 
 RendezvousDialog::RendezvousDialog(ScenarioTree* parent) :
     QDialog(parent)
@@ -141,6 +142,7 @@ RendezvousDialog::RendezvousDialog(ScenarioTree* parent) :
     QTreeWidgetItem* spacescenarioItem = parent->topLevelItem(0);
     SpaceScenario* spacescenario = dynamic_cast<SpaceScenario*> (parent->objectForItem(spacescenarioItem));
     
+#if OLDSCENARIO
 	if(spacescenario){
 		QList<ScenarioParticipant*> participants = spacescenario->participants();
 		int num = participants.size();
@@ -152,7 +154,8 @@ RendezvousDialog::RendezvousDialog(ScenarioTree* parent) :
 			} 
 		}
 	}
-    
+#endif
+
 	//set up Manoeuvre list
 	QListWidgetItem* FreeDrift = new QListWidgetItem(ManoeuvresListWidget,1000);
 	FreeDrift->setText("Free Drift");
@@ -216,22 +219,26 @@ RendezvousDialog::~RendezvousDialog()
     delete TesseralSpinBox;
 }
 
+
 //SLOTS
 
-void RendezvousDialog::addPerturbingPlanet(){
+void RendezvousDialog::addPerturbingPlanet()
+{
 	QList<QListWidgetItem *> planets = BodyListWidget->selectedItems();
 	for (int i = 0; i < planets.size(); i++){
 		addPerturbingPlanet(planets.at(i));
 	}
 }
 
-void RendezvousDialog::addPerturbingPlanet(QListWidgetItem* item){
+void RendezvousDialog::addPerturbingPlanet(QListWidgetItem* item)
+{
 	QString text = item->text();
 	if(PertBodyListWidget->findItems(text,Qt::MatchExactly).isEmpty())
 		PertBodyListWidget->addItem(text);
 }
 
-void RendezvousDialog::removePerturbingPlanet(){
+void RendezvousDialog::removePerturbingPlanet()
+{
 	QList<QListWidgetItem *> perturbplanets = PertBodyListWidget->selectedItems();
 	for (int i = 0; i < perturbplanets.size(); i++){
 		delete perturbplanets.at(i);
@@ -244,7 +251,9 @@ void RendezvousDialog::removePerturbingPlanet(){
  * element, adds it to the m_manoeuvreplan global variable, and create the respective QTreeWidgetItem
  * to attach to the Manoeuvre Plan QTreeWidgets
  */
-void RendezvousDialog::addManoeuvre(QListWidgetItem* manoeuvreWidget){
+void RendezvousDialog::addManoeuvre(QListWidgetItem* manoeuvreWidget)
+{
+#if OLDSCENARIO
 	flag = true;
 	ScenarioManoeuvre* manoeuvre = new ScenarioManoeuvre();
 	QString title = manoeuvre->nameMap().key(manoeuvreWidget->text());
@@ -264,6 +273,8 @@ void RendezvousDialog::addManoeuvre(QListWidgetItem* manoeuvreWidget){
 	for(int i=0; i<num; i++)
 		manoeuvreItem->child(i)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
 	
+#endif
+
 	connect(ManoeuvresPlanTreeWidget, SIGNAL(itemChanged(QTreeWidgetItem *, int)), this, SLOT(manoeuvrePlanChanged(QTreeWidgetItem *, int)));
 }
 
@@ -271,7 +282,8 @@ void RendezvousDialog::addManoeuvre(QListWidgetItem* manoeuvreWidget){
  * slot called from AddButton. It adds the selected manoeuvres in the QListWidget to the 
  * QTreeWidget representing the Manoeuvre Plan
  */
-void RendezvousDialog::on_AddButton_clicked(){ 
+void RendezvousDialog::on_AddButton_clicked()
+{
 	QList<QListWidgetItem*> manoeuvreList = ManoeuvresListWidget->selectedItems(); 
 	for (int i = 0; i < manoeuvreList.size(); i++){
 		addManoeuvre(manoeuvreList.at(i));
@@ -282,7 +294,9 @@ void RendezvousDialog::on_AddButton_clicked(){
  * slot called from DeleteButton. It remove the selected manoeuvre from the QTreeWidget 
  * representing the ManoeuvrePlan and from the list of all the manoeuvres.
  */
-void RendezvousDialog::on_DeleteButton_clicked(){
+void RendezvousDialog::on_DeleteButton_clicked()
+{
+#if OLDSCENARIO
 	QList<QTreeWidgetItem *>  listOfItem = ManoeuvresPlanTreeWidget->selectedItems();
 	if(!listOfItem.isEmpty()){
 		int saveBox = QMessageBox::warning(this,tr("RendezVous"),tr("Are you sure you want to delete the selected manoeuvres?"),QMessageBox::Yes | QMessageBox::No ,QMessageBox::Yes);
@@ -298,14 +312,16 @@ void RendezvousDialog::on_DeleteButton_clicked(){
 	    	return;
 	    }
 	}
-    return;
+#endif
 }
 
 /*
  * slot called from ClearAllButton. It removes all the elements from the QTreeWidget 
  * representing the ManoeuvrePlan and from the list of all the manoeuvres.
  */
-void RendezvousDialog::on_ClearAllButton_clicked(){
+void RendezvousDialog::on_ClearAllButton_clicked()
+{
+#if OLDSCENARIO
 	int saveBox = QMessageBox::warning(this,tr("RendezVous"),tr("Are you sure you want to delete all the manoeuvres?"),QMessageBox::Yes | QMessageBox::No ,QMessageBox::Yes);
     if (saveBox == QMessageBox::Yes) {
     	ManoeuvresPlanTreeWidget->clear();
@@ -316,16 +332,19 @@ void RendezvousDialog::on_ClearAllButton_clicked(){
     if (saveBox == QMessageBox::No){
     	return;
     }
+#endif
 }
 
-void RendezvousDialog::on_OKButton_clicked(){
+void RendezvousDialog::on_OKButton_clicked()
+{
 	if(isDragDropHappened()) {
 		reorderManoeuvrePlanTree();
 	}
 	accept();
 }
 
-void RendezvousDialog::on_CancelButton_clicked(){
+void RendezvousDialog::on_CancelButton_clicked()
+{
 	save_changes();
 	reject();
 }
@@ -334,7 +353,9 @@ void RendezvousDialog::on_CancelButton_clicked(){
  * slot called from QTreeWidget::itemChanged(). If some items in the tree changes (it means active/inactive or 
  * changes in the values ) the respective manoeuvre object is update 
  */
-bool RendezvousDialog::manoeuvrePlanChanged(QTreeWidgetItem* item, int column){
+bool RendezvousDialog::manoeuvrePlanChanged(QTreeWidgetItem* item, int column)
+{
+#if OLDSCENARIO
 	ScenarioManoeuvre* manoeuvre = manoeuvreForItem(item);
 	if(manoeuvre){
 		flag = true;
@@ -358,23 +379,28 @@ bool RendezvousDialog::manoeuvrePlanChanged(QTreeWidgetItem* item, int column){
 			}
 		}
 	}
+#endif
 	return flag;
 }
 
 
 // FUNCTION
 
+#if OLDSCENARIO
 ScenarioManoeuvre* RendezvousDialog::manoeuvreForItem(QTreeWidgetItem* item) const
 {
     ScenarioObject* scenarioObject = m_scenariotree->objectForItem(item);
     return dynamic_cast<ScenarioManoeuvre*>(scenarioObject);
 }
+#endif
 
 /*
  * This function is called if a drag and drop action take place. It reorders the manoeuvre list 
  * contained in the variable m_manoeuvreplan.
  */
-void RendezvousDialog::reorderManoeuvrePlanTree(){
+void RendezvousDialog::reorderManoeuvrePlanTree()
+{
+#if OLDSCENARIO
 	int numManoeuvre = invisibleRoot->childCount();
 	if(numManoeuvre!=0){
 		for(int i=0; i<numManoeuvre; i++){
@@ -385,13 +411,16 @@ void RendezvousDialog::reorderManoeuvrePlanTree(){
 			}
 		}
 	}
+#endif
 }
 
 
 /*
  * This functions rises the warning message if some changes in the Manoeuvre Plan are occurred
  */
-void RendezvousDialog::save_changes(){
+void RendezvousDialog::save_changes()
+{
+#if OLDSCENARIO
 	if(isDragDropHappened()) {
 		dragdropflag = true;
 	}
@@ -415,10 +444,12 @@ void RendezvousDialog::save_changes(){
         }
 		return;
 	}
-	return;
+#endif
 }
 
-void RendezvousDialog::displayManoeuvrePlan(){  
+void RendezvousDialog::displayManoeuvrePlan()
+{
+#if OLDSCENARIO
 	QList<ScenarioManoeuvre*> manoeuvreList = m_manoeuvreplan->manoeuvresList();
 	
 	disconnect(ManoeuvresPlanTreeWidget, SIGNAL(itemChanged(QTreeWidgetItem *, int)), this, SLOT(manoeuvrePlanChanged(QTreeWidgetItem *, int)));
@@ -442,9 +473,12 @@ void RendezvousDialog::displayManoeuvrePlan(){
 	}
 	
 	connect(ManoeuvresPlanTreeWidget, SIGNAL(itemChanged(QTreeWidgetItem *, int)), this, SLOT(manoeuvrePlanChanged(QTreeWidgetItem *, int)));
+#endif
 }
 
-bool RendezvousDialog::isDragDropHappened(){
+bool RendezvousDialog::isDragDropHappened()
+{
+#if OLDSCENARIO
 	QList<ScenarioManoeuvre* > currentManoeuvreList;
 	QList<ScenarioManoeuvre* > storedManoeuvreList = m_manoeuvreplan->manoeuvresList();
 	int num = invisibleRoot->childCount();
@@ -456,11 +490,14 @@ bool RendezvousDialog::isDragDropHappened(){
 	if (storedManoeuvreList == currentManoeuvreList) {
 			return false;
 	}
-	
+#endif
+
 	return true;
 }
 
-bool RendezvousDialog::loadValues(ScenarioRendezvousTrajectory* rendezvous){
+bool RendezvousDialog::loadValues(ScenarioRendezvousTrajectory* rendezvous)
+{
+#if OLDSCENARIO
 	ScenarioEnvironment* environment = rendezvous->environment();
 	ScenarioTargettingSimulationParameters* parameters = rendezvous->simulationParameters();
 	QString targetName = rendezvous->target();
@@ -479,11 +516,13 @@ bool RendezvousDialog::loadValues(ScenarioRendezvousTrajectory* rendezvous){
 	    }
 		return true;
 	}
+#endif
 	return false;
 }
 
 bool RendezvousDialog::loadValues(ScenarioEnvironment* environment)
 {
+#if OLDSCENARIO
     ScenarioBody* centralBody = environment->centralBody();
     if (centralBody)
     {
@@ -584,10 +623,14 @@ bool RendezvousDialog::loadValues(ScenarioEnvironment* environment)
             }
         }
     }
+#endif
     return true;
 }
 
-bool RendezvousDialog::loadValues(ScenarioTargettingSimulationParameters* parameters){
+
+bool RendezvousDialog::loadValues(ScenarioTargettingSimulationParameters* parameters)
+{
+#if OLDSCENARIO
 	ScenarioTimeline* timeline = parameters->timeline();
 	ScenarioInitialStatePosition* initialStatePos = parameters->initialStatePosition();
 
@@ -644,12 +687,14 @@ bool RendezvousDialog::loadValues(ScenarioTargettingSimulationParameters* parame
 	    }
 	}
 	else return false;
-	
+#endif
+
 	return true;
 }
 
 //TODO: check if it works
-bool RendezvousDialog::loadValues(ScenarioManoeuvrePlan* manoeuvreplan){
+bool RendezvousDialog::loadValues(ScenarioManoeuvrePlan* manoeuvreplan)
+{
 	if(manoeuvreplan){
 		m_manoeuvreplan = manoeuvreplan;
 		displayManoeuvrePlan();
@@ -658,7 +703,9 @@ bool RendezvousDialog::loadValues(ScenarioManoeuvrePlan* manoeuvreplan){
 	return false;
 }
 
-bool RendezvousDialog::saveValues(ScenarioRendezvousTrajectory* rendezvous){
+bool RendezvousDialog::saveValues(ScenarioRendezvousTrajectory* rendezvous)
+{
+#if OLDSCENARIO
 	ScenarioEnvironment* environment = rendezvous->environment();
 	ScenarioTargettingSimulationParameters* parameters = rendezvous->simulationParameters();
 	ScenarioManoeuvrePlan* manoeuvreplan = rendezvous->manoeuvrePlan();
@@ -667,13 +714,15 @@ bool RendezvousDialog::saveValues(ScenarioRendezvousTrajectory* rendezvous){
 		rendezvous->setTarget(targetcomboBox->currentText());
 		return true;
 	}
-	
+#endif
+
 	return false;
 }
 
 bool RendezvousDialog::saveValues(ScenarioEnvironment* environment)
 {
-   StaBody* body = STA_SOLAR_SYSTEM->lookup(CentralBodyComboBox->currentText());
+#if OLDSCENARIO
+    StaBody* body = STA_SOLAR_SYSTEM->lookup(CentralBodyComboBox->currentText());
     ScenarioBody* centralbody = new ScenarioBody(body);
     if (body)
     {
@@ -740,10 +789,14 @@ bool RendezvousDialog::saveValues(ScenarioEnvironment* environment)
         }
         environment->addPerturbation(externalbodiesPerturbation);
     }
+#endif
     return true;
 }
 
-bool RendezvousDialog::saveValues(ScenarioTargettingSimulationParameters* parameters){
+
+bool RendezvousDialog::saveValues(ScenarioTargettingSimulationParameters* parameters)
+{
+#if OLDSCENARIO
 	ScenarioTimeline* timeline = new ScenarioTimeline();
 	ScenarioInitialStatePosition*  initialStatePos = new ScenarioInitialStatePosition();
 	timeline->setStartTime(sta::JdToMjd(sta::CalendarToJd(dateTimeEdit->dateTime())));
@@ -781,16 +834,20 @@ bool RendezvousDialog::saveValues(ScenarioTargettingSimulationParameters* parame
         
         initialStatePos->setInitialState(elements);
     }
-	
+#endif
+
 	return true;
 }
 
-bool RendezvousDialog::saveValues(ScenarioManoeuvrePlan* manoeuvreplan){
+bool RendezvousDialog::saveValues(ScenarioManoeuvrePlan* manoeuvreplan)
+{
 	return true;
 }
 
-void RendezvousDialog::writeInputFile(){
-	
+
+void RendezvousDialog::writeInputFile()
+{
+#if OLDSCENARIO
 	QString RVDInputFilePath = QDir::temp().filePath(RVD_INPUT_FILE_NAME);
 	QFile RVDInputFile(RVDInputFilePath);
 	QTextStream RVDInputStream(&RVDInputFile);
@@ -1035,6 +1092,5 @@ void RendezvousDialog::writeInputFile(){
 	}
 	RVDInputFile.close();
 	accept();
-
+#endif
 }
-

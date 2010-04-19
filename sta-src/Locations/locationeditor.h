@@ -26,7 +26,7 @@
 #include <QDialog>
 #include "ui_locationeditor.h"
 
-class ScenarioLocation;
+class ScenarioLocationType;
 
 class LocationEditorDialog : public QDialog, private Ui_LocationEditor
 {
@@ -36,6 +36,6 @@ public:
     LocationEditorDialog(QWidget* parent = NULL);
     ~LocationEditorDialog();
     
-    bool loadValues(const ScenarioLocation* location);
-    bool saveValues(ScenarioLocation* location);
+    bool loadValues(const ScenarioLocationType* location);
+    bool saveValues(ScenarioLocationType* location);
 };

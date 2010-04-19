@@ -33,7 +33,10 @@
 #include "Scenario/scenario.h"
 #include "Astro-Core/stacoordsys.h"
 #include "Astro-Core/date.h"
+#include "Astro-Core/stabody.h"
+#include "Astro-Core/perturbations.h"
 #include "reentrystructures.h"
+#include "EntryTrajectory.h"
 #include <QtDebug>
 
 
@@ -42,6 +45,22 @@ using namespace Eigen;
 // The commented parts are concerning the Window Analysis Mode/ Dispersion Analysis/ Target Analysis;
 // this modes are not functioning in the first version of the software, but their code has been kept for
 // further developments
+
+double ReEntryDialog::getLocalRadius(ScenarioEnvironmentType* environment, double latitude)
+{
+    QSharedPointer<ScenarioCentralBodyType> centralBody = environment->CentralBody();
+    QString centralBodyName = centralBody->Name().trimmed();
+    const StaBody* body = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+    if (!body)
+    {
+        qDebug() << "Bad central body '" << centralBodyName << "' in entry trajectory.";
+        return 0;
+    }
+    double f, rs;
+    f = (body->radii().x() - body->radii().z()) / body->radii().x();
+    rs = body->radii().x() * sqrt( pow((1-f),2) / (1- f*(2-f) * pow(cos(latitude),2)) );
+    return rs;
+}
 
 ReEntryDialog::ReEntryDialog(ScenarioTree* parent) :
     QDialog(parent)
@@ -195,25 +214,17 @@ ReEntryDialog::~ReEntryDialog()
     delete TesseralSpinBox;
 }
 
-bool ReEntryDialog::loadValues(ScenarioReEntryTrajectory* reentry)
+bool ReEntryDialog::loadValues(ScenarioEntryArcType* reentry)
 {
-    ScenarioEnvironment* environment = reentry->environment();
-    ScenarioSimulationMode* simulationmode = reentry->simulationMode();
-    //ScenarioWindowMode* windowmode = reentry->windowMode();
-    ScenarioTrajectoryPropagation* propagation = reentry->trajectoryPropagation();
+    ScenarioEnvironmentType* environment = reentry->Environment().data();
+    ScenarioTimeLine* parameters = reentry->TimeLine().data();
+    ScenarioPropagationPositionType* propagation = reentry->PropagationPosition().data();
+    ScenarioInitialPositionType* initPosition = reentry->InitialPosition().data();
+    ScenarioREVConstraintsType* constraints=reentry->Constraints().data();
 
-    //MaxAltLineEdit->setText(QString::number(mainbody->maxAltitude()));
-
-    if(loadValues(environment) && loadValues(propagation))
+    if (loadValues(environment) && loadValues(parameters) && loadValues(propagation) && loadValues(constraints) && loadValues(initPosition,environment))
     {
-        if (simulationmode->isActive())
-            return loadValues(simulationmode);
-
-//            else if (windowmode->isActive())
-//               return loadValues(windowmode);
-
-        else
-            return false;
+        return true;
     }
     else
     {
@@ -221,9 +232,260 @@ bool ReEntryDialog::loadValues(ScenarioReEntryTrajectory* reentry)
     }
 }
 
+bool ReEntryDialog::saveValues(ScenarioEntryArcType* reentry)
+{
+    ScenarioEnvironmentType* environment   = reentry->Environment().data();
+    ScenarioTimeLine* parameters             = reentry->TimeLine().data();
+    ScenarioPropagationPositionType* propagation = reentry->PropagationPosition().data();
+    ScenarioInitialPositionType* initPosition  = reentry->InitialPosition().data();
+    ScenarioREVConstraintsType* constraints=reentry->Constraints().data();
 
+
+    if (saveValues(environment) && saveValues(parameters) && saveValues(propagation) && saveValues(constraints) && saveValues(initPosition,environment))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool ReEntryDialog::loadValues(ScenarioREVConstraintsType* constraints)
+{
+    gLimitLineEdit->setText(QString::number(constraints->maxNormalLoad()));
+    SPHeatRateLineEdit->setText(QString::number(constraints->maxHeatFlux()));
+    AltitudeLimitLineEdit->setText(QString::number(constraints->maxAltitude()/1000));
+    return true;
+}
+
+bool ReEntryDialog::saveValues(ScenarioREVConstraintsType* constraints)
+{
+    constraints->setMaxNormalLoad(gLimitLineEdit->text().toDouble());
+    constraints->setMaxHeatFlux(SPHeatRateLineEdit->text().toDouble());
+    constraints->setMaxAltitude(AltitudeLimitLineEdit->text().toDouble()*1000);
+    return true;
+}
+
+
+bool ReEntryDialog::loadValues(ScenarioTimeLine* timeLine)
+{
+    dateTimeEdit->setDateTime(timeLine->StartTime());
+    return true;
+}
+
+bool ReEntryDialog::saveValues(ScenarioTimeLine* timeline)
+{
+    timeline->setStartTime(dateTimeEdit->dateTime());
+    return true;
+}
+
+bool ReEntryDialog::loadValues(ScenarioInitialPositionType* initPosition, ScenarioEnvironmentType* environment)//ALso needs environment as argument for radius calculation
+{
+    ScenarioAbstract6DOFPositionType* position = initPosition->Abstract6DOFPosition().data();
+    ScenarioKeplerianElementsType* elements = dynamic_cast<ScenarioKeplerianElementsType*>(position);
+    ScenarioStateVectorType* stateVector = dynamic_cast<ScenarioStateVectorType*>(position);
+    ScenarioSphericalCoordinatesType* sphericalCoord = dynamic_cast<ScenarioSphericalCoordinatesType*>(position);
+    Q_ASSERT(elements || stateVector || sphericalCoord);
+    if (elements)
+    {
+        InitialStateComboBox->setCurrentIndex(1);
+        InitialStateStackedWidget->setCurrentWidget(keplerianPage);
+
+        semimajorAxisEdit->setText(QString::number(elements->semiMajorAxis()));
+        eccentricityEdit->setText(QString::number(elements->eccentricity()));
+        inclinationEdit->setText(QString::number(elements->inclination()*180/Pi()));
+        raanEdit->setText(QString::number(elements->RAAN()));
+        argOfPeriapsisEdit->setText(QString::number(elements->argumentOfPeriapsis()*180/Pi()));
+        trueAnomalyEdit->setText(QString::number(elements->trueAnomaly()*180/Pi()));
+    }
+    else if (stateVector != NULL)
+    {
+        InitialStateComboBox->setCurrentIndex(2);
+        InitialStateStackedWidget->setCurrentWidget(stateVectorPage);
+        //TODO: check if it works
+        /*
+        positionXEdit->setText(QString::number(stateVector->x()));
+        positionYEdit->setText(QString::number(stateVector->y()));
+        positionZEdit->setText(QString::number(stateVector->z()));
+        velocityXEdit->setText(QString::number(stateVector->vx()));
+        velocityYEdit->setText(QString::number(stateVector->vy()));
+        velocityZEdit->setText(QString::number(stateVector->vz()));
+        */
+    }
+    else if(sphericalCoord != NULL)
+    {
+        InitialStateComboBox->setCurrentIndex(0);
+        InitialStateStackedWidget->setCurrentWidget(sphericalPage);
+
+        //Need to get central body info to go from r to h
+        double rs=getLocalRadius(environment, sphericalCoord->latitude());
+
+        EntryAltLineEdit->setText(QString::number(sphericalCoord->radialDistance()-rs));
+        EntryLonLineEdit->setText(QString::number(sphericalCoord->longitude()*180/Pi()));
+        EntryLatLineEdit->setText(QString::number(sphericalCoord->latitude()*180/Pi()));
+        InertialVLineEdit->setText(QString::number(sphericalCoord->flightPathVelocity()));
+        InertiaFPALineEdit->setText(QString::number(sphericalCoord->flightPathAngle()*180/Pi()));
+        InertialHeadLineEdit->setText(QString::number(sphericalCoord->headingAngle()*180/Pi()));
+    }
+    /*
+    else
+    {
+        // Unknown initial state type
+        return false;
+    }
+    */
+    return true;
+}
+
+bool ReEntryDialog::saveValues(ScenarioInitialPositionType* initPos, ScenarioEnvironmentType* environment)
+{
+    //sta::CoordinateSystemType coordSysType = sta::CoordinateSystemType(CoordSystemComboBox->itemData(CoordSystemComboBox->currentIndex()).toInt());
+    //initPos->setCoordinateSystem(sta::CoordinateSystem(coordSysType).name());
+
+    switch (InitialStateComboBox->currentIndex())
+    {
+    case 1:
+        {
+            ScenarioKeplerianElementsType* elements = new ScenarioKeplerianElementsType;
+            elements->setSemiMajorAxis(semimajorAxisEdit->text().toDouble());
+            elements->setEccentricity(eccentricityEdit->text().toDouble());
+            elements->setInclination(inclinationEdit->text().toDouble());
+            elements->setRAAN(raanEdit->text().toDouble());
+            elements->setArgumentOfPeriapsis(argOfPeriapsisEdit->text().toDouble());
+            elements->setTrueAnomaly(trueAnomalyEdit->text().toDouble());
+
+            initPos->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(elements));
+        }
+        return true;
+
+    case 0:
+        {
+            ScenarioSphericalCoordinatesType* spherCoord = new ScenarioSphericalCoordinatesType();
+            spherCoord->setLatitude(EntryLatLineEdit->text().toDouble()*Pi()/180);
+            double rs=getLocalRadius(environment, spherCoord->latitude());
+            spherCoord->setRadialDistance(EntryAltLineEdit->text().toDouble()+rs);
+            spherCoord->setLongitude(EntryLonLineEdit->text().toDouble()*Pi()/180);
+            spherCoord->setFlightPathVelocity(InertialVLineEdit->text().toDouble());
+            spherCoord->setFlightPathAngle(InertiaFPALineEdit->text().toDouble()*Pi()/180);
+            spherCoord->setHeadingAngle(InertialHeadLineEdit->text().toDouble()*Pi()/180);
+
+            initPos->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(spherCoord));
+        }
+        return true;
+
+    default:
+        return false;
+    }
+}
+
+bool ReEntryDialog::loadValues(ScenarioPropagationPositionType* propagation)
+{
+    QString currentPropagator = propagation->propagator();
+    for (int i = 0; i < PropagatorComboBox->count(); i++)
+    {
+        if (PropagatorComboBox->itemData(i) == currentPropagator)
+        {
+                PropagatorComboBox->setCurrentIndex(i);
+            break;
+        }
+    }
+    QString currentIntegrator = propagation->integrator();
+    for (int i = 0; i < IntegratorComboBox->count(); i++)
+    {
+        if (IntegratorComboBox->itemData(i) == currentIntegrator)
+        {
+                IntegratorComboBox->setCurrentIndex(i);
+            break;
+        }
+    }
+
+
+    // Lines atched by Guillermo to cope with the problem of the propagation step on the entry module
+    // Step <= 5 seconds otherwise it does not integrate properly
+    IntegStepLineEdit->setText(QString::number(propagation->timeStep()));
+
+    //IntegStepLineEdit->setText("5");
+
+    return true;
+}
+
+bool ReEntryDialog::saveValues(ScenarioPropagationPositionType* propagation)
+{
+    propagation->setIntegrator(IntegratorComboBox->itemData(IntegratorComboBox->currentIndex()).toString());
+    propagation->setPropagator(PropagatorComboBox->itemData(PropagatorComboBox->currentIndex()).toString());
+    propagation->setTimeStep(IntegStepLineEdit->text().toDouble());
+
+    return true;
+}
+
+bool ReEntryDialog::loadValues(ScenarioEnvironmentType* environment)
+{
+    QSharedPointer<ScenarioCentralBodyType> centralBody = environment->CentralBody();
+
+    if(!centralBody.isNull())
+    {
+        QString centralBodyName = centralBody->Name().trimmed();
+        const StaBody* body = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+        if (!body)
+        {
+            qDebug() << "Bad central body '" << centralBodyName << "' in loitering trajectory.";
+            return false;
+        }
+        // Set the central body combo box
+        for (int i = 0; i < CentralBodyComboBox->count(); i++)
+        {
+            if (CentralBodyComboBox->itemData(i) == body->id())
+            {
+                CentralBodyComboBox->setCurrentIndex(i);
+                break;
+            }
+        }
+
+        QString atmospheremodel = centralBody->atmosphere().trimmed();
+        atmospheremodel.remove(".stad");
+        //Set something to check if model is valid
+            for (int i = 0; i < AtmosphereComboBox->count(); i++)
+            {
+                if (AtmosphereComboBox->itemData(i) == atmospheremodel)
+                {
+                    AtmosphereComboBox->setCurrentIndex(i);
+                    break;
+                }
+            }
+
+
+    }
+    else
+    {
+        return false;
+    }
+    return true;
+}
+
+bool ReEntryDialog::saveValues(ScenarioEnvironmentType* environment)
+{
+    StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(CentralBodyComboBox->currentText());
+    if (centralBody)
+    {
+        environment->CentralBody()->setName(centralBody->name());
+    }
+    else
+    {
+        qWarning("Unknown central body %s", CentralBodyComboBox->currentText().toAscii().data());
+        return false;
+    }
+    QString atmospheremodel = AtmosphereComboBox->itemData(AtmosphereComboBox->currentIndex()).toString();
+    environment->CentralBody()->setAtmosphere(atmospheremodel);
+    return true;
+}
+
+/*
 bool ReEntryDialog::loadValues(ScenarioEnvironment* environment)
 {
+#if OLDSCENARIO
     ScenarioBody* centralBody = environment->centralBody();
 
     if (centralBody)
@@ -296,13 +558,14 @@ bool ReEntryDialog::loadValues(ScenarioEnvironment* environment)
             }
         }
     }
-
+#endif
     return true;
 }
-
-
+*/
+/*
 bool ReEntryDialog::loadValues(ScenarioSimulationMode* simulationmode)
 {
+#if OLDSCENARIO
     ScenarioTargettingSimulationParameters* parameters = simulationmode->simulationParameters();
     //ScenarioDispersionAnalysis* dispersion = simulationmode->dispersionAnalysis();
 
@@ -412,11 +675,12 @@ bool ReEntryDialog::loadValues(ScenarioSimulationMode* simulationmode)
 //                IHLineEdit->setText(QString::number(deviations->inertialHeading()));
 //        }
 //        else DispersionAnalysisRadioButton->setChecked(false);
+#endif
 
         return true;
 
 }
-
+*/
 //bool ReEntryDialog::loadValues(ScenarioWindowMode* windowmode){
 //        ScenarioTargettingSimulationParameters* parameters = windowmode->simulationParameters();
 //        ScenarioFixedVariables* fixedvar = windowmode->fixedVariables();
@@ -486,39 +750,11 @@ bool ReEntryDialog::loadValues(ScenarioSimulationMode* simulationmode)
 //	return true;
 //}
 
-bool ReEntryDialog::loadValues(ScenarioTrajectoryPropagation* propagation){
 
-    QString currentPropagator = propagation->propagator();
-    for (int i = 0; i < PropagatorComboBox->count(); i++)
-    {
-        if (PropagatorComboBox->itemData(i) == currentPropagator)
-        {
-                PropagatorComboBox->setCurrentIndex(i);
-            break;
-        }
-    }
-    QString currentIntegrator = propagation->integrator();
-    for (int i = 0; i < IntegratorComboBox->count(); i++)
-    {
-        if (IntegratorComboBox->itemData(i) == currentIntegrator)
-        {
-                IntegratorComboBox->setCurrentIndex(i);
-            break;
-        }
-    }
-
-
-    // Lines atched by Guillermo to cope with the problem of the propagation step on the entry module
-    // Step <= 5 seconds otherwise it does not integrate properly
-    //IntegStepLineEdit->setText(QString::number(propagation->timeStep()));
-
-    IntegStepLineEdit->setText("5");
-
-    return true;
-}
-
-bool ReEntryDialog::saveValues(ScenarioReEntryTrajectory* reentry)
+/*
+bool ReEntryDialog::saveValues(ScenarioEntryArcType* reentry)
 {
+#if OLDSCENARIO
     ScenarioEnvironment* environment = reentry->environment();
     //ScenarioProperties* vehicleproperties = reentry->vehicleProperties();
     ScenarioSimulationMode* simulationmode = reentry->simulationMode();
@@ -542,12 +778,14 @@ bool ReEntryDialog::saveValues(ScenarioReEntryTrajectory* reentry)
 //        }
 
     }
-
+#endif
+    return true;
 }
-
-
+*/
+/*
 bool ReEntryDialog::saveValues(ScenarioEnvironment* environment)
 {
+#if OLDSCENARIO
     StaBody* body = STA_SOLAR_SYSTEM->lookup(CentralBodyComboBox->currentText());
     ScenarioBody* centralbody = new ScenarioBody(body);
     if (body)
@@ -587,54 +825,54 @@ bool ReEntryDialog::saveValues(ScenarioEnvironment* environment)
     dragPerturbation->setCentralBody(environment->centralBody()->body());
 
     environment->addPerturbation(dragPerturbation);
-
+#endif
     return true;
 }
+*/
 
+bool ReEntryDialog::saveValues(ScenarioSimulationMode* simulationmode)
+{
+#if OLDSCENARIO
+    ScenarioTargettingSimulationParameters* parameters = new ScenarioTargettingSimulationParameters();
 
-bool ReEntryDialog::saveValues(ScenarioSimulationMode* simulationmode){
+    ScenarioTimeline* timeline = new ScenarioTimeline();
+    ScenarioInitialStatePosition*  initialStatePos = new ScenarioInitialStatePosition();
+    ScenarioBody* centralbody=new ScenarioBody(STA_SOLAR_SYSTEM->lookup(CentralBodyComboBox->currentText()));
+    initialStatePos->setCentralsystemBody(centralbody);
+    timeline->setStartTime(sta::JdToMjd(sta::CalendarToJd(dateTimeEdit->dateTime())));
+    //timeline->setTimeStep(TimeStepLineEdit->text().toDouble());
 
-        ScenarioTargettingSimulationParameters* parameters = new ScenarioTargettingSimulationParameters();
-
-        ScenarioTimeline* timeline = new ScenarioTimeline();
-        ScenarioInitialStatePosition*  initialStatePos = new ScenarioInitialStatePosition();
-        ScenarioBody* centralbody=new ScenarioBody(STA_SOLAR_SYSTEM->lookup(CentralBodyComboBox->currentText()));
-        initialStatePos->setCentralsystemBody(centralbody);
-        timeline->setStartTime(sta::JdToMjd(sta::CalendarToJd(dateTimeEdit->dateTime())));
-        //timeline->setTimeStep(TimeStepLineEdit->text().toDouble());
-
-        parameters->setTimeline(timeline);
+    parameters->setTimeline(timeline);
 
 //	int coordSysIndex = CoordSystemComboBox->currentIndex();
 //	initialStatePos->setCoordinateSystem((sta::CoordinateSystemType) CoordSystemComboBox->itemData(coordSysIndex).toInt());
 
-        if (InitialStateComboBox->currentIndex() == 0){
-                ScenarioSphericalCoordinates* spherical = new ScenarioSphericalCoordinates();
-                spherical->m_altitude = EntryAltLineEdit->text().toDouble();
-                spherical->m_latitude = EntryLatLineEdit->text().toDouble();
-                spherical->m_longitude = EntryLonLineEdit->text().toDouble();
-                spherical->m_inertialV = InertialVLineEdit->text().toDouble();
-                spherical->m_inertialFPA = InertiaFPALineEdit->text().toDouble();
-                spherical->m_inertialH = InertialHeadLineEdit->text().toDouble();
+    if (InitialStateComboBox->currentIndex() == 0)
+    {
+        ScenarioSphericalCoordinates* spherical = new ScenarioSphericalCoordinates();
+        spherical->m_altitude = EntryAltLineEdit->text().toDouble();
+        spherical->m_latitude = EntryLatLineEdit->text().toDouble();
+        spherical->m_longitude = EntryLonLineEdit->text().toDouble();
+        spherical->m_inertialV = InertialVLineEdit->text().toDouble();
+        spherical->m_inertialFPA = InertiaFPALineEdit->text().toDouble();
+        spherical->m_inertialH = InertialHeadLineEdit->text().toDouble();
 
-                initialStatePos->setInitialState(spherical);
-        }
+        initialStatePos->setInitialState(spherical);
+    }
+    else if (InitialStateComboBox->currentIndex() == 1)
+    {
+       ScenarioKeplerianElements* elements = new ScenarioKeplerianElements();
+       elements->m_semimajorAxis       = semimajorAxisEdit->text().toDouble();
+       elements->m_eccentricity        = eccentricityEdit->text().toDouble();
+       elements->m_inclination         = inclinationEdit->text().toDouble();
+       elements->m_raan                = raanEdit->text().toDouble();
+       elements->m_argumentOfPeriapsis = argOfPeriapsisEdit->text().toDouble();
+       elements->m_trueAnomaly         = trueAnomalyEdit->text().toDouble();
 
-        else if (InitialStateComboBox->currentIndex() == 1)
-        {
-           ScenarioKeplerianElements* elements = new ScenarioKeplerianElements();
-           elements->m_semimajorAxis       = semimajorAxisEdit->text().toDouble();
-           elements->m_eccentricity        = eccentricityEdit->text().toDouble();
-           elements->m_inclination         = inclinationEdit->text().toDouble();
-           elements->m_raan                = raanEdit->text().toDouble();
-           elements->m_argumentOfPeriapsis = argOfPeriapsisEdit->text().toDouble();
-           elements->m_trueAnomaly         = trueAnomalyEdit->text().toDouble();
-
-           initialStatePos->setInitialState(elements);
-        }
-
-        else
-        {
+       initialStatePos->setInitialState(elements);
+    }
+    else
+    {
         ScenarioStateVector* stateVector = new ScenarioStateVector();
         Eigen::Vector3d position(positionXEdit->text().toDouble(),
                                  positionYEdit->text().toDouble(),
@@ -647,9 +885,9 @@ bool ReEntryDialog::saveValues(ScenarioSimulationMode* simulationmode){
         stateVector->setVelocity(velocity);
 
         initialStatePos->setInitialState(stateVector);
-        }
+    }
 
-        parameters->setInitialStatePosition(initialStatePos);
+    parameters->setInitialStatePosition(initialStatePos);
 
 //	if(TargetRadioButton->isChecked()){
 //		ScenarioFinalState* finalstate = new ScenarioFinalState();
@@ -694,10 +932,11 @@ bool ReEntryDialog::saveValues(ScenarioSimulationMode* simulationmode){
 //            simulationmode->setDispersionAnalysis(dispersion);
 //        }
 
-        simulationmode->setSimulationParameters(parameters);
-        simulationmode->setIsActiveTrue();
+    simulationmode->setSimulationParameters(parameters);
+    simulationmode->setIsActiveTrue();
+#endif
 
-        return true;
+    return true;
 }
 
 //bool ReEntryDialog::saveValues(ScenarioWindowMode* windowmode){
@@ -745,10 +984,125 @@ bool ReEntryDialog::saveValues(ScenarioSimulationMode* simulationmode){
 //	return true;
 //}
 
-bool ReEntryDialog::saveValues(ScenarioTrajectoryPropagation* propagation)
+bool PropagateEntryTrajectory(ScenarioREV* vehicle, ScenarioEntryArcType* entry, QList<double>& sampleTimes,
+                              QList<sta::StateVector>& samples,
+                              PropagationFeedback& propFeedback)
 {
-    propagation->setIntegrator(IntegratorComboBox->itemData(IntegratorComboBox->currentIndex()).toString());
-    propagation->setPropagator(PropagatorComboBox->itemData(PropagatorComboBox->currentIndex()).toString());
-    propagation->setTimeStep(IntegStepLineEdit->text().toDouble());
+    QString centralBodyName = entry->Environment()->CentralBody()->Name();
+    StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+    if (!centralBody)
+    {
+        propFeedback.raiseError(QObject::tr("Unrecognized central body '%1'").arg(centralBodyName));
+        return false;
+    }
+
+    QString coordSysName = entry->InitialPosition()->CoordinateSystem();
+    sta::CoordinateSystem coordSys(coordSysName);
+    if (coordSys.type() == sta::COORDSYS_INVALID)
+    {
+        propFeedback.raiseError(QObject::tr("Unrecognized coordinate system '%1'").arg(coordSysName));
+        return false;
+    }
+
+    //get initial position
+
+    const ScenarioTimeLine* timeline = entry->TimeLine().data();
+    double dt = entry->PropagationPosition()->timeStep();
+    EntrySettings inputSettings = createEntrySettings(entry, vehicle);
+    EntryTrajectory trajectory(inputSettings);
+    EntryParameters parameters = createEntryParametersSimulation(entry, vehicle);
+    QList<Perturbations*> perturbationsList;
+
+    sta::StateVector InitialState;
+    if(parameters.coordselector==1)
+        InitialState=sphericalTOcartesian(parameters.inputstate);
+
+    /*
+    else if(parameters.coordselector==2)
+        InitialState=
+    */
+    //qDebug()<<InitialState.position.x()<<" "<<InitialState.position.y()<<" "<<InitialState.position.z()<<" "<<InitialState.velocity.x()<<" "<<InitialState.velocity.y()<<" "<<InitialState.velocity.z();
+
+    double startTime = sta::JdToMjd(sta::CalendarToJd(timeline->StartTime()));
+    double time_jd = sta::MjdToJd(startTime);
+    double time_s = sta::daysToSecs(startTime);
+
+    sta::StateVector stateVector;
+    stateVector = trajectory.initialise(parameters, InitialState, startTime);
+    _status status = OK;
+
+
+    unsigned int steps = 0;
+
+    if (dt == 0.0)
+    {
+        propFeedback.raiseError(QObject::tr("Time step is zero!"));
+        return false;
+    }
+    if (parameters.m == 0.0)
+    {
+        propFeedback.raiseError(QObject::tr("Vehicle mass is zero!"));
+        return false;
+    }
+    if (parameters.Sref == 0.0)
+    {
+        propFeedback.raiseError(QObject::tr("Vehicle reference Area is zero!"));
+        return false;
+    }
+    if (inputSettings.maxheatrate == 0)
+    {
+        propFeedback.raiseError(QObject::tr("The maximum heat rate is zero!"));
+        return false;
+    }
+    if (inputSettings.maxloadfactor == 0)
+    {
+        propFeedback.raiseError(QObject::tr("The maximum load factor is zero!"));
+        return false;
+    }
+
+    double posx, posy, posz, velx, vely, velz;
+    int celestialbody;
+    if (inputSettings.bodyname == "Earth")
+        celestialbody = 0;
+    else if (inputSettings.bodyname == "Mars")
+        celestialbody = 3;
+    int i=0;
+    while (status == OK)
+    {
+        stateVector = trajectory.integrate(stateVector, perturbationsList);
+
+        status = trajectory.status;
+        time_jd += sta::secsToDays(dt);
+        double theta = getGreenwichHourAngle(time_jd);
+        time_s += dt;
+        JulianDate jd = sta::secsToDays(time_s);
+
+        fixedTOinertial(celestialbody, theta , stateVector.position.x(), stateVector.position.y(), stateVector.position.z(), stateVector.velocity.x(), stateVector.velocity.y(), stateVector.velocity.z(),
+            posx, posy, posz, velx, vely, velz);
+
+        Eigen::Vector3d pos = Vector3d(posx/1000, posy/1000, posz/1000);
+        Eigen::Vector3d vel = Vector3d(velx/1000, vely/1000, velz/1000);
+        sta::StateVector statevector = sta::StateVector(pos, vel);
+        //if(trajectory.status==OK)\
+        //{
+            samples << statevector;
+            sampleTimes << jd;
+        //}
+
+
+
+        i++;
+        //qDebug()<<i;
+    }
+    //qDebug()<<status;
+
+
+
+
     return true;
+
+    //QString propagator = entry->PropagationPosition()->propagator();
+    //QString integrator = entry->PropagationPosition()->integrator();
 }
+
+

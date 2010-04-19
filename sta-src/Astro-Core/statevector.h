@@ -72,15 +72,27 @@ namespace sta
     KeplerianElements.MeanAnomaly Mean anomaly at epoch (M) defines the position of the orbiting body
     along the ellipse at a specific time (the "epoch").   */
 
-        double SemimajorAxis;
-        double Eccentricity;
-        double Inclination;
-        double AscendingNode;
-        double ArgumentOfPeriapsis;
-        double MeanAnomaly;
-        double TrueAnomaly;
-        double EccentricAnomaly;
-  };
+    KeplerianElements() :
+      SemimajorAxis(0.0),
+      Eccentricity(0.0),
+      Inclination(0.0),
+      AscendingNode(0.0),
+      ArgumentOfPeriapsis(0.0),
+      MeanAnomaly(0.0),
+      TrueAnomaly(0.0),
+      EccentricAnomaly(0.0)
+    {
+    }
+
+    double SemimajorAxis;
+    double Eccentricity;
+    double Inclination;
+    double AscendingNode;
+    double ArgumentOfPeriapsis;
+    double MeanAnomaly;
+    double TrueAnomaly;
+    double EccentricAnomaly;
+};
 
 
 

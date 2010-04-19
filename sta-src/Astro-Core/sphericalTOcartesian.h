@@ -23,6 +23,14 @@
 */
 
 // Author G. Ortega
+#ifndef SPHERICALTOCARTESIAN_H
+#define SPHERICALTOCARTESIAN_H
+#include "Scenario/staschema.h"
+#include <Astro-Core/statevector.h>
+
+using namespace sta;
 
 void sphericalTOcartesian(double,double,double,double,double,double,double&,double&,double&,double&,double&,double&);
+sta::StateVector sphericalTOcartesian(double spherCoord[6]);
 
+#endif // SPHERICALTOCARTESIAN_H

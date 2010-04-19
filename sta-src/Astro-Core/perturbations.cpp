@@ -48,7 +48,7 @@
 
 const double PI = 3.141592;
 
-Perturbations::Perturbations(ScenarioPerturbations* perturbation, ScenarioProperties* properties)
+Perturbations::Perturbations()
 {
 }
 
@@ -56,20 +56,21 @@ Perturbations::~Perturbations()
 {
 }
 
+// TODO: This method should be abstract
 Vector3d
-Perturbations::calculateAcceleration(sta::StateVector state, double time, double dt)
+Perturbations::calculateAcceleration(sta::StateVector /* state */, double /* time */, double /* dt */)
 {
     return Vector3d::Zero();
 }
 
 /////////////////////////////// Gravity Field Perturbation ///////////////////////////////
-GravityPerturbations::GravityPerturbations(ScenarioGravityPerturbations* perturbation) :
-    Perturbations(perturbation)
+GravityPerturbations::GravityPerturbations(const StaBody* centralBody,
+                                           const ScenarioGravityModel* gravityModel)
 {
-    m_body = perturbation->centralBody();
-    m_modelName = perturbation->modelName();
-    m_zonalCount = perturbation->zonalCount();
-    m_tesseralCount = perturbation->tesseralCount();
+    m_body = centralBody;
+    m_modelName = gravityModel->modelName();
+    m_zonalCount = gravityModel->numberOfZonals();
+    m_tesseralCount = gravityModel->numberOfTesserals();
 
     //Assigning dimension to matrices of harmonical coefficients
     J.resize(m_zonalCount + 1);
@@ -260,13 +261,15 @@ double doublefactorial(int num)
 }
 
 /////////////////////////////// Atmospheric Drag Perturbation ///////////////////////////////
-AtmosphericDragPerturbations::AtmosphericDragPerturbations(ScenarioAtmosphericDragPerturbations* perturbation, ScenarioProperties* properties) : Perturbations(perturbation, properties)
+AtmosphericDragPerturbations::AtmosphericDragPerturbations(const QString& atmosphereModel)
 {
+#if OLDSCENARIO
     m_atmosphericModel = perturbation->atmosphericModel();
     m_body = perturbation->centralBody();
     m_surface = properties->physicalProperties()->physicalCharacteristics()->surfaceArea();
     m_cdCoefficients = properties->aerodynamicProperties()->CDCoefficients();
     m_mass = properties->physicalProperties()->physicalCharacteristics()->mass();
+#endif
 }
 
 AtmosphericDragPerturbations::~AtmosphericDragPerturbations()
@@ -301,14 +304,19 @@ AtmosphericDragPerturbations::calculateAcceleration(sta::StateVector state, doub
 }
 
 /////////////////////////////// Solar Pressure Perturbation ///////////////////////////////
-SolarPressurePerturbations::SolarPressurePerturbations(ScenarioSolarPressurePerturbations* perturbation, ScenarioProperties* properties) : Perturbations(perturbation, properties)
+SolarPressurePerturbations::SolarPressurePerturbations(StaBody* centralBody,
+                                                       double reflectivity,
+                                                       double albedo,
+                                                       double ir,
+                                                       double mass,
+                                                       double surfaceArea) :
+    m_body(centralBody),
+    m_reflectivity(reflectivity),
+    m_albedo(albedo),
+    m_ir(ir),
+    m_mass(mass),
+    m_surface(surfaceArea)
 {
-    m_body = perturbation->centralBody();
-    m_reflectivity = perturbation->reflectivity();
-    m_albedo = perturbation->albedo();
-    m_ir = perturbation->ir();
-    m_mass = properties->physicalProperties()->physicalCharacteristics()->mass();
-    m_surface = properties->physicalProperties()->physicalCharacteristics()->surfaceArea();
 }
 
 SolarPressurePerturbations::~SolarPressurePerturbations()
@@ -377,56 +385,81 @@ SolarPressurePerturbations::calculateAcceleration(sta::StateVector state, double
 
 double albedoReflectivityCoefficient(const StaBody* body)
 {
-    double albedo;
     switch(body->id())
     {
-            case(199):   albedo = 0.53;
-            case(299):   albedo = 0.76;
-            case(399):   albedo = 0.35;
-            case(499):   albedo = 0.16;
-            case(599):   albedo = 0.73;
-            case(699):   albedo = 0.76;
-            case(799):   albedo = 0.93;
-            case(899):   albedo = 0.84;
-            case(999):   albedo = 0.14;
-            case(10):    albedo = 0;
-            case(301):   albedo = 0.067;
+    case STA_MERCURY:
+        return 0.53;
+    case STA_VENUS:
+        return 0.76;
+    case STA_EARTH:
+        return 0.35;
+    case STA_MARS:
+        return 0.16;
+    case STA_JUPITER:
+        return 0.73;
+    case STA_SATURN:
+        return 0.76;
+    case STA_URANUS:
+        return 0.93;
+    case STA_NEPTUNE:
+        return 0.84;
+    case STA_PLUTO:
+        return 0.14;
+    case STA_SUN:
+        return 0;
+    case STA_MOON:
+        return 0.067;
+    default:
+        return 0;
     }
-    return albedo;
 }
 
 double irRadiationFlux(const StaBody* body)
 {
-    double ir;
     switch(body->id())
     {
-            case(199):   ir = 2139;
-            case(299):   ir = 155;
-            case(399):   ir = 240;
-            case(499):   ir = 123;
-            case(599):   ir = 3.4;
-            case(699):   ir = 0.9;
-            case(799):   ir = 0.063;
-            case(899):   ir = 0.06;
-            case(999):   ir = 0.191;
-            case(10):    ir = 0;
-            case(301):   ir = 316;
+    case STA_MERCURY:
+        return 2139;
+    case STA_VENUS:
+        return 155;
+    case STA_EARTH:
+        return 240;
+    case STA_MARS:
+        return 123;
+    case STA_JUPITER:
+        return 3.4;
+    case STA_SATURN:
+        return 0.9;
+    case STA_URANUS:
+        return 0.063;
+    case STA_NEPTUNE:
+        return 0.06;
+    case STA_PLUTO:
+        return 0.191;
+    case STA_SUN:
+        return 0;
+    case STA_MOON:
+        return 316;
+    default:
+        return 0;
     }
-    return ir;
 }
+
 
 /////////////////////////////// Third Body Perturbation ///////////////////////////////
-ExternalBodyPerturbations::ExternalBodyPerturbations(ScenarioExternalBodyPerturbations* perturbation) : Perturbations(perturbation)
-{
-    m_body = perturbation->centralBody();
 
-    foreach(ScenarioBody* scenariobody, perturbation->perturbingBodyList())
-        m_perturbingBodyList.append(scenariobody->body());
+ExternalBodyPerturbations::ExternalBodyPerturbations(const StaBody* centralBody,
+                                                     const QList<const StaBody*>& bodies) :
+    m_body(centralBody),
+    m_perturbingBodyList(bodies)
+{
 }
+
 
 ExternalBodyPerturbations::~ExternalBodyPerturbations()
 {
 }
+
 
 Vector3d
 ExternalBodyPerturbations::calculateAcceleration(sta::StateVector state, double time, double dt)
@@ -445,17 +478,21 @@ ExternalBodyPerturbations::calculateAcceleration(sta::StateVector state, double 
 }
 
 /////////////////////////////// Space Debris Perturbation ///////////////////////////////
-DebrisPerturbations::DebrisPerturbations(ScenarioDebrisPerturbations* perturbation, ScenarioProperties* properties) : Perturbations(perturbation, properties)
+
+DebrisPerturbations::DebrisPerturbations(const StaBody* centralBody,
+                                         double mass,
+                                         double surfaceArea) :
+    m_body(centralBody),
+    m_mass(mass),
+    m_surface(surfaceArea),
+    m_time(0)
 {
-    m_body = perturbation->centralBody();
-    m_mass = properties->physicalProperties()->physicalCharacteristics()->mass();
-    m_surface = properties->physicalProperties()->physicalCharacteristics()->surfaceArea();
-    m_time = 0;
     m_counterDebris.resize(25);
     m_counterDebris.setZero();
     m_counterMeteoroids.resize(25);
     m_counterMeteoroids.setZero();
 }
+
 
 DebrisPerturbations::~DebrisPerturbations()
 {

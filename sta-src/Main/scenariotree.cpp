@@ -24,11 +24,11 @@
  Extentive modified by Guillermo to hold TLEs on October 2009
  */
 
+
 #include <cassert>
 #include "scenariotree.h"
 #include "scenarioelementbox.h"
-#include "Scenario/spacescenario.h"
-#include "Scenario/spacescenarioreader.h"
+#include "Scenario/scenario.h"
 #include "Astro-Core/trajectorypropagation.h"
 #include "initialstateeditor.h"
 #include "initialstateThreebodyEditor.h"
@@ -46,7 +46,9 @@
 #include <QtGui>
 #include <iostream>
 
+
 int Lagrmode=-1;
+
 
 /*! Create a new scenario view widget.
  */
@@ -82,8 +84,43 @@ ScenarioTree::ScenarioTree(QWidget *parent)
     setDropIndicatorShown(true);
 
     setAlternatingRowColors(true);
+}
 
 
+void
+ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
+{
+    item->setText(0, scenarioObject->elementName());
+
+    // Store a pointer to the this ScenarioObject in the widget item.
+    // This will be used to map a tree widget item to a ScenarioObject.
+    // IMPORTANT: The ScenarioObject must not be deleted before the tree
+    // widget item that references it.
+    QVariant scenarioObjectData = qVariantFromValue(reinterpret_cast<void*>(scenarioObject));
+    item->setData(0, ScenarioObjectRole, scenarioObjectData);
+
+    // Disable drag and drop by default. Only very limited drag and drop
+    // is allowed within a space scenario because in general the elements
+    // of the scenario have a defined order. Only rearranging of participants
+    // and trajectories is permitted.
+    item->setFlags(item->flags() & ~(Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled));
+
+    // Allow dropping into scenarios and trajectory plans (and nothing else for now)
+    if (dynamic_cast<SpaceScenario*>(scenarioObject) ||
+        dynamic_cast<ScenarioTrajectoryPlan*>(scenarioObject) || dynamic_cast<ScenarioREVTrajectoryPlanType*>(scenarioObject))//Modified by Dominic to allow droppinmg of EntryArc
+    {
+        item->setFlags(item->flags() | Qt::ItemIsDropEnabled);
+    }
+
+    QList<QSharedPointer<ScenarioObject> > children = scenarioObject->children();
+    foreach (QSharedPointer<ScenarioObject> child, children)
+    {
+        if (!child.isNull())
+        {
+            QTreeWidgetItem* childItem = new QTreeWidgetItem(item);
+            addScenarioItems(childItem, child.data());
+        }
+    }
 }
 
 
@@ -103,72 +140,117 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
                                 Qt::DropAction action)
 {
     if (action == Qt::IgnoreAction)
+    {
         return true;
+    }
     
     if (data->formats().empty())
+    {
         return false;
+    }
 
     if (!parent)
+    {
         return false;
+    }
     
     QString dataFormat = data->formats().first();
     QByteArray encodedData = data->data(dataFormat);
     
-    // Initialize the reader and scan past the xml header
-    SpaceScenarioReader reader(encodedData);
-    while (!reader.atEnd() && !reader.isStartElement())
+    // The dropped data is XML text. Convert it to a DOM node...
+    QDomDocument doc;
+    QString errorMessage;
+    if (!doc.setContent(encodedData, &errorMessage))
     {
-        reader.readNext();
+        qDebug() << "Drop failed due to XML parsing error: " << errorMessage;
+        return false;
     }
-    
-    if (dataFormat == ScenarioElementBox::PARTICIPANT_MIME_TYPE)
+
+    QDomElement element = doc.firstChildElement();
+    QString elementName = element.tagName();
+
+    // Dropped item may be either a participant or a trajectory
+    ScenarioParticipantType* participant = NULL;
+    ScenarioAbstractTrajectoryType* trajectory = NULL;
+
+    if (elementName == "tns:GroundStation")
+        participant = ScenarioGroundStation::create(element);
+    else if (elementName == "tns:LaunchPad")
+        participant = ScenarioLaunchPad::create(element);
+    else if (elementName == "tns:Point")
+        participant = ScenarioPoint::create(element);
+    else if (elementName == "tns:LV")
+        participant = ScenarioLV::create(element);
+    else if (elementName == "tns:SC")
+        participant = ScenarioSC::create(element);
+    else if (elementName == "tns:REV")
+        participant = ScenarioREV::create(element);
+
+    if (elementName == "tns:Loitering")
+        trajectory = ScenarioLoiteringType::create(element);
+    else if (elementName == "tns:Lagrangian")
+        trajectory = ScenarioLagrangianType::create(element);
+    else if (elementName == "tns:Rendezvous")
+        trajectory = ScenarioRendezvousType::create(element);
+    else if (elementName == "tns:FlyBy")
+        trajectory = ScenarioFlyByType::create(element);
+    else if (elementName == "tns:LoiteringTLE")
+        trajectory = ScenarioLoiteringTLEType::create(element);
+    else if (elementName == "tns:EntryArc")
+        trajectory = ScenarioEntryArcType::create(element);
+
+    qDebug() << encodedData;
+    qDebug() << "ELEMENT " << elementName << ", " << trajectory;
+
+    if (participant)
     {
-        ScenarioParticipant* participant = reader.readParticipant();
-        if (!participant)
-        {
-            QMessageBox::information(this,
-                                     tr("Bad toolbox element"),
-                                     tr("Line %1: %2").arg(reader.lineNumber()).arg(reader.errorString()));
-            return false;
-        }
-        
         ScenarioObject* parentObject = objectForItem(parent);
-            
         SpaceScenario* scenario = dynamic_cast<SpaceScenario*>(parentObject);
         if (scenario)
         {
-            scenario->addParticipant(participant);
-            participant->createItem(parent);        
-        }
-        
-        return true;
-    }
-    else if (dataFormat == ScenarioElementBox::MISSION_ARC_MIME_TYPE)
-    {
-        ScenarioTrajectoryPlan* plan = NULL;
-        if (parent != NULL)
-        {
-            ScenarioObject* parentObject = objectForItem(parent);
-            plan = dynamic_cast<ScenarioTrajectoryPlan*>(parentObject);
-        }
-        
-        if (!plan)
-            return false;
-        
-        ScenarioAbstractTrajectory* trajectory = reader.readTrajectory();
-        if (!trajectory)
-        {
-            QMessageBox::information(this,
-                                     tr("Bad toolbox element"),
-                                     tr("Line %1: %2").arg(reader.lineNumber()).arg(reader.errorString()));
-            return false;
+            scenario->AbstractParticipant().append(QSharedPointer<ScenarioParticipantType>(participant));
+            QTreeWidgetItem* participantItem = new QTreeWidgetItem(parent);
+            addScenarioItems(participantItem, participant);
         }
         else
         {
-            plan->addTrajectory(trajectory);
-            trajectory->createItem(parent);      
-            
-            return true;        
+            qDebug() << "Internal error in tree view: root item is null.";
+        }
+
+        return true;
+    }
+    else if (trajectory && elementName != "tns:EntryArc")//Modified by Dominic to avoid dragging entry trajectory into SC Trajectory Plan
+    {
+        qDebug() << "Dropping trajectory";
+        ScenarioObject* parentObject = objectForItem(parent);
+        ScenarioTrajectoryPlan* trajectoryPlan = dynamic_cast<ScenarioTrajectoryPlan*>(parentObject);
+        if (trajectoryPlan)
+        {
+            trajectoryPlan->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
+            QTreeWidgetItem* trajectoryItem = new QTreeWidgetItem(parent);
+            addScenarioItems(trajectoryItem, trajectory);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else if (trajectory && elementName=="tns:EntryArc") // Added by Dominic to drop entry trajectory
+    {
+        qDebug() << "Dropping entry trajectory";
+        ScenarioObject* parentObject = objectForItem(parent);
+        ScenarioREVTrajectoryPlanType* trajectoryPlan = dynamic_cast<ScenarioREVTrajectoryPlanType*>(parentObject);
+        if (trajectoryPlan)
+        {
+            trajectoryPlan->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
+            QTreeWidgetItem* trajectoryItem = new QTreeWidgetItem(parent);
+            addScenarioItems(trajectoryItem, trajectory);
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
@@ -180,6 +262,11 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
 
 QMimeData* ScenarioTree::mimeData(const QList<QTreeWidgetItem*> items) const
 {
+    if (items.isEmpty())
+    {
+        return NULL;
+    }
+
     QMimeData *mimeData = new QMimeData();
     QByteArray encodedData;
     
@@ -232,7 +319,9 @@ void ScenarioTree::removeChildren(QTreeWidgetItem* parentItem)
     {
         QTreeWidgetItem* child = parentItem->takeChild(i);
         if (child->childCount() != 0)
+        {
             removeChildren(child);
+        }
         
         QDomElement childElement = m_domElementForItem[child];
         Q_ASSERT(!childElement.isNull());
@@ -254,7 +343,9 @@ void ScenarioTree::updateTreeItems(QTreeWidgetItem* parentItem,
         delete child;
     }
     
+#if OLDSCENARIO
     scenarioObject->createItemContents(parentItem);
+#endif
 }
 
 
@@ -262,9 +353,144 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
                                       QTreeWidgetItem* editItem)
 {
     if (scenarioObject == NULL || editItem == NULL)
+    {
         return;
-    
-    // TODO: Replace this with an edit method for scenario objects
+    }
+
+    if (dynamic_cast<ScenarioLoiteringType*>(scenarioObject) != NULL)
+    {
+        Lagrmode=-1;
+        ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(scenarioObject);
+        LoiteringDialog editDialog(this);
+        if (!editDialog.loadValues(loitering))
+        {
+            QMessageBox::information(this, tr("Bad Loitering element"), tr("Error in Loitering element"));
+        }
+        else
+        {
+            if (editDialog.exec() == QDialog::Accepted)
+            {
+                editDialog.saveValues(loitering);
+                updateTreeItems(editItem, scenarioObject);
+            }
+        }
+    }
+    else if (dynamic_cast<ScenarioLoiteringTLEType*>(scenarioObject) != NULL)
+    {
+        ScenarioLoiteringTLEType* loiteringTLE = dynamic_cast<ScenarioLoiteringTLEType*>(scenarioObject);
+        LoiteringTLEDialog editDialog(this);
+
+        if (!editDialog.loadValues(loiteringTLE))
+        {
+            QMessageBox::information(this, tr("Bad Loitering TLE element"), tr("Error in Loitering TLE element"));
+        }
+        else
+        {
+            if (editDialog.exec() == QDialog::Accepted)
+            {
+                editDialog.saveValues(loiteringTLE);
+                // TODO Change the name of the participant using the TLE line 0
+                updateTreeItems(editItem, scenarioObject);
+            }
+        }
+    }
+
+
+    else if (dynamic_cast<ScenarioLocationType*>(scenarioObject) != NULL)
+    {
+        ScenarioLocationType* location = dynamic_cast<ScenarioLocationType*>(scenarioObject);
+        LocationEditorDialog editDialog(this);
+        editDialog.loadValues(location);
+        if (editDialog.exec() == QDialog::Accepted)
+        {
+            editDialog.saveValues(location);
+            updateTreeItems(editItem, scenarioObject);
+        }
+    }
+    else if (dynamic_cast<ScenarioPayload*>(scenarioObject) != NULL)
+    {
+        ScenarioPayload* payload = dynamic_cast<ScenarioPayload*>(scenarioObject);
+        PayloadPropertiesDialog editDialog(this);
+        if (!editDialog.loadValues(payload))
+        {
+            QMessageBox::information(this, tr("Bad Payload element"), tr("Error in Payload element"));
+        }
+
+        else
+        {
+            if (editDialog.exec() == QDialog::Accepted)
+            {
+                editDialog.saveValues(payload);
+                updateTreeItems(editItem, scenarioObject);
+            }
+        }
+
+    }
+
+    else if(dynamic_cast<ScenarioEntryArcType*>(scenarioObject) != NULL)//Added by Dominic to allow opening of re-entry GUI
+    {
+        ScenarioEntryArcType* entry = dynamic_cast<ScenarioEntryArcType*>(scenarioObject);
+        ReEntryDialog editDialog(this);
+
+        if (!editDialog.loadValues(entry))
+        {
+            QMessageBox::information(this, tr("Bad Entry element"), tr("Error in Entry element"));
+        }
+
+        else
+        {
+            if (editDialog.exec() == QDialog::Accepted)
+            {
+                editDialog.saveValues(entry);
+                updateTreeItems(editItem, scenarioObject);
+            }
+        }
+
+    }
+
+    else if (dynamic_cast<ScenarioREVGeometryType*>(scenarioObject) != NULL)//Added by Dominic to allow opening of Geometry GUI
+    {
+        ScenarioREVGeometryType* geometry = dynamic_cast<ScenarioREVGeometryType*>(scenarioObject);
+        PhysicalPropertiesDialog editDialog(this);
+
+        if (!editDialog.loadValues(geometry))
+        {
+            QMessageBox::information(this, tr("Bad Geometry element"), tr("Error in Geometry element"));
+        }
+
+        else
+        {
+            if (editDialog.exec() == QDialog::Accepted)
+            {
+                editDialog.saveValues(geometry);
+                updateTreeItems(editItem, scenarioObject);
+            }
+        }
+
+    }
+    else if (dynamic_cast<ScenarioREVAeroThermodynamicsType*>(scenarioObject) != NULL)//Added by Dominic to allow opening of aerodynamic GUI
+    {
+        ScenarioREVAeroThermodynamicsType* aerothermo = dynamic_cast<ScenarioREVAeroThermodynamicsType*>(scenarioObject);
+        AerodynamicPropertiesDialog editDialog(this);
+
+        if (!editDialog.loadValues(aerothermo))
+        {
+            QMessageBox::information(this, tr("Bad Aerothermodynamics element"), tr("Error in Aerothermodynamics element"));
+        }
+
+        else
+        {
+            if (editDialog.exec() == QDialog::Accepted)
+            {
+                editDialog.saveValues(aerothermo);
+                updateTreeItems(editItem, scenarioObject);
+            }
+        }
+
+
+    }
+
+#if OLDSCENARIO
     if (dynamic_cast<ScenarioTrajectoryPropagation*>(scenarioObject) != NULL)
     {
         ScenarioTrajectoryPropagation* prop = dynamic_cast<ScenarioTrajectoryPropagation*>(scenarioObject);
@@ -305,11 +531,11 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
         }
         else
         {
-        InitialStateEditorDialog editDialog(this);
-        if (!editDialog.loadValues(initialStatePos))
-        {
-            QMessageBox::information(this, tr("Bad InitialStatePosition element"), tr("Error in InitialStatePosition element"));
-        }
+            InitialStateEditorDialog editDialog(this);
+            if (!editDialog.loadValues(initialStatePos))
+            {
+                QMessageBox::information(this, tr("Bad InitialStatePosition element"), tr("Error in InitialStatePosition element"));
+            }
         else
         {
             if (editDialog.exec() == QDialog::Accepted)
@@ -387,42 +613,40 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
 
     else if (dynamic_cast<ScenarioTleTrajectory*>(scenarioObject) != NULL)
     {
-	ScenarioTleTrajectory* loiteringTLE = dynamic_cast<ScenarioTleTrajectory*>(scenarioObject);
-	LoiteringTLEDialog editDialog(this);
+        ScenarioTleTrajectory* loiteringTLE = dynamic_cast<ScenarioTleTrajectory*>(scenarioObject);
+        LoiteringTLEDialog editDialog(this);
 
-	if (!editDialog.loadValues(loiteringTLE))
-	{
-	    QMessageBox::information(this, tr("Bad Loitering TLE element"), tr("Error in Loitering TLE element"));
-	}
-	else
-	{
-	    if (editDialog.exec() == QDialog::Accepted)
-	    {
-		editDialog.saveValues(loiteringTLE);
-		// TODO Change the name of the participant using the TLE line 0
-		updateTreeItems(editItem, scenarioObject);
-	    }
-	}
+        if (!editDialog.loadValues(loiteringTLE))
+        {
+            QMessageBox::information(this, tr("Bad Loitering TLE element"), tr("Error in Loitering TLE element"));
+        }
+        else
+        {
+            if (editDialog.exec() == QDialog::Accepted)
+            {
+                editDialog.saveValues(loiteringTLE);
+                // TODO Change the name of the participant using the TLE line 0
+                updateTreeItems(editItem, scenarioObject);
+            }
+        }
     }
-
-
     else if (dynamic_cast<ScenarioExternalTrajectory*>(scenarioObject) != NULL)
     {
-	ScenarioExternalTrajectory* externalTrajectory = dynamic_cast<ScenarioExternalTrajectory*>(scenarioObject);
-	ExternalDialog editDialog(this);
+        ScenarioExternalTrajectory* externalTrajectory = dynamic_cast<ScenarioExternalTrajectory*>(scenarioObject);
+        ExternalDialog editDialog(this);
 
-	if (!editDialog.loadValues(externalTrajectory))
-	{
-	    QMessageBox::information(this, tr("Bad External element"), tr("Error in external trajectory"));
-	}
-	else
-	{
-	    if (editDialog.exec() == QDialog::Accepted)
-	    {
-		editDialog.saveValues(externalTrajectory);
-		updateTreeItems(editItem, scenarioObject);
-	    }
-	}
+        if (!editDialog.loadValues(externalTrajectory))
+        {
+            QMessageBox::information(this, tr("Bad External element"), tr("Error in external trajectory"));
+        }
+        else
+        {
+            if (editDialog.exec() == QDialog::Accepted)
+            {
+                editDialog.saveValues(externalTrajectory);
+                updateTreeItems(editItem, scenarioObject);
+            }
+        }
     }
 
     else if (dynamic_cast<ScenarioPhysicalProperties*>(scenarioObject) != NULL)
@@ -550,13 +774,17 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             editScenarioObject(parentObject, editItem);
         }
     }    
+#endif
+
 }
 
 
 void ScenarioTree::editItem(QTreeWidgetItem* item, int /* column */)
 {
     if (item == NULL)
+    {
         return;
+    }
 
 	ScenarioObject* scenarioObject = NULL;
 
@@ -566,7 +794,8 @@ void ScenarioTree::editItem(QTreeWidgetItem* item, int /* column */)
         void* pointer = qVariantValue<void*>(data);
         scenarioObject = reinterpret_cast<ScenarioObject*>(pointer);
     }
-      
+
+#ifdef OLDSCENARIO
     // Some items in the tree view are just data fields; if the user has
     // double clicked on one, we'll invoke the editor on the item's
     // parent. This makes things a bit more convenient for the user.    
@@ -584,7 +813,8 @@ void ScenarioTree::editItem(QTreeWidgetItem* item, int /* column */)
             }
         }
     }
-    
+#endif
+
     if (scenarioObject != NULL && item != NULL)
     {
         editScenarioObject(scenarioObject, item);
@@ -597,6 +827,7 @@ void ScenarioTree::editItem(QTreeWidgetItem* item, int /* column */)
  */
 void ScenarioTree::editItemInline(QTreeWidgetItem* item, int column)
 {
+#if OLDSCENARIO
     ScenarioObject* object = objectForItem(item);
     if (object == NULL)
         return;
@@ -614,6 +845,7 @@ void ScenarioTree::editItemInline(QTreeWidgetItem* item, int column)
         SpaceScenario* scenario = dynamic_cast<SpaceScenario*>(object);
         scenario->setName(item->text(1));
     }
+#endif
 }
 
 
@@ -631,7 +863,7 @@ ScenarioObject* ScenarioTree::objectForItem(QTreeWidgetItem* item) const
         void* pointer = qVariantValue<void*>(data);
         scenarioObject = reinterpret_cast<ScenarioObject*>(pointer);
     }
-    
+
     return scenarioObject;
 }
 
@@ -680,6 +912,7 @@ void ScenarioTree::removeItem(QTreeWidgetItem* item)
   */
 void ScenarioTree::removeSelection()
 {
+#if OLDSCENARIO
     QModelIndexList selected = selectionModel()->selectedRows();
     if (!selected.isEmpty())
     {
@@ -695,4 +928,5 @@ void ScenarioTree::removeSelection()
             model()->removeRow(index.row(), index.parent());
         }
     }
+#endif
 }

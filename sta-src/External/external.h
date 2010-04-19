@@ -25,7 +25,7 @@
 #define _EXTERNAL_H_
 
 #include <QDialog>
-#include "Scenario/scenarioexternal.h"
+#include "Scenario/scenario.h"
 
 #include "ui_external.h"
 
@@ -47,8 +47,10 @@ public:
     ExternalDialog(ScenarioTree* parent=NULL);
     ~ExternalDialog();
 
+#if OLDSCENARIO
     bool loadValues(ScenarioExternalTrajectory* externalTrajectory);
     bool saveValues(ScenarioExternalTrajectory* externalTrajectory);
+#endif
 
 public slots:
     void on_ExternalFile_dropped(const QMimeData *mimeData);

@@ -24,8 +24,9 @@
 
 #include "scenariotree.h"
 #include "propulsionproperties.h"
-#include "Scenario/scenarioproperties.h"
+#include "Scenario/scenario.h"
 
+#if OLDSCENARIO
 PropulsionPropertiesDialog::PropulsionPropertiesDialog(ScenarioTree* parent) :
     QDialog(parent)
 {
@@ -79,3 +80,5 @@ bool PropulsionPropertiesDialog::saveValues(ScenarioPropulsionProperties* propul
 
     return true;
 }
+#endif // OLDSCENARIO
+

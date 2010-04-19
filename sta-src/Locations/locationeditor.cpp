@@ -24,7 +24,7 @@
  */
 
 #include "locationeditor.h"
-#include "Scenario/scenariolocation.h"
+#include "Scenario/scenario.h"
 
 
 /* Dialog box for editing location parameters: central body,
@@ -53,24 +53,28 @@ LocationEditorDialog::~LocationEditorDialog()
 
 
 // Load the edit box values from the current node values
-bool LocationEditorDialog::loadValues(const ScenarioLocation* location)
+bool LocationEditorDialog::loadValues(const ScenarioLocationType* location)
 {
+#if OLDSCENARIO
     latitudeEdit->setText(QString::number(location->getGroundPosition().latitude));
     longitudeEdit->setText(QString::number(location->getGroundPosition().longitude));
     altitudeEdit->setText(QString::number(location->getGroundPosition().altitude));
-    
+#endif
+
     return true;
 }
 
 
 // Save edit box values to a tree of DOM nodes
-bool LocationEditorDialog::saveValues(ScenarioLocation* location)
+bool LocationEditorDialog::saveValues(ScenarioLocationType* location)
 {
+#if OLDSCENARIO
     GroundPosition pos;
     pos.latitude         = latitudeEdit->text().toDouble();
     pos.longitude        = longitudeEdit->text().toDouble();
     pos.altitude         = altitudeEdit->text().toDouble();
     location->setGroundPosition(pos);
-    
+#endif
+
     return true;
 }

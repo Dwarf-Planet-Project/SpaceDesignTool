@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/icons" >
+    <qresource prefix="/icons">
         <file>mission-arcs-ascent.png</file>
         <file>mission-arcs-flyby.png</file>
         <file>mission-arcs-loitering.png</file>
@@ -60,16 +60,8 @@
         <file>timeline-realtime.png</file>
         <file>timeline-reverse.png</file>
         <file>timeline-slower.png</file>
-        <file>sta-splash.png</file>
         <file>TLE-icon-small.png</file>
         <file>TLE-icon.png</file>
-        <file>participantTarget.png</file>
-        <file>participantGroundStation.png</file>
-        <file>participantEntryVehicle.png</file>
-        <file>participantLaunchPad.png</file>
-        <file>participantRocket.png</file>
-        <file>participantSatellite.png</file>
-        <file>antena-pallete.png</file>
         <file>rocket.png</file>
         <file>reentryVehicle.png</file>
         <file>ComboEarth.png</file>
@@ -82,11 +74,6 @@
         <file>ComboSaturn.png</file>
         <file>ComboUranus.png</file>
         <file>ComboVenus.png</file>
-        <file>STA-logo-ARCHEAN-128.png</file>
-        <file>STA-logo-ARCHEAN-256.png</file>
-        <file>STA-logo-ARCHEAN-512.png</file>
-        <file>mime_logo.png</file>
-        <file>mime_logo_inside.png</file>
         <file>Gravity_field_icon.png</file>
         <file>ComboDeimos.png</file>
         <file>ComboEnceladus.png</file>
@@ -95,10 +82,18 @@
         <file>ComboTriton.png</file>
         <file>ComboSun.png</file>
         <file>TicksButton.png</file>
-        <file>GridButton.png</file>
-        <file>document-save.png</file>
-        <file>25DViewButton.png</file>
-        <file>Subpoint.png</file>
         <file>external.png</file>
+        <file>STAlogo.png</file>
+        <file>STAsplash.png</file>
+        <file>IconCLOCK.png</file>
+        <file>Icon25D.png</file>
+        <file>IconDOWNLOAD.png</file>
+        <file>IconGRID.png</file>
+        <file>IconSUN.png</file>
+        <file>ParticipantSATELLITE.png</file>
+        <file>ParticipantSTATION.png</file>
+        <file>ParticipantENTRYVEHICLE.png</file>
+        <file>ParticipantROCKET.png</file>
+        <file>ParticipantPOINT.png</file>
     </qresource>
 </RCC>

@@ -28,7 +28,7 @@
  */
 
 #include <QDialog>
-#include "Scenario/scenariotrajectorypropagation.h"
+#include "Scenario/scenario.h"
 #include "ui_trajectorypropagation.h"
 
 
@@ -40,6 +40,8 @@ public:
     TrajectoryPropagationDialog(QWidget* parent = NULL);
     ~TrajectoryPropagationDialog();
     
+#if OLDSCENARIO
     bool loadValues(ScenarioTrajectoryPropagation* prop);
     bool saveValues(ScenarioTrajectoryPropagation* prop);
+#endif
 };

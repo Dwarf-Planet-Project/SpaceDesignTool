@@ -25,7 +25,8 @@
 
 
 #include "initialstateThreebodyEditor.h"
-#include "Scenario/scenarioinitialstate.h"
+#include "Scenario/scenario.h"
+#include "Astro-Core/stacoordsys.h"
 
 
 /* Dialog box for editing initial state parameters. The dialog
@@ -83,6 +84,7 @@ InitialStateThreebodyEditorDialog::~InitialStateThreebodyEditorDialog()
 // Load the edit box values from the current node values
 bool InitialStateThreebodyEditorDialog::loadValues(const ScenarioInitialStatePosition* initialState_threebody_Pos)
 {
+#if OLDSCENARIO
     // Set the coordinate system combo box value
     for (int i = 0; i < coordinateSystemCombo->count(); i++)
     {
@@ -126,6 +128,7 @@ bool InitialStateThreebodyEditorDialog::loadValues(const ScenarioInitialStatePos
         // Unknown initial state type
         return false;
     }
+#endif
 
     return true;
 }
@@ -134,6 +137,7 @@ bool InitialStateThreebodyEditorDialog::loadValues(const ScenarioInitialStatePos
 // Save edit box values to a tree of DOM nodes
 bool InitialStateThreebodyEditorDialog::saveValues(ScenarioInitialStatePosition* initialState_threebody_Pos)
 {
+#if OLDSCENARIO
     int coordSysIndex = coordinateSystemCombo->currentIndex();
     initialState_threebody_Pos->setCoordinateSystem((sta::CoordinateSystemType) coordinateSystemCombo->itemData(coordSysIndex).toInt());
 
@@ -164,7 +168,6 @@ bool InitialStateThreebodyEditorDialog::saveValues(ScenarioInitialStatePosition*
 
         initialState_threebody_Pos->setInitialState(elements);
     }
-
+#endif // OLDSCENARIO
     return true;
 }
-

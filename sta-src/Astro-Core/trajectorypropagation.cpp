@@ -49,6 +49,7 @@ TrajectoryPropagationDialog::~TrajectoryPropagationDialog()
 }
 
 
+#if OLDSCENARIO
 bool TrajectoryPropagationDialog::loadValues(ScenarioTrajectoryPropagation* prop)
 {
     QString currentPropagator = prop->propagator();
@@ -84,3 +85,4 @@ bool TrajectoryPropagationDialog::saveValues(ScenarioTrajectoryPropagation* prop
 
     return true;
 }
+#endif

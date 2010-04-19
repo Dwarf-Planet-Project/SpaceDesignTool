@@ -29,7 +29,8 @@
 #include "ui_payloadproperties.h"
 
 class ScenarioTree;
-class ScenarioPayloadProperties;
+class ScenarioPayload;
+
 
 class PayloadPropertiesDialog : public QDialog, private Ui_PayloadPropertiesDialogClass
 {
@@ -39,8 +40,8 @@ public:
     PayloadPropertiesDialog(ScenarioTree* parent=NULL);
     ~PayloadPropertiesDialog(){}
 
-    bool loadValues(ScenarioPayloadProperties* payloadProperties);
-    bool saveValues(ScenarioPayloadProperties* payloadProperties);
+    bool loadValues(ScenarioPayload* payloadProperties);
+    bool saveValues(ScenarioPayload* payloadProperties);
 
 };
 

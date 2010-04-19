@@ -24,6 +24,7 @@ the world wide web at http://www.gnu.org.
 //#include "ascendingNode.h"
 #include "threebodyParametersComputation.h"
 #include "stamath.h"
+#include "stabody.h"
 #include <QDebug>
 
 void ascendingNodeAngle (const StaBody* firstbody, const StaBody* secondbody, double JD, double &nodeJD, double &ascNodeAng)

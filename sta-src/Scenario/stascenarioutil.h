@@ -4,6 +4,7 @@
 #include <QString>
 #include <QDateTime>
 #include <QList>
+#include <QDomElement>
 
 extern bool parseBoolean(const QString& e);
 extern double parseDouble(const QString& e);
@@ -25,7 +26,7 @@ extern QString convertToString(const QList<QString>& l);
 // Create a new element with a single text node as a child. The text node
 // contains the string representation of the value.
 template<typename T>
-QDomElement createSimpleElement(const QDomDocument& doc, const QString& tagName, T value)
+QDomElement createSimpleElement(QDomDocument& doc, const QString& tagName, T value)
 {
     QDomElement child = doc.createElement(tagName);
     child.appendChild(doc.createTextNode(convertToString(value)));

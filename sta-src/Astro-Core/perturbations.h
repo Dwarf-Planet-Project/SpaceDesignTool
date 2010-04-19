@@ -30,11 +30,10 @@
 #ifndef PERTURBATIONS_H
 #define PERTURBATIONS_H
 
-#include <Eigen/Core>
 #include "statevector.h"
-#include "Scenario/scenarioperturbations.h"
-#include "Scenario/scenarioproperties.h"
-
+#include "Scenario/scenario.h"
+#include "Astro-Core/stabody.h"
+#include <Eigen/Core>
 
 USING_PART_OF_NAMESPACE_EIGEN
 
@@ -44,14 +43,13 @@ USING_PART_OF_NAMESPACE_EIGEN
 class Perturbations
 {
 public:
-    Perturbations(ScenarioPerturbations*, ScenarioProperties* properties = NULL);
+    Perturbations();
     virtual ~Perturbations();
 
     /**
      * Abstract function calculating perturbing acceleration knowing the position of the body.
      */
     virtual Vector3d calculateAcceleration(sta::StateVector state, double mjd, double dt);
-
 };
 
 /**
@@ -60,7 +58,7 @@ public:
 class GravityPerturbations : public Perturbations
 {
 public:
-    GravityPerturbations(ScenarioGravityPerturbations*);
+    GravityPerturbations(const StaBody* centralBody, const ScenarioGravityModel*);
     ~GravityPerturbations();
 
     /**
@@ -120,7 +118,7 @@ double doublefactorial(int);
 class AtmosphericDragPerturbations : public Perturbations
 {
 public:
-    AtmosphericDragPerturbations(ScenarioAtmosphericDragPerturbations*, ScenarioProperties*);
+    AtmosphericDragPerturbations(const QString& atmosphereModel);
     virtual ~AtmosphericDragPerturbations();
 
     /**
@@ -162,7 +160,12 @@ private:
 class SolarPressurePerturbations : public Perturbations
 {
 public:
-    SolarPressurePerturbations(ScenarioSolarPressurePerturbations*, ScenarioProperties*);
+    SolarPressurePerturbations(StaBody* centralBody,
+                               double reflectivity,
+                               double albedo,
+                               double ir,
+                               double mass,
+                               double surfaceArea);
     virtual ~SolarPressurePerturbations();
     /**
      * Return the central celestial body .
@@ -219,7 +222,8 @@ double irRadiationFlux(const StaBody*);
 class ExternalBodyPerturbations : public Perturbations
 {
 public:
-    ExternalBodyPerturbations(ScenarioExternalBodyPerturbations*);
+    ExternalBodyPerturbations(const StaBody* centralBody,
+                              const QList<const StaBody*>& bodies);
     virtual ~ExternalBodyPerturbations();
 
     /**
@@ -246,7 +250,9 @@ private:
 class DebrisPerturbations : public Perturbations
 {
 public:
-    DebrisPerturbations(ScenarioDebrisPerturbations*, ScenarioProperties*);
+    DebrisPerturbations(const StaBody* centralBody,
+                        double mass,
+                        double surfaceArea);
     virtual ~DebrisPerturbations();
 
     /**

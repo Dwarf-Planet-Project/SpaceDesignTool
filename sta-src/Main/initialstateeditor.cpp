@@ -23,7 +23,8 @@
  */
 
 #include "initialstateeditor.h"
-#include "Scenario/scenarioinitialstate.h"
+#include "Scenario/scenario.h"
+#include "Astro-Core/stacoordsys.h"
 
 
 /* Dialog box for editing initial state parameters. The dialog
@@ -35,7 +36,7 @@ InitialStateEditorDialog::InitialStateEditorDialog(QWidget* parent) :
     QDialog(parent)
 {
     setupUi(this);
-    
+
     // Set up the coordinate system combo box
     coordinateSystemCombo->addItem(tr("Planet fixed"), (int) sta::COORDSYS_BODYFIXED);
     coordinateSystemCombo->addItem(tr("Inertial (J2000)"), (int) sta::COORDSYS_EME_J2000);
@@ -80,6 +81,7 @@ InitialStateEditorDialog::~InitialStateEditorDialog()
 // Load the edit box values from the current node values
 bool InitialStateEditorDialog::loadValues(const ScenarioInitialStatePosition* initialStatePos)
 {
+#if OLDSCENARIO
     // Set the coordinate system combo box value
     for (int i = 0; i < coordinateSystemCombo->count(); i++)
     {
@@ -91,7 +93,7 @@ bool InitialStateEditorDialog::loadValues(const ScenarioInitialStatePosition* in
     }
     
     ScenarioAbstractInitialState* initialState = initialStatePos->initialState();
-    ScenarioKeplerianElements* elements = dynamic_cast<ScenarioKeplerianElements*>(initialState);
+    ScenarioKeplerianElementsType* elements = dynamic_cast<ScenarioKeplerianElementsType*>(initialState);
     ScenarioStateVector* stateVector = dynamic_cast<ScenarioStateVector*>(initialState);
     Q_ASSERT(elements || stateVector);
     if (elements != NULL)
@@ -99,12 +101,12 @@ bool InitialStateEditorDialog::loadValues(const ScenarioInitialStatePosition* in
         initialStateTypeCombo->setCurrentIndex(1);
         initialStateStack->setCurrentWidget(keplerianElementsPage);
         
-        semimajorAxisEdit->setText(QString::number(elements->m_semimajorAxis));
-        eccentricityEdit->setText(QString::number(elements->m_eccentricity));
-        inclinationEdit->setText(QString::number(elements->m_inclination));
-        raanEdit->setText(QString::number(elements->m_raan));
-        argOfPeriapsisEdit->setText(QString::number(elements->m_argumentOfPeriapsis));
-        trueAnomalyEdit->setText(QString::number(elements->m_trueAnomaly));
+        semimajorAxisEdit->setText(QString::number(elements->semiMajorAxis()));
+        eccentricityEdit->setText(QString::number(elements->eccentricity()));
+        inclinationEdit->setText(QString::number(elements->inclination()));
+        raanEdit->setText(QString::number(elements->RAAN()));
+        argOfPeriapsisEdit->setText(QString::number(elements->argumentOfPeriapsis()));
+        trueAnomalyEdit->setText(QString::number(elements->trueAnomaly()));
     }
     else if (stateVector != NULL)
     {
@@ -123,7 +125,7 @@ bool InitialStateEditorDialog::loadValues(const ScenarioInitialStatePosition* in
         // Unknown initial state type
         return false;
     }
-    
+#endif
     return true;
 }
 
@@ -131,6 +133,7 @@ bool InitialStateEditorDialog::loadValues(const ScenarioInitialStatePosition* in
 // Save edit box values to a tree of DOM nodes
 bool InitialStateEditorDialog::saveValues(ScenarioInitialStatePosition* initialStatePos)
 {
+#if OLDSCENARIO
     int coordSysIndex = coordinateSystemCombo->currentIndex();
     initialStatePos->setCoordinateSystem((sta::CoordinateSystemType) coordinateSystemCombo->itemData(coordSysIndex).toInt());
     
@@ -151,16 +154,18 @@ bool InitialStateEditorDialog::saveValues(ScenarioInitialStatePosition* initialS
     }
     else
     {
-        ScenarioKeplerianElements* elements = new ScenarioKeplerianElements();
-        elements->m_semimajorAxis       = semimajorAxisEdit->text().toDouble();
-        elements->m_eccentricity        = eccentricityEdit->text().toDouble();
-        elements->m_inclination         = inclinationEdit->text().toDouble();
-        elements->m_raan                = raanEdit->text().toDouble();
-        elements->m_argumentOfPeriapsis = argOfPeriapsisEdit->text().toDouble();
-        elements->m_trueAnomaly         = trueAnomalyEdit->text().toDouble();
+        ScenarioKeplerianElementsType* elements = new ScenarioKeplerianElementsType();
+        elements->setSemiMajorAxis(semimajorAxisEdit->text().toDouble());
+        elements->setEccentricity(eccentricityEdit->text().toDouble());
+        elements->setInclination(inclinationEdit->text().toDouble());
+        elements->setRAAN(raanEdit->text().toDouble());
+        elements->setArgumentOfPeriapsis(argOfPeriapsisEdit->text().toDouble());
+        elements->setTrueAnomaly(trueAnomalyEdit->text().toDouble());
         
         initialStatePos->setInitialState(elements);
     }
-    
+#endif
+
     return true;
 }
+

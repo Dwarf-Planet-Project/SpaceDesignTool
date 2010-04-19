@@ -29,9 +29,7 @@ This program is free software; you can redistribute it and/or modify it under
 #include "Astro-Core/rectangularTOpolar.h"
 #include "Astro-Core/stamath.h"
 #include "Astro-Core/date.h"
-#include "Scenario/scenariospacevehicle.h"
-#include "Scenario/scenariotrajectoryplan.h"
-#include "Scenario/scenarioabstracttrajectory.h"
+#include "Scenario/scenario.h"
 #include <QTextStream>
 #include <QtGui>
 #include <QGLWidget>
@@ -761,8 +759,8 @@ static void clippedLine(const AlignedBox<float, 3>& clipBox,
         }
         else if (clippingRequired)
         {
-            float clipX;
-            float clipY;
+            float clipX = 0.0f;
+            float clipY = 0.0f;
 
             // One or both endpoints outside the clip volume. Pick one of them.
             unsigned int outcodeOut = outcode0 ? outcode0: outcode1;
@@ -859,9 +857,9 @@ static void clippedLine(const AlignedBox<float, 3>& clipBox,
         }
         else if (clippingRequired)
         {
-            float clipX;
-            float clipY;
-            float clipZ;
+            float clipX = 0.0f;
+            float clipY = 0.0f;
+            float clipZ = 0.0f;
 
             // One or both endpoints outside the clip volume. Pick one of them.
             unsigned int outcodeOut = outcode0 ? outcode0: outcode1;

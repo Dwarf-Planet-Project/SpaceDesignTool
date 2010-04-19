@@ -34,6 +34,7 @@
 #include <QFile>
 #include <QDir>
 #include <QSharedPointer>
+#include <QExplicitlySharedDataPointer>
 #include <QHash>
 #include <QSet>
 #include <iostream>
@@ -551,6 +552,8 @@ private:
     void writeDomFactory(QTextStream& out);
     void writeDomLoader(QTextStream& out);
     void writeDomSaver(QTextStream& out);
+    void writeChildCount(QTextStream& out) const;
+    void writeChildren(QTextStream& out) const;
 
 private:
     QString m_name;
@@ -683,6 +686,8 @@ ComplexType::writeMethodDefinitions(QTextStream& out)
     writeDomLoader(out);
     out << "\n";
     writeDomSaver(out);
+    out << "\n";
+    writeChildren(out);
     out << "\n\n";
 }
 
@@ -715,6 +720,10 @@ ComplexType::writePublicInterface(QTextStream& out)
 
     // Factory method
     out << INDENT << "static " << className() << "* create(const QDomElement& e);\n";
+    
+    // elementName() method
+    out << INDENT << "virtual QString elementName() const\n";
+    out << INDENT << "{ return " << quoteString(name()) << "; }\n";
 
     // DOM Node loader
     out << INDENT << "virtual bool " << "load(const QDomElement& e, QDomElement* nextElement);\n";
@@ -722,6 +731,9 @@ ComplexType::writePublicInterface(QTextStream& out)
     // DOM Node writer
     out << INDENT << "virtual QDomElement toDomElement(QDomDocument&) const;\n";
     out << "\n";
+
+    //out << INDENT << "virtual unsigned int childCount();\n";
+    out << INDENT << "virtual QList<QSharedPointer<ScenarioObject> > children() const;\n";
 
     // Accessors and mutators are all defined inline
     foreach (Property p, m_properties)
@@ -782,6 +794,9 @@ ComplexType::writeDefaultConstructor(QTextStream& out)
         case SchemaType::Integer:
             defaultValue = "0";
             break;
+        case SchemaType::DateTime:
+            defaultValue = "QDate(2000, 1, 1)";
+            break;
         default:
             break;
         }
@@ -804,6 +819,29 @@ ComplexType::writeDefaultConstructor(QTextStream& out)
 
     out << "\n";
     out << "{\n";
+
+    // Create all non-optional child elements
+    foreach (Property p, m_properties)
+    {
+        if (p.type().isComplex() && !p.isOptional() && !p.multipleOccurrencesAllowed())
+        {
+            QList<QSharedPointer<Element> > substitutes;
+            if (g_GlobalElements.contains(p.name()))
+            {
+                substitutes = g_GlobalElements[p.name()]->substitutes();
+            }
+
+            if (substitutes.isEmpty())
+            {
+                out << INDENT << p.memberVariableName() << " = " << p.type().memberVariableType() << "(new " << p.type().ctype() << "());\n";
+            }
+            else
+            {
+                // Which substitution should be the default?
+            }
+        }
+    }
+
     out << "}\n";
 }
 
@@ -816,9 +854,9 @@ ComplexType::writeDomFactory(QTextStream& out)
     out << returnType << " " << className() << "::create(const QDomElement& e)\n";
     out << "{\n";
     out << INDENT << returnType << " v;\n";
-    if (!isAbstract())
+    //if (!isAbstract())
     {
-        out << INDENT << "if (e.tagName() == " << quoteString(XMLNS + ":" + this->name()) << ")\n";
+        //out << INDENT << "if (e.tagName() == " << quoteString(XMLNS + ":" + this->name()) << ")\n";
         out << INDENT << "{\n";
         out << INDENT2 << "v = new " << className() << ";\n";
         out << INDENT2 << "QDomElement nextElement = e.firstChildElement();\n";
@@ -827,17 +865,24 @@ ComplexType::writeDomFactory(QTextStream& out)
         out << INDENT << "}\n";
     }
 
+#if 0
     foreach (QSharedPointer<ComplexType> subType, subclasses())
     {
         out << INDENT << "if (e.tagName() == " << quoteString(XMLNS + ":" + subType->name()) << ")\n";
         out << INDENT2 << "return " << subType->className() << "::create(e);\n";
     }
+#endif
 
     out << INDENT << "return NULL;\n";
     out << "}\n";
 }
 
 
+// The DomLoader method will load a DOM element into a C++ object. The
+// method load() accepts two parameters: an element e, and a second
+// element next. The element next will be advanced until load() is
+// done processing elements. load() should be an internal method only;
+// external code should use create() instead.
 void
 ComplexType::writeDomLoader(QTextStream& out)
 {
@@ -852,15 +897,43 @@ ComplexType::writeDomLoader(QTextStream& out)
     out << INDENT << "cerr << " << quoteString(name()) << " << endl;\n";
 #endif
 
+    QList<QSharedPointer<Element> > substitutes;
+
     foreach (Property p, m_properties)
     {
         if (p.type().isComplex())
         {
+            if (g_GlobalElements.contains(p.name()))
+            {
+                substitutes = g_GlobalElements[p.name()]->substitutes();
+            }
+
             if (p.multipleOccurrencesAllowed())
             {
+                // Arbitrary number of occurrences are allowed
                 out << INDENT << "for (;;)\n";
                 out << INDENT << "{\n";
-                out << INDENT2 << p.type().memberVariableType() << " v(" << p.type().ctype() << "::create(*next));\n";
+
+                out << INDENT2 << p.type().memberVariableType() << " v;\n";
+                if (substitutes.isEmpty())
+                {
+                    out << INDENT2 << "if (next->tagName() == " << quoteString(XMLNS + ":" + p.name()) << ")\n";
+                    out << INDENT3 << "v = " << p.type().memberVariableType() << "(" << p.type().ctype() << "::create(*next));\n";
+                }
+                else
+                {
+                    // Handle substitution group
+                    bool first = true;
+                    foreach (QSharedPointer<Element> e, substitutes)
+                    {
+                        out << INDENT2;
+                        if (!first)
+                            out << "else ";
+                        out << "if (next->tagName() == " << quoteString(XMLNS + ":" + e->name()) << ")\n";
+                        out << INDENT3 << "v = " << p.type().memberVariableType() << "((" << p.type().ctype() << "*)" << e->type().ctype() << "::create(*next));\n";
+                        first = false;
+                    }
+                }
                 out << INDENT2 << "if (v.isNull()) break; else {\n";
                 out << INDENT3 << p.memberVariableName() << " << v;\n";
                 out << INDENT3 << ADVANCE << ";\n";
@@ -869,8 +942,28 @@ ComplexType::writeDomLoader(QTextStream& out)
             }
             else
             {
-                out << INDENT << p.memberVariableName() << " = " <<
-                                 p.type().memberVariableType() << "(" << p.type().ctype() << "::create(*next));\n";
+                // Zero or one occurrence allowed
+                if (substitutes.isEmpty())
+                {
+                    out << INDENT << "if (next->tagName() == " << quoteString(XMLNS + ":" + p.name()) << ")\n";
+                    out << INDENT2 << p.memberVariableName() << " = " <<
+                                     p.type().memberVariableType() << "(" << p.type().ctype() << "::create(*next));\n";
+                }
+                else
+                {
+                    // Handle substitution group
+                    bool first = true;
+                    foreach (QSharedPointer<Element> e, substitutes)
+                    {
+                        out << INDENT;
+                        if (!first)
+                            out << "else ";
+                        out << "if (next->tagName() == " << quoteString(XMLNS + ":" + e->name()) << ")\n";
+                        out << INDENT2 << p.memberVariableName() << " = " << p.type().memberVariableType() << "((" << p.type().ctype() << "*)" << e->type().ctype() << "::create(*next));\n";
+                        first = false;
+                    }
+                }
+
                 if (p.isOptional())
                 {
                     // Only advance if the read was successful
@@ -910,7 +1003,7 @@ ComplexType::writeDomSaver(QTextStream& out)
     out << "{\n";
 
     out << INDENT << "QDomElement e = " << baseClassName() << "::toDomElement(doc);\n";
-    out << INDENT << "e.setTagName(" << quoteString(name()) << ");\n";
+    out << INDENT << "e.setTagName(" << quoteString(XMLNS + ":" + name()) << ");\n";
     foreach (Property p, m_properties)
     {
         if (p.type().isComplex())
@@ -929,7 +1022,7 @@ ComplexType::writeDomSaver(QTextStream& out)
                 out << INDENT2 << "QDomElement child = " << p.memberVariableName() << "->toDomElement(doc);\n";
                 if (!p.isReference())
                 {
-                    out << INDENT2 << "child.setTagName(" << quoteString(p.name()) << ");\n";
+                    out << INDENT2 << "child.setTagName(" << quoteString(XMLNS + ":" + p.name()) << ");\n";
                 }
                 out << INDENT2 << "e.appendChild(child);\n";
                 out << INDENT  << "}\n";
@@ -937,19 +1030,61 @@ ComplexType::writeDomSaver(QTextStream& out)
         }
         else
         {
-            out << INDENT << "e.appendChild(createSimpleElement(doc, " << quoteString(p.name()) << ", " <<
+            out << INDENT << "e.appendChild(createSimpleElement(doc, " << quoteString(XMLNS + ":" + p.name()) << ", " <<
                               p.memberVariableName() << "));\n";
-#if 0
-            out << INDENT  << "{\n";
-            out << INDENT2 << "QDomElement child = doc.createElement(" << quoteString(p.name()) << ");\n";
-            out << INDENT2 << "child.appendChild(doc.createTextNode(convertToString(" << p.memberVariableName() << ")));\n";
-            out << INDENT2 << "e.appendChild(child);\n";
-            out << INDENT  << "}\n";
-#endif
         }
     }
 
     out << INDENT << "return e;\n";
+    out << "}\n";
+}
+
+
+void
+ComplexType::writeChildCount(QTextStream& out) const
+{
+    out << "unsigned int " << className() << "::childCount() const\n";
+    out << "{\n";
+    out << INDENT << "unsigned int count = 0;\n";
+    foreach (Property p, m_properties)
+    {
+        if (p.type().isComplex())
+        {
+            if (p.multipleOccurrencesAllowed())
+            {
+                out << INDENT << "count += " << p.memberVariableName() << ".size();\n";
+            }
+            else
+            {
+                out << INDENT << "if (!" << p.memberVariableName() << ".isNull()) count++;\n";
+            }
+        }
+    }
+    out << "}\n";
+}
+
+
+void
+ComplexType::writeChildren(QTextStream& out) const
+{
+    out << "QList<QSharedPointer<ScenarioObject> >" << className() << "::children() const\n";
+    out << "{\n";
+    out << INDENT << "QList<QSharedPointer<ScenarioObject> > children;\n";
+    foreach (Property p, m_properties)
+    {
+        if (p.type().isComplex())
+        {
+            if (p.multipleOccurrencesAllowed())
+            {
+                out << INDENT << "foreach (QSharedPointer<ScenarioObject> child, " << p.memberVariableName() << ") { children << child; }\n";
+            }
+            else
+            {
+                out << INDENT << "if (!" << p.memberVariableName() << ".isNull()) children << " << p.memberVariableName() << ";\n";
+            }
+        }
+    }
+    out << INDENT << "return children;\n";
     out << "}\n";
 }
 
@@ -1272,6 +1407,12 @@ int main(int argc, char *argv[])
     QTextStream header(&headerFile);
 
     // Write the header file preamble
+    header << "// Space scenario class declarations\n";
+    header << "// Automatically generated by schema2cpp - DO NOT EDIT!\n\n";
+
+    header << "#ifndef _STASCHEMA_H_\n";
+    header << "#define _STASCHEMA_H_\n\n";
+
     header << "class QDomElement;\n";
 
     header << "#include \"stascenarioutil.h\"\n";
@@ -1290,6 +1431,8 @@ int main(int argc, char *argv[])
     header << INDENT << "{\n";
     header << INDENT2 << "return doc.createElement(\"Object\");\n";
     header << INDENT << "}\n";
+    header << INDENT << "virtual QString elementName() const = 0;\n";
+    header << INDENT << "virtual QList<QSharedPointer<ScenarioObject> > children() const = 0;\n";
     header << "};\n";
     header << "\n";
 
@@ -1311,6 +1454,8 @@ int main(int argc, char *argv[])
         e->writeClassDefinition(header);
         header << "\n\n";
     }
+
+    header << "\n#endif // _STASCHEMA_H_\n";
 
     headerFile.close();
     // Header complete

@@ -28,7 +28,6 @@ the world wide web at http://www.gnu.org.
 #include "Lagrangian/halorbitcomputation.h"
 #include "Lagrangian/lagrangianAdvanced.h"
 #include "Scenario/scenario.h"
-#include "Scenario/scenariobody.h"
 #include "Eigen/Core"
 #include "Astro-Core/stabody.h"
 #include "Astro-Core/EODE/eode.h"
@@ -42,6 +41,8 @@ the world wide web at http://www.gnu.org.
 using namespace Eigen;
 using namespace std;
 
+
+#if OLDSCENARIO
 void EarthMoonPatch()
 {
     //Earth-Sun system
@@ -176,3 +177,4 @@ void EarthMoonPatch()
         //Earth-Moon system
         Grav_Param=getGravParam_user(STA_SOLAR_SYSTEM->earth()->mu(),STA_SOLAR_SYSTEM->lookup(STA_MOON)->mu());
 }
+#endif // OLDSCENARIO

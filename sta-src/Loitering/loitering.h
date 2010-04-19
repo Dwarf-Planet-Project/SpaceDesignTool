@@ -27,34 +27,36 @@
 #ifndef _LOITERING_H_
 #define _LOITERING_H_
 
-#include <QDialog>
 #include "ui_loitering.h"
+#include "Scenario/scenario.h"
+#include "Scenario/propagationfeedback.h"
+#include "Astro-Core/statevector.h"
+#include <QDialog>
 
 class ScenarioTree;
-class ScenarioLoiteringTrajectory;
-class ScenarioEnvironment;
-class ScenarioSimulationParameters;
-class ScenarioTrajectoryPropagation;
 class TesseralBox;
+
 
 class LoiteringDialog : public QDialog, private Ui_LoiteringDialogClass
 {
     Q_OBJECT
 
 public:
-    LoiteringDialog(ScenarioTree* parent=NULL);
+    LoiteringDialog(ScenarioTree* parent = NULL);
     ~LoiteringDialog();
-    bool loadValues(ScenarioLoiteringTrajectory* loitering);
-    bool loadValues(ScenarioEnvironment* environment);
-    bool loadValues(ScenarioSimulationParameters* parameters);
-    bool loadValues(ScenarioTrajectoryPropagation* propagation);
-    bool saveValues(ScenarioLoiteringTrajectory* loitering);
-    bool saveValues(ScenarioEnvironment* environment);
-    bool saveValues(ScenarioSimulationParameters* parameters);
-    bool saveValues(ScenarioTrajectoryPropagation* propagation);
+    bool loadValues(ScenarioLoiteringType* loitering);
+    bool loadValues(ScenarioSCEnvironmentType* environment);
+    bool loadValues(ScenarioTimeLine* parameters);
+    bool loadValues(ScenarioPropagationPositionType* propagation);
+    bool loadValues(ScenarioInitialPositionType* initPosition);
+    bool saveValues(ScenarioLoiteringType* loitering);
+    bool saveValues(ScenarioSCEnvironmentType* environment);
+    bool saveValues(ScenarioTimeLine* parameters);
+    bool saveValues(ScenarioPropagationPositionType* propagation);
+    bool saveValues(ScenarioInitialPositionType* initPosition);
+
     TesseralBox* TesseralSpinBox;
     int m_tesserals;
-
 
 public slots:
     void addPerturbingPlanet(QListWidgetItem* item);
@@ -83,6 +85,12 @@ class TesseralBox : public QSpinBox
     void setVariableMaximum(int i);
 
 };
+
+extern bool
+PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
+                             QList<double>& sampleTimes,
+                             QList<sta::StateVector>& samples,
+                             PropagationFeedback& propFeedback);
 
 #endif // _LOITERING_H_
 

@@ -28,6 +28,8 @@
 #include <QDialog>
 #include "ui_aerodynamicproperties.h"
 #include <QFileDialog>
+#include "Scenario/staschema.h"
+
 
 class ScenarioTree;
 class ScenarioAerodynamicProperties;
@@ -40,17 +42,20 @@ public:
     AerodynamicPropertiesDialog(ScenarioTree* parent=NULL);
     ~AerodynamicPropertiesDialog(){}
 
-    bool loadValues(ScenarioAerodynamicProperties* aerodynamicProperties);
-    bool saveValues(ScenarioAerodynamicProperties* aerodynamicProperties);
+    bool loadValues(ScenarioREVAeroThermodynamicsType* aero);
+    bool saveValues(ScenarioREVAeroThermodynamicsType* aero);
 
 
 public slots:
-    void writeCdFile(QString filename);
-    void writeCdpFile(QString filename);
+    //void writeCdFile(QString filename);
+    //void writeCdpFile(QString filename);
+    void on_fromGeomPushButton_clicked();
+
 
 private:
     QFileDialog* loadCDDialog;
     QFileDialog* loadCDpDialog;
+    ScenarioREVAeroThermodynamicsType* m_aerothermo;
 
 };
 

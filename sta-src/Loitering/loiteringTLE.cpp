@@ -84,39 +84,21 @@ LoiteringTLEDialog::~LoiteringTLEDialog()
 
 /////////////////////////////////// FUNCTIONS ///////////////////////////////////
 
-bool LoiteringTLEDialog::loadValues(ScenarioTleTrajectory* loiteringTLE)
+bool LoiteringTLEDialog::loadValues(ScenarioLoiteringTLEType* loiteringTLE)
 {
-
     // Loading the time line and the time step
-    ScenarioExtendedTimeline* timeline = loiteringTLE->timeline();
-    QDateTime startTime = sta::JdToCalendar(sta::MjdToJd(timeline->startTime()));
-    QDateTime endTime = sta::JdToCalendar(sta::MjdToJd(timeline->endTime()));
+    ScenarioTimeLine* timeLine = loiteringTLE->TimeLine().data();
 
-    if (timeline)
-    {
-	StartDateTimeEdit->setDateTime(startTime);
-	EndDateTimeEdit->setDateTime(endTime);
-	TimeStepLineEdit->setText(QString::number(timeline->timeStep()));
+    StartDateTimeEdit->setDateTime(timeLine->StartTime());
+    EndDateTimeEdit->setDateTime(timeLine->EndTime());
+    TimeStepLineEdit->setText(QString::number(timeLine->StepTime()));
 
-	// Loading default values for ISSfor the GUI
-	QString TLE_line_0  = "ISS (ZARYA)";
-	QString TLE_line_1  = "1 25544U 98067A   09282.91732946  .00013034  00000-0  90850-4 0  7559";
-	QString TLE_line_2  = "2 25544  51.6398  77.7469 0007731 180.0753 317.5762 15.74717336624025";
-	TLEline0Edit->setText(TLE_line_0);
-	TLEline1Edit->setText(TLE_line_1);
-	TLEline2Edit->setText(TLE_line_2);
-	//Writting the values on the variable
-	loiteringTLE->setTleLine1(TLE_line_1);
-	loiteringTLE->setTleLine2(TLE_line_2);
+    TLEline0Edit->setText(loiteringTLE->tleLine0());
+    TLEline1Edit->setText(loiteringTLE->tleLine1());
+    TLEline2Edit->setText(loiteringTLE->tleLine2());
 
-	return true;
-     }
-    else
-    {
-	return false;
-    }
+    return true;
 } // End of LoiteringTLEDialog::loadValues
-
 
 
 void LoiteringTLEDialog::on_LoadTLEpushButton_clicked()
@@ -162,22 +144,23 @@ void LoiteringTLEDialog::on_LoadTLEpushButton_clicked()
 }
 
 
-
-bool LoiteringTLEDialog::saveValues(ScenarioTleTrajectory* loiteringTLE)
+bool LoiteringTLEDialog::saveValues(ScenarioLoiteringTLEType* loiteringTLE)
 {
+    // Loading the time line and the time step
+    ScenarioTimeLine* timeLine = loiteringTLE->TimeLine().data();
+
     // Saving the time line that constains start date, end date and time step
-    ScenarioExtendedTimeline* timeline = loiteringTLE->timeline();
-    timeline->setStartTime(sta::JdToMjd(sta::CalendarToJd(StartDateTimeEdit->dateTime())));
-    timeline->setEndTime(sta::JdToMjd(sta::CalendarToJd(EndDateTimeEdit->dateTime())));
-    timeline->setTimeStep(TimeStepLineEdit->text().toDouble());
+    timeLine->setStartTime(StartDateTimeEdit->dateTime());
+    timeLine->setEndTime(EndDateTimeEdit->dateTime());
+    timeLine->setStepTime(TimeStepLineEdit->text().toDouble());
 
     // Saving now the TLE parameters
     loiteringTLE->setTleLine0(TLEline0Edit->text()); //The name of the vehicle
     loiteringTLE->setTleLine1(TLEline1Edit->text()); //The first TLE line
     loiteringTLE->setTleLine2(TLEline2Edit->text()); //The second TLE line
+
     return true;
 }
-
 
 
 void LoiteringTLEDialog::on_TLE_dropped(const QMimeData *mimeData)

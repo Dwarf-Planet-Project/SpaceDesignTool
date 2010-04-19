@@ -24,6 +24,8 @@ the world wide web at http://www.gnu.org.
 #ifndef ASCENDINGNODE_H
 #define ASCENDINGNODE_H
 
+#include "stabody.h"
+
 void ascendingNodeAngle (const StaBody* firstbody, const StaBody* secondbody, double JD, double &nodeJD, double &ascNodeAng);
 double trueAnomalyFromAscNode (const StaBody* firstbody, const StaBody* secondbody, double JD, double nodeJD, double ascNodeAng);
 

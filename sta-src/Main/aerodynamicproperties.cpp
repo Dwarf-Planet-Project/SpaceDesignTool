@@ -24,7 +24,8 @@
 
 #include "scenariotree.h"
 #include "aerodynamicproperties.h"
-#include "Scenario/scenarioproperties.h"
+#include "RAM/aerodynamicmethods.h"
+#include "Scenario/scenario.h"
 #include "QFileDialog"
 #include "QDebug"
 
@@ -36,63 +37,81 @@ AerodynamicPropertiesDialog::AerodynamicPropertiesDialog(ScenarioTree* parent) :
     QDoubleValidator* positiveDoubleValidator = new QDoubleValidator(this);
     positiveDoubleValidator->setBottom(0.0);
 
-    lineEditGLoadLimit->setValidator(positiveDoubleValidator);
-    lineEditSPHeatRateLimit->setValidator(positiveDoubleValidator);
-    lineEditSurfaceArea->setValidator(positiveDoubleValidator);
-    lineEditDeploymentMachNumber->setValidator(positiveDoubleValidator);
+    //lineEditGLoadLimit->setValidator(positiveDoubleValidator);
+    //lineEditSPHeatRateLimit->setValidator(positiveDoubleValidator);
+    lineEditRefArea->setValidator(positiveDoubleValidator);
+    lineEditRefLength->setValidator(positiveDoubleValidator);
     loadCDDialog = new QFileDialog(this, "Select a file:", "data/aerodynamics/");
 
-    connect(cdButton,SIGNAL(clicked()),loadCDDialog,SLOT(exec()));
+    //connect(cdButton,SIGNAL(clicked()),loadCDDialog,SLOT(exec()));
     connect(loadCDDialog,SIGNAL(fileSelected(QString)),this,SLOT(writeCdFile(QString)));
 
     loadCDpDialog = new QFileDialog(this, "Select a file:", "data/aerodynamics/");
-    connect(cdpButton,SIGNAL(clicked()),loadCDpDialog,SLOT(exec()));
+    //connect(cdpButton,SIGNAL(clicked()),loadCDpDialog,SLOT(exec()));
     connect(loadCDpDialog,SIGNAL(fileSelected(QString)),this,SLOT(writeCdpFile(QString)));
 }
 
-bool AerodynamicPropertiesDialog::loadValues(ScenarioAerodynamicProperties* aerodynamicProperties)
+
+bool AerodynamicPropertiesDialog::loadValues(ScenarioREVAeroThermodynamicsType* aerothermo)
 {
-    lineEditCDCoefficients->setText(aerodynamicProperties->CDCoefficients());
-    lineEditGLoadLimit->setText(QString::number(aerodynamicProperties->GLoadLimit()));
-    lineEditSPHeatRateLimit->setText(QString::number(aerodynamicProperties->SPHeatRateLimit()));
+    m_aerothermo=aerothermo;
+    lineEditRefArea->setText(QString::number(aerothermo->referenceArea()));
+    lineEditRefLength->setText(QString::number(aerothermo->referenceLength()));
+    if(aerothermo->CoefficientType()==1)
+    {
+        xMomLabel->setEnabled(0);
+        yMomLabel->setEnabled(0);
+        zMomLabel->setEnabled(0);
+        xMomLineEdit->setEnabled(0);
+        xMomLineEdit->setEnabled(0);
+        yMomLineEdit->setEnabled(0);
+        zMomLineEdit->setEnabled(0);
 
-    ScenarioParachuteProperties *parachuteproperties = aerodynamicProperties->parachuteProperties();
-
+    }
+    //ScenarioParachuteProperties *parachuteproperties = aerodynamicProperties->parachuteProperties();
+    /*
     if(parachuteproperties)
     {
         lineEditSurfaceArea->setText(QString::number(parachuteproperties->surfaceArea()));
         lineEditCDCoefficients_2->setText(parachuteproperties->CDCoefficients());
         lineEditDeploymentMachNumber->setText(QString::number(parachuteproperties->deploymentMach()));
     }
-
+    */
     return true;
 }
 
-bool AerodynamicPropertiesDialog::saveValues(ScenarioAerodynamicProperties* aerodynamicProperties)
+bool AerodynamicPropertiesDialog::saveValues(ScenarioREVAeroThermodynamicsType* aerothermo)
 {
-    aerodynamicProperties->setCDCoefficients(lineEditCDCoefficients->text());
-    aerodynamicProperties->setGLoadLimit(lineEditGLoadLimit->text().toDouble());
-    aerodynamicProperties->setSPHeatRateLimit(lineEditSPHeatRateLimit->text().toDouble());
+    aerothermo->setReferenceArea(lineEditRefArea->text().toDouble());
+    aerothermo->setReferenceLength(lineEditRefLength->text().toDouble());
 
-    ScenarioParachuteProperties *parachuteproperties = new ScenarioParachuteProperties();
-    parachuteproperties->setSurfaceArea(lineEditSurfaceArea->text().toDouble());
-    parachuteproperties->setCDCoefficients(lineEditCDCoefficients_2->text());
-    parachuteproperties->setDeploymentMach(lineEditDeploymentMachNumber->text().toDouble());
 
-    aerodynamicProperties->setParachuteProperties(parachuteproperties);
+    //ScenarioParachuteProperties *parachuteproperties = new ScenarioParachuteProperties();
+    //parachuteproperties->setSurfaceArea(lineEditSurfaceArea->text().toDouble());
+    //parachuteproperties->setCDCoefficients(lineEditCDCoefficients_2->text());
+    //parachuteproperties->setDeploymentMach(lineEditDeploymentMachNumber->text().toDouble());
+
+    //aerodynamicProperties->setParachuteProperties(parachuteproperties);
 
     return true;
 }
 
-
+/*
 void AerodynamicPropertiesDialog::writeCdFile(QString filename)
 {
     filename.remove(this->loadCDDialog->directory().path() + "/");
     lineEditCDCoefficients->setText(filename);
 }
 
+
 void AerodynamicPropertiesDialog::writeCdpFile(QString filename)
 {
     filename.remove(this->loadCDpDialog->directory().path() + "/");
     lineEditCDCoefficients_2->setText(filename);
+}
+*/
+void AerodynamicPropertiesDialog::on_fromGeomPushButton_clicked()
+{
+    AerodynamicMethodDialog dialog(m_aerothermo,this);
+    dialog.exec();
 }

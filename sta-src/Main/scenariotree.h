@@ -31,6 +31,9 @@
 
 class ScenarioObject;
 
+enum { ScenarioObjectRole = Qt::UserRole + 100 };
+
+
 // ScenarioTree is a TreeWidget for viewing a single space scenario file.
 class ScenarioTree : public QTreeWidget
 {
@@ -43,6 +46,8 @@ Q_OBJECT
         ScenarioObject* selectedObject() const;
         QTreeWidgetItem* selectedItem() const;
         void removeItem(QTreeWidgetItem* item);
+
+        void addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioObject);
 
     public slots:
         void removeSelection();

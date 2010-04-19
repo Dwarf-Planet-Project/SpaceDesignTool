@@ -51,6 +51,70 @@ void derivstate (VectorXd state, double time, VectorXd parameters, VectorXd& der
         derivative[7] = parameters[8];
 }
 
+class EntryDerivativeCalculator : public DerivativeCalculator<8>
+{
+public:
+    EntryDerivativeCalculator(EntryTrajectory *trajectory):
+            m_trajectory(trajectory)
+            //m_perturbationList(perturbationList)
+    {
+    }
+
+    virtual void compute(const State& state, double t, State& derivatives) const
+    {
+        Vector3d position = state.segment<3>(0);
+        Vector3d velocity = state.segment<3>(3);
+        sta::StateVector stateVector=StateVector(position,velocity);
+        Vector3d gravity;                   //Components of gravitational acceleration in appropriate elements
+        Vector3d aero;                     	//Components of aerodynamic acceleration in appropriate elements
+        VectorXd parameters(9);             //List of parameters to send to integration: 0,1,2 = gravity, 3,4,5 = aero, 6 = omega, 7 = Qdot
+        double Cdc;
+        double tau = m_trajectory->settings.stepsize;
+
+        m_trajectory->body.updateGravity(stateVector, gravity);
+        m_trajectory->body.updateAero(stateVector, m_trajectory->state2, m_trajectory->atmosphere, m_trajectory->capsule, aero, Cdc);
+        /*
+        Vector3d perturbingAcceleration(0, 0, 0);
+        foreach (Perturbations* perturbation, perturbationList)
+        {
+            perturbingAcceleration += perturbation->calculateAcceleration(stateVector, time, tau);
+        }
+        gravity += perturbingAcceleration;
+        */
+        m_trajectory->calculateState2(aero, Cdc);
+        m_trajectory->updateEndstate();
+
+        //Test for status
+        m_trajectory->checkStatus();
+        if ( m_trajectory->status != OK) {
+            qDebug()<<"quit"<<m_trajectory->status;
+            qDebug()<<m_trajectory->state2(8);
+            qDebug()<<m_trajectory->settings.maxheatrate;
+            qDebug()<<m_trajectory->state2(5);
+            m_trajectory->result.status = m_trajectory->status;
+        }
+        parameters << gravity, aero, m_trajectory->body.getOmega(), m_trajectory->state2(3), m_trajectory->state2(4);
+        //TO DO : re-insert the heat load integration (now heat flux is always set to zero)
+        VectorXd state3(8);
+                state3 << stateVector.position, stateVector.velocity, 0, 0;
+
+
+                derivatives[0] = state3[3];
+                derivatives[1] = state3[4];
+                derivatives[2] = state3[5];
+                derivatives[3] = parameters[3] + parameters[0] + pow(parameters[6],2)*state3[0] + 2.0*parameters[6]*state3[4];
+                derivatives[4] = parameters[4] + parameters[1] + pow(parameters[6],2)*state3[1] - 2.0*parameters[6]*state3[3];
+                derivatives[5] = parameters[5] + parameters[2];
+                derivatives[6] = parameters[7];
+                derivatives[7] = parameters[8];
+    }
+
+private:
+    EntryTrajectory* m_trajectory;
+
+    //const QList<Perturbations*>& m_perturbationList;
+
+};
 
 EntryTrajectory::EntryTrajectory(EntrySettings _settings)
 {
@@ -66,8 +130,8 @@ EntryTrajectory::EntryTrajectory(EntrySettings _settings)
     heatrate.selectBody(settings.bodyname);
     capsule.flag = 0;
     capsule.selectCdCprofile(settings.CdCprofilename);
-    capsule.selectCdPprofile(settings.CdPprofilename);
-    capsule.Sp = settings.parachuteArea;
+    //capsule.selectCdPprofile(settings.CdPprofilename);
+    //capsule.Sp = settings.parachuteArea;
 
     state.resize(8);
     state2.resize(10);
@@ -79,7 +143,7 @@ sta::StateVector EntryTrajectory::initialise(EntryParameters _parameters,sta::St
 
     parameters = _parameters;           //Save the parameters as a member of the trajectory, to possibly use later in plotting
 
-    capsule.Sc = pow(parameters.R,2.0) * acos(-1.0);
+    capsule.Sc = parameters.Sref;
     capsule.m = parameters.m;
     capsule.Rn = parameters.Rn;
 
@@ -89,13 +153,18 @@ sta::StateVector EntryTrajectory::initialise(EntryParameters _parameters,sta::St
          celestialbody = 0;
     else if (settings.bodyname == "Mars")
          celestialbody = 3;
-    inertialTOfixed(celestialbody, theta, initialState.position.x(), initialState.position.y(), initialState.position.z(), initialState.velocity.x(), initialState.velocity.y(), initialState.velocity.z(),
-                state(0), state(1), state(2), state(3), state(4), state(5));
+    //inertialTOfixed(celestialbody, theta, initialState.position.x(), initialState.position.y(), initialState.position.z(), initialState.velocity.x(), initialState.velocity.y(), initialState.velocity.z(),
+      //          state(0), state(1), state(2), state(3), state(4), state(5));
 
-    const Eigen::Vector3d position(state(0), state(1), state(2));
-    const Eigen::Vector3d velocity(state(3), state(4), state(5));
-    initialState = sta::StateVector(position,velocity);
+    //const Eigen::Vector3d position(initialState.position.x(),initialState.position.y(),initialState.position.z());
+    //const Eigen::Vector3d velocity(state(3), state(4), state(5));
+    //initialState = sta::StateVector(position,velocity);
+    double omega=7.29211585494e-5;
+    initialState.velocity.x()+=initialState.position.y()*omega;
+    initialState.velocity.y()+=-initialState.position.x()*omega;
 
+    //qDebug()<<initialState.position.x()<<" "<<initialState.position.y()<<" "<<initialState.position.z()<<" "<<initialState.velocity.x()<<" "<<initialState.velocity.y()<<" "<<initialState.velocity.z();
+    
     //----- Initialise the heat loads to zero
     state(6) = 0.0;
     state(7) = 0.0;
@@ -146,22 +215,26 @@ void EntryTrajectory::saveTrajectory (QList<double>& sampleTimes, QList<sta::Sta
 
 sta::StateVector EntryTrajectory::integrate(sta::StateVector stateVector, QList<Perturbations*> perturbationsList)
 {
+    double tau = settings.stepsize;
+
+    /*
     Vector3d gravity;                   //Components of gravitational acceleration in appropriate elements
     Vector3d aero;                     	//Components of aerodynamic acceleration in appropriate elements
     VectorXd parameters(9);             //List of parameters to send to integration: 0,1,2 = gravity, 3,4,5 = aero, 6 = omega, 7 = Qdot
     double Cdc;
-    double tau = settings.stepsize;
 
     //Update gravity, perturbations and aerodynamic accelerations
     body.updateGravity(stateVector, gravity);
     body.updateAero(stateVector, state2, atmosphere, capsule, aero, Cdc);
+    qDebug()<<gravity(0)<<" "<<gravity(1)<<" "<<gravity(2);
+    qDebug()<<aero(0)<<" "<<aero(1)<<" "<<aero(2);
 
-    Vector3d perturbingAcceleration(0, 0, 0);
-    foreach (Perturbations* perturbation, perturbationsList)
-    {
-        perturbingAcceleration += perturbation->calculateAcceleration(stateVector, time, tau);
-    }
-    gravity += perturbingAcceleration;
+    //Vector3d perturbingAcceleration(0, 0, 0);
+    //foreach (Perturbations* perturbation, perturbationsList)
+    //{
+    //    perturbingAcceleration += perturbation->calculateAcceleration(stateVector, time, tau);
+    //}
+    //gravity += perturbingAcceleration;
 
     calculateState2(aero, Cdc);
     updateEndstate();
@@ -178,8 +251,15 @@ sta::StateVector EntryTrajectory::integrate(sta::StateVector stateVector, QList<
     VectorXd state(8);
             state << stateVector.position, stateVector.velocity, 0, 0;
 
-    if (settings.integrator == "RK4")
+    //if (settings.integrator == "RK4")
         rk4 (state, 8, time, tau, derivstate, parameters);
+    */
+    EntryDerivativeCalculator entryCalculator(this);// entryCalculator(this,QList<Perturbations*> perturbationsList);
+    Matrix<double, 8, 1> state;
+    state<<stateVector.position, stateVector.velocity, 0, 0;
+    rk4(state, time, tau, &entryCalculator);
+
+
 
     const Vector3d vec1(state(0), state(1), state(2));
     const Vector3d vec2(state(3), state(4), state(5));
@@ -372,7 +452,7 @@ inline void EntryTrajectory::printReport ()
             report << " " << endl;
             report << "Capsule data and initial conditions" << endl;
             report << "--------------------------------" << endl;
-            report << "Capsule base radius:\t" << parameters.R << " m" << endl;
+            //report << "Capsule base radius:\t" << parameters.R << " m" << endl; Make consistent with enw schema
             report << "Capsule mass:\t\t" << parameters.m << " kg" << endl;
             report << "Capsule nose radius:\t" << parameters.Rn << " m" << endl;
             report << "Entry altitude:\t\t" << parameters.inputstate[0] / 1000.0 << " km" << endl;

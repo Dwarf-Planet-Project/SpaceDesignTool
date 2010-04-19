@@ -57,14 +57,14 @@
 
 USING_PART_OF_NAMESPACE_EIGEN
 
-class StateVector;
+//class StateVector;
 class Perturbations;
 
 
 class EntryTrajectory
 {
 public:
-
+    friend class EntryDerivativeCalculator;
     _status status;
     capsule_class capsule;
 

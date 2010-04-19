@@ -22,9 +22,10 @@
  ------------------ E-mail: (tiziana.sabatini@yahoo.it) ----------------------------
  */
 
-#include "scenariotree.h"
-#include "Scenario/scenarioproperties.h"
 #include "payloadproperties.h"
+#include "scenariotree.h"
+#include "Scenario/scenario.h"
+
 
 PayloadPropertiesDialog::PayloadPropertiesDialog(ScenarioTree* parent) :
     QDialog(parent)
@@ -38,19 +39,18 @@ PayloadPropertiesDialog::PayloadPropertiesDialog(ScenarioTree* parent) :
     lineEditPowerPayload->setValidator(positiveDoubleValidator);
 }
 
-bool PayloadPropertiesDialog::loadValues(ScenarioPayloadProperties* payloadProperties)
+bool PayloadPropertiesDialog::loadValues(ScenarioPayload* payload)
 {
-
-    lineEditMassPayload->setText(QString::number(payloadProperties->massPayload()));
-    lineEditPowerPayload->setText(QString::number(payloadProperties->powerPayload()));
+    lineEditMassPayload->setText(QString::number(payload->mass()));
+    lineEditPowerPayload->setText(QString::number(payload->power()));
 
     return true;
 }
 
-bool PayloadPropertiesDialog::saveValues(ScenarioPayloadProperties* payloadProperties)
+bool PayloadPropertiesDialog::saveValues(ScenarioPayload* payload)
 {
-    payloadProperties->setMassPayload(lineEditMassPayload->text().toDouble());
-    payloadProperties->setPowerPayload(lineEditPowerPayload->text().toDouble());
+    payload->setMass(lineEditMassPayload->text().toDouble());
+    payload->setPower(lineEditPowerPayload->text().toDouble());
 
     return true;
 }

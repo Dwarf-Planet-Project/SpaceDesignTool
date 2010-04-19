@@ -26,7 +26,6 @@ the world wide web at http://www.gnu.org.
 #include "Lagrangian/halorbitcomputation.h"
 #include "Lagrangian/lagrangianAdvanced.h"
 #include "Scenario/scenario.h"
-#include "Scenario/scenariobody.h"
 #include "Eigen/Core"
 #include "Astro-Core/EODE/eode.h"
 #include "Astro-Core/date.h"
@@ -40,13 +39,15 @@ the world wide web at http://www.gnu.org.
 #include <QMessageBox>
 
 using namespace Eigen;
-
 using namespace std;
+
+
 double fractionOrbit;
 extern double inclinationReq, raanReq, n;
 Eigen::VectorXd GlobalOptimizers::EvaluateModel(Eigen::VectorXd x,int)
 {
         Eigen::VectorXd y(NOBJ+NCONS);
+#ifdef OLDSCENARIO
         extern ScenarioThreebodyTransfer* threebodyTransfer;
         extern sta::StateVector initialPositionRotating;
         extern ScenarioStateVector* stateVector_HaloTransfer;
@@ -521,7 +522,7 @@ finalHaloRotVZ_actual=initial_condition_0[2];
     op=op+1;
     qDebug()<<op;
     //qDebug()<<"variables"<<x[0]<<x[1]<<x[2]<<"fitness"<<y[0]<<y[1];
+#endif // OLDSCENARIO
 
-return y;
-
+    return y;
 }

@@ -24,7 +24,8 @@
 
 #include "scenariotree.h"
 #include "physicalproperties.h"
-#include "Scenario/scenarioproperties.h"
+#include "Scenario/scenario.h"
+#include "RAM/parametrization.h"
 #include <QDebug>
 
 PhysicalPropertiesDialog::PhysicalPropertiesDialog(ScenarioTree* parent):
@@ -34,21 +35,31 @@ PhysicalPropertiesDialog::PhysicalPropertiesDialog(ScenarioTree* parent):
 
     QDoubleValidator* positiveDoubleValidator = new QDoubleValidator(this);
     positiveDoubleValidator->setBottom(0.0);
+    loadGeomDialog = new QFileDialog(this, "Select a file:", "data/vehiclewgs/");
+
+    connect(geomFileButton,SIGNAL(clicked()),loadGeomDialog,SLOT(exec()));
+    connect(loadGeomDialog,SIGNAL(fileSelected(QString)),this,SLOT(writeGeomFile(QString)));
+    //ParametrizationDialog* editDialog = new ParametrizationDialog();
+    //QObject::connect(geomParaButton,SIGNAL(clicked()),editDialog,SLOT(exec()));
+    /*
+    connect(FileRadioButton, SIGNAL(toggled(bool)), lineEditGeomFile, SLOT(setEnabled(bool)));
+    connect(FileRadioButton, SIGNAL(toggled(bool)), geomFileButton, SLOT(setEnabled(bool)));
+    connect(ParaRadioButton, SIGNAL(toggled(bool)), lineEditGeomPara, SLOT(setEnabled(bool)));
+    connect(ParaRadioButton, SIGNAL(toggled(bool)), geomParaButton, SLOT(setEnabled(bool)));
+*/
 
     lineEditMass->setValidator(positiveDoubleValidator);
     lineEditSurface->setValidator(positiveDoubleValidator);
     lineEditVolume->setValidator(positiveDoubleValidator);
-    lineEditRadiusBase->setValidator(positiveDoubleValidator);
+    //lineEditRadiusBase->setValidator(positiveDoubleValidator);
     lineEditRadiusNose->setValidator(positiveDoubleValidator);
     //layout()->setSizeConstraint(QLayout::SetFixedSize);
 }
 
-bool PhysicalPropertiesDialog::loadValues(ScenarioPhysicalProperties* physicalProperties)
+bool PhysicalPropertiesDialog::loadValues(ScenarioREVGeometryType* REVgeometry)
 {
 
-    ScenarioPhysicalCharacteristics *physicalcharacteristics = physicalProperties->physicalCharacteristics();
-    ScenarioGeometricalCharacteristics *geometricalcharacteristics = physicalProperties->geometricalCharacteristics();
-
+   /*
     if(physicalcharacteristics)
     {
         lineEditMass->setText(QString::number(physicalcharacteristics->mass()));
@@ -56,26 +67,31 @@ bool PhysicalPropertiesDialog::loadValues(ScenarioPhysicalProperties* physicalPr
         lineEditVolume->setText(QString::number(physicalcharacteristics->volume()));
     }
     else return false;
+    */
+    //lineEditVolume->setText(QString::number(REVgeometry->totalVolume()));
+    //lineEditSurface->setText(QString::number(REVgeometry->surfaceArea()));
+    lineEditRadiusNose->setText(QString::number(REVgeometry->noseRadius()));
+    if(REVgeometry->shapeFamily()->value()=="" && REVgeometry->geometryFile()!="")
+        lineEditGeomFile->setText(REVgeometry->geometryFile());
+    else if(REVgeometry->shapeFamily()->value()!="")
+        lineEditGeomPara->setText(REVgeometry->geometryFile());
 
-    if(geometricalcharacteristics)
-    {
-        lineEditRadiusBase->setText(QString::number(geometricalcharacteristics->radiusBase()));
-        lineEditRadiusNose->setText(QString::number(geometricalcharacteristics->radiusNose()));
-    }
+
+
     return true;
 }
 
-bool PhysicalPropertiesDialog::saveValues(ScenarioPhysicalProperties* physicalProperties){
-        ScenarioPhysicalCharacteristics *physicalcharacteristics = new ScenarioPhysicalCharacteristics();
-        ScenarioGeometricalCharacteristics *geometricalcharacteristics = new ScenarioGeometricalCharacteristics();
-        //ScenarioPropulsion *propulsion = new ScenarioPropulsion();
+bool PhysicalPropertiesDialog::saveValues(ScenarioREVGeometryType* REVgeometry){
 
-        physicalcharacteristics->setMass(lineEditMass->text().toDouble());
-        physicalcharacteristics->setSurfaceArea(lineEditSurface->text().toDouble());
-        physicalcharacteristics->setVolume(lineEditVolume->text().toDouble());
 
-        geometricalcharacteristics->setRadiusBase(lineEditRadiusBase->text().toDouble());
-        geometricalcharacteristics->setRadiusNose(lineEditRadiusNose->text().toDouble());
+        //physicalcharacteristics->setMass(lineEditMass->text().toDouble());
+        //physicalcharacteristics->setSurfaceArea(lineEditSurface->text().toDouble());
+        //physicalcharacteristics->setVolume(lineEditVolume->text().toDouble());
+
+        //geometricalcharacteristics->setRadiusBase(lineEditRadiusBase->text().toDouble());
+        REVgeometry->setNoseRadius(lineEditRadiusNose->text().toDouble());
+        //REVgeometry->setSurfaceArea(lineEditSurface->text().toDouble());
+        //REVgeometry->setTotalVolume(lineEditVolume->text().toDouble());
 
 //        propulsion->setEngineCount(lineEditNEngine->text().toUInt());
 //        propulsion->setPropellantMass(lineEditPropellant->text().toDouble());
@@ -83,8 +99,8 @@ bool PhysicalPropertiesDialog::saveValues(ScenarioPhysicalProperties* physicalPr
 //        propulsion->setThrustPerEngine(lineEditThrust->text().toDouble());
 //        propulsion->setType(comboBoxTypePropulsion->currentText());
 
-        physicalProperties->setPhysicalCharacteristics(physicalcharacteristics);
-        physicalProperties->setGeometricalCharacteristics(geometricalcharacteristics);
+        //physicalProperties->setPhysicalCharacteristics(physicalcharacteristics);
+        //physicalProperties->setGeometricalCharacteristics(geometricalcharacteristics);
         //tc->setPropulsion(propulsion);
 
         return true;
@@ -105,3 +121,14 @@ bool PhysicalPropertiesDialog::saveValues(ScenarioPhysicalProperties* physicalPr
 //        line->setVisible(!line->isVisible());
 //}
 
+void PhysicalPropertiesDialog::writeGeomFile(QString filename)
+{
+    filename.remove(this->loadGeomDialog->directory().path() + "/");
+    lineEditGeomFile->setText(filename);
+}
+
+void PhysicalPropertiesDialog::on_geomParaButton_clicked()
+{
+    ParametrizationDialog dialog(this);
+    dialog.exec();
+}

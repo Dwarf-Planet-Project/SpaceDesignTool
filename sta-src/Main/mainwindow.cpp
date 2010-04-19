@@ -35,6 +35,8 @@ This program is free software; you can redistribute it and/or modify it under
 #include <QTextStream>
 #include <QDesktopServices> // Added by Guillermo for web and mail services
 #include <QUrl> // Added by Guillermo to work with URLs
+#include <QXmlSchema>
+#include <QXmlSchemaValidator>
 #include "mainwindow.h"
 #include "scenarioelementbox.h"
 #include "scenarioview.h"
@@ -42,8 +44,7 @@ This program is free software; you can redistribute it and/or modify it under
 #include "timelinewidget.h"
 #include "timelineview.h"
 #include "Scenario/scenario.h"
-#include "Scenario/spacescenarioreader.h"
-#include "Scenario/spacescenario.h"
+#include "Scenario/propagationfeedback.h"
 #include "Plotting/groundtrackplottool.h"
 #include "Plotting/plottingtool.h"
 #include "Plotting/threedvisualizationtool.h"
@@ -110,6 +111,7 @@ QUrl STAmail("mailto:space.trajectory.analysis@gmail.com?subject=Help&body=Need 
 const QGLContext* glctx = NULL;
 QString DEFAULT_CONFIG_FILE = "STA.cfg";
 QString BOOKMARKS_FILE = "bookmarks.xbel";
+QString SCHEMA_FILE = "schema/spacescenario/2.0/scenario.xsd";
 
 // Line patched by Guillemro as to make the default  window a bit smaller and right to the border
 const QSize DEFAULT_MAIN_WINDOW_SIZE(900,600);  // Nice size for Windows, etc
@@ -124,6 +126,8 @@ static const int STA_MAIN_WINDOW_VERSION = 14;
 static MainWindow* MainWindowInstance = NULL;
 static void ContextMenu(float x, float y, Selection sel);
 
+// Number of spaces to indent when writing scenario XML files
+static const int SCENARIO_FILE_INDENT_LEVEL = 2;
 
 // Progress notifier class receives update messages from CelestiaCore
 // at startup. This simple implementation just forwards messages on
@@ -191,7 +195,9 @@ MainWindow::MainWindow() :
     m_celestiaInterface(NULL),
     m_celestiaActions(NULL),
     m_celestiaAlerter(NULL),
-    m_celestiaUpdateTimer(NULL)
+    m_celestiaUpdateTimer(NULL),
+
+    m_spaceScenarioSchema(NULL)
 {
     setupUi(this);
     connect(actionQuit, SIGNAL(triggered()), QApplication::instance(), SLOT(closeAllWindows()));
@@ -323,8 +329,6 @@ MainWindow::MainWindow() :
 
 MainWindow::~MainWindow()
 {
-    if (m_scenario)
-        m_scenario->release();
     delete m_propagatedScenario;
 }
 
@@ -334,7 +338,7 @@ MainWindow::~MainWindow()
  */
 SpaceScenario* MainWindow::scenario() const
 {
-    return m_scenario;
+    return m_scenario.data();
 }
 
 
@@ -348,15 +352,16 @@ MainWindow::setScenario(SpaceScenario* scenario)
 
     QTreeWidgetItem* rootItem = new QTreeWidgetItem(m_scenarioView->m_scenarioTree);
     rootItem->setExpanded(true);
-    rootItem->setText(0, scenario->displayName());
-    rootItem->setText(1, scenario->name());
+    rootItem->setText(0, scenario->elementName());
+    rootItem->setText(1, scenario->Name());
     rootItem->setFlags(rootItem->flags() & ~Qt::ItemIsDragEnabled);
 
-    scenario->createItem(rootItem);
+    m_scenarioView->m_scenarioTree->addScenarioItems(rootItem, scenario);
     m_scenarioView->m_scenarioTree->addTopLevelItem(rootItem);
     replaceCurrentScenario(scenario, "");
 
-    m_scenarioView->setFocus();
+    m_scenarioView->m_scenarioTree->update();
+    m_scenarioView->m_scenarioTree->setFocus();
 }
 
 
@@ -406,41 +411,78 @@ void MainWindow::on_actionOpenScenario_triggered()
             QFileInfo scenarioFileInfo(fileName);
             settings.setValue("OpenScenarioDir", scenarioFileInfo.absolutePath());
 
-            SpaceScenarioReader scenarioReader(&scenarioFile);
-            SpaceScenario* scenario = scenarioReader.readSpaceScenario();
-            if (scenarioReader.hasError())
+            if (!m_spaceScenarioSchema)
             {
-                QMessageBox::critical(this, tr("Error"),
-                                      tr("Line %1: %2").arg(scenarioReader.lineNumber()).arg(scenarioReader.errorString()));
+                QFile schemaFile(SCHEMA_FILE);
+                if (!schemaFile.open(QIODevice::ReadOnly))
+                {
+                    QMessageBox::critical(this, tr("Critical Error"), tr("Error opening space scenario schema file. Unable to load scenario."));
+                    return;
+                }
+
+                m_spaceScenarioSchema = new QXmlSchema;
+                if (!m_spaceScenarioSchema->load(&schemaFile, QUrl::fromLocalFile(schemaFile.fileName())))
+                {
+                    QMessageBox::critical(this, tr("Critical Error"), tr("Error in space scenario schema file. Unable to load scenario."));
+                    delete m_spaceScenarioSchema;
+                    m_spaceScenarioSchema = NULL;
+                    return;
+                }
             }
-            else
+
+            QXmlSchemaValidator validator(*m_spaceScenarioSchema);
+            if (!validator.validate(&scenarioFile))
             {
-                // TODO: Probably should just call setScenario() here.
+                QMessageBox::critical(this, tr("Scenario Load Error"), tr("Scenario is not a valid space scenario."));
+                return;
+            }
 
-                clearViews();
-
-                // Prohibit drops to the top level item
-                QTreeWidgetItem* invisibleRoot = m_scenarioView->m_scenarioTree->invisibleRootItem();
-                invisibleRoot->setFlags(invisibleRoot->flags() & ~Qt::ItemIsDropEnabled);
-
-                QTreeWidgetItem* rootItem = new QTreeWidgetItem(m_scenarioView->m_scenarioTree);
-                rootItem->setExpanded(true);
-                rootItem->setText(0, scenario->displayName());
-                rootItem->setText(1, scenario->name());
-                rootItem->setFlags(rootItem->flags() & ~Qt::ItemIsDragEnabled);
-
-                scenario->createItem(rootItem);
-                m_scenarioView->m_scenarioTree->addTopLevelItem(rootItem);
-                replaceCurrentScenario(scenario, fileName);
+            scenarioFile.reset();
+            QDomDocument scenarioDoc;
+            if (!scenarioDoc.setContent(&scenarioFile))
+            {
+                // This should not fail, since we just got done validating the xml file against the space
+                // scenario schema.
+                scenarioFile.close();
+                QMessageBox::critical(this, tr("Scenario Load Error"), tr("Internal error occurred when loading space scenario."));
+                return;
             }
 
             scenarioFile.close();
+
+            QDomElement rootElement = scenarioDoc.firstChildElement("tns:SpaceScenario");
+            SpaceScenario* scenario = SpaceScenario::create(rootElement);
+            if (!scenario)
+            {
+                QMessageBox::critical(this, tr("Scenario Load Error"), tr("Internal error (parser problem) occurred when loading space scenario."));
+                return;
+            }
+
+            // TODO: Probably should just call setScenario() here.
+            clearViews();
+
+            // Prohibit drops to the top level item
+            QTreeWidgetItem* invisibleRoot = m_scenarioView->m_scenarioTree->invisibleRootItem();
+            invisibleRoot->setFlags(invisibleRoot->flags() & ~Qt::ItemIsDropEnabled);
+
+            QTreeWidgetItem* rootItem = new QTreeWidgetItem(m_scenarioView->m_scenarioTree);
+            rootItem->setExpanded(true);
+            rootItem->setText(1, scenario->Name());
+            rootItem->setFlags(rootItem->flags() & ~Qt::ItemIsDragEnabled);
+
+            m_scenarioView->m_scenarioTree->addScenarioItems(rootItem, scenario);
+            m_scenarioView->m_scenarioTree->addTopLevelItem(rootItem);
+            replaceCurrentScenario(scenario, fileName);
+
+            // This sequence seems to be required to force the scenario view
+            // widget to update (at least on Mac OS X)
+            m_scenarioView->m_scenarioTree->update();
+            m_scenarioView->setFocus();
+            m_scenarioView->m_scenarioTree->setFocus();
         }
     }
 
     settings.endGroup();
-
-//    MainWindow::clearViews();  // Line patched by Guillermo to refresh the scenario view after this operation
 }
 
 
@@ -460,10 +502,11 @@ void MainWindow::on_actionSaveScenario_triggered()
         }
         else
         {
-            QXmlStreamWriter out(&scenarioFile);
-            out.setAutoFormatting(true);
-            out.setAutoFormattingIndent(true);
-            m_scenario->writeElement(&out);
+            QDomDocument newDoc;
+            QDomElement scenarioElement = CreateSpaceScenarioElement(m_scenario.data(), newDoc);
+            newDoc.appendChild(scenarioElement);
+            QTextStream out(&scenarioFile);
+            newDoc.save(out, SCENARIO_FILE_INDENT_LEVEL);
             scenarioFile.close();
         }
     }
@@ -494,10 +537,12 @@ void MainWindow::on_actionSaveScenarioAs_triggered()
                 replaceCurrentScenario(scenario(), fileName);
             }
 
-            QXmlStreamWriter out(&scenarioFile);
-            out.setAutoFormatting(true);
-            m_scenario->writeElement(&out);
-            scenarioFile.close();
+            QDomDocument saveDoc;
+            QDomElement scenarioElement = CreateSpaceScenarioElement(m_scenario.data(), saveDoc);
+            saveDoc.appendChild(scenarioElement);
+
+            QTextStream stream(&scenarioFile);
+            saveDoc.save(stream, 1);
         }
     }
 }
@@ -668,273 +713,407 @@ void MainWindow::on_action3dViewPreferences_triggered()
 }
 
 
+// TODO:
+// Lagrangian trajectory propagation split out from main propagation
+// loop during conversion to new scenario object model. Fix this up
+// once we've got Lagrangian orbit support in the schema again.
+static void
+PropagateLagrangian()
+{
+#if OLDSCENARIO
+    // Guillermo: Why in the name of the Lord is this code HERE?
+    if (Lagrmode==2)
+    {
+        QFile file_manifolds_settings ("3BMmanifolds_settings.stam");
+        if (!file_manifolds_settings.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            QMessageBox::warning(NULL,
+                                  QObject::tr("Manifolds not plotted"),
+                                  QObject::tr("Manifolds settings data file %1 not found.").arg("3BMmanifolds_settings.stam"));
+            delete propScenario;
+            return;
+        }
+        QTextStream settings(&file_manifolds_settings);
+        int numberPositions, numberTrajectories, numberPositions2;
+
+        QList<double> singlemanifold_sampleTimes;
+        QList<sta::StateVector> singlemanifold_samples;
+        int  totalTraj=0;
+
+        while (sampleTimes.isEmpty()!=true)
+        {
+            int memory=-1; int kind=-1;
+            settings>>kind;
+            while (kind!=0)
+            {
+                //qDebug()<<"kind"<<kind;
+                if (kind==1) //information about the manifolds required
+                {
+                    memory=kind;
+                    settings>>numberTrajectories>>numberPositions>>numberPositions2;  //the number of trajectories for each manifold and the number of positions for each trajectory are read
+                    if (totalTraj==0)
+                        totalTraj=numberTrajectories;
+                    kind=numberPositions2;
+                    if (numberPositions2>4)
+                    {
+                        numberTrajectories=1;
+                    }
+                }
+                else if (kind==2)
+                {
+                    memory=kind;
+                    settings>>numberTrajectories>>numberPositions>>numberPositions2;
+                    if (totalTraj==0)
+                        totalTraj=numberTrajectories;
+                    kind=numberPositions2;
+                    if (numberPositions2>4)//the number of trajectories for each manifold and the number of positions for each trajectory are read
+                    {
+                        numberTrajectories=1;
+                    }
+                }
+                else if (kind==3)
+                {
+                    memory=kind;
+                    settings>>numberTrajectories>>numberPositions>>numberPositions2;
+                    if (totalTraj==0)
+                        totalTraj=numberTrajectories;
+                    kind=numberPositions2;
+                    if (numberPositions2>4)//the number of trajectories for each manifold and the number of positions for each trajectory are read
+                    {
+                        numberTrajectories=1;
+                    }
+                }
+                else if (kind==4)
+                {
+                    memory=kind;
+                    settings>>numberTrajectories>>numberPositions>>numberPositions2;
+                    if (totalTraj==0)
+                        totalTraj=numberTrajectories;
+                    kind=numberPositions2;
+                    if (numberPositions2>4)//the number of trajectories for each manifold and the number of positions for each trajectory are read
+                    {
+                        numberTrajectories=1;
+                    }
+                }
+                else if (kind>4)
+                {
+                    //the intersection with a main body is the stopping condition
+                    settings>>numberPositions2;
+                    numberPositions=kind;
+                    kind=numberPositions2;
+                    if (numberPositions2>4)//the number of trajectories for each manifold and the number of positions for each trajectory are read
+                    {
+                        numberTrajectories=1;
+                    }
+                }
+                else if (kind==0)
+                {
+                    break;
+                }
+                else
+                {
+                    QMessageBox::warning(NULL,
+                                         QObject::tr("Manifolds not plotted"),
+                                         QObject::tr("Wrong manifolds settings data file %1.").arg("3BMmanifolds_settings.stam"));
+                    delete propScenario;
+                    return;
+                }
+
+                for (int k=1;k<numberTrajectories+1; k++)
+                {
+                    if (totalTraj>0) //condition to plot also the halo orbit along with its manifolds
+                    {
+                        SpaceObject* spaceObject = new SpaceObject();
+                        spaceObject->setName("Halo");
+                        spaceObject->setModelFile(vehicle->appearance()->model());
+                        spaceObject->setTrajectoryColor(Qt::blue);
+                        for (int i=1;i<totalTraj+1;i++)
+                        {
+                            singlemanifold_sampleTimes.append(sampleTimes.takeFirst());
+                            singlemanifold_samples.append(samples.takeFirst());
+                        }
+                        MissionArc* arc = new MissionArc(trajectory->centralBody(),
+                                         trajectory->coordinateSystem(),
+                                         singlemanifold_sampleTimes,
+                                         singlemanifold_samples);
+                        spaceObject->addMissionArc(arc);
+                        singlemanifold_sampleTimes.clear();
+                        singlemanifold_samples.clear();
+                        propScenario->addSpaceObject(spaceObject);
+                        totalTraj=-1;
+                    }
+
+                    SpaceObject* spaceObject = new SpaceObject();
+                    spaceObject->setName("");
+                    spaceObject->setModelFile(vehicle->appearance()->model());
+
+                    if (memory==1 || memory==3)
+                        spaceObject->setTrajectoryColor(Qt::green);
+                    else if(memory==2 || memory==4)
+                        spaceObject->setTrajectoryColor(Qt::red);
+
+                    for (int i=1;i<numberPositions+1;i++)
+                    {
+                        singlemanifold_sampleTimes.append(sampleTimes.takeFirst());
+                        singlemanifold_samples.append(samples.takeFirst());
+                    }
+
+                    MissionArc* arc = new MissionArc(trajectory->centralBody(),
+                                         trajectory->coordinateSystem(),
+                                         singlemanifold_sampleTimes,
+                                         singlemanifold_samples);
+                    spaceObject->addMissionArc(arc);
+                    singlemanifold_sampleTimes.clear();
+                    singlemanifold_samples.clear();
+                    propScenario->addSpaceObject(spaceObject);
+                }
+            }
+        }
+        file_manifolds_settings.close();
+    }
+    if (Lagrmode==3||Lagrmode==4)
+    {
+        luna=1;
+         //condition to plot also the halo orbit along with the transfer orbit
+        QList<double> trajectoryLegTime;
+        QList<sta::StateVector> trajectoryLegSamples;
+                    SpaceObject* spaceObject = new SpaceObject();
+                    spaceObject->setName("Halo");
+                    spaceObject->setModelFile(vehicle->appearance()->model());
+                    spaceObject->setTrajectoryColor(Qt::blue);
+                    for (int i=1;i<1001;i++)
+                    {
+                        trajectoryLegTime.append(sampleTimes.takeFirst());
+                        trajectoryLegSamples.append(samples.takeFirst());
+                    }
+                    MissionArc* arc = new MissionArc(trajectory->centralBody(),
+                                     trajectory->coordinateSystem(),
+                                     trajectoryLegTime,
+                                     trajectoryLegSamples);
+
+                    spaceObject->addMissionArc(arc);
+                    propScenario->addSpaceObject(spaceObject);
+    }
+#endif // OLDSCENARIO
+}
+
+
 int luna;
 void MainWindow::on_actionPropagate_Scenario_triggered()
 {
     if (!scenario())
+    {
         return;
+    }
 
     PropagationFeedback feedback;
     PropagatedScenario* propScenario = new PropagatedScenario();
 
     extern int Lagrmode;
 
+    int colorIndex = 0;
+
     // Process each participant
-    foreach (ScenarioParticipant* participant, scenario()->participants())
+    foreach (QSharedPointer<ScenarioParticipantType> participant, scenario()->AbstractParticipant())
     {
-        // For space vehicles, we need to propagate trajectories
-        if (dynamic_cast<ScenarioSpaceVehicle*>(participant))
+        // Hack to set different visual properties for each participant, so
+        // that they can be distinguished in the 3D and ground track views.
+        // The user should have control over this.
+        QColor trajectoryColor;
+        switch (colorIndex % 6)
         {
-            ScenarioSpaceVehicle* vehicle = dynamic_cast<ScenarioSpaceVehicle*>(participant);
-            const QList<ScenarioAbstractTrajectory*>& trajectoryList = vehicle->trajectoryPlan()->trajectories();
+        case 0: trajectoryColor = Qt::yellow; break;
+        case 1: trajectoryColor = Qt::cyan; break;
+        case 2: trajectoryColor = Qt::green; break;
+        case 3: trajectoryColor = Qt::magenta; break;
+        case 4: trajectoryColor = QColor(128, 255, 64); break;
+        default: trajectoryColor = Qt::red; break;
+        }
+        ++colorIndex;
+
+        // For space vehicles, we need to propagate trajectories
+        if (dynamic_cast<ScenarioSC*>(participant.data()))
+        {
+            ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
+            const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList = vehicle->SCMission()->TrajectoryPlan()->AbstractTrajectory();
 
             // Initial state is stored in the first trajectory (for now); so,
             // the empty trajectory plan case has to be treated specially.
             if (!trajectoryList.isEmpty())
             {
                 SpaceObject* spaceObject = new SpaceObject();
-                spaceObject->setName(vehicle->name());
+                spaceObject->setName(vehicle->Name());
+
+                spaceObject->setTrajectoryColor(trajectoryColor);
+#if OLDSCENARIO
+                // TODO: Visual properties not added to new space scenario schema yet -cjl
                 spaceObject->setModelFile(vehicle->appearance()->model());
-
-                /* if (Lagrmode==1)
-                    spaceObject->setTrajectoryColor(Qt::blue);
-                else
-                */
-
                 spaceObject->setTrajectoryColor(vehicle->visualProperties().trajectoryColor);
+#endif
 
                 // Propagate all segments of the trajectory plan.
-                foreach (ScenarioAbstractTrajectory* trajectory, trajectoryList)
+                foreach (QSharedPointer<ScenarioAbstractTrajectoryType> trajectory, trajectoryList)
                 {
                     QList<double> sampleTimes;
                     QList<sta::StateVector> samples;
 
-                    sta::StateVector initialState = trajectory->computeInitialStateVector();
-                    trajectory->propagate(feedback, initialState, sampleTimes, samples);
-                    if (feedback.status() != PropagationFeedback::PropagationOk)
+                    if (dynamic_cast<ScenarioLoiteringType*>(trajectory.data()))
                     {
-                        // An error occurred during propagate. Clean up everything and return immediately.
-                        // The current propagation results will not be replaced.
-                        if (feedback.status() == PropagationFeedback::PropagationCanceled)
+                        ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
+                        PropagateLoiteringTrajectory(loitering, sampleTimes, samples, feedback);
+                        if (feedback.status() != PropagationFeedback::PropagationOk)
                         {
-                            QMessageBox::information(this, tr("Canceled"), tr("Propagation was canceled."));
-                        }
-                        else
-                        {
-                            QMessageBox::critical(this, tr("Propagation Error"), tr("Error during propagation: %1").arg(feedback.errorString()));
+                            // An error occurred during propagate. Clean up everything and return immediately.
+                            // The current propagation results will not be replaced.
+                            if (feedback.status() == PropagationFeedback::PropagationCanceled)
+                            {
+                                QMessageBox::information(this, tr("Canceled"), tr("Propagation was canceled."));
+                            }
+                            else
+                            {
+                                QMessageBox::critical(this, tr("Propagation Error"), tr("Error during propagation: %1").arg(feedback.errorString()));
+                            }
+
+                            delete propScenario;
+                            return;
                         }
 
-                        delete propScenario;
-                        return;
+                        QString centralBodyName = loitering->Environment()->CentralBody()->Name();
+                        StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+                        if (!centralBody)
+                        {
+                            QMessageBox::warning(this,
+                                                 tr("Propagation Error"),
+                                                 tr("Unrecognized body '%1'").arg(centralBodyName));
+                            continue;
+                        }
+
+                        QString coordSysName = loitering->InitialPosition()->CoordinateSystem();
+                        sta::CoordinateSystem coordSys(coordSysName);
+                        if (coordSys.type() == sta::COORDSYS_INVALID)
+                        {
+                            QMessageBox::warning(this,
+                                                 tr("Propagation Error"),
+                                                 tr("Unrecognized coordinate system '%1'").arg(coordSysName));
+                            continue;
+                        }
+
+                        if (sampleTimes.size() > 1)
+                        {
+                            if (Lagrmode != 2)
+                            {
+                                MissionArc* arc = new MissionArc(centralBody,
+                                                                 coordSys,
+                                                                 sampleTimes,
+                                                                 samples);
+                                spaceObject->addMissionArc(arc);
+                            }
+                        }
                     }
 
-                    if (sampleTimes.size() > 1)
+#if OLDSCENARIO
+                    PropagateLagrangian();
+#endif
+                    if (Lagrmode != 2)
                     {
-                        // Guillermo: Why in the name of the Lord is this code HERE?
-                        if (Lagrmode==2)
-                        {
-                            QFile file_manifolds_settings ("3BMmanifolds_settings.stam");
-                            if (!file_manifolds_settings.open(QIODevice::ReadOnly | QIODevice::Text))
-                            {
-                                QMessageBox::warning(NULL,
-                                                      QObject::tr("Manifolds not plotted"),
-                                                      QObject::tr("Manifolds settings data file %1 not found.").arg("3BMmanifolds_settings.stam"));
-                                delete propScenario;
-                                return;
-                            }
-                            QTextStream settings(&file_manifolds_settings);
-                            int numberPositions, numberTrajectories, numberPositions2;
-
-                            QList<double> singlemanifold_sampleTimes;
-                            QList<sta::StateVector> singlemanifold_samples;
-                            int  totalTraj=0;
-
-                            while (sampleTimes.isEmpty()!=true)
-                            {
-                                int memory=-1; int kind=-1;
-                                settings>>kind;
-                                while (kind!=0)
-                                {
-                                    //qDebug()<<"kind"<<kind;
-                                    if (kind==1) //information about the manifolds required
-                                    {
-                                        memory=kind;
-                                        settings>>numberTrajectories>>numberPositions>>numberPositions2;  //the number of trajectories for each manifold and the number of positions for each trajectory are read
-                                        if (totalTraj==0)
-                                            totalTraj=numberTrajectories;
-                                        kind=numberPositions2;
-                                        if (numberPositions2>4)
-                                        {
-                                            numberTrajectories=1;
-                                        }
-                                    }
-                                    else if (kind==2)
-                                    {
-                                        memory=kind;
-                                        settings>>numberTrajectories>>numberPositions>>numberPositions2;
-                                        if (totalTraj==0)
-                                            totalTraj=numberTrajectories;
-                                        kind=numberPositions2;
-                                        if (numberPositions2>4)//the number of trajectories for each manifold and the number of positions for each trajectory are read
-                                        {
-                                            numberTrajectories=1;
-                                        }
-                                    }
-                                    else if (kind==3)
-                                    {
-                                        memory=kind;
-                                        settings>>numberTrajectories>>numberPositions>>numberPositions2;
-                                        if (totalTraj==0)
-                                            totalTraj=numberTrajectories;
-                                        kind=numberPositions2;
-                                        if (numberPositions2>4)//the number of trajectories for each manifold and the number of positions for each trajectory are read
-                                        {
-                                            numberTrajectories=1;
-                                        }
-                                    }
-                                    else if (kind==4)
-                                    {
-                                        memory=kind;
-                                        settings>>numberTrajectories>>numberPositions>>numberPositions2;
-                                        if (totalTraj==0)
-                                            totalTraj=numberTrajectories;
-                                        kind=numberPositions2;
-                                        if (numberPositions2>4)//the number of trajectories for each manifold and the number of positions for each trajectory are read
-                                        {
-                                            numberTrajectories=1;
-                                        }
-                                    }
-                                    else if (kind>4)
-                                    {
-                                        //the intersection with a main body is the stopping condition
-                                        settings>>numberPositions2;
-                                        numberPositions=kind;
-                                        kind=numberPositions2;
-                                        if (numberPositions2>4)//the number of trajectories for each manifold and the number of positions for each trajectory are read
-                                        {
-                                            numberTrajectories=1;
-                                        }
-                                    }
-                                    else if (kind==0)
-                                    {
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        QMessageBox::warning(NULL,
-                                                             QObject::tr("Manifolds not plotted"),
-                                                             QObject::tr("Wrong manifolds settings data file %1.").arg("3BMmanifolds_settings.stam"));
-                                        delete propScenario;
-                                        return;
-                                    }
-
-                                for (int k=1;k<numberTrajectories+1; k++)
-                                {
-                                    if (totalTraj>0) //condition to plot also the halo orbit along with its manifolds
-                                    {
-                                        SpaceObject* spaceObject = new SpaceObject();
-                                        spaceObject->setName("Halo");
-                                        spaceObject->setModelFile(vehicle->appearance()->model());
-                                        spaceObject->setTrajectoryColor(Qt::blue);
-                                        for (int i=1;i<totalTraj+1;i++)
-                                        {
-                                            singlemanifold_sampleTimes.append(sampleTimes.takeFirst());
-                                            singlemanifold_samples.append(samples.takeFirst());
-                                        }
-                                        MissionArc* arc = new MissionArc(trajectory->centralBody(),
-                                                         trajectory->coordinateSystem(),
-                                                         singlemanifold_sampleTimes,
-                                                         singlemanifold_samples);
-                                        spaceObject->addMissionArc(arc);
-                                        singlemanifold_sampleTimes.clear();
-                                        singlemanifold_samples.clear();
-                                        propScenario->addSpaceObject(spaceObject);
-                                        totalTraj=-1;
-                                    }
-
-                                    SpaceObject* spaceObject = new SpaceObject();
-                                    spaceObject->setName("");
-                                    spaceObject->setModelFile(vehicle->appearance()->model());
-
-                                    if (memory==1 || memory==3)
-                                        spaceObject->setTrajectoryColor(Qt::green);
-                                    else if(memory==2 || memory==4)
-                                        spaceObject->setTrajectoryColor(Qt::red);
-
-                                    for (int i=1;i<numberPositions+1;i++)
-                                    {
-                                        singlemanifold_sampleTimes.append(sampleTimes.takeFirst());
-                                        singlemanifold_samples.append(samples.takeFirst());
-                                    }
-
-                                    MissionArc* arc = new MissionArc(trajectory->centralBody(),
-                                                         trajectory->coordinateSystem(),
-                                                         singlemanifold_sampleTimes,
-                                                         singlemanifold_samples);
-                                    spaceObject->addMissionArc(arc);
-                                    singlemanifold_sampleTimes.clear();
-                                    singlemanifold_samples.clear();
-                                    propScenario->addSpaceObject(spaceObject);
-                                }
-                            }
-                            }
-                        file_manifolds_settings.close();
-                        }
-                        if (Lagrmode==3||Lagrmode==4)
-                        {
-                            luna=1;
-                             //condition to plot also the halo orbit along with the transfer orbit
-                            QList<double> trajectoryLegTime;
-                            QList<sta::StateVector> trajectoryLegSamples;
-                                        SpaceObject* spaceObject = new SpaceObject();
-                                        spaceObject->setName("Halo");
-                                        spaceObject->setModelFile(vehicle->appearance()->model());
-                                        spaceObject->setTrajectoryColor(Qt::blue);
-                                        for (int i=1;i<1001;i++)
-                                        {
-                                            trajectoryLegTime.append(sampleTimes.takeFirst());
-                                            trajectoryLegSamples.append(samples.takeFirst());
-                                        }
-                                        MissionArc* arc = new MissionArc(trajectory->centralBody(),
-                                                         trajectory->coordinateSystem(),
-                                                         trajectoryLegTime,
-                                                         trajectoryLegSamples);
-
-                                        spaceObject->addMissionArc(arc);
-                                        propScenario->addSpaceObject(spaceObject);
-                        }
-
-                        if (Lagrmode != 2)
-                        {
-                            MissionArc* arc = new MissionArc(trajectory->centralBody(),
-                                                             trajectory->coordinateSystem(),
-                                                             sampleTimes,
-                                                             samples);
-                            spaceObject->addMissionArc(arc);
-                        }
+                        propScenario->addSpaceObject(spaceObject);
                     }
-                }
-
-                if (Lagrmode != 2)
-                {
-                    propScenario->addSpaceObject(spaceObject);
                 }
             }
         }
-        else if (dynamic_cast<ScenarioGroundElement*>(participant))
+
+        else if (dynamic_cast<ScenarioREV*>(participant.data()))//Added by Dominic to allow propagation of re-entry vehicle trajectories
         {
-            ScenarioGroundElement* groundElement = dynamic_cast<ScenarioGroundElement*>(participant);
+            ScenarioREV* entryVehicle = dynamic_cast<ScenarioREV*>(participant.data());
+            const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList = entryVehicle->REVMission()->REVTrajectoryPlan()->AbstractTrajectory();
 
-            GroundObject* groundObject = new GroundObject();
-            GroundPosition pos = groundElement->location()->getGroundPosition();
+            if(!trajectoryList.isEmpty())
+            {
+                SpaceObject* spaceObject = new SpaceObject();
+                spaceObject->setName(entryVehicle->Name());
+                spaceObject->setTrajectoryColor(trajectoryColor);
+                foreach (QSharedPointer<ScenarioAbstractTrajectoryType> trajectory, trajectoryList)
+                {
+                    QList<double> sampleTimes;
+                    QList<sta::StateVector> samples;
 
-            groundObject->name = groundElement->name();
-            groundObject->centralBody = groundElement->location()->centralBody();
-            groundObject->longitude = pos.longitude;
-            groundObject->latitude = pos.latitude;
-            groundObject->altitude = pos.altitude;
+                    if (dynamic_cast<ScenarioEntryArcType*>(trajectory.data()))
+                    {
+                        ScenarioEntryArcType* entry = dynamic_cast<ScenarioEntryArcType*>(trajectory.data());
+                        PropagateEntryTrajectory(entryVehicle, entry, sampleTimes, samples, feedback);
+                        if (feedback.status() != PropagationFeedback::PropagationOk)
+                        {
+                            // An error occurred during propagate. Clean up everything and return immediately.
+                            // The current propagation results will not be replaced.
+                            if (feedback.status() == PropagationFeedback::PropagationCanceled)
+                            {
+                                QMessageBox::information(this, tr("Canceled"), tr("Propagation was canceled."));
+                            }
+                            else
+                            {
+                                QMessageBox::critical(this, tr("Propagation Error"), tr("Error during propagation: %1").arg(feedback.errorString()));
+                            }
 
-            propScenario->addGroundObject(groundObject);
+                            delete propScenario;
+                            return;
+                        }
+
+                        QString centralBodyName = entry->Environment()->CentralBody()->Name();
+                        StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+                        if (!centralBody)
+                        {
+                            QMessageBox::warning(this,
+                                                 tr("Propagation Error"),
+                                                 tr("Unrecognized body '%1'").arg(centralBodyName));
+                            continue;
+                        }
+
+                        QString coordSysName = entry->InitialPosition()->CoordinateSystem();
+                        sta::CoordinateSystem coordSys(coordSysName);
+                        if (coordSys.type() == sta::COORDSYS_INVALID)
+                        {
+                            QMessageBox::warning(this,
+                                                 tr("Propagation Error"),
+                                                 tr("Unrecognized coordinate system '%1'").arg(coordSysName));
+                            continue;
+                        }
+                        MissionArc* arc = new MissionArc(centralBody,
+                                                         coordSys,
+                                                         sampleTimes,
+                                                         samples);
+                        qDebug()<<coordSys.name()<<" coord";
+                        spaceObject->addMissionArc(arc);
+
+                    }
+                    propScenario->addSpaceObject(spaceObject);
+
+                }
+
+            }
+
+        }
+        else if (dynamic_cast<ScenarioGroundStation*>(participant.data()))
+        {
+            ScenarioGroundStation* groundElement = dynamic_cast<ScenarioGroundStation*>(participant.data());
+
+            QSharedPointer<ScenarioAbstract3DOFPositionType> position = groundElement->Location()->Abstract3DOFPosition();
+            QSharedPointer<ScenarioGroundPositionType> groundPosition = qSharedPointerDynamicCast<ScenarioGroundPositionType>(position);
+            if (!groundPosition.isNull())
+            {
+                StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(groundElement->Location()->CentralBody());
+                if (centralBody)
+                {
+                    GroundObject* groundObject = new GroundObject();
+
+                    groundObject->name = groundElement->Name();
+                    groundObject->centralBody = centralBody;
+		    groundObject->longitude = groundPosition->longitude();
+                    groundObject->latitude = groundPosition->latitude();
+                    groundObject->altitude = groundPosition->altitude();
+
+                    propScenario->addGroundObject(groundObject);
+                }
+            }
         }
     }
 
@@ -956,14 +1135,19 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
         {
             foreach (SpaceObject* spaceObject, propScenario->spaceObjects())
             {
+
                 // Ephemeris files are required for creating trajectories for the 3D view (at least for now.)
+
                 if (!spaceObject->generateEphemerisFiles())
                 {
                     QMessageBox::information(this, tr("Warning"), tr("Error occurred while writing ephemeris files."));
                     break;
                 }
+
                 m_celestiaInterface->select(NULL);
+
                 spaceObject->realize3DViewRepresentation(m_celestiaInterface);
+
             }
             foreach (GroundObject* groundObject, propScenario->groundObjects())
             {
@@ -988,17 +1172,12 @@ void MainWindow::on_actionSystem_Engineering_triggered()
     if (!scenario())
     return;
 
-    //SEMVehicleDialog* editDialog = new SEMVehicleDialog(this);
-    //SEMVehicleDialog* editDialog = new sem(this);
-
     sem* SEMWidget = new sem(this);  // Creating the widget as a tool
     SEMWidget->show(); // Creating the window modeless. This requires the declaration of the variable on the *.h file
     SEMWidget->raise(); // Required to keep the modeless window alive
     SEMWidget->activateWindow(); // Required to keep the modeless window alive
 
-    //if (on_buttonBox_accepted->exec() == QDialog::Accepted)
-    //{
-    //}
+
 }
 
 
@@ -1035,7 +1214,7 @@ void MainWindow::on_menuEdit_aboutToShow()
     if (m_scenarioView->m_scenarioTree)
     {
         ScenarioObject* obj = m_scenarioView->m_scenarioTree->selectedObject();
-        if (dynamic_cast<ScenarioParticipant*>(obj) || dynamic_cast<ScenarioAbstractTrajectory*>(obj))
+        if (dynamic_cast<ScenarioParticipantType*>(obj) || dynamic_cast<ScenarioAbstractTrajectoryType*>(obj))
         {
             actionCut->setEnabled(true);
         }
@@ -1050,14 +1229,7 @@ void MainWindow::on_menuEdit_aboutToShow()
 // additional setup.
 void MainWindow::replaceCurrentScenario(SpaceScenario* scenario, QString filename)
 {
-    if (scenario != m_scenario)
-    {
-        if (m_scenario)
-            m_scenario->release();
-        m_scenario = scenario;
-        if (m_scenario)
-            m_scenario->addRef();
-    }
+    m_scenario = QSharedPointer<SpaceScenario>(scenario);
 
     actionPropagate_Scenario->setEnabled(m_scenario != NULL);
     actionSystem_Engineering->setEnabled(m_scenario != NULL);
@@ -1072,10 +1244,6 @@ void MainWindow::replaceCurrentScenario(SpaceScenario* scenario, QString filenam
 //   MainWindow::clearViews();  // Line patched by Guillermo to refresh the scenario view after this operation
 
 }
-
-
-
-
 
 
 void MainWindow::showGroundTrackPlotTool()
@@ -1297,8 +1465,8 @@ void MainWindow::initCelestia(const QString& qConfigFileName,
     m_celestiaAlerter = new AppAlerter(this);
     m_celestiaCore->setAlerter(m_celestiaAlerter);
 
-    // Next line patched by Guillermo with the 'Archean' logo
-    setWindowIcon(QIcon(":/icons/STA-logo-ARCHEAN-128.png"));
+    // Next line patched by Guillermo with the 'Cambrian' logo
+    setWindowIcon(QIcon(":/icons/STAlogo.png"));
 
     m_celestiaCore->initSimulation(&configFileName,
                               &extrasDirectories,
@@ -1586,6 +1754,7 @@ void MainWindow::clearViews()
         m_plottingTool->setScenario(NULL);
 
     m_scenarioView->update();  // Lined added by Guillermo as suggested by Chris to update the view of STA
+    m_scenarioView->m_scenarioTree->update();
 }
 
 

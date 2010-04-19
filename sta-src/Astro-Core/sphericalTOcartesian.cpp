@@ -25,6 +25,7 @@
 // Author G. Ortega
 
 #include "sphericalTOcartesian.h"
+#include "Scenario/staschema.h"
 #include<float.h>
 #include<math.h>
 #include<stdio.h>
@@ -48,4 +49,31 @@ void sphericalTOcartesian(double tau,double delta,double r,double V,double gamma
     //xd -= rxomega_x;
     //yd -= rxomega_y;
 
+}
+
+sta::StateVector sphericalTOcartesian(double spherCoord[6])//Added by Dominic
+
+{
+    double delta = spherCoord[2];
+    double tau = spherCoord[1];
+    double r = spherCoord[0];
+    double gamma = spherCoord[4];
+    double chi = spherCoord[5];
+    double V = spherCoord[3];
+    sta::StateVector cartesian;
+    cartesian.position.x() = r * cos(delta) * cos(tau);
+    cartesian.position.y() = r * cos(delta) * sin(tau);
+    cartesian.position.z() = r * sin(delta);
+    cartesian.velocity.x() = V * ( sin(gamma)*cos(delta)*cos(tau) - cos(gamma)*cos(chi)*sin(delta)*cos(tau) - cos(gamma)*sin(chi)*sin(tau) );
+    cartesian.velocity.y() = V * ( sin(gamma)*cos(delta)*sin(tau) - cos(gamma)*cos(chi)*sin(delta)*sin(tau) + cos(gamma)*sin(chi)*cos(tau) );
+    cartesian.velocity.z() = V * ( cos(gamma)*cos(chi)*cos(delta) + sin(gamma)*sin(delta) );
+ //   x = cos(theta)*x + sin(theta)*y;
+ //   y = -sin(theta)*x + cos(theta)*y;
+
+    //------ Transform velocity to rotating frame by subtracting r x omega
+    //double rxomega_x = -y * mu;
+    //double rxomega_y =  x * mu;
+    //xd -= rxomega_x;
+    //yd -= rxomega_y;
+    return cartesian;
 }

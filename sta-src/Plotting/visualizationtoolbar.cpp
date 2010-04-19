@@ -65,7 +65,7 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
 
 
     // Create the tick interval action
-    m_tickIntervalAction = new QAction(QIcon(":/icons/TicksButton"), tr("Ticks"), this);
+    m_tickIntervalAction = new QAction(QIcon(":/icons/IconCLOCK.png"), tr("Ticks"), this);
     QActionGroup* tickActionGroup = new QActionGroup(this);
     QMenu* tickMenu = new QMenu(tr("Ticks"), this);
 
@@ -103,19 +103,19 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     m_tickIntervalAction->setMenu(tickMenu);
     m_tickIntervalAction->setToolTip(tr("Set tick interval"));
 
-    m_gridAction = new QAction(QIcon(":/icons/GridButton"), tr("Grid"), this);
+    m_gridAction = new QAction(QIcon(":/icons/IconGRID.png"), tr("Grid"), this);
     m_gridAction->setCheckable(true);
     m_gridAction->setToolTip(tr("Toggle long/lat grid"));
 
-    m_enable25DViewAction = new QAction(QIcon(":/icons/25DViewButton.png"), tr("2.5D View"), this);
+    m_enable25DViewAction = new QAction(QIcon(":/icons/Icon25D.png"), tr("2.5D View"), this);
     m_enable25DViewAction->setCheckable(true);
     m_enable25DViewAction->setToolTip(tr("Toggle 2.5D view"));
 
-    m_terminatorAction = new QAction(QIcon(":/icons/Subpoint.png"), tr("T"), this);
+    m_terminatorAction = new QAction(QIcon(":/icons/IconSUN.png"), tr("T"), this);
     m_terminatorAction->setCheckable(true);
     m_terminatorAction->setToolTip(tr("Toggle terminator"));
 
-    m_saveImageAction = new QAction(QIcon(":/icons/document-save.png"), tr("Save"), this);
+    m_saveImageAction = new QAction(QIcon(":/icons/IconDOWNLOAD.png"), tr("Save"), this);
     m_saveImageAction->setToolTip(tr("Save plot to a file"));
 
     // Add all actions and widgets to the toolbar

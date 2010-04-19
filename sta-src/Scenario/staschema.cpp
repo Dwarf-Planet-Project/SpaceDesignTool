@@ -5,6 +5,263 @@
 #include <QtXml>
 #include "staschema.h"
 
+// ScenarioPropagationPositionType
+ScenarioPropagationPositionType::ScenarioPropagationPositionType() :
+    m_timeStep(0.0)
+{
+}
+
+ScenarioPropagationPositionType* ScenarioPropagationPositionType::create(const QDomElement& e)
+{
+    ScenarioPropagationPositionType* v;
+    {
+        v = new ScenarioPropagationPositionType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioPropagationPositionType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_propagator = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_integrator = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_timeStep = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioPropagationPositionType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:propagator", m_propagator));
+    e.appendChild(createSimpleElement(doc, "tns:integrator", m_integrator));
+    e.appendChild(createSimpleElement(doc, "tns:timeStep", m_timeStep));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioPropagationPositionType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
+// ScenarioPropagationAttitudeType
+ScenarioPropagationAttitudeType::ScenarioPropagationAttitudeType() :
+    m_timeStep(0.0)
+{
+}
+
+ScenarioPropagationAttitudeType* ScenarioPropagationAttitudeType::create(const QDomElement& e)
+{
+    ScenarioPropagationAttitudeType* v;
+    {
+        v = new ScenarioPropagationAttitudeType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioPropagationAttitudeType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_integrator = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_timeStep = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioPropagationAttitudeType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:integrator", m_integrator));
+    e.appendChild(createSimpleElement(doc, "tns:timeStep", m_timeStep));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioPropagationAttitudeType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
+// ScenarioAbstractTrajectoryType
+ScenarioAbstractTrajectoryType::ScenarioAbstractTrajectoryType()
+{
+}
+
+ScenarioAbstractTrajectoryType* ScenarioAbstractTrajectoryType::create(const QDomElement& e)
+{
+    ScenarioAbstractTrajectoryType* v;
+    {
+        v = new ScenarioAbstractTrajectoryType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioAbstractTrajectoryType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    return true;
+}
+
+QDomElement ScenarioAbstractTrajectoryType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioAbstractTrajectoryType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
+// ScenarioInitialPositionType
+ScenarioInitialPositionType::ScenarioInitialPositionType()
+{
+}
+
+ScenarioInitialPositionType* ScenarioInitialPositionType::create(const QDomElement& e)
+{
+    ScenarioInitialPositionType* v;
+    {
+        v = new ScenarioInitialPositionType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioInitialPositionType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_CoordinateSystem = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:StateVector")
+        m_Abstract6DOFPosition = QSharedPointer<ScenarioAbstract6DOFPositionType>((ScenarioAbstract6DOFPositionType*)ScenarioStateVectorType::create(*next));
+    else if (next->tagName() == "tns:KeplerianElements")
+        m_Abstract6DOFPosition = QSharedPointer<ScenarioAbstract6DOFPositionType>((ScenarioAbstract6DOFPositionType*)ScenarioKeplerianElementsType::create(*next));
+    else if (next->tagName() == "tns:SphericalCoordinates")
+        m_Abstract6DOFPosition = QSharedPointer<ScenarioAbstract6DOFPositionType>((ScenarioAbstract6DOFPositionType*)ScenarioSphericalCoordinatesType::create(*next));
+    *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioInitialPositionType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:CoordinateSystem", m_CoordinateSystem));
+    if (!m_Abstract6DOFPosition.isNull())
+    {
+        QString tagName = "Abstract6DOFPosition";
+        if (dynamic_cast<ScenarioStateVectorType*>(m_Abstract6DOFPosition.data()))
+            tagName = "StateVector";
+        else if (dynamic_cast<ScenarioKeplerianElementsType*>(m_Abstract6DOFPosition.data()))
+            tagName = "KeplerianElements";
+        else if (dynamic_cast<ScenarioSphericalCoordinatesType*>(m_Abstract6DOFPosition.data()))
+            tagName = "SphericalCoordinates";
+        QDomElement child = m_Abstract6DOFPosition->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioInitialPositionType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Abstract6DOFPosition.isNull()) children << m_Abstract6DOFPosition;
+    return children;
+}
+
+
+
+
+// ScenarioInitialAttitudeType
+ScenarioInitialAttitudeType::ScenarioInitialAttitudeType()
+{
+}
+
+ScenarioInitialAttitudeType* ScenarioInitialAttitudeType::create(const QDomElement& e)
+{
+    ScenarioInitialAttitudeType* v;
+    {
+        v = new ScenarioInitialAttitudeType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioInitialAttitudeType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_CoordinateSystem = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:EulerBLVLH")
+        m_Abstract6DOFAttitude = QSharedPointer<ScenarioAbstract6DOFAttitudeType>((ScenarioAbstract6DOFAttitudeType*)ScenarioEulerBLVLHType::create(*next));
+    else if (next->tagName() == "tns:EulerBI")
+        m_Abstract6DOFAttitude = QSharedPointer<ScenarioAbstract6DOFAttitudeType>((ScenarioAbstract6DOFAttitudeType*)ScenarioEulerBIType::create(*next));
+    else if (next->tagName() == "tns:qBLVLH")
+        m_Abstract6DOFAttitude = QSharedPointer<ScenarioAbstract6DOFAttitudeType>((ScenarioAbstract6DOFAttitudeType*)ScenarioqBLVLHType::create(*next));
+    else if (next->tagName() == "tns:qBI")
+        m_Abstract6DOFAttitude = QSharedPointer<ScenarioAbstract6DOFAttitudeType>((ScenarioAbstract6DOFAttitudeType*)ScenarioqBIType::create(*next));
+    *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioInitialAttitudeType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:CoordinateSystem", m_CoordinateSystem));
+    if (!m_Abstract6DOFAttitude.isNull())
+    {
+        QString tagName = "Abstract6DOFAttitude";
+        if (dynamic_cast<ScenarioEulerBLVLHType*>(m_Abstract6DOFAttitude.data()))
+            tagName = "EulerBLVLH";
+        else if (dynamic_cast<ScenarioEulerBIType*>(m_Abstract6DOFAttitude.data()))
+            tagName = "EulerBI";
+        else if (dynamic_cast<ScenarioqBLVLHType*>(m_Abstract6DOFAttitude.data()))
+            tagName = "qBLVLH";
+        else if (dynamic_cast<ScenarioqBIType*>(m_Abstract6DOFAttitude.data()))
+            tagName = "qBI";
+        QDomElement child = m_Abstract6DOFAttitude->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioInitialAttitudeType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Abstract6DOFAttitude.isNull()) children << m_Abstract6DOFAttitude;
+    return children;
+}
+
+
+
+
 // ScenarioParticipantType
 ScenarioParticipantType::ScenarioParticipantType()
 {
@@ -13,23 +270,12 @@ ScenarioParticipantType::ScenarioParticipantType()
 ScenarioParticipantType* ScenarioParticipantType::create(const QDomElement& e)
 {
     ScenarioParticipantType* v;
-    if (e.tagName() == "tns:ParticipantType")
     {
         v = new ScenarioParticipantType;
         QDomElement nextElement = e.firstChildElement();
         v->load(e, &nextElement);
         return v;
     }
-    if (e.tagName() == "tns:GroundStation")
-        return ScenarioGroundStation::create(e);
-    if (e.tagName() == "tns:LaunchPad")
-        return ScenarioLaunchPad::create(e);
-    if (e.tagName() == "tns:Point")
-        return ScenarioPoint::create(e);
-    if (e.tagName() == "tns:LV")
-        return ScenarioLV::create(e);
-    if (e.tagName() == "tns:SC")
-        return ScenarioSC::create(e);
     return NULL;
 }
 
@@ -41,12 +287,17 @@ bool ScenarioParticipantType::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioParticipantType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioParticipantType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("ParticipantType");
-    e.appendChild(createSimpleElement(doc, "Name", m_Name));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:Name", m_Name));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioParticipantType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -63,7 +314,6 @@ ScenarioOptVarDouble::ScenarioOptVarDouble() :
 ScenarioOptVarDouble* ScenarioOptVarDouble::create(const QDomElement& e)
 {
     ScenarioOptVarDouble* v;
-    if (e.tagName() == "tns:OptVarDouble")
     {
         v = new ScenarioOptVarDouble;
         QDomElement nextElement = e.firstChildElement();
@@ -91,14 +341,19 @@ bool ScenarioOptVarDouble::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioOptVarDouble::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioOptVarDouble::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("OptVarDouble");
-    e.appendChild(createSimpleElement(doc, "min", m_min));
-    e.appendChild(createSimpleElement(doc, "value", m_value));
-    e.appendChild(createSimpleElement(doc, "max", m_max));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:min", m_min));
+    e.appendChild(createSimpleElement(doc, "tns:value", m_value));
+    e.appendChild(createSimpleElement(doc, "tns:max", m_max));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioOptVarDouble::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -113,7 +368,6 @@ ScenarioOptVarInt::ScenarioOptVarInt() :
 ScenarioOptVarInt* ScenarioOptVarInt::create(const QDomElement& e)
 {
     ScenarioOptVarInt* v;
-    if (e.tagName() == "tns:OptVarInt")
     {
         v = new ScenarioOptVarInt;
         QDomElement nextElement = e.firstChildElement();
@@ -136,13 +390,18 @@ bool ScenarioOptVarInt::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioOptVarInt::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioOptVarInt::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("OptVarInt");
-    e.appendChild(createSimpleElement(doc, "list", m_list));
-    e.appendChild(createSimpleElement(doc, "value", m_value));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:list", m_list));
+    e.appendChild(createSimpleElement(doc, "tns:value", m_value));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioOptVarInt::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -156,7 +415,6 @@ ScenarioOptVarBool::ScenarioOptVarBool()
 ScenarioOptVarBool* ScenarioOptVarBool::create(const QDomElement& e)
 {
     ScenarioOptVarBool* v;
-    if (e.tagName() == "tns:OptVarBool")
     {
         v = new ScenarioOptVarBool;
         QDomElement nextElement = e.firstChildElement();
@@ -174,12 +432,17 @@ bool ScenarioOptVarBool::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioOptVarBool::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioOptVarBool::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("OptVarBool");
-    e.appendChild(createSimpleElement(doc, "value", m_value));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:value", m_value));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioOptVarBool::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -193,7 +456,6 @@ ScenarioOptVarString::ScenarioOptVarString()
 ScenarioOptVarString* ScenarioOptVarString::create(const QDomElement& e)
 {
     ScenarioOptVarString* v;
-    if (e.tagName() == "tns:OptVarString")
     {
         v = new ScenarioOptVarString;
         QDomElement nextElement = e.firstChildElement();
@@ -216,13 +478,18 @@ bool ScenarioOptVarString::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioOptVarString::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioOptVarString::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("OptVarString");
-    e.appendChild(createSimpleElement(doc, "list", m_list));
-    e.appendChild(createSimpleElement(doc, "value", m_value));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:list", m_list));
+    e.appendChild(createSimpleElement(doc, "tns:value", m_value));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioOptVarString::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -230,14 +497,15 @@ QDomElement ScenarioOptVarString::toDomElement(QDomDocument& doc) const
 
 // ScenarioTimeLine
 ScenarioTimeLine::ScenarioTimeLine() :
-    m_StepTime(0.0)
+    m_StartTime(QDate(2000, 1, 1)),
+    m_StepTime(0.0),
+    m_EndTime(QDate(2000, 1, 1))
 {
 }
 
 ScenarioTimeLine* ScenarioTimeLine::create(const QDomElement& e)
 {
     ScenarioTimeLine* v;
-    if (e.tagName() == "tns:TimeLine")
     {
         v = new ScenarioTimeLine;
         QDomElement nextElement = e.firstChildElement();
@@ -262,14 +530,19 @@ bool ScenarioTimeLine::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioTimeLine::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioTimeLine::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("TimeLine");
-    e.appendChild(createSimpleElement(doc, "StartTime", m_StartTime));
-    e.appendChild(createSimpleElement(doc, "StepTime", m_StepTime));
-    e.appendChild(createSimpleElement(doc, "EndTime", m_EndTime));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:StartTime", m_StartTime));
+    e.appendChild(createSimpleElement(doc, "tns:StepTime", m_StepTime));
+    e.appendChild(createSimpleElement(doc, "tns:EndTime", m_EndTime));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioTimeLine::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -283,7 +556,6 @@ ScenarioPropagation::ScenarioPropagation()
 ScenarioPropagation* ScenarioPropagation::create(const QDomElement& e)
 {
     ScenarioPropagation* v;
-    if (e.tagName() == "tns:Propagation")
     {
         v = new ScenarioPropagation;
         QDomElement nextElement = e.firstChildElement();
@@ -301,12 +573,17 @@ bool ScenarioPropagation::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioPropagation::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioPropagation::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Propagation");
-    e.appendChild(createSimpleElement(doc, "propagator", m_propagator));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:propagator", m_propagator));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioPropagation::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -315,42 +592,47 @@ QDomElement ScenarioPropagation::toDomElement(QDomDocument& doc) const
 // ScenarioEnvironmentType
 ScenarioEnvironmentType::ScenarioEnvironmentType()
 {
+    m_CentralBody = QSharedPointer<ScenarioCentralBodyType>(new ScenarioCentralBodyType());
 }
 
 ScenarioEnvironmentType* ScenarioEnvironmentType::create(const QDomElement& e)
 {
     ScenarioEnvironmentType* v;
-    if (e.tagName() == "tns:EnvironmentType")
     {
         v = new ScenarioEnvironmentType;
         QDomElement nextElement = e.firstChildElement();
         v->load(e, &nextElement);
         return v;
     }
-    if (e.tagName() == "tns:SCEnvironmentType")
-        return ScenarioSCEnvironmentType::create(e);
     return NULL;
 }
 
 bool ScenarioEnvironmentType::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    m_CentralBody = QSharedPointer<ScenarioCentralBodyType>(ScenarioCentralBodyType::create(*next));
+    if (next->tagName() == "tns:CentralBody")
+        m_CentralBody = QSharedPointer<ScenarioCentralBodyType>(ScenarioCentralBodyType::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioEnvironmentType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioEnvironmentType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("EnvironmentType");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     if (!m_CentralBody.isNull())
     {
-        QDomElement child = m_CentralBody->toDomElement(doc);
-        child.setTagName("CentralBody");
+        QString tagName = "CentralBody";
+        QDomElement child = m_CentralBody->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioEnvironmentType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_CentralBody.isNull()) children << m_CentralBody;
+    return children;
 }
 
 
@@ -359,12 +641,12 @@ QDomElement ScenarioEnvironmentType::toDomElement(QDomDocument& doc) const
 // ScenarioCentralBodyType
 ScenarioCentralBodyType::ScenarioCentralBodyType()
 {
+    m_GravityModel = QSharedPointer<ScenarioGravityModel>(new ScenarioGravityModel());
 }
 
 ScenarioCentralBodyType* ScenarioCentralBodyType::create(const QDomElement& e)
 {
     ScenarioCentralBodyType* v;
-    if (e.tagName() == "tns:CentralBodyType")
     {
         v = new ScenarioCentralBodyType;
         QDomElement nextElement = e.firstChildElement();
@@ -379,7 +661,8 @@ bool ScenarioCentralBodyType::load(const QDomElement& e, QDomElement* next)
     ScenarioObject::load(e, next);
         m_Name = (next->firstChild().toText().data());
         *next = next->nextSiblingElement();
-    m_GravityModel = QSharedPointer<ScenarioGravityModel>(ScenarioGravityModel::create(*next));
+    if (next->tagName() == "tns:GravityModel")
+        m_GravityModel = QSharedPointer<ScenarioGravityModel>(ScenarioGravityModel::create(*next));
     *next = next->nextSiblingElement();
     if (next->tagName() == "tns:atmosphere")
     {
@@ -394,20 +677,26 @@ bool ScenarioCentralBodyType::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioCentralBodyType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioCentralBodyType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("CentralBodyType");
-    e.appendChild(createSimpleElement(doc, "Name", m_Name));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:Name", m_Name));
     if (!m_GravityModel.isNull())
     {
-        QDomElement child = m_GravityModel->toDomElement(doc);
-        child.setTagName("GravityModel");
+        QString tagName = "GravityModel";
+        QDomElement child = m_GravityModel->toDomElement(doc, tagName);
         e.appendChild(child);
     }
-    e.appendChild(createSimpleElement(doc, "atmosphere", m_atmosphere));
-    e.appendChild(createSimpleElement(doc, "ellipticity", m_ellipticity));
+    e.appendChild(createSimpleElement(doc, "tns:atmosphere", m_atmosphere));
+    e.appendChild(createSimpleElement(doc, "tns:ellipticity", m_ellipticity));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioCentralBodyType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_GravityModel.isNull()) children << m_GravityModel;
+    return children;
 }
 
 
@@ -423,7 +712,6 @@ ScenarioGravityModel::ScenarioGravityModel() :
 ScenarioGravityModel* ScenarioGravityModel::create(const QDomElement& e)
 {
     ScenarioGravityModel* v;
-    if (e.tagName() == "tns:GravityModel")
     {
         v = new ScenarioGravityModel;
         QDomElement nextElement = e.firstChildElement();
@@ -445,14 +733,19 @@ bool ScenarioGravityModel::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioGravityModel::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioGravityModel::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("GravityModel");
-    e.appendChild(createSimpleElement(doc, "modelName", m_modelName));
-    e.appendChild(createSimpleElement(doc, "numberOfZonals", m_numberOfZonals));
-    e.appendChild(createSimpleElement(doc, "numberOfTesserals", m_numberOfTesserals));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:modelName", m_modelName));
+    e.appendChild(createSimpleElement(doc, "tns:numberOfZonals", m_numberOfZonals));
+    e.appendChild(createSimpleElement(doc, "tns:numberOfTesserals", m_numberOfTesserals));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioGravityModel::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -466,15 +759,12 @@ ScenarioAbstract3DOFPositionType::ScenarioAbstract3DOFPositionType()
 ScenarioAbstract3DOFPositionType* ScenarioAbstract3DOFPositionType::create(const QDomElement& e)
 {
     ScenarioAbstract3DOFPositionType* v;
-    if (e.tagName() == "tns:Abstract3DOFPositionType")
     {
         v = new ScenarioAbstract3DOFPositionType;
         QDomElement nextElement = e.firstChildElement();
         v->load(e, &nextElement);
         return v;
     }
-    if (e.tagName() == "tns:GroundPositionType")
-        return ScenarioGroundPositionType::create(e);
     return NULL;
 }
 
@@ -484,11 +774,16 @@ bool ScenarioAbstract3DOFPositionType::load(const QDomElement& e, QDomElement* n
     return true;
 }
 
-QDomElement ScenarioAbstract3DOFPositionType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioAbstract3DOFPositionType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Abstract3DOFPositionType");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioAbstract3DOFPositionType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -502,19 +797,12 @@ ScenarioAbstract6DOFPositionType::ScenarioAbstract6DOFPositionType()
 ScenarioAbstract6DOFPositionType* ScenarioAbstract6DOFPositionType::create(const QDomElement& e)
 {
     ScenarioAbstract6DOFPositionType* v;
-    if (e.tagName() == "tns:Abstract6DOFPositionType")
     {
         v = new ScenarioAbstract6DOFPositionType;
         QDomElement nextElement = e.firstChildElement();
         v->load(e, &nextElement);
         return v;
     }
-    if (e.tagName() == "tns:StateVectorType")
-        return ScenarioStateVectorType::create(e);
-    if (e.tagName() == "tns:KeplerianElementsType")
-        return ScenarioKeplerianElementsType::create(e);
-    if (e.tagName() == "tns:SphericalCoordinatesType")
-        return ScenarioSphericalCoordinatesType::create(e);
     return NULL;
 }
 
@@ -524,11 +812,16 @@ bool ScenarioAbstract6DOFPositionType::load(const QDomElement& e, QDomElement* n
     return true;
 }
 
-QDomElement ScenarioAbstract6DOFPositionType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioAbstract6DOFPositionType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Abstract6DOFPositionType");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioAbstract6DOFPositionType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -545,7 +838,6 @@ ScenarioGroundPositionType::ScenarioGroundPositionType() :
 ScenarioGroundPositionType* ScenarioGroundPositionType::create(const QDomElement& e)
 {
     ScenarioGroundPositionType* v;
-    if (e.tagName() == "tns:GroundPositionType")
     {
         v = new ScenarioGroundPositionType;
         QDomElement nextElement = e.firstChildElement();
@@ -567,14 +859,19 @@ bool ScenarioGroundPositionType::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioGroundPositionType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioGroundPositionType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioAbstract3DOFPositionType::toDomElement(doc);
-    e.setTagName("GroundPositionType");
-    e.appendChild(createSimpleElement(doc, "latitude", m_latitude));
-    e.appendChild(createSimpleElement(doc, "longitude", m_longitude));
-    e.appendChild(createSimpleElement(doc, "altitude", m_altitude));
+    QDomElement e = ScenarioAbstract3DOFPositionType::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:latitude", m_latitude));
+    e.appendChild(createSimpleElement(doc, "tns:longitude", m_longitude));
+    e.appendChild(createSimpleElement(doc, "tns:altitude", m_altitude));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioGroundPositionType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -594,7 +891,6 @@ ScenarioStateVectorType::ScenarioStateVectorType() :
 ScenarioStateVectorType* ScenarioStateVectorType::create(const QDomElement& e)
 {
     ScenarioStateVectorType* v;
-    if (e.tagName() == "tns:StateVectorType")
     {
         v = new ScenarioStateVectorType;
         QDomElement nextElement = e.firstChildElement();
@@ -622,17 +918,22 @@ bool ScenarioStateVectorType::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioStateVectorType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioStateVectorType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioAbstract6DOFPositionType::toDomElement(doc);
-    e.setTagName("StateVectorType");
-    e.appendChild(createSimpleElement(doc, "x", m_x));
-    e.appendChild(createSimpleElement(doc, "y", m_y));
-    e.appendChild(createSimpleElement(doc, "z", m_z));
-    e.appendChild(createSimpleElement(doc, "vx", m_vx));
-    e.appendChild(createSimpleElement(doc, "vy", m_vy));
-    e.appendChild(createSimpleElement(doc, "vz", m_vz));
+    QDomElement e = ScenarioAbstract6DOFPositionType::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:x", m_x));
+    e.appendChild(createSimpleElement(doc, "tns:y", m_y));
+    e.appendChild(createSimpleElement(doc, "tns:z", m_z));
+    e.appendChild(createSimpleElement(doc, "tns:vx", m_vx));
+    e.appendChild(createSimpleElement(doc, "tns:vy", m_vy));
+    e.appendChild(createSimpleElement(doc, "tns:vz", m_vz));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioStateVectorType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -652,7 +953,6 @@ ScenarioKeplerianElementsType::ScenarioKeplerianElementsType() :
 ScenarioKeplerianElementsType* ScenarioKeplerianElementsType::create(const QDomElement& e)
 {
     ScenarioKeplerianElementsType* v;
-    if (e.tagName() == "tns:KeplerianElementsType")
     {
         v = new ScenarioKeplerianElementsType;
         QDomElement nextElement = e.firstChildElement();
@@ -680,17 +980,22 @@ bool ScenarioKeplerianElementsType::load(const QDomElement& e, QDomElement* next
     return true;
 }
 
-QDomElement ScenarioKeplerianElementsType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioKeplerianElementsType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioAbstract6DOFPositionType::toDomElement(doc);
-    e.setTagName("KeplerianElementsType");
-    e.appendChild(createSimpleElement(doc, "semiMajorAxis", m_semiMajorAxis));
-    e.appendChild(createSimpleElement(doc, "eccentricity", m_eccentricity));
-    e.appendChild(createSimpleElement(doc, "inclination", m_inclination));
-    e.appendChild(createSimpleElement(doc, "RAAN", m_RAAN));
-    e.appendChild(createSimpleElement(doc, "argumentOfPeriapsis", m_argumentOfPeriapsis));
-    e.appendChild(createSimpleElement(doc, "trueAnomaly", m_trueAnomaly));
+    QDomElement e = ScenarioAbstract6DOFPositionType::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:semiMajorAxis", m_semiMajorAxis));
+    e.appendChild(createSimpleElement(doc, "tns:eccentricity", m_eccentricity));
+    e.appendChild(createSimpleElement(doc, "tns:inclination", m_inclination));
+    e.appendChild(createSimpleElement(doc, "tns:RAAN", m_RAAN));
+    e.appendChild(createSimpleElement(doc, "tns:argumentOfPeriapsis", m_argumentOfPeriapsis));
+    e.appendChild(createSimpleElement(doc, "tns:trueAnomaly", m_trueAnomaly));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioKeplerianElementsType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -710,7 +1015,6 @@ ScenarioSphericalCoordinatesType::ScenarioSphericalCoordinatesType() :
 ScenarioSphericalCoordinatesType* ScenarioSphericalCoordinatesType::create(const QDomElement& e)
 {
     ScenarioSphericalCoordinatesType* v;
-    if (e.tagName() == "tns:SphericalCoordinatesType")
     {
         v = new ScenarioSphericalCoordinatesType;
         QDomElement nextElement = e.firstChildElement();
@@ -738,17 +1042,22 @@ bool ScenarioSphericalCoordinatesType::load(const QDomElement& e, QDomElement* n
     return true;
 }
 
-QDomElement ScenarioSphericalCoordinatesType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioSphericalCoordinatesType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioAbstract6DOFPositionType::toDomElement(doc);
-    e.setTagName("SphericalCoordinatesType");
-    e.appendChild(createSimpleElement(doc, "radialDistance", m_radialDistance));
-    e.appendChild(createSimpleElement(doc, "longitude", m_longitude));
-    e.appendChild(createSimpleElement(doc, "latitude", m_latitude));
-    e.appendChild(createSimpleElement(doc, "flightPathVelocity", m_flightPathVelocity));
-    e.appendChild(createSimpleElement(doc, "flightPathAngle", m_flightPathAngle));
-    e.appendChild(createSimpleElement(doc, "headingAngle", m_headingAngle));
+    QDomElement e = ScenarioAbstract6DOFPositionType::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:radialDistance", m_radialDistance));
+    e.appendChild(createSimpleElement(doc, "tns:longitude", m_longitude));
+    e.appendChild(createSimpleElement(doc, "tns:latitude", m_latitude));
+    e.appendChild(createSimpleElement(doc, "tns:flightPathVelocity", m_flightPathVelocity));
+    e.appendChild(createSimpleElement(doc, "tns:flightPathAngle", m_flightPathAngle));
+    e.appendChild(createSimpleElement(doc, "tns:headingAngle", m_headingAngle));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioSphericalCoordinatesType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -762,21 +1071,12 @@ ScenarioAbstract6DOFAttitudeType::ScenarioAbstract6DOFAttitudeType()
 ScenarioAbstract6DOFAttitudeType* ScenarioAbstract6DOFAttitudeType::create(const QDomElement& e)
 {
     ScenarioAbstract6DOFAttitudeType* v;
-    if (e.tagName() == "tns:Abstract6DOFAttitudeType")
     {
         v = new ScenarioAbstract6DOFAttitudeType;
         QDomElement nextElement = e.firstChildElement();
         v->load(e, &nextElement);
         return v;
     }
-    if (e.tagName() == "tns:EulerBLVLHType")
-        return ScenarioEulerBLVLHType::create(e);
-    if (e.tagName() == "tns:EulerBIType")
-        return ScenarioEulerBIType::create(e);
-    if (e.tagName() == "tns:qBLVLHType")
-        return ScenarioqBLVLHType::create(e);
-    if (e.tagName() == "tns:qBIType")
-        return ScenarioqBIType::create(e);
     return NULL;
 }
 
@@ -786,11 +1086,16 @@ bool ScenarioAbstract6DOFAttitudeType::load(const QDomElement& e, QDomElement* n
     return true;
 }
 
-QDomElement ScenarioAbstract6DOFAttitudeType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioAbstract6DOFAttitudeType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Abstract6DOFAttitudeType");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioAbstract6DOFAttitudeType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -810,7 +1115,6 @@ ScenarioEulerBLVLHType::ScenarioEulerBLVLHType() :
 ScenarioEulerBLVLHType* ScenarioEulerBLVLHType::create(const QDomElement& e)
 {
     ScenarioEulerBLVLHType* v;
-    if (e.tagName() == "tns:EulerBLVLHType")
     {
         v = new ScenarioEulerBLVLHType;
         QDomElement nextElement = e.firstChildElement();
@@ -838,17 +1142,22 @@ bool ScenarioEulerBLVLHType::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioEulerBLVLHType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioEulerBLVLHType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioAbstract6DOFAttitudeType::toDomElement(doc);
-    e.setTagName("EulerBLVLHType");
-    e.appendChild(createSimpleElement(doc, "phi", m_phi));
-    e.appendChild(createSimpleElement(doc, "theta", m_theta));
-    e.appendChild(createSimpleElement(doc, "psi", m_psi));
-    e.appendChild(createSimpleElement(doc, "phiDot", m_phiDot));
-    e.appendChild(createSimpleElement(doc, "thetaDot", m_thetaDot));
-    e.appendChild(createSimpleElement(doc, "psiDot", m_psiDot));
+    QDomElement e = ScenarioAbstract6DOFAttitudeType::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:phi", m_phi));
+    e.appendChild(createSimpleElement(doc, "tns:theta", m_theta));
+    e.appendChild(createSimpleElement(doc, "tns:psi", m_psi));
+    e.appendChild(createSimpleElement(doc, "tns:phiDot", m_phiDot));
+    e.appendChild(createSimpleElement(doc, "tns:thetaDot", m_thetaDot));
+    e.appendChild(createSimpleElement(doc, "tns:psiDot", m_psiDot));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioEulerBLVLHType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -868,7 +1177,6 @@ ScenarioEulerBIType::ScenarioEulerBIType() :
 ScenarioEulerBIType* ScenarioEulerBIType::create(const QDomElement& e)
 {
     ScenarioEulerBIType* v;
-    if (e.tagName() == "tns:EulerBIType")
     {
         v = new ScenarioEulerBIType;
         QDomElement nextElement = e.firstChildElement();
@@ -896,17 +1204,22 @@ bool ScenarioEulerBIType::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioEulerBIType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioEulerBIType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioAbstract6DOFAttitudeType::toDomElement(doc);
-    e.setTagName("EulerBIType");
-    e.appendChild(createSimpleElement(doc, "phi", m_phi));
-    e.appendChild(createSimpleElement(doc, "theta", m_theta));
-    e.appendChild(createSimpleElement(doc, "psi", m_psi));
-    e.appendChild(createSimpleElement(doc, "phiDot", m_phiDot));
-    e.appendChild(createSimpleElement(doc, "thetaDot", m_thetaDot));
-    e.appendChild(createSimpleElement(doc, "psiDot", m_psiDot));
+    QDomElement e = ScenarioAbstract6DOFAttitudeType::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:phi", m_phi));
+    e.appendChild(createSimpleElement(doc, "tns:theta", m_theta));
+    e.appendChild(createSimpleElement(doc, "tns:psi", m_psi));
+    e.appendChild(createSimpleElement(doc, "tns:phiDot", m_phiDot));
+    e.appendChild(createSimpleElement(doc, "tns:thetaDot", m_thetaDot));
+    e.appendChild(createSimpleElement(doc, "tns:psiDot", m_psiDot));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioEulerBIType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -928,7 +1241,6 @@ ScenarioqBLVLHType::ScenarioqBLVLHType() :
 ScenarioqBLVLHType* ScenarioqBLVLHType::create(const QDomElement& e)
 {
     ScenarioqBLVLHType* v;
-    if (e.tagName() == "tns:qBLVLHType")
     {
         v = new ScenarioqBLVLHType;
         QDomElement nextElement = e.firstChildElement();
@@ -960,19 +1272,24 @@ bool ScenarioqBLVLHType::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioqBLVLHType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioqBLVLHType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioAbstract6DOFAttitudeType::toDomElement(doc);
-    e.setTagName("qBLVLHType");
-    e.appendChild(createSimpleElement(doc, "q1", m_q1));
-    e.appendChild(createSimpleElement(doc, "q2", m_q2));
-    e.appendChild(createSimpleElement(doc, "q3", m_q3));
-    e.appendChild(createSimpleElement(doc, "q4", m_q4));
-    e.appendChild(createSimpleElement(doc, "q1Dot", m_q1Dot));
-    e.appendChild(createSimpleElement(doc, "q2Dot", m_q2Dot));
-    e.appendChild(createSimpleElement(doc, "q3Dot", m_q3Dot));
-    e.appendChild(createSimpleElement(doc, "q4Dot", m_q4Dot));
+    QDomElement e = ScenarioAbstract6DOFAttitudeType::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:q1", m_q1));
+    e.appendChild(createSimpleElement(doc, "tns:q2", m_q2));
+    e.appendChild(createSimpleElement(doc, "tns:q3", m_q3));
+    e.appendChild(createSimpleElement(doc, "tns:q4", m_q4));
+    e.appendChild(createSimpleElement(doc, "tns:q1Dot", m_q1Dot));
+    e.appendChild(createSimpleElement(doc, "tns:q2Dot", m_q2Dot));
+    e.appendChild(createSimpleElement(doc, "tns:q3Dot", m_q3Dot));
+    e.appendChild(createSimpleElement(doc, "tns:q4Dot", m_q4Dot));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioqBLVLHType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -994,7 +1311,6 @@ ScenarioqBIType::ScenarioqBIType() :
 ScenarioqBIType* ScenarioqBIType::create(const QDomElement& e)
 {
     ScenarioqBIType* v;
-    if (e.tagName() == "tns:qBIType")
     {
         v = new ScenarioqBIType;
         QDomElement nextElement = e.firstChildElement();
@@ -1026,19 +1342,24 @@ bool ScenarioqBIType::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioqBIType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioqBIType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioAbstract6DOFAttitudeType::toDomElement(doc);
-    e.setTagName("qBIType");
-    e.appendChild(createSimpleElement(doc, "q1", m_q1));
-    e.appendChild(createSimpleElement(doc, "q2", m_q2));
-    e.appendChild(createSimpleElement(doc, "q3", m_q3));
-    e.appendChild(createSimpleElement(doc, "q4", m_q4));
-    e.appendChild(createSimpleElement(doc, "q1Dot", m_q1Dot));
-    e.appendChild(createSimpleElement(doc, "q2Dot", m_q2Dot));
-    e.appendChild(createSimpleElement(doc, "q3Dot", m_q3Dot));
-    e.appendChild(createSimpleElement(doc, "q4Dot", m_q4Dot));
+    QDomElement e = ScenarioAbstract6DOFAttitudeType::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:q1", m_q1));
+    e.appendChild(createSimpleElement(doc, "tns:q2", m_q2));
+    e.appendChild(createSimpleElement(doc, "tns:q3", m_q3));
+    e.appendChild(createSimpleElement(doc, "tns:q4", m_q4));
+    e.appendChild(createSimpleElement(doc, "tns:q1Dot", m_q1Dot));
+    e.appendChild(createSimpleElement(doc, "tns:q2Dot", m_q2Dot));
+    e.appendChild(createSimpleElement(doc, "tns:q3Dot", m_q3Dot));
+    e.appendChild(createSimpleElement(doc, "tns:q4Dot", m_q4Dot));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioqBIType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -1052,15 +1373,12 @@ ScenarioAbstract12DOFStateType::ScenarioAbstract12DOFStateType()
 ScenarioAbstract12DOFStateType* ScenarioAbstract12DOFStateType::create(const QDomElement& e)
 {
     ScenarioAbstract12DOFStateType* v;
-    if (e.tagName() == "tns:Abstract12DOFStateType")
     {
         v = new ScenarioAbstract12DOFStateType;
         QDomElement nextElement = e.firstChildElement();
         v->load(e, &nextElement);
         return v;
     }
-    if (e.tagName() == "tns:State12DOF")
-        return ScenarioState12DOF::create(e);
     return NULL;
 }
 
@@ -1070,11 +1388,16 @@ bool ScenarioAbstract12DOFStateType::load(const QDomElement& e, QDomElement* nex
     return true;
 }
 
-QDomElement ScenarioAbstract12DOFStateType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioAbstract12DOFStateType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Abstract12DOFStateType");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioAbstract12DOFStateType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -1088,7 +1411,6 @@ ScenarioState12DOF::ScenarioState12DOF()
 ScenarioState12DOF* ScenarioState12DOF::create(const QDomElement& e)
 {
     ScenarioState12DOF* v;
-    if (e.tagName() == "tns:State12DOF")
     {
         v = new ScenarioState12DOF;
         QDomElement nextElement = e.firstChildElement();
@@ -1101,28 +1423,63 @@ ScenarioState12DOF* ScenarioState12DOF::create(const QDomElement& e)
 bool ScenarioState12DOF::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioAbstract12DOFStateType::load(e, next);
-    m_Abstract6DOFPosition = QSharedPointer<ScenarioAbstract6DOFPositionType>(ScenarioAbstract6DOFPositionType::create(*next));
+    if (next->tagName() == "tns:StateVector")
+        m_Abstract6DOFPosition = QSharedPointer<ScenarioAbstract6DOFPositionType>((ScenarioAbstract6DOFPositionType*)ScenarioStateVectorType::create(*next));
+    else if (next->tagName() == "tns:KeplerianElements")
+        m_Abstract6DOFPosition = QSharedPointer<ScenarioAbstract6DOFPositionType>((ScenarioAbstract6DOFPositionType*)ScenarioKeplerianElementsType::create(*next));
+    else if (next->tagName() == "tns:SphericalCoordinates")
+        m_Abstract6DOFPosition = QSharedPointer<ScenarioAbstract6DOFPositionType>((ScenarioAbstract6DOFPositionType*)ScenarioSphericalCoordinatesType::create(*next));
     *next = next->nextSiblingElement();
-    m_Abstract6DOFAttitude = QSharedPointer<ScenarioAbstract6DOFAttitudeType>(ScenarioAbstract6DOFAttitudeType::create(*next));
+    if (next->tagName() == "tns:EulerBLVLH")
+        m_Abstract6DOFAttitude = QSharedPointer<ScenarioAbstract6DOFAttitudeType>((ScenarioAbstract6DOFAttitudeType*)ScenarioEulerBLVLHType::create(*next));
+    else if (next->tagName() == "tns:EulerBI")
+        m_Abstract6DOFAttitude = QSharedPointer<ScenarioAbstract6DOFAttitudeType>((ScenarioAbstract6DOFAttitudeType*)ScenarioEulerBIType::create(*next));
+    else if (next->tagName() == "tns:qBLVLH")
+        m_Abstract6DOFAttitude = QSharedPointer<ScenarioAbstract6DOFAttitudeType>((ScenarioAbstract6DOFAttitudeType*)ScenarioqBLVLHType::create(*next));
+    else if (next->tagName() == "tns:qBI")
+        m_Abstract6DOFAttitude = QSharedPointer<ScenarioAbstract6DOFAttitudeType>((ScenarioAbstract6DOFAttitudeType*)ScenarioqBIType::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioState12DOF::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioState12DOF::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioAbstract12DOFStateType::toDomElement(doc);
-    e.setTagName("State12DOF");
+    QDomElement e = ScenarioAbstract12DOFStateType::toDomElement(doc, elementName);
     if (!m_Abstract6DOFPosition.isNull())
     {
-        QDomElement child = m_Abstract6DOFPosition->toDomElement(doc);
+        QString tagName = "Abstract6DOFPosition";
+        if (dynamic_cast<ScenarioStateVectorType*>(m_Abstract6DOFPosition.data()))
+            tagName = "StateVector";
+        else if (dynamic_cast<ScenarioKeplerianElementsType*>(m_Abstract6DOFPosition.data()))
+            tagName = "KeplerianElements";
+        else if (dynamic_cast<ScenarioSphericalCoordinatesType*>(m_Abstract6DOFPosition.data()))
+            tagName = "SphericalCoordinates";
+        QDomElement child = m_Abstract6DOFPosition->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_Abstract6DOFAttitude.isNull())
     {
-        QDomElement child = m_Abstract6DOFAttitude->toDomElement(doc);
+        QString tagName = "Abstract6DOFAttitude";
+        if (dynamic_cast<ScenarioEulerBLVLHType*>(m_Abstract6DOFAttitude.data()))
+            tagName = "EulerBLVLH";
+        else if (dynamic_cast<ScenarioEulerBIType*>(m_Abstract6DOFAttitude.data()))
+            tagName = "EulerBI";
+        else if (dynamic_cast<ScenarioqBLVLHType*>(m_Abstract6DOFAttitude.data()))
+            tagName = "qBLVLH";
+        else if (dynamic_cast<ScenarioqBIType*>(m_Abstract6DOFAttitude.data()))
+            tagName = "qBI";
+        QDomElement child = m_Abstract6DOFAttitude->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioState12DOF::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Abstract6DOFPosition.isNull()) children << m_Abstract6DOFPosition;
+    if (!m_Abstract6DOFAttitude.isNull()) children << m_Abstract6DOFAttitude;
+    return children;
 }
 
 
@@ -1139,7 +1496,6 @@ ScenarioOptimization::ScenarioOptimization() :
 ScenarioOptimization* ScenarioOptimization::create(const QDomElement& e)
 {
     ScenarioOptimization* v;
-    if (e.tagName() == "tns:Optimization")
     {
         v = new ScenarioOptimization;
         QDomElement nextElement = e.firstChildElement();
@@ -1177,22 +1533,27 @@ bool ScenarioOptimization::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioOptimization::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioOptimization::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Optimization");
-    e.appendChild(createSimpleElement(doc, "nVariables", m_nVariables));
-    e.appendChild(createSimpleElement(doc, "variables", m_variables));
-    e.appendChild(createSimpleElement(doc, "variablesMatrix", m_variablesMatrix));
-    e.appendChild(createSimpleElement(doc, "nObjectives", m_nObjectives));
-    e.appendChild(createSimpleElement(doc, "objectives", m_objectives));
-    e.appendChild(createSimpleElement(doc, "objectivesMatrix", m_objectivesMatrix));
-    e.appendChild(createSimpleElement(doc, "nConstraints", m_nConstraints));
-    e.appendChild(createSimpleElement(doc, "constraints", m_constraints));
-    e.appendChild(createSimpleElement(doc, "constraintsMatrix", m_constraintsMatrix));
-    e.appendChild(createSimpleElement(doc, "algorithm", m_algorithm));
-    e.appendChild(createSimpleElement(doc, "algorithmParameters", m_algorithmParameters));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:nVariables", m_nVariables));
+    e.appendChild(createSimpleElement(doc, "tns:variables", m_variables));
+    e.appendChild(createSimpleElement(doc, "tns:variablesMatrix", m_variablesMatrix));
+    e.appendChild(createSimpleElement(doc, "tns:nObjectives", m_nObjectives));
+    e.appendChild(createSimpleElement(doc, "tns:objectives", m_objectives));
+    e.appendChild(createSimpleElement(doc, "tns:objectivesMatrix", m_objectivesMatrix));
+    e.appendChild(createSimpleElement(doc, "tns:nConstraints", m_nConstraints));
+    e.appendChild(createSimpleElement(doc, "tns:constraints", m_constraints));
+    e.appendChild(createSimpleElement(doc, "tns:constraintsMatrix", m_constraintsMatrix));
+    e.appendChild(createSimpleElement(doc, "tns:algorithm", m_algorithm));
+    e.appendChild(createSimpleElement(doc, "tns:algorithmParameters", m_algorithmParameters));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioOptimization::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -1206,7 +1567,6 @@ ScenarioOutputFiles::ScenarioOutputFiles()
 ScenarioOutputFiles* ScenarioOutputFiles::create(const QDomElement& e)
 {
     ScenarioOutputFiles* v;
-    if (e.tagName() == "tns:OutputFiles")
     {
         v = new ScenarioOutputFiles;
         QDomElement nextElement = e.firstChildElement();
@@ -1256,19 +1616,24 @@ bool ScenarioOutputFiles::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioOutputFiles::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioOutputFiles::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("OutputFiles");
-    e.appendChild(createSimpleElement(doc, "paretoFrontVarsFileName", m_paretoFrontVarsFileName));
-    e.appendChild(createSimpleElement(doc, "paretoFrontCstrsFileName", m_paretoFrontCstrsFileName));
-    e.appendChild(createSimpleElement(doc, "paretoFrontObjsFileName", m_paretoFrontObjsFileName));
-    e.appendChild(createSimpleElement(doc, "geometryFileName", m_geometryFileName));
-    e.appendChild(createSimpleElement(doc, "trajPostionFileName", m_trajPostionFileName));
-    e.appendChild(createSimpleElement(doc, "trajAttitudeFileName", m_trajAttitudeFileName));
-    e.appendChild(createSimpleElement(doc, "trajMiscFileName", m_trajMiscFileName));
-    e.appendChild(createSimpleElement(doc, "successProbabilityFileName", m_successProbabilityFileName));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:paretoFrontVarsFileName", m_paretoFrontVarsFileName));
+    e.appendChild(createSimpleElement(doc, "tns:paretoFrontCstrsFileName", m_paretoFrontCstrsFileName));
+    e.appendChild(createSimpleElement(doc, "tns:paretoFrontObjsFileName", m_paretoFrontObjsFileName));
+    e.appendChild(createSimpleElement(doc, "tns:geometryFileName", m_geometryFileName));
+    e.appendChild(createSimpleElement(doc, "tns:trajPostionFileName", m_trajPostionFileName));
+    e.appendChild(createSimpleElement(doc, "tns:trajAttitudeFileName", m_trajAttitudeFileName));
+    e.appendChild(createSimpleElement(doc, "tns:trajMiscFileName", m_trajMiscFileName));
+    e.appendChild(createSimpleElement(doc, "tns:successProbabilityFileName", m_successProbabilityFileName));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioOutputFiles::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -1282,19 +1647,12 @@ ScenarioAbstractConeType::ScenarioAbstractConeType()
 ScenarioAbstractConeType* ScenarioAbstractConeType::create(const QDomElement& e)
 {
     ScenarioAbstractConeType* v;
-    if (e.tagName() == "tns:AbstractConeType")
     {
         v = new ScenarioAbstractConeType;
         QDomElement nextElement = e.firstChildElement();
         v->load(e, &nextElement);
         return v;
     }
-    if (e.tagName() == "tns:CircularCone")
-        return ScenarioCircularCone::create(e);
-    if (e.tagName() == "tns:RectangularConeType")
-        return ScenarioRectangularConeType::create(e);
-    if (e.tagName() == "tns:OvalConeType")
-        return ScenarioOvalConeType::create(e);
     return NULL;
 }
 
@@ -1304,11 +1662,16 @@ bool ScenarioAbstractConeType::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioAbstractConeType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioAbstractConeType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("AbstractConeType");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioAbstractConeType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -1323,7 +1686,6 @@ ScenarioCircularCone::ScenarioCircularCone() :
 ScenarioCircularCone* ScenarioCircularCone::create(const QDomElement& e)
 {
     ScenarioCircularCone* v;
-    if (e.tagName() == "tns:CircularCone")
     {
         v = new ScenarioCircularCone;
         QDomElement nextElement = e.firstChildElement();
@@ -1341,12 +1703,17 @@ bool ScenarioCircularCone::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioCircularCone::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioCircularCone::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioAbstractConeType::toDomElement(doc);
-    e.setTagName("CircularCone");
-    e.appendChild(createSimpleElement(doc, "coneAngle", m_coneAngle));
+    QDomElement e = ScenarioAbstractConeType::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:coneAngle", m_coneAngle));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioCircularCone::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -1362,7 +1729,6 @@ ScenarioRectangularConeType::ScenarioRectangularConeType() :
 ScenarioRectangularConeType* ScenarioRectangularConeType::create(const QDomElement& e)
 {
     ScenarioRectangularConeType* v;
-    if (e.tagName() == "tns:RectangularConeType")
     {
         v = new ScenarioRectangularConeType;
         QDomElement nextElement = e.firstChildElement();
@@ -1382,13 +1748,18 @@ bool ScenarioRectangularConeType::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioRectangularConeType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioRectangularConeType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioAbstractConeType::toDomElement(doc);
-    e.setTagName("RectangularConeType");
-    e.appendChild(createSimpleElement(doc, "coneAngle1", m_coneAngle1));
-    e.appendChild(createSimpleElement(doc, "coneAngle2", m_coneAngle2));
+    QDomElement e = ScenarioAbstractConeType::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:coneAngle1", m_coneAngle1));
+    e.appendChild(createSimpleElement(doc, "tns:coneAngle2", m_coneAngle2));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioRectangularConeType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -1402,7 +1773,6 @@ ScenarioOvalConeType::ScenarioOvalConeType()
 ScenarioOvalConeType* ScenarioOvalConeType::create(const QDomElement& e)
 {
     ScenarioOvalConeType* v;
-    if (e.tagName() == "tns:OvalConeType")
     {
         v = new ScenarioOvalConeType;
         QDomElement nextElement = e.firstChildElement();
@@ -1418,11 +1788,16 @@ bool ScenarioOvalConeType::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioOvalConeType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioOvalConeType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioAbstractConeType::toDomElement(doc);
-    e.setTagName("OvalConeType");
+    QDomElement e = ScenarioAbstractConeType::toDomElement(doc, elementName);
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioOvalConeType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -1431,51 +1806,77 @@ QDomElement ScenarioOvalConeType::toDomElement(QDomDocument& doc) const
 // ScenarioAntenna
 ScenarioAntenna::ScenarioAntenna()
 {
+    m_PointingDirection = QSharedPointer<ScenarioPointingDirection>(new ScenarioPointingDirection());
 }
 
 ScenarioAntenna* ScenarioAntenna::create(const QDomElement& e)
 {
     ScenarioAntenna* v;
-    if (e.tagName() == "tns:Antenna")
     {
         v = new ScenarioAntenna;
         QDomElement nextElement = e.firstChildElement();
         v->load(e, &nextElement);
         return v;
     }
-    if (e.tagName() == "tns:CommunicationAntenna")
-        return ScenarioCommunicationAntenna::create(e);
-    if (e.tagName() == "tns:ObservationAntenna")
-        return ScenarioObservationAntenna::create(e);
     return NULL;
 }
 
 bool ScenarioAntenna::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    m_AbstractCone = QSharedPointer<ScenarioAbstractConeType>(ScenarioAbstractConeType::create(*next));
+    if (next->tagName() == "tns:CircularCone")
+        m_AbstractCone = QSharedPointer<ScenarioAbstractConeType>((ScenarioAbstractConeType*)ScenarioCircularCone::create(*next));
+    else if (next->tagName() == "tns:RectangularCone")
+        m_AbstractCone = QSharedPointer<ScenarioAbstractConeType>((ScenarioAbstractConeType*)ScenarioRectangularConeType::create(*next));
+    else if (next->tagName() == "tns:OvalCone")
+        m_AbstractCone = QSharedPointer<ScenarioAbstractConeType>((ScenarioAbstractConeType*)ScenarioOvalConeType::create(*next));
+    else if (next->tagName() == "tns:Radar")
+        m_AbstractCone = QSharedPointer<ScenarioAbstractConeType>((ScenarioAbstractConeType*)ScenarioAbstractConeType::create(*next));
     *next = next->nextSiblingElement();
-    m_PointingDirection = QSharedPointer<ScenarioPointingDirection>(ScenarioPointingDirection::create(*next));
+    if (next->tagName() == "tns:CircularCone")
+        m_PointingDirection = QSharedPointer<ScenarioPointingDirection>((ScenarioPointingDirection*)ScenarioCircularCone::create(*next));
+    else if (next->tagName() == "tns:RectangularCone")
+        m_PointingDirection = QSharedPointer<ScenarioPointingDirection>((ScenarioPointingDirection*)ScenarioRectangularConeType::create(*next));
+    else if (next->tagName() == "tns:OvalCone")
+        m_PointingDirection = QSharedPointer<ScenarioPointingDirection>((ScenarioPointingDirection*)ScenarioOvalConeType::create(*next));
+    else if (next->tagName() == "tns:Radar")
+        m_PointingDirection = QSharedPointer<ScenarioPointingDirection>((ScenarioPointingDirection*)ScenarioAbstractConeType::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioAntenna::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioAntenna::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Antenna");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     if (!m_AbstractCone.isNull())
     {
-        QDomElement child = m_AbstractCone->toDomElement(doc);
+        QString tagName = "AbstractCone";
+        if (dynamic_cast<ScenarioCircularCone*>(m_AbstractCone.data()))
+            tagName = "CircularCone";
+        else if (dynamic_cast<ScenarioRectangularConeType*>(m_AbstractCone.data()))
+            tagName = "RectangularCone";
+        else if (dynamic_cast<ScenarioOvalConeType*>(m_AbstractCone.data()))
+            tagName = "OvalCone";
+        else if (dynamic_cast<ScenarioAbstractConeType*>(m_AbstractCone.data()))
+            tagName = "Radar";
+        QDomElement child = m_AbstractCone->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_PointingDirection.isNull())
     {
-        QDomElement child = m_PointingDirection->toDomElement(doc);
-        child.setTagName("PointingDirection");
+        QString tagName = "PointingDirection";
+        QDomElement child = m_PointingDirection->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioAntenna::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_AbstractCone.isNull()) children << m_AbstractCone;
+    if (!m_PointingDirection.isNull()) children << m_PointingDirection;
+    return children;
 }
 
 
@@ -1493,7 +1894,6 @@ ScenarioPointingDirection::ScenarioPointingDirection() :
 ScenarioPointingDirection* ScenarioPointingDirection::create(const QDomElement& e)
 {
     ScenarioPointingDirection* v;
-    if (e.tagName() == "tns:PointingDirection")
     {
         v = new ScenarioPointingDirection;
         QDomElement nextElement = e.firstChildElement();
@@ -1528,16 +1928,21 @@ bool ScenarioPointingDirection::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioPointingDirection::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioPointingDirection::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("PointingDirection");
-    e.appendChild(createSimpleElement(doc, "referenceSystem", m_referenceSystem));
-    e.appendChild(createSimpleElement(doc, "azimuth", m_azimuth));
-    e.appendChild(createSimpleElement(doc, "elevation", m_elevation));
-    e.appendChild(createSimpleElement(doc, "azimuthDot", m_azimuthDot));
-    e.appendChild(createSimpleElement(doc, "elevationDot", m_elevationDot));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:referenceSystem", m_referenceSystem));
+    e.appendChild(createSimpleElement(doc, "tns:azimuth", m_azimuth));
+    e.appendChild(createSimpleElement(doc, "tns:elevation", m_elevation));
+    e.appendChild(createSimpleElement(doc, "tns:azimuthDot", m_azimuthDot));
+    e.appendChild(createSimpleElement(doc, "tns:elevationDot", m_elevationDot));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioPointingDirection::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -1551,7 +1956,6 @@ ScenarioCommunicationAntenna::ScenarioCommunicationAntenna()
 ScenarioCommunicationAntenna* ScenarioCommunicationAntenna::create(const QDomElement& e)
 {
     ScenarioCommunicationAntenna* v;
-    if (e.tagName() == "tns:CommunicationAntenna")
     {
         v = new ScenarioCommunicationAntenna;
         QDomElement nextElement = e.firstChildElement();
@@ -1567,11 +1971,16 @@ bool ScenarioCommunicationAntenna::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioCommunicationAntenna::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioCommunicationAntenna::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioAntenna::toDomElement(doc);
-    e.setTagName("CommunicationAntenna");
+    QDomElement e = ScenarioAntenna::toDomElement(doc, elementName);
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioCommunicationAntenna::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -1585,7 +1994,6 @@ ScenarioObservationAntenna::ScenarioObservationAntenna()
 ScenarioObservationAntenna* ScenarioObservationAntenna::create(const QDomElement& e)
 {
     ScenarioObservationAntenna* v;
-    if (e.tagName() == "tns:ObservationAntenna")
     {
         v = new ScenarioObservationAntenna;
         QDomElement nextElement = e.firstChildElement();
@@ -1601,11 +2009,16 @@ bool ScenarioObservationAntenna::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioObservationAntenna::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioObservationAntenna::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioAntenna::toDomElement(doc);
-    e.setTagName("ObservationAntenna");
+    QDomElement e = ScenarioAntenna::toDomElement(doc, elementName);
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioObservationAntenna::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -1619,7 +2032,6 @@ ScenarioLocationType::ScenarioLocationType()
 ScenarioLocationType* ScenarioLocationType::create(const QDomElement& e)
 {
     ScenarioLocationType* v;
-    if (e.tagName() == "tns:LocationType")
     {
         v = new ScenarioLocationType;
         QDomElement nextElement = e.firstChildElement();
@@ -1634,22 +2046,32 @@ bool ScenarioLocationType::load(const QDomElement& e, QDomElement* next)
     ScenarioObject::load(e, next);
         m_CentralBody = (next->firstChild().toText().data());
         *next = next->nextSiblingElement();
-    m_Abstract3DOFPosition = QSharedPointer<ScenarioAbstract3DOFPositionType>(ScenarioAbstract3DOFPositionType::create(*next));
+    if (next->tagName() == "tns:GroundPosition")
+        m_Abstract3DOFPosition = QSharedPointer<ScenarioAbstract3DOFPositionType>((ScenarioAbstract3DOFPositionType*)ScenarioGroundPositionType::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioLocationType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioLocationType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("LocationType");
-    e.appendChild(createSimpleElement(doc, "CentralBody", m_CentralBody));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:CentralBody", m_CentralBody));
     if (!m_Abstract3DOFPosition.isNull())
     {
-        QDomElement child = m_Abstract3DOFPosition->toDomElement(doc);
+        QString tagName = "Abstract3DOFPosition";
+        if (dynamic_cast<ScenarioGroundPositionType*>(m_Abstract3DOFPosition.data()))
+            tagName = "GroundPosition";
+        QDomElement child = m_Abstract3DOFPosition->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioLocationType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Abstract3DOFPosition.isNull()) children << m_Abstract3DOFPosition;
+    return children;
 }
 
 
@@ -1658,12 +2080,13 @@ QDomElement ScenarioLocationType::toDomElement(QDomDocument& doc) const
 // ScenarioGroundStation
 ScenarioGroundStation::ScenarioGroundStation()
 {
+    m_Location = QSharedPointer<ScenarioLocationType>(new ScenarioLocationType());
+    m_CommunicationAntenna = QSharedPointer<ScenarioCommunicationAntenna>(new ScenarioCommunicationAntenna());
 }
 
 ScenarioGroundStation* ScenarioGroundStation::create(const QDomElement& e)
 {
     ScenarioGroundStation* v;
-    if (e.tagName() == "tns:GroundStation")
     {
         v = new ScenarioGroundStation;
         QDomElement nextElement = e.firstChildElement();
@@ -1676,29 +2099,39 @@ ScenarioGroundStation* ScenarioGroundStation::create(const QDomElement& e)
 bool ScenarioGroundStation::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioParticipantType::load(e, next);
-    m_Location = QSharedPointer<ScenarioLocationType>(ScenarioLocationType::create(*next));
+    if (next->tagName() == "tns:Location")
+        m_Location = QSharedPointer<ScenarioLocationType>(ScenarioLocationType::create(*next));
     *next = next->nextSiblingElement();
-    m_CommunicationAntenna = QSharedPointer<ScenarioCommunicationAntenna>(ScenarioCommunicationAntenna::create(*next));
+    if (next->tagName() == "tns:CommunicationAntenna")
+        m_CommunicationAntenna = QSharedPointer<ScenarioCommunicationAntenna>(ScenarioCommunicationAntenna::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioGroundStation::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioGroundStation::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioParticipantType::toDomElement(doc);
-    e.setTagName("GroundStation");
+    QDomElement e = ScenarioParticipantType::toDomElement(doc, elementName);
     if (!m_Location.isNull())
     {
-        QDomElement child = m_Location->toDomElement(doc);
-        child.setTagName("Location");
+        QString tagName = "Location";
+        QDomElement child = m_Location->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_CommunicationAntenna.isNull())
     {
-        QDomElement child = m_CommunicationAntenna->toDomElement(doc);
+        QString tagName = "CommunicationAntenna";
+        QDomElement child = m_CommunicationAntenna->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioGroundStation::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Location.isNull()) children << m_Location;
+    if (!m_CommunicationAntenna.isNull()) children << m_CommunicationAntenna;
+    return children;
 }
 
 
@@ -1708,12 +2141,12 @@ QDomElement ScenarioGroundStation::toDomElement(QDomDocument& doc) const
 ScenarioLaunchPad::ScenarioLaunchPad() :
     m_clearingAltitude(0.0)
 {
+    m_Location = QSharedPointer<ScenarioLocationType>(new ScenarioLocationType());
 }
 
 ScenarioLaunchPad* ScenarioLaunchPad::create(const QDomElement& e)
 {
     ScenarioLaunchPad* v;
-    if (e.tagName() == "tns:LaunchPad")
     {
         v = new ScenarioLaunchPad;
         QDomElement nextElement = e.firstChildElement();
@@ -1726,25 +2159,32 @@ ScenarioLaunchPad* ScenarioLaunchPad::create(const QDomElement& e)
 bool ScenarioLaunchPad::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioParticipantType::load(e, next);
-    m_Location = QSharedPointer<ScenarioLocationType>(ScenarioLocationType::create(*next));
+    if (next->tagName() == "tns:Location")
+        m_Location = QSharedPointer<ScenarioLocationType>(ScenarioLocationType::create(*next));
     *next = next->nextSiblingElement();
         m_clearingAltitude = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioLaunchPad::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioLaunchPad::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioParticipantType::toDomElement(doc);
-    e.setTagName("LaunchPad");
+    QDomElement e = ScenarioParticipantType::toDomElement(doc, elementName);
     if (!m_Location.isNull())
     {
-        QDomElement child = m_Location->toDomElement(doc);
-        child.setTagName("Location");
+        QString tagName = "Location";
+        QDomElement child = m_Location->toDomElement(doc, tagName);
         e.appendChild(child);
     }
-    e.appendChild(createSimpleElement(doc, "clearingAltitude", m_clearingAltitude));
+    e.appendChild(createSimpleElement(doc, "tns:clearingAltitude", m_clearingAltitude));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioLaunchPad::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Location.isNull()) children << m_Location;
+    return children;
 }
 
 
@@ -1753,12 +2193,12 @@ QDomElement ScenarioLaunchPad::toDomElement(QDomDocument& doc) const
 // ScenarioPoint
 ScenarioPoint::ScenarioPoint()
 {
+    m_Location = QSharedPointer<ScenarioLocation>(new ScenarioLocation());
 }
 
 ScenarioPoint* ScenarioPoint::create(const QDomElement& e)
 {
     ScenarioPoint* v;
-    if (e.tagName() == "tns:Point")
     {
         v = new ScenarioPoint;
         QDomElement nextElement = e.firstChildElement();
@@ -1771,22 +2211,29 @@ ScenarioPoint* ScenarioPoint::create(const QDomElement& e)
 bool ScenarioPoint::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioParticipantType::load(e, next);
-    m_Location = QSharedPointer<ScenarioLocation>(ScenarioLocation::create(*next));
+    if (next->tagName() == "tns:Location")
+        m_Location = QSharedPointer<ScenarioLocation>(ScenarioLocation::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioPoint::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioPoint::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioParticipantType::toDomElement(doc);
-    e.setTagName("Point");
+    QDomElement e = ScenarioParticipantType::toDomElement(doc, elementName);
     if (!m_Location.isNull())
     {
-        QDomElement child = m_Location->toDomElement(doc);
-        child.setTagName("Location");
+        QString tagName = "Location";
+        QDomElement child = m_Location->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioPoint::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Location.isNull()) children << m_Location;
+    return children;
 }
 
 
@@ -1800,7 +2247,6 @@ ScenarioLocation::ScenarioLocation()
 ScenarioLocation* ScenarioLocation::create(const QDomElement& e)
 {
     ScenarioLocation* v;
-    if (e.tagName() == "tns:Location")
     {
         v = new ScenarioLocation;
         QDomElement nextElement = e.firstChildElement();
@@ -1816,11 +2262,16 @@ bool ScenarioLocation::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioLocation::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioLocation::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Location");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioLocation::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -1829,12 +2280,16 @@ QDomElement ScenarioLocation::toDomElement(QDomDocument& doc) const
 // ScenarioLV
 ScenarioLV::ScenarioLV()
 {
+    m_LVProgram = QSharedPointer<ScenarioLVProgram>(new ScenarioLVProgram());
+    m_LVMission = QSharedPointer<ScenarioLVMission>(new ScenarioLVMission());
+    m_System = QSharedPointer<ScenarioLVSystemType>(new ScenarioLVSystemType());
+    m_Optimization = QSharedPointer<ScenarioOptimization>(new ScenarioOptimization());
+    m_OutputFiles = QSharedPointer<ScenarioOutputFiles>(new ScenarioOutputFiles());
 }
 
 ScenarioLV* ScenarioLV::create(const QDomElement& e)
 {
     ScenarioLV* v;
-    if (e.tagName() == "tns:LV")
     {
         v = new ScenarioLV;
         QDomElement nextElement = e.firstChildElement();
@@ -1847,53 +2302,72 @@ ScenarioLV* ScenarioLV::create(const QDomElement& e)
 bool ScenarioLV::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioParticipantType::load(e, next);
-    m_LVProgram = QSharedPointer<ScenarioLVProgram>(ScenarioLVProgram::create(*next));
+    if (next->tagName() == "tns:LVProgram")
+        m_LVProgram = QSharedPointer<ScenarioLVProgram>(ScenarioLVProgram::create(*next));
     *next = next->nextSiblingElement();
-    m_LVMission = QSharedPointer<ScenarioLVMission>(ScenarioLVMission::create(*next));
+    if (next->tagName() == "tns:LVMission")
+        m_LVMission = QSharedPointer<ScenarioLVMission>(ScenarioLVMission::create(*next));
     *next = next->nextSiblingElement();
-    m_System = QSharedPointer<ScenarioLVSystemType>(ScenarioLVSystemType::create(*next));
+    if (next->tagName() == "tns:System")
+        m_System = QSharedPointer<ScenarioLVSystemType>(ScenarioLVSystemType::create(*next));
     *next = next->nextSiblingElement();
-    m_Optimization = QSharedPointer<ScenarioOptimization>(ScenarioOptimization::create(*next));
+    if (next->tagName() == "tns:Optimization")
+        m_Optimization = QSharedPointer<ScenarioOptimization>(ScenarioOptimization::create(*next));
     *next = next->nextSiblingElement();
-    m_OutputFiles = QSharedPointer<ScenarioOutputFiles>(ScenarioOutputFiles::create(*next));
+    if (next->tagName() == "tns:OutputFiles")
+        m_OutputFiles = QSharedPointer<ScenarioOutputFiles>(ScenarioOutputFiles::create(*next));
     *next = next->nextSiblingElement();
         m_Appearance = (next->firstChild().toText().data());
         *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioLV::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioLV::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioParticipantType::toDomElement(doc);
-    e.setTagName("LV");
+    QDomElement e = ScenarioParticipantType::toDomElement(doc, elementName);
     if (!m_LVProgram.isNull())
     {
-        QDomElement child = m_LVProgram->toDomElement(doc);
+        QString tagName = "LVProgram";
+        QDomElement child = m_LVProgram->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_LVMission.isNull())
     {
-        QDomElement child = m_LVMission->toDomElement(doc);
+        QString tagName = "LVMission";
+        QDomElement child = m_LVMission->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_System.isNull())
     {
-        QDomElement child = m_System->toDomElement(doc);
-        child.setTagName("System");
+        QString tagName = "System";
+        QDomElement child = m_System->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_Optimization.isNull())
     {
-        QDomElement child = m_Optimization->toDomElement(doc);
+        QString tagName = "Optimization";
+        QDomElement child = m_Optimization->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_OutputFiles.isNull())
     {
-        QDomElement child = m_OutputFiles->toDomElement(doc);
+        QString tagName = "OutputFiles";
+        QDomElement child = m_OutputFiles->toDomElement(doc, tagName);
         e.appendChild(child);
     }
-    e.appendChild(createSimpleElement(doc, "Appearance", m_Appearance));
+    e.appendChild(createSimpleElement(doc, "tns:Appearance", m_Appearance));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioLV::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_LVProgram.isNull()) children << m_LVProgram;
+    if (!m_LVMission.isNull()) children << m_LVMission;
+    if (!m_System.isNull()) children << m_System;
+    if (!m_Optimization.isNull()) children << m_Optimization;
+    if (!m_OutputFiles.isNull()) children << m_OutputFiles;
+    return children;
 }
 
 
@@ -1902,12 +2376,15 @@ QDomElement ScenarioLV::toDomElement(QDomDocument& doc) const
 // ScenarioPropulsionSystem
 ScenarioPropulsionSystem::ScenarioPropulsionSystem()
 {
+    m_System = QSharedPointer<ScenarioSystem>(new ScenarioSystem());
+    m_CombustionChamber = QSharedPointer<ScenarioCombustionChamber>(new ScenarioCombustionChamber());
+    m_Nozzle = QSharedPointer<ScenarioNozzle>(new ScenarioNozzle());
+    m_Performance = QSharedPointer<ScenarioPerformance>(new ScenarioPerformance());
 }
 
 ScenarioPropulsionSystem* ScenarioPropulsionSystem::create(const QDomElement& e)
 {
     ScenarioPropulsionSystem* v;
-    if (e.tagName() == "tns:PropulsionSystem")
     {
         v = new ScenarioPropulsionSystem;
         QDomElement nextElement = e.firstChildElement();
@@ -1920,73 +2397,92 @@ ScenarioPropulsionSystem* ScenarioPropulsionSystem::create(const QDomElement& e)
 bool ScenarioPropulsionSystem::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    m_System = QSharedPointer<ScenarioSystem>(ScenarioSystem::create(*next));
+    if (next->tagName() == "tns:System")
+        m_System = QSharedPointer<ScenarioSystem>(ScenarioSystem::create(*next));
     *next = next->nextSiblingElement();
-    m_LiquidTanks = QSharedPointer<ScenarioLiquidTanks>(ScenarioLiquidTanks::create(*next));
+    if (next->tagName() == "tns:LiquidTanks")
+        m_LiquidTanks = QSharedPointer<ScenarioLiquidTanks>(ScenarioLiquidTanks::create(*next));
 if (!m_LiquidTanks.isNull())
         *next = next->nextSiblingElement();
-    m_SolidGrain = QSharedPointer<ScenarioSolidGrain>(ScenarioSolidGrain::create(*next));
+    if (next->tagName() == "tns:SolidGrain")
+        m_SolidGrain = QSharedPointer<ScenarioSolidGrain>(ScenarioSolidGrain::create(*next));
 if (!m_SolidGrain.isNull())
         *next = next->nextSiblingElement();
-    m_FeedSystem = QSharedPointer<ScenarioFeedSystem>(ScenarioFeedSystem::create(*next));
+    if (next->tagName() == "tns:FeedSystem")
+        m_FeedSystem = QSharedPointer<ScenarioFeedSystem>(ScenarioFeedSystem::create(*next));
 if (!m_FeedSystem.isNull())
         *next = next->nextSiblingElement();
-    m_CombustionChamber = QSharedPointer<ScenarioCombustionChamber>(ScenarioCombustionChamber::create(*next));
+    if (next->tagName() == "tns:CombustionChamber")
+        m_CombustionChamber = QSharedPointer<ScenarioCombustionChamber>(ScenarioCombustionChamber::create(*next));
     *next = next->nextSiblingElement();
-    m_Nozzle = QSharedPointer<ScenarioNozzle>(ScenarioNozzle::create(*next));
+    if (next->tagName() == "tns:Nozzle")
+        m_Nozzle = QSharedPointer<ScenarioNozzle>(ScenarioNozzle::create(*next));
     *next = next->nextSiblingElement();
-    m_Performance = QSharedPointer<ScenarioPerformance>(ScenarioPerformance::create(*next));
+    if (next->tagName() == "tns:Performance")
+        m_Performance = QSharedPointer<ScenarioPerformance>(ScenarioPerformance::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioPropulsionSystem::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioPropulsionSystem::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("PropulsionSystem");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     if (!m_System.isNull())
     {
-        QDomElement child = m_System->toDomElement(doc);
-        child.setTagName("System");
+        QString tagName = "System";
+        QDomElement child = m_System->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_LiquidTanks.isNull())
     {
-        QDomElement child = m_LiquidTanks->toDomElement(doc);
-        child.setTagName("LiquidTanks");
+        QString tagName = "LiquidTanks";
+        QDomElement child = m_LiquidTanks->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_SolidGrain.isNull())
     {
-        QDomElement child = m_SolidGrain->toDomElement(doc);
-        child.setTagName("SolidGrain");
+        QString tagName = "SolidGrain";
+        QDomElement child = m_SolidGrain->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_FeedSystem.isNull())
     {
-        QDomElement child = m_FeedSystem->toDomElement(doc);
-        child.setTagName("FeedSystem");
+        QString tagName = "FeedSystem";
+        QDomElement child = m_FeedSystem->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_CombustionChamber.isNull())
     {
-        QDomElement child = m_CombustionChamber->toDomElement(doc);
-        child.setTagName("CombustionChamber");
+        QString tagName = "CombustionChamber";
+        QDomElement child = m_CombustionChamber->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_Nozzle.isNull())
     {
-        QDomElement child = m_Nozzle->toDomElement(doc);
-        child.setTagName("Nozzle");
+        QString tagName = "Nozzle";
+        QDomElement child = m_Nozzle->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_Performance.isNull())
     {
-        QDomElement child = m_Performance->toDomElement(doc);
-        child.setTagName("Performance");
+        QString tagName = "Performance";
+        QDomElement child = m_Performance->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioPropulsionSystem::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_System.isNull()) children << m_System;
+    if (!m_LiquidTanks.isNull()) children << m_LiquidTanks;
+    if (!m_SolidGrain.isNull()) children << m_SolidGrain;
+    if (!m_FeedSystem.isNull()) children << m_FeedSystem;
+    if (!m_CombustionChamber.isNull()) children << m_CombustionChamber;
+    if (!m_Nozzle.isNull()) children << m_Nozzle;
+    if (!m_Performance.isNull()) children << m_Performance;
+    return children;
 }
 
 
@@ -1997,12 +2493,18 @@ ScenarioSystem::ScenarioSystem() :
     m_totalEngineDryMass(0.0),
     m_engineCoGLongPosition(0.0)
 {
+    m_propType = QSharedPointer<ScenarioOptVarString>(new ScenarioOptVarString());
+    m_numberOfEngines = QSharedPointer<ScenarioOptVarInt>(new ScenarioOptVarInt());
+    m_nominalThrust = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_propMass = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_lengthOverDiam = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_offTheShelf = QSharedPointer<ScenarioOptVarBool>(new ScenarioOptVarBool());
+    m_nozzleOptAlt = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
 }
 
 ScenarioSystem* ScenarioSystem::create(const QDomElement& e)
 {
     ScenarioSystem* v;
-    if (e.tagName() == "tns:System")
     {
         v = new ScenarioSystem;
         QDomElement nextElement = e.firstChildElement();
@@ -2015,30 +2517,38 @@ ScenarioSystem* ScenarioSystem::create(const QDomElement& e)
 bool ScenarioSystem::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    m_propType = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
+    if (next->tagName() == "tns:propType")
+        m_propType = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
     *next = next->nextSiblingElement();
         m_fuelType = (next->firstChild().toText().data());
         *next = next->nextSiblingElement();
         m_oxType = (next->firstChild().toText().data());
         *next = next->nextSiblingElement();
-    m_numberOfEngines = QSharedPointer<ScenarioOptVarInt>(ScenarioOptVarInt::create(*next));
+    if (next->tagName() == "tns:numberOfEngines")
+        m_numberOfEngines = QSharedPointer<ScenarioOptVarInt>(ScenarioOptVarInt::create(*next));
     *next = next->nextSiblingElement();
-    m_nominalThrust = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    if (next->tagName() == "tns:nominalThrust")
+        m_nominalThrust = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
     *next = next->nextSiblingElement();
         m_totalEngineDryMass = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
-    m_propMass = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    if (next->tagName() == "tns:propMass")
+        m_propMass = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
     *next = next->nextSiblingElement();
         m_engineCoGLongPosition = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
-    m_lengthOverDiam = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    if (next->tagName() == "tns:lengthOverDiam")
+        m_lengthOverDiam = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
     *next = next->nextSiblingElement();
-    m_offTheShelf = QSharedPointer<ScenarioOptVarBool>(ScenarioOptVarBool::create(*next));
+    if (next->tagName() == "tns:offTheShelf")
+        m_offTheShelf = QSharedPointer<ScenarioOptVarBool>(ScenarioOptVarBool::create(*next));
     *next = next->nextSiblingElement();
-    m_offTheShelfEngineType = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
+    if (next->tagName() == "tns:offTheShelfEngineType")
+        m_offTheShelfEngineType = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
 if (!m_offTheShelfEngineType.isNull())
         *next = next->nextSiblingElement();
-    m_feedType = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
+    if (next->tagName() == "tns:feedType")
+        m_feedType = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
 if (!m_feedType.isNull())
         *next = next->nextSiblingElement();
     if (next->tagName() == "tns:coolingType")
@@ -2046,84 +2556,101 @@ if (!m_feedType.isNull())
         m_coolingType = (next->firstChild().toText().data());
         *next = next->nextSiblingElement();
     }
-    m_mixtureRatio = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    if (next->tagName() == "tns:mixtureRatio")
+        m_mixtureRatio = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
 if (!m_mixtureRatio.isNull())
         *next = next->nextSiblingElement();
-    m_nozzleOptAlt = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    if (next->tagName() == "tns:nozzleOptAlt")
+        m_nozzleOptAlt = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioSystem::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioSystem::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("System");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     if (!m_propType.isNull())
     {
-        QDomElement child = m_propType->toDomElement(doc);
-        child.setTagName("propType");
+        QString tagName = "propType";
+        QDomElement child = m_propType->toDomElement(doc, tagName);
         e.appendChild(child);
     }
-    e.appendChild(createSimpleElement(doc, "fuelType", m_fuelType));
-    e.appendChild(createSimpleElement(doc, "oxType", m_oxType));
+    e.appendChild(createSimpleElement(doc, "tns:fuelType", m_fuelType));
+    e.appendChild(createSimpleElement(doc, "tns:oxType", m_oxType));
     if (!m_numberOfEngines.isNull())
     {
-        QDomElement child = m_numberOfEngines->toDomElement(doc);
-        child.setTagName("numberOfEngines");
+        QString tagName = "numberOfEngines";
+        QDomElement child = m_numberOfEngines->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_nominalThrust.isNull())
     {
-        QDomElement child = m_nominalThrust->toDomElement(doc);
-        child.setTagName("nominalThrust");
+        QString tagName = "nominalThrust";
+        QDomElement child = m_nominalThrust->toDomElement(doc, tagName);
         e.appendChild(child);
     }
-    e.appendChild(createSimpleElement(doc, "totalEngineDryMass", m_totalEngineDryMass));
+    e.appendChild(createSimpleElement(doc, "tns:totalEngineDryMass", m_totalEngineDryMass));
     if (!m_propMass.isNull())
     {
-        QDomElement child = m_propMass->toDomElement(doc);
-        child.setTagName("propMass");
+        QString tagName = "propMass";
+        QDomElement child = m_propMass->toDomElement(doc, tagName);
         e.appendChild(child);
     }
-    e.appendChild(createSimpleElement(doc, "engineCoGLongPosition", m_engineCoGLongPosition));
+    e.appendChild(createSimpleElement(doc, "tns:engineCoGLongPosition", m_engineCoGLongPosition));
     if (!m_lengthOverDiam.isNull())
     {
-        QDomElement child = m_lengthOverDiam->toDomElement(doc);
-        child.setTagName("lengthOverDiam");
+        QString tagName = "lengthOverDiam";
+        QDomElement child = m_lengthOverDiam->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_offTheShelf.isNull())
     {
-        QDomElement child = m_offTheShelf->toDomElement(doc);
-        child.setTagName("offTheShelf");
+        QString tagName = "offTheShelf";
+        QDomElement child = m_offTheShelf->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_offTheShelfEngineType.isNull())
     {
-        QDomElement child = m_offTheShelfEngineType->toDomElement(doc);
-        child.setTagName("offTheShelfEngineType");
+        QString tagName = "offTheShelfEngineType";
+        QDomElement child = m_offTheShelfEngineType->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_feedType.isNull())
     {
-        QDomElement child = m_feedType->toDomElement(doc);
-        child.setTagName("feedType");
+        QString tagName = "feedType";
+        QDomElement child = m_feedType->toDomElement(doc, tagName);
         e.appendChild(child);
     }
-    e.appendChild(createSimpleElement(doc, "coolingType", m_coolingType));
+    e.appendChild(createSimpleElement(doc, "tns:coolingType", m_coolingType));
     if (!m_mixtureRatio.isNull())
     {
-        QDomElement child = m_mixtureRatio->toDomElement(doc);
-        child.setTagName("mixtureRatio");
+        QString tagName = "mixtureRatio";
+        QDomElement child = m_mixtureRatio->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_nozzleOptAlt.isNull())
     {
-        QDomElement child = m_nozzleOptAlt->toDomElement(doc);
-        child.setTagName("nozzleOptAlt");
+        QString tagName = "nozzleOptAlt";
+        QDomElement child = m_nozzleOptAlt->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioSystem::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_propType.isNull()) children << m_propType;
+    if (!m_numberOfEngines.isNull()) children << m_numberOfEngines;
+    if (!m_nominalThrust.isNull()) children << m_nominalThrust;
+    if (!m_propMass.isNull()) children << m_propMass;
+    if (!m_lengthOverDiam.isNull()) children << m_lengthOverDiam;
+    if (!m_offTheShelf.isNull()) children << m_offTheShelf;
+    if (!m_offTheShelfEngineType.isNull()) children << m_offTheShelfEngineType;
+    if (!m_feedType.isNull()) children << m_feedType;
+    if (!m_mixtureRatio.isNull()) children << m_mixtureRatio;
+    if (!m_nozzleOptAlt.isNull()) children << m_nozzleOptAlt;
+    return children;
 }
 
 
@@ -2138,12 +2665,12 @@ ScenarioLiquidTanks::ScenarioLiquidTanks() :
     m_fuelTankDiam(0.0),
     m_fuelTankPressure(0.0)
 {
+    m_tanksPressureNorm = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
 }
 
 ScenarioLiquidTanks* ScenarioLiquidTanks::create(const QDomElement& e)
 {
     ScenarioLiquidTanks* v;
-    if (e.tagName() == "tns:LiquidTanks")
     {
         v = new ScenarioLiquidTanks;
         QDomElement nextElement = e.firstChildElement();
@@ -2156,7 +2683,8 @@ ScenarioLiquidTanks* ScenarioLiquidTanks::create(const QDomElement& e)
 bool ScenarioLiquidTanks::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    m_tanksPressureNorm = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    if (next->tagName() == "tns:tanksPressureNorm")
+        m_tanksPressureNorm = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
     *next = next->nextSiblingElement();
         m_oxTankLength = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
@@ -2173,23 +2701,29 @@ bool ScenarioLiquidTanks::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioLiquidTanks::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioLiquidTanks::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("LiquidTanks");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     if (!m_tanksPressureNorm.isNull())
     {
-        QDomElement child = m_tanksPressureNorm->toDomElement(doc);
-        child.setTagName("tanksPressureNorm");
+        QString tagName = "tanksPressureNorm";
+        QDomElement child = m_tanksPressureNorm->toDomElement(doc, tagName);
         e.appendChild(child);
     }
-    e.appendChild(createSimpleElement(doc, "oxTankLength", m_oxTankLength));
-    e.appendChild(createSimpleElement(doc, "oxTankDiam", m_oxTankDiam));
-    e.appendChild(createSimpleElement(doc, "oxTankPressure", m_oxTankPressure));
-    e.appendChild(createSimpleElement(doc, "fuelTankLength", m_fuelTankLength));
-    e.appendChild(createSimpleElement(doc, "fuelTankDiam", m_fuelTankDiam));
-    e.appendChild(createSimpleElement(doc, "fuelTankPressure", m_fuelTankPressure));
+    e.appendChild(createSimpleElement(doc, "tns:oxTankLength", m_oxTankLength));
+    e.appendChild(createSimpleElement(doc, "tns:oxTankDiam", m_oxTankDiam));
+    e.appendChild(createSimpleElement(doc, "tns:oxTankPressure", m_oxTankPressure));
+    e.appendChild(createSimpleElement(doc, "tns:fuelTankLength", m_fuelTankLength));
+    e.appendChild(createSimpleElement(doc, "tns:fuelTankDiam", m_fuelTankDiam));
+    e.appendChild(createSimpleElement(doc, "tns:fuelTankPressure", m_fuelTankPressure));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioLiquidTanks::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_tanksPressureNorm.isNull()) children << m_tanksPressureNorm;
+    return children;
 }
 
 
@@ -2210,7 +2744,6 @@ ScenarioSolidGrain::ScenarioSolidGrain() :
 ScenarioSolidGrain* ScenarioSolidGrain::create(const QDomElement& e)
 {
     ScenarioSolidGrain* v;
-    if (e.tagName() == "tns:SolidGrain")
     {
         v = new ScenarioSolidGrain;
         QDomElement nextElement = e.firstChildElement();
@@ -2240,18 +2773,23 @@ bool ScenarioSolidGrain::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioSolidGrain::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioSolidGrain::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("SolidGrain");
-    e.appendChild(createSimpleElement(doc, "grainLength", m_grainLength));
-    e.appendChild(createSimpleElement(doc, "grainDiam", m_grainDiam));
-    e.appendChild(createSimpleElement(doc, "igniterLength", m_igniterLength));
-    e.appendChild(createSimpleElement(doc, "igniterDiam", m_igniterDiam));
-    e.appendChild(createSimpleElement(doc, "igniterMass", m_igniterMass));
-    e.appendChild(createSimpleElement(doc, "sliverMass", m_sliverMass));
-    e.appendChild(createSimpleElement(doc, "cavityVolume", m_cavityVolume));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:grainLength", m_grainLength));
+    e.appendChild(createSimpleElement(doc, "tns:grainDiam", m_grainDiam));
+    e.appendChild(createSimpleElement(doc, "tns:igniterLength", m_igniterLength));
+    e.appendChild(createSimpleElement(doc, "tns:igniterDiam", m_igniterDiam));
+    e.appendChild(createSimpleElement(doc, "tns:igniterMass", m_igniterMass));
+    e.appendChild(createSimpleElement(doc, "tns:sliverMass", m_sliverMass));
+    e.appendChild(createSimpleElement(doc, "tns:cavityVolume", m_cavityVolume));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioSolidGrain::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -2274,7 +2812,6 @@ ScenarioFeedSystem::ScenarioFeedSystem() :
 ScenarioFeedSystem* ScenarioFeedSystem::create(const QDomElement& e)
 {
     ScenarioFeedSystem* v;
-    if (e.tagName() == "tns:FeedSystem")
     {
         v = new ScenarioFeedSystem;
         QDomElement nextElement = e.firstChildElement();
@@ -2320,20 +2857,25 @@ bool ScenarioFeedSystem::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioFeedSystem::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioFeedSystem::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("FeedSystem");
-    e.appendChild(createSimpleElement(doc, "pressurizerTankPressure", m_pressurizerTankPressure));
-    e.appendChild(createSimpleElement(doc, "pressurizerTankRadius", m_pressurizerTankRadius));
-    e.appendChild(createSimpleElement(doc, "pressurizerTankMass", m_pressurizerTankMass));
-    e.appendChild(createSimpleElement(doc, "pressurizerGasMass", m_pressurizerGasMass));
-    e.appendChild(createSimpleElement(doc, "linesValvesMass", m_linesValvesMass));
-    e.appendChild(createSimpleElement(doc, "trappedPropMass", m_trappedPropMass));
-    e.appendChild(createSimpleElement(doc, "totalFeedSystemMass", m_totalFeedSystemMass));
-    e.appendChild(createSimpleElement(doc, "totalFeedSystemLength", m_totalFeedSystemLength));
-    e.appendChild(createSimpleElement(doc, "totalFeedSystemDiameter", m_totalFeedSystemDiameter));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:pressurizerTankPressure", m_pressurizerTankPressure));
+    e.appendChild(createSimpleElement(doc, "tns:pressurizerTankRadius", m_pressurizerTankRadius));
+    e.appendChild(createSimpleElement(doc, "tns:pressurizerTankMass", m_pressurizerTankMass));
+    e.appendChild(createSimpleElement(doc, "tns:pressurizerGasMass", m_pressurizerGasMass));
+    e.appendChild(createSimpleElement(doc, "tns:linesValvesMass", m_linesValvesMass));
+    e.appendChild(createSimpleElement(doc, "tns:trappedPropMass", m_trappedPropMass));
+    e.appendChild(createSimpleElement(doc, "tns:totalFeedSystemMass", m_totalFeedSystemMass));
+    e.appendChild(createSimpleElement(doc, "tns:totalFeedSystemLength", m_totalFeedSystemLength));
+    e.appendChild(createSimpleElement(doc, "tns:totalFeedSystemDiameter", m_totalFeedSystemDiameter));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioFeedSystem::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -2349,12 +2891,12 @@ ScenarioCombustionChamber::ScenarioCombustionChamber() :
     m_chamberDiameter(0.0),
     m_chamberMass(0.0)
 {
+    m_chamberPressureNorm = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
 }
 
 ScenarioCombustionChamber* ScenarioCombustionChamber::create(const QDomElement& e)
 {
     ScenarioCombustionChamber* v;
-    if (e.tagName() == "tns:CombustionChamber")
     {
         v = new ScenarioCombustionChamber;
         QDomElement nextElement = e.firstChildElement();
@@ -2367,10 +2909,12 @@ ScenarioCombustionChamber* ScenarioCombustionChamber::create(const QDomElement& 
 bool ScenarioCombustionChamber::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    m_abOverAt = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    if (next->tagName() == "tns:abOverAt")
+        m_abOverAt = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
 if (!m_abOverAt.isNull())
         *next = next->nextSiblingElement();
-    m_accOverAt = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    if (next->tagName() == "tns:accOverAt")
+        m_accOverAt = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
 if (!m_accOverAt.isNull())
         *next = next->nextSiblingElement();
     if (next->tagName() == "tns:ab")
@@ -2383,7 +2927,8 @@ if (!m_accOverAt.isNull())
         m_acc = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
     }
-    m_chamberPressureNorm = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    if (next->tagName() == "tns:chamberPressureNorm")
+        m_chamberPressureNorm = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
     *next = next->nextSiblingElement();
         m_chamberPressure = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
@@ -2407,36 +2952,44 @@ if (!m_accOverAt.isNull())
     return true;
 }
 
-QDomElement ScenarioCombustionChamber::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioCombustionChamber::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("CombustionChamber");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     if (!m_abOverAt.isNull())
     {
-        QDomElement child = m_abOverAt->toDomElement(doc);
-        child.setTagName("abOverAt");
+        QString tagName = "abOverAt";
+        QDomElement child = m_abOverAt->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_accOverAt.isNull())
     {
-        QDomElement child = m_accOverAt->toDomElement(doc);
-        child.setTagName("accOverAt");
+        QString tagName = "accOverAt";
+        QDomElement child = m_accOverAt->toDomElement(doc, tagName);
         e.appendChild(child);
     }
-    e.appendChild(createSimpleElement(doc, "ab", m_ab));
-    e.appendChild(createSimpleElement(doc, "acc", m_acc));
+    e.appendChild(createSimpleElement(doc, "tns:ab", m_ab));
+    e.appendChild(createSimpleElement(doc, "tns:acc", m_acc));
     if (!m_chamberPressureNorm.isNull())
     {
-        QDomElement child = m_chamberPressureNorm->toDomElement(doc);
-        child.setTagName("chamberPressureNorm");
+        QString tagName = "chamberPressureNorm";
+        QDomElement child = m_chamberPressureNorm->toDomElement(doc, tagName);
         e.appendChild(child);
     }
-    e.appendChild(createSimpleElement(doc, "chamberPressure", m_chamberPressure));
-    e.appendChild(createSimpleElement(doc, "chamberCharactLength", m_chamberCharactLength));
-    e.appendChild(createSimpleElement(doc, "chamberLength", m_chamberLength));
-    e.appendChild(createSimpleElement(doc, "chamberDiameter", m_chamberDiameter));
-    e.appendChild(createSimpleElement(doc, "chamberMass", m_chamberMass));
+    e.appendChild(createSimpleElement(doc, "tns:chamberPressure", m_chamberPressure));
+    e.appendChild(createSimpleElement(doc, "tns:chamberCharactLength", m_chamberCharactLength));
+    e.appendChild(createSimpleElement(doc, "tns:chamberLength", m_chamberLength));
+    e.appendChild(createSimpleElement(doc, "tns:chamberDiameter", m_chamberDiameter));
+    e.appendChild(createSimpleElement(doc, "tns:chamberMass", m_chamberMass));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioCombustionChamber::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_abOverAt.isNull()) children << m_abOverAt;
+    if (!m_accOverAt.isNull()) children << m_accOverAt;
+    if (!m_chamberPressureNorm.isNull()) children << m_chamberPressureNorm;
+    return children;
 }
 
 
@@ -2453,12 +3006,15 @@ ScenarioNozzle::ScenarioNozzle() :
     m_tvcMass(0.0),
     m_nozzleCantAngle(0.0)
 {
+    m_nozzleType = QSharedPointer<ScenarioOptVarString>(new ScenarioOptVarString());
+    m_divAngle = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_tvcType = QSharedPointer<ScenarioOptVarString>(new ScenarioOptVarString());
+    m_tvcAngle = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
 }
 
 ScenarioNozzle* ScenarioNozzle::create(const QDomElement& e)
 {
     ScenarioNozzle* v;
-    if (e.tagName() == "tns:Nozzle")
     {
         v = new ScenarioNozzle;
         QDomElement nextElement = e.firstChildElement();
@@ -2483,13 +3039,17 @@ bool ScenarioNozzle::load(const QDomElement& e, QDomElement* next)
         *next = next->nextSiblingElement();
         m_nozzleMass = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
-    m_nozzleType = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
+    if (next->tagName() == "tns:nozzleType")
+        m_nozzleType = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
     *next = next->nextSiblingElement();
-    m_divAngle = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    if (next->tagName() == "tns:divAngle")
+        m_divAngle = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
     *next = next->nextSiblingElement();
-    m_tvcType = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
+    if (next->tagName() == "tns:tvcType")
+        m_tvcType = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
     *next = next->nextSiblingElement();
-    m_tvcAngle = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    if (next->tagName() == "tns:tvcAngle")
+        m_tvcAngle = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
     *next = next->nextSiblingElement();
         m_tvcMass = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
@@ -2500,44 +3060,53 @@ bool ScenarioNozzle::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioNozzle::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioNozzle::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Nozzle");
-    e.appendChild(createSimpleElement(doc, "at", m_at));
-    e.appendChild(createSimpleElement(doc, "ae", m_ae));
-    e.appendChild(createSimpleElement(doc, "aeOverat", m_aeOverat));
-    e.appendChild(createSimpleElement(doc, "nozzleLength", m_nozzleLength));
-    e.appendChild(createSimpleElement(doc, "nozzleDiameter", m_nozzleDiameter));
-    e.appendChild(createSimpleElement(doc, "nozzleMass", m_nozzleMass));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:at", m_at));
+    e.appendChild(createSimpleElement(doc, "tns:ae", m_ae));
+    e.appendChild(createSimpleElement(doc, "tns:aeOverat", m_aeOverat));
+    e.appendChild(createSimpleElement(doc, "tns:nozzleLength", m_nozzleLength));
+    e.appendChild(createSimpleElement(doc, "tns:nozzleDiameter", m_nozzleDiameter));
+    e.appendChild(createSimpleElement(doc, "tns:nozzleMass", m_nozzleMass));
     if (!m_nozzleType.isNull())
     {
-        QDomElement child = m_nozzleType->toDomElement(doc);
-        child.setTagName("nozzleType");
+        QString tagName = "nozzleType";
+        QDomElement child = m_nozzleType->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_divAngle.isNull())
     {
-        QDomElement child = m_divAngle->toDomElement(doc);
-        child.setTagName("divAngle");
+        QString tagName = "divAngle";
+        QDomElement child = m_divAngle->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_tvcType.isNull())
     {
-        QDomElement child = m_tvcType->toDomElement(doc);
-        child.setTagName("tvcType");
+        QString tagName = "tvcType";
+        QDomElement child = m_tvcType->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_tvcAngle.isNull())
     {
-        QDomElement child = m_tvcAngle->toDomElement(doc);
-        child.setTagName("tvcAngle");
+        QString tagName = "tvcAngle";
+        QDomElement child = m_tvcAngle->toDomElement(doc, tagName);
         e.appendChild(child);
     }
-    e.appendChild(createSimpleElement(doc, "tvcMass", m_tvcMass));
-    e.appendChild(createSimpleElement(doc, "nozzleCantAngle", m_nozzleCantAngle));
-    e.appendChild(createSimpleElement(doc, "nozzleShape", m_nozzleShape));
+    e.appendChild(createSimpleElement(doc, "tns:tvcMass", m_tvcMass));
+    e.appendChild(createSimpleElement(doc, "tns:nozzleCantAngle", m_nozzleCantAngle));
+    e.appendChild(createSimpleElement(doc, "tns:nozzleShape", m_nozzleShape));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioNozzle::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_nozzleType.isNull()) children << m_nozzleType;
+    if (!m_divAngle.isNull()) children << m_divAngle;
+    if (!m_tvcType.isNull()) children << m_tvcType;
+    if (!m_tvcAngle.isNull()) children << m_tvcAngle;
+    return children;
 }
 
 
@@ -2561,7 +3130,6 @@ ScenarioPerformance::ScenarioPerformance() :
 ScenarioPerformance* ScenarioPerformance::create(const QDomElement& e)
 {
     ScenarioPerformance* v;
-    if (e.tagName() == "tns:Performance")
     {
         v = new ScenarioPerformance;
         QDomElement nextElement = e.firstChildElement();
@@ -2594,42 +3162,51 @@ bool ScenarioPerformance::load(const QDomElement& e, QDomElement* next)
         *next = next->nextSiblingElement();
         m_minOperativeAlt = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
-    m_throttle = QSharedPointer<ScenarioOptVarBool>(ScenarioOptVarBool::create(*next));
+    if (next->tagName() == "tns:throttle")
+        m_throttle = QSharedPointer<ScenarioOptVarBool>(ScenarioOptVarBool::create(*next));
 if (!m_throttle.isNull())
         *next = next->nextSiblingElement();
-    m_restart = QSharedPointer<ScenarioOptVarBool>(ScenarioOptVarBool::create(*next));
+    if (next->tagName() == "tns:restart")
+        m_restart = QSharedPointer<ScenarioOptVarBool>(ScenarioOptVarBool::create(*next));
 if (!m_restart.isNull())
         *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioPerformance::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioPerformance::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Performance");
-    e.appendChild(createSimpleElement(doc, "theoOptIsp", m_theoOptIsp));
-    e.appendChild(createSimpleElement(doc, "realOptIsp", m_realOptIsp));
-    e.appendChild(createSimpleElement(doc, "realSeeIsp", m_realSeeIsp));
-    e.appendChild(createSimpleElement(doc, "realVacuumIsp", m_realVacuumIsp));
-    e.appendChild(createSimpleElement(doc, "thrustCoeff", m_thrustCoeff));
-    e.appendChild(createSimpleElement(doc, "charactVelocity", m_charactVelocity));
-    e.appendChild(createSimpleElement(doc, "thrustCoeffEff", m_thrustCoeffEff));
-    e.appendChild(createSimpleElement(doc, "charactVelocityEff", m_charactVelocityEff));
-    e.appendChild(createSimpleElement(doc, "nominalMassFlow", m_nominalMassFlow));
-    e.appendChild(createSimpleElement(doc, "minOperativeAlt", m_minOperativeAlt));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:theoOptIsp", m_theoOptIsp));
+    e.appendChild(createSimpleElement(doc, "tns:realOptIsp", m_realOptIsp));
+    e.appendChild(createSimpleElement(doc, "tns:realSeeIsp", m_realSeeIsp));
+    e.appendChild(createSimpleElement(doc, "tns:realVacuumIsp", m_realVacuumIsp));
+    e.appendChild(createSimpleElement(doc, "tns:thrustCoeff", m_thrustCoeff));
+    e.appendChild(createSimpleElement(doc, "tns:charactVelocity", m_charactVelocity));
+    e.appendChild(createSimpleElement(doc, "tns:thrustCoeffEff", m_thrustCoeffEff));
+    e.appendChild(createSimpleElement(doc, "tns:charactVelocityEff", m_charactVelocityEff));
+    e.appendChild(createSimpleElement(doc, "tns:nominalMassFlow", m_nominalMassFlow));
+    e.appendChild(createSimpleElement(doc, "tns:minOperativeAlt", m_minOperativeAlt));
     if (!m_throttle.isNull())
     {
-        QDomElement child = m_throttle->toDomElement(doc);
-        child.setTagName("throttle");
+        QString tagName = "throttle";
+        QDomElement child = m_throttle->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_restart.isNull())
     {
-        QDomElement child = m_restart->toDomElement(doc);
-        child.setTagName("restart");
+        QString tagName = "restart";
+        QDomElement child = m_restart->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioPerformance::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_throttle.isNull()) children << m_throttle;
+    if (!m_restart.isNull()) children << m_restart;
+    return children;
 }
 
 
@@ -2641,12 +3218,12 @@ ScenarioLVProgram::ScenarioLVProgram() :
     m_nYearsOps(0.0),
     m_nLaunchesPerYear(0)
 {
+    m_programCostFactors = QSharedPointer<ScenarioprogramCostFactors>(new ScenarioprogramCostFactors());
 }
 
 ScenarioLVProgram* ScenarioLVProgram::create(const QDomElement& e)
 {
     ScenarioLVProgram* v;
-    if (e.tagName() == "tns:LVProgram")
     {
         v = new ScenarioLVProgram;
         QDomElement nextElement = e.firstChildElement();
@@ -2665,25 +3242,32 @@ bool ScenarioLVProgram::load(const QDomElement& e, QDomElement* next)
         *next = next->nextSiblingElement();
         m_nLaunchesPerYear = parseInt(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
-    m_programCostFactors = QSharedPointer<ScenarioprogramCostFactors>(ScenarioprogramCostFactors::create(*next));
+    if (next->tagName() == "tns:programCostFactors")
+        m_programCostFactors = QSharedPointer<ScenarioprogramCostFactors>(ScenarioprogramCostFactors::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioLVProgram::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioLVProgram::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("LVProgram");
-    e.appendChild(createSimpleElement(doc, "nLaunches", m_nLaunches));
-    e.appendChild(createSimpleElement(doc, "nYearsOps", m_nYearsOps));
-    e.appendChild(createSimpleElement(doc, "nLaunchesPerYear", m_nLaunchesPerYear));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:nLaunches", m_nLaunches));
+    e.appendChild(createSimpleElement(doc, "tns:nYearsOps", m_nYearsOps));
+    e.appendChild(createSimpleElement(doc, "tns:nLaunchesPerYear", m_nLaunchesPerYear));
     if (!m_programCostFactors.isNull())
     {
-        QDomElement child = m_programCostFactors->toDomElement(doc);
-        child.setTagName("programCostFactors");
+        QString tagName = "programCostFactors";
+        QDomElement child = m_programCostFactors->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioLVProgram::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_programCostFactors.isNull()) children << m_programCostFactors;
+    return children;
 }
 
 
@@ -2701,7 +3285,6 @@ ScenarioprogramCostFactors::ScenarioprogramCostFactors() :
 ScenarioprogramCostFactors* ScenarioprogramCostFactors::create(const QDomElement& e)
 {
     ScenarioprogramCostFactors* v;
-    if (e.tagName() == "tns:programCostFactors")
     {
         v = new ScenarioprogramCostFactors;
         QDomElement nextElement = e.firstChildElement();
@@ -2731,18 +3314,23 @@ bool ScenarioprogramCostFactors::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioprogramCostFactors::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioprogramCostFactors::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("programCostFactors");
-    e.appendChild(createSimpleElement(doc, "f0", m_f0));
-    e.appendChild(createSimpleElement(doc, "launcherDesignComplexity", m_launcherDesignComplexity));
-    e.appendChild(createSimpleElement(doc, "f1", m_f1));
-    e.appendChild(createSimpleElement(doc, "teamExpertise", m_teamExpertise));
-    e.appendChild(createSimpleElement(doc, "f3", m_f3));
-    e.appendChild(createSimpleElement(doc, "contractorsStructure", m_contractorsStructure));
-    e.appendChild(createSimpleElement(doc, "f7", m_f7));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:f0", m_f0));
+    e.appendChild(createSimpleElement(doc, "tns:launcherDesignComplexity", m_launcherDesignComplexity));
+    e.appendChild(createSimpleElement(doc, "tns:f1", m_f1));
+    e.appendChild(createSimpleElement(doc, "tns:teamExpertise", m_teamExpertise));
+    e.appendChild(createSimpleElement(doc, "tns:f3", m_f3));
+    e.appendChild(createSimpleElement(doc, "tns:contractorsStructure", m_contractorsStructure));
+    e.appendChild(createSimpleElement(doc, "tns:f7", m_f7));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioprogramCostFactors::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -2751,12 +3339,16 @@ QDomElement ScenarioprogramCostFactors::toDomElement(QDomDocument& doc) const
 // ScenarioLVMission
 ScenarioLVMission::ScenarioLVMission()
 {
+    m_LVPayload = QSharedPointer<ScenarioLVPayload>(new ScenarioLVPayload());
+    m_Environment = QSharedPointer<ScenarioEnvironmentType>(new ScenarioEnvironmentType());
+    m_LaunchSite = QSharedPointer<ScenarioLaunchSite>(new ScenarioLaunchSite());
+    m_TargetOrbit = QSharedPointer<ScenarioTargetOrbit>(new ScenarioTargetOrbit());
+    m_Trajectory = QSharedPointer<ScenarioTrajectory>(new ScenarioTrajectory());
 }
 
 ScenarioLVMission* ScenarioLVMission::create(const QDomElement& e)
 {
     ScenarioLVMission* v;
-    if (e.tagName() == "tns:LVMission")
     {
         v = new ScenarioLVMission;
         QDomElement nextElement = e.firstChildElement();
@@ -2769,52 +3361,69 @@ ScenarioLVMission* ScenarioLVMission::create(const QDomElement& e)
 bool ScenarioLVMission::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    m_LVPayload = QSharedPointer<ScenarioLVPayload>(ScenarioLVPayload::create(*next));
+    if (next->tagName() == "tns:LVPayload")
+        m_LVPayload = QSharedPointer<ScenarioLVPayload>(ScenarioLVPayload::create(*next));
     *next = next->nextSiblingElement();
-    m_Environment = QSharedPointer<ScenarioEnvironmentType>(ScenarioEnvironmentType::create(*next));
+    if (next->tagName() == "tns:Environment")
+        m_Environment = QSharedPointer<ScenarioEnvironmentType>(ScenarioEnvironmentType::create(*next));
     *next = next->nextSiblingElement();
-    m_LaunchSite = QSharedPointer<ScenarioLaunchSite>(ScenarioLaunchSite::create(*next));
+    if (next->tagName() == "tns:LaunchSite")
+        m_LaunchSite = QSharedPointer<ScenarioLaunchSite>(ScenarioLaunchSite::create(*next));
     *next = next->nextSiblingElement();
-    m_TargetOrbit = QSharedPointer<ScenarioTargetOrbit>(ScenarioTargetOrbit::create(*next));
+    if (next->tagName() == "tns:TargetOrbit")
+        m_TargetOrbit = QSharedPointer<ScenarioTargetOrbit>(ScenarioTargetOrbit::create(*next));
     *next = next->nextSiblingElement();
-    m_Trajectory = QSharedPointer<ScenarioTrajectory>(ScenarioTrajectory::create(*next));
+    if (next->tagName() == "tns:Trajectory")
+        m_Trajectory = QSharedPointer<ScenarioTrajectory>(ScenarioTrajectory::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioLVMission::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioLVMission::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("LVMission");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     if (!m_LVPayload.isNull())
     {
-        QDomElement child = m_LVPayload->toDomElement(doc);
-        child.setTagName("LVPayload");
+        QString tagName = "LVPayload";
+        QDomElement child = m_LVPayload->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_Environment.isNull())
     {
-        QDomElement child = m_Environment->toDomElement(doc);
+        QString tagName = "Environment";
+        QDomElement child = m_Environment->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_LaunchSite.isNull())
     {
-        QDomElement child = m_LaunchSite->toDomElement(doc);
-        child.setTagName("LaunchSite");
+        QString tagName = "LaunchSite";
+        QDomElement child = m_LaunchSite->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_TargetOrbit.isNull())
     {
-        QDomElement child = m_TargetOrbit->toDomElement(doc);
-        child.setTagName("TargetOrbit");
+        QString tagName = "TargetOrbit";
+        QDomElement child = m_TargetOrbit->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_Trajectory.isNull())
     {
-        QDomElement child = m_Trajectory->toDomElement(doc);
+        QString tagName = "Trajectory";
+        QDomElement child = m_Trajectory->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioLVMission::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_LVPayload.isNull()) children << m_LVPayload;
+    if (!m_Environment.isNull()) children << m_Environment;
+    if (!m_LaunchSite.isNull()) children << m_LaunchSite;
+    if (!m_TargetOrbit.isNull()) children << m_TargetOrbit;
+    if (!m_Trajectory.isNull()) children << m_Trajectory;
+    return children;
 }
 
 
@@ -2834,7 +3443,6 @@ ScenarioLVPayload::ScenarioLVPayload() :
 ScenarioLVPayload* ScenarioLVPayload::create(const QDomElement& e)
 {
     ScenarioLVPayload* v;
-    if (e.tagName() == "tns:LVPayload")
     {
         v = new ScenarioLVPayload;
         QDomElement nextElement = e.firstChildElement();
@@ -2862,17 +3470,22 @@ bool ScenarioLVPayload::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioLVPayload::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioLVPayload::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("LVPayload");
-    e.appendChild(createSimpleElement(doc, "mass", m_mass));
-    e.appendChild(createSimpleElement(doc, "length", m_length));
-    e.appendChild(createSimpleElement(doc, "diameter", m_diameter));
-    e.appendChild(createSimpleElement(doc, "CoGLongPosition", m_CoGLongPosition));
-    e.appendChild(createSimpleElement(doc, "maxAxialAcc", m_maxAxialAcc));
-    e.appendChild(createSimpleElement(doc, "maxHeatFlux", m_maxHeatFlux));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:mass", m_mass));
+    e.appendChild(createSimpleElement(doc, "tns:length", m_length));
+    e.appendChild(createSimpleElement(doc, "tns:diameter", m_diameter));
+    e.appendChild(createSimpleElement(doc, "tns:CoGLongPosition", m_CoGLongPosition));
+    e.appendChild(createSimpleElement(doc, "tns:maxAxialAcc", m_maxAxialAcc));
+    e.appendChild(createSimpleElement(doc, "tns:maxHeatFlux", m_maxHeatFlux));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioLVPayload::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -2886,7 +3499,6 @@ ScenarioLaunchSite::ScenarioLaunchSite()
 ScenarioLaunchSite* ScenarioLaunchSite::create(const QDomElement& e)
 {
     ScenarioLaunchSite* v;
-    if (e.tagName() == "tns:LaunchSite")
     {
         v = new ScenarioLaunchSite;
         QDomElement nextElement = e.firstChildElement();
@@ -2899,24 +3511,34 @@ ScenarioLaunchSite* ScenarioLaunchSite::create(const QDomElement& e)
 bool ScenarioLaunchSite::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    m_Abstract3DOFPosition = QSharedPointer<ScenarioAbstract3DOFPositionType>(ScenarioAbstract3DOFPositionType::create(*next));
+    if (next->tagName() == "tns:GroundPosition")
+        m_Abstract3DOFPosition = QSharedPointer<ScenarioAbstract3DOFPositionType>((ScenarioAbstract3DOFPositionType*)ScenarioGroundPositionType::create(*next));
     *next = next->nextSiblingElement();
         m_allowedAzimuths = parseDoubleList(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioLaunchSite::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioLaunchSite::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("LaunchSite");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     if (!m_Abstract3DOFPosition.isNull())
     {
-        QDomElement child = m_Abstract3DOFPosition->toDomElement(doc);
+        QString tagName = "Abstract3DOFPosition";
+        if (dynamic_cast<ScenarioGroundPositionType*>(m_Abstract3DOFPosition.data()))
+            tagName = "GroundPosition";
+        QDomElement child = m_Abstract3DOFPosition->toDomElement(doc, tagName);
         e.appendChild(child);
     }
-    e.appendChild(createSimpleElement(doc, "allowedAzimuths", m_allowedAzimuths));
+    e.appendChild(createSimpleElement(doc, "tns:allowedAzimuths", m_allowedAzimuths));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioLaunchSite::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Abstract3DOFPosition.isNull()) children << m_Abstract3DOFPosition;
+    return children;
 }
 
 
@@ -2936,7 +3558,6 @@ ScenarioTargetOrbit::ScenarioTargetOrbit() :
 ScenarioTargetOrbit* ScenarioTargetOrbit::create(const QDomElement& e)
 {
     ScenarioTargetOrbit* v;
-    if (e.tagName() == "tns:TargetOrbit")
     {
         v = new ScenarioTargetOrbit;
         QDomElement nextElement = e.firstChildElement();
@@ -2964,17 +3585,22 @@ bool ScenarioTargetOrbit::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioTargetOrbit::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioTargetOrbit::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("TargetOrbit");
-    e.appendChild(createSimpleElement(doc, "semiaxis", m_semiaxis));
-    e.appendChild(createSimpleElement(doc, "eccentricity", m_eccentricity));
-    e.appendChild(createSimpleElement(doc, "inclination", m_inclination));
-    e.appendChild(createSimpleElement(doc, "semiaxisTol", m_semiaxisTol));
-    e.appendChild(createSimpleElement(doc, "eccentricityTol", m_eccentricityTol));
-    e.appendChild(createSimpleElement(doc, "inclinationTol", m_inclinationTol));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:semiaxis", m_semiaxis));
+    e.appendChild(createSimpleElement(doc, "tns:eccentricity", m_eccentricity));
+    e.appendChild(createSimpleElement(doc, "tns:inclination", m_inclination));
+    e.appendChild(createSimpleElement(doc, "tns:semiaxisTol", m_semiaxisTol));
+    e.appendChild(createSimpleElement(doc, "tns:eccentricityTol", m_eccentricityTol));
+    e.appendChild(createSimpleElement(doc, "tns:inclinationTol", m_inclinationTol));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioTargetOrbit::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -2983,12 +3609,18 @@ QDomElement ScenarioTargetOrbit::toDomElement(QDomDocument& doc) const
 // ScenarioLVSystemType
 ScenarioLVSystemType::ScenarioLVSystemType()
 {
+    m_Architecture = QSharedPointer<ScenarioArchitecture>(new ScenarioArchitecture());
+    m_UpperStage = QSharedPointer<ScenarioUpperStage>(new ScenarioUpperStage());
+    m_SystemWeights = QSharedPointer<ScenarioSystemWeights>(new ScenarioSystemWeights());
+    m_SystemCosts = QSharedPointer<ScenarioSystemCosts>(new ScenarioSystemCosts());
+    m_SystemReliability = QSharedPointer<ScenarioSystemReliability>(new ScenarioSystemReliability());
+    m_LVAerodynamics = QSharedPointer<ScenarioLVAerodynamics>(new ScenarioLVAerodynamics());
+    m_DiscretizationSettings = QSharedPointer<ScenarioDiscretizationSettings>(new ScenarioDiscretizationSettings());
 }
 
 ScenarioLVSystemType* ScenarioLVSystemType::create(const QDomElement& e)
 {
     ScenarioLVSystemType* v;
-    if (e.tagName() == "tns:LVSystemType")
     {
         v = new ScenarioLVSystemType;
         QDomElement nextElement = e.firstChildElement();
@@ -3001,90 +3633,123 @@ ScenarioLVSystemType* ScenarioLVSystemType::create(const QDomElement& e)
 bool ScenarioLVSystemType::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    m_Architecture = QSharedPointer<ScenarioArchitecture>(ScenarioArchitecture::create(*next));
+    if (next->tagName() == "tns:Architecture")
+        m_Architecture = QSharedPointer<ScenarioArchitecture>(ScenarioArchitecture::create(*next));
     *next = next->nextSiblingElement();
     for (;;)
     {
-        QSharedPointer<ScenarioLowerStage> v(ScenarioLowerStage::create(*next));
+        QSharedPointer<ScenarioLowerStage> v;
+        if (next->tagName() == "tns:LowerStage")
+            v = QSharedPointer<ScenarioLowerStage>(ScenarioLowerStage::create(*next));
         if (v.isNull()) break; else {
             m_LowerStage << v;
             *next = next->nextSiblingElement();
         }
     }
-    m_UpperStage = QSharedPointer<ScenarioUpperStage>(ScenarioUpperStage::create(*next));
+    if (next->tagName() == "tns:UpperStage")
+        m_UpperStage = QSharedPointer<ScenarioUpperStage>(ScenarioUpperStage::create(*next));
     *next = next->nextSiblingElement();
     for (;;)
     {
-        QSharedPointer<ScenarioBoosters> v(ScenarioBoosters::create(*next));
+        QSharedPointer<ScenarioBoosters> v;
+        if (next->tagName() == "tns:Boosters")
+            v = QSharedPointer<ScenarioBoosters>(ScenarioBoosters::create(*next));
         if (v.isNull()) break; else {
             m_Boosters << v;
             *next = next->nextSiblingElement();
         }
     }
-    m_SystemWeights = QSharedPointer<ScenarioSystemWeights>(ScenarioSystemWeights::create(*next));
+    if (next->tagName() == "tns:SystemWeights")
+        m_SystemWeights = QSharedPointer<ScenarioSystemWeights>(ScenarioSystemWeights::create(*next));
     *next = next->nextSiblingElement();
-    m_SystemCosts = QSharedPointer<ScenarioSystemCosts>(ScenarioSystemCosts::create(*next));
+    if (next->tagName() == "tns:SystemCosts")
+        m_SystemCosts = QSharedPointer<ScenarioSystemCosts>(ScenarioSystemCosts::create(*next));
     *next = next->nextSiblingElement();
-    m_SystemReliability = QSharedPointer<ScenarioSystemReliability>(ScenarioSystemReliability::create(*next));
+    if (next->tagName() == "tns:SystemReliability")
+        m_SystemReliability = QSharedPointer<ScenarioSystemReliability>(ScenarioSystemReliability::create(*next));
     *next = next->nextSiblingElement();
-    m_LVAerodynamics = QSharedPointer<ScenarioLVAerodynamics>(ScenarioLVAerodynamics::create(*next));
+    if (next->tagName() == "tns:LVAerodynamics")
+        m_LVAerodynamics = QSharedPointer<ScenarioLVAerodynamics>(ScenarioLVAerodynamics::create(*next));
     *next = next->nextSiblingElement();
-    m_DiscretizationSettings = QSharedPointer<ScenarioDiscretizationSettings>(ScenarioDiscretizationSettings::create(*next));
+    if (next->tagName() == "tns:DiscretizationSettings")
+        m_DiscretizationSettings = QSharedPointer<ScenarioDiscretizationSettings>(ScenarioDiscretizationSettings::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioLVSystemType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioLVSystemType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("LVSystemType");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     if (!m_Architecture.isNull())
     {
-        QDomElement child = m_Architecture->toDomElement(doc);
-        child.setTagName("Architecture");
+        QString tagName = "Architecture";
+        QDomElement child = m_Architecture->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     foreach (QSharedPointer<ScenarioLowerStage> p, m_LowerStage)
     {
-        e.appendChild(p->toDomElement(doc));
+        QString tagName = "LowerStage";
+        QDomElement child = p->toDomElement(doc, tagName);
+        e.appendChild(child);
     }
     if (!m_UpperStage.isNull())
     {
-        QDomElement child = m_UpperStage->toDomElement(doc);
-        child.setTagName("UpperStage");
+        QString tagName = "UpperStage";
+        QDomElement child = m_UpperStage->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     foreach (QSharedPointer<ScenarioBoosters> p, m_Boosters)
     {
-        e.appendChild(p->toDomElement(doc));
+        QString tagName = "Boosters";
+        QDomElement child = p->toDomElement(doc, tagName);
+        e.appendChild(child);
     }
     if (!m_SystemWeights.isNull())
     {
-        QDomElement child = m_SystemWeights->toDomElement(doc);
+        QString tagName = "SystemWeights";
+        QDomElement child = m_SystemWeights->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_SystemCosts.isNull())
     {
-        QDomElement child = m_SystemCosts->toDomElement(doc);
+        QString tagName = "SystemCosts";
+        QDomElement child = m_SystemCosts->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_SystemReliability.isNull())
     {
-        QDomElement child = m_SystemReliability->toDomElement(doc);
+        QString tagName = "SystemReliability";
+        QDomElement child = m_SystemReliability->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_LVAerodynamics.isNull())
     {
-        QDomElement child = m_LVAerodynamics->toDomElement(doc);
+        QString tagName = "LVAerodynamics";
+        QDomElement child = m_LVAerodynamics->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_DiscretizationSettings.isNull())
     {
-        QDomElement child = m_DiscretizationSettings->toDomElement(doc);
-        child.setTagName("DiscretizationSettings");
+        QString tagName = "DiscretizationSettings";
+        QDomElement child = m_DiscretizationSettings->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioLVSystemType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Architecture.isNull()) children << m_Architecture;
+    foreach (QSharedPointer<ScenarioObject> child, m_LowerStage) { children << child; }
+    if (!m_UpperStage.isNull()) children << m_UpperStage;
+    foreach (QSharedPointer<ScenarioObject> child, m_Boosters) { children << child; }
+    if (!m_SystemWeights.isNull()) children << m_SystemWeights;
+    if (!m_SystemCosts.isNull()) children << m_SystemCosts;
+    if (!m_SystemReliability.isNull()) children << m_SystemReliability;
+    if (!m_LVAerodynamics.isNull()) children << m_LVAerodynamics;
+    if (!m_DiscretizationSettings.isNull()) children << m_DiscretizationSettings;
+    return children;
 }
 
 
@@ -3093,12 +3758,15 @@ QDomElement ScenarioLVSystemType::toDomElement(QDomDocument& doc) const
 // ScenarioArchitecture
 ScenarioArchitecture::ScenarioArchitecture()
 {
+    m_boosterConf = QSharedPointer<ScenarioOptVarString>(new ScenarioOptVarString());
+    m_nStages = QSharedPointer<ScenarioOptVarInt>(new ScenarioOptVarInt());
+    m_nBoosters = QSharedPointer<ScenarioOptVarInt>(new ScenarioOptVarInt());
+    m_singleEngineType = QSharedPointer<ScenarioOptVarBool>(new ScenarioOptVarBool());
 }
 
 ScenarioArchitecture* ScenarioArchitecture::create(const QDomElement& e)
 {
     ScenarioArchitecture* v;
-    if (e.tagName() == "tns:Architecture")
     {
         v = new ScenarioArchitecture;
         QDomElement nextElement = e.firstChildElement();
@@ -3111,46 +3779,59 @@ ScenarioArchitecture* ScenarioArchitecture::create(const QDomElement& e)
 bool ScenarioArchitecture::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    m_boosterConf = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
+    if (next->tagName() == "tns:boosterConf")
+        m_boosterConf = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
     *next = next->nextSiblingElement();
-    m_nStages = QSharedPointer<ScenarioOptVarInt>(ScenarioOptVarInt::create(*next));
+    if (next->tagName() == "tns:nStages")
+        m_nStages = QSharedPointer<ScenarioOptVarInt>(ScenarioOptVarInt::create(*next));
     *next = next->nextSiblingElement();
-    m_nBoosters = QSharedPointer<ScenarioOptVarInt>(ScenarioOptVarInt::create(*next));
+    if (next->tagName() == "tns:nBoosters")
+        m_nBoosters = QSharedPointer<ScenarioOptVarInt>(ScenarioOptVarInt::create(*next));
     *next = next->nextSiblingElement();
-    m_singleEngineType = QSharedPointer<ScenarioOptVarBool>(ScenarioOptVarBool::create(*next));
+    if (next->tagName() == "tns:singleEngineType")
+        m_singleEngineType = QSharedPointer<ScenarioOptVarBool>(ScenarioOptVarBool::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioArchitecture::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioArchitecture::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Architecture");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     if (!m_boosterConf.isNull())
     {
-        QDomElement child = m_boosterConf->toDomElement(doc);
-        child.setTagName("boosterConf");
+        QString tagName = "boosterConf";
+        QDomElement child = m_boosterConf->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_nStages.isNull())
     {
-        QDomElement child = m_nStages->toDomElement(doc);
-        child.setTagName("nStages");
+        QString tagName = "nStages";
+        QDomElement child = m_nStages->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_nBoosters.isNull())
     {
-        QDomElement child = m_nBoosters->toDomElement(doc);
-        child.setTagName("nBoosters");
+        QString tagName = "nBoosters";
+        QDomElement child = m_nBoosters->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_singleEngineType.isNull())
     {
-        QDomElement child = m_singleEngineType->toDomElement(doc);
-        child.setTagName("singleEngineType");
+        QString tagName = "singleEngineType";
+        QDomElement child = m_singleEngineType->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioArchitecture::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_boosterConf.isNull()) children << m_boosterConf;
+    if (!m_nStages.isNull()) children << m_nStages;
+    if (!m_nBoosters.isNull()) children << m_nBoosters;
+    if (!m_singleEngineType.isNull()) children << m_singleEngineType;
+    return children;
 }
 
 
@@ -3159,12 +3840,16 @@ QDomElement ScenarioArchitecture::toDomElement(QDomDocument& doc) const
 // ScenarioLowerStage
 ScenarioLowerStage::ScenarioLowerStage()
 {
+    m_Geometry = QSharedPointer<ScenarioGeometry>(new ScenarioGeometry());
+    m_PropulsionSystem = QSharedPointer<ScenarioPropulsionSystem>(new ScenarioPropulsionSystem());
+    m_ComponentWeights = QSharedPointer<ScenarioComponentWeights>(new ScenarioComponentWeights());
+    m_ComponentCosts = QSharedPointer<ScenarioComponentCosts>(new ScenarioComponentCosts());
+    m_ComponentReliability = QSharedPointer<ScenarioComponentReliability>(new ScenarioComponentReliability());
 }
 
 ScenarioLowerStage* ScenarioLowerStage::create(const QDomElement& e)
 {
     ScenarioLowerStage* v;
-    if (e.tagName() == "tns:LowerStage")
     {
         v = new ScenarioLowerStage;
         QDomElement nextElement = e.firstChildElement();
@@ -3177,49 +3862,69 @@ ScenarioLowerStage* ScenarioLowerStage::create(const QDomElement& e)
 bool ScenarioLowerStage::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    m_Geometry = QSharedPointer<ScenarioGeometry>(ScenarioGeometry::create(*next));
+    if (next->tagName() == "tns:Geometry")
+        m_Geometry = QSharedPointer<ScenarioGeometry>(ScenarioGeometry::create(*next));
     *next = next->nextSiblingElement();
-    m_PropulsionSystem = QSharedPointer<ScenarioPropulsionSystem>(ScenarioPropulsionSystem::create(*next));
+    if (next->tagName() == "tns:PropulsionSystem")
+        m_PropulsionSystem = QSharedPointer<ScenarioPropulsionSystem>(ScenarioPropulsionSystem::create(*next));
     *next = next->nextSiblingElement();
-    m_ComponentWeights = QSharedPointer<ScenarioComponentWeights>(ScenarioComponentWeights::create(*next));
+    if (next->tagName() == "tns:ComponentWeights")
+        m_ComponentWeights = QSharedPointer<ScenarioComponentWeights>(ScenarioComponentWeights::create(*next));
     *next = next->nextSiblingElement();
-    m_ComponentCosts = QSharedPointer<ScenarioComponentCosts>(ScenarioComponentCosts::create(*next));
+    if (next->tagName() == "tns:ComponentCosts")
+        m_ComponentCosts = QSharedPointer<ScenarioComponentCosts>(ScenarioComponentCosts::create(*next));
     *next = next->nextSiblingElement();
-    m_ComponentReliability = QSharedPointer<ScenarioComponentReliability>(ScenarioComponentReliability::create(*next));
+    if (next->tagName() == "tns:ComponentReliability")
+        m_ComponentReliability = QSharedPointer<ScenarioComponentReliability>(ScenarioComponentReliability::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioLowerStage::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioLowerStage::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("LowerStage");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     if (!m_Geometry.isNull())
     {
-        QDomElement child = m_Geometry->toDomElement(doc);
+        QString tagName = "Geometry";
+        QDomElement child = m_Geometry->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_PropulsionSystem.isNull())
     {
-        QDomElement child = m_PropulsionSystem->toDomElement(doc);
+        QString tagName = "PropulsionSystem";
+        QDomElement child = m_PropulsionSystem->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_ComponentWeights.isNull())
     {
-        QDomElement child = m_ComponentWeights->toDomElement(doc);
+        QString tagName = "ComponentWeights";
+        QDomElement child = m_ComponentWeights->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_ComponentCosts.isNull())
     {
-        QDomElement child = m_ComponentCosts->toDomElement(doc);
+        QString tagName = "ComponentCosts";
+        QDomElement child = m_ComponentCosts->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_ComponentReliability.isNull())
     {
-        QDomElement child = m_ComponentReliability->toDomElement(doc);
+        QString tagName = "ComponentReliability";
+        QDomElement child = m_ComponentReliability->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioLowerStage::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Geometry.isNull()) children << m_Geometry;
+    if (!m_PropulsionSystem.isNull()) children << m_PropulsionSystem;
+    if (!m_ComponentWeights.isNull()) children << m_ComponentWeights;
+    if (!m_ComponentCosts.isNull()) children << m_ComponentCosts;
+    if (!m_ComponentReliability.isNull()) children << m_ComponentReliability;
+    return children;
 }
 
 
@@ -3228,12 +3933,16 @@ QDomElement ScenarioLowerStage::toDomElement(QDomDocument& doc) const
 // ScenarioUpperStage
 ScenarioUpperStage::ScenarioUpperStage()
 {
+    m_Geometry = QSharedPointer<ScenarioGeometry>(new ScenarioGeometry());
+    m_PropulsionSystem = QSharedPointer<ScenarioPropulsionSystem>(new ScenarioPropulsionSystem());
+    m_ComponentWeights = QSharedPointer<ScenarioComponentWeights>(new ScenarioComponentWeights());
+    m_ComponentCosts = QSharedPointer<ScenarioComponentCosts>(new ScenarioComponentCosts());
+    m_ComponentReliability = QSharedPointer<ScenarioComponentReliability>(new ScenarioComponentReliability());
 }
 
 ScenarioUpperStage* ScenarioUpperStage::create(const QDomElement& e)
 {
     ScenarioUpperStage* v;
-    if (e.tagName() == "tns:UpperStage")
     {
         v = new ScenarioUpperStage;
         QDomElement nextElement = e.firstChildElement();
@@ -3246,49 +3955,69 @@ ScenarioUpperStage* ScenarioUpperStage::create(const QDomElement& e)
 bool ScenarioUpperStage::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    m_Geometry = QSharedPointer<ScenarioGeometry>(ScenarioGeometry::create(*next));
+    if (next->tagName() == "tns:Geometry")
+        m_Geometry = QSharedPointer<ScenarioGeometry>(ScenarioGeometry::create(*next));
     *next = next->nextSiblingElement();
-    m_PropulsionSystem = QSharedPointer<ScenarioPropulsionSystem>(ScenarioPropulsionSystem::create(*next));
+    if (next->tagName() == "tns:PropulsionSystem")
+        m_PropulsionSystem = QSharedPointer<ScenarioPropulsionSystem>(ScenarioPropulsionSystem::create(*next));
     *next = next->nextSiblingElement();
-    m_ComponentWeights = QSharedPointer<ScenarioComponentWeights>(ScenarioComponentWeights::create(*next));
+    if (next->tagName() == "tns:ComponentWeights")
+        m_ComponentWeights = QSharedPointer<ScenarioComponentWeights>(ScenarioComponentWeights::create(*next));
     *next = next->nextSiblingElement();
-    m_ComponentCosts = QSharedPointer<ScenarioComponentCosts>(ScenarioComponentCosts::create(*next));
+    if (next->tagName() == "tns:ComponentCosts")
+        m_ComponentCosts = QSharedPointer<ScenarioComponentCosts>(ScenarioComponentCosts::create(*next));
     *next = next->nextSiblingElement();
-    m_ComponentReliability = QSharedPointer<ScenarioComponentReliability>(ScenarioComponentReliability::create(*next));
+    if (next->tagName() == "tns:ComponentReliability")
+        m_ComponentReliability = QSharedPointer<ScenarioComponentReliability>(ScenarioComponentReliability::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioUpperStage::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioUpperStage::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("UpperStage");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     if (!m_Geometry.isNull())
     {
-        QDomElement child = m_Geometry->toDomElement(doc);
+        QString tagName = "Geometry";
+        QDomElement child = m_Geometry->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_PropulsionSystem.isNull())
     {
-        QDomElement child = m_PropulsionSystem->toDomElement(doc);
+        QString tagName = "PropulsionSystem";
+        QDomElement child = m_PropulsionSystem->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_ComponentWeights.isNull())
     {
-        QDomElement child = m_ComponentWeights->toDomElement(doc);
+        QString tagName = "ComponentWeights";
+        QDomElement child = m_ComponentWeights->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_ComponentCosts.isNull())
     {
-        QDomElement child = m_ComponentCosts->toDomElement(doc);
+        QString tagName = "ComponentCosts";
+        QDomElement child = m_ComponentCosts->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_ComponentReliability.isNull())
     {
-        QDomElement child = m_ComponentReliability->toDomElement(doc);
+        QString tagName = "ComponentReliability";
+        QDomElement child = m_ComponentReliability->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioUpperStage::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Geometry.isNull()) children << m_Geometry;
+    if (!m_PropulsionSystem.isNull()) children << m_PropulsionSystem;
+    if (!m_ComponentWeights.isNull()) children << m_ComponentWeights;
+    if (!m_ComponentCosts.isNull()) children << m_ComponentCosts;
+    if (!m_ComponentReliability.isNull()) children << m_ComponentReliability;
+    return children;
 }
 
 
@@ -3297,12 +4026,16 @@ QDomElement ScenarioUpperStage::toDomElement(QDomDocument& doc) const
 // ScenarioBoosters
 ScenarioBoosters::ScenarioBoosters()
 {
+    m_Geometry = QSharedPointer<ScenarioGeometry>(new ScenarioGeometry());
+    m_PropulsionSystem = QSharedPointer<ScenarioPropulsionSystem>(new ScenarioPropulsionSystem());
+    m_ComponentWeights = QSharedPointer<ScenarioComponentWeights>(new ScenarioComponentWeights());
+    m_ComponentCosts = QSharedPointer<ScenarioComponentCosts>(new ScenarioComponentCosts());
+    m_ComponentReliability = QSharedPointer<ScenarioComponentReliability>(new ScenarioComponentReliability());
 }
 
 ScenarioBoosters* ScenarioBoosters::create(const QDomElement& e)
 {
     ScenarioBoosters* v;
-    if (e.tagName() == "tns:Boosters")
     {
         v = new ScenarioBoosters;
         QDomElement nextElement = e.firstChildElement();
@@ -3315,49 +4048,69 @@ ScenarioBoosters* ScenarioBoosters::create(const QDomElement& e)
 bool ScenarioBoosters::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    m_Geometry = QSharedPointer<ScenarioGeometry>(ScenarioGeometry::create(*next));
+    if (next->tagName() == "tns:Geometry")
+        m_Geometry = QSharedPointer<ScenarioGeometry>(ScenarioGeometry::create(*next));
     *next = next->nextSiblingElement();
-    m_PropulsionSystem = QSharedPointer<ScenarioPropulsionSystem>(ScenarioPropulsionSystem::create(*next));
+    if (next->tagName() == "tns:PropulsionSystem")
+        m_PropulsionSystem = QSharedPointer<ScenarioPropulsionSystem>(ScenarioPropulsionSystem::create(*next));
     *next = next->nextSiblingElement();
-    m_ComponentWeights = QSharedPointer<ScenarioComponentWeights>(ScenarioComponentWeights::create(*next));
+    if (next->tagName() == "tns:ComponentWeights")
+        m_ComponentWeights = QSharedPointer<ScenarioComponentWeights>(ScenarioComponentWeights::create(*next));
     *next = next->nextSiblingElement();
-    m_ComponentCosts = QSharedPointer<ScenarioComponentCosts>(ScenarioComponentCosts::create(*next));
+    if (next->tagName() == "tns:ComponentCosts")
+        m_ComponentCosts = QSharedPointer<ScenarioComponentCosts>(ScenarioComponentCosts::create(*next));
     *next = next->nextSiblingElement();
-    m_ComponentReliability = QSharedPointer<ScenarioComponentReliability>(ScenarioComponentReliability::create(*next));
+    if (next->tagName() == "tns:ComponentReliability")
+        m_ComponentReliability = QSharedPointer<ScenarioComponentReliability>(ScenarioComponentReliability::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioBoosters::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioBoosters::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Boosters");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     if (!m_Geometry.isNull())
     {
-        QDomElement child = m_Geometry->toDomElement(doc);
+        QString tagName = "Geometry";
+        QDomElement child = m_Geometry->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_PropulsionSystem.isNull())
     {
-        QDomElement child = m_PropulsionSystem->toDomElement(doc);
+        QString tagName = "PropulsionSystem";
+        QDomElement child = m_PropulsionSystem->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_ComponentWeights.isNull())
     {
-        QDomElement child = m_ComponentWeights->toDomElement(doc);
+        QString tagName = "ComponentWeights";
+        QDomElement child = m_ComponentWeights->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_ComponentCosts.isNull())
     {
-        QDomElement child = m_ComponentCosts->toDomElement(doc);
+        QString tagName = "ComponentCosts";
+        QDomElement child = m_ComponentCosts->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_ComponentReliability.isNull())
     {
-        QDomElement child = m_ComponentReliability->toDomElement(doc);
+        QString tagName = "ComponentReliability";
+        QDomElement child = m_ComponentReliability->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioBoosters::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Geometry.isNull()) children << m_Geometry;
+    if (!m_PropulsionSystem.isNull()) children << m_PropulsionSystem;
+    if (!m_ComponentWeights.isNull()) children << m_ComponentWeights;
+    if (!m_ComponentCosts.isNull()) children << m_ComponentCosts;
+    if (!m_ComponentReliability.isNull()) children << m_ComponentReliability;
+    return children;
 }
 
 
@@ -3380,7 +4133,6 @@ ScenarioDiscretizationSettings::ScenarioDiscretizationSettings() :
 ScenarioDiscretizationSettings* ScenarioDiscretizationSettings::create(const QDomElement& e)
 {
     ScenarioDiscretizationSettings* v;
-    if (e.tagName() == "tns:DiscretizationSettings")
     {
         v = new ScenarioDiscretizationSettings;
         QDomElement nextElement = e.firstChildElement();
@@ -3414,20 +4166,25 @@ bool ScenarioDiscretizationSettings::load(const QDomElement& e, QDomElement* nex
     return true;
 }
 
-QDomElement ScenarioDiscretizationSettings::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioDiscretizationSettings::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("DiscretizationSettings");
-    e.appendChild(createSimpleElement(doc, "nMachPointsCl", m_nMachPointsCl));
-    e.appendChild(createSimpleElement(doc, "nAlfaPointsCl", m_nAlfaPointsCl));
-    e.appendChild(createSimpleElement(doc, "nMachPointsCd", m_nMachPointsCd));
-    e.appendChild(createSimpleElement(doc, "nAlfaPointsCd", m_nAlfaPointsCd));
-    e.appendChild(createSimpleElement(doc, "nMachPointsCm", m_nMachPointsCm));
-    e.appendChild(createSimpleElement(doc, "nAlfaPointsCm", m_nAlfaPointsCm));
-    e.appendChild(createSimpleElement(doc, "nPitchControlNodes", m_nPitchControlNodes));
-    e.appendChild(createSimpleElement(doc, "nYawControlNodes", m_nYawControlNodes));
-    e.appendChild(createSimpleElement(doc, "nThrustControlNodes", m_nThrustControlNodes));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:nMachPointsCl", m_nMachPointsCl));
+    e.appendChild(createSimpleElement(doc, "tns:nAlfaPointsCl", m_nAlfaPointsCl));
+    e.appendChild(createSimpleElement(doc, "tns:nMachPointsCd", m_nMachPointsCd));
+    e.appendChild(createSimpleElement(doc, "tns:nAlfaPointsCd", m_nAlfaPointsCd));
+    e.appendChild(createSimpleElement(doc, "tns:nMachPointsCm", m_nMachPointsCm));
+    e.appendChild(createSimpleElement(doc, "tns:nAlfaPointsCm", m_nAlfaPointsCm));
+    e.appendChild(createSimpleElement(doc, "tns:nPitchControlNodes", m_nPitchControlNodes));
+    e.appendChild(createSimpleElement(doc, "tns:nYawControlNodes", m_nYawControlNodes));
+    e.appendChild(createSimpleElement(doc, "tns:nThrustControlNodes", m_nThrustControlNodes));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioDiscretizationSettings::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -3441,12 +4198,12 @@ ScenarioGeometry::ScenarioGeometry() :
     m_constraintEngine(0.0),
     m_constraintInterference(0.0)
 {
+    m_diameterEqualToUpper = QSharedPointer<ScenarioOptVarBool>(new ScenarioOptVarBool());
 }
 
 ScenarioGeometry* ScenarioGeometry::create(const QDomElement& e)
 {
     ScenarioGeometry* v;
-    if (e.tagName() == "tns:Geometry")
     {
         v = new ScenarioGeometry;
         QDomElement nextElement = e.firstChildElement();
@@ -3463,7 +4220,8 @@ bool ScenarioGeometry::load(const QDomElement& e, QDomElement* next)
         *next = next->nextSiblingElement();
         m_diameter = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
-    m_diameterEqualToUpper = QSharedPointer<ScenarioOptVarBool>(ScenarioOptVarBool::create(*next));
+    if (next->tagName() == "tns:diameterEqualToUpper")
+        m_diameterEqualToUpper = QSharedPointer<ScenarioOptVarBool>(ScenarioOptVarBool::create(*next));
     *next = next->nextSiblingElement();
         m_frontShape = (next->firstChild().toText().data());
         *next = next->nextSiblingElement();
@@ -3476,23 +4234,29 @@ bool ScenarioGeometry::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioGeometry::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioGeometry::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Geometry");
-    e.appendChild(createSimpleElement(doc, "length", m_length));
-    e.appendChild(createSimpleElement(doc, "diameter", m_diameter));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:length", m_length));
+    e.appendChild(createSimpleElement(doc, "tns:diameter", m_diameter));
     if (!m_diameterEqualToUpper.isNull())
     {
-        QDomElement child = m_diameterEqualToUpper->toDomElement(doc);
-        child.setTagName("diameterEqualToUpper");
+        QString tagName = "diameterEqualToUpper";
+        QDomElement child = m_diameterEqualToUpper->toDomElement(doc, tagName);
         e.appendChild(child);
     }
-    e.appendChild(createSimpleElement(doc, "frontShape", m_frontShape));
-    e.appendChild(createSimpleElement(doc, "baseLongPosition", m_baseLongPosition));
-    e.appendChild(createSimpleElement(doc, "constraintEngine", m_constraintEngine));
-    e.appendChild(createSimpleElement(doc, "constraintInterference", m_constraintInterference));
+    e.appendChild(createSimpleElement(doc, "tns:frontShape", m_frontShape));
+    e.appendChild(createSimpleElement(doc, "tns:baseLongPosition", m_baseLongPosition));
+    e.appendChild(createSimpleElement(doc, "tns:constraintEngine", m_constraintEngine));
+    e.appendChild(createSimpleElement(doc, "tns:constraintInterference", m_constraintInterference));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioGeometry::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_diameterEqualToUpper.isNull()) children << m_diameterEqualToUpper;
+    return children;
 }
 
 
@@ -3508,7 +4272,6 @@ ScenarioLVAerodynamics::ScenarioLVAerodynamics() :
 ScenarioLVAerodynamics* ScenarioLVAerodynamics::create(const QDomElement& e)
 {
     ScenarioLVAerodynamics* v;
-    if (e.tagName() == "tns:LVAerodynamics")
     {
         v = new ScenarioLVAerodynamics;
         QDomElement nextElement = e.firstChildElement();
@@ -3536,17 +4299,22 @@ bool ScenarioLVAerodynamics::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioLVAerodynamics::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioLVAerodynamics::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("LVAerodynamics");
-    e.appendChild(createSimpleElement(doc, "userDefinedAero", m_userDefinedAero));
-    e.appendChild(createSimpleElement(doc, "referenceArea", m_referenceArea));
-    e.appendChild(createSimpleElement(doc, "referenceLength", m_referenceLength));
-    e.appendChild(createSimpleElement(doc, "clFileName", m_clFileName));
-    e.appendChild(createSimpleElement(doc, "cdFileName", m_cdFileName));
-    e.appendChild(createSimpleElement(doc, "cmFileName", m_cmFileName));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:userDefinedAero", m_userDefinedAero));
+    e.appendChild(createSimpleElement(doc, "tns:referenceArea", m_referenceArea));
+    e.appendChild(createSimpleElement(doc, "tns:referenceLength", m_referenceLength));
+    e.appendChild(createSimpleElement(doc, "tns:clFileName", m_clFileName));
+    e.appendChild(createSimpleElement(doc, "tns:cdFileName", m_cdFileName));
+    e.appendChild(createSimpleElement(doc, "tns:cmFileName", m_cmFileName));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioLVAerodynamics::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -3572,7 +4340,6 @@ ScenarioComponentWeights::ScenarioComponentWeights() :
 ScenarioComponentWeights* ScenarioComponentWeights::create(const QDomElement& e)
 {
     ScenarioComponentWeights* v;
-    if (e.tagName() == "tns:ComponentWeights")
     {
         v = new ScenarioComponentWeights;
         QDomElement nextElement = e.firstChildElement();
@@ -3630,23 +4397,28 @@ bool ScenarioComponentWeights::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioComponentWeights::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioComponentWeights::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("ComponentWeights");
-    e.appendChild(createSimpleElement(doc, "dryMass", m_dryMass));
-    e.appendChild(createSimpleElement(doc, "dryCoGLongPosition", m_dryCoGLongPosition));
-    e.appendChild(createSimpleElement(doc, "wetMass", m_wetMass));
-    e.appendChild(createSimpleElement(doc, "mainStructMass", m_mainStructMass));
-    e.appendChild(createSimpleElement(doc, "oxTankMass", m_oxTankMass));
-    e.appendChild(createSimpleElement(doc, "fuelTankMass", m_fuelTankMass));
-    e.appendChild(createSimpleElement(doc, "tpsMass", m_tpsMass));
-    e.appendChild(createSimpleElement(doc, "avionicsMass", m_avionicsMass));
-    e.appendChild(createSimpleElement(doc, "epsMass", m_epsMass));
-    e.appendChild(createSimpleElement(doc, "plAdapterMass", m_plAdapterMass));
-    e.appendChild(createSimpleElement(doc, "padInterfaceMass", m_padInterfaceMass));
-    e.appendChild(createSimpleElement(doc, "interstageMass", m_interstageMass));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:dryMass", m_dryMass));
+    e.appendChild(createSimpleElement(doc, "tns:dryCoGLongPosition", m_dryCoGLongPosition));
+    e.appendChild(createSimpleElement(doc, "tns:wetMass", m_wetMass));
+    e.appendChild(createSimpleElement(doc, "tns:mainStructMass", m_mainStructMass));
+    e.appendChild(createSimpleElement(doc, "tns:oxTankMass", m_oxTankMass));
+    e.appendChild(createSimpleElement(doc, "tns:fuelTankMass", m_fuelTankMass));
+    e.appendChild(createSimpleElement(doc, "tns:tpsMass", m_tpsMass));
+    e.appendChild(createSimpleElement(doc, "tns:avionicsMass", m_avionicsMass));
+    e.appendChild(createSimpleElement(doc, "tns:epsMass", m_epsMass));
+    e.appendChild(createSimpleElement(doc, "tns:plAdapterMass", m_plAdapterMass));
+    e.appendChild(createSimpleElement(doc, "tns:padInterfaceMass", m_padInterfaceMass));
+    e.appendChild(createSimpleElement(doc, "tns:interstageMass", m_interstageMass));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioComponentWeights::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -3658,12 +4430,19 @@ ScenarioSystemWeights::ScenarioSystemWeights() :
     m_totalWetMass(0.0),
     m_takeoffThrustOverWeight(0.0)
 {
+    m_maxAxialAcc = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_maxHeatFlux = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_maxDynPressure = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_mainStructuralMaterial = QSharedPointer<ScenarioOptVarString>(new ScenarioOptVarString());
+    m_tanksArrangement = QSharedPointer<ScenarioOptVarString>(new ScenarioOptVarString());
+    m_tanksType = QSharedPointer<ScenarioOptVarString>(new ScenarioOptVarString());
+    m_redundancyLevel = QSharedPointer<ScenarioOptVarString>(new ScenarioOptVarString());
+    m_structuralSafetyMargin = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
 }
 
 ScenarioSystemWeights* ScenarioSystemWeights::create(const QDomElement& e)
 {
     ScenarioSystemWeights* v;
-    if (e.tagName() == "tns:SystemWeights")
     {
         v = new ScenarioSystemWeights;
         QDomElement nextElement = e.firstChildElement();
@@ -3682,81 +4461,102 @@ bool ScenarioSystemWeights::load(const QDomElement& e, QDomElement* next)
         *next = next->nextSiblingElement();
         m_takeoffThrustOverWeight = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
-    m_maxAxialAcc = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    if (next->tagName() == "tns:maxAxialAcc")
+        m_maxAxialAcc = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
     *next = next->nextSiblingElement();
-    m_maxHeatFlux = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    if (next->tagName() == "tns:maxHeatFlux")
+        m_maxHeatFlux = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
     *next = next->nextSiblingElement();
-    m_maxDynPressure = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    if (next->tagName() == "tns:maxDynPressure")
+        m_maxDynPressure = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
     *next = next->nextSiblingElement();
-    m_mainStructuralMaterial = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
+    if (next->tagName() == "tns:mainStructuralMaterial")
+        m_mainStructuralMaterial = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
     *next = next->nextSiblingElement();
-    m_tanksArrangement = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
+    if (next->tagName() == "tns:tanksArrangement")
+        m_tanksArrangement = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
     *next = next->nextSiblingElement();
-    m_tanksType = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
+    if (next->tagName() == "tns:tanksType")
+        m_tanksType = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
     *next = next->nextSiblingElement();
-    m_redundancyLevel = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
+    if (next->tagName() == "tns:redundancyLevel")
+        m_redundancyLevel = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
     *next = next->nextSiblingElement();
-    m_structuralSafetyMargin = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    if (next->tagName() == "tns:structuralSafetyMargin")
+        m_structuralSafetyMargin = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioSystemWeights::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioSystemWeights::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("SystemWeights");
-    e.appendChild(createSimpleElement(doc, "totalDryMass", m_totalDryMass));
-    e.appendChild(createSimpleElement(doc, "totalWetMass", m_totalWetMass));
-    e.appendChild(createSimpleElement(doc, "takeoffThrustOverWeight", m_takeoffThrustOverWeight));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:totalDryMass", m_totalDryMass));
+    e.appendChild(createSimpleElement(doc, "tns:totalWetMass", m_totalWetMass));
+    e.appendChild(createSimpleElement(doc, "tns:takeoffThrustOverWeight", m_takeoffThrustOverWeight));
     if (!m_maxAxialAcc.isNull())
     {
-        QDomElement child = m_maxAxialAcc->toDomElement(doc);
-        child.setTagName("maxAxialAcc");
+        QString tagName = "maxAxialAcc";
+        QDomElement child = m_maxAxialAcc->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_maxHeatFlux.isNull())
     {
-        QDomElement child = m_maxHeatFlux->toDomElement(doc);
-        child.setTagName("maxHeatFlux");
+        QString tagName = "maxHeatFlux";
+        QDomElement child = m_maxHeatFlux->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_maxDynPressure.isNull())
     {
-        QDomElement child = m_maxDynPressure->toDomElement(doc);
-        child.setTagName("maxDynPressure");
+        QString tagName = "maxDynPressure";
+        QDomElement child = m_maxDynPressure->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_mainStructuralMaterial.isNull())
     {
-        QDomElement child = m_mainStructuralMaterial->toDomElement(doc);
-        child.setTagName("mainStructuralMaterial");
+        QString tagName = "mainStructuralMaterial";
+        QDomElement child = m_mainStructuralMaterial->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_tanksArrangement.isNull())
     {
-        QDomElement child = m_tanksArrangement->toDomElement(doc);
-        child.setTagName("tanksArrangement");
+        QString tagName = "tanksArrangement";
+        QDomElement child = m_tanksArrangement->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_tanksType.isNull())
     {
-        QDomElement child = m_tanksType->toDomElement(doc);
-        child.setTagName("tanksType");
+        QString tagName = "tanksType";
+        QDomElement child = m_tanksType->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_redundancyLevel.isNull())
     {
-        QDomElement child = m_redundancyLevel->toDomElement(doc);
-        child.setTagName("redundancyLevel");
+        QString tagName = "redundancyLevel";
+        QDomElement child = m_redundancyLevel->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_structuralSafetyMargin.isNull())
     {
-        QDomElement child = m_structuralSafetyMargin->toDomElement(doc);
-        child.setTagName("structuralSafetyMargin");
+        QString tagName = "structuralSafetyMargin";
+        QDomElement child = m_structuralSafetyMargin->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioSystemWeights::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_maxAxialAcc.isNull()) children << m_maxAxialAcc;
+    if (!m_maxHeatFlux.isNull()) children << m_maxHeatFlux;
+    if (!m_maxDynPressure.isNull()) children << m_maxDynPressure;
+    if (!m_mainStructuralMaterial.isNull()) children << m_mainStructuralMaterial;
+    if (!m_tanksArrangement.isNull()) children << m_tanksArrangement;
+    if (!m_tanksType.isNull()) children << m_tanksType;
+    if (!m_redundancyLevel.isNull()) children << m_redundancyLevel;
+    if (!m_structuralSafetyMargin.isNull()) children << m_structuralSafetyMargin;
+    return children;
 }
 
 
@@ -3765,12 +4565,14 @@ QDomElement ScenarioSystemWeights::toDomElement(QDomDocument& doc) const
 // ScenarioComponentCosts
 ScenarioComponentCosts::ScenarioComponentCosts()
 {
+    m_nEngineTests = QSharedPointer<ScenarioOptVarInt>(new ScenarioOptVarInt());
+    m_DevelopmentCosts = QSharedPointer<ScenarioDevelopmentCosts>(new ScenarioDevelopmentCosts());
+    m_ProductionCosts = QSharedPointer<ScenarioProductionCosts>(new ScenarioProductionCosts());
 }
 
 ScenarioComponentCosts* ScenarioComponentCosts::create(const QDomElement& e)
 {
     ScenarioComponentCosts* v;
-    if (e.tagName() == "tns:ComponentCosts")
     {
         v = new ScenarioComponentCosts;
         QDomElement nextElement = e.firstChildElement();
@@ -3783,38 +4585,49 @@ ScenarioComponentCosts* ScenarioComponentCosts::create(const QDomElement& e)
 bool ScenarioComponentCosts::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    m_nEngineTests = QSharedPointer<ScenarioOptVarInt>(ScenarioOptVarInt::create(*next));
+    if (next->tagName() == "tns:nEngineTests")
+        m_nEngineTests = QSharedPointer<ScenarioOptVarInt>(ScenarioOptVarInt::create(*next));
     *next = next->nextSiblingElement();
-    m_DevelopmentCosts = QSharedPointer<ScenarioDevelopmentCosts>(ScenarioDevelopmentCosts::create(*next));
+    if (next->tagName() == "tns:DevelopmentCosts")
+        m_DevelopmentCosts = QSharedPointer<ScenarioDevelopmentCosts>(ScenarioDevelopmentCosts::create(*next));
     *next = next->nextSiblingElement();
-    m_ProductionCosts = QSharedPointer<ScenarioProductionCosts>(ScenarioProductionCosts::create(*next));
+    if (next->tagName() == "tns:ProductionCosts")
+        m_ProductionCosts = QSharedPointer<ScenarioProductionCosts>(ScenarioProductionCosts::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioComponentCosts::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioComponentCosts::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("ComponentCosts");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     if (!m_nEngineTests.isNull())
     {
-        QDomElement child = m_nEngineTests->toDomElement(doc);
-        child.setTagName("nEngineTests");
+        QString tagName = "nEngineTests";
+        QDomElement child = m_nEngineTests->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_DevelopmentCosts.isNull())
     {
-        QDomElement child = m_DevelopmentCosts->toDomElement(doc);
-        child.setTagName("DevelopmentCosts");
+        QString tagName = "DevelopmentCosts";
+        QDomElement child = m_DevelopmentCosts->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_ProductionCosts.isNull())
     {
-        QDomElement child = m_ProductionCosts->toDomElement(doc);
-        child.setTagName("ProductionCosts");
+        QString tagName = "ProductionCosts";
+        QDomElement child = m_ProductionCosts->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioComponentCosts::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_nEngineTests.isNull()) children << m_nEngineTests;
+    if (!m_DevelopmentCosts.isNull()) children << m_DevelopmentCosts;
+    if (!m_ProductionCosts.isNull()) children << m_ProductionCosts;
+    return children;
 }
 
 
@@ -3833,7 +4646,6 @@ ScenarioDevelopmentCosts::ScenarioDevelopmentCosts() :
 ScenarioDevelopmentCosts* ScenarioDevelopmentCosts::create(const QDomElement& e)
 {
     ScenarioDevelopmentCosts* v;
-    if (e.tagName() == "tns:DevelopmentCosts")
     {
         v = new ScenarioDevelopmentCosts;
         QDomElement nextElement = e.firstChildElement();
@@ -3859,16 +4671,21 @@ bool ScenarioDevelopmentCosts::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioDevelopmentCosts::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioDevelopmentCosts::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("DevelopmentCosts");
-    e.appendChild(createSimpleElement(doc, "enginef2", m_enginef2));
-    e.appendChild(createSimpleElement(doc, "enginef5", m_enginef5));
-    e.appendChild(createSimpleElement(doc, "engineDevelopmentCost", m_engineDevelopmentCost));
-    e.appendChild(createSimpleElement(doc, "systemf2", m_systemf2));
-    e.appendChild(createSimpleElement(doc, "systemDevelopmentCost", m_systemDevelopmentCost));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:enginef2", m_enginef2));
+    e.appendChild(createSimpleElement(doc, "tns:enginef5", m_enginef5));
+    e.appendChild(createSimpleElement(doc, "tns:engineDevelopmentCost", m_engineDevelopmentCost));
+    e.appendChild(createSimpleElement(doc, "tns:systemf2", m_systemf2));
+    e.appendChild(createSimpleElement(doc, "tns:systemDevelopmentCost", m_systemDevelopmentCost));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioDevelopmentCosts::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -3888,7 +4705,6 @@ ScenarioProductionCosts::ScenarioProductionCosts() :
 ScenarioProductionCosts* ScenarioProductionCosts::create(const QDomElement& e)
 {
     ScenarioProductionCosts* v;
-    if (e.tagName() == "tns:ProductionCosts")
     {
         v = new ScenarioProductionCosts;
         QDomElement nextElement = e.firstChildElement();
@@ -3916,17 +4732,22 @@ bool ScenarioProductionCosts::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioProductionCosts::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioProductionCosts::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("ProductionCosts");
-    e.appendChild(createSimpleElement(doc, "totalNumberOfEngines", m_totalNumberOfEngines));
-    e.appendChild(createSimpleElement(doc, "enginesLearningFactor", m_enginesLearningFactor));
-    e.appendChild(createSimpleElement(doc, "totalNumberOfSystems", m_totalNumberOfSystems));
-    e.appendChild(createSimpleElement(doc, "systemsLearningFactor", m_systemsLearningFactor));
-    e.appendChild(createSimpleElement(doc, "totalEngineProductionCost", m_totalEngineProductionCost));
-    e.appendChild(createSimpleElement(doc, "totalSystemProductionCost", m_totalSystemProductionCost));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:totalNumberOfEngines", m_totalNumberOfEngines));
+    e.appendChild(createSimpleElement(doc, "tns:enginesLearningFactor", m_enginesLearningFactor));
+    e.appendChild(createSimpleElement(doc, "tns:totalNumberOfSystems", m_totalNumberOfSystems));
+    e.appendChild(createSimpleElement(doc, "tns:systemsLearningFactor", m_systemsLearningFactor));
+    e.appendChild(createSimpleElement(doc, "tns:totalEngineProductionCost", m_totalEngineProductionCost));
+    e.appendChild(createSimpleElement(doc, "tns:totalSystemProductionCost", m_totalSystemProductionCost));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioProductionCosts::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -3936,12 +4757,14 @@ QDomElement ScenarioProductionCosts::toDomElement(QDomDocument& doc) const
 ScenarioSystemCosts::ScenarioSystemCosts() :
     m_developmentTime(0.0)
 {
+    m_TotalProgramCosts = QSharedPointer<ScenarioTotalProgramCosts>(new ScenarioTotalProgramCosts());
+    m_DirectOperationsCosts = QSharedPointer<ScenarioDirectOperationsCosts>(new ScenarioDirectOperationsCosts());
+    m_IndirectOperationsCosts = QSharedPointer<ScenarioIndirectOperationsCosts>(new ScenarioIndirectOperationsCosts());
 }
 
 ScenarioSystemCosts* ScenarioSystemCosts::create(const QDomElement& e)
 {
     ScenarioSystemCosts* v;
-    if (e.tagName() == "tns:SystemCosts")
     {
         v = new ScenarioSystemCosts;
         QDomElement nextElement = e.firstChildElement();
@@ -3954,41 +4777,52 @@ ScenarioSystemCosts* ScenarioSystemCosts::create(const QDomElement& e)
 bool ScenarioSystemCosts::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    m_TotalProgramCosts = QSharedPointer<ScenarioTotalProgramCosts>(ScenarioTotalProgramCosts::create(*next));
+    if (next->tagName() == "tns:TotalProgramCosts")
+        m_TotalProgramCosts = QSharedPointer<ScenarioTotalProgramCosts>(ScenarioTotalProgramCosts::create(*next));
     *next = next->nextSiblingElement();
         m_developmentTime = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
-    m_DirectOperationsCosts = QSharedPointer<ScenarioDirectOperationsCosts>(ScenarioDirectOperationsCosts::create(*next));
+    if (next->tagName() == "tns:DirectOperationsCosts")
+        m_DirectOperationsCosts = QSharedPointer<ScenarioDirectOperationsCosts>(ScenarioDirectOperationsCosts::create(*next));
     *next = next->nextSiblingElement();
-    m_IndirectOperationsCosts = QSharedPointer<ScenarioIndirectOperationsCosts>(ScenarioIndirectOperationsCosts::create(*next));
+    if (next->tagName() == "tns:IndirectOperationsCosts")
+        m_IndirectOperationsCosts = QSharedPointer<ScenarioIndirectOperationsCosts>(ScenarioIndirectOperationsCosts::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioSystemCosts::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioSystemCosts::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("SystemCosts");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     if (!m_TotalProgramCosts.isNull())
     {
-        QDomElement child = m_TotalProgramCosts->toDomElement(doc);
-        child.setTagName("TotalProgramCosts");
+        QString tagName = "TotalProgramCosts";
+        QDomElement child = m_TotalProgramCosts->toDomElement(doc, tagName);
         e.appendChild(child);
     }
-    e.appendChild(createSimpleElement(doc, "developmentTime", m_developmentTime));
+    e.appendChild(createSimpleElement(doc, "tns:developmentTime", m_developmentTime));
     if (!m_DirectOperationsCosts.isNull())
     {
-        QDomElement child = m_DirectOperationsCosts->toDomElement(doc);
-        child.setTagName("DirectOperationsCosts");
+        QString tagName = "DirectOperationsCosts";
+        QDomElement child = m_DirectOperationsCosts->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_IndirectOperationsCosts.isNull())
     {
-        QDomElement child = m_IndirectOperationsCosts->toDomElement(doc);
-        child.setTagName("IndirectOperationsCosts");
+        QString tagName = "IndirectOperationsCosts";
+        QDomElement child = m_IndirectOperationsCosts->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioSystemCosts::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_TotalProgramCosts.isNull()) children << m_TotalProgramCosts;
+    if (!m_DirectOperationsCosts.isNull()) children << m_DirectOperationsCosts;
+    if (!m_IndirectOperationsCosts.isNull()) children << m_IndirectOperationsCosts;
+    return children;
 }
 
 
@@ -4010,7 +4844,6 @@ ScenarioTotalProgramCosts::ScenarioTotalProgramCosts() :
 ScenarioTotalProgramCosts* ScenarioTotalProgramCosts::create(const QDomElement& e)
 {
     ScenarioTotalProgramCosts* v;
-    if (e.tagName() == "tns:TotalProgramCosts")
     {
         v = new ScenarioTotalProgramCosts;
         QDomElement nextElement = e.firstChildElement();
@@ -4042,19 +4875,24 @@ bool ScenarioTotalProgramCosts::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioTotalProgramCosts::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioTotalProgramCosts::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("TotalProgramCosts");
-    e.appendChild(createSimpleElement(doc, "lifeCycleCostMY", m_lifeCycleCostMY));
-    e.appendChild(createSimpleElement(doc, "costPerLaunchMY", m_costPerLaunchMY));
-    e.appendChild(createSimpleElement(doc, "costPerKiloMY", m_costPerKiloMY));
-    e.appendChild(createSimpleElement(doc, "FYref", m_FYref));
-    e.appendChild(createSimpleElement(doc, "MYtoFYEuros", m_MYtoFYEuros));
-    e.appendChild(createSimpleElement(doc, "lifeCycleCostFYEuros", m_lifeCycleCostFYEuros));
-    e.appendChild(createSimpleElement(doc, "costPerLaunchFYEuros", m_costPerLaunchFYEuros));
-    e.appendChild(createSimpleElement(doc, "costPerKiloFYEuros", m_costPerKiloFYEuros));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:lifeCycleCostMY", m_lifeCycleCostMY));
+    e.appendChild(createSimpleElement(doc, "tns:costPerLaunchMY", m_costPerLaunchMY));
+    e.appendChild(createSimpleElement(doc, "tns:costPerKiloMY", m_costPerKiloMY));
+    e.appendChild(createSimpleElement(doc, "tns:FYref", m_FYref));
+    e.appendChild(createSimpleElement(doc, "tns:MYtoFYEuros", m_MYtoFYEuros));
+    e.appendChild(createSimpleElement(doc, "tns:lifeCycleCostFYEuros", m_lifeCycleCostFYEuros));
+    e.appendChild(createSimpleElement(doc, "tns:costPerLaunchFYEuros", m_costPerLaunchFYEuros));
+    e.appendChild(createSimpleElement(doc, "tns:costPerKiloFYEuros", m_costPerKiloFYEuros));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioTotalProgramCosts::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -4071,12 +4909,12 @@ ScenarioDirectOperationsCosts::ScenarioDirectOperationsCosts() :
     m_propellantsCost(0.0),
     m_insuranceFee(0.0)
 {
+    m_processingType = QSharedPointer<ScenarioOptVarString>(new ScenarioOptVarString());
 }
 
 ScenarioDirectOperationsCosts* ScenarioDirectOperationsCosts::create(const QDomElement& e)
 {
     ScenarioDirectOperationsCosts* v;
-    if (e.tagName() == "tns:DirectOperationsCosts")
     {
         v = new ScenarioDirectOperationsCosts;
         QDomElement nextElement = e.firstChildElement();
@@ -4091,7 +4929,8 @@ bool ScenarioDirectOperationsCosts::load(const QDomElement& e, QDomElement* next
     ScenarioObject::load(e, next);
         m_transportCost = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
-    m_processingType = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
+    if (next->tagName() == "tns:processingType")
+        m_processingType = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
     *next = next->nextSiblingElement();
         m_fv = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
@@ -4110,25 +4949,31 @@ bool ScenarioDirectOperationsCosts::load(const QDomElement& e, QDomElement* next
     return true;
 }
 
-QDomElement ScenarioDirectOperationsCosts::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioDirectOperationsCosts::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("DirectOperationsCosts");
-    e.appendChild(createSimpleElement(doc, "transportCost", m_transportCost));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:transportCost", m_transportCost));
     if (!m_processingType.isNull())
     {
-        QDomElement child = m_processingType->toDomElement(doc);
-        child.setTagName("processingType");
+        QString tagName = "processingType";
+        QDomElement child = m_processingType->toDomElement(doc, tagName);
         e.appendChild(child);
     }
-    e.appendChild(createSimpleElement(doc, "fv", m_fv));
-    e.appendChild(createSimpleElement(doc, "fc", m_fc));
-    e.appendChild(createSimpleElement(doc, "groundOperationsCost", m_groundOperationsCost));
-    e.appendChild(createSimpleElement(doc, "Qn", m_Qn));
-    e.appendChild(createSimpleElement(doc, "flightOperationsCost", m_flightOperationsCost));
-    e.appendChild(createSimpleElement(doc, "propellantsCost", m_propellantsCost));
-    e.appendChild(createSimpleElement(doc, "insuranceFee", m_insuranceFee));
+    e.appendChild(createSimpleElement(doc, "tns:fv", m_fv));
+    e.appendChild(createSimpleElement(doc, "tns:fc", m_fc));
+    e.appendChild(createSimpleElement(doc, "tns:groundOperationsCost", m_groundOperationsCost));
+    e.appendChild(createSimpleElement(doc, "tns:Qn", m_Qn));
+    e.appendChild(createSimpleElement(doc, "tns:flightOperationsCost", m_flightOperationsCost));
+    e.appendChild(createSimpleElement(doc, "tns:propellantsCost", m_propellantsCost));
+    e.appendChild(createSimpleElement(doc, "tns:insuranceFee", m_insuranceFee));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioDirectOperationsCosts::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_processingType.isNull()) children << m_processingType;
+    return children;
 }
 
 
@@ -4145,7 +4990,6 @@ ScenarioIndirectOperationsCosts::ScenarioIndirectOperationsCosts() :
 ScenarioIndirectOperationsCosts* ScenarioIndirectOperationsCosts::create(const QDomElement& e)
 {
     ScenarioIndirectOperationsCosts* v;
-    if (e.tagName() == "tns:IndirectOperationsCosts")
     {
         v = new ScenarioIndirectOperationsCosts;
         QDomElement nextElement = e.firstChildElement();
@@ -4167,14 +5011,19 @@ bool ScenarioIndirectOperationsCosts::load(const QDomElement& e, QDomElement* ne
     return true;
 }
 
-QDomElement ScenarioIndirectOperationsCosts::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioIndirectOperationsCosts::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("IndirectOperationsCosts");
-    e.appendChild(createSimpleElement(doc, "groundFacilitiesBuildingCost", m_groundFacilitiesBuildingCost));
-    e.appendChild(createSimpleElement(doc, "launchSiteCostPerYear", m_launchSiteCostPerYear));
-    e.appendChild(createSimpleElement(doc, "personnelCostPerYear", m_personnelCostPerYear));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:groundFacilitiesBuildingCost", m_groundFacilitiesBuildingCost));
+    e.appendChild(createSimpleElement(doc, "tns:launchSiteCostPerYear", m_launchSiteCostPerYear));
+    e.appendChild(createSimpleElement(doc, "tns:personnelCostPerYear", m_personnelCostPerYear));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioIndirectOperationsCosts::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -4187,12 +5036,13 @@ ScenarioComponentReliability::ScenarioComponentReliability() :
     m_tpsFailureRate(0.0),
     m_overallComponentFailureRate(0.0)
 {
+    m_Separation = QSharedPointer<ScenarioSeparation>(new ScenarioSeparation());
+    m_PropulsionReliability = QSharedPointer<ScenarioPropulsionReliability>(new ScenarioPropulsionReliability());
 }
 
 ScenarioComponentReliability* ScenarioComponentReliability::create(const QDomElement& e)
 {
     ScenarioComponentReliability* v;
-    if (e.tagName() == "tns:ComponentReliability")
     {
         v = new ScenarioComponentReliability;
         QDomElement nextElement = e.firstChildElement();
@@ -4205,7 +5055,8 @@ ScenarioComponentReliability* ScenarioComponentReliability::create(const QDomEle
 bool ScenarioComponentReliability::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    m_Separation = QSharedPointer<ScenarioSeparation>(ScenarioSeparation::create(*next));
+    if (next->tagName() == "tns:Separation")
+        m_Separation = QSharedPointer<ScenarioSeparation>(ScenarioSeparation::create(*next));
     *next = next->nextSiblingElement();
         m_avionicsFailureRate = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
@@ -4213,34 +5064,42 @@ bool ScenarioComponentReliability::load(const QDomElement& e, QDomElement* next)
         *next = next->nextSiblingElement();
         m_tpsFailureRate = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
-    m_PropulsionReliability = QSharedPointer<ScenarioPropulsionReliability>(ScenarioPropulsionReliability::create(*next));
+    if (next->tagName() == "tns:PropulsionReliability")
+        m_PropulsionReliability = QSharedPointer<ScenarioPropulsionReliability>(ScenarioPropulsionReliability::create(*next));
     *next = next->nextSiblingElement();
         m_overallComponentFailureRate = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioComponentReliability::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioComponentReliability::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("ComponentReliability");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     if (!m_Separation.isNull())
     {
-        QDomElement child = m_Separation->toDomElement(doc);
-        child.setTagName("Separation");
+        QString tagName = "Separation";
+        QDomElement child = m_Separation->toDomElement(doc, tagName);
         e.appendChild(child);
     }
-    e.appendChild(createSimpleElement(doc, "avionicsFailureRate", m_avionicsFailureRate));
-    e.appendChild(createSimpleElement(doc, "structureFailureRate", m_structureFailureRate));
-    e.appendChild(createSimpleElement(doc, "tpsFailureRate", m_tpsFailureRate));
+    e.appendChild(createSimpleElement(doc, "tns:avionicsFailureRate", m_avionicsFailureRate));
+    e.appendChild(createSimpleElement(doc, "tns:structureFailureRate", m_structureFailureRate));
+    e.appendChild(createSimpleElement(doc, "tns:tpsFailureRate", m_tpsFailureRate));
     if (!m_PropulsionReliability.isNull())
     {
-        QDomElement child = m_PropulsionReliability->toDomElement(doc);
-        child.setTagName("PropulsionReliability");
+        QString tagName = "PropulsionReliability";
+        QDomElement child = m_PropulsionReliability->toDomElement(doc, tagName);
         e.appendChild(child);
     }
-    e.appendChild(createSimpleElement(doc, "overallComponentFailureRate", m_overallComponentFailureRate));
+    e.appendChild(createSimpleElement(doc, "tns:overallComponentFailureRate", m_overallComponentFailureRate));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioComponentReliability::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Separation.isNull()) children << m_Separation;
+    if (!m_PropulsionReliability.isNull()) children << m_PropulsionReliability;
+    return children;
 }
 
 
@@ -4258,7 +5117,6 @@ ScenarioSeparation::ScenarioSeparation() :
 ScenarioSeparation* ScenarioSeparation::create(const QDomElement& e)
 {
     ScenarioSeparation* v;
-    if (e.tagName() == "tns:Separation")
     {
         v = new ScenarioSeparation;
         QDomElement nextElement = e.firstChildElement();
@@ -4282,15 +5140,20 @@ bool ScenarioSeparation::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioSeparation::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioSeparation::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Separation");
-    e.appendChild(createSimpleElement(doc, "stageSeparationReliability", m_stageSeparationReliability));
-    e.appendChild(createSimpleElement(doc, "boostersSetSeparationReliability", m_boostersSetSeparationReliability));
-    e.appendChild(createSimpleElement(doc, "fairingSeparationReliability", m_fairingSeparationReliability));
-    e.appendChild(createSimpleElement(doc, "payloadSeparationReliability", m_payloadSeparationReliability));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:stageSeparationReliability", m_stageSeparationReliability));
+    e.appendChild(createSimpleElement(doc, "tns:boostersSetSeparationReliability", m_boostersSetSeparationReliability));
+    e.appendChild(createSimpleElement(doc, "tns:fairingSeparationReliability", m_fairingSeparationReliability));
+    e.appendChild(createSimpleElement(doc, "tns:payloadSeparationReliability", m_payloadSeparationReliability));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioSeparation::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -4312,7 +5175,6 @@ ScenarioPropulsionReliability::ScenarioPropulsionReliability() :
 ScenarioPropulsionReliability* ScenarioPropulsionReliability::create(const QDomElement& e)
 {
     ScenarioPropulsionReliability* v;
-    if (e.tagName() == "tns:PropulsionReliability")
     {
         v = new ScenarioPropulsionReliability;
         QDomElement nextElement = e.firstChildElement();
@@ -4344,19 +5206,24 @@ bool ScenarioPropulsionReliability::load(const QDomElement& e, QDomElement* next
     return true;
 }
 
-QDomElement ScenarioPropulsionReliability::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioPropulsionReliability::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("PropulsionReliability");
-    e.appendChild(createSimpleElement(doc, "igniterReliability", m_igniterReliability));
-    e.appendChild(createSimpleElement(doc, "feedFailureRate", m_feedFailureRate));
-    e.appendChild(createSimpleElement(doc, "grainFailureRate", m_grainFailureRate));
-    e.appendChild(createSimpleElement(doc, "chamberFailureRate", m_chamberFailureRate));
-    e.appendChild(createSimpleElement(doc, "nozzleFailureRate", m_nozzleFailureRate));
-    e.appendChild(createSimpleElement(doc, "tvcFailureRate", m_tvcFailureRate));
-    e.appendChild(createSimpleElement(doc, "singleEngineOverallFailureRate", m_singleEngineOverallFailureRate));
-    e.appendChild(createSimpleElement(doc, "propulsionOverallFailureRate", m_propulsionOverallFailureRate));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:igniterReliability", m_igniterReliability));
+    e.appendChild(createSimpleElement(doc, "tns:feedFailureRate", m_feedFailureRate));
+    e.appendChild(createSimpleElement(doc, "tns:grainFailureRate", m_grainFailureRate));
+    e.appendChild(createSimpleElement(doc, "tns:chamberFailureRate", m_chamberFailureRate));
+    e.appendChild(createSimpleElement(doc, "tns:nozzleFailureRate", m_nozzleFailureRate));
+    e.appendChild(createSimpleElement(doc, "tns:tvcFailureRate", m_tvcFailureRate));
+    e.appendChild(createSimpleElement(doc, "tns:singleEngineOverallFailureRate", m_singleEngineOverallFailureRate));
+    e.appendChild(createSimpleElement(doc, "tns:propulsionOverallFailureRate", m_propulsionOverallFailureRate));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioPropulsionReliability::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -4370,12 +5237,12 @@ ScenarioSystemReliability::ScenarioSystemReliability() :
     m_preLaunchReliability(0.0),
     m_numberOfAscentPhases(0)
 {
+    m_Launch = QSharedPointer<ScenarioLaunch>(new ScenarioLaunch());
 }
 
 ScenarioSystemReliability* ScenarioSystemReliability::create(const QDomElement& e)
 {
     ScenarioSystemReliability* v;
-    if (e.tagName() == "tns:SystemReliability")
     {
         v = new ScenarioSystemReliability;
         QDomElement nextElement = e.firstChildElement();
@@ -4396,7 +5263,8 @@ bool ScenarioSystemReliability::load(const QDomElement& e, QDomElement* next)
         *next = next->nextSiblingElement();
         m_preLaunchReliability = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
-    m_Launch = QSharedPointer<ScenarioLaunch>(ScenarioLaunch::create(*next));
+    if (next->tagName() == "tns:Launch")
+        m_Launch = QSharedPointer<ScenarioLaunch>(ScenarioLaunch::create(*next));
     *next = next->nextSiblingElement();
         m_numberOfAscentPhases = parseInt(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
@@ -4407,24 +5275,30 @@ bool ScenarioSystemReliability::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioSystemReliability::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioSystemReliability::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("SystemReliability");
-    e.appendChild(createSimpleElement(doc, "globalVehicleReliability", m_globalVehicleReliability));
-    e.appendChild(createSimpleElement(doc, "selfDestructReliability", m_selfDestructReliability));
-    e.appendChild(createSimpleElement(doc, "missionSafety", m_missionSafety));
-    e.appendChild(createSimpleElement(doc, "preLaunchReliability", m_preLaunchReliability));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:globalVehicleReliability", m_globalVehicleReliability));
+    e.appendChild(createSimpleElement(doc, "tns:selfDestructReliability", m_selfDestructReliability));
+    e.appendChild(createSimpleElement(doc, "tns:missionSafety", m_missionSafety));
+    e.appendChild(createSimpleElement(doc, "tns:preLaunchReliability", m_preLaunchReliability));
     if (!m_Launch.isNull())
     {
-        QDomElement child = m_Launch->toDomElement(doc);
-        child.setTagName("Launch");
+        QString tagName = "Launch";
+        QDomElement child = m_Launch->toDomElement(doc, tagName);
         e.appendChild(child);
     }
-    e.appendChild(createSimpleElement(doc, "numberOfAscentPhases", m_numberOfAscentPhases));
-    e.appendChild(createSimpleElement(doc, "ascentPhasesDurations", m_ascentPhasesDurations));
-    e.appendChild(createSimpleElement(doc, "ascentPhasesFailureRate", m_ascentPhasesFailureRate));
+    e.appendChild(createSimpleElement(doc, "tns:numberOfAscentPhases", m_numberOfAscentPhases));
+    e.appendChild(createSimpleElement(doc, "tns:ascentPhasesDurations", m_ascentPhasesDurations));
+    e.appendChild(createSimpleElement(doc, "tns:ascentPhasesFailureRate", m_ascentPhasesFailureRate));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioSystemReliability::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Launch.isNull()) children << m_Launch;
+    return children;
 }
 
 
@@ -4442,7 +5316,6 @@ ScenarioLaunch::ScenarioLaunch() :
 ScenarioLaunch* ScenarioLaunch::create(const QDomElement& e)
 {
     ScenarioLaunch* v;
-    if (e.tagName() == "tns:Launch")
     {
         v = new ScenarioLaunch;
         QDomElement nextElement = e.firstChildElement();
@@ -4466,15 +5339,20 @@ bool ScenarioLaunch::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioLaunch::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioLaunch::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Launch");
-    e.appendChild(createSimpleElement(doc, "launchSiteReliability", m_launchSiteReliability));
-    e.appendChild(createSimpleElement(doc, "ignitionReliability", m_ignitionReliability));
-    e.appendChild(createSimpleElement(doc, "controlMarginReliability", m_controlMarginReliability));
-    e.appendChild(createSimpleElement(doc, "launchOverallReliability", m_launchOverallReliability));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:launchSiteReliability", m_launchSiteReliability));
+    e.appendChild(createSimpleElement(doc, "tns:ignitionReliability", m_ignitionReliability));
+    e.appendChild(createSimpleElement(doc, "tns:controlMarginReliability", m_controlMarginReliability));
+    e.appendChild(createSimpleElement(doc, "tns:launchOverallReliability", m_launchOverallReliability));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioLaunch::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -4483,12 +5361,16 @@ QDomElement ScenarioLaunch::toDomElement(QDomDocument& doc) const
 // ScenarioTrajectory
 ScenarioTrajectory::ScenarioTrajectory()
 {
+    m_TakeOff = QSharedPointer<ScenarioTakeOff>(new ScenarioTakeOff());
+    m_Ignitions = QSharedPointer<ScenarioIgnitions>(new ScenarioIgnitions());
+    m_AtmosphericFlight = QSharedPointer<ScenarioAtmosphericFlight>(new ScenarioAtmosphericFlight());
+    m_ExoatmosphericFlight = QSharedPointer<ScenarioExoatmosphericFlight>(new ScenarioExoatmosphericFlight());
+    m_Constraints = QSharedPointer<ScenarioConstraints>(new ScenarioConstraints());
 }
 
 ScenarioTrajectory* ScenarioTrajectory::create(const QDomElement& e)
 {
     ScenarioTrajectory* v;
-    if (e.tagName() == "tns:Trajectory")
     {
         v = new ScenarioTrajectory;
         QDomElement nextElement = e.firstChildElement();
@@ -4501,54 +5383,69 @@ ScenarioTrajectory* ScenarioTrajectory::create(const QDomElement& e)
 bool ScenarioTrajectory::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    m_TakeOff = QSharedPointer<ScenarioTakeOff>(ScenarioTakeOff::create(*next));
+    if (next->tagName() == "tns:TakeOff")
+        m_TakeOff = QSharedPointer<ScenarioTakeOff>(ScenarioTakeOff::create(*next));
     *next = next->nextSiblingElement();
-    m_Ignitions = QSharedPointer<ScenarioIgnitions>(ScenarioIgnitions::create(*next));
+    if (next->tagName() == "tns:Ignitions")
+        m_Ignitions = QSharedPointer<ScenarioIgnitions>(ScenarioIgnitions::create(*next));
     *next = next->nextSiblingElement();
-    m_AtmosphericFlight = QSharedPointer<ScenarioAtmosphericFlight>(ScenarioAtmosphericFlight::create(*next));
+    if (next->tagName() == "tns:AtmosphericFlight")
+        m_AtmosphericFlight = QSharedPointer<ScenarioAtmosphericFlight>(ScenarioAtmosphericFlight::create(*next));
     *next = next->nextSiblingElement();
-    m_ExoatmosphericFlight = QSharedPointer<ScenarioExoatmosphericFlight>(ScenarioExoatmosphericFlight::create(*next));
+    if (next->tagName() == "tns:ExoatmosphericFlight")
+        m_ExoatmosphericFlight = QSharedPointer<ScenarioExoatmosphericFlight>(ScenarioExoatmosphericFlight::create(*next));
     *next = next->nextSiblingElement();
-    m_Constraints = QSharedPointer<ScenarioConstraints>(ScenarioConstraints::create(*next));
+    if (next->tagName() == "tns:Constraints")
+        m_Constraints = QSharedPointer<ScenarioConstraints>(ScenarioConstraints::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioTrajectory::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioTrajectory::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Trajectory");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     if (!m_TakeOff.isNull())
     {
-        QDomElement child = m_TakeOff->toDomElement(doc);
-        child.setTagName("TakeOff");
+        QString tagName = "TakeOff";
+        QDomElement child = m_TakeOff->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_Ignitions.isNull())
     {
-        QDomElement child = m_Ignitions->toDomElement(doc);
-        child.setTagName("Ignitions");
+        QString tagName = "Ignitions";
+        QDomElement child = m_Ignitions->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_AtmosphericFlight.isNull())
     {
-        QDomElement child = m_AtmosphericFlight->toDomElement(doc);
-        child.setTagName("AtmosphericFlight");
+        QString tagName = "AtmosphericFlight";
+        QDomElement child = m_AtmosphericFlight->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_ExoatmosphericFlight.isNull())
     {
-        QDomElement child = m_ExoatmosphericFlight->toDomElement(doc);
-        child.setTagName("ExoatmosphericFlight");
+        QString tagName = "ExoatmosphericFlight";
+        QDomElement child = m_ExoatmosphericFlight->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_Constraints.isNull())
     {
-        QDomElement child = m_Constraints->toDomElement(doc);
-        child.setTagName("Constraints");
+        QString tagName = "Constraints";
+        QDomElement child = m_Constraints->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioTrajectory::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_TakeOff.isNull()) children << m_TakeOff;
+    if (!m_Ignitions.isNull()) children << m_Ignitions;
+    if (!m_AtmosphericFlight.isNull()) children << m_AtmosphericFlight;
+    if (!m_ExoatmosphericFlight.isNull()) children << m_ExoatmosphericFlight;
+    if (!m_Constraints.isNull()) children << m_Constraints;
+    return children;
 }
 
 
@@ -4567,7 +5464,6 @@ ScenarioTakeOff::ScenarioTakeOff() :
 ScenarioTakeOff* ScenarioTakeOff::create(const QDomElement& e)
 {
     ScenarioTakeOff* v;
-    if (e.tagName() == "tns:TakeOff")
     {
         v = new ScenarioTakeOff;
         QDomElement nextElement = e.firstChildElement();
@@ -4593,16 +5489,21 @@ bool ScenarioTakeOff::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioTakeOff::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioTakeOff::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("TakeOff");
-    e.appendChild(createSimpleElement(doc, "padClearingAlt", m_padClearingAlt));
-    e.appendChild(createSimpleElement(doc, "maxPitchOverAngle", m_maxPitchOverAngle));
-    e.appendChild(createSimpleElement(doc, "pitchOverDuration", m_pitchOverDuration));
-    e.appendChild(createSimpleElement(doc, "pitchOverDecayTime", m_pitchOverDecayTime));
-    e.appendChild(createSimpleElement(doc, "pitchOverHeadingAngle", m_pitchOverHeadingAngle));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:padClearingAlt", m_padClearingAlt));
+    e.appendChild(createSimpleElement(doc, "tns:maxPitchOverAngle", m_maxPitchOverAngle));
+    e.appendChild(createSimpleElement(doc, "tns:pitchOverDuration", m_pitchOverDuration));
+    e.appendChild(createSimpleElement(doc, "tns:pitchOverDecayTime", m_pitchOverDecayTime));
+    e.appendChild(createSimpleElement(doc, "tns:pitchOverHeadingAngle", m_pitchOverHeadingAngle));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioTakeOff::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -4618,7 +5519,6 @@ ScenarioIgnitions::ScenarioIgnitions() :
 ScenarioIgnitions* ScenarioIgnitions::create(const QDomElement& e)
 {
     ScenarioIgnitions* v;
-    if (e.tagName() == "tns:Ignitions")
     {
         v = new ScenarioIgnitions;
         QDomElement nextElement = e.firstChildElement();
@@ -4654,15 +5554,20 @@ bool ScenarioIgnitions::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioIgnitions::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioIgnitions::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Ignitions");
-    e.appendChild(createSimpleElement(doc, "coreIgnitionDelayOption", m_coreIgnitionDelayOption));
-    e.appendChild(createSimpleElement(doc, "coreIgnitionDelayTime", m_coreIgnitionDelayTime));
-    e.appendChild(createSimpleElement(doc, "secondBoostersSetIgnitionDelayOption", m_secondBoostersSetIgnitionDelayOption));
-    e.appendChild(createSimpleElement(doc, "secondBoostersSetIgnitionDelayTime", m_secondBoostersSetIgnitionDelayTime));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:coreIgnitionDelayOption", m_coreIgnitionDelayOption));
+    e.appendChild(createSimpleElement(doc, "tns:coreIgnitionDelayTime", m_coreIgnitionDelayTime));
+    e.appendChild(createSimpleElement(doc, "tns:secondBoostersSetIgnitionDelayOption", m_secondBoostersSetIgnitionDelayOption));
+    e.appendChild(createSimpleElement(doc, "tns:secondBoostersSetIgnitionDelayTime", m_secondBoostersSetIgnitionDelayTime));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioIgnitions::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -4676,7 +5581,6 @@ ScenarioAtmosphericFlight::ScenarioAtmosphericFlight()
 ScenarioAtmosphericFlight* ScenarioAtmosphericFlight::create(const QDomElement& e)
 {
     ScenarioAtmosphericFlight* v;
-    if (e.tagName() == "tns:AtmosphericFlight")
     {
         v = new ScenarioAtmosphericFlight;
         QDomElement nextElement = e.firstChildElement();
@@ -4701,14 +5605,19 @@ bool ScenarioAtmosphericFlight::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioAtmosphericFlight::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioAtmosphericFlight::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("AtmosphericFlight");
-    e.appendChild(createSimpleElement(doc, "optimizedPitchValues", m_optimizedPitchValues));
-    e.appendChild(createSimpleElement(doc, "optimizedYawValues", m_optimizedYawValues));
-    e.appendChild(createSimpleElement(doc, "optimizedThrustValues", m_optimizedThrustValues));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:optimizedPitchValues", m_optimizedPitchValues));
+    e.appendChild(createSimpleElement(doc, "tns:optimizedYawValues", m_optimizedYawValues));
+    e.appendChild(createSimpleElement(doc, "tns:optimizedThrustValues", m_optimizedThrustValues));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioAtmosphericFlight::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -4726,7 +5635,6 @@ ScenarioExoatmosphericFlight::ScenarioExoatmosphericFlight() :
 ScenarioExoatmosphericFlight* ScenarioExoatmosphericFlight::create(const QDomElement& e)
 {
     ScenarioExoatmosphericFlight* v;
-    if (e.tagName() == "tns:ExoatmosphericFlight")
     {
         v = new ScenarioExoatmosphericFlight;
         QDomElement nextElement = e.firstChildElement();
@@ -4755,16 +5663,21 @@ bool ScenarioExoatmosphericFlight::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioExoatmosphericFlight::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioExoatmosphericFlight::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("ExoatmosphericFlight");
-    e.appendChild(createSimpleElement(doc, "bilinearLawInitPitch", m_bilinearLawInitPitch));
-    e.appendChild(createSimpleElement(doc, "bilinearLawFinalPitch", m_bilinearLawFinalPitch));
-    e.appendChild(createSimpleElement(doc, "bilinearLawParam", m_bilinearLawParam));
-    e.appendChild(createSimpleElement(doc, "circBurnOption", m_circBurnOption));
-    e.appendChild(createSimpleElement(doc, "circBurnTime", m_circBurnTime));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:bilinearLawInitPitch", m_bilinearLawInitPitch));
+    e.appendChild(createSimpleElement(doc, "tns:bilinearLawFinalPitch", m_bilinearLawFinalPitch));
+    e.appendChild(createSimpleElement(doc, "tns:bilinearLawParam", m_bilinearLawParam));
+    e.appendChild(createSimpleElement(doc, "tns:circBurnOption", m_circBurnOption));
+    e.appendChild(createSimpleElement(doc, "tns:circBurnTime", m_circBurnTime));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioExoatmosphericFlight::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -4785,7 +5698,6 @@ ScenarioConstraints::ScenarioConstraints() :
 ScenarioConstraints* ScenarioConstraints::create(const QDomElement& e)
 {
     ScenarioConstraints* v;
-    if (e.tagName() == "tns:Constraints")
     {
         v = new ScenarioConstraints;
         QDomElement nextElement = e.firstChildElement();
@@ -4815,34 +5727,43 @@ bool ScenarioConstraints::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioConstraints::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioConstraints::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Constraints");
-    e.appendChild(createSimpleElement(doc, "finalSemiaxisError", m_finalSemiaxisError));
-    e.appendChild(createSimpleElement(doc, "finalEccError", m_finalEccError));
-    e.appendChild(createSimpleElement(doc, "finalInclError", m_finalInclError));
-    e.appendChild(createSimpleElement(doc, "axialAccCstrViolation", m_axialAccCstrViolation));
-    e.appendChild(createSimpleElement(doc, "heatFluxCstrViolation", m_heatFluxCstrViolation));
-    e.appendChild(createSimpleElement(doc, "dynPressCstrViolation", m_dynPressCstrViolation));
-    e.appendChild(createSimpleElement(doc, "controllabilityCstrViolation", m_controllabilityCstrViolation));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:finalSemiaxisError", m_finalSemiaxisError));
+    e.appendChild(createSimpleElement(doc, "tns:finalEccError", m_finalEccError));
+    e.appendChild(createSimpleElement(doc, "tns:finalInclError", m_finalInclError));
+    e.appendChild(createSimpleElement(doc, "tns:axialAccCstrViolation", m_axialAccCstrViolation));
+    e.appendChild(createSimpleElement(doc, "tns:heatFluxCstrViolation", m_heatFluxCstrViolation));
+    e.appendChild(createSimpleElement(doc, "tns:dynPressCstrViolation", m_dynPressCstrViolation));
+    e.appendChild(createSimpleElement(doc, "tns:controllabilityCstrViolation", m_controllabilityCstrViolation));
     return e;
 }
 
-
-
-
-// ScenarioInitialPositionType
-ScenarioInitialPositionType::ScenarioInitialPositionType()
+QList<QSharedPointer<ScenarioObject> >ScenarioConstraints::children() const
 {
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
-ScenarioInitialPositionType* ScenarioInitialPositionType::create(const QDomElement& e)
+
+
+
+// ScenarioREV
+ScenarioREV::ScenarioREV()
 {
-    ScenarioInitialPositionType* v;
-    if (e.tagName() == "tns:InitialPositionType")
+    m_REVProgram = QSharedPointer<ScenarioREVProgramType>(new ScenarioREVProgramType());
+    m_REVMission = QSharedPointer<ScenarioREVMissionType>(new ScenarioREVMissionType());
+    m_REVSystem = QSharedPointer<ScenarioREVSystemType>(new ScenarioREVSystemType());
+    m_Optimization = QSharedPointer<ScenarioOptimization>(new ScenarioOptimization());
+    m_OutputFiles = QSharedPointer<ScenarioOutputFiles>(new ScenarioOutputFiles());
+}
+
+ScenarioREV* ScenarioREV::create(const QDomElement& e)
+{
+    ScenarioREV* v;
     {
-        v = new ScenarioInitialPositionType;
+        v = new ScenarioREV;
         QDomElement nextElement = e.firstChildElement();
         v->load(e, &nextElement);
         return v;
@@ -4850,27 +5771,3055 @@ ScenarioInitialPositionType* ScenarioInitialPositionType::create(const QDomEleme
     return NULL;
 }
 
-bool ScenarioInitialPositionType::load(const QDomElement& e, QDomElement* next)
+bool ScenarioREV::load(const QDomElement& e, QDomElement* next)
 {
-    ScenarioObject::load(e, next);
-        m_CoordinateSystem = (next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-    m_Abstract6DOFPosition = QSharedPointer<ScenarioAbstract6DOFPositionType>(ScenarioAbstract6DOFPositionType::create(*next));
+    ScenarioParticipantType::load(e, next);
+    if (next->tagName() == "tns:REVProgram")
+        m_REVProgram = QSharedPointer<ScenarioREVProgramType>(ScenarioREVProgramType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:REVMission")
+        m_REVMission = QSharedPointer<ScenarioREVMissionType>(ScenarioREVMissionType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:REVSystem")
+        m_REVSystem = QSharedPointer<ScenarioREVSystemType>(ScenarioREVSystemType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:Optimization")
+        m_Optimization = QSharedPointer<ScenarioOptimization>(ScenarioOptimization::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:OutputFiles")
+        m_OutputFiles = QSharedPointer<ScenarioOutputFiles>(ScenarioOutputFiles::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioInitialPositionType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioREV::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("InitialPositionType");
-    e.appendChild(createSimpleElement(doc, "CoordinateSystem", m_CoordinateSystem));
-    if (!m_Abstract6DOFPosition.isNull())
+    QDomElement e = ScenarioParticipantType::toDomElement(doc, elementName);
+    if (!m_REVProgram.isNull())
     {
-        QDomElement child = m_Abstract6DOFPosition->toDomElement(doc);
+        QString tagName = "REVProgram";
+        QDomElement child = m_REVProgram->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_REVMission.isNull())
+    {
+        QString tagName = "REVMission";
+        QDomElement child = m_REVMission->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_REVSystem.isNull())
+    {
+        QString tagName = "REVSystem";
+        QDomElement child = m_REVSystem->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_Optimization.isNull())
+    {
+        QString tagName = "Optimization";
+        QDomElement child = m_Optimization->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_OutputFiles.isNull())
+    {
+        QString tagName = "OutputFiles";
+        QDomElement child = m_OutputFiles->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREV::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_REVProgram.isNull()) children << m_REVProgram;
+    if (!m_REVMission.isNull()) children << m_REVMission;
+    if (!m_REVSystem.isNull()) children << m_REVSystem;
+    if (!m_Optimization.isNull()) children << m_Optimization;
+    if (!m_OutputFiles.isNull()) children << m_OutputFiles;
+    return children;
+}
+
+
+
+
+// ScenarioREVProgramType
+ScenarioREVProgramType::ScenarioREVProgramType() :
+    m_nMissions(0),
+    m_nYearsOps(0.0)
+{
+}
+
+ScenarioREVProgramType* ScenarioREVProgramType::create(const QDomElement& e)
+{
+    ScenarioREVProgramType* v;
+    {
+        v = new ScenarioREVProgramType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVProgramType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_nMissions = parseInt(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_nYearsOps = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioREVProgramType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:nMissions", m_nMissions));
+    e.appendChild(createSimpleElement(doc, "tns:nYearsOps", m_nYearsOps));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVProgramType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
+// ScenarioREVMissionType
+ScenarioREVMissionType::ScenarioREVMissionType()
+{
+    m_Payload = QSharedPointer<ScenarioREVPayloadType>(new ScenarioREVPayloadType());
+    m_REVTrajectoryPlan = QSharedPointer<ScenarioREVTrajectoryPlanType>(new ScenarioREVTrajectoryPlanType());
+}
+
+ScenarioREVMissionType* ScenarioREVMissionType::create(const QDomElement& e)
+{
+    ScenarioREVMissionType* v;
+    {
+        v = new ScenarioREVMissionType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVMissionType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:Payload")
+        m_Payload = QSharedPointer<ScenarioREVPayloadType>(ScenarioREVPayloadType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:REVTrajectoryPlan")
+        m_REVTrajectoryPlan = QSharedPointer<ScenarioREVTrajectoryPlanType>(ScenarioREVTrajectoryPlanType::create(*next));
+    *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioREVMissionType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    if (!m_Payload.isNull())
+    {
+        QString tagName = "Payload";
+        QDomElement child = m_Payload->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_REVTrajectoryPlan.isNull())
+    {
+        QString tagName = "REVTrajectoryPlan";
+        QDomElement child = m_REVTrajectoryPlan->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVMissionType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Payload.isNull()) children << m_Payload;
+    if (!m_REVTrajectoryPlan.isNull()) children << m_REVTrajectoryPlan;
+    return children;
+}
+
+
+
+
+// ScenarioREVTrajectoryPlanType
+ScenarioREVTrajectoryPlanType::ScenarioREVTrajectoryPlanType()
+{
+}
+
+ScenarioREVTrajectoryPlanType* ScenarioREVTrajectoryPlanType::create(const QDomElement& e)
+{
+    ScenarioREVTrajectoryPlanType* v;
+    {
+        v = new ScenarioREVTrajectoryPlanType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVTrajectoryPlanType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    for (;;)
+    {
+        QSharedPointer<ScenarioAbstractTrajectoryType> v;
+        if (next->tagName() == "tns:EntryArc")
+            v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioEntryArcType::create(*next));
+        else if (next->tagName() == "tns:Loitering")
+            v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioLoiteringType::create(*next));
+        else if (next->tagName() == "tns:Lagrangian")
+            v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioLagrangianType::create(*next));
+        else if (next->tagName() == "tns:Rendezvous")
+            v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioRendezvousType::create(*next));
+        else if (next->tagName() == "tns:FlyBy")
+            v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioFlyByType::create(*next));
+        else if (next->tagName() == "tns:LoiteringTLE")
+            v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioLoiteringTLEType::create(*next));
+        if (v.isNull()) break; else {
+            m_AbstractTrajectory << v;
+            *next = next->nextSiblingElement();
+        }
+    }
+    return true;
+}
+
+QDomElement ScenarioREVTrajectoryPlanType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    foreach (QSharedPointer<ScenarioAbstractTrajectoryType> p, m_AbstractTrajectory)
+    {
+        QString tagName = "AbstractTrajectory";
+        if (dynamic_cast<ScenarioEntryArcType*>(p.data()))
+            tagName = "EntryArc";
+        else if (dynamic_cast<ScenarioLoiteringType*>(p.data()))
+            tagName = "Loitering";
+        else if (dynamic_cast<ScenarioLagrangianType*>(p.data()))
+            tagName = "Lagrangian";
+        else if (dynamic_cast<ScenarioRendezvousType*>(p.data()))
+            tagName = "Rendezvous";
+        else if (dynamic_cast<ScenarioFlyByType*>(p.data()))
+            tagName = "FlyBy";
+        else if (dynamic_cast<ScenarioLoiteringTLEType*>(p.data()))
+            tagName = "LoiteringTLE";
+        QDomElement child = p->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVTrajectoryPlanType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    foreach (QSharedPointer<ScenarioObject> child, m_AbstractTrajectory) { children << child; }
+    return children;
+}
+
+
+
+
+// ScenarioEntryArcType
+ScenarioEntryArcType::ScenarioEntryArcType()
+{
+    m_Environment = QSharedPointer<ScenarioEnvironmentType>(new ScenarioEnvironmentType());
+    m_TimeLine = QSharedPointer<ScenarioTimeLine>(new ScenarioTimeLine());
+    m_InitialPosition = QSharedPointer<ScenarioInitialPositionType>(new ScenarioInitialPositionType());
+    m_InitialAttitude = QSharedPointer<ScenarioInitialAttitudeType>(new ScenarioInitialAttitudeType());
+    m_PropagationPosition = QSharedPointer<ScenarioPropagationPositionType>(new ScenarioPropagationPositionType());
+    m_PropagationAttitude = QSharedPointer<ScenarioPropagationAttitudeType>(new ScenarioPropagationAttitudeType());
+    m_Constraints = QSharedPointer<ScenarioREVConstraintsType>(new ScenarioREVConstraintsType());
+    m_targetFinalState = QSharedPointer<ScenarioREVFinalStateType>(new ScenarioREVFinalStateType());
+    m_ConstraintsViolation = QSharedPointer<ScenarioREVConstraintsViolationType>(new ScenarioREVConstraintsViolationType());
+    m_EntryCharacteristics = QSharedPointer<ScenarioEntryCharacteristicsType>(new ScenarioEntryCharacteristicsType());
+}
+
+ScenarioEntryArcType* ScenarioEntryArcType::create(const QDomElement& e)
+{
+    ScenarioEntryArcType* v;
+    {
+        v = new ScenarioEntryArcType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioEntryArcType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioAbstractTrajectoryType::load(e, next);
+    if (next->tagName() == "tns:Environment")
+        m_Environment = QSharedPointer<ScenarioEnvironmentType>(ScenarioEnvironmentType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:TimeLine")
+        m_TimeLine = QSharedPointer<ScenarioTimeLine>(ScenarioTimeLine::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:InitialPosition")
+        m_InitialPosition = QSharedPointer<ScenarioInitialPositionType>(ScenarioInitialPositionType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:InitialAttitude")
+        m_InitialAttitude = QSharedPointer<ScenarioInitialAttitudeType>(ScenarioInitialAttitudeType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:PropagationPosition")
+        m_PropagationPosition = QSharedPointer<ScenarioPropagationPositionType>(ScenarioPropagationPositionType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:PropagationAttitude")
+        m_PropagationAttitude = QSharedPointer<ScenarioPropagationAttitudeType>(ScenarioPropagationAttitudeType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:Constraints")
+        m_Constraints = QSharedPointer<ScenarioREVConstraintsType>(ScenarioREVConstraintsType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:targetFinalState")
+        m_targetFinalState = QSharedPointer<ScenarioREVFinalStateType>(ScenarioREVFinalStateType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:ConstraintsViolation")
+        m_ConstraintsViolation = QSharedPointer<ScenarioREVConstraintsViolationType>(ScenarioREVConstraintsViolationType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:EntryCharacteristics")
+        m_EntryCharacteristics = QSharedPointer<ScenarioEntryCharacteristicsType>(ScenarioEntryCharacteristicsType::create(*next));
+    *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioEntryArcType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc, elementName);
+    if (!m_Environment.isNull())
+    {
+        QString tagName = "Environment";
+        QDomElement child = m_Environment->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_TimeLine.isNull())
+    {
+        QString tagName = "TimeLine";
+        QDomElement child = m_TimeLine->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_InitialPosition.isNull())
+    {
+        QString tagName = "InitialPosition";
+        QDomElement child = m_InitialPosition->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_InitialAttitude.isNull())
+    {
+        QString tagName = "InitialAttitude";
+        QDomElement child = m_InitialAttitude->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_PropagationPosition.isNull())
+    {
+        QString tagName = "PropagationPosition";
+        QDomElement child = m_PropagationPosition->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_PropagationAttitude.isNull())
+    {
+        QString tagName = "PropagationAttitude";
+        QDomElement child = m_PropagationAttitude->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_Constraints.isNull())
+    {
+        QString tagName = "Constraints";
+        QDomElement child = m_Constraints->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_targetFinalState.isNull())
+    {
+        QString tagName = "targetFinalState";
+        QDomElement child = m_targetFinalState->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_ConstraintsViolation.isNull())
+    {
+        QString tagName = "ConstraintsViolation";
+        QDomElement child = m_ConstraintsViolation->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_EntryCharacteristics.isNull())
+    {
+        QString tagName = "EntryCharacteristics";
+        QDomElement child = m_EntryCharacteristics->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioEntryArcType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Environment.isNull()) children << m_Environment;
+    if (!m_TimeLine.isNull()) children << m_TimeLine;
+    if (!m_InitialPosition.isNull()) children << m_InitialPosition;
+    if (!m_InitialAttitude.isNull()) children << m_InitialAttitude;
+    if (!m_PropagationPosition.isNull()) children << m_PropagationPosition;
+    if (!m_PropagationAttitude.isNull()) children << m_PropagationAttitude;
+    if (!m_Constraints.isNull()) children << m_Constraints;
+    if (!m_targetFinalState.isNull()) children << m_targetFinalState;
+    if (!m_ConstraintsViolation.isNull()) children << m_ConstraintsViolation;
+    if (!m_EntryCharacteristics.isNull()) children << m_EntryCharacteristics;
+    return children;
+}
+
+
+
+
+// ScenarioREVFinalStateType
+ScenarioREVFinalStateType::ScenarioREVFinalStateType() :
+    m_degreesOfFreedom(0)
+{
+    m_FinalPositionState = QSharedPointer<ScenarioREVFinalPositionStateType>(new ScenarioREVFinalPositionStateType());
+    m_DispersionAnalysis = QSharedPointer<ScenarioREVDispersionAnalysisType>(new ScenarioREVDispersionAnalysisType());
+}
+
+ScenarioREVFinalStateType* ScenarioREVFinalStateType::create(const QDomElement& e)
+{
+    ScenarioREVFinalStateType* v;
+    {
+        v = new ScenarioREVFinalStateType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVFinalStateType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_entryType = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:FinalPositionState")
+        m_FinalPositionState = QSharedPointer<ScenarioREVFinalPositionStateType>(ScenarioREVFinalPositionStateType::create(*next));
+    *next = next->nextSiblingElement();
+        m_degreesOfFreedom = parseInt(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_attitudeController = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:DispersionAnalysis")
+        m_DispersionAnalysis = QSharedPointer<ScenarioREVDispersionAnalysisType>(ScenarioREVDispersionAnalysisType::create(*next));
+    *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioREVFinalStateType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:entryType", m_entryType));
+    if (!m_FinalPositionState.isNull())
+    {
+        QString tagName = "FinalPositionState";
+        QDomElement child = m_FinalPositionState->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    e.appendChild(createSimpleElement(doc, "tns:degreesOfFreedom", m_degreesOfFreedom));
+    e.appendChild(createSimpleElement(doc, "tns:attitudeController", m_attitudeController));
+    if (!m_DispersionAnalysis.isNull())
+    {
+        QString tagName = "DispersionAnalysis";
+        QDomElement child = m_DispersionAnalysis->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVFinalStateType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_FinalPositionState.isNull()) children << m_FinalPositionState;
+    if (!m_DispersionAnalysis.isNull()) children << m_DispersionAnalysis;
+    return children;
+}
+
+
+
+
+// ScenarioREVFinalPositionStateType
+ScenarioREVFinalPositionStateType::ScenarioREVFinalPositionStateType()
+{
+}
+
+ScenarioREVFinalPositionStateType* ScenarioREVFinalPositionStateType::create(const QDomElement& e)
+{
+    ScenarioREVFinalPositionStateType* v;
+    {
+        v = new ScenarioREVFinalPositionStateType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVFinalPositionStateType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:StateVector")
+        m_Abstract6DOFPosition = QSharedPointer<ScenarioAbstract6DOFPositionType>((ScenarioAbstract6DOFPositionType*)ScenarioStateVectorType::create(*next));
+    else if (next->tagName() == "tns:KeplerianElements")
+        m_Abstract6DOFPosition = QSharedPointer<ScenarioAbstract6DOFPositionType>((ScenarioAbstract6DOFPositionType*)ScenarioKeplerianElementsType::create(*next));
+    else if (next->tagName() == "tns:SphericalCoordinates")
+        m_Abstract6DOFPosition = QSharedPointer<ScenarioAbstract6DOFPositionType>((ScenarioAbstract6DOFPositionType*)ScenarioSphericalCoordinatesType::create(*next));
+    *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioREVFinalPositionStateType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    if (!m_Abstract6DOFPosition.isNull())
+    {
+        QString tagName = "Abstract6DOFPosition";
+        if (dynamic_cast<ScenarioStateVectorType*>(m_Abstract6DOFPosition.data()))
+            tagName = "StateVector";
+        else if (dynamic_cast<ScenarioKeplerianElementsType*>(m_Abstract6DOFPosition.data()))
+            tagName = "KeplerianElements";
+        else if (dynamic_cast<ScenarioSphericalCoordinatesType*>(m_Abstract6DOFPosition.data()))
+            tagName = "SphericalCoordinates";
+        QDomElement child = m_Abstract6DOFPosition->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVFinalPositionStateType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Abstract6DOFPosition.isNull()) children << m_Abstract6DOFPosition;
+    return children;
+}
+
+
+
+
+// ScenarioREVDispersionAnalysisType
+ScenarioREVDispersionAnalysisType::ScenarioREVDispersionAnalysisType() :
+    m_nrSimulations(0),
+    m_dispCD(0.0),
+    m_dispCS(0.0),
+    m_dispCL(0.0),
+    m_dispCl(0.0),
+    m_dispCm(0.0),
+    m_dispCn(0.0),
+    m_dispDensity(0.0),
+    m_dispSpeedOfSound(0.0),
+    m_dispMass(0.0),
+    m_dispInitialPosition(0.0),
+    m_dispInitialAttitude(0.0)
+{
+}
+
+ScenarioREVDispersionAnalysisType* ScenarioREVDispersionAnalysisType::create(const QDomElement& e)
+{
+    ScenarioREVDispersionAnalysisType* v;
+    {
+        v = new ScenarioREVDispersionAnalysisType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVDispersionAnalysisType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_nrSimulations = parseInt(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_dispCD = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_dispCS = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_dispCL = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_dispCl = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_dispCm = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_dispCn = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_dispDensity = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_dispSpeedOfSound = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_dispMass = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_dispInitialPosition = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_dispInitialAttitude = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioREVDispersionAnalysisType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:nrSimulations", m_nrSimulations));
+    e.appendChild(createSimpleElement(doc, "tns:dispCD", m_dispCD));
+    e.appendChild(createSimpleElement(doc, "tns:dispCS", m_dispCS));
+    e.appendChild(createSimpleElement(doc, "tns:dispCL", m_dispCL));
+    e.appendChild(createSimpleElement(doc, "tns:dispCl", m_dispCl));
+    e.appendChild(createSimpleElement(doc, "tns:dispCm", m_dispCm));
+    e.appendChild(createSimpleElement(doc, "tns:dispCn", m_dispCn));
+    e.appendChild(createSimpleElement(doc, "tns:dispDensity", m_dispDensity));
+    e.appendChild(createSimpleElement(doc, "tns:dispSpeedOfSound", m_dispSpeedOfSound));
+    e.appendChild(createSimpleElement(doc, "tns:dispMass", m_dispMass));
+    e.appendChild(createSimpleElement(doc, "tns:dispInitialPosition", m_dispInitialPosition));
+    e.appendChild(createSimpleElement(doc, "tns:dispInitialAttitude", m_dispInitialAttitude));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVDispersionAnalysisType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
+// ScenarioEntryCharacteristicsType
+ScenarioEntryCharacteristicsType::ScenarioEntryCharacteristicsType() :
+    m_landingAltitude(0.0),
+    m_maxLandingVelAtSea(0.0),
+    m_maxLandingVelAtGround(0.0)
+{
+    m_landingSeaOrGround = QSharedPointer<ScenarioOptVarBool>(new ScenarioOptVarBool());
+}
+
+ScenarioEntryCharacteristicsType* ScenarioEntryCharacteristicsType::create(const QDomElement& e)
+{
+    ScenarioEntryCharacteristicsType* v;
+    {
+        v = new ScenarioEntryCharacteristicsType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioEntryCharacteristicsType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_entryWindowAnalysis = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_optimizeDeorbitBurnOption = parseBoolean(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:landingSeaOrGround")
+        m_landingSeaOrGround = QSharedPointer<ScenarioOptVarBool>(ScenarioOptVarBool::create(*next));
+    *next = next->nextSiblingElement();
+        m_landingAltitude = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_maxLandingVelAtSea = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_maxLandingVelAtGround = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioEntryCharacteristicsType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:entryWindowAnalysis", m_entryWindowAnalysis));
+    e.appendChild(createSimpleElement(doc, "tns:optimizeDeorbitBurnOption", m_optimizeDeorbitBurnOption));
+    if (!m_landingSeaOrGround.isNull())
+    {
+        QString tagName = "landingSeaOrGround";
+        QDomElement child = m_landingSeaOrGround->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    e.appendChild(createSimpleElement(doc, "tns:landingAltitude", m_landingAltitude));
+    e.appendChild(createSimpleElement(doc, "tns:maxLandingVelAtSea", m_maxLandingVelAtSea));
+    e.appendChild(createSimpleElement(doc, "tns:maxLandingVelAtGround", m_maxLandingVelAtGround));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioEntryCharacteristicsType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_landingSeaOrGround.isNull()) children << m_landingSeaOrGround;
+    return children;
+}
+
+
+
+
+// ScenarioREVConstraintsViolationType
+ScenarioREVConstraintsViolationType::ScenarioREVConstraintsViolationType() :
+    m_landingVelCstrViolation(0.0),
+    m_axialAccCstrViolation(0.0),
+    m_latAccCstrViolation(0.0),
+    m_heatFluxCstrViolation(0.0),
+    m_integratedheatLoadCstrViolation(0.0),
+    m_dynPressCstrViolation(0.0),
+    m_controllabilityCstrViolation(0.0)
+{
+}
+
+ScenarioREVConstraintsViolationType* ScenarioREVConstraintsViolationType::create(const QDomElement& e)
+{
+    ScenarioREVConstraintsViolationType* v;
+    {
+        v = new ScenarioREVConstraintsViolationType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVConstraintsViolationType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_landingVelCstrViolation = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_axialAccCstrViolation = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_latAccCstrViolation = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_heatFluxCstrViolation = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_integratedheatLoadCstrViolation = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_dynPressCstrViolation = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_controllabilityCstrViolation = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioREVConstraintsViolationType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:landingVelCstrViolation", m_landingVelCstrViolation));
+    e.appendChild(createSimpleElement(doc, "tns:axialAccCstrViolation", m_axialAccCstrViolation));
+    e.appendChild(createSimpleElement(doc, "tns:latAccCstrViolation", m_latAccCstrViolation));
+    e.appendChild(createSimpleElement(doc, "tns:heatFluxCstrViolation", m_heatFluxCstrViolation));
+    e.appendChild(createSimpleElement(doc, "tns:integratedheatLoadCstrViolation", m_integratedheatLoadCstrViolation));
+    e.appendChild(createSimpleElement(doc, "tns:dynPressCstrViolation", m_dynPressCstrViolation));
+    e.appendChild(createSimpleElement(doc, "tns:controllabilityCstrViolation", m_controllabilityCstrViolation));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVConstraintsViolationType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
+// ScenarioREVPayloadType
+ScenarioREVPayloadType::ScenarioREVPayloadType() :
+    m_mass(0.0),
+    m_length(0.0),
+    m_diameter(0.0),
+    m_COGLongPosition(0.0),
+    m_maxAxialAcc(0.0),
+    m_maxLatAcc(0.0),
+    m_nCrew(0),
+    m_nDaysInOrbit(0)
+{
+}
+
+ScenarioREVPayloadType* ScenarioREVPayloadType::create(const QDomElement& e)
+{
+    ScenarioREVPayloadType* v;
+    {
+        v = new ScenarioREVPayloadType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVPayloadType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_mass = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_length = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_diameter = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_COGLongPosition = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_maxAxialAcc = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_maxLatAcc = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_crewOption = parseBoolean(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:nCrew")
+    {
+        m_nCrew = parseInt(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    if (next->tagName() == "tns:nDaysInOrbit")
+    {
+        m_nDaysInOrbit = parseInt(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    return true;
+}
+
+QDomElement ScenarioREVPayloadType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:mass", m_mass));
+    e.appendChild(createSimpleElement(doc, "tns:length", m_length));
+    e.appendChild(createSimpleElement(doc, "tns:diameter", m_diameter));
+    e.appendChild(createSimpleElement(doc, "tns:COGLongPosition", m_COGLongPosition));
+    e.appendChild(createSimpleElement(doc, "tns:maxAxialAcc", m_maxAxialAcc));
+    e.appendChild(createSimpleElement(doc, "tns:maxLatAcc", m_maxLatAcc));
+    e.appendChild(createSimpleElement(doc, "tns:crewOption", m_crewOption));
+    e.appendChild(createSimpleElement(doc, "tns:nCrew", m_nCrew));
+    e.appendChild(createSimpleElement(doc, "tns:nDaysInOrbit", m_nDaysInOrbit));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVPayloadType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
+// ScenarioREVGeometryType
+ScenarioREVGeometryType::ScenarioREVGeometryType() :
+    m_noseRadius(0.0)
+{
+    m_shapeFamily = QSharedPointer<ScenarioOptVarString>(new ScenarioOptVarString());
+}
+
+ScenarioREVGeometryType* ScenarioREVGeometryType::create(const QDomElement& e)
+{
+    ScenarioREVGeometryType* v;
+    {
+        v = new ScenarioREVGeometryType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVGeometryType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_noseRadius = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:shapeFamily")
+        m_shapeFamily = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
+    *next = next->nextSiblingElement();
+        m_geometryFile = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:capsuleShape")
+        m_capsuleShape = QSharedPointer<ScenariocapsuleShape>(ScenariocapsuleShape::create(*next));
+if (!m_capsuleShape.isNull())
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:probeShape")
+        m_probeShape = QSharedPointer<ScenarioprobeShape>(ScenarioprobeShape::create(*next));
+if (!m_probeShape.isNull())
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:biconicShape")
+        m_biconicShape = QSharedPointer<ScenariobiconicShape>(ScenariobiconicShape::create(*next));
+if (!m_biconicShape.isNull())
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:sphereconeShape")
+        m_sphereconeShape = QSharedPointer<ScenariosphereconeShape>(ScenariosphereconeShape::create(*next));
+if (!m_sphereconeShape.isNull())
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioREVGeometryType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:noseRadius", m_noseRadius));
+    if (!m_shapeFamily.isNull())
+    {
+        QString tagName = "shapeFamily";
+        QDomElement child = m_shapeFamily->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    e.appendChild(createSimpleElement(doc, "tns:geometryFile", m_geometryFile));
+    if (!m_capsuleShape.isNull())
+    {
+        QString tagName = "capsuleShape";
+        QDomElement child = m_capsuleShape->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_probeShape.isNull())
+    {
+        QString tagName = "probeShape";
+        QDomElement child = m_probeShape->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_biconicShape.isNull())
+    {
+        QString tagName = "biconicShape";
+        QDomElement child = m_biconicShape->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_sphereconeShape.isNull())
+    {
+        QString tagName = "sphereconeShape";
+        QDomElement child = m_sphereconeShape->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVGeometryType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_shapeFamily.isNull()) children << m_shapeFamily;
+    if (!m_capsuleShape.isNull()) children << m_capsuleShape;
+    if (!m_probeShape.isNull()) children << m_probeShape;
+    if (!m_biconicShape.isNull()) children << m_biconicShape;
+    if (!m_sphereconeShape.isNull()) children << m_sphereconeShape;
+    return children;
+}
+
+
+
+
+// ScenariocapsuleShape
+ScenariocapsuleShape::ScenariocapsuleShape()
+{
+    m_param1 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_param2 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_param3 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+}
+
+ScenariocapsuleShape* ScenariocapsuleShape::create(const QDomElement& e)
+{
+    ScenariocapsuleShape* v;
+    {
+        v = new ScenariocapsuleShape;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenariocapsuleShape::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:param1")
+        m_param1 = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:param2")
+        m_param2 = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:param3")
+        m_param3 = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenariocapsuleShape::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    if (!m_param1.isNull())
+    {
+        QString tagName = "param1";
+        QDomElement child = m_param1->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_param2.isNull())
+    {
+        QString tagName = "param2";
+        QDomElement child = m_param2->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_param3.isNull())
+    {
+        QString tagName = "param3";
+        QDomElement child = m_param3->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenariocapsuleShape::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_param1.isNull()) children << m_param1;
+    if (!m_param2.isNull()) children << m_param2;
+    if (!m_param3.isNull()) children << m_param3;
+    return children;
+}
+
+
+
+
+// ScenarioprobeShape
+ScenarioprobeShape::ScenarioprobeShape()
+{
+    m_param1 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_param2 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_param3 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+}
+
+ScenarioprobeShape* ScenarioprobeShape::create(const QDomElement& e)
+{
+    ScenarioprobeShape* v;
+    {
+        v = new ScenarioprobeShape;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioprobeShape::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:param1")
+        m_param1 = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:param2")
+        m_param2 = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:param3")
+        m_param3 = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioprobeShape::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    if (!m_param1.isNull())
+    {
+        QString tagName = "param1";
+        QDomElement child = m_param1->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_param2.isNull())
+    {
+        QString tagName = "param2";
+        QDomElement child = m_param2->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_param3.isNull())
+    {
+        QString tagName = "param3";
+        QDomElement child = m_param3->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioprobeShape::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_param1.isNull()) children << m_param1;
+    if (!m_param2.isNull()) children << m_param2;
+    if (!m_param3.isNull()) children << m_param3;
+    return children;
+}
+
+
+
+
+// ScenariobiconicShape
+ScenariobiconicShape::ScenariobiconicShape()
+{
+    m_param1 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_param2 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_param3 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+}
+
+ScenariobiconicShape* ScenariobiconicShape::create(const QDomElement& e)
+{
+    ScenariobiconicShape* v;
+    {
+        v = new ScenariobiconicShape;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenariobiconicShape::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:param1")
+        m_param1 = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:param2")
+        m_param2 = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:param3")
+        m_param3 = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenariobiconicShape::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    if (!m_param1.isNull())
+    {
+        QString tagName = "param1";
+        QDomElement child = m_param1->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_param2.isNull())
+    {
+        QString tagName = "param2";
+        QDomElement child = m_param2->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_param3.isNull())
+    {
+        QString tagName = "param3";
+        QDomElement child = m_param3->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenariobiconicShape::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_param1.isNull()) children << m_param1;
+    if (!m_param2.isNull()) children << m_param2;
+    if (!m_param3.isNull()) children << m_param3;
+    return children;
+}
+
+
+
+
+// ScenariosphereconeShape
+ScenariosphereconeShape::ScenariosphereconeShape()
+{
+    m_param1 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_param2 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_param3 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+}
+
+ScenariosphereconeShape* ScenariosphereconeShape::create(const QDomElement& e)
+{
+    ScenariosphereconeShape* v;
+    {
+        v = new ScenariosphereconeShape;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenariosphereconeShape::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:param1")
+        m_param1 = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:param2")
+        m_param2 = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:param3")
+        m_param3 = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenariosphereconeShape::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    if (!m_param1.isNull())
+    {
+        QString tagName = "param1";
+        QDomElement child = m_param1->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_param2.isNull())
+    {
+        QString tagName = "param2";
+        QDomElement child = m_param2->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_param3.isNull())
+    {
+        QString tagName = "param3";
+        QDomElement child = m_param3->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenariosphereconeShape::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_param1.isNull()) children << m_param1;
+    if (!m_param2.isNull()) children << m_param2;
+    if (!m_param3.isNull()) children << m_param3;
+    return children;
+}
+
+
+
+
+// ScenarioREVConstraintsType
+ScenarioREVConstraintsType::ScenarioREVConstraintsType() :
+    m_maxHeatFlux(0.0),
+    m_maxHeatInput(0.0),
+    m_maxNormalLoad(0.0),
+    m_maxQalpha(0.0),
+    m_maxAlphaRate(0.0),
+    m_maxBankRate(0.0),
+    m_maxAltitude(0.0)
+{
+}
+
+ScenarioREVConstraintsType* ScenarioREVConstraintsType::create(const QDomElement& e)
+{
+    ScenarioREVConstraintsType* v;
+    {
+        v = new ScenarioREVConstraintsType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVConstraintsType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_maxHeatFlux = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_maxHeatInput = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_maxNormalLoad = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_maxQalpha = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_maxAlphaRate = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_maxBankRate = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_maxAltitude = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioREVConstraintsType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:maxHeatFlux", m_maxHeatFlux));
+    e.appendChild(createSimpleElement(doc, "tns:maxHeatInput", m_maxHeatInput));
+    e.appendChild(createSimpleElement(doc, "tns:maxNormalLoad", m_maxNormalLoad));
+    e.appendChild(createSimpleElement(doc, "tns:maxQalpha", m_maxQalpha));
+    e.appendChild(createSimpleElement(doc, "tns:maxAlphaRate", m_maxAlphaRate));
+    e.appendChild(createSimpleElement(doc, "tns:maxBankRate", m_maxBankRate));
+    e.appendChild(createSimpleElement(doc, "tns:maxAltitude", m_maxAltitude));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVConstraintsType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
+// ScenarioREVSystemType
+ScenarioREVSystemType::ScenarioREVSystemType()
+{
+    m_Weights = QSharedPointer<ScenarioREVWeights>(new ScenarioREVWeights());
+    m_Geometry = QSharedPointer<ScenarioREVGeometryType>(new ScenarioREVGeometryType());
+    m_TPS = QSharedPointer<ScenarioREVTPS>(new ScenarioREVTPS());
+    m_AeroThermodynamics = QSharedPointer<ScenarioREVAeroThermodynamicsType>(new ScenarioREVAeroThermodynamicsType());
+    m_Parachutes = QSharedPointer<ScenarioParachutes>(new ScenarioParachutes());
+    m_Structure = QSharedPointer<ScenarioREVStructureType>(new ScenarioREVStructureType());
+    m_SecondaryPropulsion = QSharedPointer<ScenarioREVSecondaryPropulsionType>(new ScenarioREVSecondaryPropulsionType());
+    m_Costs = QSharedPointer<ScenarioREVCostsType>(new ScenarioREVCostsType());
+    m_Reliability = QSharedPointer<ScenarioREVReliabilityType>(new ScenarioREVReliabilityType());
+}
+
+ScenarioREVSystemType* ScenarioREVSystemType::create(const QDomElement& e)
+{
+    ScenarioREVSystemType* v;
+    {
+        v = new ScenarioREVSystemType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVSystemType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:Weights")
+        m_Weights = QSharedPointer<ScenarioREVWeights>(ScenarioREVWeights::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:Geometry")
+        m_Geometry = QSharedPointer<ScenarioREVGeometryType>(ScenarioREVGeometryType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:TPS")
+        m_TPS = QSharedPointer<ScenarioREVTPS>(ScenarioREVTPS::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:AeroThermodynamics")
+        m_AeroThermodynamics = QSharedPointer<ScenarioREVAeroThermodynamicsType>(ScenarioREVAeroThermodynamicsType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:Parachutes")
+        m_Parachutes = QSharedPointer<ScenarioParachutes>(ScenarioParachutes::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:Structure")
+        m_Structure = QSharedPointer<ScenarioREVStructureType>(ScenarioREVStructureType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:SecondaryPropulsion")
+        m_SecondaryPropulsion = QSharedPointer<ScenarioREVSecondaryPropulsionType>(ScenarioREVSecondaryPropulsionType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:Costs")
+        m_Costs = QSharedPointer<ScenarioREVCostsType>(ScenarioREVCostsType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:Reliability")
+        m_Reliability = QSharedPointer<ScenarioREVReliabilityType>(ScenarioREVReliabilityType::create(*next));
+    *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioREVSystemType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    if (!m_Weights.isNull())
+    {
+        QString tagName = "Weights";
+        QDomElement child = m_Weights->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_Geometry.isNull())
+    {
+        QString tagName = "Geometry";
+        QDomElement child = m_Geometry->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_TPS.isNull())
+    {
+        QString tagName = "TPS";
+        QDomElement child = m_TPS->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_AeroThermodynamics.isNull())
+    {
+        QString tagName = "AeroThermodynamics";
+        QDomElement child = m_AeroThermodynamics->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_Parachutes.isNull())
+    {
+        QString tagName = "Parachutes";
+        QDomElement child = m_Parachutes->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_Structure.isNull())
+    {
+        QString tagName = "Structure";
+        QDomElement child = m_Structure->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_SecondaryPropulsion.isNull())
+    {
+        QString tagName = "SecondaryPropulsion";
+        QDomElement child = m_SecondaryPropulsion->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_Costs.isNull())
+    {
+        QString tagName = "Costs";
+        QDomElement child = m_Costs->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_Reliability.isNull())
+    {
+        QString tagName = "Reliability";
+        QDomElement child = m_Reliability->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVSystemType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Weights.isNull()) children << m_Weights;
+    if (!m_Geometry.isNull()) children << m_Geometry;
+    if (!m_TPS.isNull()) children << m_TPS;
+    if (!m_AeroThermodynamics.isNull()) children << m_AeroThermodynamics;
+    if (!m_Parachutes.isNull()) children << m_Parachutes;
+    if (!m_Structure.isNull()) children << m_Structure;
+    if (!m_SecondaryPropulsion.isNull()) children << m_SecondaryPropulsion;
+    if (!m_Costs.isNull()) children << m_Costs;
+    if (!m_Reliability.isNull()) children << m_Reliability;
+    return children;
+}
+
+
+
+
+// ScenarioParachutes
+ScenarioParachutes::ScenarioParachutes()
+{
+    m_nChutes = QSharedPointer<ScenarioOptVarInt>(new ScenarioOptVarInt());
+}
+
+ScenarioParachutes* ScenarioParachutes::create(const QDomElement& e)
+{
+    ScenarioParachutes* v;
+    {
+        v = new ScenarioParachutes;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioParachutes::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:nChutes")
+        m_nChutes = QSharedPointer<ScenarioOptVarInt>(ScenarioOptVarInt::create(*next));
+    *next = next->nextSiblingElement();
+    for (;;)
+    {
+        QSharedPointer<ScenarioParachute> v;
+        if (next->tagName() == "tns:Parachute")
+            v = QSharedPointer<ScenarioParachute>(ScenarioParachute::create(*next));
+        if (v.isNull()) break; else {
+            m_Parachute << v;
+            *next = next->nextSiblingElement();
+        }
+    }
+    return true;
+}
+
+QDomElement ScenarioParachutes::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    if (!m_nChutes.isNull())
+    {
+        QString tagName = "nChutes";
+        QDomElement child = m_nChutes->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    foreach (QSharedPointer<ScenarioParachute> p, m_Parachute)
+    {
+        QString tagName = "Parachute";
+        QDomElement child = p->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioParachutes::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_nChutes.isNull()) children << m_nChutes;
+    foreach (QSharedPointer<ScenarioObject> child, m_Parachute) { children << child; }
+    return children;
+}
+
+
+
+
+// ScenarioParachute
+ScenarioParachute::ScenarioParachute() :
+    m_mass(0.0),
+    m_coGLongPosition(0.0)
+{
+    m_ropeLength = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_ParachuteAerodynamics = QSharedPointer<ScenarioParachuteAerodynamics>(new ScenarioParachuteAerodynamics());
+    m_deployMach = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+}
+
+ScenarioParachute* ScenarioParachute::create(const QDomElement& e)
+{
+    ScenarioParachute* v;
+    {
+        v = new ScenarioParachute;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioParachute::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_mass = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_coGLongPosition = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:ropeLength")
+        m_ropeLength = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:ParachuteAerodynamics")
+        m_ParachuteAerodynamics = QSharedPointer<ScenarioParachuteAerodynamics>(ScenarioParachuteAerodynamics::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:deployMach")
+        m_deployMach = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioParachute::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:mass", m_mass));
+    e.appendChild(createSimpleElement(doc, "tns:coGLongPosition", m_coGLongPosition));
+    if (!m_ropeLength.isNull())
+    {
+        QString tagName = "ropeLength";
+        QDomElement child = m_ropeLength->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_ParachuteAerodynamics.isNull())
+    {
+        QString tagName = "ParachuteAerodynamics";
+        QDomElement child = m_ParachuteAerodynamics->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_deployMach.isNull())
+    {
+        QString tagName = "deployMach";
+        QDomElement child = m_deployMach->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioParachute::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_ropeLength.isNull()) children << m_ropeLength;
+    if (!m_ParachuteAerodynamics.isNull()) children << m_ParachuteAerodynamics;
+    if (!m_deployMach.isNull()) children << m_deployMach;
+    return children;
+}
+
+
+
+
+// ScenarioParachuteAerodynamics
+ScenarioParachuteAerodynamics::ScenarioParachuteAerodynamics()
+{
+    m_referenceArea = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+}
+
+ScenarioParachuteAerodynamics* ScenarioParachuteAerodynamics::create(const QDomElement& e)
+{
+    ScenarioParachuteAerodynamics* v;
+    {
+        v = new ScenarioParachuteAerodynamics;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioParachuteAerodynamics::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_userDefinedAero = parseBoolean(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:referenceArea")
+        m_referenceArea = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+        m_lowSpeedCdFileName = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioParachuteAerodynamics::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:userDefinedAero", m_userDefinedAero));
+    if (!m_referenceArea.isNull())
+    {
+        QString tagName = "referenceArea";
+        QDomElement child = m_referenceArea->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    e.appendChild(createSimpleElement(doc, "tns:lowSpeedCdFileName", m_lowSpeedCdFileName));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioParachuteAerodynamics::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_referenceArea.isNull()) children << m_referenceArea;
+    return children;
+}
+
+
+
+
+// ScenarioREVStructureType
+ScenarioREVStructureType::ScenarioREVStructureType() :
+    m_mainStructThickness(0.0),
+    m_mainStructMass(0.0),
+    m_totalStructMass(0.0),
+    m_totalStructCoGLongPosition(0.0),
+    m_airbagsMass(0.0),
+    m_airbagsCoGLongPosition(0.0)
+{
+    m_maxAxialAcc = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_maxLatAcc = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_mainStructMaterial = QSharedPointer<ScenarioOptVarString>(new ScenarioOptVarString());
+    m_structuralSafetyMargin = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_airbags = QSharedPointer<ScenarioOptVarBool>(new ScenarioOptVarBool());
+}
+
+ScenarioREVStructureType* ScenarioREVStructureType::create(const QDomElement& e)
+{
+    ScenarioREVStructureType* v;
+    {
+        v = new ScenarioREVStructureType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVStructureType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:maxAxialAcc")
+        m_maxAxialAcc = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:maxLatAcc")
+        m_maxLatAcc = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:mainStructMaterial")
+        m_mainStructMaterial = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
+    *next = next->nextSiblingElement();
+        m_mainStructThickness = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_mainStructMass = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_totalStructMass = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_totalStructCoGLongPosition = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:structuralSafetyMargin")
+        m_structuralSafetyMargin = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:airbags")
+        m_airbags = QSharedPointer<ScenarioOptVarBool>(ScenarioOptVarBool::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:maxLandingVelWithAirbag")
+        m_maxLandingVelWithAirbag = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+if (!m_maxLandingVelWithAirbag.isNull())
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:airbagsMass")
+    {
+        m_airbagsMass = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+        m_airbagsCoGLongPosition = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioREVStructureType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    if (!m_maxAxialAcc.isNull())
+    {
+        QString tagName = "maxAxialAcc";
+        QDomElement child = m_maxAxialAcc->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_maxLatAcc.isNull())
+    {
+        QString tagName = "maxLatAcc";
+        QDomElement child = m_maxLatAcc->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_mainStructMaterial.isNull())
+    {
+        QString tagName = "mainStructMaterial";
+        QDomElement child = m_mainStructMaterial->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    e.appendChild(createSimpleElement(doc, "tns:mainStructThickness", m_mainStructThickness));
+    e.appendChild(createSimpleElement(doc, "tns:mainStructMass", m_mainStructMass));
+    e.appendChild(createSimpleElement(doc, "tns:totalStructMass", m_totalStructMass));
+    e.appendChild(createSimpleElement(doc, "tns:totalStructCoGLongPosition", m_totalStructCoGLongPosition));
+    if (!m_structuralSafetyMargin.isNull())
+    {
+        QString tagName = "structuralSafetyMargin";
+        QDomElement child = m_structuralSafetyMargin->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_airbags.isNull())
+    {
+        QString tagName = "airbags";
+        QDomElement child = m_airbags->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_maxLandingVelWithAirbag.isNull())
+    {
+        QString tagName = "maxLandingVelWithAirbag";
+        QDomElement child = m_maxLandingVelWithAirbag->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    e.appendChild(createSimpleElement(doc, "tns:airbagsMass", m_airbagsMass));
+    e.appendChild(createSimpleElement(doc, "tns:airbagsCoGLongPosition", m_airbagsCoGLongPosition));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVStructureType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_maxAxialAcc.isNull()) children << m_maxAxialAcc;
+    if (!m_maxLatAcc.isNull()) children << m_maxLatAcc;
+    if (!m_mainStructMaterial.isNull()) children << m_mainStructMaterial;
+    if (!m_structuralSafetyMargin.isNull()) children << m_structuralSafetyMargin;
+    if (!m_airbags.isNull()) children << m_airbags;
+    if (!m_maxLandingVelWithAirbag.isNull()) children << m_maxLandingVelWithAirbag;
+    return children;
+}
+
+
+
+
+// ScenarioREVAeroThermodynamicsType
+ScenarioREVAeroThermodynamicsType::ScenarioREVAeroThermodynamicsType() :
+    m_referenceArea(0.0),
+    m_referenceLength(0.0),
+    m_CoefficientType(0),
+    m_emissivity(0.0)
+{
+    m_hypersonicTrimAngle = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_AeroCoefFile = QSharedPointer<ScenarioAeroCoefFile>(new ScenarioAeroCoefFile());
+}
+
+ScenarioREVAeroThermodynamicsType* ScenarioREVAeroThermodynamicsType::create(const QDomElement& e)
+{
+    ScenarioREVAeroThermodynamicsType* v;
+    {
+        v = new ScenarioREVAeroThermodynamicsType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVAeroThermodynamicsType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:hypersonicTrimAngle")
+        m_hypersonicTrimAngle = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+        m_REVuserDefinedAero = parseBoolean(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_referenceArea = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_referenceLength = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:AeroCoefFile")
+        m_AeroCoefFile = QSharedPointer<ScenarioAeroCoefFile>(ScenarioAeroCoefFile::create(*next));
+    *next = next->nextSiblingElement();
+        m_CoefficientType = parseInt(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_emissivity = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_momentReferencePoint = parseDoubleList(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_tempCDfile = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioREVAeroThermodynamicsType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    if (!m_hypersonicTrimAngle.isNull())
+    {
+        QString tagName = "hypersonicTrimAngle";
+        QDomElement child = m_hypersonicTrimAngle->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    e.appendChild(createSimpleElement(doc, "tns:REVuserDefinedAero", m_REVuserDefinedAero));
+    e.appendChild(createSimpleElement(doc, "tns:referenceArea", m_referenceArea));
+    e.appendChild(createSimpleElement(doc, "tns:referenceLength", m_referenceLength));
+    if (!m_AeroCoefFile.isNull())
+    {
+        QString tagName = "AeroCoefFile";
+        QDomElement child = m_AeroCoefFile->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    e.appendChild(createSimpleElement(doc, "tns:CoefficientType", m_CoefficientType));
+    e.appendChild(createSimpleElement(doc, "tns:emissivity", m_emissivity));
+    e.appendChild(createSimpleElement(doc, "tns:momentReferencePoint", m_momentReferencePoint));
+    e.appendChild(createSimpleElement(doc, "tns:tempCDfile", m_tempCDfile));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVAeroThermodynamicsType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_hypersonicTrimAngle.isNull()) children << m_hypersonicTrimAngle;
+    if (!m_AeroCoefFile.isNull()) children << m_AeroCoefFile;
+    return children;
+}
+
+
+
+
+// ScenarioAeroCoefFile
+ScenarioAeroCoefFile::ScenarioAeroCoefFile() :
+    m_NumberOfIndepVars(0)
+{
+}
+
+ScenarioAeroCoefFile* ScenarioAeroCoefFile::create(const QDomElement& e)
+{
+    ScenarioAeroCoefFile* v;
+    {
+        v = new ScenarioAeroCoefFile;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioAeroCoefFile::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_FileLocation = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_NumberOfIndepVars = parseInt(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_IndepVarNames = parseStringList(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_IndepVarDiscretizationPoints = parseIntList(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_IndepVarMin = parseDoubleList(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_IndepVarMax = parseDoubleList(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioAeroCoefFile::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:FileLocation", m_FileLocation));
+    e.appendChild(createSimpleElement(doc, "tns:NumberOfIndepVars", m_NumberOfIndepVars));
+    e.appendChild(createSimpleElement(doc, "tns:IndepVarNames", m_IndepVarNames));
+    e.appendChild(createSimpleElement(doc, "tns:IndepVarDiscretizationPoints", m_IndepVarDiscretizationPoints));
+    e.appendChild(createSimpleElement(doc, "tns:IndepVarMin", m_IndepVarMin));
+    e.appendChild(createSimpleElement(doc, "tns:IndepVarMax", m_IndepVarMax));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioAeroCoefFile::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
+// ScenarioREVTPS
+ScenarioREVTPS::ScenarioREVTPS() :
+    m_mainTPSThickness(0.0),
+    m_mainTPSMass(0.0),
+    m_totalTPSMass(0.0),
+    m_totalTPSCoGLongPosition(0.0)
+{
+    m_maxHeatFlux = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_maxIntegratedHeatLoad = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_mainTPSReuse = QSharedPointer<ScenarioOptVarBool>(new ScenarioOptVarBool());
+    m_mainTPSMaterial = QSharedPointer<ScenarioOptVarString>(new ScenarioOptVarString());
+}
+
+ScenarioREVTPS* ScenarioREVTPS::create(const QDomElement& e)
+{
+    ScenarioREVTPS* v;
+    {
+        v = new ScenarioREVTPS;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVTPS::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:maxHeatFlux")
+        m_maxHeatFlux = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:maxIntegratedHeatLoad")
+        m_maxIntegratedHeatLoad = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:mainTPSReuse")
+        m_mainTPSReuse = QSharedPointer<ScenarioOptVarBool>(ScenarioOptVarBool::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:mainTPSMaterial")
+        m_mainTPSMaterial = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
+    *next = next->nextSiblingElement();
+        m_mainTPSThickness = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_mainTPSMass = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_totalTPSMass = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_totalTPSCoGLongPosition = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioREVTPS::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    if (!m_maxHeatFlux.isNull())
+    {
+        QString tagName = "maxHeatFlux";
+        QDomElement child = m_maxHeatFlux->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_maxIntegratedHeatLoad.isNull())
+    {
+        QString tagName = "maxIntegratedHeatLoad";
+        QDomElement child = m_maxIntegratedHeatLoad->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_mainTPSReuse.isNull())
+    {
+        QString tagName = "mainTPSReuse";
+        QDomElement child = m_mainTPSReuse->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_mainTPSMaterial.isNull())
+    {
+        QString tagName = "mainTPSMaterial";
+        QDomElement child = m_mainTPSMaterial->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    e.appendChild(createSimpleElement(doc, "tns:mainTPSThickness", m_mainTPSThickness));
+    e.appendChild(createSimpleElement(doc, "tns:mainTPSMass", m_mainTPSMass));
+    e.appendChild(createSimpleElement(doc, "tns:totalTPSMass", m_totalTPSMass));
+    e.appendChild(createSimpleElement(doc, "tns:totalTPSCoGLongPosition", m_totalTPSCoGLongPosition));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVTPS::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_maxHeatFlux.isNull()) children << m_maxHeatFlux;
+    if (!m_maxIntegratedHeatLoad.isNull()) children << m_maxIntegratedHeatLoad;
+    if (!m_mainTPSReuse.isNull()) children << m_mainTPSReuse;
+    if (!m_mainTPSMaterial.isNull()) children << m_mainTPSMaterial;
+    return children;
+}
+
+
+
+
+// ScenarioREVSecondaryPropulsionType
+ScenarioREVSecondaryPropulsionType::ScenarioREVSecondaryPropulsionType()
+{
+    m_RCS = QSharedPointer<ScenarioREVRCSType>(new ScenarioREVRCSType());
+}
+
+ScenarioREVSecondaryPropulsionType* ScenarioREVSecondaryPropulsionType::create(const QDomElement& e)
+{
+    ScenarioREVSecondaryPropulsionType* v;
+    {
+        v = new ScenarioREVSecondaryPropulsionType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVSecondaryPropulsionType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:OMS")
+        m_OMS = QSharedPointer<ScenarioREVOMSType>(ScenarioREVOMSType::create(*next));
+if (!m_OMS.isNull())
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:RCS")
+        m_RCS = QSharedPointer<ScenarioREVRCSType>(ScenarioREVRCSType::create(*next));
+    *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioREVSecondaryPropulsionType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    if (!m_OMS.isNull())
+    {
+        QString tagName = "OMS";
+        QDomElement child = m_OMS->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_RCS.isNull())
+    {
+        QString tagName = "RCS";
+        QDomElement child = m_RCS->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVSecondaryPropulsionType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_OMS.isNull()) children << m_OMS;
+    if (!m_RCS.isNull()) children << m_RCS;
+    return children;
+}
+
+
+
+
+// ScenarioREVOMSType
+ScenarioREVOMSType::ScenarioREVOMSType() :
+    m_Isp(0.0),
+    m_dryMass(0.0),
+    m_dryCoGLongPosition(0.0),
+    m_propMass(0.0),
+    m_length(0.0),
+    m_diameter(0.0)
+{
+    m_thrust = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_burningTime = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+}
+
+ScenarioREVOMSType* ScenarioREVOMSType::create(const QDomElement& e)
+{
+    ScenarioREVOMSType* v;
+    {
+        v = new ScenarioREVOMSType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVOMSType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:thrust")
+        m_thrust = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:burningTime")
+        m_burningTime = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+        m_Isp = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_dryMass = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_dryCoGLongPosition = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_propMass = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_length = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_diameter = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioREVOMSType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    if (!m_thrust.isNull())
+    {
+        QString tagName = "thrust";
+        QDomElement child = m_thrust->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_burningTime.isNull())
+    {
+        QString tagName = "burningTime";
+        QDomElement child = m_burningTime->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    e.appendChild(createSimpleElement(doc, "tns:Isp", m_Isp));
+    e.appendChild(createSimpleElement(doc, "tns:dryMass", m_dryMass));
+    e.appendChild(createSimpleElement(doc, "tns:dryCoGLongPosition", m_dryCoGLongPosition));
+    e.appendChild(createSimpleElement(doc, "tns:propMass", m_propMass));
+    e.appendChild(createSimpleElement(doc, "tns:length", m_length));
+    e.appendChild(createSimpleElement(doc, "tns:diameter", m_diameter));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVOMSType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_thrust.isNull()) children << m_thrust;
+    if (!m_burningTime.isNull()) children << m_burningTime;
+    return children;
+}
+
+
+
+
+// ScenarioREVRCSType
+ScenarioREVRCSType::ScenarioREVRCSType() :
+    m_totalMass(0.0),
+    m_totalCoGLongPosition(0.0)
+{
+    m_thrust = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+}
+
+ScenarioREVRCSType* ScenarioREVRCSType::create(const QDomElement& e)
+{
+    ScenarioREVRCSType* v;
+    {
+        v = new ScenarioREVRCSType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVRCSType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:thrust")
+        m_thrust = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+        m_totalMass = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_totalCoGLongPosition = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioREVRCSType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    if (!m_thrust.isNull())
+    {
+        QString tagName = "thrust";
+        QDomElement child = m_thrust->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    e.appendChild(createSimpleElement(doc, "tns:totalMass", m_totalMass));
+    e.appendChild(createSimpleElement(doc, "tns:totalCoGLongPosition", m_totalCoGLongPosition));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVRCSType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_thrust.isNull()) children << m_thrust;
+    return children;
+}
+
+
+
+
+// ScenarioREVComponentsMassType
+ScenarioREVComponentsMassType::ScenarioREVComponentsMassType() :
+    m_avionics(0.0),
+    m_eps(0.0),
+    m_crewSystems(0.0)
+{
+}
+
+ScenarioREVComponentsMassType* ScenarioREVComponentsMassType::create(const QDomElement& e)
+{
+    ScenarioREVComponentsMassType* v;
+    {
+        v = new ScenarioREVComponentsMassType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVComponentsMassType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:avionics")
+    {
+        m_avionics = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    if (next->tagName() == "tns:eps")
+    {
+        m_eps = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    if (next->tagName() == "tns:crewSystems")
+    {
+        m_crewSystems = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    return true;
+}
+
+QDomElement ScenarioREVComponentsMassType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:avionics", m_avionics));
+    e.appendChild(createSimpleElement(doc, "tns:eps", m_eps));
+    e.appendChild(createSimpleElement(doc, "tns:crewSystems", m_crewSystems));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVComponentsMassType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
+// ScenarioREVComponentsType
+ScenarioREVComponentsType::ScenarioREVComponentsType()
+{
+    m_Mass = QSharedPointer<ScenarioREVComponentsMassType>(new ScenarioREVComponentsMassType());
+    m_CoGLongPosition = QSharedPointer<ScenarioCoGLongPosition>(new ScenarioCoGLongPosition());
+}
+
+ScenarioREVComponentsType* ScenarioREVComponentsType::create(const QDomElement& e)
+{
+    ScenarioREVComponentsType* v;
+    {
+        v = new ScenarioREVComponentsType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVComponentsType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:Mass")
+        m_Mass = QSharedPointer<ScenarioREVComponentsMassType>(ScenarioREVComponentsMassType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:CoGLongPosition")
+        m_CoGLongPosition = QSharedPointer<ScenarioCoGLongPosition>(ScenarioCoGLongPosition::create(*next));
+    *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioREVComponentsType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    if (!m_Mass.isNull())
+    {
+        QString tagName = "Mass";
+        QDomElement child = m_Mass->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_CoGLongPosition.isNull())
+    {
+        QString tagName = "CoGLongPosition";
+        QDomElement child = m_CoGLongPosition->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVComponentsType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Mass.isNull()) children << m_Mass;
+    if (!m_CoGLongPosition.isNull()) children << m_CoGLongPosition;
+    return children;
+}
+
+
+
+
+// ScenarioCoGLongPosition
+ScenarioCoGLongPosition::ScenarioCoGLongPosition() :
+    m_avionics(0.0),
+    m_eps(0.0),
+    m_crewSystems(0.0)
+{
+}
+
+ScenarioCoGLongPosition* ScenarioCoGLongPosition::create(const QDomElement& e)
+{
+    ScenarioCoGLongPosition* v;
+    {
+        v = new ScenarioCoGLongPosition;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioCoGLongPosition::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:avionics")
+    {
+        m_avionics = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    if (next->tagName() == "tns:eps")
+    {
+        m_eps = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    if (next->tagName() == "tns:crewSystems")
+    {
+        m_crewSystems = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    return true;
+}
+
+QDomElement ScenarioCoGLongPosition::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:avionics", m_avionics));
+    e.appendChild(createSimpleElement(doc, "tns:eps", m_eps));
+    e.appendChild(createSimpleElement(doc, "tns:crewSystems", m_crewSystems));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioCoGLongPosition::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
+// ScenarioREVWeights
+ScenarioREVWeights::ScenarioREVWeights() :
+    m_totalDryMass(0.0),
+    m_totalPropellantMass(0.0),
+    m_totalWetMass(0.0),
+    m_totalDryCoGLongPosition(0.0),
+    m_totalWetCoGLongPosition(0.0),
+    m_trimStability(0.0),
+    m_internalVolumeAvailable(0.0),
+    m_internalVolumeRequired(0.0),
+    m_internalVolumeCstrViolation(0.0),
+    m_CoGShiftCstrViolation(0.0)
+{
+    m_InertialMatrix = QSharedPointer<ScenarioInertialMatrix>(new ScenarioInertialMatrix());
+    m_redundancyLevel = QSharedPointer<ScenarioOptVarString>(new ScenarioOptVarString());
+    m_Components = QSharedPointer<ScenarioREVComponentsType>(new ScenarioREVComponentsType());
+}
+
+ScenarioREVWeights* ScenarioREVWeights::create(const QDomElement& e)
+{
+    ScenarioREVWeights* v;
+    {
+        v = new ScenarioREVWeights;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVWeights::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_totalDryMass = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_totalPropellantMass = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_totalWetMass = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_totalDryCoGLongPosition = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_totalWetCoGLongPosition = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:InertialMatrix")
+        m_InertialMatrix = QSharedPointer<ScenarioInertialMatrix>(ScenarioInertialMatrix::create(*next));
+    *next = next->nextSiblingElement();
+        m_trimStability = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_internalVolumeAvailable = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_internalVolumeRequired = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_internalVolumeCstrViolation = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_CoGShiftCstrViolation = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:redundancyLevel")
+        m_redundancyLevel = QSharedPointer<ScenarioOptVarString>(ScenarioOptVarString::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:Components")
+        m_Components = QSharedPointer<ScenarioREVComponentsType>(ScenarioREVComponentsType::create(*next));
+    *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioREVWeights::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:totalDryMass", m_totalDryMass));
+    e.appendChild(createSimpleElement(doc, "tns:totalPropellantMass", m_totalPropellantMass));
+    e.appendChild(createSimpleElement(doc, "tns:totalWetMass", m_totalWetMass));
+    e.appendChild(createSimpleElement(doc, "tns:totalDryCoGLongPosition", m_totalDryCoGLongPosition));
+    e.appendChild(createSimpleElement(doc, "tns:totalWetCoGLongPosition", m_totalWetCoGLongPosition));
+    if (!m_InertialMatrix.isNull())
+    {
+        QString tagName = "InertialMatrix";
+        QDomElement child = m_InertialMatrix->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    e.appendChild(createSimpleElement(doc, "tns:trimStability", m_trimStability));
+    e.appendChild(createSimpleElement(doc, "tns:internalVolumeAvailable", m_internalVolumeAvailable));
+    e.appendChild(createSimpleElement(doc, "tns:internalVolumeRequired", m_internalVolumeRequired));
+    e.appendChild(createSimpleElement(doc, "tns:internalVolumeCstrViolation", m_internalVolumeCstrViolation));
+    e.appendChild(createSimpleElement(doc, "tns:CoGShiftCstrViolation", m_CoGShiftCstrViolation));
+    if (!m_redundancyLevel.isNull())
+    {
+        QString tagName = "redundancyLevel";
+        QDomElement child = m_redundancyLevel->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_Components.isNull())
+    {
+        QString tagName = "Components";
+        QDomElement child = m_Components->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVWeights::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_InertialMatrix.isNull()) children << m_InertialMatrix;
+    if (!m_redundancyLevel.isNull()) children << m_redundancyLevel;
+    if (!m_Components.isNull()) children << m_Components;
+    return children;
+}
+
+
+
+
+// ScenarioInertialMatrix
+ScenarioInertialMatrix::ScenarioInertialMatrix() :
+    m_ixx(0.0),
+    m_iyy(0.0),
+    m_izz(0.0),
+    m_ixy(0.0),
+    m_ixz(0.0),
+    m_iyz(0.0)
+{
+}
+
+ScenarioInertialMatrix* ScenarioInertialMatrix::create(const QDomElement& e)
+{
+    ScenarioInertialMatrix* v;
+    {
+        v = new ScenarioInertialMatrix;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioInertialMatrix::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_ixx = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_iyy = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_izz = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_ixy = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_ixz = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_iyz = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioInertialMatrix::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:ixx", m_ixx));
+    e.appendChild(createSimpleElement(doc, "tns:iyy", m_iyy));
+    e.appendChild(createSimpleElement(doc, "tns:izz", m_izz));
+    e.appendChild(createSimpleElement(doc, "tns:ixy", m_ixy));
+    e.appendChild(createSimpleElement(doc, "tns:ixz", m_ixz));
+    e.appendChild(createSimpleElement(doc, "tns:iyz", m_iyz));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioInertialMatrix::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
+// ScenarioREVSystemCostsType
+ScenarioREVSystemCostsType::ScenarioREVSystemCostsType() :
+    m_systemDevelopmentCost(0.0),
+    m_systemProductionCost(0.0),
+    m_flightOperationsCost(0.0),
+    m_recoveryCost(0.0),
+    m_groundFacilitiesCost(0.0),
+    m_fixedGroundCost(0.0)
+{
+}
+
+ScenarioREVSystemCostsType* ScenarioREVSystemCostsType::create(const QDomElement& e)
+{
+    ScenarioREVSystemCostsType* v;
+    {
+        v = new ScenarioREVSystemCostsType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVSystemCostsType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_systemDevelopmentCost = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_systemProductionCost = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_flightOperationsCost = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:recoveryCost")
+    {
+        m_recoveryCost = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+        m_groundFacilitiesCost = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_fixedGroundCost = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioREVSystemCostsType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:systemDevelopmentCost", m_systemDevelopmentCost));
+    e.appendChild(createSimpleElement(doc, "tns:systemProductionCost", m_systemProductionCost));
+    e.appendChild(createSimpleElement(doc, "tns:flightOperationsCost", m_flightOperationsCost));
+    e.appendChild(createSimpleElement(doc, "tns:recoveryCost", m_recoveryCost));
+    e.appendChild(createSimpleElement(doc, "tns:groundFacilitiesCost", m_groundFacilitiesCost));
+    e.appendChild(createSimpleElement(doc, "tns:fixedGroundCost", m_fixedGroundCost));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVSystemCostsType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
+// ScenarioREVCostsType
+ScenarioREVCostsType::ScenarioREVCostsType() :
+    m_lifeCycleCost(0.0),
+    m_costPerMission(0.0),
+    m_costPerKilo(0.0)
+{
+    m_SystemCosts = QSharedPointer<ScenarioREVSystemCostsType>(new ScenarioREVSystemCostsType());
+    m_SubsystemsDevelopCosts = QSharedPointer<ScenarioREVSubsystemsDevelopCostsType>(new ScenarioREVSubsystemsDevelopCostsType());
+    m_SubsystemsProductionCosts = QSharedPointer<ScenarioREVSubsystemsProductionCostsType>(new ScenarioREVSubsystemsProductionCostsType());
+}
+
+ScenarioREVCostsType* ScenarioREVCostsType::create(const QDomElement& e)
+{
+    ScenarioREVCostsType* v;
+    {
+        v = new ScenarioREVCostsType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVCostsType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_lifeCycleCost = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_costPerMission = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_costPerKilo = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:SystemCosts")
+        m_SystemCosts = QSharedPointer<ScenarioREVSystemCostsType>(ScenarioREVSystemCostsType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:SubsystemsDevelopCosts")
+        m_SubsystemsDevelopCosts = QSharedPointer<ScenarioREVSubsystemsDevelopCostsType>(ScenarioREVSubsystemsDevelopCostsType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:SubsystemsProductionCosts")
+        m_SubsystemsProductionCosts = QSharedPointer<ScenarioREVSubsystemsProductionCostsType>(ScenarioREVSubsystemsProductionCostsType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:SubsystemsRefurbishmentCosts")
+        m_SubsystemsRefurbishmentCosts = QSharedPointer<ScenarioREVSubsystemsRefurbishmentCostsType>(ScenarioREVSubsystemsRefurbishmentCostsType::create(*next));
+if (!m_SubsystemsRefurbishmentCosts.isNull())
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioREVCostsType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:lifeCycleCost", m_lifeCycleCost));
+    e.appendChild(createSimpleElement(doc, "tns:costPerMission", m_costPerMission));
+    e.appendChild(createSimpleElement(doc, "tns:costPerKilo", m_costPerKilo));
+    if (!m_SystemCosts.isNull())
+    {
+        QString tagName = "SystemCosts";
+        QDomElement child = m_SystemCosts->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_SubsystemsDevelopCosts.isNull())
+    {
+        QString tagName = "SubsystemsDevelopCosts";
+        QDomElement child = m_SubsystemsDevelopCosts->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_SubsystemsProductionCosts.isNull())
+    {
+        QString tagName = "SubsystemsProductionCosts";
+        QDomElement child = m_SubsystemsProductionCosts->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_SubsystemsRefurbishmentCosts.isNull())
+    {
+        QString tagName = "SubsystemsRefurbishmentCosts";
+        QDomElement child = m_SubsystemsRefurbishmentCosts->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVCostsType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_SystemCosts.isNull()) children << m_SystemCosts;
+    if (!m_SubsystemsDevelopCosts.isNull()) children << m_SubsystemsDevelopCosts;
+    if (!m_SubsystemsProductionCosts.isNull()) children << m_SubsystemsProductionCosts;
+    if (!m_SubsystemsRefurbishmentCosts.isNull()) children << m_SubsystemsRefurbishmentCosts;
+    return children;
+}
+
+
+
+
+// ScenarioREVSubsystemsRefurbishmentCostsType
+ScenarioREVSubsystemsRefurbishmentCostsType::ScenarioREVSubsystemsRefurbishmentCostsType() :
+    m_structure(0.0),
+    m_TPS(0.0),
+    m_avionics(0.0),
+    m_OMS(0.0),
+    m_RCS(0.0),
+    m_parachutes(0.0),
+    m_airbags(0.0),
+    m_crewSystems(0.0)
+{
+}
+
+ScenarioREVSubsystemsRefurbishmentCostsType* ScenarioREVSubsystemsRefurbishmentCostsType::create(const QDomElement& e)
+{
+    ScenarioREVSubsystemsRefurbishmentCostsType* v;
+    {
+        v = new ScenarioREVSubsystemsRefurbishmentCostsType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVSubsystemsRefurbishmentCostsType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_structure = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_TPS = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_avionics = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_OMS = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_RCS = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_parachutes = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_airbags = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:crewSystems")
+    {
+        m_crewSystems = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    return true;
+}
+
+QDomElement ScenarioREVSubsystemsRefurbishmentCostsType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:structure", m_structure));
+    e.appendChild(createSimpleElement(doc, "tns:TPS", m_TPS));
+    e.appendChild(createSimpleElement(doc, "tns:avionics", m_avionics));
+    e.appendChild(createSimpleElement(doc, "tns:OMS", m_OMS));
+    e.appendChild(createSimpleElement(doc, "tns:RCS", m_RCS));
+    e.appendChild(createSimpleElement(doc, "tns:parachutes", m_parachutes));
+    e.appendChild(createSimpleElement(doc, "tns:airbags", m_airbags));
+    e.appendChild(createSimpleElement(doc, "tns:crewSystems", m_crewSystems));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVSubsystemsRefurbishmentCostsType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
+// ScenarioREVSubsystemsProductionCostsType
+ScenarioREVSubsystemsProductionCostsType::ScenarioREVSubsystemsProductionCostsType() :
+    m_structure(0.0),
+    m_TPS(0.0),
+    m_avionics(0.0),
+    m_OMS(0.0),
+    m_RCS(0.0),
+    m_parachutes(0.0),
+    m_airbags(0.0),
+    m_crewSystems(0.0),
+    m_propellants(0.0)
+{
+}
+
+ScenarioREVSubsystemsProductionCostsType* ScenarioREVSubsystemsProductionCostsType::create(const QDomElement& e)
+{
+    ScenarioREVSubsystemsProductionCostsType* v;
+    {
+        v = new ScenarioREVSubsystemsProductionCostsType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVSubsystemsProductionCostsType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_structure = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_TPS = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_avionics = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_OMS = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_RCS = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_parachutes = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_airbags = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:crewSystems")
+    {
+        m_crewSystems = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+        m_propellants = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioREVSubsystemsProductionCostsType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:structure", m_structure));
+    e.appendChild(createSimpleElement(doc, "tns:TPS", m_TPS));
+    e.appendChild(createSimpleElement(doc, "tns:avionics", m_avionics));
+    e.appendChild(createSimpleElement(doc, "tns:OMS", m_OMS));
+    e.appendChild(createSimpleElement(doc, "tns:RCS", m_RCS));
+    e.appendChild(createSimpleElement(doc, "tns:parachutes", m_parachutes));
+    e.appendChild(createSimpleElement(doc, "tns:airbags", m_airbags));
+    e.appendChild(createSimpleElement(doc, "tns:crewSystems", m_crewSystems));
+    e.appendChild(createSimpleElement(doc, "tns:propellants", m_propellants));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVSubsystemsProductionCostsType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
+// ScenarioREVSubsystemsDevelopCostsType
+ScenarioREVSubsystemsDevelopCostsType::ScenarioREVSubsystemsDevelopCostsType() :
+    m_structure(0.0),
+    m_TPS(0.0),
+    m_avionics(0.0),
+    m_OMS(0.0),
+    m_RCS(0.0),
+    m_parachutes(0.0),
+    m_airbags(0.0),
+    m_crewSystems(0.0)
+{
+}
+
+ScenarioREVSubsystemsDevelopCostsType* ScenarioREVSubsystemsDevelopCostsType::create(const QDomElement& e)
+{
+    ScenarioREVSubsystemsDevelopCostsType* v;
+    {
+        v = new ScenarioREVSubsystemsDevelopCostsType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVSubsystemsDevelopCostsType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_structure = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_TPS = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_avionics = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_OMS = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_RCS = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_parachutes = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_airbags = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:crewSystems")
+    {
+        m_crewSystems = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    return true;
+}
+
+QDomElement ScenarioREVSubsystemsDevelopCostsType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:structure", m_structure));
+    e.appendChild(createSimpleElement(doc, "tns:TPS", m_TPS));
+    e.appendChild(createSimpleElement(doc, "tns:avionics", m_avionics));
+    e.appendChild(createSimpleElement(doc, "tns:OMS", m_OMS));
+    e.appendChild(createSimpleElement(doc, "tns:RCS", m_RCS));
+    e.appendChild(createSimpleElement(doc, "tns:parachutes", m_parachutes));
+    e.appendChild(createSimpleElement(doc, "tns:airbags", m_airbags));
+    e.appendChild(createSimpleElement(doc, "tns:crewSystems", m_crewSystems));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVSubsystemsDevelopCostsType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
+// ScenarioREVReliabilityType
+ScenarioREVReliabilityType::ScenarioREVReliabilityType() :
+    m_globalVehicleReliability(0.0),
+    m_softwareReliability(0.0),
+    m_crewSafety(0.0)
+{
+    m_SubsystemsReliability = QSharedPointer<ScenarioREVSubsystemsReliablityType>(new ScenarioREVSubsystemsReliablityType());
+}
+
+ScenarioREVReliabilityType* ScenarioREVReliabilityType::create(const QDomElement& e)
+{
+    ScenarioREVReliabilityType* v;
+    {
+        v = new ScenarioREVReliabilityType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVReliabilityType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_globalVehicleReliability = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_softwareReliability = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_crewSafety = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:SubsystemsReliability")
+        m_SubsystemsReliability = QSharedPointer<ScenarioREVSubsystemsReliablityType>(ScenarioREVSubsystemsReliablityType::create(*next));
+    *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioREVReliabilityType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:globalVehicleReliability", m_globalVehicleReliability));
+    e.appendChild(createSimpleElement(doc, "tns:softwareReliability", m_softwareReliability));
+    e.appendChild(createSimpleElement(doc, "tns:crewSafety", m_crewSafety));
+    if (!m_SubsystemsReliability.isNull())
+    {
+        QString tagName = "SubsystemsReliability";
+        QDomElement child = m_SubsystemsReliability->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVReliabilityType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_SubsystemsReliability.isNull()) children << m_SubsystemsReliability;
+    return children;
+}
+
+
+
+
+// ScenarioREVSubsystemsReliablityType
+ScenarioREVSubsystemsReliablityType::ScenarioREVSubsystemsReliablityType() :
+    m_structure(0.0),
+    m_TPS(0.0),
+    m_avionics(0.0),
+    m_OMS(0.0),
+    m_RCS(0.0),
+    m_parachutes(0.0),
+    m_airbags(0.0),
+    m_crewSystems(0.0)
+{
+}
+
+ScenarioREVSubsystemsReliablityType* ScenarioREVSubsystemsReliablityType::create(const QDomElement& e)
+{
+    ScenarioREVSubsystemsReliablityType* v;
+    {
+        v = new ScenarioREVSubsystemsReliablityType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioREVSubsystemsReliablityType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_structure = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_TPS = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_avionics = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_OMS = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_RCS = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_parachutes = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_airbags = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:crewSystems")
+    {
+        m_crewSystems = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    return true;
+}
+
+QDomElement ScenarioREVSubsystemsReliablityType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:structure", m_structure));
+    e.appendChild(createSimpleElement(doc, "tns:TPS", m_TPS));
+    e.appendChild(createSimpleElement(doc, "tns:avionics", m_avionics));
+    e.appendChild(createSimpleElement(doc, "tns:OMS", m_OMS));
+    e.appendChild(createSimpleElement(doc, "tns:RCS", m_RCS));
+    e.appendChild(createSimpleElement(doc, "tns:parachutes", m_parachutes));
+    e.appendChild(createSimpleElement(doc, "tns:airbags", m_airbags));
+    e.appendChild(createSimpleElement(doc, "tns:crewSystems", m_crewSystems));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioREVSubsystemsReliablityType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -4879,12 +8828,16 @@ QDomElement ScenarioInitialPositionType::toDomElement(QDomDocument& doc) const
 // ScenarioSC
 ScenarioSC::ScenarioSC()
 {
+    m_SCProgram = QSharedPointer<ScenarioSCProgram>(new ScenarioSCProgram());
+    m_SCMission = QSharedPointer<ScenarioSCMission>(new ScenarioSCMission());
+    m_System = QSharedPointer<ScenarioSCSystemType>(new ScenarioSCSystemType());
+    m_Optimization = QSharedPointer<ScenarioOptimization>(new ScenarioOptimization());
+    m_OutputFiles = QSharedPointer<ScenarioOutputFiles>(new ScenarioOutputFiles());
 }
 
 ScenarioSC* ScenarioSC::create(const QDomElement& e)
 {
     ScenarioSC* v;
-    if (e.tagName() == "tns:SC")
     {
         v = new ScenarioSC;
         QDomElement nextElement = e.firstChildElement();
@@ -4897,50 +8850,69 @@ ScenarioSC* ScenarioSC::create(const QDomElement& e)
 bool ScenarioSC::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioParticipantType::load(e, next);
-    m_SCProgram = QSharedPointer<ScenarioSCProgram>(ScenarioSCProgram::create(*next));
+    if (next->tagName() == "tns:SCProgram")
+        m_SCProgram = QSharedPointer<ScenarioSCProgram>(ScenarioSCProgram::create(*next));
     *next = next->nextSiblingElement();
-    m_SCMission = QSharedPointer<ScenarioSCMission>(ScenarioSCMission::create(*next));
+    if (next->tagName() == "tns:SCMission")
+        m_SCMission = QSharedPointer<ScenarioSCMission>(ScenarioSCMission::create(*next));
     *next = next->nextSiblingElement();
-    m_System = QSharedPointer<ScenarioSCSystemType>(ScenarioSCSystemType::create(*next));
+    if (next->tagName() == "tns:System")
+        m_System = QSharedPointer<ScenarioSCSystemType>(ScenarioSCSystemType::create(*next));
     *next = next->nextSiblingElement();
-    m_Optimization = QSharedPointer<ScenarioOptimization>(ScenarioOptimization::create(*next));
+    if (next->tagName() == "tns:Optimization")
+        m_Optimization = QSharedPointer<ScenarioOptimization>(ScenarioOptimization::create(*next));
     *next = next->nextSiblingElement();
-    m_OutputFiles = QSharedPointer<ScenarioOutputFiles>(ScenarioOutputFiles::create(*next));
+    if (next->tagName() == "tns:OutputFiles")
+        m_OutputFiles = QSharedPointer<ScenarioOutputFiles>(ScenarioOutputFiles::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioSC::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioSC::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioParticipantType::toDomElement(doc);
-    e.setTagName("SC");
+    QDomElement e = ScenarioParticipantType::toDomElement(doc, elementName);
     if (!m_SCProgram.isNull())
     {
-        QDomElement child = m_SCProgram->toDomElement(doc);
+        QString tagName = "SCProgram";
+        QDomElement child = m_SCProgram->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_SCMission.isNull())
     {
-        QDomElement child = m_SCMission->toDomElement(doc);
+        QString tagName = "SCMission";
+        QDomElement child = m_SCMission->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_System.isNull())
     {
-        QDomElement child = m_System->toDomElement(doc);
-        child.setTagName("System");
+        QString tagName = "System";
+        QDomElement child = m_System->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_Optimization.isNull())
     {
-        QDomElement child = m_Optimization->toDomElement(doc);
+        QString tagName = "Optimization";
+        QDomElement child = m_Optimization->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_OutputFiles.isNull())
     {
-        QDomElement child = m_OutputFiles->toDomElement(doc);
+        QString tagName = "OutputFiles";
+        QDomElement child = m_OutputFiles->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioSC::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_SCProgram.isNull()) children << m_SCProgram;
+    if (!m_SCMission.isNull()) children << m_SCMission;
+    if (!m_System.isNull()) children << m_System;
+    if (!m_Optimization.isNull()) children << m_Optimization;
+    if (!m_OutputFiles.isNull()) children << m_OutputFiles;
+    return children;
 }
 
 
@@ -4954,7 +8926,6 @@ ScenarioSCProgram::ScenarioSCProgram()
 ScenarioSCProgram* ScenarioSCProgram::create(const QDomElement& e)
 {
     ScenarioSCProgram* v;
-    if (e.tagName() == "tns:SCProgram")
     {
         v = new ScenarioSCProgram;
         QDomElement nextElement = e.firstChildElement();
@@ -4970,11 +8941,16 @@ bool ScenarioSCProgram::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioSCProgram::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioSCProgram::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("SCProgram");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioSCProgram::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -4983,12 +8959,13 @@ QDomElement ScenarioSCProgram::toDomElement(QDomDocument& doc) const
 // ScenarioSCMission
 ScenarioSCMission::ScenarioSCMission()
 {
+    m_Payload = QSharedPointer<ScenarioPayload>(new ScenarioPayload());
+    m_TrajectoryPlan = QSharedPointer<ScenarioTrajectoryPlan>(new ScenarioTrajectoryPlan());
 }
 
 ScenarioSCMission* ScenarioSCMission::create(const QDomElement& e)
 {
     ScenarioSCMission* v;
-    if (e.tagName() == "tns:SCMission")
     {
         v = new ScenarioSCMission;
         QDomElement nextElement = e.firstChildElement();
@@ -5001,30 +8978,39 @@ ScenarioSCMission* ScenarioSCMission::create(const QDomElement& e)
 bool ScenarioSCMission::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    m_Payload = QSharedPointer<ScenarioPayload>(ScenarioPayload::create(*next));
+    if (next->tagName() == "tns:Payload")
+        m_Payload = QSharedPointer<ScenarioPayload>(ScenarioPayload::create(*next));
     *next = next->nextSiblingElement();
-    m_TrajectoryPlan = QSharedPointer<ScenarioTrajectoryPlan>(ScenarioTrajectoryPlan::create(*next));
+    if (next->tagName() == "tns:TrajectoryPlan")
+        m_TrajectoryPlan = QSharedPointer<ScenarioTrajectoryPlan>(ScenarioTrajectoryPlan::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioSCMission::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioSCMission::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("SCMission");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     if (!m_Payload.isNull())
     {
-        QDomElement child = m_Payload->toDomElement(doc);
-        child.setTagName("Payload");
+        QString tagName = "Payload";
+        QDomElement child = m_Payload->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_TrajectoryPlan.isNull())
     {
-        QDomElement child = m_TrajectoryPlan->toDomElement(doc);
-        child.setTagName("TrajectoryPlan");
+        QString tagName = "TrajectoryPlan";
+        QDomElement child = m_TrajectoryPlan->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioSCMission::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Payload.isNull()) children << m_Payload;
+    if (!m_TrajectoryPlan.isNull()) children << m_TrajectoryPlan;
+    return children;
 }
 
 
@@ -5040,7 +9026,6 @@ ScenarioPayload::ScenarioPayload() :
 ScenarioPayload* ScenarioPayload::create(const QDomElement& e)
 {
     ScenarioPayload* v;
-    if (e.tagName() == "tns:Payload")
     {
         v = new ScenarioPayload;
         QDomElement nextElement = e.firstChildElement();
@@ -5057,24 +9042,32 @@ bool ScenarioPayload::load(const QDomElement& e, QDomElement* next)
         *next = next->nextSiblingElement();
         m_power = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
-    m_ObservationAntenna = QSharedPointer<ScenarioObservationAntenna>(ScenarioObservationAntenna::create(*next));
+    if (next->tagName() == "tns:ObservationAntenna")
+        m_ObservationAntenna = QSharedPointer<ScenarioObservationAntenna>(ScenarioObservationAntenna::create(*next));
 if (!m_ObservationAntenna.isNull())
         *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioPayload::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioPayload::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Payload");
-    e.appendChild(createSimpleElement(doc, "mass", m_mass));
-    e.appendChild(createSimpleElement(doc, "power", m_power));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:mass", m_mass));
+    e.appendChild(createSimpleElement(doc, "tns:power", m_power));
     if (!m_ObservationAntenna.isNull())
     {
-        QDomElement child = m_ObservationAntenna->toDomElement(doc);
+        QString tagName = "ObservationAntenna";
+        QDomElement child = m_ObservationAntenna->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioPayload::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_ObservationAntenna.isNull()) children << m_ObservationAntenna;
+    return children;
 }
 
 
@@ -5088,7 +9081,6 @@ ScenarioTrajectoryPlan::ScenarioTrajectoryPlan()
 ScenarioTrajectoryPlan* ScenarioTrajectoryPlan::create(const QDomElement& e)
 {
     ScenarioTrajectoryPlan* v;
-    if (e.tagName() == "tns:TrajectoryPlan")
     {
         v = new ScenarioTrajectoryPlan;
         QDomElement nextElement = e.firstChildElement();
@@ -5103,7 +9095,19 @@ bool ScenarioTrajectoryPlan::load(const QDomElement& e, QDomElement* next)
     ScenarioObject::load(e, next);
     for (;;)
     {
-        QSharedPointer<ScenarioAbstractTrajectoryType> v(ScenarioAbstractTrajectoryType::create(*next));
+        QSharedPointer<ScenarioAbstractTrajectoryType> v;
+        if (next->tagName() == "tns:EntryArc")
+            v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioEntryArcType::create(*next));
+        else if (next->tagName() == "tns:Loitering")
+            v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioLoiteringType::create(*next));
+        else if (next->tagName() == "tns:Lagrangian")
+            v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioLagrangianType::create(*next));
+        else if (next->tagName() == "tns:Rendezvous")
+            v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioRendezvousType::create(*next));
+        else if (next->tagName() == "tns:FlyBy")
+            v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioFlyByType::create(*next));
+        else if (next->tagName() == "tns:LoiteringTLE")
+            v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioLoiteringTLEType::create(*next));
         if (v.isNull()) break; else {
             m_AbstractTrajectory << v;
             *next = next->nextSiblingElement();
@@ -5112,59 +9116,35 @@ bool ScenarioTrajectoryPlan::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioTrajectoryPlan::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioTrajectoryPlan::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("TrajectoryPlan");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     foreach (QSharedPointer<ScenarioAbstractTrajectoryType> p, m_AbstractTrajectory)
     {
-        e.appendChild(p->toDomElement(doc));
+        QString tagName = "AbstractTrajectory";
+        if (dynamic_cast<ScenarioEntryArcType*>(p.data()))
+            tagName = "EntryArc";
+        else if (dynamic_cast<ScenarioLoiteringType*>(p.data()))
+            tagName = "Loitering";
+        else if (dynamic_cast<ScenarioLagrangianType*>(p.data()))
+            tagName = "Lagrangian";
+        else if (dynamic_cast<ScenarioRendezvousType*>(p.data()))
+            tagName = "Rendezvous";
+        else if (dynamic_cast<ScenarioFlyByType*>(p.data()))
+            tagName = "FlyBy";
+        else if (dynamic_cast<ScenarioLoiteringTLEType*>(p.data()))
+            tagName = "LoiteringTLE";
+        QDomElement child = p->toDomElement(doc, tagName);
+        e.appendChild(child);
     }
     return e;
 }
 
-
-
-
-// ScenarioAbstractTrajectoryType
-ScenarioAbstractTrajectoryType::ScenarioAbstractTrajectoryType()
+QList<QSharedPointer<ScenarioObject> >ScenarioTrajectoryPlan::children() const
 {
-}
-
-ScenarioAbstractTrajectoryType* ScenarioAbstractTrajectoryType::create(const QDomElement& e)
-{
-    ScenarioAbstractTrajectoryType* v;
-    if (e.tagName() == "tns:AbstractTrajectoryType")
-    {
-        v = new ScenarioAbstractTrajectoryType;
-        QDomElement nextElement = e.firstChildElement();
-        v->load(e, &nextElement);
-        return v;
-    }
-    if (e.tagName() == "tns:LoiteringType")
-        return ScenarioLoiteringType::create(e);
-    if (e.tagName() == "tns:RendezvousType")
-        return ScenarioRendezvousType::create(e);
-    if (e.tagName() == "tns:LoiteringTLEType")
-        return ScenarioLoiteringTLEType::create(e);
-    if (e.tagName() == "tns:LagrangianType")
-        return ScenarioLagrangianType::create(e);
-    if (e.tagName() == "tns:FlyByType")
-        return ScenarioFlyByType::create(e);
-    return NULL;
-}
-
-bool ScenarioAbstractTrajectoryType::load(const QDomElement& e, QDomElement* next)
-{
-    ScenarioObject::load(e, next);
-    return true;
-}
-
-QDomElement ScenarioAbstractTrajectoryType::toDomElement(QDomDocument& doc) const
-{
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("AbstractTrajectoryType");
-    return e;
+    QList<QSharedPointer<ScenarioObject> > children;
+    foreach (QSharedPointer<ScenarioObject> child, m_AbstractTrajectory) { children << child; }
+    return children;
 }
 
 
@@ -5178,7 +9158,6 @@ ScenarioSCEnvironmentType::ScenarioSCEnvironmentType()
 ScenarioSCEnvironmentType* ScenarioSCEnvironmentType::create(const QDomElement& e)
 {
     ScenarioSCEnvironmentType* v;
-    if (e.tagName() == "tns:SCEnvironmentType")
     {
         v = new ScenarioSCEnvironmentType;
         QDomElement nextElement = e.firstChildElement();
@@ -5200,14 +9179,19 @@ bool ScenarioSCEnvironmentType::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioSCEnvironmentType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioSCEnvironmentType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioEnvironmentType::toDomElement(doc);
-    e.setTagName("SCEnvironmentType");
-    e.appendChild(createSimpleElement(doc, "perturbingBody", m_perturbingBody));
-    e.appendChild(createSimpleElement(doc, "atmosphericDrag", m_atmosphericDrag));
-    e.appendChild(createSimpleElement(doc, "solarPressure", m_solarPressure));
+    QDomElement e = ScenarioEnvironmentType::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:perturbingBody", m_perturbingBody));
+    e.appendChild(createSimpleElement(doc, "tns:atmosphericDrag", m_atmosphericDrag));
+    e.appendChild(createSimpleElement(doc, "tns:solarPressure", m_solarPressure));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioSCEnvironmentType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -5216,12 +9200,17 @@ QDomElement ScenarioSCEnvironmentType::toDomElement(QDomDocument& doc) const
 // ScenarioLoiteringType
 ScenarioLoiteringType::ScenarioLoiteringType()
 {
+    m_Environment = QSharedPointer<ScenarioSCEnvironmentType>(new ScenarioSCEnvironmentType());
+    m_TimeLine = QSharedPointer<ScenarioTimeLine>(new ScenarioTimeLine());
+    m_InitialPosition = QSharedPointer<ScenarioInitialPositionType>(new ScenarioInitialPositionType());
+    m_InitialAttitude = QSharedPointer<ScenarioInitialAttitudeType>(new ScenarioInitialAttitudeType());
+    m_PropagationPosition = QSharedPointer<ScenarioPropagationPositionType>(new ScenarioPropagationPositionType());
+    m_PropagationAttitude = QSharedPointer<ScenarioPropagationAttitudeType>(new ScenarioPropagationAttitudeType());
 }
 
 ScenarioLoiteringType* ScenarioLoiteringType::create(const QDomElement& e)
 {
     ScenarioLoiteringType* v;
-    if (e.tagName() == "tns:LoiteringType")
     {
         v = new ScenarioLoiteringType;
         QDomElement nextElement = e.firstChildElement();
@@ -5234,189 +9223,79 @@ ScenarioLoiteringType* ScenarioLoiteringType::create(const QDomElement& e)
 bool ScenarioLoiteringType::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioAbstractTrajectoryType::load(e, next);
-    m_Environment = QSharedPointer<ScenarioSCEnvironmentType>(ScenarioSCEnvironmentType::create(*next));
+    if (next->tagName() == "tns:Environment")
+        m_Environment = QSharedPointer<ScenarioSCEnvironmentType>(ScenarioSCEnvironmentType::create(*next));
     *next = next->nextSiblingElement();
-    m_TimeLine = QSharedPointer<ScenarioTimeLine>(ScenarioTimeLine::create(*next));
+    if (next->tagName() == "tns:TimeLine")
+        m_TimeLine = QSharedPointer<ScenarioTimeLine>(ScenarioTimeLine::create(*next));
     *next = next->nextSiblingElement();
-    m_InitialPosition = QSharedPointer<ScenarioInitialPositionType>(ScenarioInitialPositionType::create(*next));
+    if (next->tagName() == "tns:InitialPosition")
+        m_InitialPosition = QSharedPointer<ScenarioInitialPositionType>(ScenarioInitialPositionType::create(*next));
     *next = next->nextSiblingElement();
-    m_InitialAttitude = QSharedPointer<ScenarioInitialAttitude>(ScenarioInitialAttitude::create(*next));
+    if (next->tagName() == "tns:InitialAttitude")
+        m_InitialAttitude = QSharedPointer<ScenarioInitialAttitudeType>(ScenarioInitialAttitudeType::create(*next));
     *next = next->nextSiblingElement();
-    m_PropagationPosition = QSharedPointer<ScenarioPropagationPosition>(ScenarioPropagationPosition::create(*next));
+    if (next->tagName() == "tns:PropagationPosition")
+        m_PropagationPosition = QSharedPointer<ScenarioPropagationPositionType>(ScenarioPropagationPositionType::create(*next));
     *next = next->nextSiblingElement();
-    m_PropagationAttitude = QSharedPointer<ScenarioPropagationAttitude>(ScenarioPropagationAttitude::create(*next));
+    if (next->tagName() == "tns:PropagationAttitude")
+        m_PropagationAttitude = QSharedPointer<ScenarioPropagationAttitudeType>(ScenarioPropagationAttitudeType::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioLoiteringType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioLoiteringType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc);
-    e.setTagName("LoiteringType");
+    QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc, elementName);
     if (!m_Environment.isNull())
     {
-        QDomElement child = m_Environment->toDomElement(doc);
-        child.setTagName("Environment");
+        QString tagName = "Environment";
+        QDomElement child = m_Environment->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_TimeLine.isNull())
     {
-        QDomElement child = m_TimeLine->toDomElement(doc);
+        QString tagName = "TimeLine";
+        QDomElement child = m_TimeLine->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_InitialPosition.isNull())
     {
-        QDomElement child = m_InitialPosition->toDomElement(doc);
+        QString tagName = "InitialPosition";
+        QDomElement child = m_InitialPosition->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_InitialAttitude.isNull())
     {
-        QDomElement child = m_InitialAttitude->toDomElement(doc);
-        child.setTagName("InitialAttitude");
+        QString tagName = "InitialAttitude";
+        QDomElement child = m_InitialAttitude->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_PropagationPosition.isNull())
     {
-        QDomElement child = m_PropagationPosition->toDomElement(doc);
-        child.setTagName("PropagationPosition");
+        QString tagName = "PropagationPosition";
+        QDomElement child = m_PropagationPosition->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_PropagationAttitude.isNull())
     {
-        QDomElement child = m_PropagationAttitude->toDomElement(doc);
-        child.setTagName("PropagationAttitude");
+        QString tagName = "PropagationAttitude";
+        QDomElement child = m_PropagationAttitude->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
 }
 
-
-
-
-// ScenarioInitialAttitude
-ScenarioInitialAttitude::ScenarioInitialAttitude()
+QList<QSharedPointer<ScenarioObject> >ScenarioLoiteringType::children() const
 {
-}
-
-ScenarioInitialAttitude* ScenarioInitialAttitude::create(const QDomElement& e)
-{
-    ScenarioInitialAttitude* v;
-    if (e.tagName() == "tns:InitialAttitude")
-    {
-        v = new ScenarioInitialAttitude;
-        QDomElement nextElement = e.firstChildElement();
-        v->load(e, &nextElement);
-        return v;
-    }
-    return NULL;
-}
-
-bool ScenarioInitialAttitude::load(const QDomElement& e, QDomElement* next)
-{
-    ScenarioObject::load(e, next);
-        m_CoordinateSystem = (next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-    m_Abstract6DOFAttitude = QSharedPointer<ScenarioAbstract6DOFAttitudeType>(ScenarioAbstract6DOFAttitudeType::create(*next));
-    *next = next->nextSiblingElement();
-    return true;
-}
-
-QDomElement ScenarioInitialAttitude::toDomElement(QDomDocument& doc) const
-{
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("InitialAttitude");
-    e.appendChild(createSimpleElement(doc, "CoordinateSystem", m_CoordinateSystem));
-    if (!m_Abstract6DOFAttitude.isNull())
-    {
-        QDomElement child = m_Abstract6DOFAttitude->toDomElement(doc);
-        e.appendChild(child);
-    }
-    return e;
-}
-
-
-
-
-// ScenarioPropagationPosition
-ScenarioPropagationPosition::ScenarioPropagationPosition() :
-    m_timeStep(0.0)
-{
-}
-
-ScenarioPropagationPosition* ScenarioPropagationPosition::create(const QDomElement& e)
-{
-    ScenarioPropagationPosition* v;
-    if (e.tagName() == "tns:PropagationPosition")
-    {
-        v = new ScenarioPropagationPosition;
-        QDomElement nextElement = e.firstChildElement();
-        v->load(e, &nextElement);
-        return v;
-    }
-    return NULL;
-}
-
-bool ScenarioPropagationPosition::load(const QDomElement& e, QDomElement* next)
-{
-    ScenarioObject::load(e, next);
-        m_propagator = (next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-        m_integrator = (next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-        m_timeStep = parseDouble(next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-    return true;
-}
-
-QDomElement ScenarioPropagationPosition::toDomElement(QDomDocument& doc) const
-{
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("PropagationPosition");
-    e.appendChild(createSimpleElement(doc, "propagator", m_propagator));
-    e.appendChild(createSimpleElement(doc, "integrator", m_integrator));
-    e.appendChild(createSimpleElement(doc, "timeStep", m_timeStep));
-    return e;
-}
-
-
-
-
-// ScenarioPropagationAttitude
-ScenarioPropagationAttitude::ScenarioPropagationAttitude() :
-    m_timeStep(0.0)
-{
-}
-
-ScenarioPropagationAttitude* ScenarioPropagationAttitude::create(const QDomElement& e)
-{
-    ScenarioPropagationAttitude* v;
-    if (e.tagName() == "tns:PropagationAttitude")
-    {
-        v = new ScenarioPropagationAttitude;
-        QDomElement nextElement = e.firstChildElement();
-        v->load(e, &nextElement);
-        return v;
-    }
-    return NULL;
-}
-
-bool ScenarioPropagationAttitude::load(const QDomElement& e, QDomElement* next)
-{
-    ScenarioObject::load(e, next);
-        m_integrator = (next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-        m_timeStep = parseDouble(next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-    return true;
-}
-
-QDomElement ScenarioPropagationAttitude::toDomElement(QDomDocument& doc) const
-{
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("PropagationAttitude");
-    e.appendChild(createSimpleElement(doc, "integrator", m_integrator));
-    e.appendChild(createSimpleElement(doc, "timeStep", m_timeStep));
-    return e;
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Environment.isNull()) children << m_Environment;
+    if (!m_TimeLine.isNull()) children << m_TimeLine;
+    if (!m_InitialPosition.isNull()) children << m_InitialPosition;
+    if (!m_InitialAttitude.isNull()) children << m_InitialAttitude;
+    if (!m_PropagationPosition.isNull()) children << m_PropagationPosition;
+    if (!m_PropagationAttitude.isNull()) children << m_PropagationAttitude;
+    return children;
 }
 
 
@@ -5425,12 +9304,14 @@ QDomElement ScenarioPropagationAttitude::toDomElement(QDomDocument& doc) const
 // ScenarioRendezvousType
 ScenarioRendezvousType::ScenarioRendezvousType()
 {
+    m_Environment = QSharedPointer<ScenarioSCEnvironmentType>(new ScenarioSCEnvironmentType());
+    m_Parameters = QSharedPointer<ScenarioParameters>(new ScenarioParameters());
+    m_ManoeuvrePlan = QSharedPointer<ScenarioManoeuvrePlan>(new ScenarioManoeuvrePlan());
 }
 
 ScenarioRendezvousType* ScenarioRendezvousType::create(const QDomElement& e)
 {
     ScenarioRendezvousType* v;
-    if (e.tagName() == "tns:RendezvousType")
     {
         v = new ScenarioRendezvousType;
         QDomElement nextElement = e.firstChildElement();
@@ -5443,41 +9324,52 @@ ScenarioRendezvousType* ScenarioRendezvousType::create(const QDomElement& e)
 bool ScenarioRendezvousType::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioAbstractTrajectoryType::load(e, next);
-    m_Environment = QSharedPointer<ScenarioSCEnvironmentType>(ScenarioSCEnvironmentType::create(*next));
+    if (next->tagName() == "tns:Environment")
+        m_Environment = QSharedPointer<ScenarioSCEnvironmentType>(ScenarioSCEnvironmentType::create(*next));
     *next = next->nextSiblingElement();
-    m_Parameters = QSharedPointer<ScenarioParameters>(ScenarioParameters::create(*next));
+    if (next->tagName() == "tns:Parameters")
+        m_Parameters = QSharedPointer<ScenarioParameters>(ScenarioParameters::create(*next));
     *next = next->nextSiblingElement();
         m_Target = (next->firstChild().toText().data());
         *next = next->nextSiblingElement();
-    m_ManoeuvrePlan = QSharedPointer<ScenarioManoeuvrePlan>(ScenarioManoeuvrePlan::create(*next));
+    if (next->tagName() == "tns:ManoeuvrePlan")
+        m_ManoeuvrePlan = QSharedPointer<ScenarioManoeuvrePlan>(ScenarioManoeuvrePlan::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioRendezvousType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioRendezvousType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc);
-    e.setTagName("RendezvousType");
+    QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc, elementName);
     if (!m_Environment.isNull())
     {
-        QDomElement child = m_Environment->toDomElement(doc);
-        child.setTagName("Environment");
+        QString tagName = "Environment";
+        QDomElement child = m_Environment->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_Parameters.isNull())
     {
-        QDomElement child = m_Parameters->toDomElement(doc);
-        child.setTagName("Parameters");
+        QString tagName = "Parameters";
+        QDomElement child = m_Parameters->toDomElement(doc, tagName);
         e.appendChild(child);
     }
-    e.appendChild(createSimpleElement(doc, "Target", m_Target));
+    e.appendChild(createSimpleElement(doc, "tns:Target", m_Target));
     if (!m_ManoeuvrePlan.isNull())
     {
-        QDomElement child = m_ManoeuvrePlan->toDomElement(doc);
-        child.setTagName("ManoeuvrePlan");
+        QString tagName = "ManoeuvrePlan";
+        QDomElement child = m_ManoeuvrePlan->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioRendezvousType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Environment.isNull()) children << m_Environment;
+    if (!m_Parameters.isNull()) children << m_Parameters;
+    if (!m_ManoeuvrePlan.isNull()) children << m_ManoeuvrePlan;
+    return children;
 }
 
 
@@ -5486,12 +9378,13 @@ QDomElement ScenarioRendezvousType::toDomElement(QDomDocument& doc) const
 // ScenarioParameters
 ScenarioParameters::ScenarioParameters()
 {
+    m_TimeLine = QSharedPointer<ScenarioTimeLine>(new ScenarioTimeLine());
+    m_InitialPosition = QSharedPointer<ScenarioInitialPositionType>(new ScenarioInitialPositionType());
 }
 
 ScenarioParameters* ScenarioParameters::create(const QDomElement& e)
 {
     ScenarioParameters* v;
-    if (e.tagName() == "tns:Parameters")
     {
         v = new ScenarioParameters;
         QDomElement nextElement = e.firstChildElement();
@@ -5504,28 +9397,39 @@ ScenarioParameters* ScenarioParameters::create(const QDomElement& e)
 bool ScenarioParameters::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    m_TimeLine = QSharedPointer<ScenarioTimeLine>(ScenarioTimeLine::create(*next));
+    if (next->tagName() == "tns:TimeLine")
+        m_TimeLine = QSharedPointer<ScenarioTimeLine>(ScenarioTimeLine::create(*next));
     *next = next->nextSiblingElement();
-    m_InitialPosition = QSharedPointer<ScenarioInitialPositionType>(ScenarioInitialPositionType::create(*next));
+    if (next->tagName() == "tns:InitialPosition")
+        m_InitialPosition = QSharedPointer<ScenarioInitialPositionType>(ScenarioInitialPositionType::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioParameters::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioParameters::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Parameters");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     if (!m_TimeLine.isNull())
     {
-        QDomElement child = m_TimeLine->toDomElement(doc);
+        QString tagName = "TimeLine";
+        QDomElement child = m_TimeLine->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_InitialPosition.isNull())
     {
-        QDomElement child = m_InitialPosition->toDomElement(doc);
+        QString tagName = "InitialPosition";
+        QDomElement child = m_InitialPosition->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioParameters::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_TimeLine.isNull()) children << m_TimeLine;
+    if (!m_InitialPosition.isNull()) children << m_InitialPosition;
+    return children;
 }
 
 
@@ -5539,7 +9443,6 @@ ScenarioManoeuvrePlan::ScenarioManoeuvrePlan()
 ScenarioManoeuvrePlan* ScenarioManoeuvrePlan::create(const QDomElement& e)
 {
     ScenarioManoeuvrePlan* v;
-    if (e.tagName() == "tns:ManoeuvrePlan")
     {
         v = new ScenarioManoeuvrePlan;
         QDomElement nextElement = e.firstChildElement();
@@ -5554,7 +9457,31 @@ bool ScenarioManoeuvrePlan::load(const QDomElement& e, QDomElement* next)
     ScenarioObject::load(e, next);
     for (;;)
     {
-        QSharedPointer<ScenarioManoeuvreType> v(ScenarioManoeuvreType::create(*next));
+        QSharedPointer<ScenarioManoeuvreType> v;
+        if (next->tagName() == "tns:FreeDrift")
+            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_DURATION::create(*next));
+        else if (next->tagName() == "tns:StationKeeping")
+            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_DURATION::create(*next));
+        else if (next->tagName() == "tns:DeltaV")
+            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_DELTAV::create(*next));
+        else if (next->tagName() == "tns:HomannTransfer")
+            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_R_POSITION::create(*next));
+        else if (next->tagName() == "tns:Imp2PointTransfer")
+            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_V_R_DURATION::create(*next));
+        else if (next->tagName() == "tns:ImpHoppVbarRadial")
+            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_V_POSITION::create(*next));
+        else if (next->tagName() == "tns:ImpHoppVbarTg")
+            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_V_POSITION::create(*next));
+        else if (next->tagName() == "tns:ImpHoppNoVbar")
+            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_V_POSITION::create(*next));
+        else if (next->tagName() == "tns:XThrustTransfer")
+            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_R_POSITION::create(*next));
+        else if (next->tagName() == "tns:ForcedVbar")
+            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_V_POSITION::create(*next));
+        else if (next->tagName() == "tns:ForcedRbar")
+            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_R_POSITION::create(*next));
+        else if (next->tagName() == "tns:ContHoppVbar")
+            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_V_POSITION::create(*next));
         if (v.isNull()) break; else {
             m_AbstractManoeuvre << v;
             *next = next->nextSiblingElement();
@@ -5563,15 +9490,47 @@ bool ScenarioManoeuvrePlan::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioManoeuvrePlan::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioManoeuvrePlan::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("ManoeuvrePlan");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     foreach (QSharedPointer<ScenarioManoeuvreType> p, m_AbstractManoeuvre)
     {
-        e.appendChild(p->toDomElement(doc));
+        QString tagName = "AbstractManoeuvre";
+        if (dynamic_cast<ScenarioSTA_MANOEUVRE_DURATION*>(p.data()))
+            tagName = "FreeDrift";
+        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_DURATION*>(p.data()))
+            tagName = "StationKeeping";
+        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_DELTAV*>(p.data()))
+            tagName = "DeltaV";
+        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_R_POSITION*>(p.data()))
+            tagName = "HomannTransfer";
+        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_V_R_DURATION*>(p.data()))
+            tagName = "Imp2PointTransfer";
+        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_V_POSITION*>(p.data()))
+            tagName = "ImpHoppVbarRadial";
+        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_V_POSITION*>(p.data()))
+            tagName = "ImpHoppVbarTg";
+        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_V_POSITION*>(p.data()))
+            tagName = "ImpHoppNoVbar";
+        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_R_POSITION*>(p.data()))
+            tagName = "XThrustTransfer";
+        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_V_POSITION*>(p.data()))
+            tagName = "ForcedVbar";
+        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_R_POSITION*>(p.data()))
+            tagName = "ForcedRbar";
+        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_V_POSITION*>(p.data()))
+            tagName = "ContHoppVbar";
+        QDomElement child = p->toDomElement(doc, tagName);
+        e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioManoeuvrePlan::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    foreach (QSharedPointer<ScenarioObject> child, m_AbstractManoeuvre) { children << child; }
+    return children;
 }
 
 
@@ -5580,12 +9539,12 @@ QDomElement ScenarioManoeuvrePlan::toDomElement(QDomDocument& doc) const
 // ScenarioLoiteringTLEType
 ScenarioLoiteringTLEType::ScenarioLoiteringTLEType()
 {
+    m_TimeLine = QSharedPointer<ScenarioTimeLine>(new ScenarioTimeLine());
 }
 
 ScenarioLoiteringTLEType* ScenarioLoiteringTLEType::create(const QDomElement& e)
 {
     ScenarioLoiteringTLEType* v;
-    if (e.tagName() == "tns:LoiteringTLEType")
     {
         v = new ScenarioLoiteringTLEType;
         QDomElement nextElement = e.firstChildElement();
@@ -5598,7 +9557,8 @@ ScenarioLoiteringTLEType* ScenarioLoiteringTLEType::create(const QDomElement& e)
 bool ScenarioLoiteringTLEType::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioAbstractTrajectoryType::load(e, next);
-    m_TimeLine = QSharedPointer<ScenarioTimeLine>(ScenarioTimeLine::create(*next));
+    if (next->tagName() == "tns:TimeLine")
+        m_TimeLine = QSharedPointer<ScenarioTimeLine>(ScenarioTimeLine::create(*next));
     *next = next->nextSiblingElement();
         m_tleLine0 = (next->firstChild().toText().data());
         *next = next->nextSiblingElement();
@@ -5609,19 +9569,26 @@ bool ScenarioLoiteringTLEType::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioLoiteringTLEType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioLoiteringTLEType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc);
-    e.setTagName("LoiteringTLEType");
+    QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc, elementName);
     if (!m_TimeLine.isNull())
     {
-        QDomElement child = m_TimeLine->toDomElement(doc);
+        QString tagName = "TimeLine";
+        QDomElement child = m_TimeLine->toDomElement(doc, tagName);
         e.appendChild(child);
     }
-    e.appendChild(createSimpleElement(doc, "tleLine0", m_tleLine0));
-    e.appendChild(createSimpleElement(doc, "tleLine1", m_tleLine1));
-    e.appendChild(createSimpleElement(doc, "tleLine2", m_tleLine2));
+    e.appendChild(createSimpleElement(doc, "tns:tleLine0", m_tleLine0));
+    e.appendChild(createSimpleElement(doc, "tns:tleLine1", m_tleLine1));
+    e.appendChild(createSimpleElement(doc, "tns:tleLine2", m_tleLine2));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioLoiteringTLEType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_TimeLine.isNull()) children << m_TimeLine;
+    return children;
 }
 
 
@@ -5635,25 +9602,12 @@ ScenarioManoeuvreType::ScenarioManoeuvreType()
 ScenarioManoeuvreType* ScenarioManoeuvreType::create(const QDomElement& e)
 {
     ScenarioManoeuvreType* v;
-    if (e.tagName() == "tns:ManoeuvreType")
     {
         v = new ScenarioManoeuvreType;
         QDomElement nextElement = e.firstChildElement();
         v->load(e, &nextElement);
         return v;
     }
-    if (e.tagName() == "tns:STA_MANOEUVRE_DURATION")
-        return ScenarioSTA_MANOEUVRE_DURATION::create(e);
-    if (e.tagName() == "tns:STA_MANOEUVRE_DELTAV")
-        return ScenarioSTA_MANOEUVRE_DELTAV::create(e);
-    if (e.tagName() == "tns:STA_MANOEUVRE_V_POSITION")
-        return ScenarioSTA_MANOEUVRE_V_POSITION::create(e);
-    if (e.tagName() == "tns:STA_MANOEUVRE_R_POSITION")
-        return ScenarioSTA_MANOEUVRE_R_POSITION::create(e);
-    if (e.tagName() == "tns:STA_MANOEUVRE_V_R_POSITION")
-        return ScenarioSTA_MANOEUVRE_V_R_POSITION::create(e);
-    if (e.tagName() == "tns:STA_MANOEUVRE_V_R_DURATION")
-        return ScenarioSTA_MANOEUVRE_V_R_DURATION::create(e);
     return NULL;
 }
 
@@ -5663,11 +9617,16 @@ bool ScenarioManoeuvreType::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioManoeuvreType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioManoeuvreType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("ManoeuvreType");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioManoeuvreType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -5682,7 +9641,6 @@ ScenarioSTA_MANOEUVRE_DURATION::ScenarioSTA_MANOEUVRE_DURATION() :
 ScenarioSTA_MANOEUVRE_DURATION* ScenarioSTA_MANOEUVRE_DURATION::create(const QDomElement& e)
 {
     ScenarioSTA_MANOEUVRE_DURATION* v;
-    if (e.tagName() == "tns:STA_MANOEUVRE_DURATION")
     {
         v = new ScenarioSTA_MANOEUVRE_DURATION;
         QDomElement nextElement = e.firstChildElement();
@@ -5700,12 +9658,17 @@ bool ScenarioSTA_MANOEUVRE_DURATION::load(const QDomElement& e, QDomElement* nex
     return true;
 }
 
-QDomElement ScenarioSTA_MANOEUVRE_DURATION::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioSTA_MANOEUVRE_DURATION::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioManoeuvreType::toDomElement(doc);
-    e.setTagName("STA_MANOEUVRE_DURATION");
-    e.appendChild(createSimpleElement(doc, "Duration", m_Duration));
+    QDomElement e = ScenarioManoeuvreType::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:Duration", m_Duration));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioSTA_MANOEUVRE_DURATION::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -5723,7 +9686,6 @@ ScenarioSTA_MANOEUVRE_DELTAV::ScenarioSTA_MANOEUVRE_DELTAV() :
 ScenarioSTA_MANOEUVRE_DELTAV* ScenarioSTA_MANOEUVRE_DELTAV::create(const QDomElement& e)
 {
     ScenarioSTA_MANOEUVRE_DELTAV* v;
-    if (e.tagName() == "tns:STA_MANOEUVRE_DELTAV")
     {
         v = new ScenarioSTA_MANOEUVRE_DELTAV;
         QDomElement nextElement = e.firstChildElement();
@@ -5747,15 +9709,20 @@ bool ScenarioSTA_MANOEUVRE_DELTAV::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioSTA_MANOEUVRE_DELTAV::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioSTA_MANOEUVRE_DELTAV::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioManoeuvreType::toDomElement(doc);
-    e.setTagName("STA_MANOEUVRE_DELTAV");
-    e.appendChild(createSimpleElement(doc, "DeltaVx", m_DeltaVx));
-    e.appendChild(createSimpleElement(doc, "DeltaVy", m_DeltaVy));
-    e.appendChild(createSimpleElement(doc, "DeltaVz", m_DeltaVz));
-    e.appendChild(createSimpleElement(doc, "Duration", m_Duration));
+    QDomElement e = ScenarioManoeuvreType::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:DeltaVx", m_DeltaVx));
+    e.appendChild(createSimpleElement(doc, "tns:DeltaVy", m_DeltaVy));
+    e.appendChild(createSimpleElement(doc, "tns:DeltaVz", m_DeltaVz));
+    e.appendChild(createSimpleElement(doc, "tns:Duration", m_Duration));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioSTA_MANOEUVRE_DELTAV::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -5770,7 +9737,6 @@ ScenarioSTA_MANOEUVRE_V_POSITION::ScenarioSTA_MANOEUVRE_V_POSITION() :
 ScenarioSTA_MANOEUVRE_V_POSITION* ScenarioSTA_MANOEUVRE_V_POSITION::create(const QDomElement& e)
 {
     ScenarioSTA_MANOEUVRE_V_POSITION* v;
-    if (e.tagName() == "tns:STA_MANOEUVRE_V_POSITION")
     {
         v = new ScenarioSTA_MANOEUVRE_V_POSITION;
         QDomElement nextElement = e.firstChildElement();
@@ -5788,12 +9754,17 @@ bool ScenarioSTA_MANOEUVRE_V_POSITION::load(const QDomElement& e, QDomElement* n
     return true;
 }
 
-QDomElement ScenarioSTA_MANOEUVRE_V_POSITION::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioSTA_MANOEUVRE_V_POSITION::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioManoeuvreType::toDomElement(doc);
-    e.setTagName("STA_MANOEUVRE_V_POSITION");
-    e.appendChild(createSimpleElement(doc, "DisplacementVbar", m_DisplacementVbar));
+    QDomElement e = ScenarioManoeuvreType::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:DisplacementVbar", m_DisplacementVbar));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioSTA_MANOEUVRE_V_POSITION::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -5808,7 +9779,6 @@ ScenarioSTA_MANOEUVRE_R_POSITION::ScenarioSTA_MANOEUVRE_R_POSITION() :
 ScenarioSTA_MANOEUVRE_R_POSITION* ScenarioSTA_MANOEUVRE_R_POSITION::create(const QDomElement& e)
 {
     ScenarioSTA_MANOEUVRE_R_POSITION* v;
-    if (e.tagName() == "tns:STA_MANOEUVRE_R_POSITION")
     {
         v = new ScenarioSTA_MANOEUVRE_R_POSITION;
         QDomElement nextElement = e.firstChildElement();
@@ -5826,12 +9796,17 @@ bool ScenarioSTA_MANOEUVRE_R_POSITION::load(const QDomElement& e, QDomElement* n
     return true;
 }
 
-QDomElement ScenarioSTA_MANOEUVRE_R_POSITION::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioSTA_MANOEUVRE_R_POSITION::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioManoeuvreType::toDomElement(doc);
-    e.setTagName("STA_MANOEUVRE_R_POSITION");
-    e.appendChild(createSimpleElement(doc, "DisplacementRbar", m_DisplacementRbar));
+    QDomElement e = ScenarioManoeuvreType::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:DisplacementRbar", m_DisplacementRbar));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioSTA_MANOEUVRE_R_POSITION::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -5847,7 +9822,6 @@ ScenarioSTA_MANOEUVRE_V_R_POSITION::ScenarioSTA_MANOEUVRE_V_R_POSITION() :
 ScenarioSTA_MANOEUVRE_V_R_POSITION* ScenarioSTA_MANOEUVRE_V_R_POSITION::create(const QDomElement& e)
 {
     ScenarioSTA_MANOEUVRE_V_R_POSITION* v;
-    if (e.tagName() == "tns:STA_MANOEUVRE_V_R_POSITION")
     {
         v = new ScenarioSTA_MANOEUVRE_V_R_POSITION;
         QDomElement nextElement = e.firstChildElement();
@@ -5867,13 +9841,18 @@ bool ScenarioSTA_MANOEUVRE_V_R_POSITION::load(const QDomElement& e, QDomElement*
     return true;
 }
 
-QDomElement ScenarioSTA_MANOEUVRE_V_R_POSITION::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioSTA_MANOEUVRE_V_R_POSITION::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioManoeuvreType::toDomElement(doc);
-    e.setTagName("STA_MANOEUVRE_V_R_POSITION");
-    e.appendChild(createSimpleElement(doc, "DisplacementVbar", m_DisplacementVbar));
-    e.appendChild(createSimpleElement(doc, "DisplacementRbar", m_DisplacementRbar));
+    QDomElement e = ScenarioManoeuvreType::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:DisplacementVbar", m_DisplacementVbar));
+    e.appendChild(createSimpleElement(doc, "tns:DisplacementRbar", m_DisplacementRbar));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioSTA_MANOEUVRE_V_R_POSITION::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -5890,7 +9869,6 @@ ScenarioSTA_MANOEUVRE_V_R_DURATION::ScenarioSTA_MANOEUVRE_V_R_DURATION() :
 ScenarioSTA_MANOEUVRE_V_R_DURATION* ScenarioSTA_MANOEUVRE_V_R_DURATION::create(const QDomElement& e)
 {
     ScenarioSTA_MANOEUVRE_V_R_DURATION* v;
-    if (e.tagName() == "tns:STA_MANOEUVRE_V_R_DURATION")
     {
         v = new ScenarioSTA_MANOEUVRE_V_R_DURATION;
         QDomElement nextElement = e.firstChildElement();
@@ -5912,14 +9890,19 @@ bool ScenarioSTA_MANOEUVRE_V_R_DURATION::load(const QDomElement& e, QDomElement*
     return true;
 }
 
-QDomElement ScenarioSTA_MANOEUVRE_V_R_DURATION::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioSTA_MANOEUVRE_V_R_DURATION::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioManoeuvreType::toDomElement(doc);
-    e.setTagName("STA_MANOEUVRE_V_R_DURATION");
-    e.appendChild(createSimpleElement(doc, "DisplacementVbar", m_DisplacementVbar));
-    e.appendChild(createSimpleElement(doc, "DisplacementRbar", m_DisplacementRbar));
-    e.appendChild(createSimpleElement(doc, "Duration", m_Duration));
+    QDomElement e = ScenarioManoeuvreType::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:DisplacementVbar", m_DisplacementVbar));
+    e.appendChild(createSimpleElement(doc, "tns:DisplacementRbar", m_DisplacementRbar));
+    e.appendChild(createSimpleElement(doc, "tns:Duration", m_Duration));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioSTA_MANOEUVRE_V_R_DURATION::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -5933,7 +9916,6 @@ ScenarioLagrangianType::ScenarioLagrangianType()
 ScenarioLagrangianType* ScenarioLagrangianType::create(const QDomElement& e)
 {
     ScenarioLagrangianType* v;
-    if (e.tagName() == "tns:LagrangianType")
     {
         v = new ScenarioLagrangianType;
         QDomElement nextElement = e.firstChildElement();
@@ -5949,11 +9931,16 @@ bool ScenarioLagrangianType::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioLagrangianType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioLagrangianType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc);
-    e.setTagName("LagrangianType");
+    QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc, elementName);
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioLagrangianType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -5967,7 +9954,6 @@ ScenarioFlyByType::ScenarioFlyByType()
 ScenarioFlyByType* ScenarioFlyByType::create(const QDomElement& e)
 {
     ScenarioFlyByType* v;
-    if (e.tagName() == "tns:FlyByType")
     {
         v = new ScenarioFlyByType;
         QDomElement nextElement = e.firstChildElement();
@@ -5983,11 +9969,16 @@ bool ScenarioFlyByType::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioFlyByType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioFlyByType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc);
-    e.setTagName("FlyByType");
+    QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc, elementName);
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioFlyByType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -5996,12 +9987,20 @@ QDomElement ScenarioFlyByType::toDomElement(QDomDocument& doc) const
 // ScenarioSCSystemType
 ScenarioSCSystemType::ScenarioSCSystemType()
 {
+    m_SystemBudgets = QSharedPointer<ScenarioSystemBudgets>(new ScenarioSystemBudgets());
+    m_SCAerodynamics = QSharedPointer<ScenarioSCAerodynamics>(new ScenarioSCAerodynamics());
+    m_Propulsion = QSharedPointer<ScenarioPropulsion>(new ScenarioPropulsion());
+    m_Structure = QSharedPointer<ScenarioStructure>(new ScenarioStructure());
+    m_TCS = QSharedPointer<ScenarioTCS>(new ScenarioTCS());
+    m_EPS = QSharedPointer<ScenarioEPS>(new ScenarioEPS());
+    m_TTC = QSharedPointer<ScenarioTTC>(new ScenarioTTC());
+    m_AOCS = QSharedPointer<ScenarioAOCS>(new ScenarioAOCS());
+    m_OBDH = QSharedPointer<ScenarioOBDH>(new ScenarioOBDH());
 }
 
 ScenarioSCSystemType* ScenarioSCSystemType::create(const QDomElement& e)
 {
     ScenarioSCSystemType* v;
-    if (e.tagName() == "tns:SCSystemType")
     {
         v = new ScenarioSCSystemType;
         QDomElement nextElement = e.firstChildElement();
@@ -6014,86 +10013,109 @@ ScenarioSCSystemType* ScenarioSCSystemType::create(const QDomElement& e)
 bool ScenarioSCSystemType::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    m_SystemBudgets = QSharedPointer<ScenarioSystemBudgets>(ScenarioSystemBudgets::create(*next));
+    if (next->tagName() == "tns:SystemBudgets")
+        m_SystemBudgets = QSharedPointer<ScenarioSystemBudgets>(ScenarioSystemBudgets::create(*next));
     *next = next->nextSiblingElement();
-    m_SCAerodynamics = QSharedPointer<ScenarioSCAerodynamics>(ScenarioSCAerodynamics::create(*next));
+    if (next->tagName() == "tns:SCAerodynamics")
+        m_SCAerodynamics = QSharedPointer<ScenarioSCAerodynamics>(ScenarioSCAerodynamics::create(*next));
     *next = next->nextSiblingElement();
-    m_Propulsion = QSharedPointer<ScenarioPropulsion>(ScenarioPropulsion::create(*next));
+    if (next->tagName() == "tns:Propulsion")
+        m_Propulsion = QSharedPointer<ScenarioPropulsion>(ScenarioPropulsion::create(*next));
     *next = next->nextSiblingElement();
-    m_Structure = QSharedPointer<ScenarioStructure>(ScenarioStructure::create(*next));
+    if (next->tagName() == "tns:Structure")
+        m_Structure = QSharedPointer<ScenarioStructure>(ScenarioStructure::create(*next));
     *next = next->nextSiblingElement();
-    m_TCS = QSharedPointer<ScenarioTCS>(ScenarioTCS::create(*next));
+    if (next->tagName() == "tns:TCS")
+        m_TCS = QSharedPointer<ScenarioTCS>(ScenarioTCS::create(*next));
     *next = next->nextSiblingElement();
-    m_EPS = QSharedPointer<ScenarioEPS>(ScenarioEPS::create(*next));
+    if (next->tagName() == "tns:EPS")
+        m_EPS = QSharedPointer<ScenarioEPS>(ScenarioEPS::create(*next));
     *next = next->nextSiblingElement();
-    m_TTC = QSharedPointer<ScenarioTTC>(ScenarioTTC::create(*next));
+    if (next->tagName() == "tns:TTC")
+        m_TTC = QSharedPointer<ScenarioTTC>(ScenarioTTC::create(*next));
     *next = next->nextSiblingElement();
-    m_AOCS = QSharedPointer<ScenarioAOCS>(ScenarioAOCS::create(*next));
+    if (next->tagName() == "tns:AOCS")
+        m_AOCS = QSharedPointer<ScenarioAOCS>(ScenarioAOCS::create(*next));
     *next = next->nextSiblingElement();
-    m_OBDH = QSharedPointer<ScenarioOBDH>(ScenarioOBDH::create(*next));
+    if (next->tagName() == "tns:OBDH")
+        m_OBDH = QSharedPointer<ScenarioOBDH>(ScenarioOBDH::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioSCSystemType::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioSCSystemType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("SCSystemType");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     if (!m_SystemBudgets.isNull())
     {
-        QDomElement child = m_SystemBudgets->toDomElement(doc);
-        child.setTagName("SystemBudgets");
+        QString tagName = "SystemBudgets";
+        QDomElement child = m_SystemBudgets->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_SCAerodynamics.isNull())
     {
-        QDomElement child = m_SCAerodynamics->toDomElement(doc);
-        child.setTagName("SCAerodynamics");
+        QString tagName = "SCAerodynamics";
+        QDomElement child = m_SCAerodynamics->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_Propulsion.isNull())
     {
-        QDomElement child = m_Propulsion->toDomElement(doc);
-        child.setTagName("Propulsion");
+        QString tagName = "Propulsion";
+        QDomElement child = m_Propulsion->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_Structure.isNull())
     {
-        QDomElement child = m_Structure->toDomElement(doc);
-        child.setTagName("Structure");
+        QString tagName = "Structure";
+        QDomElement child = m_Structure->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_TCS.isNull())
     {
-        QDomElement child = m_TCS->toDomElement(doc);
-        child.setTagName("TCS");
+        QString tagName = "TCS";
+        QDomElement child = m_TCS->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_EPS.isNull())
     {
-        QDomElement child = m_EPS->toDomElement(doc);
-        child.setTagName("EPS");
+        QString tagName = "EPS";
+        QDomElement child = m_EPS->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_TTC.isNull())
     {
-        QDomElement child = m_TTC->toDomElement(doc);
-        child.setTagName("TTC");
+        QString tagName = "TTC";
+        QDomElement child = m_TTC->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_AOCS.isNull())
     {
-        QDomElement child = m_AOCS->toDomElement(doc);
-        child.setTagName("AOCS");
+        QString tagName = "AOCS";
+        QDomElement child = m_AOCS->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_OBDH.isNull())
     {
-        QDomElement child = m_OBDH->toDomElement(doc);
-        child.setTagName("OBDH");
+        QString tagName = "OBDH";
+        QDomElement child = m_OBDH->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioSCSystemType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_SystemBudgets.isNull()) children << m_SystemBudgets;
+    if (!m_SCAerodynamics.isNull()) children << m_SCAerodynamics;
+    if (!m_Propulsion.isNull()) children << m_Propulsion;
+    if (!m_Structure.isNull()) children << m_Structure;
+    if (!m_TCS.isNull()) children << m_TCS;
+    if (!m_EPS.isNull()) children << m_EPS;
+    if (!m_TTC.isNull()) children << m_TTC;
+    if (!m_AOCS.isNull()) children << m_AOCS;
+    if (!m_OBDH.isNull()) children << m_OBDH;
+    return children;
 }
 
 
@@ -6102,12 +10124,14 @@ QDomElement ScenarioSCSystemType::toDomElement(QDomDocument& doc) const
 // ScenarioSystemBudgets
 ScenarioSystemBudgets::ScenarioSystemBudgets()
 {
+    m_Mass = QSharedPointer<ScenarioMass>(new ScenarioMass());
+    m_Power = QSharedPointer<ScenarioPower>(new ScenarioPower());
+    m_Link = QSharedPointer<ScenarioLink>(new ScenarioLink());
 }
 
 ScenarioSystemBudgets* ScenarioSystemBudgets::create(const QDomElement& e)
 {
     ScenarioSystemBudgets* v;
-    if (e.tagName() == "tns:SystemBudgets")
     {
         v = new ScenarioSystemBudgets;
         QDomElement nextElement = e.firstChildElement();
@@ -6120,38 +10144,49 @@ ScenarioSystemBudgets* ScenarioSystemBudgets::create(const QDomElement& e)
 bool ScenarioSystemBudgets::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    m_Mass = QSharedPointer<ScenarioMass>(ScenarioMass::create(*next));
+    if (next->tagName() == "tns:Mass")
+        m_Mass = QSharedPointer<ScenarioMass>(ScenarioMass::create(*next));
     *next = next->nextSiblingElement();
-    m_Power = QSharedPointer<ScenarioPower>(ScenarioPower::create(*next));
+    if (next->tagName() == "tns:Power")
+        m_Power = QSharedPointer<ScenarioPower>(ScenarioPower::create(*next));
     *next = next->nextSiblingElement();
-    m_Link = QSharedPointer<ScenarioLink>(ScenarioLink::create(*next));
+    if (next->tagName() == "tns:Link")
+        m_Link = QSharedPointer<ScenarioLink>(ScenarioLink::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioSystemBudgets::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioSystemBudgets::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("SystemBudgets");
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     if (!m_Mass.isNull())
     {
-        QDomElement child = m_Mass->toDomElement(doc);
-        child.setTagName("Mass");
+        QString tagName = "Mass";
+        QDomElement child = m_Mass->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_Power.isNull())
     {
-        QDomElement child = m_Power->toDomElement(doc);
-        child.setTagName("Power");
+        QString tagName = "Power";
+        QDomElement child = m_Power->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     if (!m_Link.isNull())
     {
-        QDomElement child = m_Link->toDomElement(doc);
-        child.setTagName("Link");
+        QString tagName = "Link";
+        QDomElement child = m_Link->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioSystemBudgets::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Mass.isNull()) children << m_Mass;
+    if (!m_Power.isNull()) children << m_Power;
+    if (!m_Link.isNull()) children << m_Link;
+    return children;
 }
 
 
@@ -6167,7 +10202,6 @@ ScenarioMass::ScenarioMass() :
 ScenarioMass* ScenarioMass::create(const QDomElement& e)
 {
     ScenarioMass* v;
-    if (e.tagName() == "tns:Mass")
     {
         v = new ScenarioMass;
         QDomElement nextElement = e.firstChildElement();
@@ -6187,13 +10221,18 @@ bool ScenarioMass::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioMass::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioMass::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Mass");
-    e.appendChild(createSimpleElement(doc, "dryMass", m_dryMass));
-    e.appendChild(createSimpleElement(doc, "wetMass", m_wetMass));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:dryMass", m_dryMass));
+    e.appendChild(createSimpleElement(doc, "tns:wetMass", m_wetMass));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioMass::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -6209,7 +10248,6 @@ ScenarioPower::ScenarioPower() :
 ScenarioPower* ScenarioPower::create(const QDomElement& e)
 {
     ScenarioPower* v;
-    if (e.tagName() == "tns:Power")
     {
         v = new ScenarioPower;
         QDomElement nextElement = e.firstChildElement();
@@ -6229,13 +10267,18 @@ bool ScenarioPower::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioPower::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioPower::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Power");
-    e.appendChild(createSimpleElement(doc, "totalPowerBoL", m_totalPowerBoL));
-    e.appendChild(createSimpleElement(doc, "totalPowerEoL", m_totalPowerEoL));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:totalPowerBoL", m_totalPowerBoL));
+    e.appendChild(createSimpleElement(doc, "tns:totalPowerEoL", m_totalPowerEoL));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioPower::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -6251,7 +10294,6 @@ ScenarioLink::ScenarioLink() :
 ScenarioLink* ScenarioLink::create(const QDomElement& e)
 {
     ScenarioLink* v;
-    if (e.tagName() == "tns:Link")
     {
         v = new ScenarioLink;
         QDomElement nextElement = e.firstChildElement();
@@ -6271,13 +10313,18 @@ bool ScenarioLink::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioLink::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioLink::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Link");
-    e.appendChild(createSimpleElement(doc, "uplinkMargin", m_uplinkMargin));
-    e.appendChild(createSimpleElement(doc, "downlinkMargin", m_downlinkMargin));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:uplinkMargin", m_uplinkMargin));
+    e.appendChild(createSimpleElement(doc, "tns:downlinkMargin", m_downlinkMargin));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioLink::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -6293,7 +10340,6 @@ ScenarioSCAerodynamics::ScenarioSCAerodynamics() :
 ScenarioSCAerodynamics* ScenarioSCAerodynamics::create(const QDomElement& e)
 {
     ScenarioSCAerodynamics* v;
-    if (e.tagName() == "tns:SCAerodynamics")
     {
         v = new ScenarioSCAerodynamics;
         QDomElement nextElement = e.firstChildElement();
@@ -6313,13 +10359,18 @@ bool ScenarioSCAerodynamics::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioSCAerodynamics::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioSCAerodynamics::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("SCAerodynamics");
-    e.appendChild(createSimpleElement(doc, "surfaceArea", m_surfaceArea));
-    e.appendChild(createSimpleElement(doc, "Cd", m_Cd));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:surfaceArea", m_surfaceArea));
+    e.appendChild(createSimpleElement(doc, "tns:Cd", m_Cd));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioSCAerodynamics::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -6338,7 +10389,6 @@ ScenarioPropulsion::ScenarioPropulsion() :
 ScenarioPropulsion* ScenarioPropulsion::create(const QDomElement& e)
 {
     ScenarioPropulsion* v;
-    if (e.tagName() == "tns:Propulsion")
     {
         v = new ScenarioPropulsion;
         QDomElement nextElement = e.firstChildElement();
@@ -6364,16 +10414,21 @@ bool ScenarioPropulsion::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioPropulsion::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioPropulsion::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Propulsion");
-    e.appendChild(createSimpleElement(doc, "numberOfEngines", m_numberOfEngines));
-    e.appendChild(createSimpleElement(doc, "thrustPerEngine", m_thrustPerEngine));
-    e.appendChild(createSimpleElement(doc, "specificImpulse", m_specificImpulse));
-    e.appendChild(createSimpleElement(doc, "propellantMass", m_propellantMass));
-    e.appendChild(createSimpleElement(doc, "totalPropulsionDryMass", m_totalPropulsionDryMass));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:numberOfEngines", m_numberOfEngines));
+    e.appendChild(createSimpleElement(doc, "tns:thrustPerEngine", m_thrustPerEngine));
+    e.appendChild(createSimpleElement(doc, "tns:specificImpulse", m_specificImpulse));
+    e.appendChild(createSimpleElement(doc, "tns:propellantMass", m_propellantMass));
+    e.appendChild(createSimpleElement(doc, "tns:totalPropulsionDryMass", m_totalPropulsionDryMass));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioPropulsion::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -6388,7 +10443,6 @@ ScenarioStructure::ScenarioStructure() :
 ScenarioStructure* ScenarioStructure::create(const QDomElement& e)
 {
     ScenarioStructure* v;
-    if (e.tagName() == "tns:Structure")
     {
         v = new ScenarioStructure;
         QDomElement nextElement = e.firstChildElement();
@@ -6406,12 +10460,17 @@ bool ScenarioStructure::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioStructure::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioStructure::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("Structure");
-    e.appendChild(createSimpleElement(doc, "totalStructureMass", m_totalStructureMass));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:totalStructureMass", m_totalStructureMass));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioStructure::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -6426,7 +10485,6 @@ ScenarioTCS::ScenarioTCS() :
 ScenarioTCS* ScenarioTCS::create(const QDomElement& e)
 {
     ScenarioTCS* v;
-    if (e.tagName() == "tns:TCS")
     {
         v = new ScenarioTCS;
         QDomElement nextElement = e.firstChildElement();
@@ -6444,12 +10502,17 @@ bool ScenarioTCS::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioTCS::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioTCS::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("TCS");
-    e.appendChild(createSimpleElement(doc, "totalTCSMass", m_totalTCSMass));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:totalTCSMass", m_totalTCSMass));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioTCS::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -6464,7 +10527,6 @@ ScenarioEPS::ScenarioEPS() :
 ScenarioEPS* ScenarioEPS::create(const QDomElement& e)
 {
     ScenarioEPS* v;
-    if (e.tagName() == "tns:EPS")
     {
         v = new ScenarioEPS;
         QDomElement nextElement = e.firstChildElement();
@@ -6482,12 +10544,17 @@ bool ScenarioEPS::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioEPS::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioEPS::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("EPS");
-    e.appendChild(createSimpleElement(doc, "totalEPSMass", m_totalEPSMass));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:totalEPSMass", m_totalEPSMass));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioEPS::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -6502,7 +10569,6 @@ ScenarioTTC::ScenarioTTC() :
 ScenarioTTC* ScenarioTTC::create(const QDomElement& e)
 {
     ScenarioTTC* v;
-    if (e.tagName() == "tns:TTC")
     {
         v = new ScenarioTTC;
         QDomElement nextElement = e.firstChildElement();
@@ -6519,7 +10585,9 @@ bool ScenarioTTC::load(const QDomElement& e, QDomElement* next)
         *next = next->nextSiblingElement();
     for (;;)
     {
-        QSharedPointer<ScenarioCommunicationAntenna> v(ScenarioCommunicationAntenna::create(*next));
+        QSharedPointer<ScenarioCommunicationAntenna> v;
+        if (next->tagName() == "tns:CommunicationAntenna")
+            v = QSharedPointer<ScenarioCommunicationAntenna>(ScenarioCommunicationAntenna::create(*next));
         if (v.isNull()) break; else {
             m_CommunicationAntenna << v;
             *next = next->nextSiblingElement();
@@ -6528,16 +10596,24 @@ bool ScenarioTTC::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioTTC::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioTTC::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("TTC");
-    e.appendChild(createSimpleElement(doc, "totalTTCMass", m_totalTTCMass));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:totalTTCMass", m_totalTTCMass));
     foreach (QSharedPointer<ScenarioCommunicationAntenna> p, m_CommunicationAntenna)
     {
-        e.appendChild(p->toDomElement(doc));
+        QString tagName = "CommunicationAntenna";
+        QDomElement child = p->toDomElement(doc, tagName);
+        e.appendChild(child);
     }
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioTTC::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    foreach (QSharedPointer<ScenarioObject> child, m_CommunicationAntenna) { children << child; }
+    return children;
 }
 
 
@@ -6552,7 +10628,6 @@ ScenarioAOCS::ScenarioAOCS() :
 ScenarioAOCS* ScenarioAOCS::create(const QDomElement& e)
 {
     ScenarioAOCS* v;
-    if (e.tagName() == "tns:AOCS")
     {
         v = new ScenarioAOCS;
         QDomElement nextElement = e.firstChildElement();
@@ -6570,12 +10645,17 @@ bool ScenarioAOCS::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioAOCS::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioAOCS::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("AOCS");
-    e.appendChild(createSimpleElement(doc, "totalAOCSMass", m_totalAOCSMass));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:totalAOCSMass", m_totalAOCSMass));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioAOCS::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -6590,7 +10670,6 @@ ScenarioOBDH::ScenarioOBDH() :
 ScenarioOBDH* ScenarioOBDH::create(const QDomElement& e)
 {
     ScenarioOBDH* v;
-    if (e.tagName() == "tns:OBDH")
     {
         v = new ScenarioOBDH;
         QDomElement nextElement = e.firstChildElement();
@@ -6608,12 +10687,17 @@ bool ScenarioOBDH::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement ScenarioOBDH::toDomElement(QDomDocument& doc) const
+QDomElement ScenarioOBDH::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("OBDH");
-    e.appendChild(createSimpleElement(doc, "totalOBDHMass", m_totalOBDHMass));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:totalOBDHMass", m_totalOBDHMass));
     return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioOBDH::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
 }
 
 
@@ -6627,7 +10711,6 @@ SpaceScenario::SpaceScenario()
 SpaceScenario* SpaceScenario::create(const QDomElement& e)
 {
     SpaceScenario* v;
-    if (e.tagName() == "tns:SpaceScenario")
     {
         v = new SpaceScenario;
         QDomElement nextElement = e.firstChildElement();
@@ -6644,7 +10727,19 @@ bool SpaceScenario::load(const QDomElement& e, QDomElement* next)
         *next = next->nextSiblingElement();
     for (;;)
     {
-        QSharedPointer<ScenarioParticipantType> v(ScenarioParticipantType::create(*next));
+        QSharedPointer<ScenarioParticipantType> v;
+        if (next->tagName() == "tns:GroundStation")
+            v = QSharedPointer<ScenarioParticipantType>((ScenarioParticipantType*)ScenarioGroundStation::create(*next));
+        else if (next->tagName() == "tns:LaunchPad")
+            v = QSharedPointer<ScenarioParticipantType>((ScenarioParticipantType*)ScenarioLaunchPad::create(*next));
+        else if (next->tagName() == "tns:Point")
+            v = QSharedPointer<ScenarioParticipantType>((ScenarioParticipantType*)ScenarioPoint::create(*next));
+        else if (next->tagName() == "tns:LV")
+            v = QSharedPointer<ScenarioParticipantType>((ScenarioParticipantType*)ScenarioLV::create(*next));
+        else if (next->tagName() == "tns:REV")
+            v = QSharedPointer<ScenarioParticipantType>((ScenarioParticipantType*)ScenarioREV::create(*next));
+        else if (next->tagName() == "tns:SC")
+            v = QSharedPointer<ScenarioParticipantType>((ScenarioParticipantType*)ScenarioSC::create(*next));
         if (v.isNull()) break; else {
             m_AbstractParticipant << v;
             *next = next->nextSiblingElement();
@@ -6653,18 +10748,358 @@ bool SpaceScenario::load(const QDomElement& e, QDomElement* next)
     return true;
 }
 
-QDomElement SpaceScenario::toDomElement(QDomDocument& doc) const
+QDomElement SpaceScenario::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
-    QDomElement e = ScenarioObject::toDomElement(doc);
-    e.setTagName("SpaceScenario");
-    e.appendChild(createSimpleElement(doc, "Name", m_Name));
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:Name", m_Name));
     foreach (QSharedPointer<ScenarioParticipantType> p, m_AbstractParticipant)
     {
-        e.appendChild(p->toDomElement(doc));
+        QString tagName = "AbstractParticipant";
+        if (dynamic_cast<ScenarioGroundStation*>(p.data()))
+            tagName = "GroundStation";
+        else if (dynamic_cast<ScenarioLaunchPad*>(p.data()))
+            tagName = "LaunchPad";
+        else if (dynamic_cast<ScenarioPoint*>(p.data()))
+            tagName = "Point";
+        else if (dynamic_cast<ScenarioLV*>(p.data()))
+            tagName = "LV";
+        else if (dynamic_cast<ScenarioREV*>(p.data()))
+            tagName = "REV";
+        else if (dynamic_cast<ScenarioSC*>(p.data()))
+            tagName = "SC";
+        QDomElement child = p->toDomElement(doc, tagName);
+        e.appendChild(child);
     }
     return e;
 }
 
+QList<QSharedPointer<ScenarioObject> >SpaceScenario::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    foreach (QSharedPointer<ScenarioObject> child, m_AbstractParticipant) { children << child; }
+    return children;
+}
 
 
+
+
+QDomElement CreateImp2PointTransferElement(ScenarioSTA_MANOEUVRE_V_R_DURATION* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "Imp2PointTransfer");
+}
+
+QDomElement CreatePropulsionSystemElement(ScenarioPropulsionSystem* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "PropulsionSystem");
+}
+
+QDomElement CreateEntryArcElement(ScenarioEntryArcType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "EntryArc");
+}
+
+QDomElement CreateImpHoppNoVbarElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "ImpHoppNoVbar");
+}
+
+QDomElement CreateSCProgramElement(ScenarioSCProgram* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "SCProgram");
+}
+
+QDomElement CreateContHoppVbarElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "ContHoppVbar");
+}
+
+QDomElement CreatePointElement(ScenarioPoint* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "Point");
+}
+
+QDomElement CreateFreeDriftElement(ScenarioSTA_MANOEUVRE_DURATION* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "FreeDrift");
+}
+
+QDomElement CreateLVProgramElement(ScenarioLVProgram* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "LVProgram");
+}
+
+QDomElement CreateqBLVLHElement(ScenarioqBLVLHType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "qBLVLH");
+}
+
+QDomElement CreateEulerBIElement(ScenarioEulerBIType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "EulerBI");
+}
+
+QDomElement CreateImpHoppVbarRadialElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "ImpHoppVbarRadial");
+}
+
+QDomElement CreatePropagationPositionElement(ScenarioPropagationPositionType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "PropagationPosition");
+}
+
+QDomElement CreateSystemReliabilityElement(ScenarioSystemReliability* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "SystemReliability");
+}
+
+QDomElement CreateInitialAttitudeElement(ScenarioInitialAttitudeType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "InitialAttitude");
+}
+
+QDomElement CreatePropagationElement(ScenarioPropagation* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "Propagation");
+}
+
+QDomElement CreateREVElement(ScenarioREV* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "REV");
+}
+
+QDomElement CreateOvalConeElement(ScenarioOvalConeType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "OvalCone");
+}
+
+QDomElement CreateObservationAntennaElement(ScenarioObservationAntenna* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "ObservationAntenna");
+}
+
+QDomElement CreateXThrustTransferElement(ScenarioSTA_MANOEUVRE_R_POSITION* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "XThrustTransfer");
+}
+
+QDomElement CreateGroundPositionElement(ScenarioGroundPositionType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "GroundPosition");
+}
+
+QDomElement CreateLoiteringElement(ScenarioLoiteringType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "Loitering");
+}
+
+QDomElement CreateEnvironmentElement(ScenarioEnvironmentType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "Environment");
+}
+
+QDomElement CreateComponentCostsElement(ScenarioComponentCosts* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "ComponentCosts");
+}
+
+QDomElement CreateInitialPositionElement(ScenarioInitialPositionType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "InitialPosition");
+}
+
+QDomElement CreateComponentReliabilityElement(ScenarioComponentReliability* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "ComponentReliability");
+}
+
+QDomElement CreateTimeLineElement(ScenarioTimeLine* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "TimeLine");
+}
+
+QDomElement CreateqBIElement(ScenarioqBIType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "qBI");
+}
+
+QDomElement CreateState12DOFElement(ScenarioState12DOF* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "State12DOF");
+}
+
+QDomElement CreateRendezvousElement(ScenarioRendezvousType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "Rendezvous");
+}
+
+QDomElement CreateLVAerodynamicsElement(ScenarioLVAerodynamics* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "LVAerodynamics");
+}
+
+QDomElement CreateSCMissionElement(ScenarioSCMission* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "SCMission");
+}
+
+QDomElement CreateFlyByElement(ScenarioFlyByType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "FlyBy");
+}
+
+QDomElement CreateSystemWeightsElement(ScenarioSystemWeights* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "SystemWeights");
+}
+
+QDomElement CreateStationKeepingElement(ScenarioSTA_MANOEUVRE_DURATION* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "StationKeeping");
+}
+
+QDomElement CreateRadarElement(ScenarioAbstractConeType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "Radar");
+}
+
+QDomElement CreateRectangularConeElement(ScenarioRectangularConeType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "RectangularCone");
+}
+
+QDomElement CreateSpaceScenarioElement(SpaceScenario* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "SpaceScenario");
+}
+
+QDomElement CreatePropagationAttitudeElement(ScenarioPropagationAttitudeType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "PropagationAttitude");
+}
+
+QDomElement CreateSystemCostsElement(ScenarioSystemCosts* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "SystemCosts");
+}
+
+QDomElement CreateKeplerianElementsElement(ScenarioKeplerianElementsType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "KeplerianElements");
+}
+
+QDomElement CreateSCElement(ScenarioSC* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "SC");
+}
+
+QDomElement CreateSphericalCoordinatesElement(ScenarioSphericalCoordinatesType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "SphericalCoordinates");
+}
+
+QDomElement CreateLagrangianElement(ScenarioLagrangianType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "Lagrangian");
+}
+
+QDomElement CreateTrajectoryElement(ScenarioTrajectory* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "Trajectory");
+}
+
+QDomElement CreateOptimizationElement(ScenarioOptimization* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "Optimization");
+}
+
+QDomElement CreateLVMissionElement(ScenarioLVMission* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "LVMission");
+}
+
+QDomElement CreateOutputFilesElement(ScenarioOutputFiles* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "OutputFiles");
+}
+
+QDomElement CreateDeltaVElement(ScenarioSTA_MANOEUVRE_DELTAV* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "DeltaV");
+}
+
+QDomElement CreateLoiteringTLEElement(ScenarioLoiteringTLEType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "LoiteringTLE");
+}
+
+QDomElement CreateImpHoppVbarTgElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "ImpHoppVbarTg");
+}
+
+QDomElement CreateForcedRbarElement(ScenarioSTA_MANOEUVRE_R_POSITION* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "ForcedRbar");
+}
+
+QDomElement CreateCircularConeElement(ScenarioCircularCone* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "CircularCone");
+}
+
+QDomElement CreateHomannTransferElement(ScenarioSTA_MANOEUVRE_R_POSITION* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "HomannTransfer");
+}
+
+QDomElement CreateLaunchPadElement(ScenarioLaunchPad* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "LaunchPad");
+}
+
+QDomElement CreateGroundStationElement(ScenarioGroundStation* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "GroundStation");
+}
+
+QDomElement CreateForcedVbarElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "ForcedVbar");
+}
+
+QDomElement CreateCommunicationAntennaElement(ScenarioCommunicationAntenna* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "CommunicationAntenna");
+}
+
+QDomElement CreateLVElement(ScenarioLV* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "LV");
+}
+
+QDomElement CreateStateVectorElement(ScenarioStateVectorType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "StateVector");
+}
+
+QDomElement CreateGeometryElement(ScenarioGeometry* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "Geometry");
+}
+
+QDomElement CreateAeroCoefFileElement(ScenarioAeroCoefFile* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "AeroCoefFile");
+}
+
+QDomElement CreateEulerBLVLHElement(ScenarioEulerBLVLHType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "EulerBLVLH");
+}
+
+QDomElement CreateComponentWeightsElement(ScenarioComponentWeights* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "ComponentWeights");
+}
 

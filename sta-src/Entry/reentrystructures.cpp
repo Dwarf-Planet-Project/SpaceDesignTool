@@ -34,11 +34,12 @@
 #include "Astro-Core/Atmosphere/AtmosphereModel.h"
 #include "HeatRateClass.h"
 
-EntrySettings createEntrySettings(ScenarioReEntryTrajectory* scenarioReentry, ScenarioProperties* vehicleProperties)
+
+EntrySettings createEntrySettings(ScenarioEntryArcType* entry, ScenarioREV* vehicle)
 {
     EntrySettings settings;
-
     //Take the atmospheric file name from the perturbation list
+    /*
     QList<Perturbations*> perturbationsList = scenarioReentry->environment()->createListPerturbations(vehicleProperties);
     foreach(Perturbations* perturbation, perturbationsList)
     {
@@ -48,51 +49,58 @@ EntrySettings createEntrySettings(ScenarioReEntryTrajectory* scenarioReentry, Sc
             settings.modelname = dragperturbation->atmosphericModel();
         }
     }
-    settings.bodyname = scenarioReentry->environment()->centralBody()->body()->name();
-    settings.propagator = scenarioReentry->trajectoryPropagation()->propagator();
-    settings.integrator = scenarioReentry->trajectoryPropagation()->integrator();
-    settings.stepsize = scenarioReentry->trajectoryPropagation()->timeStep();
-    settings.CdCprofilename = vehicleProperties->aerodynamicProperties()->CDCoefficients();
-    settings.CdPprofilename = vehicleProperties->aerodynamicProperties()->parachuteProperties()->CDCoefficients();
-    settings.parachuteArea = vehicleProperties->aerodynamicProperties()->parachuteProperties()->surfaceArea();
-    settings.parachuteDeployMach = vehicleProperties->aerodynamicProperties()->parachuteProperties()->deploymentMach();
-    settings.maxloadfactor = vehicleProperties->aerodynamicProperties()->GLoadLimit();
-    settings.maxheatrate = vehicleProperties->aerodynamicProperties()->SPHeatRateLimit();
-    settings.maxaltitude = 1000000;
+    */
+    settings.modelname="gram99.stad";//entry->Environment()->CentralBody()->atmosphere().append(".stad");
+
+    settings.bodyname = entry->Environment()->CentralBody()->Name();
+    settings.propagator = entry->PropagationPosition()->propagator();
+    settings.integrator = entry->PropagationPosition()->integrator();
+    settings.stepsize = entry->PropagationPosition()->timeStep();
+    settings.CdCprofilename = vehicle->REVSystem()->AeroThermodynamics()->tempCDfile();
+    //settings.CdPprofilename = entry
+    //settings.parachuteArea = vehicleProperties->aerodynamicProperties()->parachuteProperties()->surfaceArea();
+    settings.parachuteDeployMach = 0;//vehicleProperties->aerodynamicProperties()->parachuteProperties()->deploymentMach();
+    settings.maxloadfactor = entry->Constraints()->maxNormalLoad();
+    settings.maxheatrate = entry->Constraints()->maxHeatFlux();
+    settings.maxaltitude = entry->Constraints()->maxAltitude();
 
     return settings;
 }
 
-EntryParameters createEntryParametersSimulation(ScenarioReEntryTrajectory* scenarioReentry, ScenarioProperties* vehicleProperties)
+EntryParameters createEntryParametersSimulation(ScenarioEntryArcType* entry, ScenarioREV* vehicle)
 {
-    EntryParameters parameters;
-    parameters.R = vehicleProperties->physicalProperties()->geometricalCharacteristics()->radiusBase();
-    parameters.m = vehicleProperties->physicalProperties()->physicalCharacteristics()->mass();
-    parameters.Rn = vehicleProperties->physicalProperties()->geometricalCharacteristics()->radiusNose();
 
-    QString coordinatesystem = scenarioReentry->simulationMode()->simulationParameters()->initialStatePosition()->initialState()->elementName();
-    if (coordinatesystem=="SphericalCoordinates")
+    EntryParameters parameters;
+
+    parameters.Sref = vehicle->REVSystem()->AeroThermodynamics()->referenceArea();
+    parameters.cref= vehicle->REVSystem()->AeroThermodynamics()->referenceLength();
+    parameters.m = vehicle->REVSystem()->Weights()->totalDryMass();
+    parameters.Rn = vehicle->REVSystem()->Geometry()->noseRadius();
+
+    QString coordinatesystem = entry->InitialPosition()->CoordinateSystem();
+    if (dynamic_cast<ScenarioSphericalCoordinatesType*>(entry->InitialPosition()->Abstract6DOFPosition().data()))
     {
         parameters.coordselector = 1;
-        ScenarioSphericalCoordinates* sphericalCoord = dynamic_cast<ScenarioSphericalCoordinates*>(scenarioReentry->simulationMode()->simulationParameters()->initialStatePosition()->initialState());
-        parameters.inputstate[0] = 1000*sphericalCoord->altitude();
+        ScenarioSphericalCoordinatesType* sphericalCoord = dynamic_cast<ScenarioSphericalCoordinatesType*>(entry->InitialPosition()->Abstract6DOFPosition().data());
+        parameters.inputstate[0] = 1000*sphericalCoord->radialDistance();
         parameters.inputstate[1] = sphericalCoord->longitude();
         parameters.inputstate[2] = sphericalCoord->latitude();
-        parameters.inputstate[3] = 1000*sphericalCoord->inertialVelocity();
-        parameters.inputstate[4] = sphericalCoord->inertialFlightPathAngle();
-        parameters.inputstate[5] = sphericalCoord->inertialHeading();
+        parameters.inputstate[3] = 1000*sphericalCoord->flightPathVelocity();
+        parameters.inputstate[4] = sphericalCoord->flightPathAngle();
+        parameters.inputstate[5] = sphericalCoord->headingAngle();
     }
-    else if (coordinatesystem=="KeplerianElements")
+    else if (dynamic_cast<ScenarioKeplerianElementsType*>(entry->InitialPosition()->Abstract6DOFPosition().data()))
     {
         parameters.coordselector = 2;
-        ScenarioKeplerianElements* elements = dynamic_cast<ScenarioKeplerianElements*>(scenarioReentry->simulationMode()->simulationParameters()->initialStatePosition()->initialState());
-        parameters.inputstate[0] = 1000 * elements->semimajorAxis();
+        ScenarioKeplerianElementsType* elements = dynamic_cast<ScenarioKeplerianElementsType*>(entry->InitialPosition()->Abstract6DOFPosition().data());
+        parameters.inputstate[0] = 1000 * elements->semiMajorAxis();
         parameters.inputstate[1] = elements->eccentricity();
         parameters.inputstate[2] = elements->inclination();
-        parameters.inputstate[3] = elements->raan();
+        parameters.inputstate[3] = elements->RAAN();
         parameters.inputstate[4] = elements->argumentOfPeriapsis();
         parameters.inputstate[5] = elements->trueAnomaly();
     }
+    /*
     else if (coordinatesystem=="StateVector")
     {
         parameters.coordselector = 3;
@@ -104,10 +112,12 @@ EntryParameters createEntryParametersSimulation(ScenarioReEntryTrajectory* scena
         parameters.inputstate[4] = 1000 * vector->velocity().y();
         parameters.inputstate[5] = 1000 * vector->velocity().z();
     }
+    */
     else  qFatal("Error in the initial state position coordinate systems");
 
     return parameters;
 }
+
 
 
 //EntryParameterIntervals ReentryValues::createEntryParameterIntervals(ScenarioReEntryTrajectory* scenarioReentry)

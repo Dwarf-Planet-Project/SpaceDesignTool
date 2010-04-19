@@ -29,8 +29,7 @@ the world wide web at http://www.gnu.org.
 #include "Astro-Core/date.h"
 #include "Astro-Core/stacoordsys.h"
 #include "Astro-Core/stamath.h"
-#include "Scenario/scenarioinitialstate.h"
-#include "Scenario/scenariobody.h"
+#include "Scenario/scenario.h"
 #include "Astro-Core/threebodyParametersComputation.h"
 #include "Astro-Core/cartesianTOrotating.h"
 #include "Astro-Core/rotatingTOcartesian.h"
@@ -48,7 +47,11 @@ using namespace Eigen;
 
 extern double Grav_Param, bodies_distance, period_days, velocity;
 extern int Lagrmode, System, coordinates_transformation;
-extern ScenarioBody* firstBody; extern ScenarioBody* secondBody;
+
+#ifdef OLDSCENARIO
+extern ScenarioBody* firstBody;
+extern ScenarioBody* secondBody;
+#endif
 
 LagrangianAdvancedDialog::LagrangianAdvancedDialog(ScenarioTree* parent) :
     QDialog(parent)
@@ -154,6 +157,7 @@ void LagrangianAdvancedDialog::research_init_cond()
 //function to compute the initial conditions for the Halo orbit (mode 2!)
 void LagrangianAdvancedDialog::halo_initial_conditions()
 {
+#if OLDSCENARIO
     halo.lpointsComputation ();
     //qDebug()<<"Lpoints"<<halo.L1_xposition<<halo.L2_xposition;
     halo.trajectory.init_data.Ax_amplitude=AxAmplitudelineEdit->text().toDouble();
@@ -213,12 +217,14 @@ void LagrangianAdvancedDialog::halo_initial_conditions()
     AxAmplitudelineEdit->setText(QString::number(halo.trajectory.init_data.Ax_amplitude,'f',3));
     AzAmplitudelineEdit->setText(QString::number(halo.trajectory.init_data.Az_amplitude,'f',3));
     haloOrbitComputationpushButton->setEnabled(true);
+#endif
 }
 
 
 //function to compute the Halo orbit (mode 2!)
 void LagrangianAdvancedDialog::halo_orbit_computation()
 {
+#if OLDSCENARIO
     halo.trajectory.error=halo.manifolds.error=0;
     if (XpositionlineEdit->text().toDouble()==0 || YvelocitylineEdit->text().toDouble()==0)
     {
@@ -315,12 +321,14 @@ void LagrangianAdvancedDialog::halo_orbit_computation()
         if (RstablecheckBox->isChecked() || LstablecheckBox->isChecked() || RunstablecheckBox->isChecked() || LunstablecheckBox->isChecked())
             ManifoldsComputationpushButton->setEnabled(true); //if the halo orbit has been computed, now a manifolds system can be computed
     }
+#endif
 }
 
 
 //function to compute manifolds (stil mode 2!!!)
 void LagrangianAdvancedDialog::manifolds_computation()
 {
+#if OLDSCENARIO
     double integration_time;
     int points_number;
     halo.manifolds.error=0;
@@ -606,10 +614,12 @@ void LagrangianAdvancedDialog::manifolds_computation()
                               QObject::tr("You must selected at least one branch to compute manifolds."));
         return;
     }
+#endif
 }
 
 void LagrangianAdvancedDialog::halo_orbit_initial_conditions_mode3()
 {
+#if OLDSCENARIO
     if (haloInitialConditioncheckBox->isChecked())
     {
         HaloXpositionlineEdit_2->setText(HaloXpositionlineEdit->text());
@@ -630,6 +640,7 @@ void LagrangianAdvancedDialog::halo_orbit_initial_conditions_mode3()
         HaloYvelocitylineEdit_5->setText(HaloYvelocitylineEdit->text());
     }
     */
+#endif
 }
 
 
@@ -640,7 +651,7 @@ extern ScenarioThreebodyTransfer* threebodyTransfer;// = lagrangianAdvanced->thr
 
 bool LagrangianAdvancedDialog::loadValues(ScenarioLagrangianTrajectory* lagrangianAdvanced)
 {
-
+#if OLDSCENARIO
     Lagrmode=1;
 
         loadValues(Halo); loadValues (threebodyTransfer);
@@ -658,12 +669,14 @@ bool LagrangianAdvancedDialog::loadValues(ScenarioLagrangianTrajectory* lagrangi
             return true;
         }
         else
+#endif
             return false;
 }
 
 
 bool LagrangianAdvancedDialog::loadValues(ScenarioHalo* Halo)
 {
+#if OLDSCENARIO
         halo.trajectory.error=-1;
         ScenarioInitialStatePosition* initialposition=Halo->initialStatePosition();
         ScenarioAmplitudes* amplitudes=Halo->amplitudes();
@@ -797,12 +810,14 @@ bool LagrangianAdvancedDialog::loadValues(ScenarioHalo* Halo)
                 nOrbLunstablespinBox->setValue(Halo->manifolds()->branch4()->parameters()->endCondition()->numPositions());
             }
         }
+#endif
         return true;
 }
 
 
 bool LagrangianAdvancedDialog::loadValues(ScenarioThreebodyTransfer* threebodyTransfer)
 {
+#if OLDSCENARIO
     QDateTime startTime = sta::JdToCalendar(sta::MjdToJd(threebodyTransfer->startTime));
     //qDebug()<<"startTime"<<startTime;
     dateTimeEdit->setDateTime(startTime);
@@ -848,26 +863,26 @@ bool LagrangianAdvancedDialog::loadValues(ScenarioThreebodyTransfer* threebodyTr
         checkBox_64->setChecked(true);
     else
         checkBox_64->setChecked(false);
-
+#endif
     return true;
 }
-
 
 
 int transformationMode,  maxTOF;  double startTime, finalTime, twoBodyMu;
 double raanReq, inclinationReq, n, BestTotalDeltaV, timefinTransfer;
 HaloOrbit haloTransfer;
-ScenarioKeplerianElements* elementTransfer;
+ScenarioKeplerianElementsType* elementTransfer;
 double inclinationInit, eInit, trueAnomalyInit, smaInit, argOfPeriapsisInit, raanInit, jdMission;
 
 sta::StateVector initialPositionRotating,initialPosition;
 double patchingPoint_rotating_x, patchingPoint_rotating_y, patchingPoint_rotating_z, patchingPoint_rotating_Vx, patchingPoint_rotating_Vy, patchingPoint_rotating_Vz, trueAno;
-ScenarioStateVector* stateVector_HaloTransfer;
+ScenarioStateVectorType* stateVector_HaloTransfer;
 double finalHaloRotX,finalHaloRotY,finalHaloRotZ,finalHaloRotVX,finalHaloRotVY,finalHaloRotVZ,deviation,eigen0;
 int numObj, numIterations, initMODE, op=0;
 
 void LagrangianAdvancedDialog::run_transfer_optimization()
 {
+#if OLDSCENARIO
     const StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(CentralBodyComboBox_2->currentText());
 
     //qDebug()<<"check"<<Grav_Param<<bodies_distance<<firstBody->body()->name()<<secondBody->body()->name();
@@ -1012,6 +1027,7 @@ void LagrangianAdvancedDialog::run_transfer_optimization()
                           QObject::tr("Pareto front computed"),
                           QObject::tr("The Pareto front has been computed, but for multi-objective optimization is not possible to plot the best trajectory, because different trajectories with the same fitness have been computed."));
     }
+#endif
 }
 
 
@@ -1053,12 +1069,13 @@ HaloOrbit halo_Leg1;
 
 void LagrangianAdvancedDialog::run_EarthMoonTransferLeg1()
 {
+#if OLDSCENARIO
     const StaBody* sun = STA_SOLAR_SYSTEM->sun();
     const StaBody* earth = STA_SOLAR_SYSTEM->earth();
     firstBody->setBody(sun); secondBody->setBody(earth);
     Grav_Param=getGravParam_user (firstBody->body()->mu(),secondBody->body()->mu());
     bodies_distance=secondBody->body()->distance();
-
+#endif
     /*
     ScenarioInitialStatePosition*  parkingOrbitsave = threebodyTransfer->parkingOrbit()->pOrbit();
     ScenarioInitialStatePosition* haloOrbitsave = threebodyTransfer->haloOrbit()->hOrbit();
@@ -1174,12 +1191,13 @@ HaloOrbit halo_Leg2;
 
 void LagrangianAdvancedDialog::run_EarthMoonTransferLeg2()
 {
+#if OLDSCENARIO
     const StaBody* moon = STA_SOLAR_SYSTEM->lookup(STA_MOON);
     const StaBody* earth = STA_SOLAR_SYSTEM->earth();
     firstBody->setBody(earth); secondBody->setBody(moon);
     Grav_Param=getGravParam_user (firstBody->body()->mu(),secondBody->body()->mu());
     bodies_distance=secondBody->body()->distance();
-
+#endif
     /*
     ScenarioInitialStatePosition*  parkingOrbitsave = threebodyTransfer->parkingOrbit()->pOrbit();
     ScenarioInitialStatePosition* haloOrbitsave = threebodyTransfer->haloOrbit()->hOrbit();
@@ -1318,6 +1336,7 @@ bool LagrangianAdvancedDialog::saveValues(ScenarioLagrangianTrajectory* lagrangi
 
 bool LagrangianAdvancedDialog::saveValues(ScenarioHalo* halo)
 {
+#if OLDSCENARIO
     if (Lagrmode==1 || Lagrmode==2)
         coordinates_transformation=2;
     ScenarioInitialStatePosition* initialposition=halo->initialStatePosition();
@@ -1407,13 +1426,17 @@ bool LagrangianAdvancedDialog::saveValues(ScenarioHalo* halo)
        }
     }
    else
+   {
        halo->manifolds()->branch4()->setState("false");
-       return true;
+   }
+#endif
+   return true;
 }
 
 
 bool LagrangianAdvancedDialog::saveValues(ScenarioThreebodyTransfer* threebodyTransfer)
 {
+#if OLDSCENARIO
     threebodyTransfer->setStartTime(sta::JdToMjd(sta::CalendarToJd(dateTimeEdit->dateTime())));
 
     //ScenarioAbstractInitialState* parkingOrbit=threebodyTransfer->parkingOrbit()->pOrbit()->initialState();
@@ -1450,7 +1473,6 @@ bool LagrangianAdvancedDialog::saveValues(ScenarioThreebodyTransfer* threebodyTr
 
     threebodyTransfer->parkingOrbit()->setInitialStatePosition(parkingOrbitsave);
     threebodyTransfer->haloOrbit()->setInitialStatePosition(haloOrbitsave);
-
+#endif
     return true;
 }
-

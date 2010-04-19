@@ -64,7 +64,8 @@ struct EntryParameters
 {
     int coordselector;  //1 for spherical, 2 for cartesian coordinates
     //Uncertainties_struct uncertainties;
-    double R;           //surface area to mass ratio
+    double Sref;
+    double cref;
     double m;
     double Rn;          //nose radius
     double inputstate[6];
@@ -158,12 +159,13 @@ struct angle
 /**
  * Return an EntrySettings structure given the re-entry scenario and the vehicle features.
  */
-EntrySettings createEntrySettings(ScenarioReEntryTrajectory* scenarioReentry, ScenarioProperties* vehicleProperties);
+EntrySettings createEntrySettings(ScenarioEntryArcType* entry, ScenarioREV* vehicle);
 
 /**
  * Return an EntryParameters structure for the simulation mode given the re-entry scenario and the vehicle features.
  */
-EntryParameters createEntryParametersSimulation(ScenarioReEntryTrajectory* scenarioReentry, ScenarioProperties* vehicleProperties);
+EntryParameters createEntryParametersSimulation(ScenarioEntryArcType* entry, ScenarioREV* vehicle);
+
 
 //The following functions are disabled because they refer to re-entry modes other than simulation
 

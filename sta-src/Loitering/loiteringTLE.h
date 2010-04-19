@@ -26,7 +26,7 @@
 #define _LOITERINGTLE_H_
 
 #include <QDialog>
-#include "Scenario/scenarioloiteringtle.h"
+#include "Scenario/scenario.h"
 
 #include "ui_loiteringTLE.h"
 
@@ -48,8 +48,8 @@ public:
     LoiteringTLEDialog(ScenarioTree* parent=NULL);
     ~LoiteringTLEDialog();
 
-    bool loadValues(ScenarioTleTrajectory* loiteringTLE);
-    bool saveValues(ScenarioTleTrajectory* loiteringTLE);
+    bool loadValues(ScenarioLoiteringTLEType* loiteringTLE);
+    bool saveValues(ScenarioLoiteringTLEType* loiteringTLE);
 
 public slots:
     void on_TLE_dropped(const QMimeData *mimeData);

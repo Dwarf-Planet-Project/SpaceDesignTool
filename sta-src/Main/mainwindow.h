@@ -58,6 +58,8 @@ class CelestiaGlWidget;
 class CelestiaActions;
 class CelestiaInterface;
 
+class QXmlSchema;
+
 
 class MainWindow : public QMainWindow, private Ui_MainWindow
 {
@@ -139,7 +141,7 @@ private:
     void clearViews();
 
 private:
-    SpaceScenario* m_scenario;
+    QSharedPointer<SpaceScenario> m_scenario;
     PropagatedScenario* m_propagatedScenario;
     
     QString m_scenarioFileName;
@@ -170,6 +172,8 @@ private:
     QTime m_intervalChangeTime;
     
     QAction* m_dockGroundTrackAction;
+
+    QXmlSchema* m_spaceScenarioSchema;
 };
 
 #endif // _MAIN_MAINWINDOW_H_

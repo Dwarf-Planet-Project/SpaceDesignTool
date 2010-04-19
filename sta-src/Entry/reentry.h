@@ -46,23 +46,42 @@ public:
     ReEntryDialog(ScenarioTree* parent = NULL);
     ~ReEntryDialog();
 
-    bool loadValues(ScenarioReEntryTrajectory* reentry);
-    bool loadValues(ScenarioEnvironment* environment);
+    bool loadValues(ScenarioEntryArcType* reentry);
+    bool loadValues(ScenarioTimeLine* timeLine);
+    bool loadValues(ScenarioPropagationPositionType* propagation);
+    bool loadValues(ScenarioInitialPositionType* initPosition, ScenarioEnvironmentType* environment);
+    bool loadValues(ScenarioEnvironmentType* environment);
+    bool loadValues(ScenarioREVConstraintsType* constraints);
+/*
     bool loadValues(ScenarioProperties* vehicleproperties);
     bool loadValues(ScenarioSimulationMode* simulationmode);
     bool loadValues(ScenarioWindowMode* windowmode);
     bool loadValues(ScenarioTrajectoryPropagation* propagation);
+*/
 
-    bool saveValues(ScenarioReEntryTrajectory* reentry);
-    bool saveValues(ScenarioEnvironment* environment);
+    bool saveValues(ScenarioPropagationPositionType* propagation);
+    bool saveValues(ScenarioEntryArcType* reentry);
+    bool saveValues(ScenarioEnvironmentType* environment);
+    bool saveValues(ScenarioTimeLine* parameters);
+    bool saveValues(ScenarioInitialPositionType* initPosition, ScenarioEnvironmentType* environment);
+    bool saveValues(ScenarioREVConstraintsType* constraints);
+
+
     bool saveValues(ScenarioProperties* vehicleproperties);
     bool saveValues(ScenarioSimulationMode* simulationmode);
     bool saveValues(ScenarioWindowMode* windowmode);
     bool saveValues(ScenarioTrajectoryPropagation* propagation);
+
+
+    double getLocalRadius(ScenarioEnvironmentType* environment, double latitude);
+
     TesseralBox* TesseralSpinBox;
     int m_tesserals;
 
 };
+extern bool PropagateEntryTrajectory(ScenarioREV* vehicle, ScenarioEntryArcType* entry, QList<double>& sampleTimes,
+                              QList<sta::StateVector>& samples,
+                              PropagationFeedback& propFeedback);
 
 #endif // _REENTRY_H_
 

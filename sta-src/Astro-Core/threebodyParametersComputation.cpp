@@ -23,7 +23,7 @@ the world wide web at http://www.gnu.org.
 
 #include "threebodyParametersComputation.h"
 #include "Astro-Core/stabody.h"
-#include "Scenario/scenariobody.h"
+#include "Scenario/scenario.h"
 
 double getGravParam_user (double mi_1, double mi_2)
 {
@@ -60,6 +60,7 @@ int getSystem (int id_1, int id_2)
         return 0;
 }
 
+#if OLDSCENARIO
 ScenarioBody* getBody1 (int System )
 {
     ScenarioBody* first;
@@ -181,6 +182,7 @@ ScenarioBody* getBody2 (int System )
         }
     return second;
 }
+#endif
 
 void radiusss (double mi, double x, double y, double z, double &R1, double &R2)
 

@@ -2,6 +2,46 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/scenario"
 	xmlns:tns="http://www.example.org/scenario" elementFormDefault="qualified">
 
+<element name="PropagationPosition" type="tns:PropagationPositionType"/>
+			  <complexType name="PropagationPositionType">
+				<sequence>
+				  <element name="propagator" type="string"></element>
+				  <element name="integrator" type="string"></element>
+				  <element name="timeStep" type="double"></element>
+				</sequence>
+			  </complexType>
+			  
+			  <element name="PropagationAttitude" type="tns:PropagationAttitudeType"/>
+			  <complexType name="PropagationAttitudeType">
+				<sequence>
+				  <element name="integrator" type="string"></element>
+				  <element name="timeStep" type="double"></element>
+				</sequence>
+			  </complexType>
+			  
+			  	<element name="AbstractTrajectory" abstract="true" type="tns:AbstractTrajectoryType"></element>
+    <complexType name="AbstractTrajectoryType">
+      <sequence/>
+    </complexType>
+    
+    	<element name="InitialPosition" type="tns:InitialPositionType"/>
+    <complexType name="InitialPositionType">
+	  <sequence>
+		<element name="CoordinateSystem" type="string"></element>
+		<element ref="tns:Abstract6DOFPosition"></element>
+	  </sequence>
+	</complexType>
+	
+	<element name="InitialAttitude" type="tns:InitialAttitudeType"/>
+			  <complexType name="InitialAttitudeType">
+				<sequence>
+				  <element name="CoordinateSystem" type="string"></element>
+				  <element ref="tns:Abstract6DOFAttitude"></element>
+				</sequence>
+			  </complexType>
+		
+
+
 	<element name="AbstractParticipant" abstract="true" type="tns:ParticipantType"></element>
 
 	<complexType name="ParticipantType" abstract="true">
@@ -40,7 +80,7 @@
 
 	<complexType name="OptVarInt">
 		<sequence>
-			<element name="list" type="tns:ListOfInt"></element>
+			<element name="list" type="tns:ListOfInt" minOccurs="0"></element>
 			<element name="value" type="int"></element>
 		</sequence>
 	</complexType>
@@ -55,7 +95,7 @@
 
 	<complexType name="OptVarString">
 		<sequence>
-			<element name="list" type="tns:ListOfString"></element>
+			<element name="list" type="tns:ListOfString" minOccurs="0"></element>
 			<element name="value" type="string"></element>
 		</sequence>
 	</complexType>

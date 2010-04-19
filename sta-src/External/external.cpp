@@ -83,6 +83,7 @@ ExternalDialog::~ExternalDialog()
 
 /////////////////////////////////// FUNCTIONS ///////////////////////////////////
 
+#if OLDSCENARIO
 bool ExternalDialog::loadValues(ScenarioExternalTrajectory* externalTrajectory)
 {
     // Loading the time line and the time step
@@ -112,7 +113,7 @@ bool ExternalDialog::loadValues(ScenarioExternalTrajectory* externalTrajectory)
 	return false;
     }
 } // End of LoiteringTLEDialog::loadValues
-
+#endif
 
 
 void ExternalDialog::on_LoadExternalpushButton_clicked()
@@ -227,7 +228,7 @@ void ExternalDialog::on_LoadExternalpushButton_clicked()
 
 
 
-
+#if OLDSCENARIO
 bool ExternalDialog::saveValues(ScenarioExternalTrajectory* externalTrajectory)
 {
     // Saving the time line that constains start date, end date and time step
@@ -252,7 +253,7 @@ bool ExternalDialog::saveValues(ScenarioExternalTrajectory* externalTrajectory)
 
     return true;
 }
-
+#endif
 
 
 void ExternalDialog::on_ExternalFile_dropped(const QMimeData *mimeData)

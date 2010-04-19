@@ -29,11 +29,25 @@
 #include "Scenario/scenario.h"
 #include "Astro-Core/date.h"
 #include "Astro-Core/stacoordsys.h"
+#include "Astro-Core/stabody.h"
+#include "Astro-Core/stamath.h"
+
+
+#include "Scenario/propagationfeedback.h"
+#include "Astro-Core/cartesianTOorbital.h"
+#include "Astro-Core/orbitalTOcartesian.h"
+#include "Astro-Core/propagateTWObody.h"
+#include "Astro-Core/propagateCOWELL.h"
+#include "Astro-Core/propagateENCKE.h"
+#include "Astro-Core/propagateGAUSS.h"
 
 #include <QTextStream>
 #include <QDebug>
+#include <QFile>
 
 using namespace Eigen;
+
+static const unsigned int MAX_OUTPUT_STEPS = 1000000;
 
 
 LoiteringDialog::LoiteringDialog(ScenarioTree* parent) :
@@ -234,37 +248,53 @@ void LoiteringDialog::disableIntegratorComboBox(int i)
 
 // FUNCTIONS
 
-bool LoiteringDialog::loadValues(ScenarioLoiteringTrajectory* loitering)
+bool LoiteringDialog::loadValues(ScenarioLoiteringType* loitering)
 {
-        ScenarioEnvironment* environment = loitering->environment();
-        ScenarioSimulationParameters* parameters = loitering->simulationParameters();
-        ScenarioTrajectoryPropagation* propagation = loitering->trajectoryPropagation();
+    ScenarioSCEnvironmentType* environment   = loitering->Environment().data();
+    ScenarioTimeLine* parameters             = loitering->TimeLine().data();
+    ScenarioPropagationPositionType* propagation = loitering->PropagationPosition().data();
+    ScenarioInitialPositionType* initPosition    = loitering->InitialPosition().data();//Modified by Dominic to reflect chages in XML schema (initial position now in sharedelements)
 
-        if(loadValues(environment) && loadValues(parameters) && loadValues(propagation))
+    if (loadValues(environment) && loadValues(parameters) && loadValues(propagation) && loadValues(initPosition))
     {
-                return true;
-        }
-
+        return true;
+    }
+    else
+    {
         return false;
+    }
 }
 
-bool LoiteringDialog::loadValues(ScenarioEnvironment* environment)
+bool LoiteringDialog::loadValues(ScenarioSCEnvironmentType* environment)
 {
-    ScenarioBody* centralBody = environment->centralBody();
-    if (centralBody)
+    QSharedPointer<ScenarioCentralBodyType> centralBody = environment->CentralBody();
+    if (!centralBody.isNull())
     {
+        QString centralBodyName = centralBody->Name().trimmed();
+        const StaBody* body = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+        if (!body)
+        {
+            qDebug() << "Bad central body '" << centralBodyName << "' in loitering trajectory.";
+            return false;
+        }
+
         // Set the central body combo box
         for (int i = 0; i < CentralBodyComboBox->count(); i++)
         {
-            if (CentralBodyComboBox->itemData(i) == centralBody->body()->id())
+            if (CentralBodyComboBox->itemData(i) == body->id())
             {
                 CentralBodyComboBox->setCurrentIndex(i);
                 break;
             }
         }
     }
-    else return false;
+    else
+    {
+        return false;
+    }
 
+    return true;
+#if OLDSCENARIO
     QList<ScenarioPerturbations*> perturbationsList = environment->perturbationsList();
 
     GravityFieldRadioButton->setChecked(false);
@@ -355,105 +385,39 @@ bool LoiteringDialog::loadValues(ScenarioEnvironment* environment)
             }
         }
     }
+
+    return true;
+#endif
+}
+
+
+bool LoiteringDialog::loadValues(ScenarioTimeLine* timeLine)
+{
+    dateTimeEdit->setDateTime(timeLine->StartTime());
+    dateTimeEdit_2->setDateTime(timeLine->EndTime());
+    TimeStepLineEdit->setText(QString::number(timeLine->StepTime()));
+
     return true;
 }
 
-bool LoiteringDialog::loadValues(ScenarioSimulationParameters* parameters)
+
+bool LoiteringDialog::loadValues(ScenarioPropagationPositionType* propagation)
 {
-        ScenarioExtendedTimeline* timeline = parameters->timeline();
-        ScenarioInitialStatePosition* initialStatePos = parameters->initialStatePosition();
-        ScenarioInitialStateAttitude* initialStateAtt = parameters->initialStateAttitude();
-
-        QDateTime startTime = sta::JdToCalendar(sta::MjdToJd(timeline->startTime()));
-        QDateTime endTime = sta::JdToCalendar(sta::MjdToJd(timeline->endTime()));
-
-        if (timeline)
-    {
-                dateTimeEdit->setDateTime(startTime);
-                dateTimeEdit_2->setDateTime(endTime);
-                TimeStepLineEdit->setText(QString::number(timeline->timeStep()));
-        }
-        else
-    {
-        return false;
-    }
-
-        if (initialStatePos)
-    {
-                // Set the coordinate system combo box value
-                for (int i = 0; i < CoordSystemComboBox->count(); i++)
-        {
-            if (CoordSystemComboBox->itemData(i) == initialStatePos->coordinateSystem().type())
-            {
-                CoordSystemComboBox->setCurrentIndex(i);
-                break;
-            }
-        }
-
-
-            ScenarioAbstractInitialState* initialState = initialStatePos->initialState();
-            ScenarioKeplerianElements* elements = dynamic_cast<ScenarioKeplerianElements*>(initialState);
-            ScenarioStateVector* stateVector = dynamic_cast<ScenarioStateVector*>(initialState);
-            //ScenarioTLEs* TLEs = dynamic_cast<ScenarioTLEs*>(initialState);
-
-            Q_ASSERT(elements || stateVector);
-
-            if (elements != NULL)
-            {
-                InitialStateComboBox->setCurrentIndex(0);
-                InitialStateStackedWidget->setCurrentWidget(keplerianPage);
-
-                semimajorAxisEdit->setText(QString::number(elements->m_semimajorAxis));
-                eccentricityEdit->setText(QString::number(elements->m_eccentricity));
-                inclinationEdit->setText(QString::number(elements->m_inclination));
-                raanEdit->setText(QString::number(elements->m_raan));
-                argOfPeriapsisEdit->setText(QString::number(elements->m_argumentOfPeriapsis));
-                trueAnomalyEdit->setText(QString::number(elements->m_trueAnomaly));
-            }
-            else if (stateVector != NULL)
-            {
-                InitialStateComboBox->setCurrentIndex(1);
-                InitialStateStackedWidget->setCurrentWidget(stateVectorPage);
-                //TODO: check if it works
-                positionXEdit->setText(QString::number(stateVector->position().x()));
-                positionYEdit->setText(QString::number(stateVector->position().y()));
-                positionZEdit->setText(QString::number(stateVector->position().z()));
-                velocityXEdit->setText(QString::number(stateVector->velocity().x()));
-                velocityYEdit->setText(QString::number(stateVector->velocity().y()));
-                velocityZEdit->setText(QString::number(stateVector->velocity().z()));
-            }
-	    else
-            {
-                // Unknown initial state type
-                return false;
-            }
-        }
-        else return false;
-        if(initialStateAtt)
-        {
-                //TODO: the class has to be implemented
-        }
-        return true;
-}
-
-
-bool LoiteringDialog::loadValues(ScenarioTrajectoryPropagation* propagation)
-{
-    QString currentPropagator = propagation->propagator();
+    QString currentPropagator = propagation->propagator().trimmed();
     for (int i = 0; i < PropagatorComboBox->count(); i++)
     {
         if (PropagatorComboBox->itemData(i) == currentPropagator)
         {
-                PropagatorComboBox->setCurrentIndex(i);
+            PropagatorComboBox->setCurrentIndex(i);
             break;
         }
     }
-    QString currentIntegrator = propagation->integrator();
+    QString currentIntegrator = propagation->integrator().trimmed();
     for (int i = 0; i < IntegratorComboBox->count(); i++)
     {
         if (IntegratorComboBox->itemData(i) == currentIntegrator)
         {
-                IntegratorComboBox->setCurrentIndex(i);
+            IntegratorComboBox->setCurrentIndex(i);
             break;
         }
     }
@@ -463,38 +427,166 @@ bool LoiteringDialog::loadValues(ScenarioTrajectoryPropagation* propagation)
 }
 
 
-bool LoiteringDialog::saveValues(ScenarioLoiteringTrajectory* loitering)
+bool LoiteringDialog::loadValues(ScenarioInitialPositionType* initPosition)
 {
-        ScenarioEnvironment* environment = loitering->environment();
-        ScenarioSimulationParameters* parameters = loitering->simulationParameters();
-        ScenarioTrajectoryPropagation* propagation = loitering->trajectoryPropagation();
-
-        if(saveValues(environment) && saveValues(parameters) && saveValues(propagation))
+    QString coordSysName = initPosition->CoordinateSystem().trimmed();
+    sta::CoordinateSystem coordSys(coordSysName);
+    if (!coordSys.valid())
     {
-                return true;
+        qDebug() << "Bad coordinate system '" << coordSysName << "' in scenario ";
+        coordSys = sta::CoordinateSystem(sta::COORDSYS_EME_J2000);
+    }
+
+    // Set the coordinate system combo box value
+    for (int i = 0; i < CoordSystemComboBox->count(); i++)
+    {
+        if (CoordSystemComboBox->itemData(i) == coordSys.type())
+        {
+            CoordSystemComboBox->setCurrentIndex(i);
+            break;
+        }
+    }
+
+    ScenarioAbstract6DOFPositionType* position = initPosition->Abstract6DOFPosition().data();
+
+    ScenarioKeplerianElementsType* elements = dynamic_cast<ScenarioKeplerianElementsType*>(position);
+    ScenarioStateVectorType* stateVector = dynamic_cast<ScenarioStateVectorType*>(position);
+
+    Q_ASSERT(elements || stateVector);
+
+    if (elements)
+    {
+        InitialStateComboBox->setCurrentIndex(0);
+        InitialStateStackedWidget->setCurrentWidget(keplerianPage);
+
+        semimajorAxisEdit->setText(QString::number(elements->semiMajorAxis()));
+        eccentricityEdit->setText(QString::number(elements->eccentricity()));
+        inclinationEdit->setText(QString::number(elements->inclination()*180/Pi()));//Modified by Dominic save values in scenario in radians
+        raanEdit->setText(QString::number(elements->RAAN()*180/Pi()));
+        argOfPeriapsisEdit->setText(QString::number(elements->argumentOfPeriapsis()*180/Pi()));
+        trueAnomalyEdit->setText(QString::number(elements->trueAnomaly()*180/Pi()));
+    }
+    else if (stateVector)
+    {
+        InitialStateComboBox->setCurrentIndex(1);
+        InitialStateStackedWidget->setCurrentWidget(stateVectorPage);
+
+        positionXEdit->setText(QString::number(stateVector->x()));
+        positionYEdit->setText(QString::number(stateVector->y()));
+        positionZEdit->setText(QString::number(stateVector->z()));
+        velocityXEdit->setText(QString::number(stateVector->vx()));
+        velocityYEdit->setText(QString::number(stateVector->vy()));
+        velocityZEdit->setText(QString::number(stateVector->vz()));
+    }
+    else
+    {
+        // Unknown initial state type
+        return false;
+    }
+
+    return true;
+#if OLDSCENARIO
+    ScenarioInitialStatePosition* initialStatePos = parameters->initialStatePosition();
+    ScenarioInitialStateAttitude* initialStateAtt = parameters->initialStateAttitude();
+
+    if (initialStatePos)
+    {
+        // Set the coordinate system combo box value
+        for (int i = 0; i < CoordSystemComboBox->count(); i++)
+        {
+            if (CoordSystemComboBox->itemData(i) == initialStatePos->coordinateSystem().type())
+            {
+                CoordSystemComboBox->setCurrentIndex(i);
+                break;
+            }
         }
 
+
+        ScenarioAbstractInitialState* initialState = initialStatePos->initialState();
+        ScenarioKeplerianElements* elements = dynamic_cast<ScenarioKeplerianElements*>(initialState);
+        ScenarioStateVector* stateVector = dynamic_cast<ScenarioStateVector*>(initialState);
+        //ScenarioTLEs* TLEs = dynamic_cast<ScenarioTLEs*>(initialState);
+
+        Q_ASSERT(elements || stateVector);
+
+        if (elements != NULL)
+        {
+            InitialStateComboBox->setCurrentIndex(0);
+            InitialStateStackedWidget->setCurrentWidget(keplerianPage);
+
+            semimajorAxisEdit->setText(QString::number(elements->m_semimajorAxis));
+            eccentricityEdit->setText(QString::number(elements->m_eccentricity));
+            inclinationEdit->setText(QString::number(elements->m_inclination));
+            raanEdit->setText(QString::number(elements->m_raan));
+            argOfPeriapsisEdit->setText(QString::number(elements->m_argumentOfPeriapsis));
+            trueAnomalyEdit->setText(QString::number(elements->m_trueAnomaly));
+        }
+        else if (stateVector != NULL)
+        {
+            InitialStateComboBox->setCurrentIndex(1);
+            InitialStateStackedWidget->setCurrentWidget(stateVectorPage);
+            //TODO: check if it works
+            positionXEdit->setText(QString::number(stateVector->position().x()));
+            positionYEdit->setText(QString::number(stateVector->position().y()));
+            positionZEdit->setText(QString::number(stateVector->position().z()));
+            velocityXEdit->setText(QString::number(stateVector->velocity().x()));
+            velocityYEdit->setText(QString::number(stateVector->velocity().y()));
+            velocityZEdit->setText(QString::number(stateVector->velocity().z()));
+        }
+        else
+        {
+            // Unknown initial state type
+            return false;
+        }
+    }
+    else
+    {
         return false;
+    }
+
+    if (initialStateAtt)
+    {
+        // TODO: the class has to be implemented
+    }
+#endif
+
 }
 
-bool LoiteringDialog::saveValues(ScenarioEnvironment* environment)
+
+bool LoiteringDialog::saveValues(ScenarioLoiteringType* loitering)
 {
-    StaBody* body = STA_SOLAR_SYSTEM->lookup(CentralBodyComboBox->currentText());
-    ScenarioBody* centralbody = new ScenarioBody(body);
-    if (body)
-    {
-        centralbody->setBody(body);
-        environment->setCentralBody(centralbody);
-    }
-    else return false;
+    ScenarioSCEnvironmentType* environment   = loitering->Environment().data();
+    ScenarioTimeLine* parameters             = loitering->TimeLine().data();
+    ScenarioPropagationPositionType* propagation = loitering->PropagationPosition().data();
+    ScenarioInitialPositionType* initPosition  = loitering->InitialPosition().data();//Modified by Dominic to reflect chages in XML schema (initial position now in sharedelements)
 
-    if(!environment->perturbationsList().isEmpty())
+
+    if (saveValues(environment) && saveValues(parameters) && saveValues(propagation) && saveValues(initPosition))
     {
-        foreach (ScenarioPerturbations* perturbation, environment->perturbationsList())
-        environment->removePerturbation(perturbation);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+bool LoiteringDialog::saveValues(ScenarioSCEnvironmentType* environment)
+{
+    StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(CentralBodyComboBox->currentText());
+    if (centralBody)
+    {
+        environment->CentralBody()->setName(centralBody->name());
+    }
+    else
+    {
+        qWarning("Unknown central body %s", CentralBodyComboBox->currentText().toAscii().data());
+        return false;
     }
 
-    if(GravityFieldRadioButton->isChecked())
+#if OLDSCENARIO
+    if (GravityFieldRadioButton->isChecked())
     {
         ScenarioGravityPerturbations* gravityPerturbation = new ScenarioGravityPerturbations();
 
@@ -507,8 +599,13 @@ bool LoiteringDialog::saveValues(ScenarioEnvironment* environment)
 
         environment->addPerturbation(gravityPerturbation);
     }
+#endif
 
-    if(AtmDragRadioButton->isChecked())
+    environment->setAtmosphericDrag(AtmDragRadioButton->isChecked());
+
+    // TODO: Is the code below still necessary with the new schema? -cjl
+#if OLDSCENARIO
+    if (AtmDragRadioButton->isChecked())
     {
         ScenarioAtmosphericDragPerturbations* dragPerturbation = new ScenarioAtmosphericDragPerturbations();
 
@@ -518,8 +615,13 @@ bool LoiteringDialog::saveValues(ScenarioEnvironment* environment)
         dragPerturbation->setCentralBody(environment->centralBody()->body());
         environment->addPerturbation(dragPerturbation);
     }
+#endif
 
-    if(SolarPressureRadioButton->isChecked())
+    environment->setSolarPressure(SolarPressureRadioButton->isChecked());
+
+    // TODO: Is the code below still necessary with the new schema? -cjl
+#if OLDSCENARIO
+    if (SolarPressureRadioButton->isChecked())
     {
         ScenarioSolarPressurePerturbations* solarPerturbation = new ScenarioSolarPressurePerturbations();
         solarPerturbation->setCentralBody(environment->centralBody()->body());
@@ -528,24 +630,27 @@ bool LoiteringDialog::saveValues(ScenarioEnvironment* environment)
         solarPerturbation->setIr(IRCheckBox->isChecked());
         environment->addPerturbation(solarPerturbation);
     }
+#endif
 
-    if (PertBodyRadioButton->isChecked() && PertBodyListWidget->count()!=0)
+    // Reset the perturbing bodies list
+    environment->perturbingBody().clear();
+
+    // Add selected perturbers
+    if (PertBodyRadioButton->isChecked() && PertBodyListWidget->count() != 0)
     {
-        ScenarioExternalBodyPerturbations* externalbodiesPerturbation = new ScenarioExternalBodyPerturbations();
-
-        externalbodiesPerturbation->setCentralBody(environment->centralBody()->body());
-        for(int j=0; j<PertBodyListWidget->count(); j++)
+        for (int j = 0; j < PertBodyListWidget->count(); j++)
         {
             StaBody* body = STA_SOLAR_SYSTEM->lookup(PertBodyListWidget->item(j)->text());
-            if(body && body->name() != environment->centralBody()->body()->name())
+            if (body && body != centralBody)
             {
-                ScenarioBody* perturbingbody = new ScenarioBody(body);
-                externalbodiesPerturbation->addPerturbingBody(perturbingbody);
+                environment->perturbingBody().append(body->name());
             }
         }
-        environment->addPerturbation(externalbodiesPerturbation);
     }
 
+
+    // TODO: debris perturbations not available in schema -cjl
+#if OLDSCENARIO
     if (DebrisRadioButton->isChecked())
     {
         ScenarioDebrisPerturbations* debrisPerturbation = new ScenarioDebrisPerturbations();
@@ -553,12 +658,64 @@ bool LoiteringDialog::saveValues(ScenarioEnvironment* environment)
 
         environment->addPerturbation(debrisPerturbation);
     }
+#endif
 
     return true;
 }
 
 
+bool LoiteringDialog::saveValues(ScenarioTimeLine* timeline)
+{
+    timeline->setStartTime(dateTimeEdit->dateTime());
+    timeline->setEndTime(dateTimeEdit_2->dateTime());
+    timeline->setStepTime(TimeStepLineEdit->text().toDouble());
 
+    return true;
+}
+
+
+bool LoiteringDialog::saveValues(ScenarioInitialPositionType* initPos)
+{
+    sta::CoordinateSystemType coordSysType = sta::CoordinateSystemType(CoordSystemComboBox->itemData(CoordSystemComboBox->currentIndex()).toInt());
+    initPos->setCoordinateSystem(sta::CoordinateSystem(coordSysType).name());
+
+    switch (InitialStateComboBox->currentIndex())
+    {
+    case 0:
+        {
+            ScenarioKeplerianElementsType* elements = new ScenarioKeplerianElementsType;
+            elements->setSemiMajorAxis(semimajorAxisEdit->text().toDouble());
+            elements->setEccentricity(eccentricityEdit->text().toDouble());
+            elements->setInclination(inclinationEdit->text().toDouble()*Pi()/180);//Modified by Dominic save values in scenario in radians
+            elements->setRAAN(raanEdit->text().toDouble()*Pi()/180);
+            elements->setArgumentOfPeriapsis(argOfPeriapsisEdit->text().toDouble()*Pi()/180);
+            elements->setTrueAnomaly(trueAnomalyEdit->text().toDouble()*Pi()/180);
+
+            initPos->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(elements));
+        }
+        return true;
+
+    case 1:
+        {
+            ScenarioStateVectorType* stateVector = new ScenarioStateVectorType();
+            stateVector->setX(positionXEdit->text().toDouble());
+            stateVector->setY(positionYEdit->text().toDouble());
+            stateVector->setZ(positionZEdit->text().toDouble());
+            stateVector->setVx(velocityXEdit->text().toDouble());
+            stateVector->setVy(velocityYEdit->text().toDouble());
+            stateVector->setVz(velocityZEdit->text().toDouble());
+
+            initPos->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(stateVector));
+        }
+        return true;
+
+    default:
+        return false;
+    }
+}
+
+
+#if OLDSCENARIO
 bool LoiteringDialog::saveValues(ScenarioSimulationParameters* parameters)
 {
     ScenarioExtendedTimeline* timeline = parameters->timeline();;
@@ -622,16 +779,18 @@ bool LoiteringDialog::saveValues(ScenarioSimulationParameters* parameters)
     else return false;
 
 }
+#endif
 
 
-bool LoiteringDialog::saveValues(ScenarioTrajectoryPropagation* propagation)
+bool LoiteringDialog::saveValues(ScenarioPropagationPositionType* propagation)
 {
-        propagation->setIntegrator(IntegratorComboBox->itemData(IntegratorComboBox->currentIndex()).toString());
-        propagation->setPropagator(PropagatorComboBox->itemData(PropagatorComboBox->currentIndex()).toString());
-        propagation->setTimeStep(IntStepEdit->text().toDouble());
+    propagation->setIntegrator(IntegratorComboBox->itemData(IntegratorComboBox->currentIndex()).toString());
+    propagation->setPropagator(PropagatorComboBox->itemData(PropagatorComboBox->currentIndex()).toString());
+    propagation->setTimeStep(IntStepEdit->text().toDouble());
 
     return true;
 }
+
 
 TesseralBox::TesseralBox(QDialog* parent) : QSpinBox(parent)
 {
@@ -640,4 +799,387 @@ TesseralBox::TesseralBox(QDialog* parent) : QSpinBox(parent)
 void TesseralBox::setVariableMaximum(int i)
 {
     this->setMaximum(i);
+}
+
+
+bool
+PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
+                             QList<double>& sampleTimes,
+                             QList<sta::StateVector>& samples,
+                             PropagationFeedback& propFeedback)
+{
+    QString centralBodyName = loitering->Environment()->CentralBody()->Name();
+    StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+    if (!centralBody)
+    {
+        propFeedback.raiseError(QObject::tr("Unrecognized central body '%1'").arg(centralBodyName));
+        return false;
+    }
+
+    QString coordSysName = loitering->InitialPosition()->CoordinateSystem();
+    sta::CoordinateSystem coordSys(coordSysName);
+    if (coordSys.type() == sta::COORDSYS_INVALID)
+    {
+        propFeedback.raiseError(QObject::tr("Unrecognized coordinate system '%1'").arg(coordSysName));
+        return false;
+    }
+
+    // Get the initial state in two forms:
+    //   - Keplerian elements for simple two-body propagation
+    //   - A state vector for any other sort of propagation
+    sta::StateVector initialState;
+    sta::KeplerianElements initialStateKeplerian;
+
+    ScenarioAbstract6DOFPositionType* position = loitering->InitialPosition()->Abstract6DOFPosition().data();
+    if (dynamic_cast<ScenarioStateVectorType*>(position))
+    {
+        ScenarioStateVectorType* sv = dynamic_cast<ScenarioStateVectorType*>(position);
+        initialState = sta::StateVector(Eigen::Vector3d(sv->x(), sv->y(), sv->z()),
+                                        Eigen::Vector3d(sv->vx(), sv->vy(), sv->vz()));
+        initialStateKeplerian = cartesianTOorbital(centralBody->mu(), initialState);
+    }
+    else if (dynamic_cast<ScenarioKeplerianElementsType*>(position))
+    {
+        ScenarioKeplerianElementsType* elements = dynamic_cast<ScenarioKeplerianElementsType*>(position);
+        sta::KeplerianElements e;
+        e.AscendingNode = elements->RAAN();
+        e.ArgumentOfPeriapsis = elements->argumentOfPeriapsis();
+        e.Eccentricity = elements->eccentricity();
+        e.TrueAnomaly = elements->trueAnomaly();
+        e.SemimajorAxis = elements->semiMajorAxis();
+        e.Inclination = elements->inclination();
+
+        initialState = orbitalTOcartesian(centralBody->mu(), e.SemimajorAxis, e.Eccentricity, e.Inclination,
+                                          e.ArgumentOfPeriapsis, e.AscendingNode, e.MeanAnomaly);
+        initialStateKeplerian = e;
+    }
+    else if (dynamic_cast<ScenarioSphericalCoordinatesType*>(position))
+    {
+        ScenarioSphericalCoordinatesType* spherical = dynamic_cast<ScenarioSphericalCoordinatesType*>(position);
+
+        // TODO: implement this; need to figure out mapping of spherical coordinate properties to
+        // parameters for sphericalTOcartesian function -cjl
+        // initialState = sphericalTOcartesian();
+        // initialStateKeplerial = cartesianToOrbital(initialState);
+    }
+    else
+    {
+        qWarning("Unknown initial position element");
+    }
+
+    double mu = centralBody->mu();
+
+    // Get the timeline information
+    const ScenarioTimeLine* timeline = loitering->TimeLine().data();
+    double timelineDuration = timeline->StartTime().secsTo(timeline->EndTime());
+    double dt = loitering->PropagationPosition()->timeStep();
+
+    if (dt == 0.0)
+    {
+        propFeedback.raiseError(QObject::tr("Time step is zero!"));
+        return false;
+    }
+
+    // We don't output values at every integration step. Instead use the time step
+    // from simulation parameters. The actual output step used will not necessarily
+    // match the requested output step: the code below sets it to be an integer
+    // multiple of the integration step.
+    double requestedOutputTimeStep = timeline->StepTime();
+    double outputTimeStep;
+    unsigned int outputRate;
+    if (requestedOutputTimeStep < dt)
+    {
+        outputRate = 1;
+        outputTimeStep = dt;
+    }
+    else
+    {
+        outputRate = (unsigned int) floor(requestedOutputTimeStep / dt + 0.5);
+        outputTimeStep = outputRate * dt;
+    }
+
+    if (timelineDuration / outputTimeStep > MAX_OUTPUT_STEPS)
+    {
+        propFeedback.raiseError(QObject::tr("Number of propagation steps exceeds %1. Try increasing the simulation time step.").arg(MAX_OUTPUT_STEPS));
+        return false;
+    }
+
+#if OLDSCENARIO
+    // Create the list of perturbations that will influence the propagation
+    ScenarioSpaceVehicle* spacevehicle = dynamic_cast<ScenarioSpaceVehicle*>(this->parent()->parent());
+    ScenarioProperties* vehicleproperties = spacevehicle->properties();
+
+    QList<Perturbations*> perturbationsList = environment()->createListPerturbations(vehicleproperties);
+#endif
+    QList<Perturbations*> perturbationsList;
+
+    sta::StateVector stateVector = initialState;
+
+    // deviation, reference, and q will be used only in Encke propagation
+    sta::StateVector deviation(Vector3d::Zero(), Vector3d::Zero());
+    sta::StateVector reference = initialState;
+    double q = 0.0;
+
+    double startTime = sta::JdToMjd(sta::CalendarToJd(timeline->StartTime()));
+    sampleTimes << startTime;
+    samples << stateVector;
+
+    QFile ciccio("data/PerturbationsData.stae");
+    QTextStream cicciostream(&ciccio);
+    ciccio.open(QIODevice::WriteOnly);
+
+    unsigned int steps = 0;
+
+    QString propagator = loitering->PropagationPosition()->propagator();
+    QString integrator = loitering->PropagationPosition()->integrator();
+
+    if (propagator == "TWO BODY")
+    {
+        double sma            = initialStateKeplerian.SemimajorAxis;
+        double e              = initialStateKeplerian.Eccentricity;
+        double inclination    = initialStateKeplerian.Inclination;
+        double raan           = initialStateKeplerian.AscendingNode;
+        double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis;
+        double meanAnomaly    = initialStateKeplerian.MeanAnomaly;
+
+        for (double t = dt; t < timelineDuration + dt; t += dt)
+        {
+            JulianDate jd = startTime + sta::secsToDays(t);
+
+            double perigee = sma * (1 - e);
+            if (perigee < centralBody->meanRadius())
+            {
+                propFeedback.raiseError(QObject::tr("The perigee distance is smaller than the main body radius."));
+                return false;
+            }
+
+            double argOfPeriapsisUpdated      = 0.0;
+            double meanAnomalyUpdated         = 0.0;
+            double raanUpdated                = 0.0;
+            stateVector = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
+                                           dt,
+                                           raanUpdated, argOfPeriapsisUpdated, meanAnomalyUpdated);
+
+            argOfPeriapsis = argOfPeriapsisUpdated;
+            meanAnomaly    = meanAnomalyUpdated;
+            raan           = raanUpdated;
+
+            // Append a trajectory sample every outputRate integration steps (and
+            // always at the last step.)
+            if (steps % outputRate == 0 || t >= timelineDuration)
+            {
+                sampleTimes << jd;
+                samples << stateVector;
+            }
+            ++steps;
+        }
+    }
+    else if (propagator == "COWELL")
+    {
+        for (double t = dt; t < timelineDuration + dt; t += dt)
+        {
+            JulianDate jd = startTime + sta::secsToDays(t);
+            stateVector = propagateCOWELL(mu, stateVector, dt, perturbationsList, jd, integrator, propFeedback);
+            // Append a trajectory sample every outputRate integration steps (and
+            // always at the last step.)
+            if (steps % outputRate == 0 || t >= timelineDuration)
+            {
+                sampleTimes << jd;
+                samples << stateVector;
+            }
+            ++steps;
+        }
+    }
+    else if (propagator == "ENCKE")
+    {
+        double sma            = initialStateKeplerian.SemimajorAxis;
+        double e              = initialStateKeplerian.Eccentricity;
+        double inclination    = initialStateKeplerian.Inclination;
+        double raan           = initialStateKeplerian.AscendingNode;
+        double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis;
+        double meanAnomaly    = initialStateKeplerian.MeanAnomaly;
+
+        for (double t = dt; t < timelineDuration + dt; t += dt)
+        {
+            JulianDate jd = startTime + sta::secsToDays(t);
+            deviation = propagateENCKE(mu, reference, dt, perturbationsList, jd, stateVector, deviation,  q, integrator, propFeedback);
+
+            // PropagateTWObody is used to propagate the reference trajectory
+            double argOfPeriapsisUpdated      = 0.0;
+            double meanAnomalyUpdated         = 0.0;
+            double raanUpdated                = 0.0;
+            reference = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
+                                         dt,
+                                         raanUpdated, argOfPeriapsisUpdated, meanAnomalyUpdated);
+
+            argOfPeriapsis = argOfPeriapsisUpdated;
+            meanAnomaly    = meanAnomalyUpdated;
+            raan           = raanUpdated;
+
+            // Calculating the perturbed trajectory
+            stateVector = reference + deviation;
+            q = deviation.position.dot(reference.position + 0.5 * deviation.position) / pow(reference.position.norm(), 2.0);
+
+#if 0
+            // Rectification of the reference trajectory, when the deviation is too large.
+            if (q > 0.01)
+            {
+               sta::KeplerianElements keplerian = cartesianTOorbital(mu, stateVector);
+
+               sma = keplerian.SemimajorAxis;
+               e = keplerian.Eccentricity;
+               inclination = keplerian.Inclination;
+               argOfPeriapsis = keplerian.ArgumentOfPeriapsis;
+               raan = keplerian.AscendingNode;
+               meanAnomaly = keplerian.MeanAnomaly;
+
+               q = 0;
+               reference = stateVector;
+               deviation = sta::StateVector(null, null);
+            }
+#endif
+            // Append a trajectory sample every outputRate integration steps (and
+            // always at the last step.)
+            if (steps % outputRate == 0 || t >= timelineDuration)
+            {
+                sampleTimes << jd;
+                samples << stateVector;
+            }
+            ++steps;
+        }
+    }
+    else if (propagator == "GAUSS")
+    {
+        for (double t = dt; t < timelineDuration + dt; t += dt)
+        {
+            JulianDate jd = startTime + sta::secsToDays(t);
+
+            // Append a trajectory sample every outputRate integration steps (and
+            // always at the last step.)
+            if (steps % outputRate == 0 || t >= timelineDuration)
+            {
+                sampleTimes << jd;
+                samples << stateVector;
+            }
+            ++steps;
+
+            stateVector = propagateGAUSS(mu, stateVector, dt, perturbationsList, jd, integrator);
+        }
+    }
+    else
+    {
+        propFeedback.raiseError(QObject::tr("Unsupported propagator '%1'").arg(propagator));
+        return false;
+    }
+
+#if OLDSCENARIO
+    for (double t = dt; t < timelineDuration + dt; t += dt)
+    {
+        JulianDate jd = startTime + sta::secsToDays(t);
+
+        // Choosing the propagator and propagating the trajectory
+        if (trajectoryPropagation()->propagator() == "TWO BODY")
+        {
+            double perigee=sma*(1-e);
+            if (perigee<centralBody()->meanRadius())
+            {
+                QMessageBox::warning(NULL,
+                              QObject::tr("The trajectory has been not propagated"),
+                              QObject::tr("The perigee distance is smaller than the main body radius."));
+                return stateVector.zero();
+            }
+
+            double argOfPeriapsisUpdated      = 0.0;
+            double meanAnomalyUpdated         = 0.0;
+            double raanUpdated                = 0.0;
+            stateVector = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
+                                      trajectoryPropagation()->timeStep(), raanUpdated, argOfPeriapsisUpdated,
+                                      meanAnomalyUpdated);
+
+            argOfPeriapsis = argOfPeriapsisUpdated;
+            meanAnomaly    = meanAnomalyUpdated;
+            raan           = raanUpdated;
+        }
+
+        else if (trajectoryPropagation()->propagator() == "COWELL")
+        {
+            stateVector = propagateCOWELL(mu, stateVector, trajectoryPropagation()->timeStep(), perturbationsList, time, trajectoryPropagation()->integrator(), propFeedback);
+        }
+
+        else if (trajectoryPropagation()->propagator() == "ENCKE")
+        {
+            deviation = propagateENCKE(mu, reference, trajectoryPropagation()->timeStep(),perturbationsList, time, stateVector, deviation,  q, trajectoryPropagation()->integrator(), propFeedback);
+
+            // PropagateTWObody is used to propagate the reference trajectory
+            double argOfPeriapsisUpdated      = 0.0;
+            double meanAnomalyUpdated         = 0.0;
+            double raanUpdated                = 0.0;
+            reference = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
+                                      trajectoryPropagation()->timeStep(), raanUpdated, argOfPeriapsisUpdated,
+                                      meanAnomalyUpdated);
+
+            argOfPeriapsis = argOfPeriapsisUpdated;
+            meanAnomaly    = meanAnomalyUpdated;
+            raan           = raanUpdated;
+
+            // Calculating the perturbed trajectory
+            stateVector = reference + deviation;
+            q = deviation.position.dot(reference.position + 0.5 * deviation.position) / pow(reference.position.norm(), 2.0);
+
+//            // Rectification of the reference trajectory, when the deviation is too large.
+//            if (q > 0.01)
+//            {
+//               sta::KeplerianElements keplerian = cartesianTOorbital(mu, stateVector);
+//
+//               sma = keplerian.SemimajorAxis;
+//               e = keplerian.Eccentricity;
+//               inclination = keplerian.Inclination;
+//               argOfPeriapsis = keplerian.ArgumentOfPeriapsis;
+//               raan = keplerian.AscendingNode;
+//               meanAnomaly = keplerian.MeanAnomaly;
+//
+//               q = 0;
+//               reference = stateVector;
+//               deviation = sta::StateVector(null, null);
+//            }
+        }
+
+        else if (trajectoryPropagation()->propagator() == "GAUSS")
+        {
+            stateVector = propagateGAUSS(mu, stateVector, trajectoryPropagation()->timeStep(), perturbationsList, time, trajectoryPropagation()->integrator());
+        }
+
+        KeplerianElements kep = cartesianTOorbital(mu, stateVector);
+
+        cicciostream.setRealNumberPrecision(8);
+        //cicciostream << kep.SemimajorAxis << "      ";
+        //cicciostream << kep.Eccentricity << "      ";
+        cicciostream << kep.Inclination << "      ";
+        //cicciostream << kep.ArgumentOfPeriapsis << "      ";
+        //cicciostream << kep.AscendingNode << "      ";
+        //cicciostream << kep.TrueAnomaly << "      ";
+
+//        //Treat the debris perturbation if selected by the user
+//        foreach (Perturbations* perturbation, perturbationsList)
+//        if (dynamic_cast<DebrisPerturbations*>(perturbation))
+//        {
+//            DebrisPerturbations* debris = dynamic_cast<DebrisPerturbations*>(perturbation);
+//            double gravityAcceleration = (-pow(initialState.position.norm(),-3.0) * mu * initialState.position).norm();
+//            double perturbedAcceleration = gravityAcceleration + debris->calculatePerturbingEffect(initialState, sta::daysToSecs(jd));
+//        }
+
+        // Append a trajectory sample every outputRate integration steps (and
+        // always at the last step.)
+        if (steps % outputRate == 0 || t >= timelineDuration)
+        {
+            sampleTimes << jd;
+            samples << stateVector;
+        }
+        ++steps;
+
+        time += sta::secsToDays(dt);
+    };
+#endif
+
+    return true;
 }

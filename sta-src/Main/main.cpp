@@ -20,7 +20,7 @@
   ------ Copyright (C) 2008 European Space Agency (space.trajectory.analysis AT gmail.com) ----
   ------------------ Author: Chris Laurel  -------------------------------------------------
   ------------------ E-mail: (claurel@gmail.com) ----------------------------
- Patched by Guillermo as to change the Spalsh screen of HADEAN, etc.
+ Patched by Guillermo as to change the Splash screen of HADEAN, etc.
  Modified by Guillermo October 2009 to include new ARCHEAN v2.0 Splash Screen
 
  */
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("STA");
     QCoreApplication::setOrganizationName("stasb");    // 'stasb' means STA Steering Board
     QCoreApplication::setOrganizationDomain("org");  // Patched by Guillermo
-    QCoreApplication::setApplicationVersion("2.0");
+    QCoreApplication::setApplicationVersion("3.0");
     QCoreApplication::setOrganizationDomain("STASB");  // Patched by Guillermo
 
     QString ApplicationPath = QDir::currentPath ();
@@ -78,16 +78,16 @@ int main(int argc, char *argv[])
      #ifdef Q_WS_MAC
         QSettings settings("/Users/go/Desktop/org.stasb.STA.plist", QSettings::NativeFormat);
         settings.setValue("CFBundleDisplayName", "Space Trajectory Analysis");
-        settings.setValue("CFBundleDocumentTypes", "STAFileType.icns");
-            settings.setValue("CFBundleTypeIconFile", "STAFileType.icns");
-            settings.setValue("CFBundleTypeRole", "Editor");
-            settings.setValue("NSDocumentClass", "STADocument");
+	settings.setValue("CFBundleDocumentTypes", "STAScenarioFile.icns");
+	settings.setValue("CFBundleTypeIconFile", "STAScenarioFile.icns");
+	settings.setValue("CFBundleTypeRole", "Editor");
+	settings.setValue("NSDocumentClass", "STADocument");
         settings.setValue("CFBundleExecutable", "STA");
-        settings.setValue("CFBundleGetInfoString", "2.0 RC1, Copyright 2005-2009 STA Steering Board.");
-        settings.setValue("CFBundleIconFile", "STAlogoARCHEAN.icns");
+	settings.setValue("CFBundleGetInfoString", "3.0 RC1, Copyright 2005-2010 STA Steering Board.");
+	settings.setValue("CFBundleIconFile", "STAlogo.icns");
         settings.setValue("CFBundleIdentifier", "org.stasb.STA");
-        settings.setValue("LSMinimumSystemVersion", "10.4.0");
-        settings.setValue("QuartzGLEnable", true);
+	settings.setValue("LSMinimumSystemVersion", "10.5.0");
+	//settings.setValue("QuartzGLEnable", true);
      #else
         //Not implemented yet for Windows or Linux
      #endif   
@@ -169,9 +169,9 @@ int main(int argc, char *argv[])
     // end astro core initialization
 
     // Splash screen
-    QPixmap pixmap(":/icons/sta-splash.png");
+    QPixmap pixmap(":/icons/STAsplash.png");
     QSplashScreen splash(pixmap);
-    splash.resize(718, 421);
+    splash.resize(700, 415);
 
     splash.show();
     app.processEvents();

@@ -28,8 +28,7 @@ the world wide web at http://www.gnu.org.
 #include "Astro-Core/date.h"
 #include "Astro-Core/stacoordsys.h"
 #include "Astro-Core/stamath.h"
-#include "Scenario/scenarioinitialstate.h"
-#include "Scenario/scenariobody.h"
+#include "Scenario/scenario.h"
 #include "Astro-Core/threebodyParametersComputation.h"
 #include "halorbitcomputation.h"
 #include "Astro-Core/stamath.h"
@@ -210,12 +209,15 @@ void LagrangianDialog::update_coordinate_systems()
  }
 
 
+#if OLDSCENARIO
 ScenarioBody* firstBody;
 ScenarioBody* secondBody;
+#endif
 double bodies_distance, period_days, velocity;
 
 void LagrangianDialog::threebody_system()	//system selection
 {
+#if OLDSCENARIO
     if (SystemComboBox->currentIndex()==0 || SystemComboBox->currentIndex()==12)
         return;
     firstBody=getBody1 (SystemComboBox->currentIndex()); secondBody=getBody2 (SystemComboBox->currentIndex());
@@ -248,6 +250,7 @@ void LagrangianDialog::threebody_system()	//system selection
     System=SystemComboBox->currentIndex();
     SystemComboBox_2->setText(SystemComboBox->currentText());
     primariesDistancelineEdit_2->setText(primariesDistancelineEdit->text());
+#endif
 }
 
 
@@ -746,6 +749,7 @@ ScenarioThreebodyTransfer* threebodyTransfer;
 bool LagrangianDialog::loadValues(ScenarioLagrangianTrajectory* lagrangian)
 
 {
+#if OLDSCENARIO
     Halo = lagrangian->halo();
     threebodyTransfer = lagrangian->threebodyTransfer();
     Lagrmode=0;
@@ -775,12 +779,14 @@ bool LagrangianDialog::loadValues(ScenarioLagrangianTrajectory* lagrangian)
             return true;
         }
         else
+#endif
             return false;
 }
 
 
 bool LagrangianDialog::loadValues(ScenarioThreebodyenvironment* threebodyenvironment)
 {
+#ifdef OLDSCENARIO
         firstBody = threebodyenvironment->firstBody();
         secondBody = threebodyenvironment->secondBody();
         bodies_distance=secondBody->body()->distance();
@@ -843,7 +849,7 @@ bool LagrangianDialog::loadValues(ScenarioThreebodyenvironment* threebodyenviron
 
         CentralBodyComboBox->addItem(tr((secondBody->body()->name()).toLatin1()),secondBody->body()->id());
         //CentralBodyComboBox_2->addItem(tr((secondBody->body()->name()).toLatin1()),secondBody->body()->id());
-
+#endif // OLDSCENARIO
 return true;
 }
 
@@ -851,6 +857,7 @@ return true;
 
 bool LagrangianDialog::loadValues(ScenarioSimulationParameters* parameters)
 {
+#ifdef OLDSCENARIO
     ScenarioExtendedTimeline* timeline = parameters->timeline();
     ScenarioInitialStatePosition* initialStatePos = parameters->initialStatePosition();
 
@@ -968,7 +975,8 @@ bool LagrangianDialog::loadValues(ScenarioSimulationParameters* parameters)
     {
         return false;
     }
-        return true;
+#endif
+    return true;
 }
 
 #if 0
@@ -1142,64 +1150,68 @@ bool LagrangianDialog::loadValues(ScenarioThreebodyTransfer* threebodyTransfer)
 
 bool LagrangianDialog::saveValues(ScenarioLagrangianTrajectory* lagrangian)
 {
-        ScenarioThreebodyenvironment* threebodyenvironment = lagrangian->threebodyenvironment();
-        ScenarioSimulationParameters* parameters = lagrangian->simulationParameters();
-        Halo = lagrangian->halo();
-        threebodyTransfer = lagrangian->threebodyTransfer();
-        //lagrangian->setHalo(lagrangianAdvanced->halo());
-        //lagrangian->setThreebodyTransfer(lagrangian->threebodyTransfer());
-        //qDebug()<<Lagrmode;
-        if (saveValues(threebodyenvironment) && saveValues(parameters))// && saveValues(halo) && saveValues(threebodyTransfer))
-        {
-            return true;
-        }
-        else
-            return false;
-
+#ifdef OLDSCENARIO
+    ScenarioThreebodyenvironment* threebodyenvironment = lagrangian->threebodyenvironment();
+    ScenarioSimulationParameters* parameters = lagrangian->simulationParameters();
+    Halo = lagrangian->halo();
+    threebodyTransfer = lagrangian->threebodyTransfer();
+    //lagrangian->setHalo(lagrangianAdvanced->halo());
+    //lagrangian->setThreebodyTransfer(lagrangian->threebodyTransfer());
+    //qDebug()<<Lagrmode;
+    if (saveValues(threebodyenvironment) && saveValues(parameters))// && saveValues(halo) && saveValues(threebodyTransfer))
+    {
+        return true;
+    }
+    else
+#endif
+    {
+        return false;
+    }
 }
 
 
 bool LagrangianDialog::saveValues(ScenarioThreebodyenvironment* threebodyenvironment)
 {
-
-        threebodyenvironment->setFirstBody(firstBody);
-        threebodyenvironment->setSecondBody(secondBody);
-        ScenarioGravityModel* gravmodel = new ScenarioGravityModel();
+#ifdef OLDSCENARIO
+    threebodyenvironment->setFirstBody(firstBody);
+    threebodyenvironment->setSecondBody(secondBody);
+    ScenarioGravityModel* gravmodel = new ScenarioGravityModel();
 #if 0
-        if (J2firstradioButton->isChecked())
-            {gravmodel->setZonalCount(2);
-            }
-        else
-            {gravmodel->setZonalCount(0);
-            }
-        firstBody->setGravityModel(gravmodel);
+    if (J2firstradioButton->isChecked())
+        {gravmodel->setZonalCount(2);
+        }
+    else
+        {gravmodel->setZonalCount(0);
+        }
+    firstBody->setGravityModel(gravmodel);
 
-        ScenarioGravityModel* gravmodel2 = new ScenarioGravityModel();
+    ScenarioGravityModel* gravmodel2 = new ScenarioGravityModel();
 
-        if (J2secondradioButton->isChecked())
-            {gravmodel2->setZonalCount(2);
-            }
-        else
-            {gravmodel2->setZonalCount(0);
-            }
-        secondBody->setGravityModel(gravmodel2);
+    if (J2secondradioButton->isChecked())
+        {gravmodel2->setZonalCount(2);
+        }
+    else
+        {gravmodel2->setZonalCount(0);
+        }
+    secondBody->setGravityModel(gravmodel2);
 #endif
+#endif // OLDSCENARIO
 
-        return true;
-
+    return true;
 }
 
 
 bool LagrangianDialog::saveValues(ScenarioSimulationParameters* parameters)
 {
+#ifdef OLDSCENARIO
     ScenarioExtendedTimeline* timeline = parameters->timeline();
-        ScenarioInitialStatePosition*  initialState_threebody_Pos = parameters->initialStatePosition();
+    ScenarioInitialStatePosition*  initialState_threebody_Pos = parameters->initialStatePosition();
 
-        timeline->setStartTime(sta::JdToMjd(sta::CalendarToJd(dateTimeEdit->dateTime())));
-        timeline->setEndTime(sta::JdToMjd(sta::CalendarToJd(dateTimeEdit_2->dateTime())));
-        timeline->setTimeStep(TimeStepLineEdit->text().toDouble());
-        parameters->deltav()->setTime(sta::JdToMjd(sta::CalendarToJd(dateTimeEdit_3->dateTime())));
-        ScenarioDeltav* deltav=parameters->deltav();
+    timeline->setStartTime(sta::JdToMjd(sta::CalendarToJd(dateTimeEdit->dateTime())));
+    timeline->setEndTime(sta::JdToMjd(sta::CalendarToJd(dateTimeEdit_2->dateTime())));
+    timeline->setTimeStep(TimeStepLineEdit->text().toDouble());
+    parameters->deltav()->setTime(sta::JdToMjd(sta::CalendarToJd(dateTimeEdit_3->dateTime())));
+    ScenarioDeltav* deltav=parameters->deltav();
 
     double epoch_day;
     //QTime epoch(timeEdit->time().hour(), timeEdit->time().minute(), timeEdit->time().second());
@@ -1363,6 +1375,7 @@ bool LagrangianDialog::saveValues(ScenarioSimulationParameters* parameters)
     parameters->setTimeline(timeline);
     parameters->setDeltav(deltav);
     parameters->setInitialStatePosition(initialState_threebody_Pos);
+#endif
     return true;
 }
 
@@ -1508,3 +1521,4 @@ bool LagrangianDialog::saveValues(ScenarioThreebodyTransfer* threebodyTransfer)
 }
 
 #endif
+
