@@ -1,496 +1,509 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/scenario"
-	    xmlns:tns="http://www.example.org/scenario" elementFormDefault="qualified">
+	xmlns:tns="http://www.example.org/scenario" elementFormDefault="qualified">
 
-  <element name="REV" substitutionGroup="tns:AbstractParticipant">
-	<complexType>
-	  <complexContent>
-		<extension base="tns:ParticipantType">
-		  <sequence>
-			<element ref="tns:ProgramAndMission"></element>
-			<element name="System" type="tns:REVSystemType"></element>
-			<element ref="tns:Optimization"></element>
-			<element ref="tns:OutputFiles"></element>
-		  </sequence>
-		  <attribute name="appearance" type="string"></attribute>
-		</extension>
-	  </complexContent>
+	<element name="REV" substitutionGroup="tns:AbstractParticipant">
+		<complexType>
+			<complexContent>
+				<extension base="tns:ParticipantType">
+					<sequence>
+						<element name="REVProgram" type="tns:REVProgramType"></element>
+						<element name="REVMission" type="tns:REVMissionType"></element>
+						<element name="REVSystem" type="tns:REVSystemType"></element>
+						<element ref="tns:Optimization"></element>
+						<element ref="tns:OutputFiles"></element>
+					</sequence>
+					<attribute name="appearance" type="string"></attribute>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+
+	<element name="EntryArc" substitutionGroup="tns:AbstractTrajectory"
+		type="tns:EntryArcType"></element>
+
+	<complexType name="REVProgramType">
+		<sequence>
+			<element name="nMissions" type="int"></element>
+			<element name="nYearsOps" type="double"></element>
+		</sequence>
 	</complexType>
-  </element>
 
-  <element name="ProgramAndMission">
-	<complexType>
-	  <sequence>
-		<element name="Program">
-		  <complexType>
-			<sequence>
-			  <element name="nMissions" type="int"></element>
-			  <element name="nYearsOps" type="double"></element>
-			</sequence>
-		  </complexType>
-		</element>
-		<element ref="tns:Environment"></element>
-		<element name="InitialConditions">
-		  <complexType>
-			<sequence>
-			  <element ref="tns:TimeLine"></element>
-			  <element ref="tns:Abstract6DOFPosition"></element>
-			  <element ref="tns:Abstract6DOFAttitude"></element>
-			</sequence>
-		  </complexType>
-		</element>
-		<element name="Mission">
-		  <complexType>
-			<sequence>
-			  <element name="targetFinalState">
-				<complexType>
-				  <sequence>
-					<element name="entryType" type="string"></element>
-					<!-- Ballistic/Glide/Skip -->
-					<element name="FinalState">
-					  <complexType>
-						<sequence>
-						  <element ref="tns:Abstract6DOFPosition"></element>
-						</sequence>
-					  </complexType>
-					</element>
-					<element name="Constraints" type="tns:REVConstraintsType">
-					</element>
-					<element name="degreesOfFreedom" type="int"></element>
-					<element name="attitudeController" type="string"></element>
-					<!--
-						string name represents type of attitude control, default
-						should be ideal
-					  -->
-					<element name="DispersionAnalysis">
-					  <complexType>
-						<sequence>
-						  <element name="nrSimulations" type="int"></element>
-						  <element name="dispCD" type="double"></element>
-						  <element name="dispCS" type="double"></element>
-						  <element name="dispCL" type="double"></element>
-						  <element name="dispCl" type="double"></element>
-						  <element name="dispCm" type="double"></element>
-						  <element name="dispCn" type="double"></element>
-						  <element name="dispDensity" type="double"></element>
-						  <element name="dispSpeedOfSound" type="double"></element>
-						  <element name="dispMass" type="double"></element>
-						  <element name="dispInitialPosition" type="double"></element>
-						  <element name="dispInitialAttitude" type="double"></element>
-						</sequence>
-					  </complexType>
-					</element>
-				  </sequence>
-				</complexType>
-			  </element>
-			  <element name="entryWindowAnalysis" type="string"></element>
-			  <!--
-				  This is part of M. Volckaert's work on the ballistic entry
-				  module
-				-->
-			  <element name="optimizeDeorbitBurnOption" type="boolean"></element>
-			  <element name="landingSeaOrGround" type="tns:OptVarBool"></element>
-			  <element name="landingAltitude" type="double"></element>
-			  <element name="maxLandingVelAtSea" type="double"></element>
-			  <element name="maxLandingVelAtGround" type="double"></element>
-			</sequence>
-		  </complexType>
-		</element>
-		<element name="Trajectory" type="tns:REVTrajectoryType"></element>
-		<element name="Payload" type="tns:REVPayloadType"></element>
-	  </sequence>
+	<complexType name="REVMissionType">
+		<sequence>
+			<element name="Payload" type="tns:REVPayloadType"></element>
+			<element name="REVTrajectoryPlan" type="tns:REVTrajectoryPlanType"></element>
+		</sequence>
 	</complexType>
-  </element>
-
-  <complexType name="REVTrajectoryConstraintsType">
-  	<sequence>
-	  <element name="landingVelCstrViolation" type="double"></element>
-	  <element name="axialAccCstrViolation" type="double"></element>
-	  <element name="latAccCstrViolation" type="double"></element>
-	  <element name="heatFluxCstrViolation" type="double"></element>
-	  <element name="integratedheatLoadCstrViolation" type="double"></element>
-	  <element name="dynPressCstrViolation" type="double"></element>
-	  <element name="controllabilityCstrViolation" type="double"></element>
-	</sequence>
-  </complexType>
-
-  <complexType name="REVTrajectoryType">
-	<sequence>
-	  <element name="totalCrossRange" type="double"></element>
-	  <element name="totalDownRange" type="double"></element>
-	  <element name="HighSpeedFlight">
-		<complexType>
-		  <sequence>
-			<element name="optimizedAoAValues" type="tns:ListOfDouble"></element>
-			<element name="optimizedBankValues" type="tns:ListOfDouble"></element>
-			<element name="highSpeedCrossRange" type="double"></element>
-			<element name="highSpeedDownRange" type="double"></element>
-		  </sequence>
-		</complexType>
-	  </element>
-	  <element name="LowSpeedFlight">
-		<complexType>
-		  <sequence>
-			<element name="lowSpeedCrossRange" type="double"></element>
-			<element name="lowSpeedDownRange" type="double"></element>
-		  </sequence>
-		</complexType>
-	  </element>
-	  <element name="Constraints" type="tns:REVTrajectoryConstraintsType"></element>
-	</sequence>
-  </complexType>
-
-  <complexType name="REVPayloadType">
-	<sequence>
-	  <element name="mass" type="double"></element>
-	  <element name="length" type="double"></element>
-	  <element name="diameter" type="double"></element>
-	  <element name="COGLongPosition" type="double"></element>
-	  <element name="maxAxialAcc" type="double"></element>
-	  <element name="maxLatAcc" type="double"></element>
-	  <element name="crewOption" type="boolean"></element>
-	  <element name="nCrew" type="int" minOccurs="0"></element>
-	  <element name="nDaysInOrbit" type="int" minOccurs="0"></element>
-	</sequence>
-  </complexType>
-
-  <complexType name="REVGeometryType">
-	<sequence>
-	  <element name="noseRadius" type="double"></element>
-	  <element name="shapeFamily" type="tns:OptVarString"></element>
-	  <element name="capsuleShape" minOccurs="0">
-		<complexType>
-		  <sequence>
-			<element name="param1" type="tns:OptVarDouble"></element>
-			<element name="param2" type="tns:OptVarDouble"></element>
-			<element name="param3" type="tns:OptVarDouble"></element>
-		  </sequence>
-		</complexType>
-	  </element>
-	  <element name="probeShape" minOccurs="0">
-		<complexType>
-		  <sequence>
-			<element name="param1" type="tns:OptVarDouble"></element>
-			<element name="param2" type="tns:OptVarDouble"></element>
-			<element name="param3" type="tns:OptVarDouble"></element>
-		  </sequence>
-		</complexType>
-	  </element>
-	  <element name="biconicShape" minOccurs="0">
-		<complexType>
-		  <sequence>
-			<element name="param1" type="tns:OptVarDouble"></element>
-			<element name="param2" type="tns:OptVarDouble"></element>
-			<element name="param3" type="tns:OptVarDouble"></element>
-		  </sequence>
-		</complexType>
-	  </element>
-	  <element name="sphereconeShape" minOccurs="0">
-		<complexType>
-		  <sequence>
-			<element name="param1" type="tns:OptVarDouble"></element>
-			<element name="param2" type="tns:OptVarDouble"></element>
-			<element name="param3" type="tns:OptVarDouble"></element>
-		  </sequence>
-		</complexType>
-	  </element>
-	</sequence>
-  </complexType>
 
 
-  <complexType name="REVConstraintsType">
-	<sequence>
-	  <element name="maxHeatFlux" type="double"></element>
-	  <element name="maxHeatInput" type="double"></element>
-	  <element name="maxNormalLoad" type="double"></element>
-	  <element name="maxQalpha" type="double"></element>
-	  <element name="maxAlphaRate" type="double"></element>
-	  <element name="maxBankRate" type="double"></element>
-	</sequence>
-  </complexType>
+	<complexType name="REVTrajectoryPlanType">
+		<sequence>
+			<element ref="tns:AbstractTrajectory" maxOccurs="unbounded"></element>
+		</sequence>
+	</complexType>
 
-  <complexType name="REVSystemType">
-	<sequence>
-	  <!-- <element ref="tns:VehicleAerodynamics"></element> -->
-	  <element ref="tns:Weights"></element>
-	  <element name="Geometry" type="tns:REVGeometryType"></element>
-	  <element ref="tns:TPS"></element>
-	  <element name="Parachutes">
-		<complexType>
-		  <sequence>
-			<element name="nChutes" type="tns:OptVarInt">
-			</element>
-			<element name="Parachute" minOccurs="0" maxOccurs="4">
-			  <complexType>
+
+	<complexType name="EntryArcType">
+		<complexContent>
+			<extension base="tns:AbstractTrajectoryType">
 				<sequence>
-				  <element name="mass" type="double"></element>
-				  <element name="coGLongPosition" type="double"></element>
-				  <element name="ropeLength" type="tns:OptVarDouble"></element>
-				  <element name="ParachuteAerodynamics">
-					<complexType>
-					  <sequence>
-						<element name="userDefinedAero" type="boolean"></element>
-						<element name="referenceArea" type="tns:OptVarDouble"></element>
-						<element name="lowSpeedCdFileName" type="string"></element>
-					  </sequence>
-					</complexType>
-				  </element>
-				  <element name="deployMach" type="tns:OptVarDouble">
-				  </element>
+					<element ref="tns:Environment"></element>
+					<element ref="tns:TimeLine"></element>
+					<element ref="tns:InitialPosition"></element>
+					<element ref="tns:InitialAttitude"></element>
+					<element ref="tns:PropagationPosition"></element>
+					<element ref="tns:PropagationAttitude"></element>
+					<element name="Constraints" type="tns:REVConstraintsType"></element>
+					<element name="targetFinalState" type="tns:REVFinalStateType"></element>
+					<element name="ConstraintsViolation" type="tns:REVConstraintsViolationType"></element>
+					<element name="EntryCharacteristics" type="tns:EntryCharacteristicsType"></element>
 				</sequence>
-			  </complexType>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="REVFinalStateType">
+		<sequence>
+			<element name="entryType" type="string"></element>
+			<!-- Ballistic/Glide/Skip -->
+			<element name="FinalPositionState" type="tns:REVFinalPositionStateType"></element>
+			<element name="degreesOfFreedom" type="int"></element>
+			<element name="attitudeController" type="string"></element>
+			<!--
+				string name represents type of attitude control, default should be
+				ideal
+			-->
+			<element name="DispersionAnalysis" type="tns:REVDispersionAnalysisType"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="REVFinalPositionStateType">
+		<sequence>
+			<element ref="tns:Abstract6DOFPosition"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="REVDispersionAnalysisType">
+		<sequence>
+			<element name="nrSimulations" type="int"></element>
+			<element name="dispCD" type="double"></element>
+			<element name="dispCS" type="double"></element>
+			<element name="dispCL" type="double"></element>
+			<element name="dispCl" type="double"></element>
+			<element name="dispCm" type="double"></element>
+			<element name="dispCn" type="double"></element>
+			<element name="dispDensity" type="double"></element>
+			<element name="dispSpeedOfSound" type="double"></element>
+			<element name="dispMass" type="double"></element>
+			<element name="dispInitialPosition" type="double"></element>
+			<element name="dispInitialAttitude" type="double"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="EntryCharacteristicsType">
+		<sequence>
+			<element name="entryWindowAnalysis" type="string"></element>
+			<!--
+				This is part of M. Volckaert's work on the ballistic entry module
+			-->
+			<element name="optimizeDeorbitBurnOption" type="boolean"></element>
+			<element name="landingSeaOrGround" type="tns:OptVarBool"></element>
+			<element name="landingAltitude" type="double"></element>
+			<element name="maxLandingVelAtSea" type="double"></element>
+			<element name="maxLandingVelAtGround" type="double"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="REVConstraintsViolationType">
+		<sequence>
+			<element name="landingVelCstrViolation" type="double"></element>
+			<element name="axialAccCstrViolation" type="double"></element>
+			<element name="latAccCstrViolation" type="double"></element>
+			<element name="heatFluxCstrViolation" type="double"></element>
+			<element name="integratedheatLoadCstrViolation" type="double"></element>
+			<element name="dynPressCstrViolation" type="double"></element>
+			<element name="controllabilityCstrViolation" type="double"></element>
+		</sequence>
+	</complexType>
+<!-- 
+	<complexType name="REVTrajectoryType">
+		<sequence>
+			<element name="totalCrossRange" type="double"></element>
+			<element name="totalDownRange" type="double"></element>
+			<element name="HighSpeedFlight">
+				<complexType>
+					<sequence>
+						<element name="optimizedAoAValues" type="tns:ListOfDouble"></element>
+						<element name="optimizedBankValues" type="tns:ListOfDouble"></element>
+						<element name="highSpeedCrossRange" type="double"></element>
+						<element name="highSpeedDownRange" type="double"></element>
+					</sequence>
+				</complexType>
 			</element>
-		  </sequence>
+			<element name="LowSpeedFlight">
+				<complexType>
+					<sequence>
+						<element name="lowSpeedCrossRange" type="double"></element>
+						<element name="lowSpeedDownRange" type="double"></element>
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+ -->
+	<complexType name="REVPayloadType">
+		<sequence>
+			<element name="mass" type="double"></element>
+			<element name="length" type="double"></element>
+			<element name="diameter" type="double"></element>
+			<element name="COGLongPosition" type="double"></element>
+			<element name="maxAxialAcc" type="double"></element>
+			<element name="maxLatAcc" type="double"></element>
+			<element name="crewOption" type="boolean"></element>
+			<element name="nCrew" type="int" minOccurs="0"></element>
+			<element name="nDaysInOrbit" type="int" minOccurs="0"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="REVGeometryType">
+		<sequence>
+			<element name="noseRadius" type="double"></element>
+			<element name="shapeFamily" type="tns:OptVarString"></element>
+			<element name="geometryFile" type="string"></element>
+			<element name="capsuleShape" minOccurs="0">
+				<complexType>
+					<sequence>
+						<element name="param1" type="tns:OptVarDouble"></element>
+						<element name="param2" type="tns:OptVarDouble"></element>
+						<element name="param3" type="tns:OptVarDouble"></element>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="probeShape" minOccurs="0">
+				<complexType>
+					<sequence>
+						<element name="param1" type="tns:OptVarDouble"></element>
+						<element name="param2" type="tns:OptVarDouble"></element>
+						<element name="param3" type="tns:OptVarDouble"></element>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="biconicShape" minOccurs="0">
+				<complexType>
+					<sequence>
+						<element name="param1" type="tns:OptVarDouble"></element>
+						<element name="param2" type="tns:OptVarDouble"></element>
+						<element name="param3" type="tns:OptVarDouble"></element>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="sphereconeShape" minOccurs="0">
+				<complexType>
+					<sequence>
+						<element name="param1" type="tns:OptVarDouble"></element>
+						<element name="param2" type="tns:OptVarDouble"></element>
+						<element name="param3" type="tns:OptVarDouble"></element>
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+
+	<complexType name="REVConstraintsType">
+		<sequence>
+			<element name="maxHeatFlux" type="double"></element>
+			<element name="maxHeatInput" type="double"></element>
+			<element name="maxNormalLoad" type="double"></element>
+			<element name="maxQalpha" type="double"></element>
+			<element name="maxAlphaRate" type="double"></element>
+			<element name="maxBankRate" type="double"></element>
+			<element name="maxAltitude" type="double"></element>
+		</sequence>
+	</complexType>
+
+
+
+	<complexType name="REVSystemType">
+		<sequence>
+			<element name="Weights" type="tns:REVWeights"></element>
+			<element name="Geometry" type="tns:REVGeometryType"></element>
+			<element name="TPS" type="tns:REVTPS"></element>
+			<element name="AeroThermodynamics" type="tns:REVAeroThermodynamicsType"></element>
+			<element name="Parachutes">
+				<complexType>
+					<sequence>
+						<element name="nChutes" type="tns:OptVarInt">
+						</element>
+						<element name="Parachute" minOccurs="0" maxOccurs="4">
+							<complexType>
+								<sequence>
+									<element name="mass" type="double"></element>
+									<element name="coGLongPosition" type="double"></element>
+									<element name="ropeLength" type="tns:OptVarDouble"></element>
+									<element name="ParachuteAerodynamics">
+										<complexType>
+											<sequence>
+												<element name="userDefinedAero" type="boolean"></element>
+												<element name="referenceArea" type="tns:OptVarDouble"></element>
+												<element name="lowSpeedCdFileName" type="string"></element>
+											</sequence>
+										</complexType>
+									</element>
+									<element name="deployMach" type="tns:OptVarDouble">
+									</element>
+								</sequence>
+							</complexType>
+						</element>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="Structure" type="tns:REVStructureType"></element>
+			<element name="SecondaryPropulsion" type="tns:REVSecondaryPropulsionType"></element>
+			<element name="Costs" type="tns:REVCostsType"></element>
+			<element name="Reliability" type="tns:REVReliabilityType"></element>
+			<!-- <element name="DiscretizationSettings" type="tns:REVDiscretizationSettingsType"></element> -->
+		</sequence>
+		<attribute name="name" type="string"></attribute>
+	</complexType>
+
+
+
+	<complexType name="REVStructureType">
+		<sequence>
+			<element name="maxAxialAcc" type="tns:OptVarDouble"></element>
+			<element name="maxLatAcc" type="tns:OptVarDouble"></element>
+			<element name="mainStructMaterial" type="tns:OptVarString"></element>
+			<element name="mainStructThickness" type="double"></element>
+			<element name="mainStructMass" type="double"></element>
+			<element name="totalStructMass" type="double"></element>
+			<element name="totalStructCoGLongPosition" type="double"></element>
+			<element name="structuralSafetyMargin" type="tns:OptVarDouble"></element>
+			<element name="airbags" type="tns:OptVarBool"></element>
+			<element name="maxLandingVelWithAirbag" type="tns:OptVarDouble"	minOccurs="0"></element>
+			<element name="airbagsMass" type="double" minOccurs="0"></element>
+			<element name="airbagsCoGLongPosition" type="double"></element>
+		</sequence>
+	</complexType>
+
+		<complexType name="REVAeroThermodynamicsType">
+			<sequence>
+				<element name="hypersonicTrimAngle" type="tns:OptVarDouble"></element>
+				<element name="REVuserDefinedAero" type="boolean"></element>
+				<element name="referenceArea" type="double"></element>
+				<element name="referenceLength" type="double"></element>
+				<element name="AeroCoefFile" type="tns:AeroCoefFileType" minOccurs="0" maxOccurs="6"></element>
+				<!-- <element name="frictionCoefficient" type="double"></element> -->
+				<element name="CoefficientType" type="int"></element> <!-- 1=only translation as function of Mach, 2=all 6 as function of Mach, 3= all 6 as function of M,a and b -->
+				<element name="emissivity" type="double"></element>
+				<element name="momentReferencePoint" type="tns:ListOfDouble"></element>
+				<element name="tempCDfile" type="string"></element>
+			</sequence>
 		</complexType>
-	  </element>
-	  <element name="Structure" type="tns:REVStructureType"></element>
-	  <element ref="tns:SecondaryPropulsion"></element>
-	  <element name="Costs" type="tns:REVCostsType"></element>
-	  <element name="Reliability" type="tns:REVReliabilityType"></element>
-	  <element name="DiscretizationSettings" type="tns:REVDiscretizationSettingsType"></element>
-	</sequence>
-	<attribute name="name" type="string"></attribute>
-  </complexType>
 
-  <element name="VehicleAeroThermodynamics">
-	<complexType>
-	  <sequence>
-		<element name="hypersonicTrimAngle" type="tns:OptVarDouble"></element>
-		<element name="userDefinedAero" type="boolean"></element>
-		<element name="referenceArea" type="double"></element>
-		<element name="referenceLength" type="double"></element>
-		<element name="frictionCoefficient" type="double"></element>
-		<element name="emissivity" type="double"></element>
-		<element name="highVForceCoeffFile" type="string" minOccurs="0"></element>
-		<element name="highVMomentCoeffFile" type="string"
-				 minOccurs="0"></element>
-		<element name="highVDerivativeCoeffFile" type="string"
-				 minOccurs="0"></element>
-		<element name="highVControlCoeffFile" type="string"
-				 minOccurs="0"></element>
-		<element name="lowVForceCoeffFile" type="string" minOccurs="0"></element>
-		<element name="lowVMomentCoeffFile" type="string" minOccurs="0"></element>
-		<element name="lowVDerivativeCoeffFile" type="string"
-				 minOccurs="0"></element>
-		<element name="lowVControlCoeffFile" type="string"
-				 minOccurs="0"></element>
-	  </sequence>
-	</complexType>
-  </element>
+		<complexType name="AeroCoefFileType">
+						<sequence>
+							<element name="FileLocation" type="string"></element>
+							<element name="CoefName" type="string"></element>
+							<element name="NumberOfIndepVars" type="int"></element>
+							<element name="IndepVarNames" type="tns:ListOfString"></element>
+							<element name="IndepVarDiscretizationPoints" type="tns:ListOfInt"></element>
+							<element name="IndepVarMin" type="tns:ListOfDouble"></element>
+							<element name="IndepVarMax" type="tns:ListOfDouble"></element>
+						</sequence>
+					</complexType>
 
-  <complexType name="REVStructureType">
-	<sequence>
-	  <element name="maxAxialAcc" type="tns:OptVarDouble"></element>
-	  <element name="maxLatAcc" type="tns:OptVarDouble"></element>
-	  <element name="mainStructMaterial" type="tns:OptVarString"></element>
-	  <element name="mainStructThickness" type="double"></element>
-	  <element name="mainStructMass" type="double"></element>
-	  <element name="totalStructMass" type="double"></element>
-	  <element name="totalStructCoGLongPosition" type="double"></element>
-	  <element name="structuralSafetyMargin" type="tns:OptVarDouble"></element>
-	  <element name="airbags" type="tns:OptVarBool"></element>
-	  <element name="maxLandingVelWithAirbag" type="tns:OptVarDouble"
-			   minOccurs="0"></element>
-	  <element name="airbagsMass" type="double" minOccurs="0"></element>
-	  <element name="airbagsCoGLongPosition" type="double"></element>
-	</sequence>
-  </complexType>
-
-  <element name="TPS">
-	<complexType>
-	  <sequence>
-		<element name="maxHeatFlux" type="tns:OptVarDouble"></element>
-		<element name="maxIntegratedHeatLoad" type="tns:OptVarDouble"></element>
-		<element name="mainTPSReuse" type="tns:OptVarBool"></element>
-		<element name="mainTPSMaterial" type="tns:OptVarString"></element>
-		<element name="mainTPSThickness" type="double"></element>
-		<element name="mainTPSMass" type="double"></element>
-		<element name="totalTPSMass" type="double"></element>
-		<element name="totalTPSCoGLongPosition" type="double"></element>
-	  </sequence>
-	</complexType>
-  </element>
-
-  <element name="SecondaryPropulsion">
-	<complexType>
-	  <sequence>
-		<element name="OMS" minOccurs="0">
-		  <complexType>
+		<complexType name="REVTPS">
 			<sequence>
-			  <element name="thrust" type="tns:OptVarDouble"></element>
-			  <element name="burningTime" type="tns:OptVarDouble"></element>
-			  <element name="Isp" type="double"></element>
-			  <element name="dryMass" type="double"></element>
-			  <element name="dryCoGLongPosition" type="double"></element>
-			  <element name="propMass" type="double"></element>
-			  <element name="length" type="double"></element>
-			  <element name="diameter" type="double"></element>
+				<element name="maxHeatFlux" type="tns:OptVarDouble"></element>
+				<element name="maxIntegratedHeatLoad" type="tns:OptVarDouble"></element>
+				<element name="mainTPSReuse" type="tns:OptVarBool"></element>
+				<element name="mainTPSMaterial" type="tns:OptVarString"></element>
+				<element name="mainTPSThickness" type="double"></element>
+				<element name="mainTPSMass" type="double"></element>
+				<element name="totalTPSMass" type="double"></element>
+				<element name="totalTPSCoGLongPosition" type="double"></element>
 			</sequence>
-		  </complexType>
-		</element>
-		<element name="RCS">
-		  <complexType>
+		</complexType>
+
+		<complexType name="REVSecondaryPropulsionType">
 			<sequence>
-			  <element name="thrust" type="tns:OptVarDouble"></element>
-			  <element name="totalMass" type="double"></element>
-			  <element name="totalCoGLongPosition" type="double"></element>
+				<element name="OMS" type="REVOMSType" minOccurs="0"></element>
+				<element name="RCS" type="REVRCSType">					
+				</element>
 			</sequence>
-		  </complexType>
-		</element>
-	  </sequence>
-	</complexType>
-  </element>
+		</complexType>
 
-  <complexType name="REVComponentsMassType">
-	<sequence>
-	  <element name="avionics" type="double" minOccurs="0"></element>
-	  <element name="eps" type="double" minOccurs="0"></element>
-	  <element name="crewSystems" type="double" minOccurs="0"></element>
-	</sequence>
-  </complexType>
+<complexType name="REVOMSType">
+						<sequence>
+							<element name="thrust" type="tns:OptVarDouble"></element>
+							<element name="burningTime" type="tns:OptVarDouble"></element>
+							<element name="Isp" type="double"></element>
+							<element name="dryMass" type="double"></element>
+							<element name="dryCoGLongPosition" type="double"></element>
+							<element name="propMass" type="double"></element>
+							<element name="length" type="double"></element>
+							<element name="diameter" type="double"></element>
+						</sequence>
+					</complexType>
+					
+					<complexType name="REVRCSType">
+						<sequence>
+							<element name="thrust" type="tns:OptVarDouble"></element>
+							<element name="totalMass" type="double"></element>
+							<element name="totalCoGLongPosition" type="double"></element>
+						</sequence>
+					</complexType>
 
-  <complexType name="REVComponentsType">
-	<sequence>
-	  <element name="Mass" type="tns:REVComponentsMassType"></element>
-	  <element name="CoGLongPosition">
-		<complexType>
-		  <sequence>
+	<complexType name="REVComponentsMassType">
+		<sequence>
 			<element name="avionics" type="double" minOccurs="0"></element>
 			<element name="eps" type="double" minOccurs="0"></element>
 			<element name="crewSystems" type="double" minOccurs="0"></element>
-		  </sequence>
-		</complexType>
-	  </element>
-	</sequence>
-  </complexType>
-
-  <element name="Weights">
-	<complexType>
-	  <sequence>
-		<element name="totalDryMass" type="double"></element>
-		<element name="totalPropellantMass" type="double"></element>
-		<element name="totalWetMass" type="double"></element>
-		<element name="totalDryCoGLongPosition" type="double"></element>
-		<element name="totalWetCoGLongPosition" type="double"></element>
-		<element name="InertialMatrix">
-		  <complexType>
-			<sequence>
-			  <element name="ixx" type="double"></element>
-			  <element name="iyy" type="double"></element>
-			  <element name="izz" type="double"></element>
-			  <element name="ixy" type="double"></element>
-			  <element name="ixz" type="double"></element>
-			  <element name="iyz" type="double"></element>
-			</sequence>
-		  </complexType>
-		</element>
-		<element name="trimStability" type="double"></element>
-		<element name="internalVolumeAvailable" type="double"></element>
-		<element name="internalVolumeRequired" type="double"></element>
-		<element name="internalVolumeCstrViolation" type="double"></element>
-		<element name="CoGShiftCstrViolation" type="double"></element>
-		<element name="redundancyLevel" type="tns:OptVarString"></element>
-		<element name="Components" type="tns:REVComponentsType"></element>
-	  </sequence>
+		</sequence>
 	</complexType>
-  </element>
 
-  <complexType name="REVSystemCostsType">
-	<sequence>
-	  <element name="systemDevelopmentCost" type="double"></element>
-	  <element name="systemProductionCost" type="double"></element>
-	  <element name="flightOperationsCost" type="double"></element>
-	  <element name="recoveryCost" type="double" minOccurs="0"></element>
-	  <element name="groundFacilitiesCost" type="double"></element>
-	  <element name="fixedGroundCost" type="double"></element>
-	</sequence>
-  </complexType>
+	<complexType name="REVComponentsType">
+		<sequence>
+			<element name="Mass" type="tns:REVComponentsMassType"></element>
+			<element name="CoGLongPosition">
+				<complexType>
+					<sequence>
+						<element name="avionics" type="double" minOccurs="0"></element>
+						<element name="eps" type="double" minOccurs="0"></element>
+						<element name="crewSystems" type="double" minOccurs="0"></element>
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
 
-  <complexType name="REVCostsType">
-	<sequence>
-	  <element name="lifeCycleCost" type="double"></element>
-	  <element name="costPerMission" type="double"></element>
-	  <element name="costPerKilo" type="double"></element>
-	  <element name="SystemCosts" type="tns:REVSystemCostsType"></element>
-	  <element name="SubsystemsDevelopCosts">
-		<complexType>
-		  <sequence>
-			<element name="structure" type="double"></element>
-			<element name="TPS" type="double"></element>
-			<element name="avionics" type="double"></element>
-			<element name="OMS" type="double"></element>
-			<element name="RCS" type="double"></element>
-			<element name="parachutes" type="double"></element>
-			<element name="airbags" type="double"></element>
-			<element name="crewSystems" type="double" minOccurs="0"></element>
-		  </sequence>
+		<complexType name="REVWeights">
+			<sequence>
+				<element name="totalDryMass" type="double"></element>
+				<element name="totalPropellantMass" type="double"></element>
+				<element name="totalWetMass" type="double"></element>
+				<element name="totalDryCoGLongPosition" type="double"></element>
+				<element name="totalWetCoGLongPosition" type="double"></element>
+				<element name="InertialMatrix">
+					<complexType>
+						<sequence>
+							<element name="ixx" type="double"></element>
+							<element name="iyy" type="double"></element>
+							<element name="izz" type="double"></element>
+							<element name="ixy" type="double"></element>
+							<element name="ixz" type="double"></element>
+							<element name="iyz" type="double"></element>
+						</sequence>
+					</complexType>
+				</element>
+				<element name="trimStability" type="double"></element>
+				<element name="internalVolumeAvailable" type="double"></element>
+				<element name="internalVolumeRequired" type="double"></element>
+				<element name="internalVolumeCstrViolation" type="double"></element>
+				<element name="CoGShiftCstrViolation" type="double"></element>
+				<element name="redundancyLevel" type="tns:OptVarString"></element>
+				<element name="Components" type="tns:REVComponentsType"></element>
+			</sequence>
 		</complexType>
-	  </element>
-	  <element name="SubsystemsProductionCosts">
-		<complexType>
-		  <sequence>
-			<element name="structure" type="double"></element>
-			<element name="TPS" type="double"></element>
-			<element name="avionics" type="double"></element>
-			<element name="OMS" type="double"></element>
-			<element name="RCS" type="double"></element>
-			<element name="parachutes" type="double"></element>
-			<element name="airbags" type="double"></element>
-			<element name="crewSystems" type="double" minOccurs="0"></element>
-			<element name="propellants" type="double"></element>
-		  </sequence>
-		</complexType>
-	  </element>
-	  <element name="SubsystemsRefurbishmentCosts" minOccurs="0">
-		<complexType>
-		  <sequence>
-			<element name="structure" type="double"></element>
-			<element name="TPS" type="double"></element>
-			<element name="avionics" type="double"></element>
-			<element name="OMS" type="double"></element>
-			<element name="RCS" type="double"></element>
-			<element name="parachutes" type="double"></element>
-			<element name="airbags" type="double"></element>
-			<element name="crewSystems" type="double" minOccurs="0"></element>
-		  </sequence>
-		</complexType>
-	  </element>
-	</sequence>
-  </complexType>
 
-  <complexType name="REVReliabilityType">
-	<sequence>
-	  <element name="globalVehicleReliability" type="double"></element>
-	  <element name="softwareReliability" type="double"></element>
-	  <element name="crewSafety" type="double"></element>
-	  <element name="SubsystemsReliability">
-		<complexType>
-		  <sequence>
-			<element name="structure" type="double"></element>
-			<element name="TPS" type="double"></element>
-			<element name="avionics" type="double"></element>
-			<element name="OMS" type="double"></element>
-			<element name="RCS" type="double"></element>
-			<element name="parachutes" type="double"></element>
-			<element name="airbags" type="double"></element>
-			<element name="crewSystems" type="double" minOccurs="0"></element>
-		  </sequence>
-		</complexType>
-	  </element>
-	</sequence>
-  </complexType>
+	<complexType name="REVSystemCostsType">
+		<sequence>
+			<element name="systemDevelopmentCost" type="double"></element>
+			<element name="systemProductionCost" type="double"></element>
+			<element name="flightOperationsCost" type="double"></element>
+			<element name="recoveryCost" type="double" minOccurs="0"></element>
+			<element name="groundFacilitiesCost" type="double"></element>
+			<element name="fixedGroundCost" type="double"></element>
+		</sequence>
+	</complexType>
 
-  <complexType name="REVDiscretizationSettingsType">
-	<sequence>
-	  <element name="nMachPointsCl" type="int"></element>
-	  <element name="nAlfaPointsCl" type="int"></element>
-	  <element name="nMachPointsCd" type="int"></element>
-	  <element name="nAlfaPointsCd" type="int"></element>
-	  <element name="nMachPointsCm" type="int"></element>
-	  <element name="nAlfaPointsCm" type="int"></element>
-	  <element name="nAoAControlNodes" type="int"></element>
-	  <element name="nBankControlNodes" type="int"></element>
-	</sequence>
-  </complexType>
+	<complexType name="REVCostsType">
+		<sequence>
+			<element name="lifeCycleCost" type="double"></element>
+			<element name="costPerMission" type="double"></element>
+			<element name="costPerKilo" type="double"></element>
+			<element name="SystemCosts" type="tns:REVSystemCostsType"></element>
+			<element name="SubsystemsDevelopCosts" type="tns:REVSubsystemsDevelopCostsType"></element>
+			<element name="SubsystemsProductionCosts" type="tns:REVSubsystemsProductionCostsType"></element>
+			<element name="SubsystemsRefurbishmentCosts" type="tns:REVSubsystemsRefurbishmentCostsType" minOccurs="0"></element>
+		</sequence>
+	</complexType>
+	
+	<complexType name="REVSubsystemsRefurbishmentCostsType">
+					<sequence>
+						<element name="structure" type="double"></element>
+						<element name="TPS" type="double"></element>
+						<element name="avionics" type="double"></element>
+						<element name="OMS" type="double"></element>
+						<element name="RCS" type="double"></element>
+						<element name="parachutes" type="double"></element>
+						<element name="airbags" type="double"></element>
+						<element name="crewSystems" type="double" minOccurs="0"></element>
+					</sequence>
+				</complexType>
+	
+	<complexType name="REVSubsystemsProductionCostsType">
+					<sequence>
+						<element name="structure" type="double"></element>
+						<element name="TPS" type="double"></element>
+						<element name="avionics" type="double"></element>
+						<element name="OMS" type="double"></element>
+						<element name="RCS" type="double"></element>
+						<element name="parachutes" type="double"></element>
+						<element name="airbags" type="double"></element>
+						<element name="crewSystems" type="double" minOccurs="0"></element>
+						<element name="propellants" type="double"></element>
+					</sequence>
+				</complexType>
+	
+					<complexType name="REVSubsystemsDevelopCostsType">
+					<sequence>
+						<element name="structure" type="double"></element>
+						<element name="TPS" type="double"></element>
+						<element name="avionics" type="double"></element>
+						<element name="OMS" type="double"></element>
+						<element name="RCS" type="double"></element>
+						<element name="parachutes" type="double"></element>
+						<element name="airbags" type="double"></element>
+						<element name="crewSystems" type="double" minOccurs="0"></element>
+					</sequence>
+				</complexType>
 
+	<complexType name="REVReliabilityType">
+		<sequence>
+			<element name="globalVehicleReliability" type="double"></element>
+			<element name="softwareReliability" type="double"></element>
+			<element name="crewSafety" type="double"></element>
+			<element name="SubsystemsReliability" type="tns:REVSubsystemsReliablityType"></element>
+		</sequence>
+	</complexType>
+	
+	<complexType name="REVSubsystemsReliablityType">
+					<sequence>
+						<element name="structure" type="double"></element>
+						<element name="TPS" type="double"></element>
+						<element name="avionics" type="double"></element>
+						<element name="OMS" type="double"></element>
+						<element name="RCS" type="double"></element>
+						<element name="parachutes" type="double"></element>
+						<element name="airbags" type="double"></element>
+						<element name="crewSystems" type="double" minOccurs="0"></element>
+					</sequence>
+				</complexType>
+<!-- 
+	<complexType name="REVDiscretizationSettingsType">
+		<sequence>
+			<element name="nMachPointsCl" type="int"></element>
+			<element name="nAlfaPointsCl" type="int"></element>
+			<element name="nMachPointsCd" type="int"></element>
+			<element name="nAlfaPointsCd" type="int"></element>
+			<element name="nMachPointsCm" type="int"></element>
+			<element name="nAlfaPointsCm" type="int"></element>
+			<element name="nAoAControlNodes" type="int"></element>
+			<element name="nBankControlNodes" type="int"></element>
+		</sequence>
+	</complexType>
+ -->
 </schema>

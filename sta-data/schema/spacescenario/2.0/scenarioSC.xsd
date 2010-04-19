@@ -35,7 +35,7 @@
 			  <sequence>
 				<element name="mass" type="double"></element>
 				<element name="power" type="double"></element>
-				<element ref="tns:ObservationAntenna" minOccurs="0"></element>
+				<element ref="tns:AbstractPayload" maxOccurs="4"></element>
 			  </sequence>
 			</complexType>
 		  </element>
@@ -327,7 +327,6 @@
 		  <complexType>
 			<sequence>
 			  <element name="totalTTCMass" type="double"></element>
-			  <element ref="tns:CommunicationAntenna" maxOccurs="unbounded"></element>
 			</sequence>
 		  </complexType>
 		</element>

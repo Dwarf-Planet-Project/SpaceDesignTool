@@ -326,6 +326,20 @@ addGroundStationItem(QTreeWidgetItem* parent,
 }
 
 
+// New method by Guillermo to handle special satellites from ESA
+static void
+addESASatelliteItem(QTreeWidgetItem* parent,
+                     const char* name)
+{
+    QTreeWidgetItem* myESASatelliteItem   = new QTreeWidgetItem(parent);
+    myESASatelliteItem->setText(0, name);
+    myESASatelliteItem->setIcon(0, QIcon(":/icons/ParticipantSATELLITE.png"));
+    setDragAndDropInfo(myESASatelliteItem,
+                       ScenarioElementBox::PARTICIPANT_MIME_TYPE,
+                       spaceVehicleFragment(name, "Satellite"));
+}
+
+
 
 ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
     QWidget(parent)
@@ -359,16 +373,26 @@ setFont(font);
     missionArcsItem->setText(0, tr("Mission Arcs"));
     QTreeWidgetItem* maneuversItem = new QTreeWidgetItem();
     maneuversItem->setText(0, tr("Maneuvers"));
+
+    // Now creating optional widgets to ease the work of the user:
+    // ESA satellites
+    QTreeWidgetItem* ESASatellitesItem = new QTreeWidgetItem();
+    ESASatellitesItem->setText(0, tr("ESA Satellites"));
+
+    // Ground stations
     QTreeWidgetItem* ESAgroundStationsItem = new QTreeWidgetItem();
     ESAgroundStationsItem->setText(0, tr("ESA Ground Stations"));
     // Next lines patch by Guillermo to include NASA stations
     QTreeWidgetItem* NASAgroundStationsItem = new QTreeWidgetItem();
     NASAgroundStationsItem->setText(0, tr("NASA Ground Stations"));
 
+
+    // Adding the widgets
     m_elementTreeWidget->clear();
     m_elementTreeWidget->addTopLevelItem(participantsItem);
     m_elementTreeWidget->addTopLevelItem(missionArcsItem);
     m_elementTreeWidget->addTopLevelItem(maneuversItem);
+    m_elementTreeWidget->addTopLevelItem(ESASatellitesItem);
     m_elementTreeWidget->addTopLevelItem(ESAgroundStationsItem);
     m_elementTreeWidget->addTopLevelItem(NASAgroundStationsItem);
 
@@ -487,6 +511,11 @@ setFont(font);
     //                   MISSION_ARC_MIME_TYPE,
     //                   rendezvousFragment("Rendezvous 1"));
 
+
+    // Some  ESA Satellites
+    addESASatelliteItem(ESASatellitesItem, "Cryosat-2");
+
+
     // The ESTRACK ground stations (LAT, LON, ALT)
     addGroundStationItem(ESAgroundStationsItem, "Cebreros",     "Earth",  40.45268986,  -4.36754881, 794.1);
     addGroundStationItem(ESAgroundStationsItem, "Kiruna",      "Earth",  67.8571252,   20.96434169, 402.275);
@@ -524,6 +553,12 @@ setFont(font);
         m_elementTreeWidget->setItemExpanded(item, true);
         item->setExpanded(true);
     }
+
+    // Contracting now some elements that should not be shown to the user at a first sight.
+    ESASatellitesItem->setExpanded(false);
+    ESAgroundStationsItem->setExpanded(false);
+    NASAgroundStationsItem->setExpanded(false);
+
 
     setLayout(layout);
 #endif

@@ -364,81 +364,219 @@
 	</element>
 
 	<!-- ANTENNA -->
-    <complexType name="AbstractConeType">
-      <sequence/>
-    </complexType>
+    
 
-	<element name="AbstractCone" type="tns:AbstractConeType" abstract="true"></element>
+	<element name="AbstractCone" type="tns:AbstractConeType"
+		abstract="true"></element>
+	
+	<complexType name="AbstractConeType" abstract="true"></complexType>
 
-	<element name="CircularCone" substitutionGroup="tns:AbstractCone">
-	  <complexType>
-        <complexContent>
-          <extension base="tns:AbstractConeType">
-			<sequence>
-			  <element name="coneAngle" type="double"></element>
-			</sequence>
-          </extension>
-        </complexContent>
-	  </complexType>
-	</element>
-
-	<element name="RectangularCone" substitutionGroup="tns:AbstractCone" type="tns:RectangularConeType"/>
-	<complexType name="RectangularConeType">
-      <complexContent>
-        <extension base="tns:AbstractConeType">
-		  <sequence>
-		    <element name="coneAngle1" type="double"></element>
-		    <element name="coneAngle2" type="double"></element>
-		  </sequence>
-        </extension>
-      </complexContent>
-	</complexType>
-
-	<element name="OvalCone" substitutionGroup="tns:AbstractCone" type="tns:OvalConeType"/>
-	<complexType name="OvalConeType">
-      <complexContent>
-        <extension base="tns:AbstractConeType">
-		  <sequence>
-		  </sequence>
-        </extension>
-      </complexContent>
-	</complexType>
-
-	<element name="Radar" substitutionGroup="tns:AbstractCone" type="tns:AbstractConeType">
-    </element>
-
-	<complexType name="Antenna">
-	  <sequence>
-		<element ref="tns:AbstractCone"></element>
-		<element name="PointingDirection">
-		  <complexType>
-			<sequence>
-			  <element name="referenceSystem" type="string" minOccurs="0"></element>
-			  <element name="azimuth" type="double"></element>
-			  <element name="elevation" type="double"></element>
-			  <element name="azimuthDot" type="double" minOccurs="0"></element>
-			  <element name="elevationDot" type="double" minOccurs="0"></element>
-			</sequence>
-		  </complexType>
-		</element>
-	  </sequence>
-	</complexType>
-
-	<element name="CommunicationAntenna">
-	  <complexType>
+	<element name="CircularCone" substitutionGroup="tns:AbstractCone"
+		type="tns:CircularConeType" />
+	
+	<complexType name="CircularConeType">
 		<complexContent>
-		  <extension base="tns:Antenna"></extension>
+			<extension base="tns:AbstractConeType">
+				<sequence>
+					<element name="coneAngle" type="double"></element>
+				</sequence>
+			</extension>
 		</complexContent>
-	  </complexType>
-	</element>
+	</complexType>
 
-	<element name="ObservationAntenna">
+	<element name="RectangularCone" substitutionGroup="tns:AbstractCone"
+		type="tns:RectangularConeType" />
+	
+	<complexType name="RectangularConeType">
+		<complexContent>
+			<extension base="tns:AbstractConeType">
+				<sequence>
+					<element name="coneAngle1" type="double"></element>
+					<element name="coneAngle2" type="double"></element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<element name="OvalCone" substitutionGroup="tns:AbstractCone"
+		type="tns:OvalConeType" />
+		
+	<complexType name="OvalConeType">
+		<complexContent>
+			<extension base="tns:AbstractConeType">
+				<sequence>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<element name="RadarCone" substitutionGroup="tns:AbstractCone"
+		type="tns:RadarConeType"></element>
+
+	<complexType name="RadarConeType">
+		<complexContent>
+			<extension base="tns:AbstractConeType">
+				<sequence>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+<element name="Antenna" type="tns:AntennaType" abstract="true"></element>
+		
+		
+		
+	<complexType name="AntennaType" abstract="true">
+		<sequence>
+			<element ref="tns:AbstractCone"></element>
+			<element name="PointingDirection">
+				<complexType>
+					<sequence>
+						<element name="referenceSystem" type="string" minOccurs="0"></element>
+						<element name="azimuth" type="double"></element>
+						<element name="elevation" type="double"></element>
+						<element name="azimuthDot" type="double" minOccurs="0"></element>
+						<element name="elevationDot" type="double" minOccurs="0"></element>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="EMproperties">
+				<complexType>
+					<sequence>
+						<element name="GainMax" type="double"></element>
+						<element name="Polarisation" type="string"></element>
+						<element name="AreaEff" type="double"></element>
+						<element name="Diameter" type="double"></element>
+						<element name="Efficiency" type="double"></element>
+						<element name="AngularBeamWidth" type="double"></element>
+						<element name="Frequency" type="double"></element>
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+	
+	<element name="Transmitter" substitutionGroup="tns:Antenna">
 		<complexType>
 			<complexContent>
-				<extension base="tns:Antenna"></extension>
-			</complexContent>
+				<extension base="tns:AntennaType">
+					<sequence>
+						<element name="Power" type="double"></element>
+						<element name="FedderLossTx" type="double"></element>
+						<element name="DepointingLossTx" type="double"></element>
+						<element name="Modulation">
+							<complexType>
+								<sequence>
+									<element name="ModulationType" type="string"></element>
+									<element name="DataRate" type="double"></element>
+								</sequence>
+							</complexType>
+						</element>
+					</sequence>
+					</extension>
+					</complexContent>
 		</complexType>
 	</element>
+
+	<element name="Receiver" substitutionGroup="tns:Antenna">
+		<complexType>
+					<complexContent>
+				<extension base="tns:AntennaType">
+					<sequence>
+						<element name="GoverT" type="double"></element>
+						<element name="FeederLossRx" type="double"></element>
+						<element name="DepointingLossRx" type="double"></element>
+						<element name="SystemTemperature">
+							<complexType>
+								<sequence>
+									<element name="Tantenna">
+										<complexType>
+											<sequence>
+												<element name="Tsky" type="double"></element>
+												<element name="Tground" type="double"></element>
+											</sequence>
+										</complexType>
+									</element>
+									<element name="RxNoiseFigure" type="double"></element>
+									<element name="ThermoFeeder" type="double"></element>
+									<element name="ThermoReveicer" type="double"></element>
+								</sequence>
+							</complexType>
+						</element>
+					</sequence>
+					</extension>
+					</complexContent>
+		</complexType>
+	</element>
+	
+	<!-- PAYLOADS -->
+	
+					
+	<element name="AbstractPayload" type="tns:AbstractPayloadType" abstract="true"></element>	
+	
+	<complexType name="AbstractPayloadType" abstract="true"></complexType>
+					
+		<element name="OpticalPayload" substitutionGroup="tns:AbstractPayload"
+	type="tns:OpticalPayloadType"></element>
+
+	<complexType name="OpticalPayloadType">
+		<complexContent>
+			<extension base="tns:AbstractPayloadType">
+				<sequence>
+					<element name="linearResolution" type="double"></element>
+					<element name="numberOfPixels" type="double"></element>
+					<element name="wavelenght" type="double"></element>
+					<element name="dataRate" type="double"></element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>		
+	
+	<element name="RadarPayload" substitutionGroup="tns:AbstractPayload"
+	type="tns:RadarPayloadType"></element>
+
+	<complexType name="RadarPayloadType">
+		<complexContent>
+			<extension base="tns:AbstractPayloadType">
+				<sequence>
+					<element name="angularResolution" type="double"></element>
+					<element name="linearResolution" type="double"></element>
+					<element name="wavelenght" type="double"></element>
+					<element name="dataRate" type="double"></element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>		
+	
+	<element name="XrayPayload" substitutionGroup="tns:AbstractPayload"
+	type="tns:XrayPayloadType"></element>
+
+	<complexType name="XrayPayloadType">
+		<complexContent>
+			<extension base="tns:AbstractPayloadType">
+				<sequence>
+					<element name="angularResolution" type="double"></element>
+					<element name="wavelenght" type="double"></element>
+					<element name="dataRate" type="double"></element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>			
+	
+	
+<element name="CommunicationPayload" substitutionGroup="tns:AbstractPayload"
+	type="tns:CommunicationPayloadType"></element>
+
+	<complexType name="CommunicationPayloadType">
+		<complexContent>
+			<extension base="tns:AbstractPayloadType">
+			<sequence>
+			<element ref="tns:Antenna" maxOccurs="unbounded"></element>
+			</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
 
 
 

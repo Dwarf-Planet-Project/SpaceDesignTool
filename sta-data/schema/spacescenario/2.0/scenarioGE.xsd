@@ -14,7 +14,22 @@
 		  <extension base="tns:ParticipantType">
 			<sequence>
 			  <element name="Location" type="tns:LocationType"/>
-			  <element ref="tns:CommunicationAntenna" maxOccurs="1"></element>
+			  <element ref="tns:Antenna" maxOccurs="unbounded"></element>
+			  <element name="Environment">
+				<complexType>
+					<sequence>
+						<element name="Rain">
+							<complexType>
+								<sequence>
+									<element name="PercentageExceededLimit" type="double"></element>
+								</sequence>
+							</complexType>
+						</element>
+						<element name="OxygenAtt" type="double"></element>
+						<element name="WaterVapourAtt" type="double"></element>
+					</sequence>
+				</complexType>
+			  </element>
 			</sequence>
 		  </extension>
 		</complexContent>

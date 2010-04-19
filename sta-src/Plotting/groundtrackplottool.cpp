@@ -139,7 +139,7 @@ static double chooseGridSpacing(double range, double maxTicks)
 
 
 // For now, use a constant minimum elevation angle for all ground stations
-static const double GroundStationElevationAngle = 15.0;
+static const double GroundStationElevationAngle = 5.0;
 static const QColor GroundStationColor(255, 64, 20);
 
 
