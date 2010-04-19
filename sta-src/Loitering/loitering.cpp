@@ -827,45 +827,9 @@ PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
     // Get the initial state in two forms:
     //   - Keplerian elements for simple two-body propagation
     //   - A state vector for any other sort of propagation
-    sta::StateVector initialState;
-    sta::KeplerianElements initialStateKeplerian;
-
     ScenarioAbstract6DOFPositionType* position = loitering->InitialPosition()->Abstract6DOFPosition().data();
-    if (dynamic_cast<ScenarioStateVectorType*>(position))
-    {
-        ScenarioStateVectorType* sv = dynamic_cast<ScenarioStateVectorType*>(position);
-        initialState = sta::StateVector(Eigen::Vector3d(sv->x(), sv->y(), sv->z()),
-                                        Eigen::Vector3d(sv->vx(), sv->vy(), sv->vz()));
-        initialStateKeplerian = cartesianTOorbital(centralBody->mu(), initialState);
-    }
-    else if (dynamic_cast<ScenarioKeplerianElementsType*>(position))
-    {
-        ScenarioKeplerianElementsType* elements = dynamic_cast<ScenarioKeplerianElementsType*>(position);
-        sta::KeplerianElements e;
-        e.AscendingNode = elements->RAAN();
-        e.ArgumentOfPeriapsis = elements->argumentOfPeriapsis();
-        e.Eccentricity = elements->eccentricity();
-        e.TrueAnomaly = elements->trueAnomaly();
-        e.SemimajorAxis = elements->semiMajorAxis();
-        e.Inclination = elements->inclination();
-
-        initialState = orbitalTOcartesian(centralBody->mu(), e.SemimajorAxis, e.Eccentricity, e.Inclination,
-                                          e.ArgumentOfPeriapsis, e.AscendingNode, e.MeanAnomaly);
-        initialStateKeplerian = e;
-    }
-    else if (dynamic_cast<ScenarioSphericalCoordinatesType*>(position))
-    {
-        ScenarioSphericalCoordinatesType* spherical = dynamic_cast<ScenarioSphericalCoordinatesType*>(position);
-
-        // TODO: implement this; need to figure out mapping of spherical coordinate properties to
-        // parameters for sphericalTOcartesian function -cjl
-        // initialState = sphericalTOcartesian();
-        // initialStateKeplerial = cartesianToOrbital(initialState);
-    }
-    else
-    {
-        qWarning("Unknown initial position element");
-    }
+    sta::StateVector initialState = AbstractPositionToStateVector(position, centralBody);
+    sta::KeplerianElements initialStateKeplerian = AbstractPositionToKeplerianElements(position, centralBody);
 
     double mu = centralBody->mu();
 

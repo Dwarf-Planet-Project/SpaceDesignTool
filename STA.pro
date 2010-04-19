@@ -275,7 +275,8 @@ RAM_FORMS = sta-src/RAM/parametrizedgeometry.ui \
 
 # ########################## Scenario  #################################
 SCENARIO_SOURCES = sta-src/Scenario/staschema.cpp \
-    sta-src/Scenario/stascenarioutil.cpp
+    sta-src/Scenario/stascenarioutil.cpp \
+    sta-src/Scenario/scenario.cpp
 SCENARIO_HEADERS = sta-src/Scenario/staschema.h \
     sta-src/Scenario/stascenarioutil.h \
     sta-src/Scenario/propagationfeedback.h \

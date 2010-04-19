@@ -17,19 +17,29 @@
  */
 
 /*
- ------ Copyright (C) 2008 European Space Agency (space.trajectory.analysis AT gmail.com) ----
+ ------ Copyright (C) 2008-2010 European Space Agency (space.trajectory.analysis AT gmail.com) ----
  ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
  */
-
-// This file simply includes all headers for scenario objects; it makes
-// it easy for another source file to use space scenarios without worrying
-// about including headers for all required objects.
 
 #ifndef _STA_SCENARIO_H_
 #define _STA_SCENARIO_H_
 
 #include "staschema.h"
+
+#include "Astro-Core/statevector.h"
+#include "Astro-Core/stabody.h"
+
+
+// Utility functions for space scenario objects.
+
+extern sta::StateVector
+AbstractPositionToStateVector(const ScenarioAbstract6DOFPositionType* position,
+                              const StaBody* centralBody);
+extern sta::KeplerianElements
+AbstractPositionToKeplerianElements(const ScenarioAbstract6DOFPositionType* position,
+                                    const StaBody* centralBody);
+
 
 #endif // _STA_SCENARIO_H_
 
