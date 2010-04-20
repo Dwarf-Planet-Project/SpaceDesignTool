@@ -7,8 +7,8 @@
 			<complexContent>
 				<extension base="tns:ParticipantType">
 					<sequence>
-						<element ref="tns:LVProgram"></element>
-						<element ref="tns:LVMission"></element>
+						<element name="Program" type="tns:LVProgramType"></element>
+						<element name="Mission" type="tns:LVMissionType"></element>
 						<element name="System" type="tns:LVSystemType"></element>
 						<element ref="tns:Optimization"></element>
 						<element ref="tns:OutputFiles"></element>
@@ -19,48 +19,316 @@
 		</complexType>
 	</element>
 
-	<element name="PropulsionSystem">
-		<complexType>
+	<complexType name="LVProgramType">
+		<sequence>
+		  <element name="nLaunches" type="int"></element>
+		  <element name="nYearsOps" type="double"></element>
+		  <element name="nLaunchesPerYear" type="int"></element>
+		  <element name="ProgramCostFactors" type="tns:LVProgramCostFactorsType"></element>
+		</sequence>
+  	</complexType>
+
+	<complexType name="LVMissionType">
+        <sequence>
+		  <element name="Payload" type="tns:LVPayloadType"></element>
+		  <element ref="tns:Environment"></element>
+		  <element name="LaunchSite" type="tns:LVLaunchSiteType"></element>
+		  <element name="TargetOrbit" type="tns:LVTargetOrbitType"></element>
+		  <element name="Trajectory" type="tns:LVTrajectoryType"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="LVSystemType">
+	  <sequence>
+		<element name="Architecture" type="tns:LVArchitectureType"></element>
+		<element name="PlFairing" type="tns:LVPlFairingType" maxOccurs="1"></element>
+		<element name="LowerStage" type="tns:LVLowerStageType" maxOccurs="3"></element>
+		<element name="UpperStage" type="tns:LVUpperStageType"></element>
+		<element name="Boosters" type="tns:LVBoostersType" minOccurs="0" maxOccurs="2"></element>
+		<element name="SystemWeights" type="tns:LVSystemWeightsType"></element>
+		<element name="SystemCosts" type="tns:LVSystemCostsType"></element>
+		<element name="SystemReliability" type="tns:LVSystemReliabilityType"></element>
+		<element name="Aerodynamics" type="tns:LVAerodynamicsType"></element>
+		<element name="SystemConstraints" type="tns:LVSystemConstraintsType"></element>
+	  </sequence>
+	</complexType>
+
+	<complexType name="LVPropulsionSystemType">
 			<sequence>
-				<element name="System">
-					<complexType>
+				<element name="System" type="tns:LVPropulsionSystemSystemType"></element>
+				<element name="LiquidTanks" type="tns:LVPropulsionSystemLiquidTanksType"></element>
+				<element name="SolidGrain" type="tns:LVPropulsionSystemSolidGrainType"></element>
+				<element name="FeedSystem" type="tns:LVPropulsionSystemFeedSystemType"></element>
+				<element name="CombustionChamber" type="tns:LVPropulsionSystemCombustionChamberType"></element>
+				<element name="Nozzle" type="tns:LVPropulsionSystemNozzleType"></element>
+				<element name="Performance" type="tns:LVPropulsionSystemPerformanceType"></element>
+			</sequence>
+	</complexType>
+
+	<complexType name="LVGeometryType">
+		<sequence>
+		  <element name="diameterEqualToUpper" type="tns:OptVarBool"></element>
+		  <element name="lengthOverDiam" type="tns:OptVarDouble"></element>
+		  <element name="length" type="double"></element>
+		  <element name="diameter" type="double"></element>
+		  <element name="volume" type="double"></element>
+		  <element name="baseLongPosition" type="double"></element>
+		  <element name="noseShape" type="string"></element>
+		  <element name="noseLength" type="double"></element>
+		  <element name="adapterLength" type="double"></element>
+		  <element name="intertankLength" type="double"></element>
+		  <element name="interstageLength" type="double"></element>
+		  <element name="enginesGimbalClearenceCstrViolation" type="double"></element>
+		  <element name="geometryInterferenceCstrViolation" type="double"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="LVAerodynamicsType">
+		<sequence>
+		  <element name="userDefinedAero" type="boolean"></element>
+		  <element name="referenceArea" type="double"></element>
+		  <element name="referenceLength" type="double"></element>
+		  <element name="cl" type="tns:AeroCoefFileType"></element>
+		  <element name="cd" type="tns:AeroCoefFileType"></element>
+		  <element name="cm" type="tns:AeroCoefFileType"></element>
+        </sequence>
+	</complexType>
+
+	<complexType name="LVComponentWeightsType">
+			<sequence>
+				<element name="tanksArrangement" type="tns:OptVarInt"></element>
+				<element name="tanksType" type="tns:OptVarInt"></element>
+				<element name="dryMass" type="double"></element>
+				<element name="dryCoGLongPosition" type="double"></element>
+				<element name="wetMass" type="double" minOccurs="0"></element>
+				<element name="mainStructMass" type="double"></element>
+				<element name="oxTankMass" type="double" minOccurs="0"></element>
+				<element name="fuelTankMass" type="double" minOccurs="0"></element>
+				<element name="tpsMass" type="double"></element>
+				<element name="avionicsMass" type="double"></element>
+				<element name="epsMass" type="double"></element>
+				<element name="plAdapterMass" type="double" minOccurs="0"></element>
+				<element name="padInterfaceMass" type="double" minOccurs="0"></element>
+				<element name="interstageMass" type="double" minOccurs="0"></element>
+			</sequence>
+	</complexType>
+
+	<complexType name="LVSystemWeightsType">
+			<sequence>
+				<element name="totalDryMass" type="double"></element>
+				<element name="totalWetMass" type="double"></element>
+				<element name="takeoffThrustOverWeight" type="double"></element>
+				<element name="maxAxialAcc" type="tns:OptVarDouble"></element>
+				<element name="maxHeatFlux" type="tns:OptVarDouble"></element>
+				<element name="maxDynPressure" type="tns:OptVarDouble"></element>
+				<element name="mainStructuralMaterial" type="tns:OptVarInt"></element>
+				<element name="redundancyLevel" type="tns:OptVarInt"></element>
+				<element name="structuralSafetyMargin" type="tns:OptVarDouble"></element>
+			</sequence>
+	</complexType>
+
+	<complexType name="LVComponentCostsType">
+			<sequence>
+				<element name="nEngineTests" type="tns:OptVarInt"></element>
+				<element name="DevelopmentCosts" type="tns:LVDevelopmentCostsType"></element>
+				<element name="ProductionCosts" type="tns:LVProductionCostsType"></element>
+			</sequence>
+	</complexType>
+
+	<complexType name="LVSystemCostsType">
+			<sequence>
+				<element name="TotalProgramCosts" type="tns:LVTotalProgramCostsType"></element>
+				<element name="developmentTime" type="double"></element>
+				<element name="DirectOperationsCosts" type="tns:LVDirectOperationsCostsType"></element>
+				<element name="IndirectOperationsCosts" type="tns:LVIndirectOperationsCostsType"></element>
+			</sequence>
+	</complexType>
+
+	<complexType name="LVComponentReliabilityType">
+		<sequence>
+		  <element name="Separation" type="tns:LVSeparationType"></element>
+		  <element name="avionicsFailureRate" type="double"></element>
+		  <element name="structureFailureRate" type="double"></element>
+		  <element name="tpsFailureRate" type="double"></element>
+		  <element name="PropulsionReliability" type="tns:LVPropulsionReliabilityType"></element>
+		  <element name="overallComponentFailureRate" type="double"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="LVSystemReliabilityType">
+			<sequence>
+				<element name="globalVehicleReliability" type="double"></element>
+				<element name="selfDestructReliability" type="double"></element>
+				<element name="missionSafety" type="double"></element>
+				<element name="preLaunchReliability" type="double"></element>
+			    <element name="TakeoffReliability" type="tns:LVTakeoffReliabilityType"></element>
+				<element name="numberOfAscentPhases" type="int"></element>
+				<element name="ascentPhasesDurations" type="tns:ListOfDouble"></element>
+				<element name="ascentPhasesFailureRate" type="tns:ListOfDouble"></element>
+			</sequence>
+	</complexType>
+
+
+	<complexType name="LVTrajectoryType">
+			<sequence>
+			    <element name="TakeOff" type="tns:LVTakeOffType"></element>
+			    <element name="Ignitions" type="tns:LVIgnitionsType"></element>
+			    <element name="AtmosphericFlight" type="tns:LVAtmosphericFlightType"></element>
+			    <element name="ExoatmosphericFlight" type="tns:LVExoatmosphericFlightType"></element>
+			    <element name="TrajectoryConstraints" type="tns:LVTrajectoryConstraintsType"></element>
+			</sequence>
+	</complexType>
+
+		  <complexType name="LVProgramCostFactorsType">
+			  <sequence>
+				<element name="f0" type="double"></element>
+				<element name="launcherDesignComplexity" type="string"></element>
+				<element name="f1" type="double"></element>
+				<element name="teamExpertise" type="string"></element>
+				<element name="f3" type="double"></element>
+				<element name="contractorsStructure" type="string"></element>
+				<element name="f7" type="double"></element>
+			  </sequence>
+		  </complexType>
+
+		  <complexType name="LVPayloadType">
+			  <sequence>
+				<element name="mass" type="double"></element>
+				<element name="length" type="double"></element>
+				<element name="diameter" type="double"></element>
+				<element name="CoGLongPosition" type="double"></element>
+				<element name="maxAxialAcc" type="double"></element>
+				<element name="maxHeatFlux" type="double"></element>
+			  </sequence>
+		  </complexType>
+		  
+		  <complexType name="LVLaunchSiteType">
+			  <sequence>
+				<element ref="tns:Abstract3DOFPosition"></element>
+				<element name="allowedAzimuths" type="tns:ListOfDouble"></element>
+			  </sequence>
+			  <attribute name="name" type="string"></attribute>
+		  </complexType>
+		  
+		  <complexType name="LVTargetOrbitType">
+			  <sequence>
+				<element name="semiaxis" type="double"></element>
+				<element name="eccentricity" type="double"></element>
+				<element name="inclination" type="double"></element>
+				<element name="semiaxisTol" type="double"></element>
+				<element name="eccentricityTol" type="double"></element>
+				<element name="inclinationTol" type="double"></element>
+			  </sequence>
+		  </complexType>
+		  
+		  
+		<complexType name="LVArchitectureType">
+			<sequence>
+			  <element name="boosterConf" type="tns:OptVarInt"></element>
+			  <element name="nStages" type="tns:OptVarInt"></element>
+			  <element name="nBoosters" type="tns:OptVarInt"></element>
+			  <element name="singleEngineType" type="tns:OptVarBool"></element>
+			</sequence>
+		</complexType>
+		
+		<complexType name="LVPlFairingType">
+			<sequence>
+			  <element name="Geometry" type="tns:LVGeometryType"></element>
+			  <element name="ComponentWeights" type="tns:LVComponentWeightsType"></element>
+			  <element name="ComponentCosts" type="tns:LVComponentCostsType"></element>
+			  <element name="ComponentReliability" type="tns:LVComponentReliabilityType"></element>
+			</sequence>
+		</complexType>
+
+		<complexType name="LVLowerStageType">
+			<sequence>
+			  <element name="Geometry" type="tns:LVGeometryType"></element>
+			  <element name="PropulsionSystem" type="tns:LVPropulsionSystemType"></element>
+			  <element name="ComponentWeights" type="tns:LVComponentWeightsType"></element>
+			  <element name="ComponentCosts" type="tns:LVComponentCostsType"></element>
+			  <element name="ComponentReliability" type="tns:LVComponentReliabilityType"></element>
+			</sequence>
+			<attribute name="stageNumber" type="int"></attribute>
+		</complexType>
+		
+		<complexType name="LVUpperStageType">
+			<sequence>
+			  <element name="Geometry" type="tns:LVGeometryType"></element>
+			  <element name="PropulsionSystem" type="tns:LVPropulsionSystemType"></element>
+			  <element name="ComponentWeights" type="tns:LVComponentWeightsType"></element>
+			  <element name="ComponentCosts" type="tns:LVComponentCostsType"></element>
+			  <element name="ComponentReliability" type="tns:LVComponentReliabilityType"></element>
+			</sequence>
+			<attribute name="stageNumber" type="int"></attribute>
+		</complexType>
+		
+		<complexType name="LVBoostersType">
+			<sequence>
+			  <element name="Geometry" type="tns:LVGeometryType"></element>
+			  <element name="PropulsionSystem" type="tns:LVPropulsionSystemType"></element>
+			  <element name="ComponentWeights" type="tns:LVComponentWeightsType"></element>
+			  <element name="ComponentCosts" type="tns:LVComponentCostsType"></element>
+			  <element name="ComponentReliability" type="tns:LVComponentReliabilityType"></element>
+			</sequence>
+			<attribute name="boostersSetNumber" type="int"></attribute>
+		</complexType>
+
+		<complexType name="LVSystemConstraintsType">
+				<sequence>
+				</sequence>
+		</complexType>
+		
+				<complexType name="LVPropulsionSystemSystemType">
 						<sequence>
-							<element name="propType" type="tns:OptVarString"></element>
+							<element name="propType" type="tns:OptVarInt"></element>
 							<element name="fuelType" type="string"></element>
 							<element name="oxType" type="string"></element>
 							<element name="numberOfEngines" type="tns:OptVarInt"></element>
 							<element name="nominalThrust" type="tns:OptVarDouble"></element>
+							<element name="nominalThrustPerEngine" type="double"></element>
+							<element name="engineWerMass" type="double"></element>
 							<element name="totalEngineDryMass" type="double"></element>
+							<element name="totalPropSysDryMass" type="double"></element>
 							<element name="propMass" type="tns:OptVarDouble"></element>
+							<element name="totalEngineLength" type="double"></element>
 							<element name="engineCoGLongPosition" type="double"></element>
-							<element name="lengthOverDiam" type="tns:OptVarDouble"></element>
 							<element name="offTheShelf" type="tns:OptVarBool"></element>
-							<element name="offTheShelfEngineType" type="tns:OptVarString"
-								minOccurs="0"></element>
-							<element name="feedType" minOccurs="0" type="tns:OptVarString"></element>
+							<element name="offTheShelfEngineId" type="tns:OptVarInt"></element>
+							<element name="offTheShelfEngineName" type="string"></element>
+							<element name="feedType" type="tns:OptVarInt"></element>
 							<element name="coolingType" minOccurs="0" type="string"></element>
-							<element name="mixtureRatio" type="tns:OptVarDouble"
-								minOccurs="0"></element>
+							<element name="mixtureRatio" type="tns:OptVarDouble"></element>
 							<element name="nozzleOptAlt" type="tns:OptVarDouble"></element>
+							<element name="pccOverPa" type="double"></element>
+							<element name="paOptAlt" type="double"></element>
+							<element name="spFillingFactorCstrViolation" type="double"></element>
+							<element name="thrustRangeCstrViolation" type="double"></element>
+							<element name="maxNenginesCstrViolation" type="double"></element>
+							<element name="ceaExecutionFailureViolation" type="double"></element>
 						</sequence>
-					</complexType>
-				</element>
-				<element name="LiquidTanks" minOccurs="0">
-					<complexType>
+				</complexType>
+
+				<complexType name="LVPropulsionSystemLiquidTanksType">
 						<sequence>
 							<element name="tanksPressureNorm" type="tns:OptVarDouble"></element>
+							<element name="tanksPressure" type="double"></element>
 							<element name="oxTankLength" type="double"></element>
 							<element name="oxTankDiam" type="double"></element>
 							<element name="oxTankPressure" type="double"></element>
+							<element name="oxMass" type="double"></element>
+							<element name="oxTankVolume" type="double"></element>
 							<element name="fuelTankLength" type="double"></element>
 							<element name="fuelTankDiam" type="double"></element>
 							<element name="fuelTankPressure" type="double"></element>
+							<element name="fuelMass" type="double"></element>
+							<element name="fuelTankVolume" type="double"></element>
 						</sequence>
-					</complexType>
-				</element>
-				<element name="SolidGrain" minOccurs="0">
-					<complexType>
+				</complexType>
+
+				<complexType name="LVPropulsionSystemSolidGrainType">
 						<sequence>
+							<element name="abOverAt" type="tns:OptVarDouble"></element>
+							<element name="ab" type="double" minOccurs="0"></element>
 							<element name="grainLength" type="double"></element>
 							<element name="grainDiam" type="double"></element>
 							<element name="igniterLength" type="double"></element>
@@ -69,10 +337,9 @@
 							<element name="sliverMass" type="double"></element>
 							<element name="cavityVolume" type="double"></element>
 						</sequence>
-					</complexType>
-				</element>
-				<element name="FeedSystem" minOccurs="0">
-					<complexType>
+				</complexType>
+
+				<complexType name="LVPropulsionSystemFeedSystemType">
 						<sequence>
 							<element name="pressurizerTankPressure" type="double"
 								minOccurs="0"></element>
@@ -88,16 +355,11 @@
 							<element name="totalFeedSystemLength" type="double"></element>
 							<element name="totalFeedSystemDiameter" type="double"></element>
 						</sequence>
-					</complexType>
-				</element>
-				<element name="CombustionChamber">
-					<complexType>
+				</complexType>
+
+				<complexType name="LVPropulsionSystemCombustionChamberType">
 						<sequence>
-							<element name="abOverAt" type="tns:OptVarDouble"
-								minOccurs="0"></element>
-							<element name="accOverAt" type="tns:OptVarDouble"
-								minOccurs="0"></element>
-							<element name="ab" type="double" minOccurs="0"></element>
+							<element name="accOverAt" type="tns:OptVarDouble"></element>
 							<element name="acc" type="double" minOccurs="0"></element>
 							<element name="chamberPressureNorm" type="tns:OptVarDouble"></element>
 							<element name="chamberPressure" type="double"></element>
@@ -106,254 +368,56 @@
 							<element name="chamberDiameter" type="double" minOccurs="0"></element>
 							<element name="chamberMass" type="double" minOccurs="0"></element>
 						</sequence>
-					</complexType>
-				</element>
-				<element name="Nozzle">
-					<complexType>
+				</complexType>
+
+				<complexType name="LVPropulsionSystemNozzleType">
 						<sequence>
 							<element name="at" type="double"></element>
 							<element name="ae" type="double"></element>
 							<element name="aeOverat" type="double"></element>
-							<element name="nozzleLength" type="double"></element>
+							<element name="throatDiameter" type="double"></element>
 							<element name="nozzleDiameter" type="double"></element>
+							<element name="convLength" type="double"></element>
+							<element name="divLength" type="double"></element>
+							<element name="nozzleLength" type="double"></element>
 							<element name="nozzleMass" type="double"></element>
-							<element name="nozzleType" type="tns:OptVarString"></element>
+							<element name="nozzleType" type="tns:OptVarInt"></element>
 							<element name="divAngle" type="tns:OptVarDouble"></element>
-							<element name="tvcType" type="tns:OptVarString"></element>
+							<element name="tvcType" type="tns:OptVarInt"></element>
 							<element name="tvcAngle" type="tns:OptVarDouble"></element>
 							<element name="tvcMass" type="double"></element>
 							<element name="nozzleCantAngle" type="double"></element>
 							<element name="nozzleShape" type="string"></element>	<!-- file name for the nozzle shape design -->
 						</sequence>
-					</complexType>
-				</element>
-				<element name="Performance">
-					<complexType>
+				</complexType>
+
+				<complexType name="LVPropulsionSystemPerformanceType">
 						<sequence>
+							<element name="seaThrust" type="double"></element>
+							<element name="seaThrustPerEngine" type="double"></element>
+							<element name="vacuumThrust" type="double"></element>
+							<element name="vacuumThrustPerEngine" type="double"></element>
 							<element name="theoOptIsp" type="double"></element>
 							<element name="realOptIsp" type="double"></element>
-							<element name="realSeeIsp" type="double"></element>
+							<element name="theoSeaIsp" type="double"></element>
+							<element name="realSeaIsp" type="double"></element>
+							<element name="theoVacuumIsp" type="double"></element>
 							<element name="realVacuumIsp" type="double"></element>
 							<element name="thrustCoeff" type="double"></element>
 							<element name="charactVelocity" type="double"></element>
 							<element name="thrustCoeffEff" type="double"></element>
 							<element name="charactVelocityEff" type="double"></element>
+							<element name="totalIspEff" type="double"></element>
 							<element name="nominalMassFlow" type="double"></element>
+							<element name="nominalMassFlowPerEngine" type="double"></element>
+							<element name="gammaExhaust" type="double"></element>
 							<element name="minOperativeAlt" type="double"></element>
-							<element name="throttle" type="tns:OptVarBool" minOccurs="0"></element>
-							<element name="restart" type="tns:OptVarBool" minOccurs="0"></element>
+							<element name="throttle" type="tns:OptVarBool"></element>
+							<element name="restart" type="tns:OptVarBool"></element>
 						</sequence>
-					</complexType>
-				</element>
-			</sequence>
-		</complexType>
-	</element>
+				</complexType>
 
-    <element name="LVProgram">
-	  <complexType>
-		<sequence>
-		  <element name="nLaunches" type="int"></element>
-		  <element name="nYearsOps" type="double"></element>
-		  <element name="nLaunchesPerYear" type="int"></element>
-		  <element name="programCostFactors">
-			<complexType>
-			  <sequence>
-				<element name="f0" type="double"></element>
-				<element name="launcherDesignComplexity" type="string"></element>
-				<element name="f1" type="double"></element>
-				<element name="teamExpertise" type="string"></element>
-				<element name="f3" type="double"></element>
-				<element name="contractorsStructure" type="string"></element>
-				<element name="f7" type="double"></element>
-			  </sequence>
-			</complexType>
-		  </element>
-		</sequence>
-	  </complexType>
-	</element>
-
-    <element name="LVMission">
-      <complexType>
-        <sequence>
-		  <element name="LVPayload">
-			<complexType>
-			  <sequence>
-				<element name="mass" type="double"></element>
-				<element name="length" type="double"></element>
-				<element name="diameter" type="double"></element>
-				<element name="CoGLongPosition" type="double"></element>
-				<element name="maxAxialAcc" type="double"></element>
-				<element name="maxHeatFlux" type="double"></element>
-			  </sequence>
-			</complexType>
-		  </element>
-		  <element ref="tns:Environment"></element>
-		  <element name="LaunchSite">
-			<complexType>
-			  <sequence>
-				<element ref="tns:Abstract3DOFPosition"></element>
-				<element name="allowedAzimuths" type="tns:ListOfDouble"></element>
-			  </sequence>
-			  <attribute name="name" type="string"></attribute>
-			</complexType>
-		  </element>
-		  <element name="TargetOrbit">
-			<complexType>
-			  <sequence>
-				<element name="semiaxis" type="double"></element>
-				<element name="eccentricity" type="double"></element>
-				<element name="inclination" type="double"></element>
-				<element name="semiaxisTol" type="double"></element>
-				<element name="eccentricityTol" type="double"></element>
-				<element name="inclinationTol" type="double"></element>
-			  </sequence>
-			</complexType>
-		  </element>
-		  <element ref="tns:Trajectory"></element>
-		</sequence>
-	  </complexType>
-	</element>
-
-	<complexType name="LVSystemType">
-	  <sequence>
-		<element name="Architecture">
-		  <complexType>
-			<sequence>
-			  <element name="boosterConf" type="tns:OptVarString"></element>
-			  <element name="nStages" type="tns:OptVarInt"></element>
-			  <element name="nBoosters" type="tns:OptVarInt"></element>
-			  <element name="singleEngineType" type="tns:OptVarBool"></element>
-			</sequence>
-		  </complexType>
-		</element>
-		<element name="LowerStage" maxOccurs="3">
-		  <complexType>
-			<sequence>
-			  <element ref="tns:Geometry"></element>
-			  <element ref="tns:PropulsionSystem"></element>
-			  <element ref="tns:ComponentWeights"></element>
-			  <element ref="tns:ComponentCosts"></element>
-			  <element ref="tns:ComponentReliability"></element>
-			</sequence>
-			<attribute name="stageNumber" type="int"></attribute>
-		  </complexType>
-		</element>
-		<element name="UpperStage">
-		  <complexType>
-			<sequence>
-			  <element ref="tns:Geometry"></element>
-			  <element ref="tns:PropulsionSystem"></element>
-			  <element ref="tns:ComponentWeights"></element>
-			  <element ref="tns:ComponentCosts"></element>
-			  <element ref="tns:ComponentReliability"></element>
-			</sequence>
-			<attribute name="stageNumber" type="int"></attribute>
-		  </complexType>
-		</element>
-		<element name="Boosters" minOccurs="0" maxOccurs="2">
-		  <complexType>
-			<sequence>
-			  <element ref="tns:Geometry"></element>
-			  <element ref="tns:PropulsionSystem"></element>
-			  <element ref="tns:ComponentWeights"></element>
-			  <element ref="tns:ComponentCosts"></element>
-			  <element ref="tns:ComponentReliability"></element>
-			</sequence>
-			<attribute name="boostersSetNumber" type="int"></attribute>
-		  </complexType>
-		</element>
-		<element ref="tns:SystemWeights"></element>
-		<element ref="tns:SystemCosts"></element>
-		<element ref="tns:SystemReliability"></element>
-		<element ref="tns:LVAerodynamics"></element>
-		<element name="DiscretizationSettings">
-		  <complexType>
-			<sequence>
-			  <element name="nMachPointsCl" type="int"></element>
-			  <element name="nAlfaPointsCl" type="int"></element>
-			  <element name="nMachPointsCd" type="int"></element>
-			  <element name="nAlfaPointsCd" type="int"></element>
-			  <element name="nMachPointsCm" type="int"></element>
-			  <element name="nAlfaPointsCm" type="int"></element>
-			  <element name="nPitchControlNodes" type="int"></element>
-			  <element name="nYawControlNodes" type="int"></element>
-			  <element name="nThrustControlNodes" type="int"></element>
-			</sequence>
-		  </complexType>
-		</element>
-	  </sequence>
-	</complexType>
-
-	<element name="Geometry">
-	  <complexType>
-		<sequence>
-		  <element name="length" type="double"></element>
-		  <element name="diameter" type="double"></element>
-		  <element name="diameterEqualToUpper" type="tns:OptVarBool"></element>
-		  <element name="frontShape" type="string"></element>
-		  <element name="baseLongPosition" type="double"></element>
-		  <element name="constraintEngine" type="double"></element>
-		  <element name="constraintInterference" type="double"></element>
-		</sequence>
-	  </complexType>
-	</element>
-
-	<element name="LVAerodynamics">
-	  <complexType>
-		<sequence>
-		  <element name="userDefinedAero" type="boolean"></element>
-		  <element name="referenceArea" type="double"></element>
-		  <element name="referenceLength" type="double"></element>
-		  <element name="clFileName" type="string"></element>
-		  <element name="cdFileName" type="string"></element>
-		  <element name="cmFileName" type="string"></element>
-        </sequence>
-	  </complexType>
-	</element>
-
-	<element name="ComponentWeights">
-		<complexType>
-			<sequence>
-				<element name="dryMass" type="double"></element>
-				<element name="dryCoGLongPosition" type="double"></element>
-				<element name="wetMass" type="double" minOccurs="0"></element>
-				<element name="mainStructMass" type="double"></element>
-				<element name="oxTankMass" type="double" minOccurs="0"></element>
-				<element name="fuelTankMass" type="double" minOccurs="0"></element>
-				<element name="tpsMass" type="double"></element>
-				<element name="avionicsMass" type="double"></element>
-				<element name="epsMass" type="double"></element>
-				<element name="plAdapterMass" type="double" minOccurs="0"></element>
-				<element name="padInterfaceMass" type="double" minOccurs="0"></element>
-				<element name="interstageMass" type="double" minOccurs="0"></element>
-			</sequence>
-		</complexType>
-	</element>
-
-	<element name="SystemWeights">
-		<complexType>
-			<sequence>
-				<element name="totalDryMass" type="double"></element>
-				<element name="totalWetMass" type="double"></element>
-				<element name="takeoffThrustOverWeight" type="double"></element>
-				<element name="maxAxialAcc" type="tns:OptVarDouble"></element>
-				<element name="maxHeatFlux" type="tns:OptVarDouble"></element>
-				<element name="maxDynPressure" type="tns:OptVarDouble"></element>
-				<element name="mainStructuralMaterial" type="tns:OptVarString"></element>
-				<element name="tanksArrangement" type="tns:OptVarString"></element>
-				<element name="tanksType" type="tns:OptVarString"></element>
-				<element name="redundancyLevel" type="tns:OptVarString"></element>
-				<element name="structuralSafetyMargin" type="tns:OptVarDouble"></element>
-			</sequence>
-		</complexType>
-	</element>
-
-	<element name="ComponentCosts">
-		<complexType>
-			<sequence>
-				<element name="nEngineTests" type="tns:OptVarInt"></element>
-				<element name="DevelopmentCosts">
-					<complexType>
+				<complexType name="LVDevelopmentCostsType">
 						<sequence>
 							<element name="enginef2" type="double"></element>
 							<element name="enginef5" type="double"></element>
@@ -361,10 +425,9 @@
 							<element name="systemf2" type="double"></element>
 							<element name="systemDevelopmentCost" type="double"></element>
 						</sequence>
-					</complexType>
-				</element>
-				<element name="ProductionCosts">
-					<complexType>
+				</complexType>
+				
+				<complexType name="LVProductionCostsType">
 						<sequence>
 							<element name="totalNumberOfEngines" type="int"></element>
 							<element name="enginesLearningFactor" type="double"></element>
@@ -373,17 +436,10 @@
 							<element name="totalEngineProductionCost" type="double"></element>
 							<element name="totalSystemProductionCost" type="double"></element>
 						</sequence>
-					</complexType>
-				</element>
-			</sequence>
-		</complexType>
-	</element>
+				</complexType>
 
-	<element name="SystemCosts">
-		<complexType>
-			<sequence>
-				<element name="TotalProgramCosts">
-					<complexType>
+
+				<complexType name="LVTotalProgramCostsType">
 						<sequence>
 							<element name="lifeCycleCostMY" type="double"></element>
 							<element name="costPerLaunchMY" type="double"></element>
@@ -394,14 +450,12 @@
 							<element name="costPerLaunchFYEuros" type="double"></element>
 							<element name="costPerKiloFYEuros" type="double"></element>
 						</sequence>
-					</complexType>
-				</element>
-				<element name="developmentTime" type="double"></element>
-				<element name="DirectOperationsCosts">
-					<complexType>
+				</complexType>
+				
+				<complexType name="LVDirectOperationsCostsType">
 						<sequence>
 							<element name="transportCost" type="double"></element>
-							<element name="processingType" type="tns:OptVarString"></element>
+							<element name="processingType" type="tns:OptVarInt"></element>
 							<element name="fv" type="double"></element>
 							<element name="fc" type="double"></element>
 							<element name="groundOperationsCost" type="double"></element>
@@ -410,39 +464,27 @@
 							<element name="propellantsCost" type="double"></element>
 							<element name="insuranceFee" type="double"></element>
 						</sequence>
-					</complexType>
-				</element>
-				<element name="IndirectOperationsCosts">
-					<complexType>
+				</complexType>
+				
+				<complexType name="LVIndirectOperationsCostsType">
 						<sequence>
 							<element name="groundFacilitiesBuildingCost" type="double"></element>
 							<element name="launchSiteCostPerYear" type="double"></element>
 							<element name="personnelCostPerYear" type="double"></element>
 						</sequence>
-					</complexType>
-				</element>
-			</sequence>
-		</complexType>
-	</element>
+				</complexType>
 
-	<element name="ComponentReliability">
-	  <complexType>
-		<sequence>
-		  <element name="Separation">
-			<complexType>
+
+		  <complexType name="LVSeparationType">
 			  <sequence>
 				<element name="stageSeparationReliability" type="double"></element>
 				<element name="boostersSetSeparationReliability" type="double"></element>
 				<element name="fairingSeparationReliability" type="double"></element>
 				<element name="payloadSeparationReliability" type="double"></element>
 			  </sequence>
-			</complexType>
-		  </element>
-		  <element name="avionicsFailureRate" type="double"></element>
-		  <element name="structureFailureRate" type="double"></element>
-		  <element name="tpsFailureRate" type="double"></element>
-		  <element name="PropulsionReliability">
-			<complexType>
+		  </complexType>
+		  
+		  <complexType name="LVPropulsionReliabilityType">
 			  <sequence>
 				<element name="igniterReliability" type="double"></element>
 				<element name="feedFailureRate" type="double"></element>
@@ -453,89 +495,60 @@
 				<element name="singleEngineOverallFailureRate" type="double"></element>
 				<element name="propulsionOverallFailureRate" type="double"></element>
 			  </sequence>
-			</complexType>
-		  </element>
-		  <element name="overallComponentFailureRate" type="double"></element>
-		</sequence>
-	  </complexType>
-	</element>
-
-	<element name="SystemReliability">
-		<complexType>
-			<sequence>
-				<element name="globalVehicleReliability" type="double"></element>
-				<element name="selfDestructReliability" type="double"></element>
-				<element name="missionSafety" type="double"></element>
-				<element name="preLaunchReliability" type="double"></element>
-				<element name="Launch">
-					<complexType>
+		  </complexType>
+		  
+				<complexType name="LVTakeoffReliabilityType">
 						<sequence>
 							<element name="launchSiteReliability" type="double"></element>
 							<element name="ignitionReliability" type="double"></element>
 							<element name="controlMarginReliability" type="double"></element>
 							<element name="launchOverallReliability" type="double"></element>
 						</sequence>
-					</complexType>
-				</element>
-				<element name="numberOfAscentPhases" type="int"></element>
-				<element name="ascentPhasesDurations" type="tns:ListOfDouble"></element>
-				<element name="ascentPhasesFailureRate" type="tns:ListOfDouble"></element>
-			</sequence>
-		</complexType>
-	</element>
+				</complexType>
 
 
-	<element name="Trajectory">
-		<complexType>
-			<sequence>
-				<element name="TakeOff">
-					<complexType>
+				<complexType name="LVTakeOffType">
 						<sequence>
 							<element name="padClearingAlt" type="double"></element>
-							<element name="maxPitchOverAngle" type="double"></element>
+							<element name="maxPitchOverAngle" type="tns:OptVarDouble"></element>
 							<element name="pitchOverDuration" type="double"></element>
 							<element name="pitchOverDecayTime" type="double"></element>
-							<element name="pitchOverHeadingAngle" type="double"></element>
+							<element name="pitchOverHeadingAngle" type="tns:OptVarDouble"></element>
 						</sequence>
-					</complexType>
-				</element>
-				<element name="Ignitions">
-					<complexType>
+				</complexType>
+				
+				<complexType name="LVIgnitionsType">
 						<sequence>
-							<element name="coreIgnitionDelayOption" type="boolean"
-								minOccurs="0"></element>
-							<element name="coreIgnitionDelayTime" type="double"
-								minOccurs="0"></element>
-							<element name="secondBoostersSetIgnitionDelayOption"
-								type="boolean" minOccurs="0"></element>
-							<element name="secondBoostersSetIgnitionDelayTime" type="double"
-								minOccurs="0"></element>
+							<element name="coreIgnitionDelayOption" type="tns:OptVarBool"></element>
+							<element name="coreIgnitionDelayTime" type="tns:OptVarDouble"></element>
+							<element name="secondBoostersSetIgnitionDelayOption" type="tns:OptVarBool"></element>
+							<element name="secondBoostersSetIgnitionDelayTime" type="tns:OptVarDouble"></element>
+						  	<element name="nThrustControlNodes" type="tns:ListOfInt"></element>
 						</sequence>
-					</complexType>
-				</element>
-				<element name="AtmosphericFlight">
-					<complexType>
+				</complexType>
+				
+				<complexType name="LVAtmosphericFlightType">
 						<sequence>
 							<element name="optimizedPitchValues" type="tns:ListOfDouble"></element>
 							<element name="optimizedYawValues" type="tns:ListOfDouble"></element>
-							<element name="optimizedThrustValues" type="tns:ListOfDouble"
-								minOccurs="0"></element>
+							<element name="optimizedThrustValues" type="tns:ListOfDouble"></element>
+			  				<element name="nPitchControlNodes" type="int"></element>
+							<element name="nYawControlNodes" type="int"></element>
 						</sequence>
-					</complexType>
-				</element>
-				<element name="ExoatmosphericFlight">
-					<complexType>
+				</complexType>
+				
+				<complexType name="LVExoatmosphericFlightType">
 						<sequence>
-							<element name="bilinearLawInitPitch" type="double"></element>
-							<element name="bilinearLawFinalPitch" type="double"></element>
-							<element name="bilinearLawParam" type="double"></element>
+							<element name="bilinearLawInitPitch" type="tns:OptVarDouble"></element>
+							<element name="bilinearLawFinalPitch" type="tns:OptVarDouble"></element>
+							<element name="bilinearLawParam" type="tns:OptVarDouble"></element>
+							<element name="nYawControlNodes" type="int"></element>
 							<element name="circBurnOption" type="boolean"></element>
-							<element name="circBurnTime" type="double" minOccurs="0"></element>
+							<element name="circBurnTime" type="tns:OptVarDouble"></element>
 						</sequence>
-					</complexType>
-				</element>
-				<element name="Constraints">
-					<complexType>
+				</complexType>
+				
+				<complexType name="LVTrajectoryConstraintsType">
 						<sequence>
 							<element name="finalSemiaxisError" type="double"></element>
 							<element name="finalEccError" type="double"></element>
@@ -545,11 +558,6 @@
 							<element name="dynPressCstrViolation" type="double"></element>
 							<element name="controllabilityCstrViolation" type="double"></element>
 						</sequence>
-					</complexType>
-				</element>
-			</sequence>
-		</complexType>
-	</element>
-
+				</complexType>
 
 </schema>

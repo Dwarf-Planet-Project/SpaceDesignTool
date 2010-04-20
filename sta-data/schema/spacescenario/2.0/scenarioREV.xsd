@@ -302,18 +302,6 @@
 			</sequence>
 		</complexType>
 
-		<complexType name="AeroCoefFileType">
-						<sequence>
-							<element name="FileLocation" type="string"></element>
-							<element name="CoefName" type="string"></element>
-							<element name="NumberOfIndepVars" type="int"></element>
-							<element name="IndepVarNames" type="tns:ListOfString"></element>
-							<element name="IndepVarDiscretizationPoints" type="tns:ListOfInt"></element>
-							<element name="IndepVarMin" type="tns:ListOfDouble"></element>
-							<element name="IndepVarMax" type="tns:ListOfDouble"></element>
-						</sequence>
-					</complexType>
-
 		<complexType name="REVTPS">
 			<sequence>
 				<element name="maxHeatFlux" type="tns:OptVarDouble"></element>
