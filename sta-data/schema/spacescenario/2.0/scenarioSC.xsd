@@ -33,9 +33,7 @@
 		  <element name="Payload">
 			<complexType>
 			  <sequence>
-				<element name="mass" type="double"></element>
-				<element name="power" type="double"></element>
-				<element ref="tns:AbstractPayload" maxOccurs="4"></element>
+				<element ref="tns:AbstractPayload" maxOccurs="unbounded"></element>
 			  </sequence>
 			</complexType>
 		  </element>
@@ -305,6 +303,43 @@
 		<element name="Structure">
 		  <complexType>
 			<sequence>
+			  <element name="StructuralShape" type="string"></element>
+			  <element name="Sizing">
+			  	<complexType>
+			  		<sequence>
+			  			<element name="volume" type="double"></element>
+						<element name="width" type="double"></element>
+						<element name="length" type="double"></element>
+						<element name="height" type="double"></element> 
+			  		</sequence>
+			  	</complexType>
+			  </element>
+			  <element name="MomentsOfInertia">
+			  	<complexType>
+			  		<sequence>
+			  			<element name="xAxis" type="double"></element>
+						<element name="yAxis" type="double"></element>
+						<element name="zAxis" type="double"></element>
+			  		</sequence>
+			  	</complexType>
+			  </element>
+			  <element name="SecondMomentsOfArea">
+			  	<complexType>
+			  		<sequence>
+			  			<element name="xAxis" type="double"></element>
+						<element name="yAxis" type="double"></element>
+						<element name="zAxis" type="double"></element>
+			  		</sequence>
+			  	</complexType>
+			  </element>
+			  <element name="NaturalFrequency">
+			  	<complexType>
+			  		<sequence>
+			  			<element name="axialFrequency" type="double"></element>
+						<element name="lateralFrequency" type="double"></element>
+			  		</sequence>
+			  	</complexType>
+			  </element>
 			  <element name="totalStructureMass" type="double"></element>
 			</sequence>
 		  </complexType>
@@ -312,6 +347,52 @@
 		<element name="TCS"> <!-- Thermal Control System -->
 		  <complexType>
 			<sequence>
+			  <element name="Temperature">
+			  	<complexType>
+			  		<sequence>
+			  			<element name="maximumSCTemperature" type="double"></element>
+			  			<element name="minimumSCTemperature" type="double"></element>
+			  		</sequence>
+			  	</complexType>
+			  </element>
+			  <element name="heaterPower" type="double"></element>
+			  <element name="radiatedPower" type="double"></element>
+			  <element name="CoatingArea">
+			  	<complexType>
+			  		<sequence>
+			  			<element name="ColdSurface">
+			  				<complexType>
+			  					<sequence>
+			  						<element name="ColdCoating">
+			  							<complexType>
+			  								<sequence>
+			  									<element name="emissivity" type="double"></element>
+			  									<element name="absorptivity" type="double"></element>
+			  								</sequence>
+			  							</complexType>
+			  						</element>
+			  						<element name="totalColdArea" type="double"></element>
+			  					</sequence>
+			  				</complexType>
+			  			</element>
+			  			<element name="HotSurface">
+			  				<complexType>
+			  					<sequence>
+			  						<element name="HotCoating">
+			  							<complexType>
+			  								<sequence>
+			  									<element name="emissivity" type="double"></element>
+			  									<element name="absorptivity" type="double"></element>
+			  								</sequence>
+			  							</complexType>
+			  						</element>
+			  						<element name="totalHotArea" type="double"></element>
+			  					</sequence>
+			  				</complexType>
+			  			</element>
+			  		</sequence>
+			  	</complexType>
+			  </element>
 			  <element name="totalTCSMass" type="double"></element>
 			</sequence>
 		  </complexType>
@@ -319,6 +400,26 @@
 		<element name="EPS"> <!-- Electrical and Power System -->
 		  <complexType>
 			<sequence>
+			  <element name="SolarArray">
+			  	<complexType>
+			  		<sequence>
+			  			<element name="SACellType" type="string"></element>
+			  			<element name="massOfSolarArray" type="double"></element>
+			  			<element name="areaOfSolarArray" type="double"></element>
+			  		</sequence>
+			  	</complexType>
+			  </element>
+			  <element name="BatteryType">
+			  	<complexType>
+			  		<sequence>
+			  			<element name="BatteryType" type="string"></element>
+			  			<element name="totalMassOfBatteries" type="double"></element>
+			  			<element name="numberOfBatteries" type="double"></element>
+			  			<element name="totalVolumeOfBatteries" type="double"></element>
+			  		</sequence>
+			  	</complexType>
+			  </element>
+			  <element name="massOfPCU" type="double"></element>
 			  <element name="totalEPSMass" type="double"></element>
 			</sequence>
 		  </complexType>
@@ -327,6 +428,17 @@
 		  <complexType>
 			<sequence>
 			  <element name="totalTTCMass" type="double"></element>
+			  <element name="TTCAntenna">
+			  	<complexType>
+			  		<sequence>
+			  			<element name="TransmitterPower" type="double"></element>
+			  			<element name="TransmitterFrequency" type="double"></element>
+			  			<element name="TransmitterGain" type="double"></element>
+			  			<element name="LinkDuration" type="double"></element>
+			  			<element name="DataRate" type="double"></element>
+			  		</sequence>
+			  	</complexType>
+			  	</element>
 			</sequence>
 		  </complexType>
 		</element>
@@ -341,6 +453,7 @@
 		  <complexType>
 			<sequence>
 			  <element name="totalOBDHMass" type="double"></element>
+			  <element name="totalSizeOfMemory" type="double"></element>
 			</sequence>
 		  </complexType>
 		</element>

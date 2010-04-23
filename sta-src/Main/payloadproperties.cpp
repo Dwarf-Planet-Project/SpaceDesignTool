@@ -41,16 +41,16 @@ PayloadPropertiesDialog::PayloadPropertiesDialog(ScenarioTree* parent) :
 
 bool PayloadPropertiesDialog::loadValues(ScenarioPayload* payload)
 {
-    lineEditMassPayload->setText(QString::number(payload->mass()));
-    lineEditPowerPayload->setText(QString::number(payload->power()));
+    //lineEditMassPayload->setText(QString::number(payload->mass()));
+    //lineEditPowerPayload->setText(QString::number(payload->power()));
 
     return true;
 }
 
 bool PayloadPropertiesDialog::saveValues(ScenarioPayload* payload)
 {
-    payload->setMass(lineEditMassPayload->text().toDouble());
-    payload->setPower(lineEditPowerPayload->text().toDouble());
+   // payload->setMass(lineEditMassPayload->text().toDouble());
+    //payload->setPower(lineEditPowerPayload->text().toDouble());
 
     return true;
 }

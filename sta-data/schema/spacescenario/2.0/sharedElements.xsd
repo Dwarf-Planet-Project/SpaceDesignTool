@@ -445,11 +445,11 @@
 					<sequence>
 						<element name="GainMax" type="double"></element>
 						<element name="Polarisation" type="string"></element>
+						<element name="TiltAngle" type="double"></element>
 						<element name="AreaEff" type="double"></element>
 						<element name="Diameter" type="double"></element>
 						<element name="Efficiency" type="double"></element>
 						<element name="AngularBeamWidth" type="double"></element>
-						<element name="Frequency" type="double"></element>
 					</sequence>
 				</complexType>
 			</element>
@@ -500,6 +500,7 @@
 									<element name="RxNoiseFigure" type="double"></element>
 									<element name="ThermoFeeder" type="double"></element>
 									<element name="ThermoReveicer" type="double"></element>
+									<element name="TotalSystemTemp" type="double"></element>
 								</sequence>
 							</complexType>
 						</element>
@@ -512,9 +513,43 @@
 	<!-- PAYLOADS -->
 	
 					
-	<element name="AbstractPayload" type="tns:AbstractPayloadType" abstract="true"></element>	
+	<element name="AbstractPayload" type="tns:AbstractPayloadType" abstract="true" maxOccurs="4"></element>	
 	
-	<complexType name="AbstractPayloadType" abstract="true"></complexType>
+	<complexType name="AbstractPayloadType" abstract="true">
+		<sequence>
+			<element name="name" type="string"></element>
+			<element name="payloadMass" type="double"></element>
+			<element name="PayloadPower">
+						<complexType>
+							<sequence>
+								<element name="powerConsumption" type="double"></element>
+								<element name="powerOnPercentageInEclipse" type="double"></element>
+								<element name="powerOnPercentageInDaylight" type="double"></element>
+							</sequence>
+						</complexType>
+					</element>
+					<element name="PayloadStructure">
+						<complexType>
+							<sequence>
+								<element name="volume" type="double"></element>
+								<element name="width" type="double"></element>
+								<element name="length" type="double"></element>
+								<element name="height" type="double"></element>
+							</sequence>
+						</complexType>
+					</element>
+					<element name="PayloadTemperatureRange">
+						<complexType>
+							<sequence>
+								<element name="minimumTemperature" type="double"></element>
+								<element name="maximumTemperature" type="double"></element>
+							</sequence>
+						</complexType>
+					</element>	
+					<element name="dataRateOBDH" type="double"></element>
+					<element name="frequency" type="double"></element>
+		</sequence>
+	</complexType>
 					
 		<element name="OpticalPayload" substitutionGroup="tns:AbstractPayload"
 	type="tns:OpticalPayloadType"></element>
@@ -525,8 +560,6 @@
 				<sequence>
 					<element name="linearResolution" type="double"></element>
 					<element name="numberOfPixels" type="double"></element>
-					<element name="wavelenght" type="double"></element>
-					<element name="dataRate" type="double"></element>
 				</sequence>
 			</extension>
 		</complexContent>
@@ -540,9 +573,6 @@
 			<extension base="tns:AbstractPayloadType">
 				<sequence>
 					<element name="angularResolution" type="double"></element>
-					<element name="linearResolution" type="double"></element>
-					<element name="wavelenght" type="double"></element>
-					<element name="dataRate" type="double"></element>
 				</sequence>
 			</extension>
 		</complexContent>
@@ -556,8 +586,7 @@
 			<extension base="tns:AbstractPayloadType">
 				<sequence>
 					<element name="angularResolution" type="double"></element>
-					<element name="wavelenght" type="double"></element>
-					<element name="dataRate" type="double"></element>
+					<element name="numberOfPixels" type="double"></element>
 				</sequence>
 			</extension>
 		</complexContent>
@@ -588,7 +617,6 @@
         <element name="IndepVarMax" type="tns:ListOfDouble"></element> 
 	</sequence> 
 </complexType> 
-
 
 
 </schema>

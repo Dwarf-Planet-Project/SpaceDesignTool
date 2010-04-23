@@ -60,61 +60,78 @@ class ScenarioState12DOF;
 class ScenarioOptimization;
 class ScenarioOutputFiles;
 class ScenarioAbstractConeType;
-class ScenarioCircularCone;
+class ScenarioCircularConeType;
 class ScenarioRectangularConeType;
 class ScenarioOvalConeType;
-class ScenarioAntenna;
+class ScenarioRadarConeType;
+class ScenarioAntennaType;
 class ScenarioPointingDirection;
-class ScenarioCommunicationAntenna;
-class ScenarioObservationAntenna;
+class ScenarioEMproperties;
+class ScenarioTransmitter;
+class ScenarioModulation;
+class ScenarioReceiver;
+class ScenarioSystemTemperature;
+class ScenarioTantenna;
+class ScenarioAbstractPayloadType;
+class ScenarioPayloadPower;
+class ScenarioPayloadStructure;
+class ScenarioPayloadTemperatureRange;
+class ScenarioOpticalPayloadType;
+class ScenarioRadarPayloadType;
+class ScenarioXrayPayloadType;
+class ScenarioCommunicationPayloadType;
+class ScenarioAeroCoefFileType;
 class ScenarioLocationType;
 class ScenarioGroundStation;
+class ScenarioEnvironment;
+class ScenarioRain;
 class ScenarioLaunchPad;
 class ScenarioPoint;
 class ScenarioLocation;
 class ScenarioLV;
-class ScenarioPropulsionSystem;
-class ScenarioSystem;
-class ScenarioLiquidTanks;
-class ScenarioSolidGrain;
-class ScenarioFeedSystem;
-class ScenarioCombustionChamber;
-class ScenarioNozzle;
-class ScenarioPerformance;
-class ScenarioLVProgram;
-class ScenarioprogramCostFactors;
-class ScenarioLVMission;
-class ScenarioLVPayload;
-class ScenarioLaunchSite;
-class ScenarioTargetOrbit;
+class ScenarioLVProgramType;
+class ScenarioLVMissionType;
 class ScenarioLVSystemType;
-class ScenarioArchitecture;
-class ScenarioLowerStage;
-class ScenarioUpperStage;
-class ScenarioBoosters;
-class ScenarioDiscretizationSettings;
-class ScenarioGeometry;
-class ScenarioLVAerodynamics;
-class ScenarioComponentWeights;
-class ScenarioSystemWeights;
-class ScenarioComponentCosts;
-class ScenarioDevelopmentCosts;
-class ScenarioProductionCosts;
-class ScenarioSystemCosts;
-class ScenarioTotalProgramCosts;
-class ScenarioDirectOperationsCosts;
-class ScenarioIndirectOperationsCosts;
-class ScenarioComponentReliability;
-class ScenarioSeparation;
-class ScenarioPropulsionReliability;
-class ScenarioSystemReliability;
-class ScenarioLaunch;
-class ScenarioTrajectory;
-class ScenarioTakeOff;
-class ScenarioIgnitions;
-class ScenarioAtmosphericFlight;
-class ScenarioExoatmosphericFlight;
-class ScenarioConstraints;
+class ScenarioLVPropulsionSystemType;
+class ScenarioLVGeometryType;
+class ScenarioLVAerodynamicsType;
+class ScenarioLVComponentWeightsType;
+class ScenarioLVSystemWeightsType;
+class ScenarioLVComponentCostsType;
+class ScenarioLVSystemCostsType;
+class ScenarioLVComponentReliabilityType;
+class ScenarioLVSystemReliabilityType;
+class ScenarioLVTrajectoryType;
+class ScenarioLVProgramCostFactorsType;
+class ScenarioLVPayloadType;
+class ScenarioLVLaunchSiteType;
+class ScenarioLVTargetOrbitType;
+class ScenarioLVArchitectureType;
+class ScenarioLVPlFairingType;
+class ScenarioLVLowerStageType;
+class ScenarioLVUpperStageType;
+class ScenarioLVBoostersType;
+class ScenarioLVSystemConstraintsType;
+class ScenarioLVPropulsionSystemSystemType;
+class ScenarioLVPropulsionSystemLiquidTanksType;
+class ScenarioLVPropulsionSystemSolidGrainType;
+class ScenarioLVPropulsionSystemFeedSystemType;
+class ScenarioLVPropulsionSystemCombustionChamberType;
+class ScenarioLVPropulsionSystemNozzleType;
+class ScenarioLVPropulsionSystemPerformanceType;
+class ScenarioLVDevelopmentCostsType;
+class ScenarioLVProductionCostsType;
+class ScenarioLVTotalProgramCostsType;
+class ScenarioLVDirectOperationsCostsType;
+class ScenarioLVIndirectOperationsCostsType;
+class ScenarioLVSeparationType;
+class ScenarioLVPropulsionReliabilityType;
+class ScenarioLVTakeoffReliabilityType;
+class ScenarioLVTakeOffType;
+class ScenarioLVIgnitionsType;
+class ScenarioLVAtmosphericFlightType;
+class ScenarioLVExoatmosphericFlightType;
+class ScenarioLVTrajectoryConstraintsType;
 class ScenarioREV;
 class ScenarioREVProgramType;
 class ScenarioREVMissionType;
@@ -138,7 +155,6 @@ class ScenarioParachute;
 class ScenarioParachuteAerodynamics;
 class ScenarioREVStructureType;
 class ScenarioREVAeroThermodynamicsType;
-class ScenarioAeroCoefFile;
 class ScenarioREVTPS;
 class ScenarioREVSecondaryPropulsionType;
 class ScenarioREVOMSType;
@@ -183,9 +199,22 @@ class ScenarioLink;
 class ScenarioSCAerodynamics;
 class ScenarioPropulsion;
 class ScenarioStructure;
+class ScenarioSizing;
+class ScenarioMomentsOfInertia;
+class ScenarioSecondMomentsOfArea;
+class ScenarioNaturalFrequency;
 class ScenarioTCS;
+class ScenarioTemperature;
+class ScenarioCoatingArea;
+class ScenarioColdSurface;
+class ScenarioColdCoating;
+class ScenarioHotSurface;
+class ScenarioHotCoating;
 class ScenarioEPS;
+class ScenarioSolarArray;
+class ScenarioBatteryType;
 class ScenarioTTC;
+class ScenarioTTCAntenna;
 class ScenarioAOCS;
 class ScenarioOBDH;
 class SpaceScenario;
@@ -1242,14 +1271,14 @@ private:
 };
 
 
-// ScenarioCircularCone
-class ScenarioCircularCone : public ScenarioAbstractConeType
+// ScenarioCircularConeType
+class ScenarioCircularConeType : public ScenarioAbstractConeType
 {
 public:
-    ScenarioCircularCone();
-    static ScenarioCircularCone* create(const QDomElement& e);
+    ScenarioCircularConeType();
+    static ScenarioCircularConeType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "CircularCone"; }
+    { return "CircularConeType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -1308,14 +1337,31 @@ private:
 };
 
 
-// ScenarioAntenna
-class ScenarioAntenna : public ScenarioObject
+// ScenarioRadarConeType
+class ScenarioRadarConeType : public ScenarioAbstractConeType
 {
 public:
-    ScenarioAntenna();
-    static ScenarioAntenna* create(const QDomElement& e);
+    ScenarioRadarConeType();
+    static ScenarioRadarConeType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "Antenna"; }
+    { return "RadarConeType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+
+private:
+};
+
+
+// ScenarioAntennaType
+class ScenarioAntennaType : public ScenarioObject
+{
+public:
+    ScenarioAntennaType();
+    static ScenarioAntennaType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "AntennaType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -1328,10 +1374,15 @@ public:
     { return m_PointingDirection; }
     void setPointingDirection(QSharedPointer<ScenarioPointingDirection> PointingDirection)
     { m_PointingDirection = PointingDirection; }
+    QSharedPointer<ScenarioEMproperties> EMproperties() const
+    { return m_EMproperties; }
+    void setEMproperties(QSharedPointer<ScenarioEMproperties> EMproperties)
+    { m_EMproperties = EMproperties; }
 
 private:
     QSharedPointer<ScenarioAbstractConeType> m_AbstractCone;
     QSharedPointer<ScenarioPointingDirection> m_PointingDirection;
+    QSharedPointer<ScenarioEMproperties> m_EMproperties;
 };
 
 
@@ -1377,37 +1428,533 @@ private:
 };
 
 
-// ScenarioCommunicationAntenna
-class ScenarioCommunicationAntenna : public ScenarioAntenna
+// ScenarioEMproperties
+class ScenarioEMproperties : public ScenarioObject
 {
 public:
-    ScenarioCommunicationAntenna();
-    static ScenarioCommunicationAntenna* create(const QDomElement& e);
+    ScenarioEMproperties();
+    static ScenarioEMproperties* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "CommunicationAntenna"; }
+    { return "EMproperties"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double GainMax() const
+    { return m_GainMax; }
+    void setGainMax(double GainMax)
+    { m_GainMax = GainMax; }
+    QString Polarisation() const
+    { return m_Polarisation; }
+    void setPolarisation(QString Polarisation)
+    { m_Polarisation = Polarisation; }
+    double TiltAngle() const
+    { return m_TiltAngle; }
+    void setTiltAngle(double TiltAngle)
+    { m_TiltAngle = TiltAngle; }
+    double AreaEff() const
+    { return m_AreaEff; }
+    void setAreaEff(double AreaEff)
+    { m_AreaEff = AreaEff; }
+    double Diameter() const
+    { return m_Diameter; }
+    void setDiameter(double Diameter)
+    { m_Diameter = Diameter; }
+    double Efficiency() const
+    { return m_Efficiency; }
+    void setEfficiency(double Efficiency)
+    { m_Efficiency = Efficiency; }
+    double AngularBeamWidth() const
+    { return m_AngularBeamWidth; }
+    void setAngularBeamWidth(double AngularBeamWidth)
+    { m_AngularBeamWidth = AngularBeamWidth; }
 
 private:
+    double m_GainMax;
+    QString m_Polarisation;
+    double m_TiltAngle;
+    double m_AreaEff;
+    double m_Diameter;
+    double m_Efficiency;
+    double m_AngularBeamWidth;
 };
 
 
-// ScenarioObservationAntenna
-class ScenarioObservationAntenna : public ScenarioAntenna
+// ScenarioTransmitter
+class ScenarioTransmitter : public ScenarioAntennaType
 {
 public:
-    ScenarioObservationAntenna();
-    static ScenarioObservationAntenna* create(const QDomElement& e);
+    ScenarioTransmitter();
+    static ScenarioTransmitter* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "ObservationAntenna"; }
+    { return "Transmitter"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double Power() const
+    { return m_Power; }
+    void setPower(double Power)
+    { m_Power = Power; }
+    double FedderLossTx() const
+    { return m_FedderLossTx; }
+    void setFedderLossTx(double FedderLossTx)
+    { m_FedderLossTx = FedderLossTx; }
+    double DepointingLossTx() const
+    { return m_DepointingLossTx; }
+    void setDepointingLossTx(double DepointingLossTx)
+    { m_DepointingLossTx = DepointingLossTx; }
+    QSharedPointer<ScenarioModulation> Modulation() const
+    { return m_Modulation; }
+    void setModulation(QSharedPointer<ScenarioModulation> Modulation)
+    { m_Modulation = Modulation; }
 
 private:
+    double m_Power;
+    double m_FedderLossTx;
+    double m_DepointingLossTx;
+    QSharedPointer<ScenarioModulation> m_Modulation;
+};
+
+
+// ScenarioModulation
+class ScenarioModulation : public ScenarioObject
+{
+public:
+    ScenarioModulation();
+    static ScenarioModulation* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "Modulation"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QString ModulationType() const
+    { return m_ModulationType; }
+    void setModulationType(QString ModulationType)
+    { m_ModulationType = ModulationType; }
+    double DataRate() const
+    { return m_DataRate; }
+    void setDataRate(double DataRate)
+    { m_DataRate = DataRate; }
+
+private:
+    QString m_ModulationType;
+    double m_DataRate;
+};
+
+
+// ScenarioReceiver
+class ScenarioReceiver : public ScenarioAntennaType
+{
+public:
+    ScenarioReceiver();
+    static ScenarioReceiver* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "Receiver"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double GoverT() const
+    { return m_GoverT; }
+    void setGoverT(double GoverT)
+    { m_GoverT = GoverT; }
+    double FeederLossRx() const
+    { return m_FeederLossRx; }
+    void setFeederLossRx(double FeederLossRx)
+    { m_FeederLossRx = FeederLossRx; }
+    double DepointingLossRx() const
+    { return m_DepointingLossRx; }
+    void setDepointingLossRx(double DepointingLossRx)
+    { m_DepointingLossRx = DepointingLossRx; }
+    QSharedPointer<ScenarioSystemTemperature> SystemTemperature() const
+    { return m_SystemTemperature; }
+    void setSystemTemperature(QSharedPointer<ScenarioSystemTemperature> SystemTemperature)
+    { m_SystemTemperature = SystemTemperature; }
+
+private:
+    double m_GoverT;
+    double m_FeederLossRx;
+    double m_DepointingLossRx;
+    QSharedPointer<ScenarioSystemTemperature> m_SystemTemperature;
+};
+
+
+// ScenarioSystemTemperature
+class ScenarioSystemTemperature : public ScenarioObject
+{
+public:
+    ScenarioSystemTemperature();
+    static ScenarioSystemTemperature* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "SystemTemperature"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioTantenna> Tantenna() const
+    { return m_Tantenna; }
+    void setTantenna(QSharedPointer<ScenarioTantenna> Tantenna)
+    { m_Tantenna = Tantenna; }
+    double RxNoiseFigure() const
+    { return m_RxNoiseFigure; }
+    void setRxNoiseFigure(double RxNoiseFigure)
+    { m_RxNoiseFigure = RxNoiseFigure; }
+    double ThermoFeeder() const
+    { return m_ThermoFeeder; }
+    void setThermoFeeder(double ThermoFeeder)
+    { m_ThermoFeeder = ThermoFeeder; }
+    double ThermoReveicer() const
+    { return m_ThermoReveicer; }
+    void setThermoReveicer(double ThermoReveicer)
+    { m_ThermoReveicer = ThermoReveicer; }
+    double TotalSystemTemp() const
+    { return m_TotalSystemTemp; }
+    void setTotalSystemTemp(double TotalSystemTemp)
+    { m_TotalSystemTemp = TotalSystemTemp; }
+
+private:
+    QSharedPointer<ScenarioTantenna> m_Tantenna;
+    double m_RxNoiseFigure;
+    double m_ThermoFeeder;
+    double m_ThermoReveicer;
+    double m_TotalSystemTemp;
+};
+
+
+// ScenarioTantenna
+class ScenarioTantenna : public ScenarioObject
+{
+public:
+    ScenarioTantenna();
+    static ScenarioTantenna* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "Tantenna"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double Tsky() const
+    { return m_Tsky; }
+    void setTsky(double Tsky)
+    { m_Tsky = Tsky; }
+    double Tground() const
+    { return m_Tground; }
+    void setTground(double Tground)
+    { m_Tground = Tground; }
+
+private:
+    double m_Tsky;
+    double m_Tground;
+};
+
+
+// ScenarioAbstractPayloadType
+class ScenarioAbstractPayloadType : public ScenarioObject
+{
+public:
+    ScenarioAbstractPayloadType();
+    static ScenarioAbstractPayloadType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "AbstractPayloadType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QString name() const
+    { return m_name; }
+    void setName(QString name)
+    { m_name = name; }
+    double payloadMass() const
+    { return m_payloadMass; }
+    void setPayloadMass(double payloadMass)
+    { m_payloadMass = payloadMass; }
+    QSharedPointer<ScenarioPayloadPower> PayloadPower() const
+    { return m_PayloadPower; }
+    void setPayloadPower(QSharedPointer<ScenarioPayloadPower> PayloadPower)
+    { m_PayloadPower = PayloadPower; }
+    QSharedPointer<ScenarioPayloadStructure> PayloadStructure() const
+    { return m_PayloadStructure; }
+    void setPayloadStructure(QSharedPointer<ScenarioPayloadStructure> PayloadStructure)
+    { m_PayloadStructure = PayloadStructure; }
+    QSharedPointer<ScenarioPayloadTemperatureRange> PayloadTemperatureRange() const
+    { return m_PayloadTemperatureRange; }
+    void setPayloadTemperatureRange(QSharedPointer<ScenarioPayloadTemperatureRange> PayloadTemperatureRange)
+    { m_PayloadTemperatureRange = PayloadTemperatureRange; }
+    double dataRateOBDH() const
+    { return m_dataRateOBDH; }
+    void setDataRateOBDH(double dataRateOBDH)
+    { m_dataRateOBDH = dataRateOBDH; }
+    double frequency() const
+    { return m_frequency; }
+    void setFrequency(double frequency)
+    { m_frequency = frequency; }
+
+private:
+    QString m_name;
+    double m_payloadMass;
+    QSharedPointer<ScenarioPayloadPower> m_PayloadPower;
+    QSharedPointer<ScenarioPayloadStructure> m_PayloadStructure;
+    QSharedPointer<ScenarioPayloadTemperatureRange> m_PayloadTemperatureRange;
+    double m_dataRateOBDH;
+    double m_frequency;
+};
+
+
+// ScenarioPayloadPower
+class ScenarioPayloadPower : public ScenarioObject
+{
+public:
+    ScenarioPayloadPower();
+    static ScenarioPayloadPower* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "PayloadPower"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double powerConsumption() const
+    { return m_powerConsumption; }
+    void setPowerConsumption(double powerConsumption)
+    { m_powerConsumption = powerConsumption; }
+    double powerOnPercentageInEclipse() const
+    { return m_powerOnPercentageInEclipse; }
+    void setPowerOnPercentageInEclipse(double powerOnPercentageInEclipse)
+    { m_powerOnPercentageInEclipse = powerOnPercentageInEclipse; }
+    double powerOnPercentageInDaylight() const
+    { return m_powerOnPercentageInDaylight; }
+    void setPowerOnPercentageInDaylight(double powerOnPercentageInDaylight)
+    { m_powerOnPercentageInDaylight = powerOnPercentageInDaylight; }
+
+private:
+    double m_powerConsumption;
+    double m_powerOnPercentageInEclipse;
+    double m_powerOnPercentageInDaylight;
+};
+
+
+// ScenarioPayloadStructure
+class ScenarioPayloadStructure : public ScenarioObject
+{
+public:
+    ScenarioPayloadStructure();
+    static ScenarioPayloadStructure* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "PayloadStructure"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double volume() const
+    { return m_volume; }
+    void setVolume(double volume)
+    { m_volume = volume; }
+    double width() const
+    { return m_width; }
+    void setWidth(double width)
+    { m_width = width; }
+    double length() const
+    { return m_length; }
+    void setLength(double length)
+    { m_length = length; }
+    double height() const
+    { return m_height; }
+    void setHeight(double height)
+    { m_height = height; }
+
+private:
+    double m_volume;
+    double m_width;
+    double m_length;
+    double m_height;
+};
+
+
+// ScenarioPayloadTemperatureRange
+class ScenarioPayloadTemperatureRange : public ScenarioObject
+{
+public:
+    ScenarioPayloadTemperatureRange();
+    static ScenarioPayloadTemperatureRange* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "PayloadTemperatureRange"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double minimumTemperature() const
+    { return m_minimumTemperature; }
+    void setMinimumTemperature(double minimumTemperature)
+    { m_minimumTemperature = minimumTemperature; }
+    double maximumTemperature() const
+    { return m_maximumTemperature; }
+    void setMaximumTemperature(double maximumTemperature)
+    { m_maximumTemperature = maximumTemperature; }
+
+private:
+    double m_minimumTemperature;
+    double m_maximumTemperature;
+};
+
+
+// ScenarioOpticalPayloadType
+class ScenarioOpticalPayloadType : public ScenarioAbstractPayloadType
+{
+public:
+    ScenarioOpticalPayloadType();
+    static ScenarioOpticalPayloadType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "OpticalPayloadType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double linearResolution() const
+    { return m_linearResolution; }
+    void setLinearResolution(double linearResolution)
+    { m_linearResolution = linearResolution; }
+    double numberOfPixels() const
+    { return m_numberOfPixels; }
+    void setNumberOfPixels(double numberOfPixels)
+    { m_numberOfPixels = numberOfPixels; }
+
+private:
+    double m_linearResolution;
+    double m_numberOfPixels;
+};
+
+
+// ScenarioRadarPayloadType
+class ScenarioRadarPayloadType : public ScenarioAbstractPayloadType
+{
+public:
+    ScenarioRadarPayloadType();
+    static ScenarioRadarPayloadType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "RadarPayloadType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double angularResolution() const
+    { return m_angularResolution; }
+    void setAngularResolution(double angularResolution)
+    { m_angularResolution = angularResolution; }
+
+private:
+    double m_angularResolution;
+};
+
+
+// ScenarioXrayPayloadType
+class ScenarioXrayPayloadType : public ScenarioAbstractPayloadType
+{
+public:
+    ScenarioXrayPayloadType();
+    static ScenarioXrayPayloadType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "XrayPayloadType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double angularResolution() const
+    { return m_angularResolution; }
+    void setAngularResolution(double angularResolution)
+    { m_angularResolution = angularResolution; }
+    double numberOfPixels() const
+    { return m_numberOfPixels; }
+    void setNumberOfPixels(double numberOfPixels)
+    { m_numberOfPixels = numberOfPixels; }
+
+private:
+    double m_angularResolution;
+    double m_numberOfPixels;
+};
+
+
+// ScenarioCommunicationPayloadType
+class ScenarioCommunicationPayloadType : public ScenarioAbstractPayloadType
+{
+public:
+    ScenarioCommunicationPayloadType();
+    static ScenarioCommunicationPayloadType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "CommunicationPayloadType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    const QList<QSharedPointer<ScenarioAntennaType> >& Antenna() const
+    { return m_Antenna; }
+    QList<QSharedPointer<ScenarioAntennaType> >& Antenna()
+    { return m_Antenna; }
+    void setAntenna(QList<QSharedPointer<ScenarioAntennaType> > Antenna)
+    { m_Antenna = Antenna; }
+
+private:
+    QList<QSharedPointer<ScenarioAntennaType> > m_Antenna;
+};
+
+
+// ScenarioAeroCoefFileType
+class ScenarioAeroCoefFileType : public ScenarioObject
+{
+public:
+    ScenarioAeroCoefFileType();
+    static ScenarioAeroCoefFileType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "AeroCoefFileType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QString FileLocation() const
+    { return m_FileLocation; }
+    void setFileLocation(QString FileLocation)
+    { m_FileLocation = FileLocation; }
+    QString CoefName() const
+    { return m_CoefName; }
+    void setCoefName(QString CoefName)
+    { m_CoefName = CoefName; }
+    int NumberOfIndepVars() const
+    { return m_NumberOfIndepVars; }
+    void setNumberOfIndepVars(int NumberOfIndepVars)
+    { m_NumberOfIndepVars = NumberOfIndepVars; }
+    const QList<QString>& IndepVarNames() const
+    { return m_IndepVarNames; }
+    QList<QString>& IndepVarNames()
+    { return m_IndepVarNames; }
+    void setIndepVarNames(QList<QString> IndepVarNames)
+    { m_IndepVarNames = IndepVarNames; }
+    const QList<int>& IndepVarDiscretizationPoints() const
+    { return m_IndepVarDiscretizationPoints; }
+    QList<int>& IndepVarDiscretizationPoints()
+    { return m_IndepVarDiscretizationPoints; }
+    void setIndepVarDiscretizationPoints(QList<int> IndepVarDiscretizationPoints)
+    { m_IndepVarDiscretizationPoints = IndepVarDiscretizationPoints; }
+    const QList<double>& IndepVarMin() const
+    { return m_IndepVarMin; }
+    QList<double>& IndepVarMin()
+    { return m_IndepVarMin; }
+    void setIndepVarMin(QList<double> IndepVarMin)
+    { m_IndepVarMin = IndepVarMin; }
+    const QList<double>& IndepVarMax() const
+    { return m_IndepVarMax; }
+    QList<double>& IndepVarMax()
+    { return m_IndepVarMax; }
+    void setIndepVarMax(QList<double> IndepVarMax)
+    { m_IndepVarMax = IndepVarMax; }
+
+private:
+    QString m_FileLocation;
+    QString m_CoefName;
+    int m_NumberOfIndepVars;
+    QList<QString> m_IndepVarNames;
+    QList<int> m_IndepVarDiscretizationPoints;
+    QList<double> m_IndepVarMin;
+    QList<double> m_IndepVarMax;
 };
 
 
@@ -1454,14 +2001,75 @@ public:
     { return m_Location; }
     void setLocation(QSharedPointer<ScenarioLocationType> Location)
     { m_Location = Location; }
-    QSharedPointer<ScenarioCommunicationAntenna> CommunicationAntenna() const
-    { return m_CommunicationAntenna; }
-    void setCommunicationAntenna(QSharedPointer<ScenarioCommunicationAntenna> CommunicationAntenna)
-    { m_CommunicationAntenna = CommunicationAntenna; }
+    const QList<QSharedPointer<ScenarioAntennaType> >& Antenna() const
+    { return m_Antenna; }
+    QList<QSharedPointer<ScenarioAntennaType> >& Antenna()
+    { return m_Antenna; }
+    void setAntenna(QList<QSharedPointer<ScenarioAntennaType> > Antenna)
+    { m_Antenna = Antenna; }
+    QSharedPointer<ScenarioEnvironment> Environment() const
+    { return m_Environment; }
+    void setEnvironment(QSharedPointer<ScenarioEnvironment> Environment)
+    { m_Environment = Environment; }
 
 private:
     QSharedPointer<ScenarioLocationType> m_Location;
-    QSharedPointer<ScenarioCommunicationAntenna> m_CommunicationAntenna;
+    QList<QSharedPointer<ScenarioAntennaType> > m_Antenna;
+    QSharedPointer<ScenarioEnvironment> m_Environment;
+};
+
+
+// ScenarioEnvironment
+class ScenarioEnvironment : public ScenarioObject
+{
+public:
+    ScenarioEnvironment();
+    static ScenarioEnvironment* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "Environment"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioRain> Rain() const
+    { return m_Rain; }
+    void setRain(QSharedPointer<ScenarioRain> Rain)
+    { m_Rain = Rain; }
+    double OxygenAtt() const
+    { return m_OxygenAtt; }
+    void setOxygenAtt(double OxygenAtt)
+    { m_OxygenAtt = OxygenAtt; }
+    double WaterVapourAtt() const
+    { return m_WaterVapourAtt; }
+    void setWaterVapourAtt(double WaterVapourAtt)
+    { m_WaterVapourAtt = WaterVapourAtt; }
+
+private:
+    QSharedPointer<ScenarioRain> m_Rain;
+    double m_OxygenAtt;
+    double m_WaterVapourAtt;
+};
+
+
+// ScenarioRain
+class ScenarioRain : public ScenarioObject
+{
+public:
+    ScenarioRain();
+    static ScenarioRain* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "Rain"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double PercentageExceededLimit() const
+    { return m_PercentageExceededLimit; }
+    void setPercentageExceededLimit(double PercentageExceededLimit)
+    { m_PercentageExceededLimit = PercentageExceededLimit; }
+
+private:
+    double m_PercentageExceededLimit;
 };
 
 
@@ -1543,14 +2151,14 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioLVProgram> LVProgram() const
-    { return m_LVProgram; }
-    void setLVProgram(QSharedPointer<ScenarioLVProgram> LVProgram)
-    { m_LVProgram = LVProgram; }
-    QSharedPointer<ScenarioLVMission> LVMission() const
-    { return m_LVMission; }
-    void setLVMission(QSharedPointer<ScenarioLVMission> LVMission)
-    { m_LVMission = LVMission; }
+    QSharedPointer<ScenarioLVProgramType> Program() const
+    { return m_Program; }
+    void setProgram(QSharedPointer<ScenarioLVProgramType> Program)
+    { m_Program = Program; }
+    QSharedPointer<ScenarioLVMissionType> Mission() const
+    { return m_Mission; }
+    void setMission(QSharedPointer<ScenarioLVMissionType> Mission)
+    { m_Mission = Mission; }
     QSharedPointer<ScenarioLVSystemType> System() const
     { return m_System; }
     void setSystem(QSharedPointer<ScenarioLVSystemType> System)
@@ -1569,8 +2177,8 @@ public:
     { m_Appearance = Appearance; }
 
 private:
-    QSharedPointer<ScenarioLVProgram> m_LVProgram;
-    QSharedPointer<ScenarioLVMission> m_LVMission;
+    QSharedPointer<ScenarioLVProgramType> m_Program;
+    QSharedPointer<ScenarioLVMissionType> m_Mission;
     QSharedPointer<ScenarioLVSystemType> m_System;
     QSharedPointer<ScenarioOptimization> m_Optimization;
     QSharedPointer<ScenarioOutputFiles> m_OutputFiles;
@@ -1578,73 +2186,1112 @@ private:
 };
 
 
-// ScenarioPropulsionSystem
-class ScenarioPropulsionSystem : public ScenarioObject
+// ScenarioLVProgramType
+class ScenarioLVProgramType : public ScenarioObject
 {
 public:
-    ScenarioPropulsionSystem();
-    static ScenarioPropulsionSystem* create(const QDomElement& e);
+    ScenarioLVProgramType();
+    static ScenarioLVProgramType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "PropulsionSystem"; }
+    { return "LVProgramType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioSystem> System() const
-    { return m_System; }
-    void setSystem(QSharedPointer<ScenarioSystem> System)
-    { m_System = System; }
-    QSharedPointer<ScenarioLiquidTanks> LiquidTanks() const
-    { return m_LiquidTanks; }
-    void setLiquidTanks(QSharedPointer<ScenarioLiquidTanks> LiquidTanks)
-    { m_LiquidTanks = LiquidTanks; }
-    QSharedPointer<ScenarioSolidGrain> SolidGrain() const
-    { return m_SolidGrain; }
-    void setSolidGrain(QSharedPointer<ScenarioSolidGrain> SolidGrain)
-    { m_SolidGrain = SolidGrain; }
-    QSharedPointer<ScenarioFeedSystem> FeedSystem() const
-    { return m_FeedSystem; }
-    void setFeedSystem(QSharedPointer<ScenarioFeedSystem> FeedSystem)
-    { m_FeedSystem = FeedSystem; }
-    QSharedPointer<ScenarioCombustionChamber> CombustionChamber() const
-    { return m_CombustionChamber; }
-    void setCombustionChamber(QSharedPointer<ScenarioCombustionChamber> CombustionChamber)
-    { m_CombustionChamber = CombustionChamber; }
-    QSharedPointer<ScenarioNozzle> Nozzle() const
-    { return m_Nozzle; }
-    void setNozzle(QSharedPointer<ScenarioNozzle> Nozzle)
-    { m_Nozzle = Nozzle; }
-    QSharedPointer<ScenarioPerformance> Performance() const
-    { return m_Performance; }
-    void setPerformance(QSharedPointer<ScenarioPerformance> Performance)
-    { m_Performance = Performance; }
+    int nLaunches() const
+    { return m_nLaunches; }
+    void setNLaunches(int nLaunches)
+    { m_nLaunches = nLaunches; }
+    double nYearsOps() const
+    { return m_nYearsOps; }
+    void setNYearsOps(double nYearsOps)
+    { m_nYearsOps = nYearsOps; }
+    int nLaunchesPerYear() const
+    { return m_nLaunchesPerYear; }
+    void setNLaunchesPerYear(int nLaunchesPerYear)
+    { m_nLaunchesPerYear = nLaunchesPerYear; }
+    QSharedPointer<ScenarioLVProgramCostFactorsType> ProgramCostFactors() const
+    { return m_ProgramCostFactors; }
+    void setProgramCostFactors(QSharedPointer<ScenarioLVProgramCostFactorsType> ProgramCostFactors)
+    { m_ProgramCostFactors = ProgramCostFactors; }
 
 private:
-    QSharedPointer<ScenarioSystem> m_System;
-    QSharedPointer<ScenarioLiquidTanks> m_LiquidTanks;
-    QSharedPointer<ScenarioSolidGrain> m_SolidGrain;
-    QSharedPointer<ScenarioFeedSystem> m_FeedSystem;
-    QSharedPointer<ScenarioCombustionChamber> m_CombustionChamber;
-    QSharedPointer<ScenarioNozzle> m_Nozzle;
-    QSharedPointer<ScenarioPerformance> m_Performance;
+    int m_nLaunches;
+    double m_nYearsOps;
+    int m_nLaunchesPerYear;
+    QSharedPointer<ScenarioLVProgramCostFactorsType> m_ProgramCostFactors;
 };
 
 
-// ScenarioSystem
-class ScenarioSystem : public ScenarioObject
+// ScenarioLVMissionType
+class ScenarioLVMissionType : public ScenarioObject
 {
 public:
-    ScenarioSystem();
-    static ScenarioSystem* create(const QDomElement& e);
+    ScenarioLVMissionType();
+    static ScenarioLVMissionType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "System"; }
+    { return "LVMissionType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioOptVarString> propType() const
+    QSharedPointer<ScenarioLVPayloadType> Payload() const
+    { return m_Payload; }
+    void setPayload(QSharedPointer<ScenarioLVPayloadType> Payload)
+    { m_Payload = Payload; }
+    QSharedPointer<ScenarioEnvironmentType> Environment() const
+    { return m_Environment; }
+    void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
+    { m_Environment = Environment; }
+    QSharedPointer<ScenarioLVLaunchSiteType> LaunchSite() const
+    { return m_LaunchSite; }
+    void setLaunchSite(QSharedPointer<ScenarioLVLaunchSiteType> LaunchSite)
+    { m_LaunchSite = LaunchSite; }
+    QSharedPointer<ScenarioLVTargetOrbitType> TargetOrbit() const
+    { return m_TargetOrbit; }
+    void setTargetOrbit(QSharedPointer<ScenarioLVTargetOrbitType> TargetOrbit)
+    { m_TargetOrbit = TargetOrbit; }
+    QSharedPointer<ScenarioLVTrajectoryType> Trajectory() const
+    { return m_Trajectory; }
+    void setTrajectory(QSharedPointer<ScenarioLVTrajectoryType> Trajectory)
+    { m_Trajectory = Trajectory; }
+
+private:
+    QSharedPointer<ScenarioLVPayloadType> m_Payload;
+    QSharedPointer<ScenarioEnvironmentType> m_Environment;
+    QSharedPointer<ScenarioLVLaunchSiteType> m_LaunchSite;
+    QSharedPointer<ScenarioLVTargetOrbitType> m_TargetOrbit;
+    QSharedPointer<ScenarioLVTrajectoryType> m_Trajectory;
+};
+
+
+// ScenarioLVSystemType
+class ScenarioLVSystemType : public ScenarioObject
+{
+public:
+    ScenarioLVSystemType();
+    static ScenarioLVSystemType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVSystemType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioLVArchitectureType> Architecture() const
+    { return m_Architecture; }
+    void setArchitecture(QSharedPointer<ScenarioLVArchitectureType> Architecture)
+    { m_Architecture = Architecture; }
+    QSharedPointer<ScenarioLVPlFairingType> PlFairing() const
+    { return m_PlFairing; }
+    void setPlFairing(QSharedPointer<ScenarioLVPlFairingType> PlFairing)
+    { m_PlFairing = PlFairing; }
+    const QList<QSharedPointer<ScenarioLVLowerStageType> >& LowerStage() const
+    { return m_LowerStage; }
+    QList<QSharedPointer<ScenarioLVLowerStageType> >& LowerStage()
+    { return m_LowerStage; }
+    void setLowerStage(QList<QSharedPointer<ScenarioLVLowerStageType> > LowerStage)
+    { m_LowerStage = LowerStage; }
+    QSharedPointer<ScenarioLVUpperStageType> UpperStage() const
+    { return m_UpperStage; }
+    void setUpperStage(QSharedPointer<ScenarioLVUpperStageType> UpperStage)
+    { m_UpperStage = UpperStage; }
+    const QList<QSharedPointer<ScenarioLVBoostersType> >& Boosters() const
+    { return m_Boosters; }
+    QList<QSharedPointer<ScenarioLVBoostersType> >& Boosters()
+    { return m_Boosters; }
+    void setBoosters(QList<QSharedPointer<ScenarioLVBoostersType> > Boosters)
+    { m_Boosters = Boosters; }
+    QSharedPointer<ScenarioLVSystemWeightsType> SystemWeights() const
+    { return m_SystemWeights; }
+    void setSystemWeights(QSharedPointer<ScenarioLVSystemWeightsType> SystemWeights)
+    { m_SystemWeights = SystemWeights; }
+    QSharedPointer<ScenarioLVSystemCostsType> SystemCosts() const
+    { return m_SystemCosts; }
+    void setSystemCosts(QSharedPointer<ScenarioLVSystemCostsType> SystemCosts)
+    { m_SystemCosts = SystemCosts; }
+    QSharedPointer<ScenarioLVSystemReliabilityType> SystemReliability() const
+    { return m_SystemReliability; }
+    void setSystemReliability(QSharedPointer<ScenarioLVSystemReliabilityType> SystemReliability)
+    { m_SystemReliability = SystemReliability; }
+    QSharedPointer<ScenarioLVAerodynamicsType> Aerodynamics() const
+    { return m_Aerodynamics; }
+    void setAerodynamics(QSharedPointer<ScenarioLVAerodynamicsType> Aerodynamics)
+    { m_Aerodynamics = Aerodynamics; }
+    QSharedPointer<ScenarioLVSystemConstraintsType> SystemConstraints() const
+    { return m_SystemConstraints; }
+    void setSystemConstraints(QSharedPointer<ScenarioLVSystemConstraintsType> SystemConstraints)
+    { m_SystemConstraints = SystemConstraints; }
+
+private:
+    QSharedPointer<ScenarioLVArchitectureType> m_Architecture;
+    QSharedPointer<ScenarioLVPlFairingType> m_PlFairing;
+    QList<QSharedPointer<ScenarioLVLowerStageType> > m_LowerStage;
+    QSharedPointer<ScenarioLVUpperStageType> m_UpperStage;
+    QList<QSharedPointer<ScenarioLVBoostersType> > m_Boosters;
+    QSharedPointer<ScenarioLVSystemWeightsType> m_SystemWeights;
+    QSharedPointer<ScenarioLVSystemCostsType> m_SystemCosts;
+    QSharedPointer<ScenarioLVSystemReliabilityType> m_SystemReliability;
+    QSharedPointer<ScenarioLVAerodynamicsType> m_Aerodynamics;
+    QSharedPointer<ScenarioLVSystemConstraintsType> m_SystemConstraints;
+};
+
+
+// ScenarioLVPropulsionSystemType
+class ScenarioLVPropulsionSystemType : public ScenarioObject
+{
+public:
+    ScenarioLVPropulsionSystemType();
+    static ScenarioLVPropulsionSystemType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVPropulsionSystemType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioLVPropulsionSystemSystemType> System() const
+    { return m_System; }
+    void setSystem(QSharedPointer<ScenarioLVPropulsionSystemSystemType> System)
+    { m_System = System; }
+    QSharedPointer<ScenarioLVPropulsionSystemLiquidTanksType> LiquidTanks() const
+    { return m_LiquidTanks; }
+    void setLiquidTanks(QSharedPointer<ScenarioLVPropulsionSystemLiquidTanksType> LiquidTanks)
+    { m_LiquidTanks = LiquidTanks; }
+    QSharedPointer<ScenarioLVPropulsionSystemSolidGrainType> SolidGrain() const
+    { return m_SolidGrain; }
+    void setSolidGrain(QSharedPointer<ScenarioLVPropulsionSystemSolidGrainType> SolidGrain)
+    { m_SolidGrain = SolidGrain; }
+    QSharedPointer<ScenarioLVPropulsionSystemFeedSystemType> FeedSystem() const
+    { return m_FeedSystem; }
+    void setFeedSystem(QSharedPointer<ScenarioLVPropulsionSystemFeedSystemType> FeedSystem)
+    { m_FeedSystem = FeedSystem; }
+    QSharedPointer<ScenarioLVPropulsionSystemCombustionChamberType> CombustionChamber() const
+    { return m_CombustionChamber; }
+    void setCombustionChamber(QSharedPointer<ScenarioLVPropulsionSystemCombustionChamberType> CombustionChamber)
+    { m_CombustionChamber = CombustionChamber; }
+    QSharedPointer<ScenarioLVPropulsionSystemNozzleType> Nozzle() const
+    { return m_Nozzle; }
+    void setNozzle(QSharedPointer<ScenarioLVPropulsionSystemNozzleType> Nozzle)
+    { m_Nozzle = Nozzle; }
+    QSharedPointer<ScenarioLVPropulsionSystemPerformanceType> Performance() const
+    { return m_Performance; }
+    void setPerformance(QSharedPointer<ScenarioLVPropulsionSystemPerformanceType> Performance)
+    { m_Performance = Performance; }
+
+private:
+    QSharedPointer<ScenarioLVPropulsionSystemSystemType> m_System;
+    QSharedPointer<ScenarioLVPropulsionSystemLiquidTanksType> m_LiquidTanks;
+    QSharedPointer<ScenarioLVPropulsionSystemSolidGrainType> m_SolidGrain;
+    QSharedPointer<ScenarioLVPropulsionSystemFeedSystemType> m_FeedSystem;
+    QSharedPointer<ScenarioLVPropulsionSystemCombustionChamberType> m_CombustionChamber;
+    QSharedPointer<ScenarioLVPropulsionSystemNozzleType> m_Nozzle;
+    QSharedPointer<ScenarioLVPropulsionSystemPerformanceType> m_Performance;
+};
+
+
+// ScenarioLVGeometryType
+class ScenarioLVGeometryType : public ScenarioObject
+{
+public:
+    ScenarioLVGeometryType();
+    static ScenarioLVGeometryType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVGeometryType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioOptVarBool> diameterEqualToUpper() const
+    { return m_diameterEqualToUpper; }
+    void setDiameterEqualToUpper(QSharedPointer<ScenarioOptVarBool> diameterEqualToUpper)
+    { m_diameterEqualToUpper = diameterEqualToUpper; }
+    QSharedPointer<ScenarioOptVarDouble> lengthOverDiam() const
+    { return m_lengthOverDiam; }
+    void setLengthOverDiam(QSharedPointer<ScenarioOptVarDouble> lengthOverDiam)
+    { m_lengthOverDiam = lengthOverDiam; }
+    double length() const
+    { return m_length; }
+    void setLength(double length)
+    { m_length = length; }
+    double diameter() const
+    { return m_diameter; }
+    void setDiameter(double diameter)
+    { m_diameter = diameter; }
+    double volume() const
+    { return m_volume; }
+    void setVolume(double volume)
+    { m_volume = volume; }
+    double baseLongPosition() const
+    { return m_baseLongPosition; }
+    void setBaseLongPosition(double baseLongPosition)
+    { m_baseLongPosition = baseLongPosition; }
+    QString noseShape() const
+    { return m_noseShape; }
+    void setNoseShape(QString noseShape)
+    { m_noseShape = noseShape; }
+    double noseLength() const
+    { return m_noseLength; }
+    void setNoseLength(double noseLength)
+    { m_noseLength = noseLength; }
+    double adapterLength() const
+    { return m_adapterLength; }
+    void setAdapterLength(double adapterLength)
+    { m_adapterLength = adapterLength; }
+    double intertankLength() const
+    { return m_intertankLength; }
+    void setIntertankLength(double intertankLength)
+    { m_intertankLength = intertankLength; }
+    double interstageLength() const
+    { return m_interstageLength; }
+    void setInterstageLength(double interstageLength)
+    { m_interstageLength = interstageLength; }
+    double enginesGimbalClearenceCstrViolation() const
+    { return m_enginesGimbalClearenceCstrViolation; }
+    void setEnginesGimbalClearenceCstrViolation(double enginesGimbalClearenceCstrViolation)
+    { m_enginesGimbalClearenceCstrViolation = enginesGimbalClearenceCstrViolation; }
+    double geometryInterferenceCstrViolation() const
+    { return m_geometryInterferenceCstrViolation; }
+    void setGeometryInterferenceCstrViolation(double geometryInterferenceCstrViolation)
+    { m_geometryInterferenceCstrViolation = geometryInterferenceCstrViolation; }
+
+private:
+    QSharedPointer<ScenarioOptVarBool> m_diameterEqualToUpper;
+    QSharedPointer<ScenarioOptVarDouble> m_lengthOverDiam;
+    double m_length;
+    double m_diameter;
+    double m_volume;
+    double m_baseLongPosition;
+    QString m_noseShape;
+    double m_noseLength;
+    double m_adapterLength;
+    double m_intertankLength;
+    double m_interstageLength;
+    double m_enginesGimbalClearenceCstrViolation;
+    double m_geometryInterferenceCstrViolation;
+};
+
+
+// ScenarioLVAerodynamicsType
+class ScenarioLVAerodynamicsType : public ScenarioObject
+{
+public:
+    ScenarioLVAerodynamicsType();
+    static ScenarioLVAerodynamicsType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVAerodynamicsType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    bool userDefinedAero() const
+    { return m_userDefinedAero; }
+    void setUserDefinedAero(bool userDefinedAero)
+    { m_userDefinedAero = userDefinedAero; }
+    double referenceArea() const
+    { return m_referenceArea; }
+    void setReferenceArea(double referenceArea)
+    { m_referenceArea = referenceArea; }
+    double referenceLength() const
+    { return m_referenceLength; }
+    void setReferenceLength(double referenceLength)
+    { m_referenceLength = referenceLength; }
+    QSharedPointer<ScenarioAeroCoefFileType> cl() const
+    { return m_cl; }
+    void setCl(QSharedPointer<ScenarioAeroCoefFileType> cl)
+    { m_cl = cl; }
+    QSharedPointer<ScenarioAeroCoefFileType> cd() const
+    { return m_cd; }
+    void setCd(QSharedPointer<ScenarioAeroCoefFileType> cd)
+    { m_cd = cd; }
+    QSharedPointer<ScenarioAeroCoefFileType> cm() const
+    { return m_cm; }
+    void setCm(QSharedPointer<ScenarioAeroCoefFileType> cm)
+    { m_cm = cm; }
+
+private:
+    bool m_userDefinedAero;
+    double m_referenceArea;
+    double m_referenceLength;
+    QSharedPointer<ScenarioAeroCoefFileType> m_cl;
+    QSharedPointer<ScenarioAeroCoefFileType> m_cd;
+    QSharedPointer<ScenarioAeroCoefFileType> m_cm;
+};
+
+
+// ScenarioLVComponentWeightsType
+class ScenarioLVComponentWeightsType : public ScenarioObject
+{
+public:
+    ScenarioLVComponentWeightsType();
+    static ScenarioLVComponentWeightsType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVComponentWeightsType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioOptVarInt> tanksArrangement() const
+    { return m_tanksArrangement; }
+    void setTanksArrangement(QSharedPointer<ScenarioOptVarInt> tanksArrangement)
+    { m_tanksArrangement = tanksArrangement; }
+    QSharedPointer<ScenarioOptVarInt> tanksType() const
+    { return m_tanksType; }
+    void setTanksType(QSharedPointer<ScenarioOptVarInt> tanksType)
+    { m_tanksType = tanksType; }
+    double dryMass() const
+    { return m_dryMass; }
+    void setDryMass(double dryMass)
+    { m_dryMass = dryMass; }
+    double dryCoGLongPosition() const
+    { return m_dryCoGLongPosition; }
+    void setDryCoGLongPosition(double dryCoGLongPosition)
+    { m_dryCoGLongPosition = dryCoGLongPosition; }
+    double wetMass() const
+    { return m_wetMass; }
+    void setWetMass(double wetMass)
+    { m_wetMass = wetMass; }
+    double mainStructMass() const
+    { return m_mainStructMass; }
+    void setMainStructMass(double mainStructMass)
+    { m_mainStructMass = mainStructMass; }
+    double oxTankMass() const
+    { return m_oxTankMass; }
+    void setOxTankMass(double oxTankMass)
+    { m_oxTankMass = oxTankMass; }
+    double fuelTankMass() const
+    { return m_fuelTankMass; }
+    void setFuelTankMass(double fuelTankMass)
+    { m_fuelTankMass = fuelTankMass; }
+    double tpsMass() const
+    { return m_tpsMass; }
+    void setTpsMass(double tpsMass)
+    { m_tpsMass = tpsMass; }
+    double avionicsMass() const
+    { return m_avionicsMass; }
+    void setAvionicsMass(double avionicsMass)
+    { m_avionicsMass = avionicsMass; }
+    double epsMass() const
+    { return m_epsMass; }
+    void setEpsMass(double epsMass)
+    { m_epsMass = epsMass; }
+    double plAdapterMass() const
+    { return m_plAdapterMass; }
+    void setPlAdapterMass(double plAdapterMass)
+    { m_plAdapterMass = plAdapterMass; }
+    double padInterfaceMass() const
+    { return m_padInterfaceMass; }
+    void setPadInterfaceMass(double padInterfaceMass)
+    { m_padInterfaceMass = padInterfaceMass; }
+    double interstageMass() const
+    { return m_interstageMass; }
+    void setInterstageMass(double interstageMass)
+    { m_interstageMass = interstageMass; }
+
+private:
+    QSharedPointer<ScenarioOptVarInt> m_tanksArrangement;
+    QSharedPointer<ScenarioOptVarInt> m_tanksType;
+    double m_dryMass;
+    double m_dryCoGLongPosition;
+    double m_wetMass;
+    double m_mainStructMass;
+    double m_oxTankMass;
+    double m_fuelTankMass;
+    double m_tpsMass;
+    double m_avionicsMass;
+    double m_epsMass;
+    double m_plAdapterMass;
+    double m_padInterfaceMass;
+    double m_interstageMass;
+};
+
+
+// ScenarioLVSystemWeightsType
+class ScenarioLVSystemWeightsType : public ScenarioObject
+{
+public:
+    ScenarioLVSystemWeightsType();
+    static ScenarioLVSystemWeightsType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVSystemWeightsType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double totalDryMass() const
+    { return m_totalDryMass; }
+    void setTotalDryMass(double totalDryMass)
+    { m_totalDryMass = totalDryMass; }
+    double totalWetMass() const
+    { return m_totalWetMass; }
+    void setTotalWetMass(double totalWetMass)
+    { m_totalWetMass = totalWetMass; }
+    double takeoffThrustOverWeight() const
+    { return m_takeoffThrustOverWeight; }
+    void setTakeoffThrustOverWeight(double takeoffThrustOverWeight)
+    { m_takeoffThrustOverWeight = takeoffThrustOverWeight; }
+    QSharedPointer<ScenarioOptVarDouble> maxAxialAcc() const
+    { return m_maxAxialAcc; }
+    void setMaxAxialAcc(QSharedPointer<ScenarioOptVarDouble> maxAxialAcc)
+    { m_maxAxialAcc = maxAxialAcc; }
+    QSharedPointer<ScenarioOptVarDouble> maxHeatFlux() const
+    { return m_maxHeatFlux; }
+    void setMaxHeatFlux(QSharedPointer<ScenarioOptVarDouble> maxHeatFlux)
+    { m_maxHeatFlux = maxHeatFlux; }
+    QSharedPointer<ScenarioOptVarDouble> maxDynPressure() const
+    { return m_maxDynPressure; }
+    void setMaxDynPressure(QSharedPointer<ScenarioOptVarDouble> maxDynPressure)
+    { m_maxDynPressure = maxDynPressure; }
+    QSharedPointer<ScenarioOptVarInt> mainStructuralMaterial() const
+    { return m_mainStructuralMaterial; }
+    void setMainStructuralMaterial(QSharedPointer<ScenarioOptVarInt> mainStructuralMaterial)
+    { m_mainStructuralMaterial = mainStructuralMaterial; }
+    QSharedPointer<ScenarioOptVarInt> redundancyLevel() const
+    { return m_redundancyLevel; }
+    void setRedundancyLevel(QSharedPointer<ScenarioOptVarInt> redundancyLevel)
+    { m_redundancyLevel = redundancyLevel; }
+    QSharedPointer<ScenarioOptVarDouble> structuralSafetyMargin() const
+    { return m_structuralSafetyMargin; }
+    void setStructuralSafetyMargin(QSharedPointer<ScenarioOptVarDouble> structuralSafetyMargin)
+    { m_structuralSafetyMargin = structuralSafetyMargin; }
+
+private:
+    double m_totalDryMass;
+    double m_totalWetMass;
+    double m_takeoffThrustOverWeight;
+    QSharedPointer<ScenarioOptVarDouble> m_maxAxialAcc;
+    QSharedPointer<ScenarioOptVarDouble> m_maxHeatFlux;
+    QSharedPointer<ScenarioOptVarDouble> m_maxDynPressure;
+    QSharedPointer<ScenarioOptVarInt> m_mainStructuralMaterial;
+    QSharedPointer<ScenarioOptVarInt> m_redundancyLevel;
+    QSharedPointer<ScenarioOptVarDouble> m_structuralSafetyMargin;
+};
+
+
+// ScenarioLVComponentCostsType
+class ScenarioLVComponentCostsType : public ScenarioObject
+{
+public:
+    ScenarioLVComponentCostsType();
+    static ScenarioLVComponentCostsType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVComponentCostsType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioOptVarInt> nEngineTests() const
+    { return m_nEngineTests; }
+    void setNEngineTests(QSharedPointer<ScenarioOptVarInt> nEngineTests)
+    { m_nEngineTests = nEngineTests; }
+    QSharedPointer<ScenarioLVDevelopmentCostsType> DevelopmentCosts() const
+    { return m_DevelopmentCosts; }
+    void setDevelopmentCosts(QSharedPointer<ScenarioLVDevelopmentCostsType> DevelopmentCosts)
+    { m_DevelopmentCosts = DevelopmentCosts; }
+    QSharedPointer<ScenarioLVProductionCostsType> ProductionCosts() const
+    { return m_ProductionCosts; }
+    void setProductionCosts(QSharedPointer<ScenarioLVProductionCostsType> ProductionCosts)
+    { m_ProductionCosts = ProductionCosts; }
+
+private:
+    QSharedPointer<ScenarioOptVarInt> m_nEngineTests;
+    QSharedPointer<ScenarioLVDevelopmentCostsType> m_DevelopmentCosts;
+    QSharedPointer<ScenarioLVProductionCostsType> m_ProductionCosts;
+};
+
+
+// ScenarioLVSystemCostsType
+class ScenarioLVSystemCostsType : public ScenarioObject
+{
+public:
+    ScenarioLVSystemCostsType();
+    static ScenarioLVSystemCostsType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVSystemCostsType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioLVTotalProgramCostsType> TotalProgramCosts() const
+    { return m_TotalProgramCosts; }
+    void setTotalProgramCosts(QSharedPointer<ScenarioLVTotalProgramCostsType> TotalProgramCosts)
+    { m_TotalProgramCosts = TotalProgramCosts; }
+    double developmentTime() const
+    { return m_developmentTime; }
+    void setDevelopmentTime(double developmentTime)
+    { m_developmentTime = developmentTime; }
+    QSharedPointer<ScenarioLVDirectOperationsCostsType> DirectOperationsCosts() const
+    { return m_DirectOperationsCosts; }
+    void setDirectOperationsCosts(QSharedPointer<ScenarioLVDirectOperationsCostsType> DirectOperationsCosts)
+    { m_DirectOperationsCosts = DirectOperationsCosts; }
+    QSharedPointer<ScenarioLVIndirectOperationsCostsType> IndirectOperationsCosts() const
+    { return m_IndirectOperationsCosts; }
+    void setIndirectOperationsCosts(QSharedPointer<ScenarioLVIndirectOperationsCostsType> IndirectOperationsCosts)
+    { m_IndirectOperationsCosts = IndirectOperationsCosts; }
+
+private:
+    QSharedPointer<ScenarioLVTotalProgramCostsType> m_TotalProgramCosts;
+    double m_developmentTime;
+    QSharedPointer<ScenarioLVDirectOperationsCostsType> m_DirectOperationsCosts;
+    QSharedPointer<ScenarioLVIndirectOperationsCostsType> m_IndirectOperationsCosts;
+};
+
+
+// ScenarioLVComponentReliabilityType
+class ScenarioLVComponentReliabilityType : public ScenarioObject
+{
+public:
+    ScenarioLVComponentReliabilityType();
+    static ScenarioLVComponentReliabilityType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVComponentReliabilityType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioLVSeparationType> Separation() const
+    { return m_Separation; }
+    void setSeparation(QSharedPointer<ScenarioLVSeparationType> Separation)
+    { m_Separation = Separation; }
+    double avionicsFailureRate() const
+    { return m_avionicsFailureRate; }
+    void setAvionicsFailureRate(double avionicsFailureRate)
+    { m_avionicsFailureRate = avionicsFailureRate; }
+    double structureFailureRate() const
+    { return m_structureFailureRate; }
+    void setStructureFailureRate(double structureFailureRate)
+    { m_structureFailureRate = structureFailureRate; }
+    double tpsFailureRate() const
+    { return m_tpsFailureRate; }
+    void setTpsFailureRate(double tpsFailureRate)
+    { m_tpsFailureRate = tpsFailureRate; }
+    QSharedPointer<ScenarioLVPropulsionReliabilityType> PropulsionReliability() const
+    { return m_PropulsionReliability; }
+    void setPropulsionReliability(QSharedPointer<ScenarioLVPropulsionReliabilityType> PropulsionReliability)
+    { m_PropulsionReliability = PropulsionReliability; }
+    double overallComponentFailureRate() const
+    { return m_overallComponentFailureRate; }
+    void setOverallComponentFailureRate(double overallComponentFailureRate)
+    { m_overallComponentFailureRate = overallComponentFailureRate; }
+
+private:
+    QSharedPointer<ScenarioLVSeparationType> m_Separation;
+    double m_avionicsFailureRate;
+    double m_structureFailureRate;
+    double m_tpsFailureRate;
+    QSharedPointer<ScenarioLVPropulsionReliabilityType> m_PropulsionReliability;
+    double m_overallComponentFailureRate;
+};
+
+
+// ScenarioLVSystemReliabilityType
+class ScenarioLVSystemReliabilityType : public ScenarioObject
+{
+public:
+    ScenarioLVSystemReliabilityType();
+    static ScenarioLVSystemReliabilityType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVSystemReliabilityType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double globalVehicleReliability() const
+    { return m_globalVehicleReliability; }
+    void setGlobalVehicleReliability(double globalVehicleReliability)
+    { m_globalVehicleReliability = globalVehicleReliability; }
+    double selfDestructReliability() const
+    { return m_selfDestructReliability; }
+    void setSelfDestructReliability(double selfDestructReliability)
+    { m_selfDestructReliability = selfDestructReliability; }
+    double missionSafety() const
+    { return m_missionSafety; }
+    void setMissionSafety(double missionSafety)
+    { m_missionSafety = missionSafety; }
+    double preLaunchReliability() const
+    { return m_preLaunchReliability; }
+    void setPreLaunchReliability(double preLaunchReliability)
+    { m_preLaunchReliability = preLaunchReliability; }
+    QSharedPointer<ScenarioLVTakeoffReliabilityType> TakeoffReliability() const
+    { return m_TakeoffReliability; }
+    void setTakeoffReliability(QSharedPointer<ScenarioLVTakeoffReliabilityType> TakeoffReliability)
+    { m_TakeoffReliability = TakeoffReliability; }
+    int numberOfAscentPhases() const
+    { return m_numberOfAscentPhases; }
+    void setNumberOfAscentPhases(int numberOfAscentPhases)
+    { m_numberOfAscentPhases = numberOfAscentPhases; }
+    const QList<double>& ascentPhasesDurations() const
+    { return m_ascentPhasesDurations; }
+    QList<double>& ascentPhasesDurations()
+    { return m_ascentPhasesDurations; }
+    void setAscentPhasesDurations(QList<double> ascentPhasesDurations)
+    { m_ascentPhasesDurations = ascentPhasesDurations; }
+    const QList<double>& ascentPhasesFailureRate() const
+    { return m_ascentPhasesFailureRate; }
+    QList<double>& ascentPhasesFailureRate()
+    { return m_ascentPhasesFailureRate; }
+    void setAscentPhasesFailureRate(QList<double> ascentPhasesFailureRate)
+    { m_ascentPhasesFailureRate = ascentPhasesFailureRate; }
+
+private:
+    double m_globalVehicleReliability;
+    double m_selfDestructReliability;
+    double m_missionSafety;
+    double m_preLaunchReliability;
+    QSharedPointer<ScenarioLVTakeoffReliabilityType> m_TakeoffReliability;
+    int m_numberOfAscentPhases;
+    QList<double> m_ascentPhasesDurations;
+    QList<double> m_ascentPhasesFailureRate;
+};
+
+
+// ScenarioLVTrajectoryType
+class ScenarioLVTrajectoryType : public ScenarioObject
+{
+public:
+    ScenarioLVTrajectoryType();
+    static ScenarioLVTrajectoryType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVTrajectoryType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioLVTakeOffType> TakeOff() const
+    { return m_TakeOff; }
+    void setTakeOff(QSharedPointer<ScenarioLVTakeOffType> TakeOff)
+    { m_TakeOff = TakeOff; }
+    QSharedPointer<ScenarioLVIgnitionsType> Ignitions() const
+    { return m_Ignitions; }
+    void setIgnitions(QSharedPointer<ScenarioLVIgnitionsType> Ignitions)
+    { m_Ignitions = Ignitions; }
+    QSharedPointer<ScenarioLVAtmosphericFlightType> AtmosphericFlight() const
+    { return m_AtmosphericFlight; }
+    void setAtmosphericFlight(QSharedPointer<ScenarioLVAtmosphericFlightType> AtmosphericFlight)
+    { m_AtmosphericFlight = AtmosphericFlight; }
+    QSharedPointer<ScenarioLVExoatmosphericFlightType> ExoatmosphericFlight() const
+    { return m_ExoatmosphericFlight; }
+    void setExoatmosphericFlight(QSharedPointer<ScenarioLVExoatmosphericFlightType> ExoatmosphericFlight)
+    { m_ExoatmosphericFlight = ExoatmosphericFlight; }
+    QSharedPointer<ScenarioLVTrajectoryConstraintsType> TrajectoryConstraints() const
+    { return m_TrajectoryConstraints; }
+    void setTrajectoryConstraints(QSharedPointer<ScenarioLVTrajectoryConstraintsType> TrajectoryConstraints)
+    { m_TrajectoryConstraints = TrajectoryConstraints; }
+
+private:
+    QSharedPointer<ScenarioLVTakeOffType> m_TakeOff;
+    QSharedPointer<ScenarioLVIgnitionsType> m_Ignitions;
+    QSharedPointer<ScenarioLVAtmosphericFlightType> m_AtmosphericFlight;
+    QSharedPointer<ScenarioLVExoatmosphericFlightType> m_ExoatmosphericFlight;
+    QSharedPointer<ScenarioLVTrajectoryConstraintsType> m_TrajectoryConstraints;
+};
+
+
+// ScenarioLVProgramCostFactorsType
+class ScenarioLVProgramCostFactorsType : public ScenarioObject
+{
+public:
+    ScenarioLVProgramCostFactorsType();
+    static ScenarioLVProgramCostFactorsType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVProgramCostFactorsType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double f0() const
+    { return m_f0; }
+    void setF0(double f0)
+    { m_f0 = f0; }
+    QString launcherDesignComplexity() const
+    { return m_launcherDesignComplexity; }
+    void setLauncherDesignComplexity(QString launcherDesignComplexity)
+    { m_launcherDesignComplexity = launcherDesignComplexity; }
+    double f1() const
+    { return m_f1; }
+    void setF1(double f1)
+    { m_f1 = f1; }
+    QString teamExpertise() const
+    { return m_teamExpertise; }
+    void setTeamExpertise(QString teamExpertise)
+    { m_teamExpertise = teamExpertise; }
+    double f3() const
+    { return m_f3; }
+    void setF3(double f3)
+    { m_f3 = f3; }
+    QString contractorsStructure() const
+    { return m_contractorsStructure; }
+    void setContractorsStructure(QString contractorsStructure)
+    { m_contractorsStructure = contractorsStructure; }
+    double f7() const
+    { return m_f7; }
+    void setF7(double f7)
+    { m_f7 = f7; }
+
+private:
+    double m_f0;
+    QString m_launcherDesignComplexity;
+    double m_f1;
+    QString m_teamExpertise;
+    double m_f3;
+    QString m_contractorsStructure;
+    double m_f7;
+};
+
+
+// ScenarioLVPayloadType
+class ScenarioLVPayloadType : public ScenarioObject
+{
+public:
+    ScenarioLVPayloadType();
+    static ScenarioLVPayloadType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVPayloadType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double mass() const
+    { return m_mass; }
+    void setMass(double mass)
+    { m_mass = mass; }
+    double length() const
+    { return m_length; }
+    void setLength(double length)
+    { m_length = length; }
+    double diameter() const
+    { return m_diameter; }
+    void setDiameter(double diameter)
+    { m_diameter = diameter; }
+    double CoGLongPosition() const
+    { return m_CoGLongPosition; }
+    void setCoGLongPosition(double CoGLongPosition)
+    { m_CoGLongPosition = CoGLongPosition; }
+    double maxAxialAcc() const
+    { return m_maxAxialAcc; }
+    void setMaxAxialAcc(double maxAxialAcc)
+    { m_maxAxialAcc = maxAxialAcc; }
+    double maxHeatFlux() const
+    { return m_maxHeatFlux; }
+    void setMaxHeatFlux(double maxHeatFlux)
+    { m_maxHeatFlux = maxHeatFlux; }
+
+private:
+    double m_mass;
+    double m_length;
+    double m_diameter;
+    double m_CoGLongPosition;
+    double m_maxAxialAcc;
+    double m_maxHeatFlux;
+};
+
+
+// ScenarioLVLaunchSiteType
+class ScenarioLVLaunchSiteType : public ScenarioObject
+{
+public:
+    ScenarioLVLaunchSiteType();
+    static ScenarioLVLaunchSiteType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVLaunchSiteType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioAbstract3DOFPositionType> Abstract3DOFPosition() const
+    { return m_Abstract3DOFPosition; }
+    void setAbstract3DOFPosition(QSharedPointer<ScenarioAbstract3DOFPositionType> Abstract3DOFPosition)
+    { m_Abstract3DOFPosition = Abstract3DOFPosition; }
+    const QList<double>& allowedAzimuths() const
+    { return m_allowedAzimuths; }
+    QList<double>& allowedAzimuths()
+    { return m_allowedAzimuths; }
+    void setAllowedAzimuths(QList<double> allowedAzimuths)
+    { m_allowedAzimuths = allowedAzimuths; }
+
+private:
+    QSharedPointer<ScenarioAbstract3DOFPositionType> m_Abstract3DOFPosition;
+    QList<double> m_allowedAzimuths;
+};
+
+
+// ScenarioLVTargetOrbitType
+class ScenarioLVTargetOrbitType : public ScenarioObject
+{
+public:
+    ScenarioLVTargetOrbitType();
+    static ScenarioLVTargetOrbitType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVTargetOrbitType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double semiaxis() const
+    { return m_semiaxis; }
+    void setSemiaxis(double semiaxis)
+    { m_semiaxis = semiaxis; }
+    double eccentricity() const
+    { return m_eccentricity; }
+    void setEccentricity(double eccentricity)
+    { m_eccentricity = eccentricity; }
+    double inclination() const
+    { return m_inclination; }
+    void setInclination(double inclination)
+    { m_inclination = inclination; }
+    double semiaxisTol() const
+    { return m_semiaxisTol; }
+    void setSemiaxisTol(double semiaxisTol)
+    { m_semiaxisTol = semiaxisTol; }
+    double eccentricityTol() const
+    { return m_eccentricityTol; }
+    void setEccentricityTol(double eccentricityTol)
+    { m_eccentricityTol = eccentricityTol; }
+    double inclinationTol() const
+    { return m_inclinationTol; }
+    void setInclinationTol(double inclinationTol)
+    { m_inclinationTol = inclinationTol; }
+
+private:
+    double m_semiaxis;
+    double m_eccentricity;
+    double m_inclination;
+    double m_semiaxisTol;
+    double m_eccentricityTol;
+    double m_inclinationTol;
+};
+
+
+// ScenarioLVArchitectureType
+class ScenarioLVArchitectureType : public ScenarioObject
+{
+public:
+    ScenarioLVArchitectureType();
+    static ScenarioLVArchitectureType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVArchitectureType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioOptVarInt> boosterConf() const
+    { return m_boosterConf; }
+    void setBoosterConf(QSharedPointer<ScenarioOptVarInt> boosterConf)
+    { m_boosterConf = boosterConf; }
+    QSharedPointer<ScenarioOptVarInt> nStages() const
+    { return m_nStages; }
+    void setNStages(QSharedPointer<ScenarioOptVarInt> nStages)
+    { m_nStages = nStages; }
+    QSharedPointer<ScenarioOptVarInt> nBoosters() const
+    { return m_nBoosters; }
+    void setNBoosters(QSharedPointer<ScenarioOptVarInt> nBoosters)
+    { m_nBoosters = nBoosters; }
+    QSharedPointer<ScenarioOptVarBool> singleEngineType() const
+    { return m_singleEngineType; }
+    void setSingleEngineType(QSharedPointer<ScenarioOptVarBool> singleEngineType)
+    { m_singleEngineType = singleEngineType; }
+
+private:
+    QSharedPointer<ScenarioOptVarInt> m_boosterConf;
+    QSharedPointer<ScenarioOptVarInt> m_nStages;
+    QSharedPointer<ScenarioOptVarInt> m_nBoosters;
+    QSharedPointer<ScenarioOptVarBool> m_singleEngineType;
+};
+
+
+// ScenarioLVPlFairingType
+class ScenarioLVPlFairingType : public ScenarioObject
+{
+public:
+    ScenarioLVPlFairingType();
+    static ScenarioLVPlFairingType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVPlFairingType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioLVGeometryType> Geometry() const
+    { return m_Geometry; }
+    void setGeometry(QSharedPointer<ScenarioLVGeometryType> Geometry)
+    { m_Geometry = Geometry; }
+    QSharedPointer<ScenarioLVComponentWeightsType> ComponentWeights() const
+    { return m_ComponentWeights; }
+    void setComponentWeights(QSharedPointer<ScenarioLVComponentWeightsType> ComponentWeights)
+    { m_ComponentWeights = ComponentWeights; }
+    QSharedPointer<ScenarioLVComponentCostsType> ComponentCosts() const
+    { return m_ComponentCosts; }
+    void setComponentCosts(QSharedPointer<ScenarioLVComponentCostsType> ComponentCosts)
+    { m_ComponentCosts = ComponentCosts; }
+    QSharedPointer<ScenarioLVComponentReliabilityType> ComponentReliability() const
+    { return m_ComponentReliability; }
+    void setComponentReliability(QSharedPointer<ScenarioLVComponentReliabilityType> ComponentReliability)
+    { m_ComponentReliability = ComponentReliability; }
+
+private:
+    QSharedPointer<ScenarioLVGeometryType> m_Geometry;
+    QSharedPointer<ScenarioLVComponentWeightsType> m_ComponentWeights;
+    QSharedPointer<ScenarioLVComponentCostsType> m_ComponentCosts;
+    QSharedPointer<ScenarioLVComponentReliabilityType> m_ComponentReliability;
+};
+
+
+// ScenarioLVLowerStageType
+class ScenarioLVLowerStageType : public ScenarioObject
+{
+public:
+    ScenarioLVLowerStageType();
+    static ScenarioLVLowerStageType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVLowerStageType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioLVGeometryType> Geometry() const
+    { return m_Geometry; }
+    void setGeometry(QSharedPointer<ScenarioLVGeometryType> Geometry)
+    { m_Geometry = Geometry; }
+    QSharedPointer<ScenarioLVPropulsionSystemType> PropulsionSystem() const
+    { return m_PropulsionSystem; }
+    void setPropulsionSystem(QSharedPointer<ScenarioLVPropulsionSystemType> PropulsionSystem)
+    { m_PropulsionSystem = PropulsionSystem; }
+    QSharedPointer<ScenarioLVComponentWeightsType> ComponentWeights() const
+    { return m_ComponentWeights; }
+    void setComponentWeights(QSharedPointer<ScenarioLVComponentWeightsType> ComponentWeights)
+    { m_ComponentWeights = ComponentWeights; }
+    QSharedPointer<ScenarioLVComponentCostsType> ComponentCosts() const
+    { return m_ComponentCosts; }
+    void setComponentCosts(QSharedPointer<ScenarioLVComponentCostsType> ComponentCosts)
+    { m_ComponentCosts = ComponentCosts; }
+    QSharedPointer<ScenarioLVComponentReliabilityType> ComponentReliability() const
+    { return m_ComponentReliability; }
+    void setComponentReliability(QSharedPointer<ScenarioLVComponentReliabilityType> ComponentReliability)
+    { m_ComponentReliability = ComponentReliability; }
+
+private:
+    QSharedPointer<ScenarioLVGeometryType> m_Geometry;
+    QSharedPointer<ScenarioLVPropulsionSystemType> m_PropulsionSystem;
+    QSharedPointer<ScenarioLVComponentWeightsType> m_ComponentWeights;
+    QSharedPointer<ScenarioLVComponentCostsType> m_ComponentCosts;
+    QSharedPointer<ScenarioLVComponentReliabilityType> m_ComponentReliability;
+};
+
+
+// ScenarioLVUpperStageType
+class ScenarioLVUpperStageType : public ScenarioObject
+{
+public:
+    ScenarioLVUpperStageType();
+    static ScenarioLVUpperStageType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVUpperStageType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioLVGeometryType> Geometry() const
+    { return m_Geometry; }
+    void setGeometry(QSharedPointer<ScenarioLVGeometryType> Geometry)
+    { m_Geometry = Geometry; }
+    QSharedPointer<ScenarioLVPropulsionSystemType> PropulsionSystem() const
+    { return m_PropulsionSystem; }
+    void setPropulsionSystem(QSharedPointer<ScenarioLVPropulsionSystemType> PropulsionSystem)
+    { m_PropulsionSystem = PropulsionSystem; }
+    QSharedPointer<ScenarioLVComponentWeightsType> ComponentWeights() const
+    { return m_ComponentWeights; }
+    void setComponentWeights(QSharedPointer<ScenarioLVComponentWeightsType> ComponentWeights)
+    { m_ComponentWeights = ComponentWeights; }
+    QSharedPointer<ScenarioLVComponentCostsType> ComponentCosts() const
+    { return m_ComponentCosts; }
+    void setComponentCosts(QSharedPointer<ScenarioLVComponentCostsType> ComponentCosts)
+    { m_ComponentCosts = ComponentCosts; }
+    QSharedPointer<ScenarioLVComponentReliabilityType> ComponentReliability() const
+    { return m_ComponentReliability; }
+    void setComponentReliability(QSharedPointer<ScenarioLVComponentReliabilityType> ComponentReliability)
+    { m_ComponentReliability = ComponentReliability; }
+
+private:
+    QSharedPointer<ScenarioLVGeometryType> m_Geometry;
+    QSharedPointer<ScenarioLVPropulsionSystemType> m_PropulsionSystem;
+    QSharedPointer<ScenarioLVComponentWeightsType> m_ComponentWeights;
+    QSharedPointer<ScenarioLVComponentCostsType> m_ComponentCosts;
+    QSharedPointer<ScenarioLVComponentReliabilityType> m_ComponentReliability;
+};
+
+
+// ScenarioLVBoostersType
+class ScenarioLVBoostersType : public ScenarioObject
+{
+public:
+    ScenarioLVBoostersType();
+    static ScenarioLVBoostersType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVBoostersType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioLVGeometryType> Geometry() const
+    { return m_Geometry; }
+    void setGeometry(QSharedPointer<ScenarioLVGeometryType> Geometry)
+    { m_Geometry = Geometry; }
+    QSharedPointer<ScenarioLVPropulsionSystemType> PropulsionSystem() const
+    { return m_PropulsionSystem; }
+    void setPropulsionSystem(QSharedPointer<ScenarioLVPropulsionSystemType> PropulsionSystem)
+    { m_PropulsionSystem = PropulsionSystem; }
+    QSharedPointer<ScenarioLVComponentWeightsType> ComponentWeights() const
+    { return m_ComponentWeights; }
+    void setComponentWeights(QSharedPointer<ScenarioLVComponentWeightsType> ComponentWeights)
+    { m_ComponentWeights = ComponentWeights; }
+    QSharedPointer<ScenarioLVComponentCostsType> ComponentCosts() const
+    { return m_ComponentCosts; }
+    void setComponentCosts(QSharedPointer<ScenarioLVComponentCostsType> ComponentCosts)
+    { m_ComponentCosts = ComponentCosts; }
+    QSharedPointer<ScenarioLVComponentReliabilityType> ComponentReliability() const
+    { return m_ComponentReliability; }
+    void setComponentReliability(QSharedPointer<ScenarioLVComponentReliabilityType> ComponentReliability)
+    { m_ComponentReliability = ComponentReliability; }
+
+private:
+    QSharedPointer<ScenarioLVGeometryType> m_Geometry;
+    QSharedPointer<ScenarioLVPropulsionSystemType> m_PropulsionSystem;
+    QSharedPointer<ScenarioLVComponentWeightsType> m_ComponentWeights;
+    QSharedPointer<ScenarioLVComponentCostsType> m_ComponentCosts;
+    QSharedPointer<ScenarioLVComponentReliabilityType> m_ComponentReliability;
+};
+
+
+// ScenarioLVSystemConstraintsType
+class ScenarioLVSystemConstraintsType : public ScenarioObject
+{
+public:
+    ScenarioLVSystemConstraintsType();
+    static ScenarioLVSystemConstraintsType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVSystemConstraintsType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+
+private:
+};
+
+
+// ScenarioLVPropulsionSystemSystemType
+class ScenarioLVPropulsionSystemSystemType : public ScenarioObject
+{
+public:
+    ScenarioLVPropulsionSystemSystemType();
+    static ScenarioLVPropulsionSystemSystemType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LVPropulsionSystemSystemType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioOptVarInt> propType() const
     { return m_propType; }
-    void setPropType(QSharedPointer<ScenarioOptVarString> propType)
+    void setPropType(QSharedPointer<ScenarioOptVarInt> propType)
     { m_propType = propType; }
     QString fuelType() const
     { return m_fuelType; }
@@ -1662,33 +3309,49 @@ public:
     { return m_nominalThrust; }
     void setNominalThrust(QSharedPointer<ScenarioOptVarDouble> nominalThrust)
     { m_nominalThrust = nominalThrust; }
+    double nominalThrustPerEngine() const
+    { return m_nominalThrustPerEngine; }
+    void setNominalThrustPerEngine(double nominalThrustPerEngine)
+    { m_nominalThrustPerEngine = nominalThrustPerEngine; }
+    double engineWerMass() const
+    { return m_engineWerMass; }
+    void setEngineWerMass(double engineWerMass)
+    { m_engineWerMass = engineWerMass; }
     double totalEngineDryMass() const
     { return m_totalEngineDryMass; }
     void setTotalEngineDryMass(double totalEngineDryMass)
     { m_totalEngineDryMass = totalEngineDryMass; }
+    double totalPropSysDryMass() const
+    { return m_totalPropSysDryMass; }
+    void setTotalPropSysDryMass(double totalPropSysDryMass)
+    { m_totalPropSysDryMass = totalPropSysDryMass; }
     QSharedPointer<ScenarioOptVarDouble> propMass() const
     { return m_propMass; }
     void setPropMass(QSharedPointer<ScenarioOptVarDouble> propMass)
     { m_propMass = propMass; }
+    double totalEngineLength() const
+    { return m_totalEngineLength; }
+    void setTotalEngineLength(double totalEngineLength)
+    { m_totalEngineLength = totalEngineLength; }
     double engineCoGLongPosition() const
     { return m_engineCoGLongPosition; }
     void setEngineCoGLongPosition(double engineCoGLongPosition)
     { m_engineCoGLongPosition = engineCoGLongPosition; }
-    QSharedPointer<ScenarioOptVarDouble> lengthOverDiam() const
-    { return m_lengthOverDiam; }
-    void setLengthOverDiam(QSharedPointer<ScenarioOptVarDouble> lengthOverDiam)
-    { m_lengthOverDiam = lengthOverDiam; }
     QSharedPointer<ScenarioOptVarBool> offTheShelf() const
     { return m_offTheShelf; }
     void setOffTheShelf(QSharedPointer<ScenarioOptVarBool> offTheShelf)
     { m_offTheShelf = offTheShelf; }
-    QSharedPointer<ScenarioOptVarString> offTheShelfEngineType() const
-    { return m_offTheShelfEngineType; }
-    void setOffTheShelfEngineType(QSharedPointer<ScenarioOptVarString> offTheShelfEngineType)
-    { m_offTheShelfEngineType = offTheShelfEngineType; }
-    QSharedPointer<ScenarioOptVarString> feedType() const
+    QSharedPointer<ScenarioOptVarInt> offTheShelfEngineId() const
+    { return m_offTheShelfEngineId; }
+    void setOffTheShelfEngineId(QSharedPointer<ScenarioOptVarInt> offTheShelfEngineId)
+    { m_offTheShelfEngineId = offTheShelfEngineId; }
+    QString offTheShelfEngineName() const
+    { return m_offTheShelfEngineName; }
+    void setOffTheShelfEngineName(QString offTheShelfEngineName)
+    { m_offTheShelfEngineName = offTheShelfEngineName; }
+    QSharedPointer<ScenarioOptVarInt> feedType() const
     { return m_feedType; }
-    void setFeedType(QSharedPointer<ScenarioOptVarString> feedType)
+    void setFeedType(QSharedPointer<ScenarioOptVarInt> feedType)
     { m_feedType = feedType; }
     QString coolingType() const
     { return m_coolingType; }
@@ -1702,34 +3365,68 @@ public:
     { return m_nozzleOptAlt; }
     void setNozzleOptAlt(QSharedPointer<ScenarioOptVarDouble> nozzleOptAlt)
     { m_nozzleOptAlt = nozzleOptAlt; }
+    double pccOverPa() const
+    { return m_pccOverPa; }
+    void setPccOverPa(double pccOverPa)
+    { m_pccOverPa = pccOverPa; }
+    double paOptAlt() const
+    { return m_paOptAlt; }
+    void setPaOptAlt(double paOptAlt)
+    { m_paOptAlt = paOptAlt; }
+    double spFillingFactorCstrViolation() const
+    { return m_spFillingFactorCstrViolation; }
+    void setSpFillingFactorCstrViolation(double spFillingFactorCstrViolation)
+    { m_spFillingFactorCstrViolation = spFillingFactorCstrViolation; }
+    double thrustRangeCstrViolation() const
+    { return m_thrustRangeCstrViolation; }
+    void setThrustRangeCstrViolation(double thrustRangeCstrViolation)
+    { m_thrustRangeCstrViolation = thrustRangeCstrViolation; }
+    double maxNenginesCstrViolation() const
+    { return m_maxNenginesCstrViolation; }
+    void setMaxNenginesCstrViolation(double maxNenginesCstrViolation)
+    { m_maxNenginesCstrViolation = maxNenginesCstrViolation; }
+    double ceaExecutionFailureViolation() const
+    { return m_ceaExecutionFailureViolation; }
+    void setCeaExecutionFailureViolation(double ceaExecutionFailureViolation)
+    { m_ceaExecutionFailureViolation = ceaExecutionFailureViolation; }
 
 private:
-    QSharedPointer<ScenarioOptVarString> m_propType;
+    QSharedPointer<ScenarioOptVarInt> m_propType;
     QString m_fuelType;
     QString m_oxType;
     QSharedPointer<ScenarioOptVarInt> m_numberOfEngines;
     QSharedPointer<ScenarioOptVarDouble> m_nominalThrust;
+    double m_nominalThrustPerEngine;
+    double m_engineWerMass;
     double m_totalEngineDryMass;
+    double m_totalPropSysDryMass;
     QSharedPointer<ScenarioOptVarDouble> m_propMass;
+    double m_totalEngineLength;
     double m_engineCoGLongPosition;
-    QSharedPointer<ScenarioOptVarDouble> m_lengthOverDiam;
     QSharedPointer<ScenarioOptVarBool> m_offTheShelf;
-    QSharedPointer<ScenarioOptVarString> m_offTheShelfEngineType;
-    QSharedPointer<ScenarioOptVarString> m_feedType;
+    QSharedPointer<ScenarioOptVarInt> m_offTheShelfEngineId;
+    QString m_offTheShelfEngineName;
+    QSharedPointer<ScenarioOptVarInt> m_feedType;
     QString m_coolingType;
     QSharedPointer<ScenarioOptVarDouble> m_mixtureRatio;
     QSharedPointer<ScenarioOptVarDouble> m_nozzleOptAlt;
+    double m_pccOverPa;
+    double m_paOptAlt;
+    double m_spFillingFactorCstrViolation;
+    double m_thrustRangeCstrViolation;
+    double m_maxNenginesCstrViolation;
+    double m_ceaExecutionFailureViolation;
 };
 
 
-// ScenarioLiquidTanks
-class ScenarioLiquidTanks : public ScenarioObject
+// ScenarioLVPropulsionSystemLiquidTanksType
+class ScenarioLVPropulsionSystemLiquidTanksType : public ScenarioObject
 {
 public:
-    ScenarioLiquidTanks();
-    static ScenarioLiquidTanks* create(const QDomElement& e);
+    ScenarioLVPropulsionSystemLiquidTanksType();
+    static ScenarioLVPropulsionSystemLiquidTanksType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "LiquidTanks"; }
+    { return "LVPropulsionSystemLiquidTanksType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -1738,6 +3435,10 @@ public:
     { return m_tanksPressureNorm; }
     void setTanksPressureNorm(QSharedPointer<ScenarioOptVarDouble> tanksPressureNorm)
     { m_tanksPressureNorm = tanksPressureNorm; }
+    double tanksPressure() const
+    { return m_tanksPressure; }
+    void setTanksPressure(double tanksPressure)
+    { m_tanksPressure = tanksPressure; }
     double oxTankLength() const
     { return m_oxTankLength; }
     void setOxTankLength(double oxTankLength)
@@ -1750,6 +3451,14 @@ public:
     { return m_oxTankPressure; }
     void setOxTankPressure(double oxTankPressure)
     { m_oxTankPressure = oxTankPressure; }
+    double oxMass() const
+    { return m_oxMass; }
+    void setOxMass(double oxMass)
+    { m_oxMass = oxMass; }
+    double oxTankVolume() const
+    { return m_oxTankVolume; }
+    void setOxTankVolume(double oxTankVolume)
+    { m_oxTankVolume = oxTankVolume; }
     double fuelTankLength() const
     { return m_fuelTankLength; }
     void setFuelTankLength(double fuelTankLength)
@@ -1762,30 +3471,51 @@ public:
     { return m_fuelTankPressure; }
     void setFuelTankPressure(double fuelTankPressure)
     { m_fuelTankPressure = fuelTankPressure; }
+    double fuelMass() const
+    { return m_fuelMass; }
+    void setFuelMass(double fuelMass)
+    { m_fuelMass = fuelMass; }
+    double fuelTankVolume() const
+    { return m_fuelTankVolume; }
+    void setFuelTankVolume(double fuelTankVolume)
+    { m_fuelTankVolume = fuelTankVolume; }
 
 private:
     QSharedPointer<ScenarioOptVarDouble> m_tanksPressureNorm;
+    double m_tanksPressure;
     double m_oxTankLength;
     double m_oxTankDiam;
     double m_oxTankPressure;
+    double m_oxMass;
+    double m_oxTankVolume;
     double m_fuelTankLength;
     double m_fuelTankDiam;
     double m_fuelTankPressure;
+    double m_fuelMass;
+    double m_fuelTankVolume;
 };
 
 
-// ScenarioSolidGrain
-class ScenarioSolidGrain : public ScenarioObject
+// ScenarioLVPropulsionSystemSolidGrainType
+class ScenarioLVPropulsionSystemSolidGrainType : public ScenarioObject
 {
 public:
-    ScenarioSolidGrain();
-    static ScenarioSolidGrain* create(const QDomElement& e);
+    ScenarioLVPropulsionSystemSolidGrainType();
+    static ScenarioLVPropulsionSystemSolidGrainType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "SolidGrain"; }
+    { return "LVPropulsionSystemSolidGrainType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioOptVarDouble> abOverAt() const
+    { return m_abOverAt; }
+    void setAbOverAt(QSharedPointer<ScenarioOptVarDouble> abOverAt)
+    { m_abOverAt = abOverAt; }
+    double ab() const
+    { return m_ab; }
+    void setAb(double ab)
+    { m_ab = ab; }
     double grainLength() const
     { return m_grainLength; }
     void setGrainLength(double grainLength)
@@ -1816,6 +3546,8 @@ public:
     { m_cavityVolume = cavityVolume; }
 
 private:
+    QSharedPointer<ScenarioOptVarDouble> m_abOverAt;
+    double m_ab;
     double m_grainLength;
     double m_grainDiam;
     double m_igniterLength;
@@ -1826,14 +3558,14 @@ private:
 };
 
 
-// ScenarioFeedSystem
-class ScenarioFeedSystem : public ScenarioObject
+// ScenarioLVPropulsionSystemFeedSystemType
+class ScenarioLVPropulsionSystemFeedSystemType : public ScenarioObject
 {
 public:
-    ScenarioFeedSystem();
-    static ScenarioFeedSystem* create(const QDomElement& e);
+    ScenarioLVPropulsionSystemFeedSystemType();
+    static ScenarioLVPropulsionSystemFeedSystemType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "FeedSystem"; }
+    { return "LVPropulsionSystemFeedSystemType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -1888,30 +3620,22 @@ private:
 };
 
 
-// ScenarioCombustionChamber
-class ScenarioCombustionChamber : public ScenarioObject
+// ScenarioLVPropulsionSystemCombustionChamberType
+class ScenarioLVPropulsionSystemCombustionChamberType : public ScenarioObject
 {
 public:
-    ScenarioCombustionChamber();
-    static ScenarioCombustionChamber* create(const QDomElement& e);
+    ScenarioLVPropulsionSystemCombustionChamberType();
+    static ScenarioLVPropulsionSystemCombustionChamberType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "CombustionChamber"; }
+    { return "LVPropulsionSystemCombustionChamberType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioOptVarDouble> abOverAt() const
-    { return m_abOverAt; }
-    void setAbOverAt(QSharedPointer<ScenarioOptVarDouble> abOverAt)
-    { m_abOverAt = abOverAt; }
     QSharedPointer<ScenarioOptVarDouble> accOverAt() const
     { return m_accOverAt; }
     void setAccOverAt(QSharedPointer<ScenarioOptVarDouble> accOverAt)
     { m_accOverAt = accOverAt; }
-    double ab() const
-    { return m_ab; }
-    void setAb(double ab)
-    { m_ab = ab; }
     double acc() const
     { return m_acc; }
     void setAcc(double acc)
@@ -1942,9 +3666,7 @@ public:
     { m_chamberMass = chamberMass; }
 
 private:
-    QSharedPointer<ScenarioOptVarDouble> m_abOverAt;
     QSharedPointer<ScenarioOptVarDouble> m_accOverAt;
-    double m_ab;
     double m_acc;
     QSharedPointer<ScenarioOptVarDouble> m_chamberPressureNorm;
     double m_chamberPressure;
@@ -1955,14 +3677,14 @@ private:
 };
 
 
-// ScenarioNozzle
-class ScenarioNozzle : public ScenarioObject
+// ScenarioLVPropulsionSystemNozzleType
+class ScenarioLVPropulsionSystemNozzleType : public ScenarioObject
 {
 public:
-    ScenarioNozzle();
-    static ScenarioNozzle* create(const QDomElement& e);
+    ScenarioLVPropulsionSystemNozzleType();
+    static ScenarioLVPropulsionSystemNozzleType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "Nozzle"; }
+    { return "LVPropulsionSystemNozzleType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -1979,29 +3701,41 @@ public:
     { return m_aeOverat; }
     void setAeOverat(double aeOverat)
     { m_aeOverat = aeOverat; }
-    double nozzleLength() const
-    { return m_nozzleLength; }
-    void setNozzleLength(double nozzleLength)
-    { m_nozzleLength = nozzleLength; }
+    double throatDiameter() const
+    { return m_throatDiameter; }
+    void setThroatDiameter(double throatDiameter)
+    { m_throatDiameter = throatDiameter; }
     double nozzleDiameter() const
     { return m_nozzleDiameter; }
     void setNozzleDiameter(double nozzleDiameter)
     { m_nozzleDiameter = nozzleDiameter; }
+    double convLength() const
+    { return m_convLength; }
+    void setConvLength(double convLength)
+    { m_convLength = convLength; }
+    double divLength() const
+    { return m_divLength; }
+    void setDivLength(double divLength)
+    { m_divLength = divLength; }
+    double nozzleLength() const
+    { return m_nozzleLength; }
+    void setNozzleLength(double nozzleLength)
+    { m_nozzleLength = nozzleLength; }
     double nozzleMass() const
     { return m_nozzleMass; }
     void setNozzleMass(double nozzleMass)
     { m_nozzleMass = nozzleMass; }
-    QSharedPointer<ScenarioOptVarString> nozzleType() const
+    QSharedPointer<ScenarioOptVarInt> nozzleType() const
     { return m_nozzleType; }
-    void setNozzleType(QSharedPointer<ScenarioOptVarString> nozzleType)
+    void setNozzleType(QSharedPointer<ScenarioOptVarInt> nozzleType)
     { m_nozzleType = nozzleType; }
     QSharedPointer<ScenarioOptVarDouble> divAngle() const
     { return m_divAngle; }
     void setDivAngle(QSharedPointer<ScenarioOptVarDouble> divAngle)
     { m_divAngle = divAngle; }
-    QSharedPointer<ScenarioOptVarString> tvcType() const
+    QSharedPointer<ScenarioOptVarInt> tvcType() const
     { return m_tvcType; }
-    void setTvcType(QSharedPointer<ScenarioOptVarString> tvcType)
+    void setTvcType(QSharedPointer<ScenarioOptVarInt> tvcType)
     { m_tvcType = tvcType; }
     QSharedPointer<ScenarioOptVarDouble> tvcAngle() const
     { return m_tvcAngle; }
@@ -2024,12 +3758,15 @@ private:
     double m_at;
     double m_ae;
     double m_aeOverat;
-    double m_nozzleLength;
+    double m_throatDiameter;
     double m_nozzleDiameter;
+    double m_convLength;
+    double m_divLength;
+    double m_nozzleLength;
     double m_nozzleMass;
-    QSharedPointer<ScenarioOptVarString> m_nozzleType;
+    QSharedPointer<ScenarioOptVarInt> m_nozzleType;
     QSharedPointer<ScenarioOptVarDouble> m_divAngle;
-    QSharedPointer<ScenarioOptVarString> m_tvcType;
+    QSharedPointer<ScenarioOptVarInt> m_tvcType;
     QSharedPointer<ScenarioOptVarDouble> m_tvcAngle;
     double m_tvcMass;
     double m_nozzleCantAngle;
@@ -2037,18 +3774,34 @@ private:
 };
 
 
-// ScenarioPerformance
-class ScenarioPerformance : public ScenarioObject
+// ScenarioLVPropulsionSystemPerformanceType
+class ScenarioLVPropulsionSystemPerformanceType : public ScenarioObject
 {
 public:
-    ScenarioPerformance();
-    static ScenarioPerformance* create(const QDomElement& e);
+    ScenarioLVPropulsionSystemPerformanceType();
+    static ScenarioLVPropulsionSystemPerformanceType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "Performance"; }
+    { return "LVPropulsionSystemPerformanceType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double seaThrust() const
+    { return m_seaThrust; }
+    void setSeaThrust(double seaThrust)
+    { m_seaThrust = seaThrust; }
+    double seaThrustPerEngine() const
+    { return m_seaThrustPerEngine; }
+    void setSeaThrustPerEngine(double seaThrustPerEngine)
+    { m_seaThrustPerEngine = seaThrustPerEngine; }
+    double vacuumThrust() const
+    { return m_vacuumThrust; }
+    void setVacuumThrust(double vacuumThrust)
+    { m_vacuumThrust = vacuumThrust; }
+    double vacuumThrustPerEngine() const
+    { return m_vacuumThrustPerEngine; }
+    void setVacuumThrustPerEngine(double vacuumThrustPerEngine)
+    { m_vacuumThrustPerEngine = vacuumThrustPerEngine; }
     double theoOptIsp() const
     { return m_theoOptIsp; }
     void setTheoOptIsp(double theoOptIsp)
@@ -2057,10 +3810,18 @@ public:
     { return m_realOptIsp; }
     void setRealOptIsp(double realOptIsp)
     { m_realOptIsp = realOptIsp; }
-    double realSeeIsp() const
-    { return m_realSeeIsp; }
-    void setRealSeeIsp(double realSeeIsp)
-    { m_realSeeIsp = realSeeIsp; }
+    double theoSeaIsp() const
+    { return m_theoSeaIsp; }
+    void setTheoSeaIsp(double theoSeaIsp)
+    { m_theoSeaIsp = theoSeaIsp; }
+    double realSeaIsp() const
+    { return m_realSeaIsp; }
+    void setRealSeaIsp(double realSeaIsp)
+    { m_realSeaIsp = realSeaIsp; }
+    double theoVacuumIsp() const
+    { return m_theoVacuumIsp; }
+    void setTheoVacuumIsp(double theoVacuumIsp)
+    { m_theoVacuumIsp = theoVacuumIsp; }
     double realVacuumIsp() const
     { return m_realVacuumIsp; }
     void setRealVacuumIsp(double realVacuumIsp)
@@ -2081,10 +3842,22 @@ public:
     { return m_charactVelocityEff; }
     void setCharactVelocityEff(double charactVelocityEff)
     { m_charactVelocityEff = charactVelocityEff; }
+    double totalIspEff() const
+    { return m_totalIspEff; }
+    void setTotalIspEff(double totalIspEff)
+    { m_totalIspEff = totalIspEff; }
     double nominalMassFlow() const
     { return m_nominalMassFlow; }
     void setNominalMassFlow(double nominalMassFlow)
     { m_nominalMassFlow = nominalMassFlow; }
+    double nominalMassFlowPerEngine() const
+    { return m_nominalMassFlowPerEngine; }
+    void setNominalMassFlowPerEngine(double nominalMassFlowPerEngine)
+    { m_nominalMassFlowPerEngine = nominalMassFlowPerEngine; }
+    double gammaExhaust() const
+    { return m_gammaExhaust; }
+    void setGammaExhaust(double gammaExhaust)
+    { m_gammaExhaust = gammaExhaust; }
     double minOperativeAlt() const
     { return m_minOperativeAlt; }
     void setMinOperativeAlt(double minOperativeAlt)
@@ -2099,854 +3872,38 @@ public:
     { m_restart = restart; }
 
 private:
+    double m_seaThrust;
+    double m_seaThrustPerEngine;
+    double m_vacuumThrust;
+    double m_vacuumThrustPerEngine;
     double m_theoOptIsp;
     double m_realOptIsp;
-    double m_realSeeIsp;
+    double m_theoSeaIsp;
+    double m_realSeaIsp;
+    double m_theoVacuumIsp;
     double m_realVacuumIsp;
     double m_thrustCoeff;
     double m_charactVelocity;
     double m_thrustCoeffEff;
     double m_charactVelocityEff;
+    double m_totalIspEff;
     double m_nominalMassFlow;
+    double m_nominalMassFlowPerEngine;
+    double m_gammaExhaust;
     double m_minOperativeAlt;
     QSharedPointer<ScenarioOptVarBool> m_throttle;
     QSharedPointer<ScenarioOptVarBool> m_restart;
 };
 
 
-// ScenarioLVProgram
-class ScenarioLVProgram : public ScenarioObject
+// ScenarioLVDevelopmentCostsType
+class ScenarioLVDevelopmentCostsType : public ScenarioObject
 {
 public:
-    ScenarioLVProgram();
-    static ScenarioLVProgram* create(const QDomElement& e);
+    ScenarioLVDevelopmentCostsType();
+    static ScenarioLVDevelopmentCostsType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "LVProgram"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    int nLaunches() const
-    { return m_nLaunches; }
-    void setNLaunches(int nLaunches)
-    { m_nLaunches = nLaunches; }
-    double nYearsOps() const
-    { return m_nYearsOps; }
-    void setNYearsOps(double nYearsOps)
-    { m_nYearsOps = nYearsOps; }
-    int nLaunchesPerYear() const
-    { return m_nLaunchesPerYear; }
-    void setNLaunchesPerYear(int nLaunchesPerYear)
-    { m_nLaunchesPerYear = nLaunchesPerYear; }
-    QSharedPointer<ScenarioprogramCostFactors> programCostFactors() const
-    { return m_programCostFactors; }
-    void setProgramCostFactors(QSharedPointer<ScenarioprogramCostFactors> programCostFactors)
-    { m_programCostFactors = programCostFactors; }
-
-private:
-    int m_nLaunches;
-    double m_nYearsOps;
-    int m_nLaunchesPerYear;
-    QSharedPointer<ScenarioprogramCostFactors> m_programCostFactors;
-};
-
-
-// ScenarioprogramCostFactors
-class ScenarioprogramCostFactors : public ScenarioObject
-{
-public:
-    ScenarioprogramCostFactors();
-    static ScenarioprogramCostFactors* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "programCostFactors"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    double f0() const
-    { return m_f0; }
-    void setF0(double f0)
-    { m_f0 = f0; }
-    QString launcherDesignComplexity() const
-    { return m_launcherDesignComplexity; }
-    void setLauncherDesignComplexity(QString launcherDesignComplexity)
-    { m_launcherDesignComplexity = launcherDesignComplexity; }
-    double f1() const
-    { return m_f1; }
-    void setF1(double f1)
-    { m_f1 = f1; }
-    QString teamExpertise() const
-    { return m_teamExpertise; }
-    void setTeamExpertise(QString teamExpertise)
-    { m_teamExpertise = teamExpertise; }
-    double f3() const
-    { return m_f3; }
-    void setF3(double f3)
-    { m_f3 = f3; }
-    QString contractorsStructure() const
-    { return m_contractorsStructure; }
-    void setContractorsStructure(QString contractorsStructure)
-    { m_contractorsStructure = contractorsStructure; }
-    double f7() const
-    { return m_f7; }
-    void setF7(double f7)
-    { m_f7 = f7; }
-
-private:
-    double m_f0;
-    QString m_launcherDesignComplexity;
-    double m_f1;
-    QString m_teamExpertise;
-    double m_f3;
-    QString m_contractorsStructure;
-    double m_f7;
-};
-
-
-// ScenarioLVMission
-class ScenarioLVMission : public ScenarioObject
-{
-public:
-    ScenarioLVMission();
-    static ScenarioLVMission* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "LVMission"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioLVPayload> LVPayload() const
-    { return m_LVPayload; }
-    void setLVPayload(QSharedPointer<ScenarioLVPayload> LVPayload)
-    { m_LVPayload = LVPayload; }
-    QSharedPointer<ScenarioEnvironmentType> Environment() const
-    { return m_Environment; }
-    void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
-    { m_Environment = Environment; }
-    QSharedPointer<ScenarioLaunchSite> LaunchSite() const
-    { return m_LaunchSite; }
-    void setLaunchSite(QSharedPointer<ScenarioLaunchSite> LaunchSite)
-    { m_LaunchSite = LaunchSite; }
-    QSharedPointer<ScenarioTargetOrbit> TargetOrbit() const
-    { return m_TargetOrbit; }
-    void setTargetOrbit(QSharedPointer<ScenarioTargetOrbit> TargetOrbit)
-    { m_TargetOrbit = TargetOrbit; }
-    QSharedPointer<ScenarioTrajectory> Trajectory() const
-    { return m_Trajectory; }
-    void setTrajectory(QSharedPointer<ScenarioTrajectory> Trajectory)
-    { m_Trajectory = Trajectory; }
-
-private:
-    QSharedPointer<ScenarioLVPayload> m_LVPayload;
-    QSharedPointer<ScenarioEnvironmentType> m_Environment;
-    QSharedPointer<ScenarioLaunchSite> m_LaunchSite;
-    QSharedPointer<ScenarioTargetOrbit> m_TargetOrbit;
-    QSharedPointer<ScenarioTrajectory> m_Trajectory;
-};
-
-
-// ScenarioLVPayload
-class ScenarioLVPayload : public ScenarioObject
-{
-public:
-    ScenarioLVPayload();
-    static ScenarioLVPayload* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "LVPayload"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    double mass() const
-    { return m_mass; }
-    void setMass(double mass)
-    { m_mass = mass; }
-    double length() const
-    { return m_length; }
-    void setLength(double length)
-    { m_length = length; }
-    double diameter() const
-    { return m_diameter; }
-    void setDiameter(double diameter)
-    { m_diameter = diameter; }
-    double CoGLongPosition() const
-    { return m_CoGLongPosition; }
-    void setCoGLongPosition(double CoGLongPosition)
-    { m_CoGLongPosition = CoGLongPosition; }
-    double maxAxialAcc() const
-    { return m_maxAxialAcc; }
-    void setMaxAxialAcc(double maxAxialAcc)
-    { m_maxAxialAcc = maxAxialAcc; }
-    double maxHeatFlux() const
-    { return m_maxHeatFlux; }
-    void setMaxHeatFlux(double maxHeatFlux)
-    { m_maxHeatFlux = maxHeatFlux; }
-
-private:
-    double m_mass;
-    double m_length;
-    double m_diameter;
-    double m_CoGLongPosition;
-    double m_maxAxialAcc;
-    double m_maxHeatFlux;
-};
-
-
-// ScenarioLaunchSite
-class ScenarioLaunchSite : public ScenarioObject
-{
-public:
-    ScenarioLaunchSite();
-    static ScenarioLaunchSite* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "LaunchSite"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioAbstract3DOFPositionType> Abstract3DOFPosition() const
-    { return m_Abstract3DOFPosition; }
-    void setAbstract3DOFPosition(QSharedPointer<ScenarioAbstract3DOFPositionType> Abstract3DOFPosition)
-    { m_Abstract3DOFPosition = Abstract3DOFPosition; }
-    const QList<double>& allowedAzimuths() const
-    { return m_allowedAzimuths; }
-    QList<double>& allowedAzimuths()
-    { return m_allowedAzimuths; }
-    void setAllowedAzimuths(QList<double> allowedAzimuths)
-    { m_allowedAzimuths = allowedAzimuths; }
-
-private:
-    QSharedPointer<ScenarioAbstract3DOFPositionType> m_Abstract3DOFPosition;
-    QList<double> m_allowedAzimuths;
-};
-
-
-// ScenarioTargetOrbit
-class ScenarioTargetOrbit : public ScenarioObject
-{
-public:
-    ScenarioTargetOrbit();
-    static ScenarioTargetOrbit* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "TargetOrbit"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    double semiaxis() const
-    { return m_semiaxis; }
-    void setSemiaxis(double semiaxis)
-    { m_semiaxis = semiaxis; }
-    double eccentricity() const
-    { return m_eccentricity; }
-    void setEccentricity(double eccentricity)
-    { m_eccentricity = eccentricity; }
-    double inclination() const
-    { return m_inclination; }
-    void setInclination(double inclination)
-    { m_inclination = inclination; }
-    double semiaxisTol() const
-    { return m_semiaxisTol; }
-    void setSemiaxisTol(double semiaxisTol)
-    { m_semiaxisTol = semiaxisTol; }
-    double eccentricityTol() const
-    { return m_eccentricityTol; }
-    void setEccentricityTol(double eccentricityTol)
-    { m_eccentricityTol = eccentricityTol; }
-    double inclinationTol() const
-    { return m_inclinationTol; }
-    void setInclinationTol(double inclinationTol)
-    { m_inclinationTol = inclinationTol; }
-
-private:
-    double m_semiaxis;
-    double m_eccentricity;
-    double m_inclination;
-    double m_semiaxisTol;
-    double m_eccentricityTol;
-    double m_inclinationTol;
-};
-
-
-// ScenarioLVSystemType
-class ScenarioLVSystemType : public ScenarioObject
-{
-public:
-    ScenarioLVSystemType();
-    static ScenarioLVSystemType* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "LVSystemType"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioArchitecture> Architecture() const
-    { return m_Architecture; }
-    void setArchitecture(QSharedPointer<ScenarioArchitecture> Architecture)
-    { m_Architecture = Architecture; }
-    const QList<QSharedPointer<ScenarioLowerStage> >& LowerStage() const
-    { return m_LowerStage; }
-    QList<QSharedPointer<ScenarioLowerStage> >& LowerStage()
-    { return m_LowerStage; }
-    void setLowerStage(QList<QSharedPointer<ScenarioLowerStage> > LowerStage)
-    { m_LowerStage = LowerStage; }
-    QSharedPointer<ScenarioUpperStage> UpperStage() const
-    { return m_UpperStage; }
-    void setUpperStage(QSharedPointer<ScenarioUpperStage> UpperStage)
-    { m_UpperStage = UpperStage; }
-    const QList<QSharedPointer<ScenarioBoosters> >& Boosters() const
-    { return m_Boosters; }
-    QList<QSharedPointer<ScenarioBoosters> >& Boosters()
-    { return m_Boosters; }
-    void setBoosters(QList<QSharedPointer<ScenarioBoosters> > Boosters)
-    { m_Boosters = Boosters; }
-    QSharedPointer<ScenarioSystemWeights> SystemWeights() const
-    { return m_SystemWeights; }
-    void setSystemWeights(QSharedPointer<ScenarioSystemWeights> SystemWeights)
-    { m_SystemWeights = SystemWeights; }
-    QSharedPointer<ScenarioSystemCosts> SystemCosts() const
-    { return m_SystemCosts; }
-    void setSystemCosts(QSharedPointer<ScenarioSystemCosts> SystemCosts)
-    { m_SystemCosts = SystemCosts; }
-    QSharedPointer<ScenarioSystemReliability> SystemReliability() const
-    { return m_SystemReliability; }
-    void setSystemReliability(QSharedPointer<ScenarioSystemReliability> SystemReliability)
-    { m_SystemReliability = SystemReliability; }
-    QSharedPointer<ScenarioLVAerodynamics> LVAerodynamics() const
-    { return m_LVAerodynamics; }
-    void setLVAerodynamics(QSharedPointer<ScenarioLVAerodynamics> LVAerodynamics)
-    { m_LVAerodynamics = LVAerodynamics; }
-    QSharedPointer<ScenarioDiscretizationSettings> DiscretizationSettings() const
-    { return m_DiscretizationSettings; }
-    void setDiscretizationSettings(QSharedPointer<ScenarioDiscretizationSettings> DiscretizationSettings)
-    { m_DiscretizationSettings = DiscretizationSettings; }
-
-private:
-    QSharedPointer<ScenarioArchitecture> m_Architecture;
-    QList<QSharedPointer<ScenarioLowerStage> > m_LowerStage;
-    QSharedPointer<ScenarioUpperStage> m_UpperStage;
-    QList<QSharedPointer<ScenarioBoosters> > m_Boosters;
-    QSharedPointer<ScenarioSystemWeights> m_SystemWeights;
-    QSharedPointer<ScenarioSystemCosts> m_SystemCosts;
-    QSharedPointer<ScenarioSystemReliability> m_SystemReliability;
-    QSharedPointer<ScenarioLVAerodynamics> m_LVAerodynamics;
-    QSharedPointer<ScenarioDiscretizationSettings> m_DiscretizationSettings;
-};
-
-
-// ScenarioArchitecture
-class ScenarioArchitecture : public ScenarioObject
-{
-public:
-    ScenarioArchitecture();
-    static ScenarioArchitecture* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "Architecture"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioOptVarString> boosterConf() const
-    { return m_boosterConf; }
-    void setBoosterConf(QSharedPointer<ScenarioOptVarString> boosterConf)
-    { m_boosterConf = boosterConf; }
-    QSharedPointer<ScenarioOptVarInt> nStages() const
-    { return m_nStages; }
-    void setNStages(QSharedPointer<ScenarioOptVarInt> nStages)
-    { m_nStages = nStages; }
-    QSharedPointer<ScenarioOptVarInt> nBoosters() const
-    { return m_nBoosters; }
-    void setNBoosters(QSharedPointer<ScenarioOptVarInt> nBoosters)
-    { m_nBoosters = nBoosters; }
-    QSharedPointer<ScenarioOptVarBool> singleEngineType() const
-    { return m_singleEngineType; }
-    void setSingleEngineType(QSharedPointer<ScenarioOptVarBool> singleEngineType)
-    { m_singleEngineType = singleEngineType; }
-
-private:
-    QSharedPointer<ScenarioOptVarString> m_boosterConf;
-    QSharedPointer<ScenarioOptVarInt> m_nStages;
-    QSharedPointer<ScenarioOptVarInt> m_nBoosters;
-    QSharedPointer<ScenarioOptVarBool> m_singleEngineType;
-};
-
-
-// ScenarioLowerStage
-class ScenarioLowerStage : public ScenarioObject
-{
-public:
-    ScenarioLowerStage();
-    static ScenarioLowerStage* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "LowerStage"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioGeometry> Geometry() const
-    { return m_Geometry; }
-    void setGeometry(QSharedPointer<ScenarioGeometry> Geometry)
-    { m_Geometry = Geometry; }
-    QSharedPointer<ScenarioPropulsionSystem> PropulsionSystem() const
-    { return m_PropulsionSystem; }
-    void setPropulsionSystem(QSharedPointer<ScenarioPropulsionSystem> PropulsionSystem)
-    { m_PropulsionSystem = PropulsionSystem; }
-    QSharedPointer<ScenarioComponentWeights> ComponentWeights() const
-    { return m_ComponentWeights; }
-    void setComponentWeights(QSharedPointer<ScenarioComponentWeights> ComponentWeights)
-    { m_ComponentWeights = ComponentWeights; }
-    QSharedPointer<ScenarioComponentCosts> ComponentCosts() const
-    { return m_ComponentCosts; }
-    void setComponentCosts(QSharedPointer<ScenarioComponentCosts> ComponentCosts)
-    { m_ComponentCosts = ComponentCosts; }
-    QSharedPointer<ScenarioComponentReliability> ComponentReliability() const
-    { return m_ComponentReliability; }
-    void setComponentReliability(QSharedPointer<ScenarioComponentReliability> ComponentReliability)
-    { m_ComponentReliability = ComponentReliability; }
-
-private:
-    QSharedPointer<ScenarioGeometry> m_Geometry;
-    QSharedPointer<ScenarioPropulsionSystem> m_PropulsionSystem;
-    QSharedPointer<ScenarioComponentWeights> m_ComponentWeights;
-    QSharedPointer<ScenarioComponentCosts> m_ComponentCosts;
-    QSharedPointer<ScenarioComponentReliability> m_ComponentReliability;
-};
-
-
-// ScenarioUpperStage
-class ScenarioUpperStage : public ScenarioObject
-{
-public:
-    ScenarioUpperStage();
-    static ScenarioUpperStage* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "UpperStage"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioGeometry> Geometry() const
-    { return m_Geometry; }
-    void setGeometry(QSharedPointer<ScenarioGeometry> Geometry)
-    { m_Geometry = Geometry; }
-    QSharedPointer<ScenarioPropulsionSystem> PropulsionSystem() const
-    { return m_PropulsionSystem; }
-    void setPropulsionSystem(QSharedPointer<ScenarioPropulsionSystem> PropulsionSystem)
-    { m_PropulsionSystem = PropulsionSystem; }
-    QSharedPointer<ScenarioComponentWeights> ComponentWeights() const
-    { return m_ComponentWeights; }
-    void setComponentWeights(QSharedPointer<ScenarioComponentWeights> ComponentWeights)
-    { m_ComponentWeights = ComponentWeights; }
-    QSharedPointer<ScenarioComponentCosts> ComponentCosts() const
-    { return m_ComponentCosts; }
-    void setComponentCosts(QSharedPointer<ScenarioComponentCosts> ComponentCosts)
-    { m_ComponentCosts = ComponentCosts; }
-    QSharedPointer<ScenarioComponentReliability> ComponentReliability() const
-    { return m_ComponentReliability; }
-    void setComponentReliability(QSharedPointer<ScenarioComponentReliability> ComponentReliability)
-    { m_ComponentReliability = ComponentReliability; }
-
-private:
-    QSharedPointer<ScenarioGeometry> m_Geometry;
-    QSharedPointer<ScenarioPropulsionSystem> m_PropulsionSystem;
-    QSharedPointer<ScenarioComponentWeights> m_ComponentWeights;
-    QSharedPointer<ScenarioComponentCosts> m_ComponentCosts;
-    QSharedPointer<ScenarioComponentReliability> m_ComponentReliability;
-};
-
-
-// ScenarioBoosters
-class ScenarioBoosters : public ScenarioObject
-{
-public:
-    ScenarioBoosters();
-    static ScenarioBoosters* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "Boosters"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioGeometry> Geometry() const
-    { return m_Geometry; }
-    void setGeometry(QSharedPointer<ScenarioGeometry> Geometry)
-    { m_Geometry = Geometry; }
-    QSharedPointer<ScenarioPropulsionSystem> PropulsionSystem() const
-    { return m_PropulsionSystem; }
-    void setPropulsionSystem(QSharedPointer<ScenarioPropulsionSystem> PropulsionSystem)
-    { m_PropulsionSystem = PropulsionSystem; }
-    QSharedPointer<ScenarioComponentWeights> ComponentWeights() const
-    { return m_ComponentWeights; }
-    void setComponentWeights(QSharedPointer<ScenarioComponentWeights> ComponentWeights)
-    { m_ComponentWeights = ComponentWeights; }
-    QSharedPointer<ScenarioComponentCosts> ComponentCosts() const
-    { return m_ComponentCosts; }
-    void setComponentCosts(QSharedPointer<ScenarioComponentCosts> ComponentCosts)
-    { m_ComponentCosts = ComponentCosts; }
-    QSharedPointer<ScenarioComponentReliability> ComponentReliability() const
-    { return m_ComponentReliability; }
-    void setComponentReliability(QSharedPointer<ScenarioComponentReliability> ComponentReliability)
-    { m_ComponentReliability = ComponentReliability; }
-
-private:
-    QSharedPointer<ScenarioGeometry> m_Geometry;
-    QSharedPointer<ScenarioPropulsionSystem> m_PropulsionSystem;
-    QSharedPointer<ScenarioComponentWeights> m_ComponentWeights;
-    QSharedPointer<ScenarioComponentCosts> m_ComponentCosts;
-    QSharedPointer<ScenarioComponentReliability> m_ComponentReliability;
-};
-
-
-// ScenarioDiscretizationSettings
-class ScenarioDiscretizationSettings : public ScenarioObject
-{
-public:
-    ScenarioDiscretizationSettings();
-    static ScenarioDiscretizationSettings* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "DiscretizationSettings"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    int nMachPointsCl() const
-    { return m_nMachPointsCl; }
-    void setNMachPointsCl(int nMachPointsCl)
-    { m_nMachPointsCl = nMachPointsCl; }
-    int nAlfaPointsCl() const
-    { return m_nAlfaPointsCl; }
-    void setNAlfaPointsCl(int nAlfaPointsCl)
-    { m_nAlfaPointsCl = nAlfaPointsCl; }
-    int nMachPointsCd() const
-    { return m_nMachPointsCd; }
-    void setNMachPointsCd(int nMachPointsCd)
-    { m_nMachPointsCd = nMachPointsCd; }
-    int nAlfaPointsCd() const
-    { return m_nAlfaPointsCd; }
-    void setNAlfaPointsCd(int nAlfaPointsCd)
-    { m_nAlfaPointsCd = nAlfaPointsCd; }
-    int nMachPointsCm() const
-    { return m_nMachPointsCm; }
-    void setNMachPointsCm(int nMachPointsCm)
-    { m_nMachPointsCm = nMachPointsCm; }
-    int nAlfaPointsCm() const
-    { return m_nAlfaPointsCm; }
-    void setNAlfaPointsCm(int nAlfaPointsCm)
-    { m_nAlfaPointsCm = nAlfaPointsCm; }
-    int nPitchControlNodes() const
-    { return m_nPitchControlNodes; }
-    void setNPitchControlNodes(int nPitchControlNodes)
-    { m_nPitchControlNodes = nPitchControlNodes; }
-    int nYawControlNodes() const
-    { return m_nYawControlNodes; }
-    void setNYawControlNodes(int nYawControlNodes)
-    { m_nYawControlNodes = nYawControlNodes; }
-    int nThrustControlNodes() const
-    { return m_nThrustControlNodes; }
-    void setNThrustControlNodes(int nThrustControlNodes)
-    { m_nThrustControlNodes = nThrustControlNodes; }
-
-private:
-    int m_nMachPointsCl;
-    int m_nAlfaPointsCl;
-    int m_nMachPointsCd;
-    int m_nAlfaPointsCd;
-    int m_nMachPointsCm;
-    int m_nAlfaPointsCm;
-    int m_nPitchControlNodes;
-    int m_nYawControlNodes;
-    int m_nThrustControlNodes;
-};
-
-
-// ScenarioGeometry
-class ScenarioGeometry : public ScenarioObject
-{
-public:
-    ScenarioGeometry();
-    static ScenarioGeometry* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "Geometry"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    double length() const
-    { return m_length; }
-    void setLength(double length)
-    { m_length = length; }
-    double diameter() const
-    { return m_diameter; }
-    void setDiameter(double diameter)
-    { m_diameter = diameter; }
-    QSharedPointer<ScenarioOptVarBool> diameterEqualToUpper() const
-    { return m_diameterEqualToUpper; }
-    void setDiameterEqualToUpper(QSharedPointer<ScenarioOptVarBool> diameterEqualToUpper)
-    { m_diameterEqualToUpper = diameterEqualToUpper; }
-    QString frontShape() const
-    { return m_frontShape; }
-    void setFrontShape(QString frontShape)
-    { m_frontShape = frontShape; }
-    double baseLongPosition() const
-    { return m_baseLongPosition; }
-    void setBaseLongPosition(double baseLongPosition)
-    { m_baseLongPosition = baseLongPosition; }
-    double constraintEngine() const
-    { return m_constraintEngine; }
-    void setConstraintEngine(double constraintEngine)
-    { m_constraintEngine = constraintEngine; }
-    double constraintInterference() const
-    { return m_constraintInterference; }
-    void setConstraintInterference(double constraintInterference)
-    { m_constraintInterference = constraintInterference; }
-
-private:
-    double m_length;
-    double m_diameter;
-    QSharedPointer<ScenarioOptVarBool> m_diameterEqualToUpper;
-    QString m_frontShape;
-    double m_baseLongPosition;
-    double m_constraintEngine;
-    double m_constraintInterference;
-};
-
-
-// ScenarioLVAerodynamics
-class ScenarioLVAerodynamics : public ScenarioObject
-{
-public:
-    ScenarioLVAerodynamics();
-    static ScenarioLVAerodynamics* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "LVAerodynamics"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    bool userDefinedAero() const
-    { return m_userDefinedAero; }
-    void setUserDefinedAero(bool userDefinedAero)
-    { m_userDefinedAero = userDefinedAero; }
-    double referenceArea() const
-    { return m_referenceArea; }
-    void setReferenceArea(double referenceArea)
-    { m_referenceArea = referenceArea; }
-    double referenceLength() const
-    { return m_referenceLength; }
-    void setReferenceLength(double referenceLength)
-    { m_referenceLength = referenceLength; }
-    QString clFileName() const
-    { return m_clFileName; }
-    void setClFileName(QString clFileName)
-    { m_clFileName = clFileName; }
-    QString cdFileName() const
-    { return m_cdFileName; }
-    void setCdFileName(QString cdFileName)
-    { m_cdFileName = cdFileName; }
-    QString cmFileName() const
-    { return m_cmFileName; }
-    void setCmFileName(QString cmFileName)
-    { m_cmFileName = cmFileName; }
-
-private:
-    bool m_userDefinedAero;
-    double m_referenceArea;
-    double m_referenceLength;
-    QString m_clFileName;
-    QString m_cdFileName;
-    QString m_cmFileName;
-};
-
-
-// ScenarioComponentWeights
-class ScenarioComponentWeights : public ScenarioObject
-{
-public:
-    ScenarioComponentWeights();
-    static ScenarioComponentWeights* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "ComponentWeights"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    double dryMass() const
-    { return m_dryMass; }
-    void setDryMass(double dryMass)
-    { m_dryMass = dryMass; }
-    double dryCoGLongPosition() const
-    { return m_dryCoGLongPosition; }
-    void setDryCoGLongPosition(double dryCoGLongPosition)
-    { m_dryCoGLongPosition = dryCoGLongPosition; }
-    double wetMass() const
-    { return m_wetMass; }
-    void setWetMass(double wetMass)
-    { m_wetMass = wetMass; }
-    double mainStructMass() const
-    { return m_mainStructMass; }
-    void setMainStructMass(double mainStructMass)
-    { m_mainStructMass = mainStructMass; }
-    double oxTankMass() const
-    { return m_oxTankMass; }
-    void setOxTankMass(double oxTankMass)
-    { m_oxTankMass = oxTankMass; }
-    double fuelTankMass() const
-    { return m_fuelTankMass; }
-    void setFuelTankMass(double fuelTankMass)
-    { m_fuelTankMass = fuelTankMass; }
-    double tpsMass() const
-    { return m_tpsMass; }
-    void setTpsMass(double tpsMass)
-    { m_tpsMass = tpsMass; }
-    double avionicsMass() const
-    { return m_avionicsMass; }
-    void setAvionicsMass(double avionicsMass)
-    { m_avionicsMass = avionicsMass; }
-    double epsMass() const
-    { return m_epsMass; }
-    void setEpsMass(double epsMass)
-    { m_epsMass = epsMass; }
-    double plAdapterMass() const
-    { return m_plAdapterMass; }
-    void setPlAdapterMass(double plAdapterMass)
-    { m_plAdapterMass = plAdapterMass; }
-    double padInterfaceMass() const
-    { return m_padInterfaceMass; }
-    void setPadInterfaceMass(double padInterfaceMass)
-    { m_padInterfaceMass = padInterfaceMass; }
-    double interstageMass() const
-    { return m_interstageMass; }
-    void setInterstageMass(double interstageMass)
-    { m_interstageMass = interstageMass; }
-
-private:
-    double m_dryMass;
-    double m_dryCoGLongPosition;
-    double m_wetMass;
-    double m_mainStructMass;
-    double m_oxTankMass;
-    double m_fuelTankMass;
-    double m_tpsMass;
-    double m_avionicsMass;
-    double m_epsMass;
-    double m_plAdapterMass;
-    double m_padInterfaceMass;
-    double m_interstageMass;
-};
-
-
-// ScenarioSystemWeights
-class ScenarioSystemWeights : public ScenarioObject
-{
-public:
-    ScenarioSystemWeights();
-    static ScenarioSystemWeights* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "SystemWeights"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    double totalDryMass() const
-    { return m_totalDryMass; }
-    void setTotalDryMass(double totalDryMass)
-    { m_totalDryMass = totalDryMass; }
-    double totalWetMass() const
-    { return m_totalWetMass; }
-    void setTotalWetMass(double totalWetMass)
-    { m_totalWetMass = totalWetMass; }
-    double takeoffThrustOverWeight() const
-    { return m_takeoffThrustOverWeight; }
-    void setTakeoffThrustOverWeight(double takeoffThrustOverWeight)
-    { m_takeoffThrustOverWeight = takeoffThrustOverWeight; }
-    QSharedPointer<ScenarioOptVarDouble> maxAxialAcc() const
-    { return m_maxAxialAcc; }
-    void setMaxAxialAcc(QSharedPointer<ScenarioOptVarDouble> maxAxialAcc)
-    { m_maxAxialAcc = maxAxialAcc; }
-    QSharedPointer<ScenarioOptVarDouble> maxHeatFlux() const
-    { return m_maxHeatFlux; }
-    void setMaxHeatFlux(QSharedPointer<ScenarioOptVarDouble> maxHeatFlux)
-    { m_maxHeatFlux = maxHeatFlux; }
-    QSharedPointer<ScenarioOptVarDouble> maxDynPressure() const
-    { return m_maxDynPressure; }
-    void setMaxDynPressure(QSharedPointer<ScenarioOptVarDouble> maxDynPressure)
-    { m_maxDynPressure = maxDynPressure; }
-    QSharedPointer<ScenarioOptVarString> mainStructuralMaterial() const
-    { return m_mainStructuralMaterial; }
-    void setMainStructuralMaterial(QSharedPointer<ScenarioOptVarString> mainStructuralMaterial)
-    { m_mainStructuralMaterial = mainStructuralMaterial; }
-    QSharedPointer<ScenarioOptVarString> tanksArrangement() const
-    { return m_tanksArrangement; }
-    void setTanksArrangement(QSharedPointer<ScenarioOptVarString> tanksArrangement)
-    { m_tanksArrangement = tanksArrangement; }
-    QSharedPointer<ScenarioOptVarString> tanksType() const
-    { return m_tanksType; }
-    void setTanksType(QSharedPointer<ScenarioOptVarString> tanksType)
-    { m_tanksType = tanksType; }
-    QSharedPointer<ScenarioOptVarString> redundancyLevel() const
-    { return m_redundancyLevel; }
-    void setRedundancyLevel(QSharedPointer<ScenarioOptVarString> redundancyLevel)
-    { m_redundancyLevel = redundancyLevel; }
-    QSharedPointer<ScenarioOptVarDouble> structuralSafetyMargin() const
-    { return m_structuralSafetyMargin; }
-    void setStructuralSafetyMargin(QSharedPointer<ScenarioOptVarDouble> structuralSafetyMargin)
-    { m_structuralSafetyMargin = structuralSafetyMargin; }
-
-private:
-    double m_totalDryMass;
-    double m_totalWetMass;
-    double m_takeoffThrustOverWeight;
-    QSharedPointer<ScenarioOptVarDouble> m_maxAxialAcc;
-    QSharedPointer<ScenarioOptVarDouble> m_maxHeatFlux;
-    QSharedPointer<ScenarioOptVarDouble> m_maxDynPressure;
-    QSharedPointer<ScenarioOptVarString> m_mainStructuralMaterial;
-    QSharedPointer<ScenarioOptVarString> m_tanksArrangement;
-    QSharedPointer<ScenarioOptVarString> m_tanksType;
-    QSharedPointer<ScenarioOptVarString> m_redundancyLevel;
-    QSharedPointer<ScenarioOptVarDouble> m_structuralSafetyMargin;
-};
-
-
-// ScenarioComponentCosts
-class ScenarioComponentCosts : public ScenarioObject
-{
-public:
-    ScenarioComponentCosts();
-    static ScenarioComponentCosts* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "ComponentCosts"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioOptVarInt> nEngineTests() const
-    { return m_nEngineTests; }
-    void setNEngineTests(QSharedPointer<ScenarioOptVarInt> nEngineTests)
-    { m_nEngineTests = nEngineTests; }
-    QSharedPointer<ScenarioDevelopmentCosts> DevelopmentCosts() const
-    { return m_DevelopmentCosts; }
-    void setDevelopmentCosts(QSharedPointer<ScenarioDevelopmentCosts> DevelopmentCosts)
-    { m_DevelopmentCosts = DevelopmentCosts; }
-    QSharedPointer<ScenarioProductionCosts> ProductionCosts() const
-    { return m_ProductionCosts; }
-    void setProductionCosts(QSharedPointer<ScenarioProductionCosts> ProductionCosts)
-    { m_ProductionCosts = ProductionCosts; }
-
-private:
-    QSharedPointer<ScenarioOptVarInt> m_nEngineTests;
-    QSharedPointer<ScenarioDevelopmentCosts> m_DevelopmentCosts;
-    QSharedPointer<ScenarioProductionCosts> m_ProductionCosts;
-};
-
-
-// ScenarioDevelopmentCosts
-class ScenarioDevelopmentCosts : public ScenarioObject
-{
-public:
-    ScenarioDevelopmentCosts();
-    static ScenarioDevelopmentCosts* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "DevelopmentCosts"; }
+    { return "LVDevelopmentCostsType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -2981,14 +3938,14 @@ private:
 };
 
 
-// ScenarioProductionCosts
-class ScenarioProductionCosts : public ScenarioObject
+// ScenarioLVProductionCostsType
+class ScenarioLVProductionCostsType : public ScenarioObject
 {
 public:
-    ScenarioProductionCosts();
-    static ScenarioProductionCosts* create(const QDomElement& e);
+    ScenarioLVProductionCostsType();
+    static ScenarioLVProductionCostsType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "ProductionCosts"; }
+    { return "LVProductionCostsType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -3028,51 +3985,14 @@ private:
 };
 
 
-// ScenarioSystemCosts
-class ScenarioSystemCosts : public ScenarioObject
+// ScenarioLVTotalProgramCostsType
+class ScenarioLVTotalProgramCostsType : public ScenarioObject
 {
 public:
-    ScenarioSystemCosts();
-    static ScenarioSystemCosts* create(const QDomElement& e);
+    ScenarioLVTotalProgramCostsType();
+    static ScenarioLVTotalProgramCostsType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "SystemCosts"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioTotalProgramCosts> TotalProgramCosts() const
-    { return m_TotalProgramCosts; }
-    void setTotalProgramCosts(QSharedPointer<ScenarioTotalProgramCosts> TotalProgramCosts)
-    { m_TotalProgramCosts = TotalProgramCosts; }
-    double developmentTime() const
-    { return m_developmentTime; }
-    void setDevelopmentTime(double developmentTime)
-    { m_developmentTime = developmentTime; }
-    QSharedPointer<ScenarioDirectOperationsCosts> DirectOperationsCosts() const
-    { return m_DirectOperationsCosts; }
-    void setDirectOperationsCosts(QSharedPointer<ScenarioDirectOperationsCosts> DirectOperationsCosts)
-    { m_DirectOperationsCosts = DirectOperationsCosts; }
-    QSharedPointer<ScenarioIndirectOperationsCosts> IndirectOperationsCosts() const
-    { return m_IndirectOperationsCosts; }
-    void setIndirectOperationsCosts(QSharedPointer<ScenarioIndirectOperationsCosts> IndirectOperationsCosts)
-    { m_IndirectOperationsCosts = IndirectOperationsCosts; }
-
-private:
-    QSharedPointer<ScenarioTotalProgramCosts> m_TotalProgramCosts;
-    double m_developmentTime;
-    QSharedPointer<ScenarioDirectOperationsCosts> m_DirectOperationsCosts;
-    QSharedPointer<ScenarioIndirectOperationsCosts> m_IndirectOperationsCosts;
-};
-
-
-// ScenarioTotalProgramCosts
-class ScenarioTotalProgramCosts : public ScenarioObject
-{
-public:
-    ScenarioTotalProgramCosts();
-    static ScenarioTotalProgramCosts* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "TotalProgramCosts"; }
+    { return "LVTotalProgramCostsType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -3122,14 +4042,14 @@ private:
 };
 
 
-// ScenarioDirectOperationsCosts
-class ScenarioDirectOperationsCosts : public ScenarioObject
+// ScenarioLVDirectOperationsCostsType
+class ScenarioLVDirectOperationsCostsType : public ScenarioObject
 {
 public:
-    ScenarioDirectOperationsCosts();
-    static ScenarioDirectOperationsCosts* create(const QDomElement& e);
+    ScenarioLVDirectOperationsCostsType();
+    static ScenarioLVDirectOperationsCostsType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "DirectOperationsCosts"; }
+    { return "LVDirectOperationsCostsType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -3138,9 +4058,9 @@ public:
     { return m_transportCost; }
     void setTransportCost(double transportCost)
     { m_transportCost = transportCost; }
-    QSharedPointer<ScenarioOptVarString> processingType() const
+    QSharedPointer<ScenarioOptVarInt> processingType() const
     { return m_processingType; }
-    void setProcessingType(QSharedPointer<ScenarioOptVarString> processingType)
+    void setProcessingType(QSharedPointer<ScenarioOptVarInt> processingType)
     { m_processingType = processingType; }
     double fv() const
     { return m_fv; }
@@ -3173,7 +4093,7 @@ public:
 
 private:
     double m_transportCost;
-    QSharedPointer<ScenarioOptVarString> m_processingType;
+    QSharedPointer<ScenarioOptVarInt> m_processingType;
     double m_fv;
     double m_fc;
     double m_groundOperationsCost;
@@ -3184,14 +4104,14 @@ private:
 };
 
 
-// ScenarioIndirectOperationsCosts
-class ScenarioIndirectOperationsCosts : public ScenarioObject
+// ScenarioLVIndirectOperationsCostsType
+class ScenarioLVIndirectOperationsCostsType : public ScenarioObject
 {
 public:
-    ScenarioIndirectOperationsCosts();
-    static ScenarioIndirectOperationsCosts* create(const QDomElement& e);
+    ScenarioLVIndirectOperationsCostsType();
+    static ScenarioLVIndirectOperationsCostsType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "IndirectOperationsCosts"; }
+    { return "LVIndirectOperationsCostsType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -3216,61 +4136,14 @@ private:
 };
 
 
-// ScenarioComponentReliability
-class ScenarioComponentReliability : public ScenarioObject
+// ScenarioLVSeparationType
+class ScenarioLVSeparationType : public ScenarioObject
 {
 public:
-    ScenarioComponentReliability();
-    static ScenarioComponentReliability* create(const QDomElement& e);
+    ScenarioLVSeparationType();
+    static ScenarioLVSeparationType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "ComponentReliability"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioSeparation> Separation() const
-    { return m_Separation; }
-    void setSeparation(QSharedPointer<ScenarioSeparation> Separation)
-    { m_Separation = Separation; }
-    double avionicsFailureRate() const
-    { return m_avionicsFailureRate; }
-    void setAvionicsFailureRate(double avionicsFailureRate)
-    { m_avionicsFailureRate = avionicsFailureRate; }
-    double structureFailureRate() const
-    { return m_structureFailureRate; }
-    void setStructureFailureRate(double structureFailureRate)
-    { m_structureFailureRate = structureFailureRate; }
-    double tpsFailureRate() const
-    { return m_tpsFailureRate; }
-    void setTpsFailureRate(double tpsFailureRate)
-    { m_tpsFailureRate = tpsFailureRate; }
-    QSharedPointer<ScenarioPropulsionReliability> PropulsionReliability() const
-    { return m_PropulsionReliability; }
-    void setPropulsionReliability(QSharedPointer<ScenarioPropulsionReliability> PropulsionReliability)
-    { m_PropulsionReliability = PropulsionReliability; }
-    double overallComponentFailureRate() const
-    { return m_overallComponentFailureRate; }
-    void setOverallComponentFailureRate(double overallComponentFailureRate)
-    { m_overallComponentFailureRate = overallComponentFailureRate; }
-
-private:
-    QSharedPointer<ScenarioSeparation> m_Separation;
-    double m_avionicsFailureRate;
-    double m_structureFailureRate;
-    double m_tpsFailureRate;
-    QSharedPointer<ScenarioPropulsionReliability> m_PropulsionReliability;
-    double m_overallComponentFailureRate;
-};
-
-
-// ScenarioSeparation
-class ScenarioSeparation : public ScenarioObject
-{
-public:
-    ScenarioSeparation();
-    static ScenarioSeparation* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "Separation"; }
+    { return "LVSeparationType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -3300,14 +4173,14 @@ private:
 };
 
 
-// ScenarioPropulsionReliability
-class ScenarioPropulsionReliability : public ScenarioObject
+// ScenarioLVPropulsionReliabilityType
+class ScenarioLVPropulsionReliabilityType : public ScenarioObject
 {
 public:
-    ScenarioPropulsionReliability();
-    static ScenarioPropulsionReliability* create(const QDomElement& e);
+    ScenarioLVPropulsionReliabilityType();
+    static ScenarioLVPropulsionReliabilityType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "PropulsionReliability"; }
+    { return "LVPropulsionReliabilityType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -3357,75 +4230,14 @@ private:
 };
 
 
-// ScenarioSystemReliability
-class ScenarioSystemReliability : public ScenarioObject
+// ScenarioLVTakeoffReliabilityType
+class ScenarioLVTakeoffReliabilityType : public ScenarioObject
 {
 public:
-    ScenarioSystemReliability();
-    static ScenarioSystemReliability* create(const QDomElement& e);
+    ScenarioLVTakeoffReliabilityType();
+    static ScenarioLVTakeoffReliabilityType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "SystemReliability"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    double globalVehicleReliability() const
-    { return m_globalVehicleReliability; }
-    void setGlobalVehicleReliability(double globalVehicleReliability)
-    { m_globalVehicleReliability = globalVehicleReliability; }
-    double selfDestructReliability() const
-    { return m_selfDestructReliability; }
-    void setSelfDestructReliability(double selfDestructReliability)
-    { m_selfDestructReliability = selfDestructReliability; }
-    double missionSafety() const
-    { return m_missionSafety; }
-    void setMissionSafety(double missionSafety)
-    { m_missionSafety = missionSafety; }
-    double preLaunchReliability() const
-    { return m_preLaunchReliability; }
-    void setPreLaunchReliability(double preLaunchReliability)
-    { m_preLaunchReliability = preLaunchReliability; }
-    QSharedPointer<ScenarioLaunch> Launch() const
-    { return m_Launch; }
-    void setLaunch(QSharedPointer<ScenarioLaunch> Launch)
-    { m_Launch = Launch; }
-    int numberOfAscentPhases() const
-    { return m_numberOfAscentPhases; }
-    void setNumberOfAscentPhases(int numberOfAscentPhases)
-    { m_numberOfAscentPhases = numberOfAscentPhases; }
-    const QList<double>& ascentPhasesDurations() const
-    { return m_ascentPhasesDurations; }
-    QList<double>& ascentPhasesDurations()
-    { return m_ascentPhasesDurations; }
-    void setAscentPhasesDurations(QList<double> ascentPhasesDurations)
-    { m_ascentPhasesDurations = ascentPhasesDurations; }
-    const QList<double>& ascentPhasesFailureRate() const
-    { return m_ascentPhasesFailureRate; }
-    QList<double>& ascentPhasesFailureRate()
-    { return m_ascentPhasesFailureRate; }
-    void setAscentPhasesFailureRate(QList<double> ascentPhasesFailureRate)
-    { m_ascentPhasesFailureRate = ascentPhasesFailureRate; }
-
-private:
-    double m_globalVehicleReliability;
-    double m_selfDestructReliability;
-    double m_missionSafety;
-    double m_preLaunchReliability;
-    QSharedPointer<ScenarioLaunch> m_Launch;
-    int m_numberOfAscentPhases;
-    QList<double> m_ascentPhasesDurations;
-    QList<double> m_ascentPhasesFailureRate;
-};
-
-
-// ScenarioLaunch
-class ScenarioLaunch : public ScenarioObject
-{
-public:
-    ScenarioLaunch();
-    static ScenarioLaunch* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "Launch"; }
+    { return "LVTakeoffReliabilityType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -3455,56 +4267,14 @@ private:
 };
 
 
-// ScenarioTrajectory
-class ScenarioTrajectory : public ScenarioObject
+// ScenarioLVTakeOffType
+class ScenarioLVTakeOffType : public ScenarioObject
 {
 public:
-    ScenarioTrajectory();
-    static ScenarioTrajectory* create(const QDomElement& e);
+    ScenarioLVTakeOffType();
+    static ScenarioLVTakeOffType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "Trajectory"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioTakeOff> TakeOff() const
-    { return m_TakeOff; }
-    void setTakeOff(QSharedPointer<ScenarioTakeOff> TakeOff)
-    { m_TakeOff = TakeOff; }
-    QSharedPointer<ScenarioIgnitions> Ignitions() const
-    { return m_Ignitions; }
-    void setIgnitions(QSharedPointer<ScenarioIgnitions> Ignitions)
-    { m_Ignitions = Ignitions; }
-    QSharedPointer<ScenarioAtmosphericFlight> AtmosphericFlight() const
-    { return m_AtmosphericFlight; }
-    void setAtmosphericFlight(QSharedPointer<ScenarioAtmosphericFlight> AtmosphericFlight)
-    { m_AtmosphericFlight = AtmosphericFlight; }
-    QSharedPointer<ScenarioExoatmosphericFlight> ExoatmosphericFlight() const
-    { return m_ExoatmosphericFlight; }
-    void setExoatmosphericFlight(QSharedPointer<ScenarioExoatmosphericFlight> ExoatmosphericFlight)
-    { m_ExoatmosphericFlight = ExoatmosphericFlight; }
-    QSharedPointer<ScenarioConstraints> Constraints() const
-    { return m_Constraints; }
-    void setConstraints(QSharedPointer<ScenarioConstraints> Constraints)
-    { m_Constraints = Constraints; }
-
-private:
-    QSharedPointer<ScenarioTakeOff> m_TakeOff;
-    QSharedPointer<ScenarioIgnitions> m_Ignitions;
-    QSharedPointer<ScenarioAtmosphericFlight> m_AtmosphericFlight;
-    QSharedPointer<ScenarioExoatmosphericFlight> m_ExoatmosphericFlight;
-    QSharedPointer<ScenarioConstraints> m_Constraints;
-};
-
-
-// ScenarioTakeOff
-class ScenarioTakeOff : public ScenarioObject
-{
-public:
-    ScenarioTakeOff();
-    static ScenarioTakeOff* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "TakeOff"; }
+    { return "LVTakeOffType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -3513,9 +4283,9 @@ public:
     { return m_padClearingAlt; }
     void setPadClearingAlt(double padClearingAlt)
     { m_padClearingAlt = padClearingAlt; }
-    double maxPitchOverAngle() const
+    QSharedPointer<ScenarioOptVarDouble> maxPitchOverAngle() const
     { return m_maxPitchOverAngle; }
-    void setMaxPitchOverAngle(double maxPitchOverAngle)
+    void setMaxPitchOverAngle(QSharedPointer<ScenarioOptVarDouble> maxPitchOverAngle)
     { m_maxPitchOverAngle = maxPitchOverAngle; }
     double pitchOverDuration() const
     { return m_pitchOverDuration; }
@@ -3525,65 +4295,72 @@ public:
     { return m_pitchOverDecayTime; }
     void setPitchOverDecayTime(double pitchOverDecayTime)
     { m_pitchOverDecayTime = pitchOverDecayTime; }
-    double pitchOverHeadingAngle() const
+    QSharedPointer<ScenarioOptVarDouble> pitchOverHeadingAngle() const
     { return m_pitchOverHeadingAngle; }
-    void setPitchOverHeadingAngle(double pitchOverHeadingAngle)
+    void setPitchOverHeadingAngle(QSharedPointer<ScenarioOptVarDouble> pitchOverHeadingAngle)
     { m_pitchOverHeadingAngle = pitchOverHeadingAngle; }
 
 private:
     double m_padClearingAlt;
-    double m_maxPitchOverAngle;
+    QSharedPointer<ScenarioOptVarDouble> m_maxPitchOverAngle;
     double m_pitchOverDuration;
     double m_pitchOverDecayTime;
-    double m_pitchOverHeadingAngle;
+    QSharedPointer<ScenarioOptVarDouble> m_pitchOverHeadingAngle;
 };
 
 
-// ScenarioIgnitions
-class ScenarioIgnitions : public ScenarioObject
+// ScenarioLVIgnitionsType
+class ScenarioLVIgnitionsType : public ScenarioObject
 {
 public:
-    ScenarioIgnitions();
-    static ScenarioIgnitions* create(const QDomElement& e);
+    ScenarioLVIgnitionsType();
+    static ScenarioLVIgnitionsType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "Ignitions"; }
+    { return "LVIgnitionsType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    bool coreIgnitionDelayOption() const
+    QSharedPointer<ScenarioOptVarBool> coreIgnitionDelayOption() const
     { return m_coreIgnitionDelayOption; }
-    void setCoreIgnitionDelayOption(bool coreIgnitionDelayOption)
+    void setCoreIgnitionDelayOption(QSharedPointer<ScenarioOptVarBool> coreIgnitionDelayOption)
     { m_coreIgnitionDelayOption = coreIgnitionDelayOption; }
-    double coreIgnitionDelayTime() const
+    QSharedPointer<ScenarioOptVarDouble> coreIgnitionDelayTime() const
     { return m_coreIgnitionDelayTime; }
-    void setCoreIgnitionDelayTime(double coreIgnitionDelayTime)
+    void setCoreIgnitionDelayTime(QSharedPointer<ScenarioOptVarDouble> coreIgnitionDelayTime)
     { m_coreIgnitionDelayTime = coreIgnitionDelayTime; }
-    bool secondBoostersSetIgnitionDelayOption() const
+    QSharedPointer<ScenarioOptVarBool> secondBoostersSetIgnitionDelayOption() const
     { return m_secondBoostersSetIgnitionDelayOption; }
-    void setSecondBoostersSetIgnitionDelayOption(bool secondBoostersSetIgnitionDelayOption)
+    void setSecondBoostersSetIgnitionDelayOption(QSharedPointer<ScenarioOptVarBool> secondBoostersSetIgnitionDelayOption)
     { m_secondBoostersSetIgnitionDelayOption = secondBoostersSetIgnitionDelayOption; }
-    double secondBoostersSetIgnitionDelayTime() const
+    QSharedPointer<ScenarioOptVarDouble> secondBoostersSetIgnitionDelayTime() const
     { return m_secondBoostersSetIgnitionDelayTime; }
-    void setSecondBoostersSetIgnitionDelayTime(double secondBoostersSetIgnitionDelayTime)
+    void setSecondBoostersSetIgnitionDelayTime(QSharedPointer<ScenarioOptVarDouble> secondBoostersSetIgnitionDelayTime)
     { m_secondBoostersSetIgnitionDelayTime = secondBoostersSetIgnitionDelayTime; }
+    const QList<int>& nThrustControlNodes() const
+    { return m_nThrustControlNodes; }
+    QList<int>& nThrustControlNodes()
+    { return m_nThrustControlNodes; }
+    void setNThrustControlNodes(QList<int> nThrustControlNodes)
+    { m_nThrustControlNodes = nThrustControlNodes; }
 
 private:
-    bool m_coreIgnitionDelayOption;
-    double m_coreIgnitionDelayTime;
-    bool m_secondBoostersSetIgnitionDelayOption;
-    double m_secondBoostersSetIgnitionDelayTime;
+    QSharedPointer<ScenarioOptVarBool> m_coreIgnitionDelayOption;
+    QSharedPointer<ScenarioOptVarDouble> m_coreIgnitionDelayTime;
+    QSharedPointer<ScenarioOptVarBool> m_secondBoostersSetIgnitionDelayOption;
+    QSharedPointer<ScenarioOptVarDouble> m_secondBoostersSetIgnitionDelayTime;
+    QList<int> m_nThrustControlNodes;
 };
 
 
-// ScenarioAtmosphericFlight
-class ScenarioAtmosphericFlight : public ScenarioObject
+// ScenarioLVAtmosphericFlightType
+class ScenarioLVAtmosphericFlightType : public ScenarioObject
 {
 public:
-    ScenarioAtmosphericFlight();
-    static ScenarioAtmosphericFlight* create(const QDomElement& e);
+    ScenarioLVAtmosphericFlightType();
+    static ScenarioLVAtmosphericFlightType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "AtmosphericFlight"; }
+    { return "LVAtmosphericFlightType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -3606,64 +4383,79 @@ public:
     { return m_optimizedThrustValues; }
     void setOptimizedThrustValues(QList<double> optimizedThrustValues)
     { m_optimizedThrustValues = optimizedThrustValues; }
+    int nPitchControlNodes() const
+    { return m_nPitchControlNodes; }
+    void setNPitchControlNodes(int nPitchControlNodes)
+    { m_nPitchControlNodes = nPitchControlNodes; }
+    int nYawControlNodes() const
+    { return m_nYawControlNodes; }
+    void setNYawControlNodes(int nYawControlNodes)
+    { m_nYawControlNodes = nYawControlNodes; }
 
 private:
     QList<double> m_optimizedPitchValues;
     QList<double> m_optimizedYawValues;
     QList<double> m_optimizedThrustValues;
+    int m_nPitchControlNodes;
+    int m_nYawControlNodes;
 };
 
 
-// ScenarioExoatmosphericFlight
-class ScenarioExoatmosphericFlight : public ScenarioObject
+// ScenarioLVExoatmosphericFlightType
+class ScenarioLVExoatmosphericFlightType : public ScenarioObject
 {
 public:
-    ScenarioExoatmosphericFlight();
-    static ScenarioExoatmosphericFlight* create(const QDomElement& e);
+    ScenarioLVExoatmosphericFlightType();
+    static ScenarioLVExoatmosphericFlightType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "ExoatmosphericFlight"; }
+    { return "LVExoatmosphericFlightType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    double bilinearLawInitPitch() const
+    QSharedPointer<ScenarioOptVarDouble> bilinearLawInitPitch() const
     { return m_bilinearLawInitPitch; }
-    void setBilinearLawInitPitch(double bilinearLawInitPitch)
+    void setBilinearLawInitPitch(QSharedPointer<ScenarioOptVarDouble> bilinearLawInitPitch)
     { m_bilinearLawInitPitch = bilinearLawInitPitch; }
-    double bilinearLawFinalPitch() const
+    QSharedPointer<ScenarioOptVarDouble> bilinearLawFinalPitch() const
     { return m_bilinearLawFinalPitch; }
-    void setBilinearLawFinalPitch(double bilinearLawFinalPitch)
+    void setBilinearLawFinalPitch(QSharedPointer<ScenarioOptVarDouble> bilinearLawFinalPitch)
     { m_bilinearLawFinalPitch = bilinearLawFinalPitch; }
-    double bilinearLawParam() const
+    QSharedPointer<ScenarioOptVarDouble> bilinearLawParam() const
     { return m_bilinearLawParam; }
-    void setBilinearLawParam(double bilinearLawParam)
+    void setBilinearLawParam(QSharedPointer<ScenarioOptVarDouble> bilinearLawParam)
     { m_bilinearLawParam = bilinearLawParam; }
+    int nYawControlNodes() const
+    { return m_nYawControlNodes; }
+    void setNYawControlNodes(int nYawControlNodes)
+    { m_nYawControlNodes = nYawControlNodes; }
     bool circBurnOption() const
     { return m_circBurnOption; }
     void setCircBurnOption(bool circBurnOption)
     { m_circBurnOption = circBurnOption; }
-    double circBurnTime() const
+    QSharedPointer<ScenarioOptVarDouble> circBurnTime() const
     { return m_circBurnTime; }
-    void setCircBurnTime(double circBurnTime)
+    void setCircBurnTime(QSharedPointer<ScenarioOptVarDouble> circBurnTime)
     { m_circBurnTime = circBurnTime; }
 
 private:
-    double m_bilinearLawInitPitch;
-    double m_bilinearLawFinalPitch;
-    double m_bilinearLawParam;
+    QSharedPointer<ScenarioOptVarDouble> m_bilinearLawInitPitch;
+    QSharedPointer<ScenarioOptVarDouble> m_bilinearLawFinalPitch;
+    QSharedPointer<ScenarioOptVarDouble> m_bilinearLawParam;
+    int m_nYawControlNodes;
     bool m_circBurnOption;
-    double m_circBurnTime;
+    QSharedPointer<ScenarioOptVarDouble> m_circBurnTime;
 };
 
 
-// ScenarioConstraints
-class ScenarioConstraints : public ScenarioObject
+// ScenarioLVTrajectoryConstraintsType
+class ScenarioLVTrajectoryConstraintsType : public ScenarioObject
 {
 public:
-    ScenarioConstraints();
-    static ScenarioConstraints* create(const QDomElement& e);
+    ScenarioLVTrajectoryConstraintsType();
+    static ScenarioLVTrajectoryConstraintsType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "Constraints"; }
+    { return "LVTrajectoryConstraintsType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -4699,9 +5491,11 @@ public:
     { return m_referenceLength; }
     void setReferenceLength(double referenceLength)
     { m_referenceLength = referenceLength; }
-    QSharedPointer<ScenarioAeroCoefFile> AeroCoefFile() const
+    const QList<QSharedPointer<ScenarioAeroCoefFileType> >& AeroCoefFile() const
     { return m_AeroCoefFile; }
-    void setAeroCoefFile(QSharedPointer<ScenarioAeroCoefFile> AeroCoefFile)
+    QList<QSharedPointer<ScenarioAeroCoefFileType> >& AeroCoefFile()
+    { return m_AeroCoefFile; }
+    void setAeroCoefFile(QList<QSharedPointer<ScenarioAeroCoefFileType> > AeroCoefFile)
     { m_AeroCoefFile = AeroCoefFile; }
     int CoefficientType() const
     { return m_CoefficientType; }
@@ -4727,66 +5521,11 @@ private:
     bool m_REVuserDefinedAero;
     double m_referenceArea;
     double m_referenceLength;
-    QSharedPointer<ScenarioAeroCoefFile> m_AeroCoefFile;
+    QList<QSharedPointer<ScenarioAeroCoefFileType> > m_AeroCoefFile;
     int m_CoefficientType;
     double m_emissivity;
     QList<double> m_momentReferencePoint;
     QString m_tempCDfile;
-};
-
-
-// ScenarioAeroCoefFile
-class ScenarioAeroCoefFile : public ScenarioObject
-{
-public:
-    ScenarioAeroCoefFile();
-    static ScenarioAeroCoefFile* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "AeroCoefFile"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QString FileLocation() const
-    { return m_FileLocation; }
-    void setFileLocation(QString FileLocation)
-    { m_FileLocation = FileLocation; }
-    int NumberOfIndepVars() const
-    { return m_NumberOfIndepVars; }
-    void setNumberOfIndepVars(int NumberOfIndepVars)
-    { m_NumberOfIndepVars = NumberOfIndepVars; }
-    const QList<QString>& IndepVarNames() const
-    { return m_IndepVarNames; }
-    QList<QString>& IndepVarNames()
-    { return m_IndepVarNames; }
-    void setIndepVarNames(QList<QString> IndepVarNames)
-    { m_IndepVarNames = IndepVarNames; }
-    const QList<int>& IndepVarDiscretizationPoints() const
-    { return m_IndepVarDiscretizationPoints; }
-    QList<int>& IndepVarDiscretizationPoints()
-    { return m_IndepVarDiscretizationPoints; }
-    void setIndepVarDiscretizationPoints(QList<int> IndepVarDiscretizationPoints)
-    { m_IndepVarDiscretizationPoints = IndepVarDiscretizationPoints; }
-    const QList<double>& IndepVarMin() const
-    { return m_IndepVarMin; }
-    QList<double>& IndepVarMin()
-    { return m_IndepVarMin; }
-    void setIndepVarMin(QList<double> IndepVarMin)
-    { m_IndepVarMin = IndepVarMin; }
-    const QList<double>& IndepVarMax() const
-    { return m_IndepVarMax; }
-    QList<double>& IndepVarMax()
-    { return m_IndepVarMax; }
-    void setIndepVarMax(QList<double> IndepVarMax)
-    { m_IndepVarMax = IndepVarMax; }
-
-private:
-    QString m_FileLocation;
-    int m_NumberOfIndepVars;
-    QList<QString> m_IndepVarNames;
-    QList<int> m_IndepVarDiscretizationPoints;
-    QList<double> m_IndepVarMin;
-    QList<double> m_IndepVarMax;
 };
 
 
@@ -5650,23 +6389,15 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    double mass() const
-    { return m_mass; }
-    void setMass(double mass)
-    { m_mass = mass; }
-    double power() const
-    { return m_power; }
-    void setPower(double power)
-    { m_power = power; }
-    QSharedPointer<ScenarioObservationAntenna> ObservationAntenna() const
-    { return m_ObservationAntenna; }
-    void setObservationAntenna(QSharedPointer<ScenarioObservationAntenna> ObservationAntenna)
-    { m_ObservationAntenna = ObservationAntenna; }
+    const QList<QSharedPointer<ScenarioAbstractPayloadType> >& AbstractPayload() const
+    { return m_AbstractPayload; }
+    QList<QSharedPointer<ScenarioAbstractPayloadType> >& AbstractPayload()
+    { return m_AbstractPayload; }
+    void setAbstractPayload(QList<QSharedPointer<ScenarioAbstractPayloadType> > AbstractPayload)
+    { m_AbstractPayload = AbstractPayload; }
 
 private:
-    double m_mass;
-    double m_power;
-    QSharedPointer<ScenarioObservationAntenna> m_ObservationAntenna;
+    QList<QSharedPointer<ScenarioAbstractPayloadType> > m_AbstractPayload;
 };
 
 
@@ -6369,13 +7100,166 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QString StructuralShape() const
+    { return m_StructuralShape; }
+    void setStructuralShape(QString StructuralShape)
+    { m_StructuralShape = StructuralShape; }
+    QSharedPointer<ScenarioSizing> Sizing() const
+    { return m_Sizing; }
+    void setSizing(QSharedPointer<ScenarioSizing> Sizing)
+    { m_Sizing = Sizing; }
+    QSharedPointer<ScenarioMomentsOfInertia> MomentsOfInertia() const
+    { return m_MomentsOfInertia; }
+    void setMomentsOfInertia(QSharedPointer<ScenarioMomentsOfInertia> MomentsOfInertia)
+    { m_MomentsOfInertia = MomentsOfInertia; }
+    QSharedPointer<ScenarioSecondMomentsOfArea> SecondMomentsOfArea() const
+    { return m_SecondMomentsOfArea; }
+    void setSecondMomentsOfArea(QSharedPointer<ScenarioSecondMomentsOfArea> SecondMomentsOfArea)
+    { m_SecondMomentsOfArea = SecondMomentsOfArea; }
+    QSharedPointer<ScenarioNaturalFrequency> NaturalFrequency() const
+    { return m_NaturalFrequency; }
+    void setNaturalFrequency(QSharedPointer<ScenarioNaturalFrequency> NaturalFrequency)
+    { m_NaturalFrequency = NaturalFrequency; }
     double totalStructureMass() const
     { return m_totalStructureMass; }
     void setTotalStructureMass(double totalStructureMass)
     { m_totalStructureMass = totalStructureMass; }
 
 private:
+    QString m_StructuralShape;
+    QSharedPointer<ScenarioSizing> m_Sizing;
+    QSharedPointer<ScenarioMomentsOfInertia> m_MomentsOfInertia;
+    QSharedPointer<ScenarioSecondMomentsOfArea> m_SecondMomentsOfArea;
+    QSharedPointer<ScenarioNaturalFrequency> m_NaturalFrequency;
     double m_totalStructureMass;
+};
+
+
+// ScenarioSizing
+class ScenarioSizing : public ScenarioObject
+{
+public:
+    ScenarioSizing();
+    static ScenarioSizing* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "Sizing"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double volume() const
+    { return m_volume; }
+    void setVolume(double volume)
+    { m_volume = volume; }
+    double width() const
+    { return m_width; }
+    void setWidth(double width)
+    { m_width = width; }
+    double length() const
+    { return m_length; }
+    void setLength(double length)
+    { m_length = length; }
+    double height() const
+    { return m_height; }
+    void setHeight(double height)
+    { m_height = height; }
+
+private:
+    double m_volume;
+    double m_width;
+    double m_length;
+    double m_height;
+};
+
+
+// ScenarioMomentsOfInertia
+class ScenarioMomentsOfInertia : public ScenarioObject
+{
+public:
+    ScenarioMomentsOfInertia();
+    static ScenarioMomentsOfInertia* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "MomentsOfInertia"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double xAxis() const
+    { return m_xAxis; }
+    void setXAxis(double xAxis)
+    { m_xAxis = xAxis; }
+    double yAxis() const
+    { return m_yAxis; }
+    void setYAxis(double yAxis)
+    { m_yAxis = yAxis; }
+    double zAxis() const
+    { return m_zAxis; }
+    void setZAxis(double zAxis)
+    { m_zAxis = zAxis; }
+
+private:
+    double m_xAxis;
+    double m_yAxis;
+    double m_zAxis;
+};
+
+
+// ScenarioSecondMomentsOfArea
+class ScenarioSecondMomentsOfArea : public ScenarioObject
+{
+public:
+    ScenarioSecondMomentsOfArea();
+    static ScenarioSecondMomentsOfArea* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "SecondMomentsOfArea"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double xAxis() const
+    { return m_xAxis; }
+    void setXAxis(double xAxis)
+    { m_xAxis = xAxis; }
+    double yAxis() const
+    { return m_yAxis; }
+    void setYAxis(double yAxis)
+    { m_yAxis = yAxis; }
+    double zAxis() const
+    { return m_zAxis; }
+    void setZAxis(double zAxis)
+    { m_zAxis = zAxis; }
+
+private:
+    double m_xAxis;
+    double m_yAxis;
+    double m_zAxis;
+};
+
+
+// ScenarioNaturalFrequency
+class ScenarioNaturalFrequency : public ScenarioObject
+{
+public:
+    ScenarioNaturalFrequency();
+    static ScenarioNaturalFrequency* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "NaturalFrequency"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double axialFrequency() const
+    { return m_axialFrequency; }
+    void setAxialFrequency(double axialFrequency)
+    { m_axialFrequency = axialFrequency; }
+    double lateralFrequency() const
+    { return m_lateralFrequency; }
+    void setLateralFrequency(double lateralFrequency)
+    { m_lateralFrequency = lateralFrequency; }
+
+private:
+    double m_axialFrequency;
+    double m_lateralFrequency;
 };
 
 
@@ -6391,13 +7275,195 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioTemperature> Temperature() const
+    { return m_Temperature; }
+    void setTemperature(QSharedPointer<ScenarioTemperature> Temperature)
+    { m_Temperature = Temperature; }
+    double heaterPower() const
+    { return m_heaterPower; }
+    void setHeaterPower(double heaterPower)
+    { m_heaterPower = heaterPower; }
+    double radiatedPower() const
+    { return m_radiatedPower; }
+    void setRadiatedPower(double radiatedPower)
+    { m_radiatedPower = radiatedPower; }
+    QSharedPointer<ScenarioCoatingArea> CoatingArea() const
+    { return m_CoatingArea; }
+    void setCoatingArea(QSharedPointer<ScenarioCoatingArea> CoatingArea)
+    { m_CoatingArea = CoatingArea; }
     double totalTCSMass() const
     { return m_totalTCSMass; }
     void setTotalTCSMass(double totalTCSMass)
     { m_totalTCSMass = totalTCSMass; }
 
 private:
+    QSharedPointer<ScenarioTemperature> m_Temperature;
+    double m_heaterPower;
+    double m_radiatedPower;
+    QSharedPointer<ScenarioCoatingArea> m_CoatingArea;
     double m_totalTCSMass;
+};
+
+
+// ScenarioTemperature
+class ScenarioTemperature : public ScenarioObject
+{
+public:
+    ScenarioTemperature();
+    static ScenarioTemperature* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "Temperature"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double maximumSCTemperature() const
+    { return m_maximumSCTemperature; }
+    void setMaximumSCTemperature(double maximumSCTemperature)
+    { m_maximumSCTemperature = maximumSCTemperature; }
+    double minimumSCTemperature() const
+    { return m_minimumSCTemperature; }
+    void setMinimumSCTemperature(double minimumSCTemperature)
+    { m_minimumSCTemperature = minimumSCTemperature; }
+
+private:
+    double m_maximumSCTemperature;
+    double m_minimumSCTemperature;
+};
+
+
+// ScenarioCoatingArea
+class ScenarioCoatingArea : public ScenarioObject
+{
+public:
+    ScenarioCoatingArea();
+    static ScenarioCoatingArea* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "CoatingArea"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioColdSurface> ColdSurface() const
+    { return m_ColdSurface; }
+    void setColdSurface(QSharedPointer<ScenarioColdSurface> ColdSurface)
+    { m_ColdSurface = ColdSurface; }
+    QSharedPointer<ScenarioHotSurface> HotSurface() const
+    { return m_HotSurface; }
+    void setHotSurface(QSharedPointer<ScenarioHotSurface> HotSurface)
+    { m_HotSurface = HotSurface; }
+
+private:
+    QSharedPointer<ScenarioColdSurface> m_ColdSurface;
+    QSharedPointer<ScenarioHotSurface> m_HotSurface;
+};
+
+
+// ScenarioColdSurface
+class ScenarioColdSurface : public ScenarioObject
+{
+public:
+    ScenarioColdSurface();
+    static ScenarioColdSurface* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "ColdSurface"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioColdCoating> ColdCoating() const
+    { return m_ColdCoating; }
+    void setColdCoating(QSharedPointer<ScenarioColdCoating> ColdCoating)
+    { m_ColdCoating = ColdCoating; }
+    double totalColdArea() const
+    { return m_totalColdArea; }
+    void setTotalColdArea(double totalColdArea)
+    { m_totalColdArea = totalColdArea; }
+
+private:
+    QSharedPointer<ScenarioColdCoating> m_ColdCoating;
+    double m_totalColdArea;
+};
+
+
+// ScenarioColdCoating
+class ScenarioColdCoating : public ScenarioObject
+{
+public:
+    ScenarioColdCoating();
+    static ScenarioColdCoating* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "ColdCoating"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double emissivity() const
+    { return m_emissivity; }
+    void setEmissivity(double emissivity)
+    { m_emissivity = emissivity; }
+    double absorptivity() const
+    { return m_absorptivity; }
+    void setAbsorptivity(double absorptivity)
+    { m_absorptivity = absorptivity; }
+
+private:
+    double m_emissivity;
+    double m_absorptivity;
+};
+
+
+// ScenarioHotSurface
+class ScenarioHotSurface : public ScenarioObject
+{
+public:
+    ScenarioHotSurface();
+    static ScenarioHotSurface* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "HotSurface"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioHotCoating> HotCoating() const
+    { return m_HotCoating; }
+    void setHotCoating(QSharedPointer<ScenarioHotCoating> HotCoating)
+    { m_HotCoating = HotCoating; }
+    double totalHotArea() const
+    { return m_totalHotArea; }
+    void setTotalHotArea(double totalHotArea)
+    { m_totalHotArea = totalHotArea; }
+
+private:
+    QSharedPointer<ScenarioHotCoating> m_HotCoating;
+    double m_totalHotArea;
+};
+
+
+// ScenarioHotCoating
+class ScenarioHotCoating : public ScenarioObject
+{
+public:
+    ScenarioHotCoating();
+    static ScenarioHotCoating* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "HotCoating"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double emissivity() const
+    { return m_emissivity; }
+    void setEmissivity(double emissivity)
+    { m_emissivity = emissivity; }
+    double absorptivity() const
+    { return m_absorptivity; }
+    void setAbsorptivity(double absorptivity)
+    { m_absorptivity = absorptivity; }
+
+private:
+    double m_emissivity;
+    double m_absorptivity;
 };
 
 
@@ -6413,13 +7479,97 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioSolarArray> SolarArray() const
+    { return m_SolarArray; }
+    void setSolarArray(QSharedPointer<ScenarioSolarArray> SolarArray)
+    { m_SolarArray = SolarArray; }
+    QSharedPointer<ScenarioBatteryType> BatteryType() const
+    { return m_BatteryType; }
+    void setBatteryType(QSharedPointer<ScenarioBatteryType> BatteryType)
+    { m_BatteryType = BatteryType; }
+    double massOfPCU() const
+    { return m_massOfPCU; }
+    void setMassOfPCU(double massOfPCU)
+    { m_massOfPCU = massOfPCU; }
     double totalEPSMass() const
     { return m_totalEPSMass; }
     void setTotalEPSMass(double totalEPSMass)
     { m_totalEPSMass = totalEPSMass; }
 
 private:
+    QSharedPointer<ScenarioSolarArray> m_SolarArray;
+    QSharedPointer<ScenarioBatteryType> m_BatteryType;
+    double m_massOfPCU;
     double m_totalEPSMass;
+};
+
+
+// ScenarioSolarArray
+class ScenarioSolarArray : public ScenarioObject
+{
+public:
+    ScenarioSolarArray();
+    static ScenarioSolarArray* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "SolarArray"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QString SACellType() const
+    { return m_SACellType; }
+    void setSACellType(QString SACellType)
+    { m_SACellType = SACellType; }
+    double massOfSolarArray() const
+    { return m_massOfSolarArray; }
+    void setMassOfSolarArray(double massOfSolarArray)
+    { m_massOfSolarArray = massOfSolarArray; }
+    double areaOfSolarArray() const
+    { return m_areaOfSolarArray; }
+    void setAreaOfSolarArray(double areaOfSolarArray)
+    { m_areaOfSolarArray = areaOfSolarArray; }
+
+private:
+    QString m_SACellType;
+    double m_massOfSolarArray;
+    double m_areaOfSolarArray;
+};
+
+
+// ScenarioBatteryType
+class ScenarioBatteryType : public ScenarioObject
+{
+public:
+    ScenarioBatteryType();
+    static ScenarioBatteryType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "BatteryType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QString BatteryType() const
+    { return m_BatteryType; }
+    void setBatteryType(QString BatteryType)
+    { m_BatteryType = BatteryType; }
+    double totalMassOfBatteries() const
+    { return m_totalMassOfBatteries; }
+    void setTotalMassOfBatteries(double totalMassOfBatteries)
+    { m_totalMassOfBatteries = totalMassOfBatteries; }
+    double numberOfBatteries() const
+    { return m_numberOfBatteries; }
+    void setNumberOfBatteries(double numberOfBatteries)
+    { m_numberOfBatteries = numberOfBatteries; }
+    double totalVolumeOfBatteries() const
+    { return m_totalVolumeOfBatteries; }
+    void setTotalVolumeOfBatteries(double totalVolumeOfBatteries)
+    { m_totalVolumeOfBatteries = totalVolumeOfBatteries; }
+
+private:
+    QString m_BatteryType;
+    double m_totalMassOfBatteries;
+    double m_numberOfBatteries;
+    double m_totalVolumeOfBatteries;
 };
 
 
@@ -6439,16 +7589,56 @@ public:
     { return m_totalTTCMass; }
     void setTotalTTCMass(double totalTTCMass)
     { m_totalTTCMass = totalTTCMass; }
-    const QList<QSharedPointer<ScenarioCommunicationAntenna> >& CommunicationAntenna() const
-    { return m_CommunicationAntenna; }
-    QList<QSharedPointer<ScenarioCommunicationAntenna> >& CommunicationAntenna()
-    { return m_CommunicationAntenna; }
-    void setCommunicationAntenna(QList<QSharedPointer<ScenarioCommunicationAntenna> > CommunicationAntenna)
-    { m_CommunicationAntenna = CommunicationAntenna; }
+    QSharedPointer<ScenarioTTCAntenna> TTCAntenna() const
+    { return m_TTCAntenna; }
+    void setTTCAntenna(QSharedPointer<ScenarioTTCAntenna> TTCAntenna)
+    { m_TTCAntenna = TTCAntenna; }
 
 private:
     double m_totalTTCMass;
-    QList<QSharedPointer<ScenarioCommunicationAntenna> > m_CommunicationAntenna;
+    QSharedPointer<ScenarioTTCAntenna> m_TTCAntenna;
+};
+
+
+// ScenarioTTCAntenna
+class ScenarioTTCAntenna : public ScenarioObject
+{
+public:
+    ScenarioTTCAntenna();
+    static ScenarioTTCAntenna* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "TTCAntenna"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double TransmitterPower() const
+    { return m_TransmitterPower; }
+    void setTransmitterPower(double TransmitterPower)
+    { m_TransmitterPower = TransmitterPower; }
+    double TransmitterFrequency() const
+    { return m_TransmitterFrequency; }
+    void setTransmitterFrequency(double TransmitterFrequency)
+    { m_TransmitterFrequency = TransmitterFrequency; }
+    double TransmitterGain() const
+    { return m_TransmitterGain; }
+    void setTransmitterGain(double TransmitterGain)
+    { m_TransmitterGain = TransmitterGain; }
+    double LinkDuration() const
+    { return m_LinkDuration; }
+    void setLinkDuration(double LinkDuration)
+    { m_LinkDuration = LinkDuration; }
+    double DataRate() const
+    { return m_DataRate; }
+    void setDataRate(double DataRate)
+    { m_DataRate = DataRate; }
+
+private:
+    double m_TransmitterPower;
+    double m_TransmitterFrequency;
+    double m_TransmitterGain;
+    double m_LinkDuration;
+    double m_DataRate;
 };
 
 
@@ -6490,9 +7680,14 @@ public:
     { return m_totalOBDHMass; }
     void setTotalOBDHMass(double totalOBDHMass)
     { m_totalOBDHMass = totalOBDHMass; }
+    double totalSizeOfMemory() const
+    { return m_totalSizeOfMemory; }
+    void setTotalSizeOfMemory(double totalSizeOfMemory)
+    { m_totalSizeOfMemory = totalSizeOfMemory; }
 
 private:
     double m_totalOBDHMass;
+    double m_totalSizeOfMemory;
 };
 
 
@@ -6525,69 +7720,60 @@ private:
 };
 
 
-QDomElement CreateImp2PointTransferElement(ScenarioSTA_MANOEUVRE_V_R_DURATION* e, QDomDocument& doc);
-QDomElement CreatePropulsionSystemElement(ScenarioPropulsionSystem* e, QDomDocument& doc);
-QDomElement CreateEntryArcElement(ScenarioEntryArcType* e, QDomDocument& doc);
-QDomElement CreateImpHoppNoVbarElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc);
-QDomElement CreateSCProgramElement(ScenarioSCProgram* e, QDomDocument& doc);
-QDomElement CreateContHoppVbarElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc);
-QDomElement CreatePointElement(ScenarioPoint* e, QDomDocument& doc);
+QDomElement CreateForcedVbarElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc);
 QDomElement CreateFreeDriftElement(ScenarioSTA_MANOEUVRE_DURATION* e, QDomDocument& doc);
-QDomElement CreateLVProgramElement(ScenarioLVProgram* e, QDomDocument& doc);
-QDomElement CreateqBLVLHElement(ScenarioqBLVLHType* e, QDomDocument& doc);
-QDomElement CreateEulerBIElement(ScenarioEulerBIType* e, QDomDocument& doc);
-QDomElement CreateImpHoppVbarRadialElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc);
-QDomElement CreatePropagationPositionElement(ScenarioPropagationPositionType* e, QDomDocument& doc);
-QDomElement CreateSystemReliabilityElement(ScenarioSystemReliability* e, QDomDocument& doc);
-QDomElement CreateInitialAttitudeElement(ScenarioInitialAttitudeType* e, QDomDocument& doc);
-QDomElement CreatePropagationElement(ScenarioPropagation* e, QDomDocument& doc);
-QDomElement CreateREVElement(ScenarioREV* e, QDomDocument& doc);
-QDomElement CreateOvalConeElement(ScenarioOvalConeType* e, QDomDocument& doc);
-QDomElement CreateObservationAntennaElement(ScenarioObservationAntenna* e, QDomDocument& doc);
 QDomElement CreateXThrustTransferElement(ScenarioSTA_MANOEUVRE_R_POSITION* e, QDomDocument& doc);
-QDomElement CreateGroundPositionElement(ScenarioGroundPositionType* e, QDomDocument& doc);
-QDomElement CreateLoiteringElement(ScenarioLoiteringType* e, QDomDocument& doc);
-QDomElement CreateEnvironmentElement(ScenarioEnvironmentType* e, QDomDocument& doc);
-QDomElement CreateComponentCostsElement(ScenarioComponentCosts* e, QDomDocument& doc);
-QDomElement CreateInitialPositionElement(ScenarioInitialPositionType* e, QDomDocument& doc);
-QDomElement CreateComponentReliabilityElement(ScenarioComponentReliability* e, QDomDocument& doc);
-QDomElement CreateTimeLineElement(ScenarioTimeLine* e, QDomDocument& doc);
-QDomElement CreateqBIElement(ScenarioqBIType* e, QDomDocument& doc);
-QDomElement CreateState12DOFElement(ScenarioState12DOF* e, QDomDocument& doc);
-QDomElement CreateRendezvousElement(ScenarioRendezvousType* e, QDomDocument& doc);
-QDomElement CreateLVAerodynamicsElement(ScenarioLVAerodynamics* e, QDomDocument& doc);
-QDomElement CreateSCMissionElement(ScenarioSCMission* e, QDomDocument& doc);
-QDomElement CreateFlyByElement(ScenarioFlyByType* e, QDomDocument& doc);
-QDomElement CreateSystemWeightsElement(ScenarioSystemWeights* e, QDomDocument& doc);
-QDomElement CreateStationKeepingElement(ScenarioSTA_MANOEUVRE_DURATION* e, QDomDocument& doc);
-QDomElement CreateRadarElement(ScenarioAbstractConeType* e, QDomDocument& doc);
-QDomElement CreateRectangularConeElement(ScenarioRectangularConeType* e, QDomDocument& doc);
-QDomElement CreateSpaceScenarioElement(SpaceScenario* e, QDomDocument& doc);
-QDomElement CreatePropagationAttitudeElement(ScenarioPropagationAttitudeType* e, QDomDocument& doc);
-QDomElement CreateSystemCostsElement(ScenarioSystemCosts* e, QDomDocument& doc);
-QDomElement CreateKeplerianElementsElement(ScenarioKeplerianElementsType* e, QDomDocument& doc);
-QDomElement CreateSCElement(ScenarioSC* e, QDomDocument& doc);
-QDomElement CreateSphericalCoordinatesElement(ScenarioSphericalCoordinatesType* e, QDomDocument& doc);
-QDomElement CreateLagrangianElement(ScenarioLagrangianType* e, QDomDocument& doc);
-QDomElement CreateTrajectoryElement(ScenarioTrajectory* e, QDomDocument& doc);
-QDomElement CreateOptimizationElement(ScenarioOptimization* e, QDomDocument& doc);
-QDomElement CreateLVMissionElement(ScenarioLVMission* e, QDomDocument& doc);
-QDomElement CreateOutputFilesElement(ScenarioOutputFiles* e, QDomDocument& doc);
-QDomElement CreateDeltaVElement(ScenarioSTA_MANOEUVRE_DELTAV* e, QDomDocument& doc);
-QDomElement CreateLoiteringTLEElement(ScenarioLoiteringTLEType* e, QDomDocument& doc);
-QDomElement CreateImpHoppVbarTgElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc);
-QDomElement CreateForcedRbarElement(ScenarioSTA_MANOEUVRE_R_POSITION* e, QDomDocument& doc);
-QDomElement CreateCircularConeElement(ScenarioCircularCone* e, QDomDocument& doc);
+QDomElement CreatePointElement(ScenarioPoint* e, QDomDocument& doc);
 QDomElement CreateHomannTransferElement(ScenarioSTA_MANOEUVRE_R_POSITION* e, QDomDocument& doc);
+QDomElement CreateOptimizationElement(ScenarioOptimization* e, QDomDocument& doc);
+QDomElement CreateOvalConeElement(ScenarioOvalConeType* e, QDomDocument& doc);
+QDomElement CreateREVElement(ScenarioREV* e, QDomDocument& doc);
+QDomElement CreateLoiteringTLEElement(ScenarioLoiteringTLEType* e, QDomDocument& doc);
+QDomElement CreateCommunicationPayloadElement(ScenarioCommunicationPayloadType* e, QDomDocument& doc);
+QDomElement CreateOpticalPayloadElement(ScenarioOpticalPayloadType* e, QDomDocument& doc);
+QDomElement CreateXrayPayloadElement(ScenarioXrayPayloadType* e, QDomDocument& doc);
+QDomElement CreateInitialAttitudeElement(ScenarioInitialAttitudeType* e, QDomDocument& doc);
+QDomElement CreateRadarConeElement(ScenarioRadarConeType* e, QDomDocument& doc);
+QDomElement CreateLoiteringElement(ScenarioLoiteringType* e, QDomDocument& doc);
+QDomElement CreateReceiverElement(ScenarioReceiver* e, QDomDocument& doc);
+QDomElement CreateSphericalCoordinatesElement(ScenarioSphericalCoordinatesType* e, QDomDocument& doc);
+QDomElement CreateTimeLineElement(ScenarioTimeLine* e, QDomDocument& doc);
+QDomElement CreateStationKeepingElement(ScenarioSTA_MANOEUVRE_DURATION* e, QDomDocument& doc);
+QDomElement CreateEntryArcElement(ScenarioEntryArcType* e, QDomDocument& doc);
+QDomElement CreateImp2PointTransferElement(ScenarioSTA_MANOEUVRE_V_R_DURATION* e, QDomDocument& doc);
+QDomElement CreateKeplerianElementsElement(ScenarioKeplerianElementsType* e, QDomDocument& doc);
+QDomElement CreatePropagationAttitudeElement(ScenarioPropagationAttitudeType* e, QDomDocument& doc);
+QDomElement CreateRadarPayloadElement(ScenarioRadarPayloadType* e, QDomDocument& doc);
+QDomElement CreateTransmitterElement(ScenarioTransmitter* e, QDomDocument& doc);
+QDomElement CreateGroundPositionElement(ScenarioGroundPositionType* e, QDomDocument& doc);
+QDomElement CreateInitialPositionElement(ScenarioInitialPositionType* e, QDomDocument& doc);
+QDomElement CreateLVElement(ScenarioLV* e, QDomDocument& doc);
+QDomElement CreateContHoppVbarElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc);
+QDomElement CreateOutputFilesElement(ScenarioOutputFiles* e, QDomDocument& doc);
+QDomElement CreateForcedRbarElement(ScenarioSTA_MANOEUVRE_R_POSITION* e, QDomDocument& doc);
+QDomElement CreateEulerBIElement(ScenarioEulerBIType* e, QDomDocument& doc);
+QDomElement CreateState12DOFElement(ScenarioState12DOF* e, QDomDocument& doc);
+QDomElement CreateEulerBLVLHElement(ScenarioEulerBLVLHType* e, QDomDocument& doc);
 QDomElement CreateLaunchPadElement(ScenarioLaunchPad* e, QDomDocument& doc);
 QDomElement CreateGroundStationElement(ScenarioGroundStation* e, QDomDocument& doc);
-QDomElement CreateForcedVbarElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc);
-QDomElement CreateCommunicationAntennaElement(ScenarioCommunicationAntenna* e, QDomDocument& doc);
-QDomElement CreateLVElement(ScenarioLV* e, QDomDocument& doc);
+QDomElement CreateImpHoppVbarRadialElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc);
+QDomElement CreateSCMissionElement(ScenarioSCMission* e, QDomDocument& doc);
+QDomElement CreateqBIElement(ScenarioqBIType* e, QDomDocument& doc);
+QDomElement CreateEnvironmentElement(ScenarioEnvironmentType* e, QDomDocument& doc);
 QDomElement CreateStateVectorElement(ScenarioStateVectorType* e, QDomDocument& doc);
-QDomElement CreateGeometryElement(ScenarioGeometry* e, QDomDocument& doc);
-QDomElement CreateAeroCoefFileElement(ScenarioAeroCoefFile* e, QDomDocument& doc);
-QDomElement CreateEulerBLVLHElement(ScenarioEulerBLVLHType* e, QDomDocument& doc);
-QDomElement CreateComponentWeightsElement(ScenarioComponentWeights* e, QDomDocument& doc);
+QDomElement CreateDeltaVElement(ScenarioSTA_MANOEUVRE_DELTAV* e, QDomDocument& doc);
+QDomElement CreateSpaceScenarioElement(SpaceScenario* e, QDomDocument& doc);
+QDomElement CreateqBLVLHElement(ScenarioqBLVLHType* e, QDomDocument& doc);
+QDomElement CreateRendezvousElement(ScenarioRendezvousType* e, QDomDocument& doc);
+QDomElement CreatePropagationPositionElement(ScenarioPropagationPositionType* e, QDomDocument& doc);
+QDomElement CreateSCElement(ScenarioSC* e, QDomDocument& doc);
+QDomElement CreateSCProgramElement(ScenarioSCProgram* e, QDomDocument& doc);
+QDomElement CreateFlyByElement(ScenarioFlyByType* e, QDomDocument& doc);
+QDomElement CreateImpHoppVbarTgElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc);
+QDomElement CreateCircularConeElement(ScenarioCircularConeType* e, QDomDocument& doc);
+QDomElement CreateRectangularConeElement(ScenarioRectangularConeType* e, QDomDocument& doc);
+QDomElement CreateLagrangianElement(ScenarioLagrangianType* e, QDomDocument& doc);
+QDomElement CreateImpHoppNoVbarElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc);
+QDomElement CreatePropagationElement(ScenarioPropagation* e, QDomDocument& doc);
 
 #endif // _STASCHEMA_H_
