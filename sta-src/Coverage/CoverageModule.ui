@@ -1,0 +1,1103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainCoverageGUI</class>
+ <widget class="QDialog" name="MainCoverageGUI">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>613</width>
+    <height>415</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Antenna Participant Properties</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_73">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_37">
+     <item>
+      <widget class="QTabWidget" name="tabWidget_2">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="SpecificationsTab">
+        <attribute name="title">
+         <string>Specifications</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_38">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_21">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_39">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_22">
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_40">
+                 <item>
+                  <widget class="QGroupBox" name="PointingGroupBox_2">
+                   <property name="title">
+                    <string>Pointing direction</string>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_41">
+                    <item>
+                     <layout class="QVBoxLayout" name="verticalLayout_42">
+                      <item>
+                       <layout class="QHBoxLayout" name="horizontalLayout_23">
+                        <item>
+                         <layout class="QHBoxLayout" name="horizontalLayout_24">
+                          <item>
+                           <layout class="QVBoxLayout" name="verticalLayout_43">
+                            <item>
+                             <widget class="QLabel" name="ElevationLabel">
+                              <property name="text">
+                               <string>Elevation</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QLabel" name="AzimuthLabel">
+                              <property name="text">
+                               <string>Azimuth</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QLabel" name="ConeShapeLabel">
+                              <property name="text">
+                               <string>Cone Shape</string>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </item>
+                          <item>
+                           <layout class="QVBoxLayout" name="verticalLayout_44">
+                            <property name="spacing">
+                             <number>6</number>
+                            </property>
+                            <item>
+                             <widget class="QLineEdit" name="ElLineEdit">
+                              <property name="maximumSize">
+                               <size>
+                                <width>100</width>
+                                <height>26</height>
+                               </size>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QLineEdit" name="AzLineEdit">
+                              <property name="maximumSize">
+                               <size>
+                                <width>100</width>
+                                <height>26</height>
+                               </size>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QComboBox" name="ConeShapeComboBox">
+                              <property name="maximumSize">
+                               <size>
+                                <width>120</width>
+                                <height>30</height>
+                               </size>
+                              </property>
+                              <item>
+                               <property name="text">
+                                <string>Circular</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>Oval</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>Rectangular</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>SAR</string>
+                               </property>
+                              </item>
+                             </widget>
+                            </item>
+                           </layout>
+                          </item>
+                          <item>
+                           <layout class="QVBoxLayout" name="verticalLayout_45">
+                            <item>
+                             <widget class="QLabel" name="DegElLabel">
+                              <property name="text">
+                               <string>deg</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QLabel" name="DegAzLable">
+                              <property name="text">
+                               <string>deg</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QToolButton" name="ConeShapeToolButton">
+                              <property name="text">
+                               <string>...</string>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </item>
+                         </layout>
+                        </item>
+                        <item>
+                         <spacer name="horizontalSpacer_14">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>40</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                       </layout>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
+                     <spacer name="verticalSpacer_11">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>40</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QGroupBox" name="PolarisationGroupBox">
+                   <property name="title">
+                    <string>Polarisation</string>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_46">
+                    <item>
+                     <layout class="QVBoxLayout" name="verticalLayout_47">
+                      <item>
+                       <layout class="QHBoxLayout" name="horizontalLayout_25">
+                        <item>
+                         <layout class="QHBoxLayout" name="horizontalLayout_26">
+                          <item>
+                           <layout class="QVBoxLayout" name="verticalLayout_48">
+                            <item>
+                             <widget class="QLabel" name="TypePolLabel">
+                              <property name="text">
+                               <string>Type</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QLabel" name="TiltLabel">
+                              <property name="text">
+                               <string>Tilt Angle</string>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </item>
+                          <item>
+                           <layout class="QVBoxLayout" name="verticalLayout_49">
+                            <item>
+                             <widget class="QComboBox" name="PolarisationComboBox">
+                              <item>
+                               <property name="text">
+                                <string>Linear</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>Right Circular</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>Left Circular</string>
+                               </property>
+                              </item>
+                             </widget>
+                            </item>
+                            <item>
+                             <layout class="QHBoxLayout" name="horizontalLayout_27">
+                              <item>
+                               <widget class="QLineEdit" name="TiltLineEdit">
+                                <property name="text">
+                                 <string/>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="DegTiltLabel">
+                                <property name="text">
+                                 <string>deg</string>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </item>
+                           </layout>
+                          </item>
+                         </layout>
+                        </item>
+                        <item>
+                         <spacer name="horizontalSpacer_16">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>40</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <spacer name="verticalSpacer_12">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="AntennaPropGroupBox">
+                 <property name="title">
+                  <string>Antenna Properties</string>
+                 </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_28">
+                  <item>
+                   <layout class="QVBoxLayout" name="verticalLayout_50">
+                    <property name="spacing">
+                     <number>6</number>
+                    </property>
+                    <item>
+                     <layout class="QHBoxLayout" name="horizontalLayout_29">
+                      <property name="spacing">
+                       <number>6</number>
+                      </property>
+                      <item>
+                       <layout class="QVBoxLayout" name="verticalLayout_51">
+                        <property name="spacing">
+                         <number>15</number>
+                        </property>
+                        <item>
+                         <layout class="QHBoxLayout" name="horizontalLayout_30">
+                          <item>
+                           <layout class="QVBoxLayout" name="verticalLayout_52">
+                            <item>
+                             <widget class="QLabel" name="EfficiencyLabel">
+                              <property name="text">
+                               <string>Efficiency </string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QLabel" name="FrequencyLabel">
+                              <property name="text">
+                               <string>Frequency</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QLabel" name="TypeBeamLabel">
+                              <property name="text">
+                               <string>Type of beam</string>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </item>
+                          <item>
+                           <layout class="QVBoxLayout" name="verticalLayout_53">
+                            <item>
+                             <widget class="QLineEdit" name="EfficiencyLineEdit"/>
+                            </item>
+                            <item>
+                             <widget class="QLineEdit" name="FrequencyLineEdit"/>
+                            </item>
+                            <item>
+                             <widget class="QComboBox" name="TypeBeamComboBox">
+                              <item>
+                               <property name="text">
+                                <string>Parabolic</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>Gaussian</string>
+                               </property>
+                              </item>
+                             </widget>
+                            </item>
+                           </layout>
+                          </item>
+                          <item>
+                           <layout class="QVBoxLayout" name="verticalLayout_54">
+                            <item>
+                             <widget class="QLabel" name="PercentageLabel">
+                              <property name="text">
+                               <string>%</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QLabel" name="GHzFreqLabel">
+                              <property name="text">
+                               <string>GHz</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QWidget" name="widget_4" native="true"/>
+                            </item>
+                           </layout>
+                          </item>
+                         </layout>
+                        </item>
+                        <item>
+                         <layout class="QHBoxLayout" name="horizontalLayout_31">
+                          <item>
+                           <spacer name="horizontalSpacer_17">
+                            <property name="orientation">
+                             <enum>Qt::Horizontal</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                             <size>
+                              <width>40</width>
+                              <height>20</height>
+                             </size>
+                            </property>
+                           </spacer>
+                          </item>
+                          <item>
+                           <widget class="QPushButton" name="SizeOptionsButton">
+                            <property name="text">
+                             <string>Size Options</string>
+                            </property>
+                            <property name="checkable">
+                             <bool>false</bool>
+                            </property>
+                            <property name="checked">
+                             <bool>false</bool>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <spacer name="horizontalSpacer_18">
+                            <property name="orientation">
+                             <enum>Qt::Horizontal</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                             <size>
+                              <width>40</width>
+                              <height>20</height>
+                             </size>
+                            </property>
+                           </spacer>
+                          </item>
+                         </layout>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <spacer name="horizontalSpacer_19">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
+                     <spacer name="verticalSpacer_13">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>40</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer name="verticalSpacer_14">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_20">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="DeviceTab">
+        <attribute name="title">
+         <string>Device</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_55">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_32">
+           <item>
+            <widget class="QGroupBox" name="Transmitter">
+             <property name="title">
+              <string>Transmitter</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_56">
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_57">
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout_58">
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_33">
+                    <item>
+                     <spacer name="horizontalSpacer_21">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
+                     <layout class="QHBoxLayout" name="horizontalLayout_34">
+                      <item>
+                       <layout class="QVBoxLayout" name="verticalLayout_59">
+                        <item>
+                         <widget class="QLabel" name="PowerLabel">
+                          <property name="text">
+                           <string>Power</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="TxFeederLossLabel">
+                          <property name="text">
+                           <string>Feeder Loss</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="TxDepointingLossLabel">
+                          <property name="text">
+                           <string>Depointing Loss</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QVBoxLayout" name="verticalLayout_60">
+                        <item>
+                         <widget class="QLineEdit" name="PowerLineEdit">
+                          <property name="minimumSize">
+                           <size>
+                            <width>0</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="TxFeederLossLineEdit"/>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="TxDepointingLossLineEdit"/>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QVBoxLayout" name="verticalLayout_61">
+                        <item>
+                         <widget class="QLabel" name="WattLabel">
+                          <property name="text">
+                           <string>W</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="DbTxFeederLabel">
+                          <property name="text">
+                           <string>dB</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="DbTxDepointingLabel">
+                          <property name="text">
+                           <string>dB</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_22">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <spacer name="verticalSpacer_15">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <layout class="QVBoxLayout" name="verticalLayout_62">
+                    <item>
+                     <layout class="QHBoxLayout" name="horizontalLayout_35">
+                      <item>
+                       <spacer name="horizontalSpacer_23">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item>
+                       <widget class="QGroupBox" name="ModulationGroupBox">
+                        <property name="title">
+                         <string>Modulation</string>
+                        </property>
+                        <layout class="QVBoxLayout" name="verticalLayout_63">
+                         <item>
+                          <layout class="QVBoxLayout" name="verticalLayout_64">
+                           <item>
+                            <layout class="QHBoxLayout" name="horizontalLayout_36">
+                             <item>
+                              <spacer name="horizontalSpacer_24">
+                               <property name="orientation">
+                                <enum>Qt::Horizontal</enum>
+                               </property>
+                               <property name="sizeHint" stdset="0">
+                                <size>
+                                 <width>40</width>
+                                 <height>20</height>
+                                </size>
+                               </property>
+                              </spacer>
+                             </item>
+                             <item>
+                              <layout class="QHBoxLayout" name="horizontalLayout_37">
+                               <item>
+                                <layout class="QVBoxLayout" name="verticalLayout_65">
+                                 <item>
+                                  <widget class="QLabel" name="TypeModLabel">
+                                   <property name="text">
+                                    <string>Type</string>
+                                   </property>
+                                  </widget>
+                                 </item>
+                                 <item>
+                                  <widget class="QLabel" name="DataRateLabel">
+                                   <property name="text">
+                                    <string>Data Rate</string>
+                                   </property>
+                                  </widget>
+                                 </item>
+                                </layout>
+                               </item>
+                               <item>
+                                <layout class="QVBoxLayout" name="verticalLayout_66">
+                                 <item>
+                                  <widget class="QComboBox" name="TypeModComboBox">
+                                   <item>
+                                    <property name="text">
+                                     <string>BPSK</string>
+                                    </property>
+                                   </item>
+                                   <item>
+                                    <property name="text">
+                                     <string>DE-BPSK</string>
+                                    </property>
+                                   </item>
+                                   <item>
+                                    <property name="text">
+                                     <string>D-BPSK</string>
+                                    </property>
+                                   </item>
+                                   <item>
+                                    <property name="text">
+                                     <string>QPSK</string>
+                                    </property>
+                                   </item>
+                                   <item>
+                                    <property name="text">
+                                     <string>DE-QPSK</string>
+                                    </property>
+                                   </item>
+                                   <item>
+                                    <property name="text">
+                                     <string>D-QPSK</string>
+                                    </property>
+                                   </item>
+                                   <item>
+                                    <property name="text">
+                                     <string>OQPSK</string>
+                                    </property>
+                                   </item>
+                                   <item>
+                                    <property name="text">
+                                     <string>MSK</string>
+                                    </property>
+                                   </item>
+                                  </widget>
+                                 </item>
+                                 <item>
+                                  <layout class="QHBoxLayout" name="horizontalLayout_38">
+                                   <item>
+                                    <widget class="QLineEdit" name="DataRateLineEdit"/>
+                                   </item>
+                                   <item>
+                                    <widget class="QLabel" name="MbpsDataRateLabel">
+                                     <property name="text">
+                                      <string>Mbps</string>
+                                     </property>
+                                    </widget>
+                                   </item>
+                                  </layout>
+                                 </item>
+                                </layout>
+                               </item>
+                              </layout>
+                             </item>
+                             <item>
+                              <spacer name="horizontalSpacer_25">
+                               <property name="orientation">
+                                <enum>Qt::Horizontal</enum>
+                               </property>
+                               <property name="sizeHint" stdset="0">
+                                <size>
+                                 <width>40</width>
+                                 <height>20</height>
+                                </size>
+                               </property>
+                              </spacer>
+                             </item>
+                            </layout>
+                           </item>
+                           <item>
+                            <spacer name="verticalSpacer_16">
+                             <property name="orientation">
+                              <enum>Qt::Vertical</enum>
+                             </property>
+                             <property name="sizeHint" stdset="0">
+                              <size>
+                               <width>20</width>
+                               <height>40</height>
+                              </size>
+                             </property>
+                            </spacer>
+                           </item>
+                          </layout>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="horizontalSpacer_26">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
+                     <spacer name="verticalSpacer_17">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>40</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_18">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_67">
+             <item>
+              <widget class="QGroupBox" name="Receiver">
+               <property name="autoFillBackground">
+                <bool>false</bool>
+               </property>
+               <property name="title">
+                <string>Receiver</string>
+               </property>
+               <property name="flat">
+                <bool>false</bool>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+               <property name="checked">
+                <bool>false</bool>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_68">
+                <item>
+                 <widget class="QSplitter" name="splitter_3">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <widget class="QWidget" name="layoutWidget_4">
+                   <layout class="QHBoxLayout" name="horizontalLayout_39">
+                    <item>
+                     <layout class="QVBoxLayout" name="verticalLayout_69">
+                      <item>
+                       <widget class="QLabel" name="SystemTempLabel">
+                        <property name="text">
+                         <string>System Temperature</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="RxFeederLossLabel">
+                        <property name="text">
+                         <string>Feeder Loss</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="RxDepointingLossLabel">
+                        <property name="text">
+                         <string>Depointing Loss</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
+                     <layout class="QVBoxLayout" name="verticalLayout_70">
+                      <item>
+                       <widget class="QLineEdit" name="SystemTempLineEdit">
+                        <property name="minimumSize">
+                         <size>
+                          <width>70</width>
+                          <height>0</height>
+                         </size>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLineEdit" name="RxFeederLineEdit"/>
+                      </item>
+                      <item>
+                       <widget class="QLineEdit" name="RxDepointingLineEdit"/>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
+                     <layout class="QVBoxLayout" name="verticalLayout_71">
+                      <item>
+                       <widget class="QLabel" name="KsystemLabel">
+                        <property name="text">
+                         <string>K</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="DbRxFeederLabel">
+                        <property name="text">
+                         <string>dB</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="DbRxDepointingLabel">
+                        <property name="text">
+                         <string>dB</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                   </layout>
+                  </widget>
+                  <widget class="QWidget" name="layoutWidget_5">
+                   <layout class="QVBoxLayout" name="verticalLayout_72">
+                    <item>
+                     <widget class="QToolButton" name="SystemTempToolButton">
+                      <property name="text">
+                       <string>...</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QWidget" name="widget_5" native="true"/>
+                    </item>
+                    <item>
+                     <widget class="QWidget" name="widget_6" native="true"/>
+                    </item>
+                   </layout>
+                  </widget>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <spacer name="verticalSpacer_19">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_40">
+       <item>
+        <spacer name="horizontalSpacer_27">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QSplitter" name="splitter_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <widget class="QPushButton" name="CancelButton">
+          <property name="text">
+           <string>Cancel</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="OkButton">
+          <property name="text">
+           <string>OK</string>
+          </property>
+          <property name="autoDefault">
+           <bool>false</bool>
+          </property>
+          <property name="default">
+           <bool>false</bool>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_28">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_20">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>OkButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainCoverageGUI</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>385</x>
+     <y>387</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>444</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CancelButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainCoverageGUI</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>220</x>
+     <y>390</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>170</x>
+     <y>384</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

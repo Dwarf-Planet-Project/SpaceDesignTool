@@ -22,9 +22,13 @@
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
  */
 
+
+//#ifndef SCENARIOELEMENTBOX_H
+//#define SCENARIOELEMENTBOX_H
 #include <QWidget>
 #include <QTreeWidget>
 #include "ui_scenarioelementbox.h"
+
 
 
 class ScenarioElementWidget : public QTreeWidget
@@ -50,8 +54,12 @@ public:
     
     static const QString PARTICIPANT_MIME_TYPE;
     static const QString MISSION_ARC_MIME_TYPE;
+    static const QString PAYLOAD_MIME_TYPE; //Line added by Ricardo to create a new MIME type for different payloads
     static const QString MANEUVER_MIME_TYPE;
     
 private:
     ScenarioElementWidget* m_elementTreeWidget;
 };
+
+
+//#endif //SCENARIOELEMENTBOX_H

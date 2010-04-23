@@ -35,12 +35,14 @@
 #include <QMimeData>
 #include <QTextStream>
 #include <QtDebug>
+#include "Coverage/maincoveragegui.h"
 
 static const QString SCENARIO_MIME_TYPE("application/sta.scenario.xml");
 
 const QString ScenarioElementBox::PARTICIPANT_MIME_TYPE("application/sta.participant.xml");
 const QString ScenarioElementBox::MISSION_ARC_MIME_TYPE("application/sta.missionarc.xml");
 const QString ScenarioElementBox::MANEUVER_MIME_TYPE("application/sta.maneuver.xml");
+const QString ScenarioElementBox::PAYLOAD_MIME_TYPE("application/sta.payload.xml"); //Line added by Ricardo Noriega
 
 static const int ScenarioFragmentRole     = Qt::UserRole + 1;
 static const int ScenarioFragmentTypeRole = Qt::UserRole + 2;
@@ -129,6 +131,56 @@ static QByteArray REVFragment(const char* name, const char* vehicleType)//Create
     QDomDocument doc;
     return fragmentText(CreateREVElement(&entryVehicle, doc)).toUtf8();
 }
+
+//Lines added by Ricardo Noriega. Creates a communication payload fragment representing a single payload
+static QByteArray CommPayloadFragment(const char* name, const char* payloadType)
+{
+    ScenarioCommunicationPayloadType commPayload;
+
+
+    ScenarioAntennaType * antenna=new ScenarioAntennaType;
+    /*** fill in defaults ***/
+    //if(commPayload.Antenna().length()!=0){
+    //ScenarioAntennaType* antenna = commPayload.Antenna().at(0).data();
+
+
+    //ScenarioReceiver* receiver = dynamic_cast<ScenarioReceiver*>(antenna);
+
+    antenna->PointingDirection()->setElevation(sta::Pi()/2);
+    antenna->PointingDirection()->setAzimuth(0);
+
+    antenna->EMproperties()->setEfficiency(55);
+    //antenna->EMproperties()->setFrequency(14.5);
+
+
+                                   /*if (dynamic_cast<ScenarioReceiver*>(antenna) != NULL)
+                                    {
+                                        // It's a receiver
+                                        ScenarioReceiver* receiver = dynamic_cast<ScenarioReceiver*>(antenna);
+                                        // Do something with the receiver
+                                        receiver->setDepointingLossRx(0);
+                                        receiver->setFeederLossRx(0);
+                                    }
+                                    else if (dynamic_cast<ScenarioTransmitter*>(antenna) != NULL)
+                                    {
+                                        // It's a transmitter
+                                        ScenarioTransmitter* transmitter = dynamic_cast<ScenarioTransmitter*>(antenna);
+                                        // Do something with the transmitter
+                                        transmitter->setDepointingLossTx(0);
+                                        transmitter->setFedderLossTx(0);
+                                    }*/
+
+
+
+    commPayload.Antenna().append(QSharedPointer<ScenarioAntennaType>(antenna));
+    qDebug()<<commPayload.Antenna().length()<<" length at the very beginning... why it is one?";
+    //}
+    QDomDocument doc;
+
+    return fragmentText(CreateCommunicationPayloadElement(&commPayload, doc)).toUtf8();
+}
+
+
 
 
 // Create a scenario fragment representing a single space vehicle.
@@ -371,6 +423,9 @@ setFont(font);
     participantsItem->setText(0, tr("Participants"));
     QTreeWidgetItem* missionArcsItem = new QTreeWidgetItem();
     missionArcsItem->setText(0, tr("Mission Arcs"));
+    // Next lines patch by Ricardo Noriega to include payloads into the scenario tree box
+    QTreeWidgetItem* payloadsItem = new QTreeWidgetItem();
+    payloadsItem->setText(0, tr("Payloads"));
     QTreeWidgetItem* maneuversItem = new QTreeWidgetItem();
     maneuversItem->setText(0, tr("Maneuvers"));
 
@@ -391,6 +446,7 @@ setFont(font);
     m_elementTreeWidget->clear();
     m_elementTreeWidget->addTopLevelItem(participantsItem);
     m_elementTreeWidget->addTopLevelItem(missionArcsItem);
+    m_elementTreeWidget->addTopLevelItem(payloadsItem);
     m_elementTreeWidget->addTopLevelItem(maneuversItem);
     m_elementTreeWidget->addTopLevelItem(ESASatellitesItem);
     m_elementTreeWidget->addTopLevelItem(ESAgroundStationsItem);
@@ -434,6 +490,13 @@ setFont(font);
     setDragAndDropInfo(reentryVehicleItem,
                        PARTICIPANT_MIME_TYPE,
                        REVFragment("New Reentry Vehicle", "Reentry Vehicle"));
+    //These lines are added by Ricardo to create the widget of the communication payload
+    QTreeWidgetItem* communicationPayloadItem  = new QTreeWidgetItem(payloadsItem);
+    communicationPayloadItem->setText(0, tr("Communication Payload"));
+    communicationPayloadItem->setIcon(0, QIcon(":/icons/ParticipantENTRYVEHICLE.png"));
+    setDragAndDropInfo(communicationPayloadItem,
+                       PAYLOAD_MIME_TYPE,
+                       CommPayloadFragment("New Communication Payload", "Comm Payload"));
 
     QTreeWidgetItem* groundStationItem   = new QTreeWidgetItem(participantsItem);
     groundStationItem->setText(0, tr("Station"));

@@ -735,7 +735,11 @@ SOURCES = $$MAIN_SOURCES \
     $$CURVEPLOT_SOURCES \
     $$QWT3D_SOURCES \
     $$NORAD_SOURCES \
-    $$HELPBROWSER_SOURCES
+    $$HELPBROWSER_SOURCES \
+    sta-src/Coverage/systemtempdialog.cpp \
+    sta-src/Coverage/sizeoptionsdialog.cpp \
+    sta-src/Coverage/maincoveragegui.cpp \
+    sta-src/Coverage/coneshapedialog.cpp
 HEADERS = $$MAIN_HEADERS \
     $$ASTROCORE_HEADERS \
     $$SEM_HEADERS \
@@ -755,7 +759,11 @@ HEADERS = $$MAIN_HEADERS \
     $$CURVEPLOT_HEADERS \
     $$QWT3D_HEADERS \
     $$NORAD_HEADERS \
-    $$HELPBROWSER_HEADERS
+    $$HELPBROWSER_HEADERS \
+    sta-src/Coverage/systemtempdialog.h \
+    sta-src/Coverage/sizeoptionsdialog.h \
+    sta-src/Coverage/maincoveragegui.h \
+    sta-src/Coverage/coneshapedialog.h
 FORMS = $$MAIN_FORMS \
     $$ASTROCORE_FORMS \
     $$SEM_FORMS \
@@ -773,7 +781,11 @@ FORMS = $$MAIN_FORMS \
     $$CURVEPLOT_FORMS \
     $$QWT3D_FORMS \
     $$NORAD_FORMS \
-    $$HELPBROWSER_FORMS
+    $$HELPBROWSER_FORMS \
+    sta-src/Coverage/SystemTemp.ui \
+    sta-src/Coverage/CoverageModule.ui \
+    sta-src/Coverage/ConeShape.ui \
+    sta-src/Coverage/AntennaSize.ui
 RESOURCES = $$CELESTIA_RESOURCES \
     iconary/sta-icons.qrc
 UI_HEADERS_DIR = sta-src/ui/include

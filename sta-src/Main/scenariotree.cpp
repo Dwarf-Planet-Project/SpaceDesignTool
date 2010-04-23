@@ -43,6 +43,7 @@
 #include "aerodynamicproperties.h"
 #include "propulsionproperties.h"
 #include "payloadproperties.h"
+#include "Coverage/maincoveragegui.h"
 #include <QtGui>
 #include <iostream>
 
@@ -107,7 +108,7 @@ ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioOb
 
     // Allow dropping into scenarios and trajectory plans (and nothing else for now)
     if (dynamic_cast<SpaceScenario*>(scenarioObject) ||
-        dynamic_cast<ScenarioTrajectoryPlan*>(scenarioObject) || dynamic_cast<ScenarioREVTrajectoryPlanType*>(scenarioObject))//Modified by Dominic to allow droppinmg of EntryArc
+        dynamic_cast<ScenarioTrajectoryPlan*>(scenarioObject) || dynamic_cast<ScenarioPayload*>(scenarioObject) || dynamic_cast<ScenarioGroundStation*>(scenarioObject) || dynamic_cast<ScenarioREVTrajectoryPlanType*>(scenarioObject))//Modified by Dominic and Ricardo Noriega to allow dropping of EntryArc and Payloads over SC and GS
     {
         item->setFlags(item->flags() | Qt::ItemIsDropEnabled);
     }
@@ -129,6 +130,7 @@ QStringList ScenarioTree::mimeTypes() const
     QStringList types;
     types << ScenarioElementBox::PARTICIPANT_MIME_TYPE
           << ScenarioElementBox::MISSION_ARC_MIME_TYPE
+          << ScenarioElementBox::PAYLOAD_MIME_TYPE //Line added by Ricardo Noriega to create a new MIME TYPE. Comm, optical, xray and radar shall be payloads of this type.
           << ScenarioElementBox::MANEUVER_MIME_TYPE;
     return types;
 }
@@ -169,9 +171,10 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
     QDomElement element = doc.firstChildElement();
     QString elementName = element.tagName();
 
-    // Dropped item may be either a participant or a trajectory
+    // Dropped item may be either a participant or a trajectory or a payload
     ScenarioParticipantType* participant = NULL;
     ScenarioAbstractTrajectoryType* trajectory = NULL;
+    ScenarioAbstractPayloadType* payload = NULL; //Line added by Ricardo to create an item to be dropped of payload type
 
     if (elementName == "tns:GroundStation")
         participant = ScenarioGroundStation::create(element);
@@ -185,6 +188,9 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
         participant = ScenarioSC::create(element);
     else if (elementName == "tns:REV")
         participant = ScenarioREV::create(element);
+
+    if (elementName == "tns:CommunicationPayload")
+        payload = ScenarioCommunicationPayloadType::create(element); //Ricardo edit this line to let the CommPayload element to be added to the scenario
 
     if (elementName == "tns:Loitering")
         trajectory = ScenarioLoiteringType::create(element);
@@ -246,6 +252,24 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
             trajectoryPlan->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
             QTreeWidgetItem* trajectoryItem = new QTreeWidgetItem(parent);
             addScenarioItems(trajectoryItem, trajectory);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    else if (payload)//Modified by Ricardo to avoid dragging communication payload into SC Trajectory Plan
+    {
+        //qDebug() << "Dropping payload";
+        ScenarioObject* parentObject = objectForItem(parent);
+        ScenarioPayload* scPayload = dynamic_cast<ScenarioPayload*>(parentObject);
+        if (scPayload) //if the draggable element is over the payload of the spacecraft, the comm payload could be attached
+        {
+            scPayload->AbstractPayload().append(QSharedPointer<ScenarioAbstractPayloadType>(payload));
+            QTreeWidgetItem* payloadItem = new QTreeWidgetItem(parent);
+            addScenarioItems(payloadItem, payload);
             return true;
         }
         else
@@ -426,6 +450,31 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
         }
 
     }
+
+    //These lines were added by Ricardo Noriega in order to open the GUI from a Comm Payload element. It opens the Main Coverage GUI.
+    else if (dynamic_cast<ScenarioCommunicationPayloadType*>(scenarioObject) != NULL)
+    {
+        ScenarioCommunicationPayloadType* commPayload = dynamic_cast<ScenarioCommunicationPayloadType*>(scenarioObject);
+        MainCoverageGUI editDialog(this);
+        qDebug()<<commPayload->Antenna().length()<<" length";
+        if (!editDialog.loadValues(commPayload))
+        {
+            QMessageBox::information(this, tr("Bad Payload element"), tr("Error in Payload element"));
+        }
+
+        else
+        {
+            if (editDialog.exec() == QDialog::Accepted)
+            {
+                editDialog.saveValues(commPayload);
+                updateTreeItems(editItem, scenarioObject);
+            }
+        }
+
+    }
+
+
+
 
     else if(dynamic_cast<ScenarioEntryArcType*>(scenarioObject) != NULL)//Added by Dominic to allow opening of re-entry GUI
     {

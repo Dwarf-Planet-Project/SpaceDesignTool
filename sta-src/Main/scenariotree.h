@@ -22,6 +22,10 @@
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
  */
 
+
+#ifndef SCENARIOTREE_H
+#define SCENARIOTREE_H
+
 #include <QWidget>
 #include <QDomDocument>
 #include <QHash>
@@ -90,6 +94,6 @@ private:
     ScenarioObject* m_scenarioObject;
 };
 
-
+#endif //SCENARIOTREE_H
 
 
