@@ -513,7 +513,7 @@
 	<!-- PAYLOADS -->
 	
 					
-	<element name="AbstractPayload" type="tns:AbstractPayloadType" abstract="true" maxOccurs="4"></element>	
+	<element name="AbstractPayload" type="tns:AbstractPayloadType" abstract="true"></element>	
 	
 	<complexType name="AbstractPayloadType" abstract="true">
 		<sequence>
