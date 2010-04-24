@@ -69,8 +69,8 @@ Libraries and data used
 # STA uses Celestia code and Celestia data. In particular, STA uses Celestia's rendering engine for the 3D view window, some its catalogs of stellar and planetary information, and some of its texture maps and 3D models of solar system bodies. For credits and authorship of these parts, please read the README, AUTHORS, and LICENSE files inside the celestia-src folder.
 # STA uses Curveplot. Curveplot is a library for high precision plotting of piecewise cubic curves in OpenGL. It is distributed under the terms of the GNU Lesser Public License and is Copyright of Chris Laurel.
 # STA uses OpenGL Extension Wrangler Library GLEW. For credits and authorship of this library, please read the README file inside the GLEW folder.
-# STA uses the QwPlot3D rogramming library that provides 3D-widgets for plotting. The library is zlib licensed. QwPlot3D ic copyright of Michael Bieber
-# STA uses the optimizer NSGA-II from the Kanpur Genetic Algorithms Laboratory (KanGAL) of the Indian Institute of Technology Kanpur. NSGA-II ic copyright of Prof. Kalyanmoy Deb.
+# STA uses the QwPlot3D programming library that provides 3D-widgets for plotting. The library is zlib licensed. QwPlot3D ic copyright of Michael Bieber
+# STA uses the optimizer NSGA-II from the Kanpur Genetic Algorithms Laboratory (KanGAL) of the Indian Institute of Technology Kanpur. NSGA-II is copyright of Prof. Kalyanmoy Deb.
 
 
 
