@@ -76,7 +76,7 @@ ScenarioTree::ScenarioTree(QWidget *parent)
             this, SLOT(editItem(QTreeWidgetItem*, int)));
     connect(this, SIGNAL(itemChanged(QTreeWidgetItem*, int)),
             this, SLOT(editItemInline(QTreeWidgetItem*, int)));
-    setExpandsOnDoubleClick(false);
+    setExpandsOnDoubleClick(true);
     
     // Set drag and drop behavior
     setDragEnabled(true);
@@ -84,7 +84,6 @@ ScenarioTree::ScenarioTree(QWidget *parent)
     setDragDropMode(QAbstractItemView::DragDrop);
     setDropIndicatorShown(true);
 
-    setAlternatingRowColors(true);
 }
 
 
@@ -122,6 +121,9 @@ ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioOb
             addScenarioItems(childItem, child.data());
         }
     }
+
+    // Guillermo: expand items by default
+    item->setExpanded(true);
 }
 
 
@@ -205,8 +207,8 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
     else if (elementName == "tns:EntryArc")
         trajectory = ScenarioEntryArcType::create(element);
 
-    qDebug() << encodedData;
-    qDebug() << "ELEMENT " << elementName << ", " << trajectory;
+    //qDebug() << encodedData;
+    //qDebug() << "ELEMENT " << elementName << ", " << trajectory;
 
     if (participant)
     {
@@ -225,7 +227,7 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
 
         return true;
     }
-    else if (trajectory && elementName != "tns:EntryArc")//Modified by Dominic to avoid dragging entry trajectory into SC Trajectory Plan
+    else if (trajectory && elementName != "tns:EntryArc") //Modified by Dominic to avoid dragging entry trajectory into SC Trajectory Plan
     {
         qDebug() << "Dropping trajectory";
         ScenarioObject* parentObject = objectForItem(parent);
@@ -244,7 +246,7 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
     }
     else if (trajectory && elementName=="tns:EntryArc") // Added by Dominic to drop entry trajectory
     {
-        qDebug() << "Dropping entry trajectory";
+	//qDebug() << "Dropping entry trajectory";
         ScenarioObject* parentObject = objectForItem(parent);
         ScenarioREVTrajectoryPlanType* trajectoryPlan = dynamic_cast<ScenarioREVTrajectoryPlanType*>(parentObject);
         if (trajectoryPlan)
@@ -260,7 +262,7 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
         }
     }
 
-    else if (payload)//Modified by Ricardo to avoid dragging communication payload into SC Trajectory Plan
+    else if (payload)  //Modified by Ricardo to avoid dragging communication payload into SC Trajectory Plan
     {
         //qDebug() << "Dropping payload";
         ScenarioObject* parentObject = objectForItem(parent);
@@ -517,7 +519,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
         }
 
     }
-    else if (dynamic_cast<ScenarioREVAeroThermodynamicsType*>(scenarioObject) != NULL)//Added by Dominic to allow opening of aerodynamic GUI
+    else if (dynamic_cast<ScenarioREVAeroThermodynamicsType*>(scenarioObject) != NULL)  //Added by Dominic to allow opening of aerodynamic GUI
     {
         ScenarioREVAeroThermodynamicsType* aerothermo = dynamic_cast<ScenarioREVAeroThermodynamicsType*>(scenarioObject);
         AerodynamicPropertiesDialog editDialog(this);

@@ -53,9 +53,11 @@ ScenarioElementWidget::ScenarioElementWidget(QWidget* parent) :
     setHeaderHidden(true);
     setRootIsDecorated(false);
     //setIconSize(QSize(32, 32));
-    setIconSize(QSize(30, 30)); // Smaller icons are a bit better
+    setIconSize(QSize(25, 25)); // Smaller icons are a bit better
     //QFont font("Helvetica", 10); setFont(font);
     setItemDelegate(new SheetDelegate(this));
+
+    setAlternatingRowColors(true);
 
     setDragDropMode(DragOnly);
     model()->setSupportedDragActions(Qt::CopyAction);
@@ -445,7 +447,7 @@ setFont(font);
     // Ground stations
     QTreeWidgetItem* ESAgroundStationsItem = new QTreeWidgetItem();
     ESAgroundStationsItem->setText(0, tr("ESA Ground Stations"));
-    // Next lines patch by Guillermo to include NASA stations
+    // Next lines patched by Guillermo to include NASA stations
     QTreeWidgetItem* NASAgroundStationsItem = new QTreeWidgetItem();
     NASAgroundStationsItem->setText(0, tr("NASA Ground Stations"));
 
@@ -627,13 +629,14 @@ setFont(font);
         item->setExpanded(true);
     }
 
+
     // Contracting now some elements that should not be shown to the user at a first sight.
     ESASatellitesItem->setExpanded(false);
     ESAgroundStationsItem->setExpanded(false);
     NASAgroundStationsItem->setExpanded(false);
 
-
     setLayout(layout);
+
 #endif
 }
 

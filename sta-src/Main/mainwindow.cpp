@@ -380,6 +380,7 @@ void MainWindow::on_actionNewScenario_triggered()
 
     m_scenarioView->update();
     m_scenarioView->setFocus();
+
 }
 
 

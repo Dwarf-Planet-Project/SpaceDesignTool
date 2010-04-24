@@ -41,6 +41,10 @@ ScenarioView::ScenarioView(QWidget* parent) :
 
     m_scenarioTree = new ScenarioTree(this);
     layout()->addWidget(m_scenarioTree);
+
+    // Guillermo on alternate background
+    m_scenarioTree->setAlternatingRowColors(true);
+
 }
 
 
