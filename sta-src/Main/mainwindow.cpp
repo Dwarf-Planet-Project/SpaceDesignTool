@@ -338,7 +338,7 @@ MainWindow::~MainWindow()
  */
 SpaceScenario* MainWindow::scenario() const
 {
-    return m_scenario.data();
+    return m_scenario;
 }
 
 
@@ -503,7 +503,7 @@ void MainWindow::on_actionSaveScenario_triggered()
         else
         {
             QDomDocument newDoc;
-            QDomElement scenarioElement = CreateSpaceScenarioElement(m_scenario.data(), newDoc);
+            QDomElement scenarioElement = CreateSpaceScenarioElement(m_scenario, newDoc);
             newDoc.appendChild(scenarioElement);
             QTextStream out(&scenarioFile);
             newDoc.save(out, SCENARIO_FILE_INDENT_LEVEL);
@@ -538,7 +538,7 @@ void MainWindow::on_actionSaveScenarioAs_triggered()
             }
 
             QDomDocument saveDoc;
-            QDomElement scenarioElement = CreateSpaceScenarioElement(m_scenario.data(), saveDoc);
+            QDomElement scenarioElement = CreateSpaceScenarioElement(m_scenario, saveDoc);
             saveDoc.appendChild(scenarioElement);
 
             QTextStream stream(&scenarioFile);
@@ -1229,7 +1229,7 @@ void MainWindow::on_menuEdit_aboutToShow()
 // additional setup.
 void MainWindow::replaceCurrentScenario(SpaceScenario* scenario, QString filename)
 {
-    m_scenario = QSharedPointer<SpaceScenario>(scenario);
+    m_scenario = scenario;
 
     actionPropagate_Scenario->setEnabled(m_scenario != NULL);
     actionSystem_Engineering->setEnabled(m_scenario != NULL);

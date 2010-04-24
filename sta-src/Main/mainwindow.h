@@ -141,7 +141,7 @@ private:
     void clearViews();
 
 private:
-    QSharedPointer<SpaceScenario> m_scenario;
+    SpaceScenario* m_scenario;
     PropagatedScenario* m_propagatedScenario;
     
     QString m_scenarioFileName;
