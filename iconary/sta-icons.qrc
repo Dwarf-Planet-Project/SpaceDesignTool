@@ -95,5 +95,6 @@
         <file>ParticipantENTRYVEHICLE.png</file>
         <file>ParticipantROCKET.png</file>
         <file>ParticipantPOINT.png</file>
+        <file>ParticipantCOMMUNICATIONS.png</file>
     </qresource>
 </RCC>
