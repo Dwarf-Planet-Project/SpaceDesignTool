@@ -31,6 +31,7 @@
 #include "Astro-Core/stacoordsys.h"
 #include "Astro-Core/stabody.h"
 #include "Astro-Core/stamath.h"
+#include "Astro-Core/trueAnomalyTOmeanAnomaly.h"
 
 
 #include "Scenario/propagationfeedback.h"
@@ -141,25 +142,11 @@ LoiteringDialog::LoiteringDialog(ScenarioTree* parent) :
     AngularVelocityZEdit_2->setValidator(doubleValidator);
 
     //Added combo box to select atmosphere models
-    /*
-    AtmosphereComboBox->addItem(QIcon(":/icons/ComboEarth.png"), tr("gram99 [0-120km]"), "gram99");
-    AtmosphereComboBox->addItem(QIcon(":/icons/ComboEarth.png"), tr("exponential [0-120km]"), "exponential");
-    AtmosphereComboBox->addItem(QIcon(":/icons/ComboEarth.png"), tr("ussa1976 [0-1000km]"), "ussa1976");
-    AtmosphereComboBox->addItem(QIcon(":/icons/ComboMars.png"), tr("mars_emcd [0-120km]"), "mars_emcd");
-    */
-
     // Lines patched by Guillermo to take away the icons
     AtmosphereComboBox->addItem(tr("GRAM 99"), "gram99");
     AtmosphereComboBox->addItem(tr("Exponential"), "exponential");
     AtmosphereComboBox->addItem(tr("US 76"), "ussa1976");
     AtmosphereComboBox->addItem(tr("Mars EMCD"), "mars_emcd");
-
-    /*
-    GravityComboBox->addItem(QIcon(":/icons/ComboEarth.png"), tr("EGM2008"), "EGM2008");
-    GravityComboBox->addItem(QIcon(":/icons/ComboMars.png"), tr("GTM090"), "GTM090");
-    GravityComboBox->addItem(QIcon(":/icons/ComboVenus.png"), tr("SHGJ180"), "SHGJ180");
-    GravityComboBox->addItem(QIcon(":/icons/ComboMoon.png"), tr("JGL165"), "JGL165");
-    */
 
     // Lines patched by Guillermo to take away the icons
     GravityComboBox->addItem(tr("EGM 2008"), "EGM2008");
@@ -250,10 +237,10 @@ void LoiteringDialog::disableIntegratorComboBox(int i)
 
 bool LoiteringDialog::loadValues(ScenarioLoiteringType* loitering)
 {
-    ScenarioSCEnvironmentType* environment   = loitering->Environment().data();
-    ScenarioTimeLine* parameters             = loitering->TimeLine().data();
-    ScenarioPropagationPositionType* propagation = loitering->PropagationPosition().data();
-    ScenarioInitialPositionType* initPosition    = loitering->InitialPosition().data();//Modified by Dominic to reflect chages in XML schema (initial position now in sharedelements)
+    ScenarioSCEnvironmentType* environment	    = loitering->Environment().data();
+    ScenarioTimeLine* parameters		    = loitering->TimeLine().data();
+    ScenarioPropagationPositionType* propagation    = loitering->PropagationPosition().data();
+    ScenarioInitialPositionType* initPosition	    = loitering->InitialPosition().data();  //Modified by Dominic to reflect chages in XML schema (initial position now in sharedelements)
 
     if (loadValues(environment) && loadValues(parameters) && loadValues(propagation) && loadValues(initPosition))
     {
@@ -450,7 +437,7 @@ bool LoiteringDialog::loadValues(ScenarioInitialPositionType* initPosition)
     ScenarioAbstract6DOFPositionType* position = initPosition->Abstract6DOFPosition().data();
 
     ScenarioKeplerianElementsType* elements = dynamic_cast<ScenarioKeplerianElementsType*>(position);
-    ScenarioStateVectorType* stateVector = dynamic_cast<ScenarioStateVectorType*>(position);
+    ScenarioStateVectorType* stateVector    = dynamic_cast<ScenarioStateVectorType*>(position);
 
     Q_ASSERT(elements || stateVector);
 
@@ -461,10 +448,10 @@ bool LoiteringDialog::loadValues(ScenarioInitialPositionType* initPosition)
 
         semimajorAxisEdit->setText(QString::number(elements->semiMajorAxis()));
         eccentricityEdit->setText(QString::number(elements->eccentricity()));
-        inclinationEdit->setText(QString::number(elements->inclination()*180/Pi()));//Modified by Dominic save values in scenario in radians
-        raanEdit->setText(QString::number(elements->RAAN()*180/Pi()));
-        argOfPeriapsisEdit->setText(QString::number(elements->argumentOfPeriapsis()*180/Pi()));
-        trueAnomalyEdit->setText(QString::number(elements->trueAnomaly()*180/Pi()));
+	inclinationEdit->setText(QString::number(elements->inclination()));
+	raanEdit->setText(QString::number(elements->RAAN())); //*180/Pi()));
+	argOfPeriapsisEdit->setText(QString::number(elements->argumentOfPeriapsis())); //*180/Pi()));
+	trueAnomalyEdit->setText(QString::number(elements->trueAnomaly())); //*180/Pi()));
     }
     else if (stateVector)
     {
@@ -555,10 +542,10 @@ bool LoiteringDialog::loadValues(ScenarioInitialPositionType* initPosition)
 
 bool LoiteringDialog::saveValues(ScenarioLoiteringType* loitering)
 {
-    ScenarioSCEnvironmentType* environment   = loitering->Environment().data();
-    ScenarioTimeLine* parameters             = loitering->TimeLine().data();
+    ScenarioSCEnvironmentType* environment	 = loitering->Environment().data();
+    ScenarioTimeLine* parameters		 = loitering->TimeLine().data();
     ScenarioPropagationPositionType* propagation = loitering->PropagationPosition().data();
-    ScenarioInitialPositionType* initPosition  = loitering->InitialPosition().data();//Modified by Dominic to reflect chages in XML schema (initial position now in sharedelements)
+    ScenarioInitialPositionType* initPosition    = loitering->InitialPosition().data();//Modified by Dominic to reflect chages in XML schema (initial position now in sharedelements)
 
 
     if (saveValues(environment) && saveValues(parameters) && saveValues(propagation) && saveValues(initPosition))
@@ -683,15 +670,16 @@ bool LoiteringDialog::saveValues(ScenarioInitialPositionType* initPos)
     {
     case 0:
         {
-            ScenarioKeplerianElementsType* elements = new ScenarioKeplerianElementsType;
-            elements->setSemiMajorAxis(semimajorAxisEdit->text().toDouble());
-            elements->setEccentricity(eccentricityEdit->text().toDouble());
-            elements->setInclination(inclinationEdit->text().toDouble()*Pi()/180);//Modified by Dominic save values in scenario in radians
-            elements->setRAAN(raanEdit->text().toDouble()*Pi()/180);
-            elements->setArgumentOfPeriapsis(argOfPeriapsisEdit->text().toDouble()*Pi()/180);
-            elements->setTrueAnomaly(trueAnomalyEdit->text().toDouble()*Pi()/180);
+	    // Guillermo April 23 2010 patching the mess of Dominic
+	    ScenarioKeplerianElementsType* elements_deg = new ScenarioKeplerianElementsType;
+	    elements_deg->setSemiMajorAxis(semimajorAxisEdit->text().toDouble());
+	    elements_deg->setEccentricity(eccentricityEdit->text().toDouble());
+	    elements_deg->setInclination(inclinationEdit->text().toDouble());  //Modified by Dominic save values in scenario in radians
+	    elements_deg->setRAAN(raanEdit->text().toDouble());
+	    elements_deg->setArgumentOfPeriapsis(argOfPeriapsisEdit->text().toDouble());
+	    elements_deg->setTrueAnomaly(trueAnomalyEdit->text().toDouble());
 
-            initPos->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(elements));
+	    initPos->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(elements_deg));
         }
         return true;
 
@@ -740,8 +728,8 @@ bool LoiteringDialog::saveValues(ScenarioSimulationParameters* parameters)
 
         initialStatePos->setInitialState(elements);
 
-        //QTextStream out (stdout);
-        //out << "a: " << elements->semimajorAxis() << endl;
+	//QTextStream out (stdout);
+	//out << "a: " << elements->semimajorAxis() << endl;
 
 
         return true;
@@ -802,6 +790,7 @@ void TesseralBox::setVariableMaximum(int i)
 }
 
 
+/////////////////////////////////////// PropagateLoiteringTrajectory /////////////////////////////
 bool
 PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
                              QList<double>& sampleTimes,
@@ -899,27 +888,50 @@ PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
 
     if (propagator == "TWO BODY")
     {
+
         double sma            = initialStateKeplerian.SemimajorAxis;
         double e              = initialStateKeplerian.Eccentricity;
-        double inclination    = initialStateKeplerian.Inclination;
-        double raan           = initialStateKeplerian.AscendingNode;
-        double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis;
-        double meanAnomaly    = initialStateKeplerian.MeanAnomaly;
+	double inclination    = initialStateKeplerian.Inclination*Pi()/180.0;
+	double raan           = initialStateKeplerian.AscendingNode*Pi()/180.0;
+	double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis*Pi()/180.0;
+	double trueAnomaly    = initialStateKeplerian.TrueAnomaly*Pi()/180.0;
+	double meanAnomaly    = trueAnomalyTOmeanAnomaly(trueAnomaly, e);
+	QTextStream out (stdout);
+	out << "sma: " << sma << endl;
+	out << "e: " << e << endl;
+	out << "inclination: " << inclination << endl;
+	out << "raan: " << raan << endl;
+	out << "argOfPeriapsis: " << argOfPeriapsis << endl;
+	out << "trueAnomaly: " << trueAnomaly << endl;
+	out << "meanAnomaly: " << meanAnomaly << endl;
 
-        for (double t = dt; t < timelineDuration + dt; t += dt)
-        {
+	/*
+	double sma            = 6378.0+450.1365;
+	double e              = 0.0006;
+	double inclination    = 51.6651*Pi()/180.0;
+	double raan           = 12.4829*Pi()/180.0;
+	double argOfPeriapsis = 45.0278*Pi()/180.0;
+	double meanAnomaly    = trueAnomalyTOmeanAnomaly(87.3523*Pi()/180.0, e);
+	*/
+
+	// Next lines patched by Guillermo on April 23 2010 to speed up calculations outside the for loop
+	double argOfPeriapsisUpdated      = 0.0;
+	double meanAnomalyUpdated         = 0.0;
+	double raanUpdated                = 0.0;
+
+	double perigee = sma * (1 - e);
+	if (perigee < centralBody->meanRadius())
+	{
+	    propFeedback.raiseError(QObject::tr("The perigee distance is smaller than the main body radius."));
+	    return false;
+	}
+	else
+	{
+
+	  for (double t = dt; t < timelineDuration + dt; t += dt)
+	  {
             JulianDate jd = startTime + sta::secsToDays(t);
 
-            double perigee = sma * (1 - e);
-            if (perigee < centralBody->meanRadius())
-            {
-                propFeedback.raiseError(QObject::tr("The perigee distance is smaller than the main body radius."));
-                return false;
-            }
-
-            double argOfPeriapsisUpdated      = 0.0;
-            double meanAnomalyUpdated         = 0.0;
-            double raanUpdated                = 0.0;
             stateVector = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
                                            dt,
                                            raanUpdated, argOfPeriapsisUpdated, meanAnomalyUpdated);
@@ -927,6 +939,10 @@ PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
             argOfPeriapsis = argOfPeriapsisUpdated;
             meanAnomaly    = meanAnomalyUpdated;
             raan           = raanUpdated;
+
+	    out << "argOfPeriapsis: " << argOfPeriapsis << endl;
+	    out << "meanAnomaly: " << meanAnomaly << endl;
+	    out << "raan: " << raan << endl;
 
             // Append a trajectory sample every outputRate integration steps (and
             // always at the last step.)
@@ -936,7 +952,8 @@ PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
                 samples << stateVector;
             }
             ++steps;
-        }
+	  }
+	}
     }
     else if (propagator == "COWELL")
     {

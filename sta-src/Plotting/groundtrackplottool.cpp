@@ -150,7 +150,7 @@ GroundTrackView::GroundTrackView(QWidget* parent) :
     m_pixmap(NULL),
     m_pixmapOk(false),
     m_contextMenu(NULL),
-    m_showEntireTracks(true),
+    m_showEntireTracks(false),
     //m_showGrid(true),
     m_showGrid(false),
     m_showTicks(false),

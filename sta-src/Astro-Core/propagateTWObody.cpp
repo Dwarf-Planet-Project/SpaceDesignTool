@@ -46,7 +46,7 @@
 //      deltat  propagation time length (s)
 //
 // Output:
-//		pos    xyz coordinates in ECI system (km)
+//	pos    xyz coordinates in ECI system (km)
 //      vel    vxvyvz coordinates in ECI system (km/s)
 //      ran1   RAAN at time=deltat (rad)
 //      ap1    argument of perigee at time=deltat (rad)

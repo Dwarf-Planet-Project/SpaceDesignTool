@@ -39,6 +39,12 @@
      <height>32</height>
     </rect>
    </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
@@ -282,7 +288,7 @@ of closest approach to the central body), passing through the focal
 point where the center of mass resides.</string>
             </property>
             <property name="text">
-             <string>10000</string>
+             <string>0.0</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -311,7 +317,7 @@ measured at the ascending node (where the orbit passes upward
 through the reference plane).</string>
             </property>
             <property name="text">
-             <string>45.0</string>
+             <string>0.0</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2077,8 +2083,8 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
         <rect>
          <x>5</x>
          <y>50</y>
-         <width>136</width>
-         <height>30</height>
+         <width>225</width>
+         <height>59</height>
         </rect>
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -2658,7 +2664,80 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
   </widget>
  </widget>
  <tabstops>
+  <tabstop>dateTimeEdit</tabstop>
+  <tabstop>dateTimeEdit_2</tabstop>
+  <tabstop>TimeStepLineEdit</tabstop>
+  <tabstop>CoordSystemComboBox</tabstop>
+  <tabstop>InitialStateComboBox</tabstop>
+  <tabstop>semimajorAxisEdit</tabstop>
+  <tabstop>eccentricityEdit</tabstop>
+  <tabstop>inclinationEdit</tabstop>
+  <tabstop>raanEdit</tabstop>
+  <tabstop>argOfPeriapsisEdit</tabstop>
+  <tabstop>trueAnomalyEdit</tabstop>
+  <tabstop>comboBox_3</tabstop>
+  <tabstop>comboBox_4</tabstop>
+  <tabstop>Euler123alphaEdit_2</tabstop>
+  <tabstop>Euler123betaEdit_2</tabstop>
+  <tabstop>Euler123gammaEdit_2</tabstop>
+  <tabstop>AngularVelocityXEdit_3</tabstop>
+  <tabstop>AngularVelocityYEdit_2</tabstop>
+  <tabstop>AngularVelocityZEdit_2</tabstop>
+  <tabstop>argOfPeriapsisEdit_6</tabstop>
+  <tabstop>CentralBodyComboBox</tabstop>
+  <tabstop>GravityFieldRadioButton</tabstop>
+  <tabstop>GravityComboBox</tabstop>
+  <tabstop>ZonalsSpinBox</tabstop>
+  <tabstop>AtmDragRadioButton</tabstop>
+  <tabstop>AtmosphereComboBox</tabstop>
+  <tabstop>SolarPressureRadioButton</tabstop>
+  <tabstop>AlbedoCheckBox</tabstop>
+  <tabstop>IRCheckBox</tabstop>
+  <tabstop>CrSpinBox</tabstop>
+  <tabstop>DebrisRadioButton</tabstop>
+  <tabstop>PertBodyRadioButton</tabstop>
+  <tabstop>BodyListWidget</tabstop>
+  <tabstop>PertBodyListWidget</tabstop>
+  <tabstop>AddPushButton</tabstop>
+  <tabstop>RemovePushButton</tabstop>
+  <tabstop>quaternion4Edit</tabstop>
+  <tabstop>PropagatorComboBox</tabstop>
+  <tabstop>IntegratorComboBox</tabstop>
+  <tabstop>IntStepEdit</tabstop>
+  <tabstop>AttitudePropagationComboBox</tabstop>
+  <tabstop>ExtCouplesComboBox</tabstop>
+  <tabstop>IntegratorComboBox_2</tabstop>
+  <tabstop>IntStepEdit_2</tabstop>
   <tabstop>buttonBox</tabstop>
+  <tabstop>positionYEdit</tabstop>
+  <tabstop>positionZEdit</tabstop>
+  <tabstop>LoiteringTabsAssembly</tabstop>
+  <tabstop>Euler123betaEdit</tabstop>
+  <tabstop>AngularVelocityXEdit</tabstop>
+  <tabstop>Euler123gammaEdit</tabstop>
+  <tabstop>AngularVelocityYEdit</tabstop>
+  <tabstop>AngularVelocityZEdit</tabstop>
+  <tabstop>positionXEdit</tabstop>
+  <tabstop>semimajorAxisEdit_6</tabstop>
+  <tabstop>inclinationEdit_6</tabstop>
+  <tabstop>raanEdit_6</tabstop>
+  <tabstop>eccentricityEdit_6</tabstop>
+  <tabstop>velocityXEdit</tabstop>
+  <tabstop>ManualInputTLEpushButton</tabstop>
+  <tabstop>velocityYEdit</tabstop>
+  <tabstop>velocityZEdit</tabstop>
+  <tabstop>LoadTLEpushButton</tabstop>
+  <tabstop>Euler123alphaEdit</tabstop>
+  <tabstop>trueAnomalyEdit_6</tabstop>
+  <tabstop>quaternion1Edit</tabstop>
+  <tabstop>quaternion2Edit</tabstop>
+  <tabstop>quaternion3Edit</tabstop>
+  <tabstop>argOfPeriapsisEdit_7</tabstop>
+  <tabstop>trueAnomalyEdit_7</tabstop>
+  <tabstop>AngularVelocityXEdit_2</tabstop>
+  <tabstop>InterpolatorComboBox</tabstop>
+  <tabstop>lineEdit_7</tabstop>
+  <tabstop>OrderSpinBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../iconary/sta-icons.qrc"/>

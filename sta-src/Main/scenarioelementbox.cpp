@@ -132,6 +132,7 @@ static QByteArray REVFragment(const char* name, const char* vehicleType)//Create
     return fragmentText(CreateREVElement(&entryVehicle, doc)).toUtf8();
 }
 
+
 //Lines added by Ricardo Noriega. Creates a communication payload fragment representing a single payload
 static QByteArray CommPayloadFragment(const char* name, const char* payloadType)
 {
@@ -147,9 +148,9 @@ static QByteArray CommPayloadFragment(const char* name, const char* payloadType)
     //ScenarioReceiver* receiver = dynamic_cast<ScenarioReceiver*>(antenna);
 
     antenna->PointingDirection()->setElevation(sta::Pi()/2);
-    antenna->PointingDirection()->setAzimuth(0);
+    antenna->PointingDirection()->setAzimuth(0.0);
 
-    antenna->EMproperties()->setEfficiency(55);
+    antenna->EMproperties()->setEfficiency(55.0);
     //antenna->EMproperties()->setFrequency(14.5);
 
 
@@ -173,6 +174,7 @@ static QByteArray CommPayloadFragment(const char* name, const char* payloadType)
 
 
     commPayload.Antenna().append(QSharedPointer<ScenarioAntennaType>(antenna));
+
     qDebug()<<commPayload.Antenna().length()<<" length at the very beginning... why it is one?";
     //}
     QDomDocument doc;
@@ -203,12 +205,18 @@ static QByteArray loiteringFragment(const char* name)
     loitering.Environment()->CentralBody()->setName("EARTH");
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
 
+    // Patched by Guillermo April 23 2010 to get default values for ISS orbits
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
-    initPos->setSemiMajorAxis(8000.0);
+    initPos->setSemiMajorAxis(6378.0+450.1365);
+    initPos->setInclination(51.6651);
+    initPos->setEccentricity(0.0006);
+    initPos->setRAAN(12.4829);
+    initPos->setArgumentOfPeriapsis(45.0278);
+    initPos->setTrueAnomaly(87.3523);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    loitering.TimeLine()->setStartTime(QDateTime(QDate(2010, 1, 1)));
-    loitering.TimeLine()->setEndTime(QDateTime(QDate(2010, 1, 2)));
+    loitering.TimeLine()->setStartTime(QDateTime(QDate(2012, 1, 1)));
+    loitering.TimeLine()->setEndTime(QDateTime(QDate(2012, 1, 2)));
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
@@ -490,10 +498,12 @@ setFont(font);
     setDragAndDropInfo(reentryVehicleItem,
                        PARTICIPANT_MIME_TYPE,
                        REVFragment("New Reentry Vehicle", "Reentry Vehicle"));
+
     //These lines are added by Ricardo to create the widget of the communication payload
+    // Patched by Guillermo to change the icon
     QTreeWidgetItem* communicationPayloadItem  = new QTreeWidgetItem(payloadsItem);
-    communicationPayloadItem->setText(0, tr("Communication Payload"));
-    communicationPayloadItem->setIcon(0, QIcon(":/icons/ParticipantENTRYVEHICLE.png"));
+    communicationPayloadItem->setText(0, tr("Communications"));
+    communicationPayloadItem->setIcon(0, QIcon(":/icons/ParticipantCOMMUNICATIONS.png"));
     setDragAndDropInfo(communicationPayloadItem,
                        PAYLOAD_MIME_TYPE,
                        CommPayloadFragment("New Communication Payload", "Comm Payload"));

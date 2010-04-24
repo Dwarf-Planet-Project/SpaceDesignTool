@@ -20,11 +20,14 @@
  ------ Copyright (C) 2008 European Space Agency (space.trajectory.analysis AT gmail.com) ----
  ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
+ // Patched by Guillermo to convert into mean anomaly April 23 2010
  */
 
 #include "scenario.h"
 #include "Astro-Core/orbitalTOcartesian.h"
 #include "Astro-Core/cartesianTOorbital.h"
+#include "Astro-Core/trueAnomalyTOmeanAnomaly.h"
+#include "Astro-Core/stamath.h"
 
 
 /** Convert an abstract position to a cartesian state vector.
@@ -48,15 +51,16 @@ AbstractPositionToStateVector(const ScenarioAbstract6DOFPositionType* position,
     {
         const ScenarioKeplerianElementsType* elements = dynamic_cast<const ScenarioKeplerianElementsType*>(position);
         sta::KeplerianElements e;
-        e.AscendingNode = elements->RAAN();
-        e.ArgumentOfPeriapsis = elements->argumentOfPeriapsis();
+	e.AscendingNode = elements->RAAN()*Pi()/180.0;
+	e.ArgumentOfPeriapsis = elements->argumentOfPeriapsis()*Pi()/180.0;
         e.Eccentricity = elements->eccentricity();
-        e.TrueAnomaly = elements->trueAnomaly();
+	e.TrueAnomaly = elements->trueAnomaly()*Pi()/180.0;
+	double MeanAnomaly =  trueAnomalyTOmeanAnomaly(e.TrueAnomaly,e.Eccentricity);
         e.SemimajorAxis = elements->semiMajorAxis();
-        e.Inclination = elements->inclination();
+	e.Inclination = elements->inclination()*Pi()/180.0;
 
         initialState = orbitalTOcartesian(centralBody->mu(), e.SemimajorAxis, e.Eccentricity, e.Inclination,
-                                          e.ArgumentOfPeriapsis, e.AscendingNode, e.MeanAnomaly);
+					  e.ArgumentOfPeriapsis, e.AscendingNode, MeanAnomaly);
     }
     else if (dynamic_cast<const ScenarioSphericalCoordinatesType*>(position))
     {
