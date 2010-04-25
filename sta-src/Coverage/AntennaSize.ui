@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>327</width>
-    <height>221</height>
+    <width>312</width>
+    <height>236</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>312</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>312</width>
+    <height>236</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Size Options</string>
@@ -18,8 +30,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>311</width>
-     <height>190</height>
+     <width>293</width>
+     <height>217</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -171,30 +183,12 @@
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <widget class="QPushButton" name="CancelButton">
-             <property name="text">
-              <string>Cancel</string>
-             </property>
-            </widget>
-            <widget class="QPushButton" name="OkButton">
-             <property name="text">
-              <string>OK</string>
+            <widget class="QDialogButtonBox" name="buttonBox">
+             <property name="standardButtons">
+              <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
              </property>
             </widget>
            </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_5">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
           </item>
          </layout>
         </item>
@@ -244,8 +238,8 @@
      <y>55</y>
     </hint>
     <hint type="destinationlabel">
-     <x>145</x>
-     <y>79</y>
+     <x>225</x>
+     <y>102</y>
     </hint>
    </hints>
   </connection>
@@ -256,8 +250,8 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>128</x>
-     <y>62</y>
+     <x>123</x>
+     <y>74</y>
     </hint>
     <hint type="destinationlabel">
      <x>151</x>
@@ -352,8 +346,8 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>131</x>
-     <y>115</y>
+     <x>123</x>
+     <y>126</y>
     </hint>
     <hint type="destinationlabel">
      <x>161</x>
@@ -378,34 +372,34 @@
    </hints>
   </connection>
   <connection>
-   <sender>OkButton</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
    <receiver>SizeOptions</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>231</x>
-     <y>182</y>
+     <x>247</x>
+     <y>199</y>
     </hint>
     <hint type="destinationlabel">
-     <x>302</x>
-     <y>210</y>
+     <x>244</x>
+     <y>216</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>CancelButton</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
    <receiver>SizeOptions</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>89</x>
-     <y>183</y>
+     <x>186</x>
+     <y>192</y>
     </hint>
     <hint type="destinationlabel">
-     <x>29</x>
-     <y>196</y>
+     <x>64</x>
+     <y>191</y>
     </hint>
    </hints>
   </connection>
