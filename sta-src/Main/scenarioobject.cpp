@@ -20,6 +20,7 @@
  ------ Copyright (C) 2008 European Space Agency (space.trajectory.analysis AT gmail.com) ----
  ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
+ Extensively patched by Guillermo to include new elemets like payload, etc.
  */
 
 #include "scenarioobject.h"

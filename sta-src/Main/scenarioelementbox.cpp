@@ -1,29 +1,32 @@
 /*
  This program is free software; you can redistribute it and/or modify it under
- the terms of the GNU Lesser General Public License as published by the Free Software
- Foundation; either version 2 of the License, or (at your option) any later
- version.
+ the terms of the European Union Public Licence - EUPL v.1.1 as published by
+ the European Commission.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- details.
+ FOR A PARTICULAR PURPOSE. See the European Union Public Licence - EUPL v.1.1
+ for more details.
 
- You should have received a copy of the GNU Lesser General Public License along with
- this program; if not, write to the Free Software Foundation, Inc., 59 Temple
- Place - Suite 330, Boston, MA 02111-1307, USA.
- Further information about the GNU Lesser General Public License can also be found on
- the world wide web at http://www.gnu.org.
+ You should have received a copy of the European Union Public Licence - EUPL v.1.1
+ along with this program.
+
+ Further information about the European Union Public Licence - EUPL v.1.1 can
+ also be found on the world wide web at http://ec.europa.eu/idabc/eupl
  */
 
 /*
- ------ Copyright (C) 2008-2010 European Space Agency (space.trajectory.analysis AT gmail.com) ----
+ ------ Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
+ */
+
+/*
  ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
   Modified by Tiziana Sabatini May 2009
   Modified by Guillermo June 3rd 2009
   Modified by Valentino Zuccarelli June 14th 2009
   Extensvely modified by Guillermo on October 2009 to include TLEs
+  Modified by Guillermo April 2010 to include coverage
  */
 
 #include "scenarioelementbox.h"
@@ -36,6 +39,7 @@
 #include <QTextStream>
 #include <QtDebug>
 #include "Coverage/maincoveragegui.h"
+
 
 static const QString SCENARIO_MIME_TYPE("application/sta.scenario.xml");
 
@@ -56,9 +60,7 @@ ScenarioElementWidget::ScenarioElementWidget(QWidget* parent) :
     setIconSize(QSize(25, 25)); // Smaller icons are a bit better
     //QFont font("Helvetica", 10); setFont(font);
     setItemDelegate(new SheetDelegate(this));
-
     setAlternatingRowColors(true);
-
     setDragDropMode(DragOnly);
     model()->setSupportedDragActions(Qt::CopyAction);
 }
@@ -116,76 +118,21 @@ static QString fragmentText(QDomElement e)
     return text;
 }
 
-static QByteArray REVFragment(const char* name, const char* vehicleType)//Created by Dominic to allow REV to be dragged and dropped
+
+
+// Set the mime type and data for drag and drop
+static void setDragAndDropInfo(QTreeWidgetItem* item,
+			       const QString& mimeType,
+			       const QByteArray& mimeData)
 {
-    ScenarioREV entryVehicle;
-
-    /*** fill in defaults ***/
-    entryVehicle.REVSystem()->Weights()->setTotalDryMass(100);
-    entryVehicle.REVSystem()->Geometry()->setNoseRadius(1);
-
-    entryVehicle.REVSystem()->AeroThermodynamics()->setReferenceArea(0.5*0.5*3.141592653589793238);
-    entryVehicle.REVSystem()->AeroThermodynamics()->setTempCDfile("CdM.stad");
-    entryVehicle.REVSystem()->AeroThermodynamics()->setCoefficientType(1);
-
-    //qDebug()<<entryVehicle.REVSystem()->REVAeroThermodynamics()->tempCDfile()<<"  file test";
-
-    QDomDocument doc;
-    return fragmentText(CreateREVElement(&entryVehicle, doc)).toUtf8();
-}
-
-
-//Lines added by Ricardo Noriega. Creates a communication payload fragment representing a single payload
-static QByteArray CommPayloadFragment(const char* name, const char* payloadType)
-{
-    ScenarioCommunicationPayloadType commPayload;
-
-
-    ScenarioAntennaType * antenna=new ScenarioAntennaType;
-    /*** fill in defaults ***/
-    //if(commPayload.Antenna().length()!=0){
-    //ScenarioAntennaType* antenna = commPayload.Antenna().at(0).data();
-
-
-    //ScenarioReceiver* receiver = dynamic_cast<ScenarioReceiver*>(antenna);
-
-    antenna->PointingDirection()->setElevation(sta::Pi()/2);
-    antenna->PointingDirection()->setAzimuth(0.0);
-
-    antenna->EMproperties()->setEfficiency(55.0);
-    //antenna->EMproperties()->setFrequency(14.5);
-
-
-                                   /*if (dynamic_cast<ScenarioReceiver*>(antenna) != NULL)
-                                    {
-                                        // It's a receiver
-                                        ScenarioReceiver* receiver = dynamic_cast<ScenarioReceiver*>(antenna);
-                                        // Do something with the receiver
-                                        receiver->setDepointingLossRx(0);
-                                        receiver->setFeederLossRx(0);
-                                    }
-                                    else if (dynamic_cast<ScenarioTransmitter*>(antenna) != NULL)
-                                    {
-                                        // It's a transmitter
-                                        ScenarioTransmitter* transmitter = dynamic_cast<ScenarioTransmitter*>(antenna);
-                                        // Do something with the transmitter
-                                        transmitter->setDepointingLossTx(0);
-                                        transmitter->setFedderLossTx(0);
-                                    }*/
-
-
-
-    commPayload.Antenna().append(QSharedPointer<ScenarioAntennaType>(antenna));
-
-    qDebug()<<commPayload.Antenna().length()<<" length at the very beginning... why it is one?";
-    //}
-    QDomDocument doc;
-
-    return fragmentText(CreateCommunicationPayloadElement(&commPayload, doc)).toUtf8();
+    item->setData(0, ScenarioFragmentTypeRole, mimeType);
+    item->setData(0, ScenarioFragmentRole, mimeData);
 }
 
 
 
+
+////////////////////////  Creating PARTICIPANTS fragments /////////////////////////////////
 
 // Create a scenario fragment representing a single space vehicle.
 static QByteArray spaceVehicleFragment(const char* name, const char* vehicleType)
@@ -193,10 +140,97 @@ static QByteArray spaceVehicleFragment(const char* name, const char* vehicleType
     ScenarioSC spacecraft;
 
     /*** fill in defaults ***/
-
     QDomDocument doc;
     return fragmentText(CreateSCElement(&spacecraft, doc)).toUtf8();
 }
+
+
+//Created by Dominic to allow REV to be dragged and dropped
+static QByteArray REVFragment(const char* name, const char* vehicleType)
+{
+    ScenarioREV entryVehicle;
+
+    /*** fill in defaults ***/
+    entryVehicle.REVSystem()->Weights()->setTotalDryMass(100);
+    entryVehicle.REVSystem()->Geometry()->setNoseRadius(1);
+    entryVehicle.REVSystem()->AeroThermodynamics()->setReferenceArea(0.5*0.5*3.141592653589793238);
+    entryVehicle.REVSystem()->AeroThermodynamics()->setTempCDfile("CdM.stad");
+    entryVehicle.REVSystem()->AeroThermodynamics()->setCoefficientType(1);
+    //qDebug()<<entryVehicle.REVSystem()->REVAeroThermodynamics()->tempCDfile()<<"  file test";
+    QDomDocument doc;
+    return fragmentText(CreateREVElement(&entryVehicle, doc)).toUtf8();
+}
+
+
+static QByteArray groundStationFragment(const char* name,
+					const char* centralBody,
+					double latitude = 0.0,
+					double longitude = 0.0,
+					double altitude = 0.0)
+{
+    ScenarioGroundStation groundStation;
+
+    groundStation.setName(name);
+    groundStation.Location()->setCentralBody(centralBody);
+
+    QSharedPointer<ScenarioGroundPositionType> groundPosition(new ScenarioGroundPositionType());
+    groundPosition->setLatitude(latitude);
+    groundPosition->setLongitude(longitude);
+    groundPosition->setAltitude(altitude);
+    groundStation.Location()->setAbstract3DOFPosition(groundPosition);
+
+    QDomDocument doc;
+    return fragmentText(CreateGroundStationElement(&groundStation, doc)).toUtf8();
+}
+
+
+// Create a scenario fragment representing a ground element.
+static QByteArray groundElementFragment(const char* name,
+					const char* groundElementType,
+					const char* centralBody,
+					double latitude = 0.0,
+					double longitude = 0.0,
+					double altitude = 0.0)
+{
+    QByteArray encodedData;
+
+    encodedData +=
+    "<";
+    encodedData += groundElementType;
+    encodedData += " Name=\"";
+    encodedData += name;
+    encodedData += "\">"
+    "<Location>"
+    "<GroundPosition>"
+    "<Latitude>" + QString::number(latitude) + "</Latitude>"
+    "<Longitude>" + QString::number(longitude) + "</Longitude>"
+    "<Altitude>" + QString::number(altitude) + "</Altitude>"
+    "</GroundPosition>";
+    encodedData += "<CentralBody>";
+    encodedData += centralBody;
+    encodedData += "</CentralBody>"
+    "</Location>";
+
+    // Clearing altitude is a required element for launch pads.
+    if (QString(groundElementType) == "LaunchPad")
+    {
+	encodedData += "<LaunchPadClearingAltitude>10</LaunchPadClearingAltitude>";
+    }
+
+    encodedData += "</";
+    encodedData += groundElementType;
+    encodedData += ">";
+
+    return encodedData;
+}
+
+
+
+
+
+
+
+////////////////////////  Creating MISSION ARCS fragments /////////////////////////////////
 
 
 static QByteArray loiteringFragment(const char* name)
@@ -229,7 +263,9 @@ static QByteArray loiteringFragment(const char* name)
 }
 
 
-static QByteArray reentryFragment(const char* name)//Modified by Dominic to allow dragging of entry Arc
+
+// Re-entry misison arc fragment
+static QByteArray reentryFragment(const char* name) //Modified by Dominic to allow dragging of entry Arc
 {
     ScenarioEntryArcType entry;
 
@@ -253,6 +289,8 @@ static QByteArray reentryFragment(const char* name)//Modified by Dominic to allo
 }
 
 
+
+// Loitering for TLE elemennts fragment
 static QByteArray loiteringTLEFragment(const char* name)
 {
     ScenarioLoiteringTLEType loiteringTLE;
@@ -271,17 +309,15 @@ static QByteArray loiteringTLEFragment(const char* name)
 
 
 
-
+// External trajectories fragments
 static QByteArray externalFragment(const char* name)
 {
     QByteArray data;
 
     data += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-
     data += "<External Name=\"";
     data += name;
     data += "\">";
-
     data +=
     "<Timeline>"
     "  <StartTime>2010-01-01T00:00:00</StartTime>"
@@ -297,79 +333,57 @@ static QByteArray externalFragment(const char* name)
 
 
 
-static QByteArray groundStationFragment(const char* name,
-                                        const char* centralBody,
-                                        double latitude = 0.0,
-                                        double longitude = 0.0,
-                                        double altitude = 0.0)
+////////////////////////  Creating PAYLOADS fragments /////////////////////////////////
+
+//Lines added by Ricardo Noriega. Creates a communication payload fragment representing a single payload
+static QByteArray commsPayloadFragment(const char* name, const char* payloadType)
 {
-    ScenarioGroundStation groundStation;
+    ScenarioCommunicationPayloadType commPayload;
+    ScenarioAntennaType * antenna1 = new ScenarioAntennaType;
 
-    groundStation.setName(name);
-    groundStation.Location()->setCentralBody(centralBody);
+    /*** fill in defaults ***/
+    //if(commPayload.Antenna().length()!=0){
+    //ScenarioAntennaType* antenna = commPayload.Antenna().at(0).data();
 
-    QSharedPointer<ScenarioGroundPositionType> groundPosition(new ScenarioGroundPositionType());
-    groundPosition->setLatitude(latitude);
-    groundPosition->setLongitude(longitude);
-    groundPosition->setAltitude(altitude);
-    groundStation.Location()->setAbstract3DOFPosition(groundPosition);
+    //ScenarioReceiver* receiver = dynamic_cast<ScenarioReceiver*>(antenna);
+
+    antenna1->PointingDirection()->setElevation(sta::Pi()/2);
+    antenna1->PointingDirection()->setAzimuth(0.0);
+    antenna1->EMproperties()->setEfficiency(55.0);
+    //antenna->EMproperties()->setFrequency(14.5);
+
+
+   /*if (dynamic_cast<ScenarioReceiver*>(antenna) != NULL)
+   {
+   // It's a receiver
+   ScenarioReceiver* receiver = dynamic_cast<ScenarioReceiver*>(antenna);
+   // Do something with the receiver
+   receiver->setDepointingLossRx(0);
+   receiver->setFeederLossRx(0);
+   }
+   else if (dynamic_cast<ScenarioTransmitter*>(antenna) != NULL)
+   {
+   // It's a transmitter
+   ScenarioTransmitter* transmitter = dynamic_cast<ScenarioTransmitter*>(antenna);
+   // Do something with the transmitter
+   transmitter->setDepointingLossTx(0);
+   transmitter->setFedderLossTx(0);
+   }*/
+
+
+    commPayload.Antenna().append(QSharedPointer<ScenarioAntennaType>(antenna1));
+    //qDebug()<<commPayload.Antenna().length()<<" length at the very beginning... why it is one?";
 
     QDomDocument doc;
-    return fragmentText(CreateGroundStationElement(&groundStation, doc)).toUtf8();
+    return fragmentText(CreateCommunicationPayloadElement(&commPayload, doc)).toUtf8();
 }
 
 
-// Create a scenario fragment representing a ground element.
-static QByteArray groundElementFragment(const char* name,
-                                        const char* groundElementType,
-                                        const char* centralBody,
-                                        double latitude = 0.0,
-                                        double longitude = 0.0,
-                                        double altitude = 0.0)
-{
-    QByteArray encodedData;
-
-    encodedData +=
-    "<";
-    encodedData += groundElementType;
-    encodedData += " Name=\"";
-    encodedData += name;
-    encodedData += "\">"
-    "<Location>"
-    "<GroundPosition>"
-    "<Latitude>" + QString::number(latitude) + "</Latitude>"
-    "<Longitude>" + QString::number(longitude) + "</Longitude>"
-    "<Altitude>" + QString::number(altitude) + "</Altitude>"
-    "</GroundPosition>";
-    encodedData += "<CentralBody>";
-    encodedData += centralBody;
-    encodedData += "</CentralBody>"
-    "</Location>";
-
-    // Clearing altitude is a required element for launch pads.
-    if (QString(groundElementType) == "LaunchPad")
-    {
-        encodedData += "<LaunchPadClearingAltitude>10</LaunchPadClearingAltitude>";
-    }
-
-    encodedData += "</";
-    encodedData += groundElementType;
-    encodedData += ">";
-
-    return encodedData;
-}
 
 
-// Set the mime type and data for drag and drop
-static void setDragAndDropInfo(QTreeWidgetItem* item,
-                               const QString& mimeType,
-                               const QByteArray& mimeData)
-{
-    item->setData(0, ScenarioFragmentTypeRole, mimeType);
-    item->setData(0, ScenarioFragmentRole, mimeData);
-}
+//////////////////////////// Methods for manipulating pre-created PARTICIPANTS ////////////////////////////////
 
-
+////  Ground stations (ESA, NASA, etc)
 static void
 addGroundStationItem(QTreeWidgetItem* parent,
                      const char* name,
@@ -402,6 +416,10 @@ addESASatelliteItem(QTreeWidgetItem* parent,
 }
 
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////  Creating the palette of the scenario element box ///////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
     QWidget(parent)
@@ -463,13 +481,38 @@ setFont(font);
     m_elementTreeWidget->addTopLevelItem(NASAgroundStationsItem);
 
 
-    /////////// Creating the widgets
+    ///////// Creating now the participants in orden of flight:
+    /////////Launcher, satellite, re-entry, ground station, target, launch pad
+
+    // Diabling the complete function for the time being. Patched by Guillermo
+    //QTreeWidgetItem* launcherItem        = new QTreeWidgetItem(participantsItem);
+    //launcherItem->setText(0, tr("Launcher"));
+    //launcherItem->setIcon(0, QIcon(":/icons/ParticipantROCKET.png"));
+    //setDragAndDropInfo(launcherItem,
+    //                   PARTICIPANT_MIME_TYPE,
+    //                   spaceVehicleFragment("New Launcher", "Launcher"));
+
+
     QTreeWidgetItem* satelliteItem       = new QTreeWidgetItem(participantsItem);
     satelliteItem->setText(0, tr("Satellite"));
     satelliteItem->setIcon(0, QIcon(":/icons/ParticipantSATELLITE.png"));
     setDragAndDropInfo(satelliteItem,
                        PARTICIPANT_MIME_TYPE,
                        spaceVehicleFragment("New Satellite", "Satellite"));
+
+    QTreeWidgetItem* reentryVehicleItem  = new QTreeWidgetItem(participantsItem);
+    reentryVehicleItem->setText(0, tr("Reentry vehicle"));
+    reentryVehicleItem->setIcon(0, QIcon(":/icons/ParticipantENTRYVEHICLE.png"));
+    setDragAndDropInfo(reentryVehicleItem,
+		       PARTICIPANT_MIME_TYPE,
+		       REVFragment("New Reentry Vehicle", "Reentry Vehicle"));
+
+    QTreeWidgetItem* groundStationItem   = new QTreeWidgetItem(participantsItem);
+    groundStationItem->setText(0, tr("Station"));
+    groundStationItem->setIcon(0, QIcon(":/icons/ParticipantSTATION.png"));
+    setDragAndDropInfo(groundStationItem,
+		       PARTICIPANT_MIME_TYPE,
+		       groundElementFragment("New Ground Station", "GroundStation", "Earth"));
 
     QTreeWidgetItem* targetItem          = new QTreeWidgetItem(participantsItem);
     targetItem->setText(0, tr("Point"));
@@ -486,20 +529,9 @@ setFont(font);
     //                   PARTICIPANT_MIME_TYPE,
     //                   groundElementFragment("New Launch Pad", "LaunchPad", "Earth"));
 
-    // Diabling the complete function for the time being. Patched by Guillermo
-    //QTreeWidgetItem* launcherItem        = new QTreeWidgetItem(participantsItem);
-    //launcherItem->setText(0, tr("Launcher"));
-    //launcherItem->setIcon(0, QIcon(":/icons/ParticipantROCKET.png"));
-    //setDragAndDropInfo(launcherItem,
-    //                   PARTICIPANT_MIME_TYPE,
-    //                   spaceVehicleFragment("New Launcher", "Launcher"));
 
-    QTreeWidgetItem* reentryVehicleItem  = new QTreeWidgetItem(participantsItem);
-    reentryVehicleItem->setText(0, tr("Reentry vehicle"));
-    reentryVehicleItem->setIcon(0, QIcon(":/icons/ParticipantENTRYVEHICLE.png"));
-    setDragAndDropInfo(reentryVehicleItem,
-                       PARTICIPANT_MIME_TYPE,
-                       REVFragment("New Reentry Vehicle", "Reentry Vehicle"));
+
+    /////////// Creating the widgets for the different payload: Communications, optical, X-ray, radar, etc
 
     //These lines are added by Ricardo to create the widget of the communication payload
     // Patched by Guillermo to change the icon
@@ -508,14 +540,11 @@ setFont(font);
     communicationPayloadItem->setIcon(0, QIcon(":/icons/ParticipantCOMMUNICATIONS.png"));
     setDragAndDropInfo(communicationPayloadItem,
                        PAYLOAD_MIME_TYPE,
-                       CommPayloadFragment("New Communication Payload", "Comm Payload"));
+		       commsPayloadFragment("New Communication Payload", "Comm Payload"));
 
-    QTreeWidgetItem* groundStationItem   = new QTreeWidgetItem(participantsItem);
-    groundStationItem->setText(0, tr("Station"));
-    groundStationItem->setIcon(0, QIcon(":/icons/ParticipantSTATION.png"));
-    setDragAndDropInfo(groundStationItem,
-                       PARTICIPANT_MIME_TYPE,
-                       groundElementFragment("New Ground Station", "GroundStation", "Earth"));
+
+
+    ///////////////////// Creating now the mission arcs: ascent, loitering, fly-by, re-entry, rendezvous
 
     // Diabling the complete function for the time being. Patched by Guillermo
     //QTreeWidgetItem* ascentItem       = new QTreeWidgetItem(missionArcsItem);
@@ -537,12 +566,32 @@ setFont(font);
 		       MISSION_ARC_MIME_TYPE,
 		       loiteringTLEFragment("LoiteringTLE 1"));
 
+    // Diabling the complete function for the time being. Patched by Guillermo
+    //QTreeWidgetItem* flybyItem        = new QTreeWidgetItem(missionArcsItem);
+    //flybyItem->setText(0, tr("Fly-by"));
+    //flybyItem->setIcon(0, QIcon(":/icons/mission-arcs-flyby.png"));
+    //setDragAndDropInfo(flybyItem,
+    //		       MISSION_ARC_MIME_TYPE,
+    //		       flybyFragment("Fly-by 1"));
+
+
     QTreeWidgetItem* reentryItem      = new QTreeWidgetItem(missionArcsItem);
     reentryItem->setText(0, tr("Entry"));
     reentryItem->setIcon(0, QIcon(":/icons/mission-arcs-reentry.png"));
     setDragAndDropInfo(reentryItem,
                        MISSION_ARC_MIME_TYPE,
                        reentryFragment("ReEntry 1"));
+
+    // Diabling the complete function for the time being. Patched by Guillermo
+    //QTreeWidgetItem* rendezvousItem   = new QTreeWidgetItem(maneuversItem);
+    //rendezvousItem->setText(0, tr("Rendezvous plan"));
+    //rendezvousItem->setIcon(0, QIcon(":/icons/mission-arcs-rendezvous.png"));
+    //setDragAndDropInfo(rendezvousItem,
+    //                   MISSION_ARC_MIME_TYPE,
+    //                   rendezvousFragment("Rendezvous 1"));
+
+
+
 
 #ifdef OLDSCENARIO
     QTreeWidgetItem* externalItem    = new QTreeWidgetItem(missionArcsItem);
@@ -559,14 +608,6 @@ setFont(font);
                        MISSION_ARC_MIME_TYPE,
                        lagrangianFragment("Lagrangian 1"));
 
-    // Diabling the complete function for the time being. Patched by Guillermo
-    //QTreeWidgetItem* flybyItem        = new QTreeWidgetItem(missionArcsItem);
-    //flybyItem->setText(0, tr("Fly-by"));
-    //flybyItem->setIcon(0, QIcon(":/icons/mission-arcs-flyby.png"));
-    //setDragAndDropInfo(flybyItem,
-    //		       MISSION_ARC_MIME_TYPE,
-    //		       flybyFragment("Fly-by 1"));
-
 
 
     QTreeWidgetItem* impulseItem      = new QTreeWidgetItem(maneuversItem);
@@ -577,19 +618,10 @@ setFont(font);
 		       impulseFragment("Single-impulse 1"));
 #endif
 
-
-    // Diabling the complete function for the time being. Patched by Guillermo
-    //QTreeWidgetItem* rendezvousItem   = new QTreeWidgetItem(maneuversItem);
-    //rendezvousItem->setText(0, tr("Rendezvous plan"));
-    //rendezvousItem->setIcon(0, QIcon(":/icons/mission-arcs-rendezvous.png"));
-    //setDragAndDropInfo(rendezvousItem,
-    //                   MISSION_ARC_MIME_TYPE,
-    //                   rendezvousFragment("Rendezvous 1"));
-
+    //////////////// Adding now concrete widgets into the scenario
 
     // Some  ESA Satellites
     addESASatelliteItem(ESASatellitesItem, "Cryosat-2");
-
 
     // The ESTRACK ground stations (LAT, LON, ALT)
     addGroundStationItem(ESAgroundStationsItem, "Cebreros",     "Earth",  40.45268986,  -4.36754881, 794.1);
@@ -605,7 +637,6 @@ setFont(font);
     addGroundStationItem(ESAgroundStationsItem, "Santiago",     "Earth",  -33.151478,    -70.668306,   730.853);
     addGroundStationItem(ESAgroundStationsItem, "Svalbard",     "Earth",   78.229772,    15.407786,   501.3);
     //addGroundStationItem(ESAgroundStationsItem, "Villafranca", "Earth",  40.4455932,   -3.95260078, 664.425);
-
 
     // The NASA ground stations
     addGroundStationItem(NASAgroundStationsItem, "Camberra",	 "Earth", -35.4047,  148.9831, 680.0);

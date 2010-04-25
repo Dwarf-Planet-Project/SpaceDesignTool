@@ -896,6 +896,7 @@ PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
 	double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis*Pi()/180.0;
 	double trueAnomaly    = initialStateKeplerian.TrueAnomaly*Pi()/180.0;
 	double meanAnomaly    = trueAnomalyTOmeanAnomaly(trueAnomaly, e);
+	/*
 	QTextStream out (stdout);
 	out << "sma: " << sma << endl;
 	out << "e: " << e << endl;
@@ -904,14 +905,6 @@ PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
 	out << "argOfPeriapsis: " << argOfPeriapsis << endl;
 	out << "trueAnomaly: " << trueAnomaly << endl;
 	out << "meanAnomaly: " << meanAnomaly << endl;
-
-	/*
-	double sma            = 6378.0+450.1365;
-	double e              = 0.0006;
-	double inclination    = 51.6651*Pi()/180.0;
-	double raan           = 12.4829*Pi()/180.0;
-	double argOfPeriapsis = 45.0278*Pi()/180.0;
-	double meanAnomaly    = trueAnomalyTOmeanAnomaly(87.3523*Pi()/180.0, e);
 	*/
 
 	// Next lines patched by Guillermo on April 23 2010 to speed up calculations outside the for loop
@@ -940,9 +933,11 @@ PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
             meanAnomaly    = meanAnomalyUpdated;
             raan           = raanUpdated;
 
+	    /*
 	    out << "argOfPeriapsis: " << argOfPeriapsis << endl;
 	    out << "meanAnomaly: " << meanAnomaly << endl;
 	    out << "raan: " << raan << endl;
+	    */
 
             // Append a trajectory sample every outputRate integration steps (and
             // always at the last step.)

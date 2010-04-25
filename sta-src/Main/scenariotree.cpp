@@ -229,7 +229,7 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
     }
     else if (trajectory && elementName != "tns:EntryArc") //Modified by Dominic to avoid dragging entry trajectory into SC Trajectory Plan
     {
-        qDebug() << "Dropping trajectory";
+	//qDebug() << "Dropping trajectory";
         ScenarioObject* parentObject = objectForItem(parent);
         ScenarioTrajectoryPlan* trajectoryPlan = dynamic_cast<ScenarioTrajectoryPlan*>(parentObject);
         if (trajectoryPlan)
