@@ -96,5 +96,7 @@
         <file>ParticipantROCKET.png</file>
         <file>ParticipantPOINT.png</file>
         <file>ParticipantCOMMUNICATIONS.png</file>
+        <file>ParticipantTELESCOPE.png</file>
+        <file>ParticipantRADAR.png</file>
     </qresource>
 </RCC>

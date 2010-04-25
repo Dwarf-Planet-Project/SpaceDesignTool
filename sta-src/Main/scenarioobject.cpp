@@ -1,23 +1,25 @@
-/* 
+/*
  This program is free software; you can redistribute it and/or modify it under
- the terms of the GNU Lesser General Public License as published by the Free Software
- Foundation; either version 2 of the License, or (at your option) any later
- version.
- 
+ the terms of the European Union Public Licence - EUPL v.1.1 as published by
+ the European Commission.
+
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- details.
- 
- You should have received a copy of the GNU Lesser General Public License along with
- this program; if not, write to the Free Software Foundation, Inc., 59 Temple
- Place - Suite 330, Boston, MA 02111-1307, USA.
- Further information about the GNU Lesser General Public License can also be found on
- the world wide web at http://www.gnu.org. 
+ FOR A PARTICULAR PURPOSE. See the European Union Public Licence - EUPL v.1.1
+ for more details.
+
+ You should have received a copy of the European Union Public Licence - EUPL v.1.1
+ along with this program.
+
+ Further information about the European Union Public Licence - EUPL v.1.1 can
+ also be found on the world wide web at http://ec.europa.eu/idabc/eupl
  */
 
 /*
- ------ Copyright (C) 2008 European Space Agency (space.trajectory.analysis AT gmail.com) ----
+ ------ Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
+ */
+
+/*
  ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
  Extensively patched by Guillermo to include new elemets like payload, etc.
@@ -103,6 +105,8 @@ QTreeWidgetItem* ScenarioObject::createItemSelf(QTreeWidgetItem* parent)
 void ScenarioObject::createItemContents(QTreeWidgetItem* /* item */)
 {
 }
+
+
 
 
 /*** SpaceScenario ***/
@@ -884,6 +888,55 @@ SpaceScenarioReader::readReentryVehicle()
     skipUnknownElement();
     return new ScenarioReentryVehicle();
 }
+
+
+
+// Patched by Guillermo to introduce the payloads
+ScenarioPayload*
+SpaceScenarioReader::readPayload()
+{
+    ScenarioPayload* payloadPlan = new ScenarioPayload();
+
+    while (!atEnd())
+    {
+	readNext();
+	if (isEndElement())
+	    break;
+
+	if (isStartElement())
+	{
+	    if (name() == "Payload")
+	    {
+		ScenarioTrajectory* trajectory = readTrajectory();
+		if (trajectory != NULL)
+		{
+		    trajectoryPlan->addTrajectory(trajectory);
+		}
+		else
+		{
+		    // Otherwise an error must have occurred
+		}
+	    }
+	    else
+	    {
+		raiseError(QObject::tr("Unknown element in payload plan: '%1'").arg(name().toString()));
+	    }
+	}
+    }
+
+    if (hasError())
+    {
+	delete trajectoryPlan;
+	trajectoryPlan = NULL;
+    }
+
+    return trajectoryPlan;
+}
+
+
+
+
+
 
 
 ScenarioTrajectoryPlan*

@@ -1,27 +1,30 @@
-/* 
+/*
  This program is free software; you can redistribute it and/or modify it under
- the terms of the GNU Lesser General Public License as published by the Free Software
- Foundation; either version 2 of the License, or (at your option) any later
- version.
- 
+ the terms of the European Union Public Licence - EUPL v.1.1 as published by
+ the European Commission.
+
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- details.
- 
- You should have received a copy of the GNU Lesser General Public License along with
- this program; if not, write to the Free Software Foundation, Inc., 59 Temple
- Place - Suite 330, Boston, MA 02111-1307, USA.
- Further information about the GNU Lesser General Public License can also be found on
- the world wide web at http://www.gnu.org. 
+ FOR A PARTICULAR PURPOSE. See the European Union Public Licence - EUPL v.1.1
+ for more details.
+
+ You should have received a copy of the European Union Public Licence - EUPL v.1.1
+ along with this program.
+
+ Further information about the European Union Public Licence - EUPL v.1.1 can
+ also be found on the world wide web at http://ec.europa.eu/idabc/eupl
  */
 
 /*
- ------ Copyright (C) 2008 European Space Agency (space.trajectory.analysis AT gmail.com) ----
+ ------ Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
+
+ */
+/*
  ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
-  Modified by Valentino Zuccarelli on 14th June 2009
+ Modified by Valentino Zuccarelli on 14th June 2009
  Extentive modified by Guillermo to hold TLEs on October 2009
+ Extentive modified by Guillermo to accomodate payloads April 2010
  */
 
 
@@ -42,8 +45,13 @@
 #include "physicalproperties.h"
 #include "aerodynamicproperties.h"
 #include "propulsionproperties.h"
-#include "payloadproperties.h"
-#include "Coverage/maincoveragegui.h"
+//#include "payloadproperties.h"
+//#include "Coverage/maincoveragegui.h"
+#include "Payloads/commsPayloadDialog.h"
+#include "Payloads/opticalPayloadDialog.h"
+#include "Payloads/radarPayloadDialog.h"
+
+
 #include <QtGui>
 #include <iostream>
 
@@ -107,7 +115,10 @@ ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioOb
 
     // Allow dropping into scenarios and trajectory plans (and nothing else for now)
     if (dynamic_cast<SpaceScenario*>(scenarioObject) ||
-        dynamic_cast<ScenarioTrajectoryPlan*>(scenarioObject) || dynamic_cast<ScenarioPayload*>(scenarioObject) || dynamic_cast<ScenarioGroundStation*>(scenarioObject) || dynamic_cast<ScenarioREVTrajectoryPlanType*>(scenarioObject))//Modified by Dominic and Ricardo Noriega to allow dropping of EntryArc and Payloads over SC and GS
+	dynamic_cast<ScenarioTrajectoryPlan*>(scenarioObject) ||
+	dynamic_cast<ScenarioPayloadPlan*>(scenarioObject) ||  // Patched by Guillermo to allow drops into Payload plan
+	dynamic_cast<ScenarioGroundStation*>(scenarioObject) ||
+	dynamic_cast<ScenarioREVTrajectoryPlanType*>(scenarioObject))  //Modified by Dominic and Ricardo Noriega to allow dropping of EntryArc and Payloads over SC and GS
     {
         item->setFlags(item->flags() | Qt::ItemIsDropEnabled);
     }
@@ -191,8 +202,12 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
     else if (elementName == "tns:REV")
         participant = ScenarioREV::create(element);
 
-    if (elementName == "tns:CommunicationPayload")
-        payload = ScenarioCommunicationPayloadType::create(element); //Ricardo edit this line to let the CommPayload element to be added to the scenario
+    if (elementName == "tns:CommsPayload")
+	payload = ScenarioCommsPayloadType::create(element); //Ricardo edit this line to let the CommPayload element to be added to the scenario
+    if (elementName == "tns:OpticalPayload")
+	payload = ScenarioOpticalPayloadType::create(element);  // Guillermo: optical
+    if (elementName == "tns:RadarPayload")
+	payload = ScenarioRadarPayloadType::create(element); // Guillermo radar
 
     if (elementName == "tns:Loitering")
         trajectory = ScenarioLoiteringType::create(element);
@@ -266,7 +281,7 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
     {
         //qDebug() << "Dropping payload";
         ScenarioObject* parentObject = objectForItem(parent);
-        ScenarioPayload* scPayload = dynamic_cast<ScenarioPayload*>(parentObject);
+	ScenarioPayloadPlan* scPayload = dynamic_cast<ScenarioPayloadPlan*>(parentObject);
         if (scPayload) //if the draggable element is over the payload of the spacecraft, the comm payload could be attached
         {
             scPayload->AbstractPayload().append(QSharedPointer<ScenarioAbstractPayloadType>(payload));
@@ -385,7 +400,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
 
     if (dynamic_cast<ScenarioLoiteringType*>(scenarioObject) != NULL)
     {
-        Lagrmode=-1;
+	Lagrmode=-1;    // Guillermo: to remove this from here !!!!!!!!!!!!
         ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(scenarioObject);
         LoiteringDialog editDialog(this);
         if (!editDialog.loadValues(loitering))
@@ -420,8 +435,6 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             }
         }
     }
-
-
     else if (dynamic_cast<ScenarioLocationType*>(scenarioObject) != NULL)
     {
         ScenarioLocationType* location = dynamic_cast<ScenarioLocationType*>(scenarioObject);
@@ -433,13 +446,13 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             updateTreeItems(editItem, scenarioObject);
         }
     }
-    else if (dynamic_cast<ScenarioPayload*>(scenarioObject) != NULL)
+    else if (dynamic_cast<ScenarioCommsPayloadType*>(scenarioObject) != NULL)   // Guillermo: patching Ricardo's code
     {
-        ScenarioPayload* payload = dynamic_cast<ScenarioPayload*>(scenarioObject);
-        PayloadPropertiesDialog editDialog(this);
+	ScenarioCommsPayloadType* payload = dynamic_cast<ScenarioCommsPayloadType*>(scenarioObject);
+	commsPayloadDialog editDialog(this);
         if (!editDialog.loadValues(payload))
         {
-            QMessageBox::information(this, tr("Bad Payload element"), tr("Error in Payload element"));
+	    QMessageBox::information(this, tr("Bad Communications Payload element"), tr("Error in Communications Payload element"));
         }
 
         else
@@ -452,32 +465,44 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
         }
 
     }
-
-    //These lines were added by Ricardo Noriega in order to open the GUI from a Comm Payload element. It opens the Main Coverage GUI.
-    else if (dynamic_cast<ScenarioCommunicationPayloadType*>(scenarioObject) != NULL)
+    else if (dynamic_cast<ScenarioOpticalPayloadType*>(scenarioObject) != NULL)   // Guillermo: patching Ricardo's code
     {
-        ScenarioCommunicationPayloadType* commPayload = dynamic_cast<ScenarioCommunicationPayloadType*>(scenarioObject);
-        MainCoverageGUI editDialog(this);
-        qDebug()<<commPayload->Antenna().length()<<" length";
-        if (!editDialog.loadValues(commPayload))
-        {
-            QMessageBox::information(this, tr("Bad Payload element"), tr("Error in Payload element"));
-        }
+	ScenarioOpticalPayloadType* payload = dynamic_cast<ScenarioOpticalPayloadType*>(scenarioObject);
+	opticalPayloadDialog editDialog(this);
+	if (!editDialog.loadValues(payload))
+	{
+	    QMessageBox::information(this, tr("Bad Optical Payload element"), tr("Error in Optical Payload element"));
+	}
 
-        else
-        {
-            if (editDialog.exec() == QDialog::Accepted)
-            {
-                editDialog.saveValues(commPayload);
-                updateTreeItems(editItem, scenarioObject);
-            }
-        }
+	else
+	{
+	    if (editDialog.exec() == QDialog::Accepted)
+	    {
+		editDialog.saveValues(payload);
+		updateTreeItems(editItem, scenarioObject);
+	    }
+	}
 
     }
+    else if (dynamic_cast<ScenarioRadarPayloadType*>(scenarioObject) != NULL)   // Guillermo: patching Ricardo's code
+    {
+	ScenarioRadarPayloadType* payload = dynamic_cast<ScenarioRadarPayloadType*>(scenarioObject);
+	radarPayloadDialog editDialog(this);
+	if (!editDialog.loadValues(payload))
+	{
+	    QMessageBox::information(this, tr("Bad Radar Payload element"), tr("Error in Radar Payload element"));
+	}
 
+	else
+	{
+	    if (editDialog.exec() == QDialog::Accepted)
+	    {
+		editDialog.saveValues(payload);
+		updateTreeItems(editItem, scenarioObject);
+	    }
+	}
 
-
-
+    }
     else if(dynamic_cast<ScenarioEntryArcType*>(scenarioObject) != NULL)//Added by Dominic to allow opening of re-entry GUI
     {
         ScenarioEntryArcType* entry = dynamic_cast<ScenarioEntryArcType*>(scenarioObject);
@@ -754,6 +779,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
         }
     }
 
+    /*
     else if (dynamic_cast<ScenarioPayloadProperties*>(scenarioObject) != NULL)
     {
         ScenarioPayloadProperties* payloadProperties = dynamic_cast<ScenarioPayloadProperties*>(scenarioObject);
@@ -771,6 +797,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             }
         }
     }
+    */
 
     else if (dynamic_cast<ScenarioReEntryTrajectory*>(scenarioObject) != NULL)
     {

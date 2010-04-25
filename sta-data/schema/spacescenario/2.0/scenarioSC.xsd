@@ -23,30 +23,44 @@
 	<element name="SCProgram">
 		<complexType>
 			<sequence>
-            </sequence>
-        </complexType>
-    </element>
-
-    <element name="SCMission">
-      <complexType>
-        <sequence>
-		  <element name="Payload">
-			<complexType>
-			  <sequence>
-				<element ref="tns:AbstractPayload" maxOccurs="unbounded"></element>
-			  </sequence>
-			</complexType>
-		  </element>
-		  <element name="TrajectoryPlan">
-			<complexType>
-			  <sequence>
-				<element ref="tns:AbstractTrajectory" maxOccurs="unbounded"></element>
-			  </sequence>
-			</complexType>
-		  </element>
-		</sequence>
-	  </complexType>
+			</sequence>
+		</complexType>
 	</element>
+
+	<element name="SCMission">
+		<complexType>
+			<sequence>
+				<element name="TrajectoryPlan">
+					<complexType>
+						<sequence>
+							<element ref="tns:AbstractTrajectory" maxOccurs="unbounded"></element>
+						</sequence>
+					</complexType>
+				</element>
+				<element name="PayloadPlan">
+					<complexType>
+						<sequence>
+							<element ref="tns:AbstractPayload" maxOccurs="unbounded"></element>
+						</sequence>
+					</complexType>
+				</element>
+
+			</sequence>
+		</complexType>
+	</element>
+
+
+	<!-- Payloads -->
+
+	<element name="CommsPayload" substitutionGroup="tns:AbstractPayload"
+		type="tns:CommsPayloadType"></element>
+
+	<element name="OpticalPayload" substitutionGroup="tns:AbstractPayload"
+		type="tns:OpticalPayloadType"></element>
+
+	<element name="RadarPayload" substitutionGroup="tns:AbstractPayload"
+		type="tns:RadarPayloadType"></element>
+
 
 	<!-- Trajectories -->
 
@@ -62,70 +76,70 @@
 		type="tns:LoiteringTLEType"></element>
 
 	<complexType name="SCEnvironmentType">
-	  <complexContent>
-		<extension base="tns:EnvironmentType">
-		  <sequence>
-			<element name="perturbingBody" type="tns:ListOfString"></element>
-			<element name="atmosphericDrag" type="boolean"></element>
-			<element name="solarPressure" type="boolean"></element>
-		  </sequence>
-		</extension>
-	  </complexContent>
+		<complexContent>
+			<extension base="tns:EnvironmentType">
+				<sequence>
+					<element name="perturbingBody" type="tns:ListOfString"></element>
+					<element name="atmosphericDrag" type="boolean"></element>
+					<element name="solarPressure" type="boolean"></element>
+				</sequence>
+			</extension>
+		</complexContent>
 	</complexType>
 
 	<complexType name="LoiteringType">
-      <complexContent>
-        <extension base="tns:AbstractTrajectoryType">
-		  <sequence>
-			<element name="Environment" type="tns:SCEnvironmentType"></element>
-			<element ref="tns:TimeLine"></element>
-			<element ref="tns:InitialPosition"/>
-			<element ref="tns:InitialAttitude"/>
-			<element ref="tns:PropagationPosition"/>
-			<element ref="tns:PropagationAttitude"/>
-		  </sequence>
-        </extension>
-      </complexContent>
+		<complexContent>
+			<extension base="tns:AbstractTrajectoryType">
+				<sequence>
+					<element name="Environment" type="tns:SCEnvironmentType"></element>
+					<element ref="tns:TimeLine"></element>
+					<element ref="tns:InitialPosition" />
+					<element ref="tns:InitialAttitude" />
+					<element ref="tns:PropagationPosition" />
+					<element ref="tns:PropagationAttitude" />
+				</sequence>
+			</extension>
+		</complexContent>
 	</complexType>
 
 	<complexType name="RendezvousType">
-      <complexContent>
-        <extension base="tns:AbstractTrajectoryType">
-		  <sequence>
-			<element name="Environment" type="tns:SCEnvironmentType"></element>
-			<element name="Parameters">
-			  <complexType>
+		<complexContent>
+			<extension base="tns:AbstractTrajectoryType">
 				<sequence>
-				  <element ref="tns:TimeLine"/>
-			      <element ref="tns:InitialPosition"/>
+					<element name="Environment" type="tns:SCEnvironmentType"></element>
+					<element name="Parameters">
+						<complexType>
+							<sequence>
+								<element ref="tns:TimeLine" />
+								<element ref="tns:InitialPosition" />
+							</sequence>
+						</complexType>
+					</element>
+					<element name="Target" type="string"></element>
+					<element name="ManoeuvrePlan">
+						<complexType>
+							<sequence>
+								<element ref="tns:AbstractManoeuvre" minOccurs="0"
+									maxOccurs="unbounded"></element>
+							</sequence>
+						</complexType>
+					</element>
 				</sequence>
-			  </complexType>
-			</element>
-			<element name="Target" type="string"></element>
-			<element name="ManoeuvrePlan">
-			  <complexType>
-				<sequence>
-				  <element ref="tns:AbstractManoeuvre" minOccurs="0"
-						   maxOccurs="unbounded"></element>
-				</sequence>
-			  </complexType>
-			</element>
-		  </sequence>
-        </extension>
-      </complexContent>
+			</extension>
+		</complexContent>
 	</complexType>
 
 	<complexType name="LoiteringTLEType">
-      <complexContent>
-        <extension base="tns:AbstractTrajectoryType">
-		  <sequence>
-			<element ref="tns:TimeLine"></element>
-			<element name="tleLine0" type="string"></element>
-			<element name="tleLine1" type="string"></element>
-			<element name="tleLine2" type="string"></element>
-		  </sequence>
-        </extension>
-      </complexContent>
+		<complexContent>
+			<extension base="tns:AbstractTrajectoryType">
+				<sequence>
+					<element ref="tns:TimeLine"></element>
+					<element name="tleLine0" type="string"></element>
+					<element name="tleLine1" type="string"></element>
+					<element name="tleLine2" type="string"></element>
+				</sequence>
+			</extension>
+		</complexContent>
 	</complexType>
 
 	<element name="AbstractManoeuvre" abstract="true" type="tns:ManoeuvreType"></element>
@@ -233,231 +247,263 @@
 	</complexType>
 
 	<complexType name="LagrangianType">
-      <complexContent>
-        <extension base="tns:AbstractTrajectoryType">
-          <sequence/>
-        </extension>
-      </complexContent>
-    </complexType>
+		<complexContent>
+			<extension base="tns:AbstractTrajectoryType">
+				<sequence />
+			</extension>
+		</complexContent>
+	</complexType>
 
 	<complexType name="FlyByType">
-      <complexContent>
-        <extension base="tns:AbstractTrajectoryType">
-          <sequence/>
-        </extension>
-      </complexContent>
-    </complexType>
+		<complexContent>
+			<extension base="tns:AbstractTrajectoryType">
+				<sequence />
+			</extension>
+		</complexContent>
+	</complexType>
 
 	<complexType name="SCSystemType">
-	  <sequence>
-		<element name="SystemBudgets">
-		  <complexType>
-			<sequence>
-			  <element name="Mass">
+		<sequence>
+			<element name="SystemBudgets">
 				<complexType>
-				  <sequence>
-					<element name="dryMass" type="double"></element>
-					<element name="wetMass" type="double"></element>
-				  </sequence>
+					<sequence>
+						<element name="MassOfSystem">
+							<complexType>
+								<sequence>
+									<element name="dryMass" type="double"></element>
+									<element name="wetMass" type="double"></element>
+								</sequence>
+							</complexType>
+						</element>
+						<element name="PowerOfSystem">
+							<complexType>
+								<sequence>
+									<element name="totalPowerBoL" type="double"></element>
+									<element name="totalPowerEoL" type="double"></element>
+								</sequence>
+							</complexType>
+						</element>
+						<element name="Link">
+							<complexType>
+								<sequence>
+									<element name="uplinkMargin" type="double"></element>
+									<element name="downlinkMargin" type="double"></element>
+								</sequence>
+							</complexType>
+						</element>
+					</sequence>
 				</complexType>
-			  </element>
-			  <element name="Power">
+			</element>
+			<element name="SCAerodynamics">
 				<complexType>
-				  <sequence>
-					<element name="totalPowerBoL" type="double"></element>
-					<element name="totalPowerEoL" type="double"></element>
-				  </sequence>
+					<sequence>
+						<element name="surfaceArea" type="double"></element>
+						<element name="Cd" type="double"></element>
+					</sequence>
 				</complexType>
-			  </element>
-			  <element name="Link">
+			</element>
+			<element name="Propulsion">
 				<complexType>
-				  <sequence>
-					<element name="uplinkMargin" type="double"></element>
-					<element name="downlinkMargin" type="double"></element>
-				  </sequence>
+					<sequence>
+						<element name="numberOfEngines" type="int"></element>
+						<element name="thrustPerEngine" type="double"></element>
+						<element name="specificImpulse" type="double"></element>
+						<element name="propellantMass" type="double"></element>
+						<element name="totalPropulsionDryMass" type="double"></element>
+					</sequence>
+					<attribute name="type" type="string"></attribute>
 				</complexType>
-			  </element>
-			</sequence>
-		  </complexType>
-		</element>
-		<element name="SCAerodynamics">
-		  <complexType>
-			<sequence>
-			  <element name="surfaceArea" type="double"></element>
-			  <element name="Cd" type="double"></element>
-			</sequence>
-		  </complexType>
-		</element>
-		<element name="Propulsion">
-		  <complexType>
-			<sequence>
-			  <element name="numberOfEngines" type="int"></element>
-			  <element name="thrustPerEngine" type="double"></element>
-			  <element name="specificImpulse" type="double"></element>
-			  <element name="propellantMass" type="double"></element>
-			  <element name="totalPropulsionDryMass" type="double"></element>
-			</sequence>
-			<attribute name="type" type="string"></attribute>
-		  </complexType>
-		</element>
-		<element name="Structure">
-		  <complexType>
-			<sequence>
-			  <element name="StructuralShape" type="string"></element>
-			  <element name="Sizing">
-			  	<complexType>
-			  		<sequence>
-			  			<element name="volume" type="double"></element>
-						<element name="width" type="double"></element>
-						<element name="length" type="double"></element>
-						<element name="height" type="double"></element> 
-			  		</sequence>
-			  	</complexType>
-			  </element>
-			  <element name="MomentsOfInertia">
-			  	<complexType>
-			  		<sequence>
-			  			<element name="xAxis" type="double"></element>
-						<element name="yAxis" type="double"></element>
-						<element name="zAxis" type="double"></element>
-			  		</sequence>
-			  	</complexType>
-			  </element>
-			  <element name="SecondMomentsOfArea">
-			  	<complexType>
-			  		<sequence>
-			  			<element name="xAxis" type="double"></element>
-						<element name="yAxis" type="double"></element>
-						<element name="zAxis" type="double"></element>
-			  		</sequence>
-			  	</complexType>
-			  </element>
-			  <element name="NaturalFrequency">
-			  	<complexType>
-			  		<sequence>
-			  			<element name="axialFrequency" type="double"></element>
-						<element name="lateralFrequency" type="double"></element>
-			  		</sequence>
-			  	</complexType>
-			  </element>
-			  <element name="totalStructureMass" type="double"></element>
-			</sequence>
-		  </complexType>
-		</element>
-		<element name="TCS"> <!-- Thermal Control System -->
-		  <complexType>
-			<sequence>
-			  <element name="Temperature">
-			  	<complexType>
-			  		<sequence>
-			  			<element name="maximumSCTemperature" type="double"></element>
-			  			<element name="minimumSCTemperature" type="double"></element>
-			  		</sequence>
-			  	</complexType>
-			  </element>
-			  <element name="heaterPower" type="double"></element>
-			  <element name="radiatedPower" type="double"></element>
-			  <element name="CoatingArea">
-			  	<complexType>
-			  		<sequence>
-			  			<element name="ColdSurface">
-			  				<complexType>
-			  					<sequence>
-			  						<element name="ColdCoating">
-			  							<complexType>
-			  								<sequence>
-			  									<element name="emissivity" type="double"></element>
-			  									<element name="absorptivity" type="double"></element>
-			  								</sequence>
-			  							</complexType>
-			  						</element>
-			  						<element name="totalColdArea" type="double"></element>
-			  					</sequence>
-			  				</complexType>
-			  			</element>
-			  			<element name="HotSurface">
-			  				<complexType>
-			  					<sequence>
-			  						<element name="HotCoating">
-			  							<complexType>
-			  								<sequence>
-			  									<element name="emissivity" type="double"></element>
-			  									<element name="absorptivity" type="double"></element>
-			  								</sequence>
-			  							</complexType>
-			  						</element>
-			  						<element name="totalHotArea" type="double"></element>
-			  					</sequence>
-			  				</complexType>
-			  			</element>
-			  		</sequence>
-			  	</complexType>
-			  </element>
-			  <element name="totalTCSMass" type="double"></element>
-			</sequence>
-		  </complexType>
-		</element>
-		<element name="EPS"> <!-- Electrical and Power System -->
-		  <complexType>
-			<sequence>
-			  <element name="SolarArray">
-			  	<complexType>
-			  		<sequence>
-			  			<element name="SACellType" type="string"></element>
-			  			<element name="massOfSolarArray" type="double"></element>
-			  			<element name="areaOfSolarArray" type="double"></element>
-			  		</sequence>
-			  	</complexType>
-			  </element>
-			  <element name="BatteryType">
-			  	<complexType>
-			  		<sequence>
-			  			<element name="BatteryType" type="string"></element>
-			  			<element name="totalMassOfBatteries" type="double"></element>
-			  			<element name="numberOfBatteries" type="double"></element>
-			  			<element name="totalVolumeOfBatteries" type="double"></element>
-			  		</sequence>
-			  	</complexType>
-			  </element>
-			  <element name="massOfPCU" type="double"></element>
-			  <element name="totalEPSMass" type="double"></element>
-			</sequence>
-		  </complexType>
-		</element>
-		<element name="TTC"> <!-- Telemetry Tracking and Coommunications-->
-		  <complexType>
-			<sequence>
-			  <element name="totalTTCMass" type="double"></element>
-			  <element name="TTCAntenna">
-			  	<complexType>
-			  		<sequence>
-			  			<element name="TransmitterPower" type="double"></element>
-			  			<element name="TransmitterFrequency" type="double"></element>
-			  			<element name="TransmitterGain" type="double"></element>
-			  			<element name="LinkDuration" type="double"></element>
-			  			<element name="DataRate" type="double"></element>
-			  		</sequence>
-			  	</complexType>
-			  	</element>
-			</sequence>
-		  </complexType>
-		</element>
-		<element name="AOCS"> <!-- Attitude and Orbital Control System -->
-		  <complexType>
-			<sequence>
-			  <element name="totalAOCSMass" type="double"></element>
-			</sequence>
-		  </complexType>
-		</element>
-		<element name="OBDH"> <!-- On Board Data Handling -->
-		  <complexType>
-			<sequence>
-			  <element name="totalOBDHMass" type="double"></element>
-			  <element name="totalSizeOfMemory" type="double"></element>
-			</sequence>
-		  </complexType>
-		</element>
-	  </sequence>
+			</element>
+			<element name="Structure">
+				<complexType>
+					<sequence>
+						<element name="StructuralShape" type="string"></element>
+						<element name="Sizing">
+							<complexType>
+								<sequence>
+									<element name="volume" type="double"></element>
+									<element name="width" type="double"></element>
+									<element name="length" type="double"></element>
+									<element name="height" type="double"></element>
+								</sequence>
+							</complexType>
+						</element>
+						<element name="MomentsOfInertia">
+							<complexType>
+								<sequence>
+									<element name="xAxis" type="double"></element>
+									<element name="yAxis" type="double"></element>
+									<element name="zAxis" type="double"></element>
+								</sequence>
+							</complexType>
+						</element>
+						<element name="SecondMomentsOfArea">
+							<complexType>
+								<sequence>
+									<element name="xAxis" type="double"></element>
+									<element name="yAxis" type="double"></element>
+									<element name="zAxis" type="double"></element>
+								</sequence>
+							</complexType>
+						</element>
+						<element name="NaturalFrequency">
+							<complexType>
+								<sequence>
+									<element name="axialFrequency" type="double"></element>
+									<element name="lateralFrequency" type="double"></element>
+								</sequence>
+							</complexType>
+						</element>
+						<element name="totalStructureMass" type="double"></element>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="TCS"> <!-- Thermal Control System -->
+				<complexType>
+					<sequence>
+						<element name="Temperature">
+							<complexType>
+								<sequence>
+									<element name="maximumSCTemperature" type="double"></element>
+									<element name="minimumSCTemperature" type="double"></element>
+								</sequence>
+							</complexType>
+						</element>
+						<element name="heaterPower" type="double"></element>
+						<element name="radiatedPower" type="double"></element>
+						<element name="CoatingArea">
+							<complexType>
+								<sequence>
+									<element name="ColdSurface">
+										<complexType>
+											<sequence>
+												<element name="ColdCoating">
+													<complexType>
+														<sequence>
+															<element name="emissivity" type="double"></element>
+															<element name="absorptivity" type="double"></element>
+														</sequence>
+													</complexType>
+												</element>
+												<element name="totalColdArea" type="double"></element>
+											</sequence>
+										</complexType>
+									</element>
+									<element name="HotSurface">
+										<complexType>
+											<sequence>
+												<element name="HotCoating">
+													<complexType>
+														<sequence>
+															<element name="emissivity" type="double"></element>
+															<element name="absorptivity" type="double"></element>
+														</sequence>
+													</complexType>
+												</element>
+												<element name="totalHotArea" type="double"></element>
+											</sequence>
+										</complexType>
+									</element>
+								</sequence>
+							</complexType>
+						</element>
+						<element name="totalTCSMass" type="double"></element>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="EPS"> <!-- Electrical and Power System -->
+				<complexType>
+					<sequence>
+						<element name="SolarArray">
+							<complexType>
+								<sequence>
+									<element name="SACellType" type="string"></element>
+									<element name="massOfSolarArray" type="double"></element>
+									<element name="areaOfSolarArray" type="double"></element>
+								</sequence>
+							</complexType>
+						</element>
+						<element name="BatteryType">
+							<complexType>
+								<sequence>
+									<element name="BatteryType" type="string"></element>
+									<element name="totalMassOfBatteries" type="double"></element>
+									<element name="numberOfBatteries" type="double"></element>
+									<element name="totalVolumeOfBatteries" type="double"></element>
+								</sequence>
+							</complexType>
+						</element>
+						<element name="massOfPCU" type="double"></element>
+						<element name="totalEPSMass" type="double"></element>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="TTC"> <!-- Telemetry Tracking and Coommunications-->
+				<complexType>
+					<sequence>
+						<element name="totalTTCMass" type="double"></element>
+						<element name="TTCAntenna">
+							<complexType>
+								<sequence>
+									<element name="TransmitterPower" type="double"></element>
+									<element name="TransmitterFrequency" type="double"></element>
+									<element name="TransmitterGain" type="double"></element>
+									<element name="LinkDuration" type="double"></element>
+									<element name="DataRate" type="double"></element>
+								</sequence>
+							</complexType>
+						</element>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="AOCS"> <!-- Attitude and Orbital Control System -->
+				<complexType>
+					<sequence>
+						<element name="totalAOCSMass" type="double"></element>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="OBDH"> <!-- On Board Data Handling -->
+				<complexType>
+					<sequence>
+						<element name="totalOBDHMass" type="double"></element>
+						<element name="totalSizeOfMemory" type="double"></element>
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
 	</complexType>
+
+
+	<complexType name="CommsPayloadType">
+		<complexContent>
+			<extension base="tns:AbstractPayloadType">
+				<sequence>
+					<element ref="tns:Transmitter"></element>
+					<element ref="tns:Receiver"></element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="OpticalPayloadType">
+		<complexContent>
+			<extension base="tns:AbstractPayloadType">
+				<sequence>
+					<element ref="tns:Telescope"></element>
+				</sequence>
+			</extension>
+	</complexContent></complexType>
+
+	<complexType name="RadarPayloadType">
+		<complexContent>
+			<extension base="tns:AbstractPayloadType">
+				<sequence>
+					<element ref="tns:Radar"></element>
+				</sequence>
+			</extension>
+	</complexContent></complexType>
+
+
 
 </schema>

@@ -38,7 +38,7 @@
 #include <QMimeData>
 #include <QTextStream>
 #include <QtDebug>
-#include "Coverage/maincoveragegui.h"
+//#include "Coverage/maincoveragegui.h"
 
 
 static const QString SCENARIO_MIME_TYPE("application/sta.scenario.xml");
@@ -335,55 +335,40 @@ static QByteArray externalFragment(const char* name)
 
 ////////////////////////  Creating PAYLOADS fragments /////////////////////////////////
 
-//Lines added by Ricardo Noriega. Creates a communication payload fragment representing a single payload
-static QByteArray commsPayloadFragment(const char* name, const char* payloadType)
+// Guillermo patching the lines added by Ricardo Noriega. Creates a communication payload fragment representing a single payload
+static QByteArray commsPayloadFragment(const char* name)
 {
-    ScenarioCommunicationPayloadType commPayload;
-    ScenarioAntennaType * antenna1 = new ScenarioAntennaType;
-
-    /*** fill in defaults ***/
-    //if(commPayload.Antenna().length()!=0){
-    //ScenarioAntennaType* antenna = commPayload.Antenna().at(0).data();
-
-    //ScenarioReceiver* receiver = dynamic_cast<ScenarioReceiver*>(antenna);
-
-    antenna1->PointingDirection()->setElevation(sta::Pi()/2);
-    antenna1->PointingDirection()->setAzimuth(0.0);
-    antenna1->EMproperties()->setEfficiency(55.0);
-    //antenna->EMproperties()->setFrequency(14.5);
-
-
-   /*if (dynamic_cast<ScenarioReceiver*>(antenna) != NULL)
-   {
-   // It's a receiver
-   ScenarioReceiver* receiver = dynamic_cast<ScenarioReceiver*>(antenna);
-   // Do something with the receiver
-   receiver->setDepointingLossRx(0);
-   receiver->setFeederLossRx(0);
-   }
-   else if (dynamic_cast<ScenarioTransmitter*>(antenna) != NULL)
-   {
-   // It's a transmitter
-   ScenarioTransmitter* transmitter = dynamic_cast<ScenarioTransmitter*>(antenna);
-   // Do something with the transmitter
-   transmitter->setDepointingLossTx(0);
-   transmitter->setFedderLossTx(0);
-   }*/
-
-
-    commPayload.Antenna().append(QSharedPointer<ScenarioAntennaType>(antenna1));
-    //qDebug()<<commPayload.Antenna().length()<<" length at the very beginning... why it is one?";
+    ScenarioCommsPayloadType commPayload;
 
     QDomDocument doc;
-    return fragmentText(CreateCommunicationPayloadElement(&commPayload, doc)).toUtf8();
+    return fragmentText(CreateCommsPayloadElement(&commPayload, doc)).toUtf8();
 }
 
+
+
+// Guillermo on optical payloads
+static QByteArray opticalPayloadFragment(const char* name)
+{
+    ScenarioOpticalPayloadType opticalPayload;
+
+    QDomDocument doc;
+    return fragmentText(CreateOpticalPayloadElement(&opticalPayload, doc)).toUtf8();
+}
+
+// Guillermo on optical payloads
+static QByteArray radarPayloadFragment(const char* name)
+{
+    ScenarioRadarPayloadType radarPayload;
+
+    QDomDocument doc;
+    return fragmentText(CreateRadarPayloadElement(&radarPayload, doc)).toUtf8();
+}
 
 
 
 //////////////////////////// Methods for manipulating pre-created PARTICIPANTS ////////////////////////////////
 
-////  Ground stations (ESA, NASA, etc)
+////  Guillermo: Ground stations (ESA, NASA, etc)
 static void
 addGroundStationItem(QTreeWidgetItem* parent,
                      const char* name,
@@ -425,11 +410,11 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
     QWidget(parent)
 {
 
-/*
-// Changing the standard font of this box
-QFont font("Helvetica", 10);  //QFont font("Helvetica",10,QFont::Condensed);
-setFont(font);
-*/
+    /*
+    // Changing the standard font of this box
+    QFont font("Helvetica", 10);  //QFont font("Helvetica",10,QFont::Condensed);
+    setFont(font);
+    */
 
 
 #if 0
@@ -540,7 +525,21 @@ setFont(font);
     communicationPayloadItem->setIcon(0, QIcon(":/icons/ParticipantCOMMUNICATIONS.png"));
     setDragAndDropInfo(communicationPayloadItem,
                        PAYLOAD_MIME_TYPE,
-		       commsPayloadFragment("New Communication Payload", "Comm Payload"));
+		       commsPayloadFragment("Comms 1"));
+
+    QTreeWidgetItem* opticalPayloadItem  = new QTreeWidgetItem(payloadsItem);
+    opticalPayloadItem->setText(0, tr("Telescope"));
+    opticalPayloadItem->setIcon(0, QIcon(":/icons/ParticipantTELESCOPE.png"));
+    setDragAndDropInfo(opticalPayloadItem,
+		       PAYLOAD_MIME_TYPE,
+		       opticalPayloadFragment("Optical 1"));
+
+    QTreeWidgetItem* radarPayloadItem  = new QTreeWidgetItem(payloadsItem);
+    radarPayloadItem->setText(0, tr("Radar"));
+    radarPayloadItem->setIcon(0, QIcon(":/icons/ParticipantRADAR.png"));
+    setDragAndDropInfo(radarPayloadItem,
+		       PAYLOAD_MIME_TYPE,
+		       radarPayloadFragment("Radar 1"));
 
 
 

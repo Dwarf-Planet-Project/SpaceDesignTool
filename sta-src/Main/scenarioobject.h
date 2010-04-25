@@ -536,8 +536,11 @@ public:
     ScenarioLauncher* readLauncher();
     ScenarioReentryVehicle* readReentryVehicle();
     
+    // Patched by Guillermo to include payloads
+
     ScenarioTrajectoryPlan* readTrajectoryPlan();
     ScenarioTrajectory* readTrajectory();
+
     ScenarioAdditionalComponents* readAdditionalComponents();
     ScenarioProperties* readProperties();
     

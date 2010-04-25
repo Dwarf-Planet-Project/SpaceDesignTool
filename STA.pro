@@ -273,6 +273,18 @@ RAM_HEADERS = sta-src/RAM/parametrization.h \
 RAM_FORMS = sta-src/RAM/parametrizedgeometry.ui \
     sta-src/RAM/aerodynamicmethods.ui
 
+# ################ Payloads ############
+PAYLOAD_SOURCES = sta-src/Payloads/commsPayloadDialog.cpp \
+    sta-src/Payloads/opticalPayloadDialog.cpp \
+    sta-src/Payloads/radarPayloadDialog.cpp
+PAYLOAD_HEADERS = sta-src/Payloads/commsPayloadDialog.h \
+    sta-src/Payloads/opticalPayloadDialog.h \
+    sta-src/Payloads/radarPayloadDialog.h
+PAYLOAD_FORMS = sta-src/Payloads/commsPayloadDialog.ui \
+    sta-src/Payloads/opticalPayloadDialog.ui \
+    sta-src/Payloads/radarPayloadDialog.ui
+
+
 # ########################## Scenario  #################################
 SCENARIO_SOURCES = sta-src/Scenario/staschema.cpp \
     sta-src/Scenario/stascenarioutil.cpp \
@@ -315,11 +327,13 @@ UTIL_HEADERS = $$CEL/celutil/basictypes.h \
     $$CEL/celutil/utf8.h \
     $$CEL/celutil/util.h \
     $$CEL/celutil/watcher.h
+
 win32 { 
     UTIL_SOURCES += $$CEL/celutil/windirectory.cpp \
         $$CEL/celutil/wintimer.cpp
     UTIL_HEADERS += $$CEL/celutil/winutil.h
 }
+
 unix:UTIL_SOURCES += $$CEL/celutil/unixdirectory.cpp \
     $$CEL/celutil/unixtimer.cpp
 
@@ -736,10 +750,7 @@ SOURCES = $$MAIN_SOURCES \
     $$QWT3D_SOURCES \
     $$NORAD_SOURCES \
     $$HELPBROWSER_SOURCES \
-    sta-src/Coverage/systemtempdialog.cpp \
-    sta-src/Coverage/sizeoptionsdialog.cpp \
-    sta-src/Coverage/maincoveragegui.cpp \
-    sta-src/Coverage/coneshapedialog.cpp
+    $$PAYLOAD_SOURCES
 HEADERS = $$MAIN_HEADERS \
     $$ASTROCORE_HEADERS \
     $$SEM_HEADERS \
@@ -760,10 +771,7 @@ HEADERS = $$MAIN_HEADERS \
     $$QWT3D_HEADERS \
     $$NORAD_HEADERS \
     $$HELPBROWSER_HEADERS \
-    sta-src/Coverage/systemtempdialog.h \
-    sta-src/Coverage/sizeoptionsdialog.h \
-    sta-src/Coverage/maincoveragegui.h \
-    sta-src/Coverage/coneshapedialog.h
+    $$PAYLOAD_HEADERS
 FORMS = $$MAIN_FORMS \
     $$ASTROCORE_FORMS \
     $$SEM_FORMS \
@@ -782,12 +790,11 @@ FORMS = $$MAIN_FORMS \
     $$QWT3D_FORMS \
     $$NORAD_FORMS \
     $$HELPBROWSER_FORMS \
-    sta-src/Coverage/SystemTemp.ui \
-    sta-src/Coverage/CoverageModule.ui \
-    sta-src/Coverage/ConeShape.ui \
-    sta-src/Coverage/AntennaSize.ui
+    $$PAYLOAD_FORMS
+
 RESOURCES = $$CELESTIA_RESOURCES \
     iconary/sta-icons.qrc
+
 UI_HEADERS_DIR = sta-src/ui/include
 UI_SOURCES_DIR = sta-src/ui/src
 INCLUDEPATH += .
@@ -798,6 +805,7 @@ INCLUDEPATH += thirdparty/glew/include
 INCLUDEPATH += thirdparty/curveplot/include
 INCLUDEPATH += thirdparty/qwtplot3d/include
 INCLUDEPATH += thirdparty/noradtle
+
 win32 { 
     # SPICE support
     # SOURCES += $$SPICE_SOURCES
@@ -821,6 +829,7 @@ win32 {
     # Disable the regrettable min and max macros in windows.h
     DEFINES += NOMINMAX
 }
+
 win32-g++ { 
     # Work around alignment problems with MinGW. Fixed-size Eigen matrices
     # are sometimes allocated on the stack at unaligned addresses even though
