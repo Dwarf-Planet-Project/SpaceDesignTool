@@ -434,6 +434,7 @@ void MainWindow::on_actionOpenScenario_triggered()
             QXmlSchemaValidator validator(*m_spaceScenarioSchema);
             if (!validator.validate(&scenarioFile))
             {
+
                 QMessageBox::critical(this, tr("Scenario Load Error"), tr("Scenario is not a valid space scenario."));
                 return;
             }
@@ -487,6 +488,13 @@ void MainWindow::on_actionOpenScenario_triggered()
 }
 
 
+// Add required namespace attributes for the
+static void addScenarioNamespaceAttributes(QDomElement& rootElement)
+{
+
+}
+
+
 void MainWindow::on_actionSaveScenario_triggered()
 {
     // If the scenario wasn't saved or loaded from a file yet, treat "Save" as "Save As"
@@ -505,6 +513,7 @@ void MainWindow::on_actionSaveScenario_triggered()
         {
             QDomDocument newDoc;
             QDomElement scenarioElement = CreateSpaceScenarioElement(m_scenario, newDoc);
+            AddScenarioNamespaceAttributes(scenarioElement);
             newDoc.appendChild(scenarioElement);
             QTextStream out(&scenarioFile);
             newDoc.save(out, SCENARIO_FILE_INDENT_LEVEL);
@@ -540,6 +549,7 @@ void MainWindow::on_actionSaveScenarioAs_triggered()
 
             QDomDocument saveDoc;
             QDomElement scenarioElement = CreateSpaceScenarioElement(m_scenario, saveDoc);
+            AddScenarioNamespaceAttributes(scenarioElement);
             saveDoc.appendChild(scenarioElement);
 
             QTextStream stream(&scenarioFile);

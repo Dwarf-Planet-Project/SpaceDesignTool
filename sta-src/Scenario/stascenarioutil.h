@@ -33,4 +33,7 @@ QDomElement createSimpleElement(QDomDocument& doc, const QString& tagName, T val
     return child;
 }
 
+/** Add require namespace attributes for the root SpaceScenario element */
+void AddScenarioNamespaceAttributes(QDomElement& scenarioElement);
+
 #endif // _STA_SCENARIO_UTIL_H_

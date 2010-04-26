@@ -128,3 +128,13 @@ QString convertToString(const QList<int>& l)
 
     return s;
 }
+
+
+void AddScenarioNamespaceAttributes(QDomElement& scenarioElement)
+{
+    // TODO: Update these with the actual location of the space scenario schema once that
+    // has been established.
+    scenarioElement.setAttribute("xmlns:tns", "http://www.example.org/scenario");
+    scenarioElement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+    scenarioElement.setAttribute("xsi:schemaLocation", "http://www.example.org/scenario scenario.xsd");
+}
