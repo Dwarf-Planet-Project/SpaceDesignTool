@@ -317,8 +317,8 @@
 
 		<complexType name="REVSecondaryPropulsionType">
 			<sequence>
-				<element name="OMS" type="REVOMSType" minOccurs="0"></element>
-				<element name="RCS" type="REVRCSType">					
+				<element name="OMS" type="tns:REVOMSType" minOccurs="0"></element>
+				<element name="RCS" type="tns:REVRCSType">					
 				</element>
 			</sequence>
 		</complexType>
