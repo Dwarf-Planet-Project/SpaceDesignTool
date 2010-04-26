@@ -33,7 +33,7 @@
 				<element name="TrajectoryPlan">
 					<complexType>
 						<sequence>
-							<element ref="tns:AbstractTrajectory" maxOccurs="unbounded"></element>
+							<element ref="tns:AbstractTrajectory" minOccurs="0" maxOccurs="unbounded"></element>
 						</sequence>
 					</complexType>
 				</element>
