@@ -47,7 +47,8 @@
 #include "propulsionproperties.h"
 //#include "payloadproperties.h"
 //#include "Coverage/maincoveragegui.h"
-#include "Payloads/commsPayloadDialog.h"
+#include "Payloads/transmitterPayloadDialog.h"
+#include "Payloads/receiverPayloadDialog.h"
 #include "Payloads/opticalPayloadDialog.h"
 #include "Payloads/radarPayloadDialog.h"
 
@@ -202,8 +203,10 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
     else if (elementName == "tns:REV")
         participant = ScenarioREV::create(element);
 
-    if (elementName == "tns:CommsPayload")
-	payload = ScenarioCommsPayloadType::create(element); //Ricardo edit this line to let the CommPayload element to be added to the scenario
+    if (elementName == "tns:TransmitterPayload")
+	payload = ScenarioTransmitterPayloadType::create(element); //Ricardo edit this line to let the CommPayload element to be added to the scenario
+    if (elementName == "tns:ReceiverPayload")
+	payload = ScenarioReceiverPayloadType::create(element); //Guillermo
     if (elementName == "tns:OpticalPayload")
 	payload = ScenarioOpticalPayloadType::create(element);  // Guillermo: optical
     if (elementName == "tns:RadarPayload")
@@ -446,13 +449,13 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             updateTreeItems(editItem, scenarioObject);
         }
     }
-    else if (dynamic_cast<ScenarioCommsPayloadType*>(scenarioObject) != NULL)   // Guillermo: patching Ricardo's code
+    else if (dynamic_cast<ScenarioTransmitterPayloadType*>(scenarioObject) != NULL)   // Guillermo: patching Ricardo's code
     {
-	ScenarioCommsPayloadType* payload = dynamic_cast<ScenarioCommsPayloadType*>(scenarioObject);
-	commsPayloadDialog editDialog(this);
+	ScenarioTransmitterPayloadType* payload = dynamic_cast<ScenarioTransmitterPayloadType*>(scenarioObject);
+	transmitterPayloadDialog editDialog(this);
         if (!editDialog.loadValues(payload))
         {
-	    QMessageBox::information(this, tr("Bad Communications Payload element"), tr("Error in Communications Payload element"));
+	    QMessageBox::information(this, tr("Bad Tx Payload element"), tr("Error in Tx Payload element"));
         }
 
         else
@@ -463,6 +466,25 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
                 updateTreeItems(editItem, scenarioObject);
             }
         }
+
+    }
+    else if (dynamic_cast<ScenarioReceiverPayloadType*>(scenarioObject) != NULL)   // Guillermo: patching Ricardo's code
+    {
+	ScenarioReceiverPayloadType* payload = dynamic_cast<ScenarioReceiverPayloadType*>(scenarioObject);
+	receiverPayloadDialog editDialog(this);
+	if (!editDialog.loadValues(payload))
+	{
+	    QMessageBox::information(this, tr("Bad Rx Payload element"), tr("Error in Rx Payload element"));
+	}
+
+	else
+	{
+	    if (editDialog.exec() == QDialog::Accepted)
+	    {
+		editDialog.saveValues(payload);
+		updateTreeItems(editItem, scenarioObject);
+	    }
+	}
 
     }
     else if (dynamic_cast<ScenarioOpticalPayloadType*>(scenarioObject) != NULL)   // Guillermo: patching Ricardo's code

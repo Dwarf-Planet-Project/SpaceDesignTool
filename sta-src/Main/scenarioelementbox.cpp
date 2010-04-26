@@ -335,13 +335,23 @@ static QByteArray externalFragment(const char* name)
 
 ////////////////////////  Creating PAYLOADS fragments /////////////////////////////////
 
-// Guillermo patching the lines added by Ricardo Noriega. Creates a communication payload fragment representing a single payload
-static QByteArray commsPayloadFragment(const char* name)
+// Guillermo patching the lines added by Ricardo Noriega. Creates a Tx payload fragment representing a single payload
+static QByteArray transmitterPayloadFragment(const char* name)
 {
-    ScenarioCommsPayloadType commPayload;
+    ScenarioTransmitterPayloadType transmitterPayload;
 
     QDomDocument doc;
-    return fragmentText(CreateCommsPayloadElement(&commPayload, doc)).toUtf8();
+    return fragmentText(CreateTransmitterPayloadElement(&transmitterPayload, doc)).toUtf8();
+}
+
+
+// Guillermo patching the lines added by Ricardo Noriega. Creates a Rx payload fragment representing a single payload
+static QByteArray receiverPayloadFragment(const char* name)
+{
+    ScenarioReceiverPayloadType receiverPayload;
+
+    QDomDocument doc;
+    return fragmentText(CreateReceiverPayloadElement(&receiverPayload, doc)).toUtf8();
 }
 
 
@@ -520,12 +530,19 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
 
     //These lines are added by Ricardo to create the widget of the communication payload
     // Patched by Guillermo to change the icon
-    QTreeWidgetItem* communicationPayloadItem  = new QTreeWidgetItem(payloadsItem);
-    communicationPayloadItem->setText(0, tr("Communications"));
-    communicationPayloadItem->setIcon(0, QIcon(":/icons/ParticipantCOMMUNICATIONS.png"));
-    setDragAndDropInfo(communicationPayloadItem,
+    QTreeWidgetItem* transmitterPayloadItem  = new QTreeWidgetItem(payloadsItem);
+    transmitterPayloadItem->setText(0, tr("Transmitter"));
+    transmitterPayloadItem->setIcon(0, QIcon(":/icons/ParticipantCOMMUNICATIONS.png"));
+    setDragAndDropInfo(transmitterPayloadItem,
                        PAYLOAD_MIME_TYPE,
-		       commsPayloadFragment("Comms 1"));
+		       transmitterPayloadFragment("Tx 1"));
+
+    QTreeWidgetItem* receiverPayloadItem  = new QTreeWidgetItem(payloadsItem);
+    receiverPayloadItem->setText(0, tr("Receiver"));
+    receiverPayloadItem->setIcon(0, QIcon(":/icons/ParticipantCOMMUNICATIONS.png"));
+    setDragAndDropInfo(receiverPayloadItem,
+		       PAYLOAD_MIME_TYPE,
+		       receiverPayloadFragment("Rx 1"));
 
     QTreeWidgetItem* opticalPayloadItem  = new QTreeWidgetItem(payloadsItem);
     opticalPayloadItem->setText(0, tr("Telescope"));

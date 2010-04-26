@@ -213,7 +213,8 @@ class ScenarioTTC;
 class ScenarioTTCAntenna;
 class ScenarioAOCS;
 class ScenarioOBDH;
-class ScenarioCommsPayloadType;
+class ScenarioTransmitterPayloadType;
+class ScenarioReceiverPayloadType;
 class ScenarioOpticalPayloadType;
 class ScenarioRadarPayloadType;
 class SpaceScenario;
@@ -7610,14 +7611,14 @@ private:
 };
 
 
-// ScenarioCommsPayloadType
-class ScenarioCommsPayloadType : public ScenarioAbstractPayloadType
+// ScenarioTransmitterPayloadType
+class ScenarioTransmitterPayloadType : public ScenarioAbstractPayloadType
 {
 public:
-    ScenarioCommsPayloadType();
-    static ScenarioCommsPayloadType* create(const QDomElement& e);
+    ScenarioTransmitterPayloadType();
+    static ScenarioTransmitterPayloadType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "CommsPayloadType"; }
+    { return "TransmitterPayloadType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -7626,13 +7627,30 @@ public:
     { return m_Transmitter; }
     void setTransmitter(QSharedPointer<ScenarioTransmitter> Transmitter)
     { m_Transmitter = Transmitter; }
+
+private:
+    QSharedPointer<ScenarioTransmitter> m_Transmitter;
+};
+
+
+// ScenarioReceiverPayloadType
+class ScenarioReceiverPayloadType : public ScenarioAbstractPayloadType
+{
+public:
+    ScenarioReceiverPayloadType();
+    static ScenarioReceiverPayloadType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "ReceiverPayloadType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
     QSharedPointer<ScenarioReceiver> Receiver() const
     { return m_Receiver; }
     void setReceiver(QSharedPointer<ScenarioReceiver> Receiver)
     { m_Receiver = Receiver; }
 
 private:
-    QSharedPointer<ScenarioTransmitter> m_Transmitter;
     QSharedPointer<ScenarioReceiver> m_Receiver;
 };
 
@@ -7718,6 +7736,7 @@ QDomElement CreateHomannTransferElement(ScenarioSTA_MANOEUVRE_R_POSITION* e, QDo
 QDomElement CreateOptimizationElement(ScenarioOptimization* e, QDomDocument& doc);
 QDomElement CreateREVElement(ScenarioREV* e, QDomDocument& doc);
 QDomElement CreateLoiteringTLEElement(ScenarioLoiteringTLEType* e, QDomDocument& doc);
+QDomElement CreateReceiverPayloadElement(ScenarioReceiverPayloadType* e, QDomDocument& doc);
 QDomElement CreateOpticalPayloadElement(ScenarioOpticalPayloadType* e, QDomDocument& doc);
 QDomElement CreateInitialAttitudeElement(ScenarioInitialAttitudeType* e, QDomDocument& doc);
 QDomElement CreateLoiteringElement(ScenarioLoiteringType* e, QDomDocument& doc);
@@ -7730,13 +7749,13 @@ QDomElement CreateImp2PointTransferElement(ScenarioSTA_MANOEUVRE_V_R_DURATION* e
 QDomElement CreateKeplerianElementsElement(ScenarioKeplerianElementsType* e, QDomDocument& doc);
 QDomElement CreatePropagationAttitudeElement(ScenarioPropagationAttitudeType* e, QDomDocument& doc);
 QDomElement CreateRadarPayloadElement(ScenarioRadarPayloadType* e, QDomDocument& doc);
+QDomElement CreateTransmitterPayloadElement(ScenarioTransmitterPayloadType* e, QDomDocument& doc);
 QDomElement CreateTransmitterElement(ScenarioTransmitter* e, QDomDocument& doc);
 QDomElement CreateGroundPositionElement(ScenarioGroundPositionType* e, QDomDocument& doc);
 QDomElement CreateLVElement(ScenarioLV* e, QDomDocument& doc);
 QDomElement CreateInitialPositionElement(ScenarioInitialPositionType* e, QDomDocument& doc);
 QDomElement CreateContHoppVbarElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc);
 QDomElement CreateOutputFilesElement(ScenarioOutputFiles* e, QDomDocument& doc);
-QDomElement CreateCommsPayloadElement(ScenarioCommsPayloadType* e, QDomDocument& doc);
 QDomElement CreateForcedRbarElement(ScenarioSTA_MANOEUVRE_R_POSITION* e, QDomDocument& doc);
 QDomElement CreateEulerBIElement(ScenarioEulerBIType* e, QDomDocument& doc);
 QDomElement CreateState12DOFElement(ScenarioState12DOF* e, QDomDocument& doc);

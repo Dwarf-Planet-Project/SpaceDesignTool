@@ -10084,8 +10084,10 @@ bool ScenarioPayloadPlan::load(const QDomElement& e, QDomElement* next)
     for (;;)
     {
         QSharedPointer<ScenarioAbstractPayloadType> v;
-        if (next->tagName() == "tns:CommsPayload")
-            v = QSharedPointer<ScenarioAbstractPayloadType>((ScenarioAbstractPayloadType*)ScenarioCommsPayloadType::create(*next));
+        if (next->tagName() == "tns:TransmitterPayload")
+            v = QSharedPointer<ScenarioAbstractPayloadType>((ScenarioAbstractPayloadType*)ScenarioTransmitterPayloadType::create(*next));
+        else if (next->tagName() == "tns:ReceiverPayload")
+            v = QSharedPointer<ScenarioAbstractPayloadType>((ScenarioAbstractPayloadType*)ScenarioReceiverPayloadType::create(*next));
         else if (next->tagName() == "tns:OpticalPayload")
             v = QSharedPointer<ScenarioAbstractPayloadType>((ScenarioAbstractPayloadType*)ScenarioOpticalPayloadType::create(*next));
         else if (next->tagName() == "tns:RadarPayload")
@@ -10104,8 +10106,10 @@ QDomElement ScenarioPayloadPlan::toDomElement(QDomDocument& doc, const QString& 
     foreach (QSharedPointer<ScenarioAbstractPayloadType> p, m_AbstractPayload)
     {
         QString tagName = "AbstractPayload";
-        if (dynamic_cast<ScenarioCommsPayloadType*>(p.data()))
-            tagName = "CommsPayload";
+        if (dynamic_cast<ScenarioTransmitterPayloadType*>(p.data()))
+            tagName = "TransmitterPayload";
+        else if (dynamic_cast<ScenarioReceiverPayloadType*>(p.data()))
+            tagName = "ReceiverPayload";
         else if (dynamic_cast<ScenarioOpticalPayloadType*>(p.data()))
             tagName = "OpticalPayload";
         else if (dynamic_cast<ScenarioRadarPayloadType*>(p.data()))
@@ -12444,18 +12448,17 @@ QList<QSharedPointer<ScenarioObject> >ScenarioOBDH::children() const
 
 
 
-// ScenarioCommsPayloadType
-ScenarioCommsPayloadType::ScenarioCommsPayloadType()
+// ScenarioTransmitterPayloadType
+ScenarioTransmitterPayloadType::ScenarioTransmitterPayloadType()
 {
     m_Transmitter = QSharedPointer<ScenarioTransmitter>(new ScenarioTransmitter());
-    m_Receiver = QSharedPointer<ScenarioReceiver>(new ScenarioReceiver());
 }
 
-ScenarioCommsPayloadType* ScenarioCommsPayloadType::create(const QDomElement& e)
+ScenarioTransmitterPayloadType* ScenarioTransmitterPayloadType::create(const QDomElement& e)
 {
-    ScenarioCommsPayloadType* v;
+    ScenarioTransmitterPayloadType* v;
     {
-        v = new ScenarioCommsPayloadType;
+        v = new ScenarioTransmitterPayloadType;
         QDomElement nextElement = e.firstChildElement();
         v->load(e, &nextElement);
         return v;
@@ -12463,19 +12466,16 @@ ScenarioCommsPayloadType* ScenarioCommsPayloadType::create(const QDomElement& e)
     return NULL;
 }
 
-bool ScenarioCommsPayloadType::load(const QDomElement& e, QDomElement* next)
+bool ScenarioTransmitterPayloadType::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioAbstractPayloadType::load(e, next);
     if (next->tagName() == "tns:Transmitter")
         m_Transmitter = QSharedPointer<ScenarioTransmitter>(ScenarioTransmitter::create(*next));
     *next = next->nextSiblingElement();
-    if (next->tagName() == "tns:Receiver")
-        m_Receiver = QSharedPointer<ScenarioReceiver>(ScenarioReceiver::create(*next));
-    *next = next->nextSiblingElement();
     return true;
 }
 
-QDomElement ScenarioCommsPayloadType::toDomElement(QDomDocument& doc, const QString& elementName) const
+QDomElement ScenarioTransmitterPayloadType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioAbstractPayloadType::toDomElement(doc, elementName);
     if (!m_Transmitter.isNull())
@@ -12484,6 +12484,49 @@ QDomElement ScenarioCommsPayloadType::toDomElement(QDomDocument& doc, const QStr
         QDomElement child = m_Transmitter->toDomElement(doc, tagName);
         e.appendChild(child);
     }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioTransmitterPayloadType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Transmitter.isNull()) children << m_Transmitter;
+    return children;
+}
+
+
+
+
+// ScenarioReceiverPayloadType
+ScenarioReceiverPayloadType::ScenarioReceiverPayloadType()
+{
+    m_Receiver = QSharedPointer<ScenarioReceiver>(new ScenarioReceiver());
+}
+
+ScenarioReceiverPayloadType* ScenarioReceiverPayloadType::create(const QDomElement& e)
+{
+    ScenarioReceiverPayloadType* v;
+    {
+        v = new ScenarioReceiverPayloadType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioReceiverPayloadType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioAbstractPayloadType::load(e, next);
+    if (next->tagName() == "tns:Receiver")
+        m_Receiver = QSharedPointer<ScenarioReceiver>(ScenarioReceiver::create(*next));
+    *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioReceiverPayloadType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioAbstractPayloadType::toDomElement(doc, elementName);
     if (!m_Receiver.isNull())
     {
         QString tagName = "Receiver";
@@ -12493,10 +12536,9 @@ QDomElement ScenarioCommsPayloadType::toDomElement(QDomDocument& doc, const QStr
     return e;
 }
 
-QList<QSharedPointer<ScenarioObject> >ScenarioCommsPayloadType::children() const
+QList<QSharedPointer<ScenarioObject> >ScenarioReceiverPayloadType::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
-    if (!m_Transmitter.isNull()) children << m_Transmitter;
     if (!m_Receiver.isNull()) children << m_Receiver;
     return children;
 }
@@ -12722,6 +12764,11 @@ QDomElement CreateLoiteringTLEElement(ScenarioLoiteringTLEType* e, QDomDocument&
     return e->toDomElement(doc, "LoiteringTLE");
 }
 
+QDomElement CreateReceiverPayloadElement(ScenarioReceiverPayloadType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "ReceiverPayload");
+}
+
 QDomElement CreateOpticalPayloadElement(ScenarioOpticalPayloadType* e, QDomDocument& doc)
 {
     return e->toDomElement(doc, "OpticalPayload");
@@ -12782,6 +12829,11 @@ QDomElement CreateRadarPayloadElement(ScenarioRadarPayloadType* e, QDomDocument&
     return e->toDomElement(doc, "RadarPayload");
 }
 
+QDomElement CreateTransmitterPayloadElement(ScenarioTransmitterPayloadType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "TransmitterPayload");
+}
+
 QDomElement CreateTransmitterElement(ScenarioTransmitter* e, QDomDocument& doc)
 {
     return e->toDomElement(doc, "Transmitter");
@@ -12810,11 +12862,6 @@ QDomElement CreateContHoppVbarElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomD
 QDomElement CreateOutputFilesElement(ScenarioOutputFiles* e, QDomDocument& doc)
 {
     return e->toDomElement(doc, "OutputFiles");
-}
-
-QDomElement CreateCommsPayloadElement(ScenarioCommsPayloadType* e, QDomDocument& doc)
-{
-    return e->toDomElement(doc, "CommsPayload");
 }
 
 QDomElement CreateForcedRbarElement(ScenarioSTA_MANOEUVRE_R_POSITION* e, QDomDocument& doc)

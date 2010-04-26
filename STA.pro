@@ -274,13 +274,16 @@ RAM_FORMS = sta-src/RAM/parametrizedgeometry.ui \
     sta-src/RAM/aerodynamicmethods.ui
 
 # ################ Payloads ############
-PAYLOAD_SOURCES = sta-src/Payloads/commsPayloadDialog.cpp \
+PAYLOAD_SOURCES = sta-src/Payloads/transmitterPayloadDialog.cpp \
+    sta-src/Payloads/receiverPayloadDialog.cpp \
     sta-src/Payloads/opticalPayloadDialog.cpp \
     sta-src/Payloads/radarPayloadDialog.cpp
-PAYLOAD_HEADERS = sta-src/Payloads/commsPayloadDialog.h \
+PAYLOAD_HEADERS = sta-src/Payloads/transmitterPayloadDialog.h \
+    sta-src/Payloads/receiverPayloadDialog.h \
     sta-src/Payloads/opticalPayloadDialog.h \
     sta-src/Payloads/radarPayloadDialog.h
-PAYLOAD_FORMS = sta-src/Payloads/commsPayloadDialog.ui \
+PAYLOAD_FORMS = sta-src/Payloads/transmitterPayloadDialog.ui \
+    sta-src/Payloads/receiverPayloadDialog.ui \
     sta-src/Payloads/opticalPayloadDialog.ui \
     sta-src/Payloads/radarPayloadDialog.ui
 

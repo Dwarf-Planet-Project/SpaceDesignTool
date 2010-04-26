@@ -33,7 +33,8 @@
 				<element name="TrajectoryPlan">
 					<complexType>
 						<sequence>
-							<element ref="tns:AbstractTrajectory" minOccurs="0" maxOccurs="unbounded"></element>
+							<element ref="tns:AbstractTrajectory" minOccurs="0"
+								maxOccurs="unbounded"></element>
 						</sequence>
 					</complexType>
 				</element>
@@ -52,8 +53,11 @@
 
 	<!-- Payloads -->
 
-	<element name="CommsPayload" substitutionGroup="tns:AbstractPayload"
-		type="tns:CommsPayloadType"></element>
+	<element name="TransmitterPayload" substitutionGroup="tns:AbstractPayload"
+		type="tns:TransmitterPayloadType"></element>
+
+	<element name="ReceiverPayload" substitutionGroup="tns:AbstractPayload"
+		type="tns:ReceiverPayloadType"></element>
 
 	<element name="OpticalPayload" substitutionGroup="tns:AbstractPayload"
 		type="tns:OpticalPayloadType"></element>
@@ -475,16 +479,26 @@
 	</complexType>
 
 
-	<complexType name="CommsPayloadType">
+	<complexType name="TransmitterPayloadType">
 		<complexContent>
 			<extension base="tns:AbstractPayloadType">
 				<sequence>
 					<element ref="tns:Transmitter"></element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="ReceiverPayloadType">
+		<complexContent>
+			<extension base="tns:AbstractPayloadType">
+				<sequence>
 					<element ref="tns:Receiver"></element>
 				</sequence>
 			</extension>
 		</complexContent>
 	</complexType>
+
 
 	<complexType name="OpticalPayloadType">
 		<complexContent>
@@ -493,7 +507,8 @@
 					<element ref="tns:Telescope"></element>
 				</sequence>
 			</extension>
-	</complexContent></complexType>
+		</complexContent>
+	</complexType>
 
 	<complexType name="RadarPayloadType">
 		<complexContent>
@@ -502,7 +517,8 @@
 					<element ref="tns:Radar"></element>
 				</sequence>
 			</extension>
-	</complexContent></complexType>
+		</complexContent>
+	</complexType>
 
 
 
