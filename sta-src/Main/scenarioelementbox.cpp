@@ -169,7 +169,7 @@ static QByteArray groundStationFragment(const char* name,
 					double altitude = 0.0)
 {
     ScenarioGroundStation groundStation;
-
+    /*** fill in defaults ***/
     groundStation.setName(name);
     groundStation.Location()->setCentralBody(centralBody);
 
@@ -182,6 +182,50 @@ static QByteArray groundStationFragment(const char* name,
     QDomDocument doc;
     return fragmentText(CreateGroundStationElement(&groundStation, doc)).toUtf8();
 }
+
+
+static QByteArray launchPadFragment(const char* name,
+				    const char* centralBody,
+				    double latitude = 0.0,
+				    double longitude = 0.0,
+				    double altitude = 0.0)
+{
+    ScenarioLaunchPad launchPad;
+    /*** fill in defaults ***/
+    launchPad.setName(name);
+    launchPad.Location()->setCentralBody(centralBody);
+
+    QSharedPointer<ScenarioGroundPositionType> groundPosition(new ScenarioGroundPositionType());
+    groundPosition->setLatitude(latitude);
+    groundPosition->setLongitude(longitude);
+    groundPosition->setAltitude(altitude);
+    launchPad.Location()->setAbstract3DOFPosition(groundPosition);
+
+    QDomDocument doc;
+    return fragmentText(CreateLaunchPadElement(&launchPad, doc)).toUtf8();
+}
+
+static QByteArray pointFragment(const char* name,
+				const char* centralBody,
+				double latitude = 0.0,
+				double longitude = 0.0,
+				double altitude = 0.0)
+{
+    ScenarioPoint myPoint;
+    /*** fill in defaults ***/
+    myPoint.setName(name);
+    myPoint.Location()->setCentralBody(centralBody);
+
+    QSharedPointer<ScenarioGroundPositionType> groundPosition(new ScenarioGroundPositionType());
+    groundPosition->setLatitude(latitude);
+    groundPosition->setLongitude(longitude);
+    groundPosition->setAltitude(altitude);
+    myPoint.Location()->setAbstract3DOFPosition(groundPosition);
+
+    QDomDocument doc;
+    return fragmentText(CreatePointElement(&myPoint, doc)).toUtf8();
+}
+
 
 
 // Create a scenario fragment representing a ground element.
@@ -240,6 +284,7 @@ static QByteArray loiteringFragment(const char* name)
     /*** fill in defaults ***/
     loitering.Environment()->CentralBody()->setName("EARTH");
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
+    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
 
     // Patched by Guillermo April 23 2010 to get default values for ISS orbits
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
@@ -250,6 +295,14 @@ static QByteArray loiteringFragment(const char* name)
     initPos->setArgumentOfPeriapsis(45.0278);
     initPos->setTrueAnomaly(87.3523);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
+    QSharedPointer<ScenarioEulerBIType> initAtt(new ScenarioEulerBIType());
+    initAtt->setPhi(0.00000);
+    initAtt->setTheta(0.00000);
+    initAtt->setPsi(0.00000);
+    initAtt->setPhiDot(0.00000);
+    initAtt->setThetaDot(0.00000);
+    initAtt->setPsiDot(0.00000);
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
 
     loitering.TimeLine()->setStartTime(QDateTime(QDate(2012, 1, 1)));
     loitering.TimeLine()->setEndTime(QDateTime(QDate(2012, 1, 2)));
@@ -507,14 +560,14 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
     groundStationItem->setIcon(0, QIcon(":/icons/ParticipantSTATION.png"));
     setDragAndDropInfo(groundStationItem,
 		       PARTICIPANT_MIME_TYPE,
-		       groundElementFragment("New Ground Station", "GroundStation", "Earth"));
+		       groundStationFragment("New Ground Station", "Earth", 0.0, 0.0, 0.0));
 
     QTreeWidgetItem* targetItem          = new QTreeWidgetItem(participantsItem);
     targetItem->setText(0, tr("Point"));
     targetItem->setIcon(0, QIcon(":/icons/ParticipantPOINT.png"));
     setDragAndDropInfo(targetItem,
                        PARTICIPANT_MIME_TYPE,
-                       groundElementFragment("New Point", "Point", "Earth"));
+		       pointFragment("New Point", "Earth", 0.0, 0.0, 0.0));
 
     // Diabling the complete function for the time being. Patched by Guillermo
     //QTreeWidgetItem* launchPadItem       = new QTreeWidgetItem(participantsItem);
@@ -526,7 +579,7 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
 
 
 
-    /////////// Creating the widgets for the different payload: Communications, optical, X-ray, radar, etc
+    /////////// Creating the widgets for the different payload: Tx, Rx, optical, X-ray, radar, etc
 
     //These lines are added by Ricardo to create the widget of the communication payload
     // Patched by Guillermo to change the icon

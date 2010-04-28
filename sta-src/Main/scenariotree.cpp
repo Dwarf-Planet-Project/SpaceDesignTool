@@ -23,8 +23,8 @@
  ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
  Modified by Valentino Zuccarelli on 14th June 2009
- Extentive modified by Guillermo to hold TLEs on October 2009
- Extentive modified by Guillermo to accomodate payloads April 2010
+ Extensively modified by Guillermo to hold TLEs on October 2009
+ Extensively modified by Guillermo to accomodate payloads April 2010
  */
 
 
@@ -46,7 +46,6 @@
 #include "aerodynamicproperties.h"
 #include "propulsionproperties.h"
 //#include "payloadproperties.h"
-//#include "Coverage/maincoveragegui.h"
 #include "Payloads/transmitterPayloadDialog.h"
 #include "Payloads/receiverPayloadDialog.h"
 #include "Payloads/opticalPayloadDialog.h"
@@ -57,7 +56,7 @@
 #include <iostream>
 
 
-int Lagrmode=-1;
+int Lagrmode=-1;  // Guillermo says: take away this thing
 
 
 /*! Create a new scenario view widget.
@@ -117,8 +116,8 @@ ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioOb
     // Allow dropping into scenarios and trajectory plans (and nothing else for now)
     if (dynamic_cast<SpaceScenario*>(scenarioObject) ||
 	dynamic_cast<ScenarioTrajectoryPlan*>(scenarioObject) ||
-	dynamic_cast<ScenarioPayloadPlan*>(scenarioObject) ||  // Patched by Guillermo to allow drops into Payload plan
-	dynamic_cast<ScenarioGroundStation*>(scenarioObject) ||
+	dynamic_cast<ScenarioPayloadSet*>(scenarioObject) ||  // Patched by Guillermo to allow drops into Payload plan
+	//dynamic_cast<ScenarioGroundStation*>(scenarioObject) ||
 	dynamic_cast<ScenarioREVTrajectoryPlanType*>(scenarioObject))  //Modified by Dominic and Ricardo Noriega to allow dropping of EntryArc and Payloads over SC and GS
     {
         item->setFlags(item->flags() | Qt::ItemIsDropEnabled);
@@ -150,6 +149,10 @@ QStringList ScenarioTree::mimeTypes() const
 }
 
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////// Dropping the objects in the scenario tree /////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
                                 int /* index */,
                                 const QMimeData* data,
@@ -191,7 +194,7 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
     ScenarioAbstractPayloadType* payload = NULL; //Line added by Ricardo to create an item to be dropped of payload type
 
     if (elementName == "tns:GroundStation")
-        participant = ScenarioGroundStation::create(element);
+	participant = ScenarioGroundStation::create(element);
     else if (elementName == "tns:LaunchPad")
         participant = ScenarioLaunchPad::create(element);
     else if (elementName == "tns:Point")
@@ -226,7 +229,7 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
         trajectory = ScenarioEntryArcType::create(element);
 
     //qDebug() << encodedData;
-    //qDebug() << "ELEMENT " << elementName << ", " << trajectory;
+    //qDebug() << "ELEMENT " << elementName;
 
     if (participant)
     {
@@ -234,6 +237,7 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
         SpaceScenario* scenario = dynamic_cast<SpaceScenario*>(parentObject);
         if (scenario)
         {
+	    //qDebug() << "Adding participant";
             scenario->AbstractParticipant().append(QSharedPointer<ScenarioParticipantType>(participant));
             QTreeWidgetItem* participantItem = new QTreeWidgetItem(parent);
             addScenarioItems(participantItem, participant);
@@ -284,8 +288,8 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
     {
         //qDebug() << "Dropping payload";
         ScenarioObject* parentObject = objectForItem(parent);
-	ScenarioPayloadPlan* scPayload = dynamic_cast<ScenarioPayloadPlan*>(parentObject);
-        if (scPayload) //if the draggable element is over the payload of the spacecraft, the comm payload could be attached
+	ScenarioPayloadSet* scPayload = dynamic_cast<ScenarioPayloadSet*>(parentObject);
+	if (scPayload) //if the draggable element is over the payload of the spacecraft, the payload could be attached
         {
             scPayload->AbstractPayload().append(QSharedPointer<ScenarioAbstractPayloadType>(payload));
             QTreeWidgetItem* payloadItem = new QTreeWidgetItem(parent);
@@ -393,6 +397,12 @@ void ScenarioTree::updateTreeItems(QTreeWidgetItem* parentItem,
 }
 
 
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////// Editing the objects in the scenario ///////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
                                       QTreeWidgetItem* editItem)
 {

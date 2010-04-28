@@ -35,6 +35,15 @@
 		<sequence />
 	</complexType>
 
+	<element name="PayloadSet">
+		<complexType>
+			<sequence>
+				<element ref="tns:AbstractPayload" maxOccurs="unbounded"></element>
+			</sequence>
+		</complexType>
+	</element>
+
+
 
 	<element name="InitialPosition" type="tns:InitialPositionType" />
 	<complexType name="InitialPositionType">

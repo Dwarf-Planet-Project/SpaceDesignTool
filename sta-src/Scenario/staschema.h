@@ -33,6 +33,7 @@ class ScenarioPropagationPositionType;
 class ScenarioPropagationAttitudeType;
 class ScenarioAbstractTrajectoryType;
 class ScenarioAbstractPayloadType;
+class ScenarioPayloadSet;
 class ScenarioInitialPositionType;
 class ScenarioInitialAttitudeType;
 class ScenarioParticipantType;
@@ -77,13 +78,12 @@ class ScenarioReceiver;
 class ScenarioSystemTemperature;
 class ScenarioTantenna;
 class ScenarioAeroCoefFileType;
-class ScenarioLocationType;
 class ScenarioGroundStation;
-class ScenarioEnvironment;
+class ScenarioGroundStationEnvironment;
 class ScenarioRain;
 class ScenarioLaunchPad;
 class ScenarioPoint;
-class ScenarioLocation;
+class ScenarioLocationType;
 class ScenarioLV;
 class ScenarioLVProgramType;
 class ScenarioLVMissionType;
@@ -171,7 +171,6 @@ class ScenarioSC;
 class ScenarioSCProgram;
 class ScenarioSCMission;
 class ScenarioTrajectoryPlan;
-class ScenarioPayloadPlan;
 class ScenarioSCEnvironmentType;
 class ScenarioLoiteringType;
 class ScenarioRendezvousType;
@@ -316,6 +315,30 @@ public:
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
 
 private:
+};
+
+
+// ScenarioPayloadSet
+class ScenarioPayloadSet : public ScenarioObject
+{
+public:
+    ScenarioPayloadSet();
+    static ScenarioPayloadSet* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "PayloadSet"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    const QList<QSharedPointer<ScenarioAbstractPayloadType> >& AbstractPayload() const
+    { return m_AbstractPayload; }
+    QList<QSharedPointer<ScenarioAbstractPayloadType> >& AbstractPayload()
+    { return m_AbstractPayload; }
+    void setAbstractPayload(QList<QSharedPointer<ScenarioAbstractPayloadType> > AbstractPayload)
+    { m_AbstractPayload = AbstractPayload; }
+
+private:
+    QList<QSharedPointer<ScenarioAbstractPayloadType> > m_AbstractPayload;
 };
 
 
@@ -1878,33 +1901,6 @@ private:
 };
 
 
-// ScenarioLocationType
-class ScenarioLocationType : public ScenarioObject
-{
-public:
-    ScenarioLocationType();
-    static ScenarioLocationType* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "LocationType"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QString CentralBody() const
-    { return m_CentralBody; }
-    void setCentralBody(QString CentralBody)
-    { m_CentralBody = CentralBody; }
-    QSharedPointer<ScenarioAbstract3DOFPositionType> Abstract3DOFPosition() const
-    { return m_Abstract3DOFPosition; }
-    void setAbstract3DOFPosition(QSharedPointer<ScenarioAbstract3DOFPositionType> Abstract3DOFPosition)
-    { m_Abstract3DOFPosition = Abstract3DOFPosition; }
-
-private:
-    QString m_CentralBody;
-    QSharedPointer<ScenarioAbstract3DOFPositionType> m_Abstract3DOFPosition;
-};
-
-
 // ScenarioGroundStation
 class ScenarioGroundStation : public ScenarioParticipantType
 {
@@ -1921,32 +1917,30 @@ public:
     { return m_Location; }
     void setLocation(QSharedPointer<ScenarioLocationType> Location)
     { m_Location = Location; }
-    const QList<QSharedPointer<ScenarioAntennaType> >& Antenna() const
-    { return m_Antenna; }
-    QList<QSharedPointer<ScenarioAntennaType> >& Antenna()
-    { return m_Antenna; }
-    void setAntenna(QList<QSharedPointer<ScenarioAntennaType> > Antenna)
-    { m_Antenna = Antenna; }
-    QSharedPointer<ScenarioEnvironment> Environment() const
-    { return m_Environment; }
-    void setEnvironment(QSharedPointer<ScenarioEnvironment> Environment)
-    { m_Environment = Environment; }
+    QSharedPointer<ScenarioPayloadSet> PayloadSet() const
+    { return m_PayloadSet; }
+    void setPayloadSet(QSharedPointer<ScenarioPayloadSet> PayloadSet)
+    { m_PayloadSet = PayloadSet; }
+    QSharedPointer<ScenarioGroundStationEnvironment> GroundStationEnvironment() const
+    { return m_GroundStationEnvironment; }
+    void setGroundStationEnvironment(QSharedPointer<ScenarioGroundStationEnvironment> GroundStationEnvironment)
+    { m_GroundStationEnvironment = GroundStationEnvironment; }
 
 private:
     QSharedPointer<ScenarioLocationType> m_Location;
-    QList<QSharedPointer<ScenarioAntennaType> > m_Antenna;
-    QSharedPointer<ScenarioEnvironment> m_Environment;
+    QSharedPointer<ScenarioPayloadSet> m_PayloadSet;
+    QSharedPointer<ScenarioGroundStationEnvironment> m_GroundStationEnvironment;
 };
 
 
-// ScenarioEnvironment
-class ScenarioEnvironment : public ScenarioObject
+// ScenarioGroundStationEnvironment
+class ScenarioGroundStationEnvironment : public ScenarioObject
 {
 public:
-    ScenarioEnvironment();
-    static ScenarioEnvironment* create(const QDomElement& e);
+    ScenarioGroundStationEnvironment();
+    static ScenarioGroundStationEnvironment* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "Environment"; }
+    { return "GroundStationEnvironment"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -2009,6 +2003,10 @@ public:
     { return m_Location; }
     void setLocation(QSharedPointer<ScenarioLocationType> Location)
     { m_Location = Location; }
+    QSharedPointer<ScenarioPayloadSet> PayloadSet() const
+    { return m_PayloadSet; }
+    void setPayloadSet(QSharedPointer<ScenarioPayloadSet> PayloadSet)
+    { m_PayloadSet = PayloadSet; }
     double clearingAltitude() const
     { return m_clearingAltitude; }
     void setClearingAltitude(double clearingAltitude)
@@ -2016,6 +2014,7 @@ public:
 
 private:
     QSharedPointer<ScenarioLocationType> m_Location;
+    QSharedPointer<ScenarioPayloadSet> m_PayloadSet;
     double m_clearingAltitude;
 };
 
@@ -2032,30 +2031,45 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioLocation> Location() const
+    QSharedPointer<ScenarioLocationType> Location() const
     { return m_Location; }
-    void setLocation(QSharedPointer<ScenarioLocation> Location)
+    void setLocation(QSharedPointer<ScenarioLocationType> Location)
     { m_Location = Location; }
+    QSharedPointer<ScenarioPayloadSet> PayloadSet() const
+    { return m_PayloadSet; }
+    void setPayloadSet(QSharedPointer<ScenarioPayloadSet> PayloadSet)
+    { m_PayloadSet = PayloadSet; }
 
 private:
-    QSharedPointer<ScenarioLocation> m_Location;
+    QSharedPointer<ScenarioLocationType> m_Location;
+    QSharedPointer<ScenarioPayloadSet> m_PayloadSet;
 };
 
 
-// ScenarioLocation
-class ScenarioLocation : public ScenarioObject
+// ScenarioLocationType
+class ScenarioLocationType : public ScenarioObject
 {
 public:
-    ScenarioLocation();
-    static ScenarioLocation* create(const QDomElement& e);
+    ScenarioLocationType();
+    static ScenarioLocationType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "Location"; }
+    { return "LocationType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QString CentralBody() const
+    { return m_CentralBody; }
+    void setCentralBody(QString CentralBody)
+    { m_CentralBody = CentralBody; }
+    QSharedPointer<ScenarioAbstract3DOFPositionType> Abstract3DOFPosition() const
+    { return m_Abstract3DOFPosition; }
+    void setAbstract3DOFPosition(QSharedPointer<ScenarioAbstract3DOFPositionType> Abstract3DOFPosition)
+    { m_Abstract3DOFPosition = Abstract3DOFPosition; }
 
 private:
+    QString m_CentralBody;
+    QSharedPointer<ScenarioAbstract3DOFPositionType> m_Abstract3DOFPosition;
 };
 
 
@@ -6286,14 +6300,14 @@ public:
     { return m_TrajectoryPlan; }
     void setTrajectoryPlan(QSharedPointer<ScenarioTrajectoryPlan> TrajectoryPlan)
     { m_TrajectoryPlan = TrajectoryPlan; }
-    QSharedPointer<ScenarioPayloadPlan> PayloadPlan() const
-    { return m_PayloadPlan; }
-    void setPayloadPlan(QSharedPointer<ScenarioPayloadPlan> PayloadPlan)
-    { m_PayloadPlan = PayloadPlan; }
+    QSharedPointer<ScenarioPayloadSet> PayloadSet() const
+    { return m_PayloadSet; }
+    void setPayloadSet(QSharedPointer<ScenarioPayloadSet> PayloadSet)
+    { m_PayloadSet = PayloadSet; }
 
 private:
     QSharedPointer<ScenarioTrajectoryPlan> m_TrajectoryPlan;
-    QSharedPointer<ScenarioPayloadPlan> m_PayloadPlan;
+    QSharedPointer<ScenarioPayloadSet> m_PayloadSet;
 };
 
 
@@ -6318,30 +6332,6 @@ public:
 
 private:
     QList<QSharedPointer<ScenarioAbstractTrajectoryType> > m_AbstractTrajectory;
-};
-
-
-// ScenarioPayloadPlan
-class ScenarioPayloadPlan : public ScenarioObject
-{
-public:
-    ScenarioPayloadPlan();
-    static ScenarioPayloadPlan* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "PayloadPlan"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    const QList<QSharedPointer<ScenarioAbstractPayloadType> >& AbstractPayload() const
-    { return m_AbstractPayload; }
-    QList<QSharedPointer<ScenarioAbstractPayloadType> >& AbstractPayload()
-    { return m_AbstractPayload; }
-    void setAbstractPayload(QList<QSharedPointer<ScenarioAbstractPayloadType> > AbstractPayload)
-    { m_AbstractPayload = AbstractPayload; }
-
-private:
-    QList<QSharedPointer<ScenarioAbstractPayloadType> > m_AbstractPayload;
 };
 
 
@@ -7728,6 +7718,7 @@ private:
 };
 
 
+QDomElement CreatePayloadSetElement(ScenarioPayloadSet* e, QDomDocument& doc);
 QDomElement CreateForcedVbarElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc);
 QDomElement CreateFreeDriftElement(ScenarioSTA_MANOEUVRE_DURATION* e, QDomDocument& doc);
 QDomElement CreateXThrustTransferElement(ScenarioSTA_MANOEUVRE_R_POSITION* e, QDomDocument& doc);

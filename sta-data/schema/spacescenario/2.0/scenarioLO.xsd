@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/scenario"
+	xmlns:tns="http://www.example.org/scenario" elementFormDefault="qualified">
+
+	<element name="GroundStation" substitutionGroup="tns:AbstractParticipant">
+		<complexType>
+			<complexContent>
+				<extension base="tns:ParticipantType">
+					<sequence>
+						<element name="Location" type="tns:LocationType"></element>
+						<element ref="tns:PayloadSet"></element>
+						<element name="GroundStationEnvironment">
+							<complexType>
+								<sequence>
+									<element name="Rain">
+										<complexType>
+											<sequence>
+												<element name="PercentageExceededLimit" type="double"></element>
+											</sequence>
+										</complexType>
+									</element>
+									<element name="OxygenAtt" type="double"></element>
+									<element name="WaterVapourAtt" type="double"></element>
+								</sequence>
+							</complexType>
+						</element>
+					</sequence>
+					<attribute name="name" type="string"></attribute>
+					<attribute name="appearance" type="string"></attribute>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+
+	<element name="LaunchPad" substitutionGroup="tns:AbstractParticipant">
+		<complexType>
+			<complexContent>
+				<extension base="tns:ParticipantType">
+					<sequence>
+						<element name="Location" type="tns:LocationType"></element>
+						<element ref="tns:PayloadSet"></element>
+						<element name="clearingAltitude" type="double"></element>
+					</sequence>
+					<attribute name="name" type="string"></attribute>
+					<attribute name="appearance" type="string"></attribute>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+
+	<element name="Point" substitutionGroup="tns:AbstractParticipant">
+		<complexType>
+			<complexContent>
+				<extension base="tns:ParticipantType">
+					<sequence>
+						<element name="Location" type="tns:LocationType"></element>
+						<element ref="tns:PayloadSet"></element>
+					</sequence>
+					<attribute name="name" type="string"></attribute>
+					<attribute name="appearance" type="string"></attribute>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+
+	<complexType name="LocationType">
+		<sequence>
+			<element name="CentralBody" type="string"></element>
+			<element ref="tns:Abstract3DOFPosition"></element>
+		</sequence>
+	</complexType>
+
+</schema>

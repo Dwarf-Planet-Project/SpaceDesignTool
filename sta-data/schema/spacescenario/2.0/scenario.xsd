@@ -1,8 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/scenario"
 	xmlns:tns="http://www.example.org/scenario" elementFormDefault="qualified">
+	
 	<include schemaLocation="sharedElements.xsd" />
-
-	<include schemaLocation="scenarioGE.xsd" />
+	<include schemaLocation="scenarioLO.xsd" />
 	<include schemaLocation="scenarioLV.xsd" />
 	<include schemaLocation="scenarioREV.xsd" />
 	<include schemaLocation="scenarioSC.xsd" />
@@ -11,7 +12,7 @@
 	<element name="SpaceScenario">
 		<complexType>
 			<sequence>
-                <element name="Name" type="string" minOccurs="1"></element>
+				<element name="Name" type="string" minOccurs="1"></element>
 				<element ref="tns:AbstractParticipant" minOccurs="0"
 					maxOccurs="unbounded"></element>
 			</sequence>

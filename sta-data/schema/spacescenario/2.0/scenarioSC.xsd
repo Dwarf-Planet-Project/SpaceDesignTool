@@ -33,19 +33,13 @@
 				<element name="TrajectoryPlan">
 					<complexType>
 						<sequence>
-							<element ref="tns:AbstractTrajectory" minOccurs="0"
-								maxOccurs="unbounded"></element>
+							<element ref="tns:AbstractTrajectory"
+								minOccurs="0" maxOccurs="unbounded">
+							</element>
 						</sequence>
 					</complexType>
 				</element>
-				<element name="PayloadPlan">
-					<complexType>
-						<sequence>
-							<element ref="tns:AbstractPayload" maxOccurs="unbounded"></element>
-						</sequence>
-					</complexType>
-				</element>
-
+				<element ref="tns:PayloadSet"></element>
 			</sequence>
 		</complexType>
 	</element>
