@@ -52,6 +52,7 @@
     <property name="title">
      <string>Tools</string>
     </property>
+    <addaction name="actionAnalyse"/>
    </widget>
    <widget class="QMenu" name="menuCalculate">
     <property name="title">
@@ -59,7 +60,6 @@
     </property>
     <addaction name="actionPropagate_Scenario"/>
     <addaction name="actionSystem_Engineering"/>
-    <addaction name="actionAnalyse"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -305,10 +305,7 @@
   </action>
   <action name="actionAnalyse">
    <property name="text">
-    <string>Plot</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+P</string>
+    <string>Analysis</string>
    </property>
   </action>
   <action name="actionActivateSTACalculator">

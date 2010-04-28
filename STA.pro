@@ -273,6 +273,11 @@ RAM_HEADERS = sta-src/RAM/parametrization.h \
 RAM_FORMS = sta-src/RAM/parametrizedgeometry.ui \
     sta-src/RAM/aerodynamicmethods.ui
 
+# ################ Analysis ############
+ANALYSIS_SOURCES = sta-src/Analysis/analysis.cpp
+ANALYSIS_HEADERS = sta-src/Analysis/analysis.h
+ANALYSIS_FORMS = sta-src/Analysis/analysis.ui
+
 # ################ Payloads ############
 PAYLOAD_SOURCES = sta-src/Payloads/transmitterPayloadDialog.cpp \
     sta-src/Payloads/receiverPayloadDialog.cpp \
@@ -753,7 +758,8 @@ SOURCES = $$MAIN_SOURCES \
     $$QWT3D_SOURCES \
     $$NORAD_SOURCES \
     $$HELPBROWSER_SOURCES \
-    $$PAYLOAD_SOURCES
+    $$PAYLOAD_SOURCES \
+    $$ANALYSIS_SOURCES
 HEADERS = $$MAIN_HEADERS \
     $$ASTROCORE_HEADERS \
     $$SEM_HEADERS \
@@ -774,7 +780,8 @@ HEADERS = $$MAIN_HEADERS \
     $$QWT3D_HEADERS \
     $$NORAD_HEADERS \
     $$HELPBROWSER_HEADERS \
-    $$PAYLOAD_HEADERS
+    $$PAYLOAD_HEADERS \
+    $$ANALYSIS_HEADERS
 FORMS = $$MAIN_FORMS \
     $$ASTROCORE_FORMS \
     $$SEM_FORMS \
@@ -793,7 +800,8 @@ FORMS = $$MAIN_FORMS \
     $$QWT3D_FORMS \
     $$NORAD_FORMS \
     $$HELPBROWSER_FORMS \
-    $$PAYLOAD_FORMS
+    $$PAYLOAD_FORMS \
+    $$ANALYSIS_FORMS
 
 RESOURCES = $$CELESTIA_RESOURCES \
     iconary/sta-icons.qrc

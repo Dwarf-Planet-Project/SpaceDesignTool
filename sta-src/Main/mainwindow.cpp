@@ -1,29 +1,30 @@
 /*
-This program is free software; you can redistribute it and/or modify it under
- the terms of the GNU Lesser General Public License as published by the Free Software
- Foundation; either version 2 of the License, or (at your option) any later
- version.
+ This program is free software; you can redistribute it and/or modify it under
+ the terms of the European Union Public Licence - EUPL v.1.1 as published by
+ the European Commission.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- details.
+ FOR A PARTICULAR PURPOSE. See the European Union Public Licence - EUPL v.1.1
+ for more details.
 
- You should have received a copy of the GNU Lesser General Public License along with
- this program; if not, write to the Free Software Foundation, Inc., 59 Temple
- Place - Suite 330, Boston, MA 02111-1307, USA.
- Further information about the GNU Lesser General Public License can also be found on
- the world wide web at http://www.gnu.org.
+ You should have received a copy of the European Union Public Licence - EUPL v.1.1
+ along with this program.
+
+ Further information about the European Union Public Licence - EUPL v.1.1 can
+ also be found on the world wide web at http://ec.europa.eu/idabc/eupl
  */
 
 /*
- ------ Copyright (C) 2008 European Space Agency (space.trajectory.analysis AT gmail.com) ----
- ------------------ Author: Guillermo Ortega  -------------------------------------------------
- ------------------ E-mail: (space.trajectory.analysis AT gmail.com) ----------------------------
+ ------ Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
+ */
+/*
 
+ ------------------ Author: Guillermo Ortega  -------------------------------------------------
  ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
   Modified by Guillermo on October 2009 to allow shorcuts on dialogues and change the "calculate" dialogue
+  Patched by Guillermo April 2010 to add analyis module
 
  */
 
@@ -56,6 +57,7 @@ This program is free software; you can redistribute it and/or modify it under
 #include "Loitering/loitering.h"
 #include "Loitering/loiteringTLE.h"
 #include "SEM/sem.h"
+#include "Analysis/analysis.h"
 #include "exportdialog.h"
 
 #include "Calculator/STAcalculator.h"
@@ -93,6 +95,7 @@ This program is free software; you can redistribute it and/or modify it under
 #ifdef TARGET_OS_MAC
     #include <Carbon/Carbon.h>
 #endif
+
 #include <time.h>
 
 
@@ -189,6 +192,7 @@ MainWindow::MainWindow() :
     m_loiteringDialog(NULL),
     m_loiteringTLEDialog(NULL),
     m_SEMVehicleDialog(NULL),
+    m_AnalysisDialog(NULL),
 
     m_celestiaViewWidget(NULL),
     m_celestiaCore(NULL),
@@ -1197,6 +1201,8 @@ void MainWindow::on_actionAnalyse_triggered()
     if (!scenario())
     return;
 
+    // Guillermo says: we do not call plotting any more from the main window. We do it now from the analysis module
+ /*
     if (m_plottingTool == NULL)
     {
         m_plottingTool = new PlottingTool(this);
@@ -1204,7 +1210,15 @@ void MainWindow::on_actionAnalyse_triggered()
     }
     m_plottingTool->resize(650, 500);
     m_plottingTool->show();
+*/
+
+    analysis* AnalysisWidget = new analysis(this);  // Creating the widget as a tool
+    AnalysisWidget->show(); // Creating the window modeless. This requires the declaration of the variable on the *.h file
+    AnalysisWidget->raise(); // Required to keep the modeless window alive
+    AnalysisWidget->activateWindow(); // Required to keep the modeless window alive
+
 }
+
 
 
 
