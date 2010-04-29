@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>614</width>
-    <height>303</height>
+    <width>548</width>
+    <height>285</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>614</width>
-    <height>303</height>
+    <width>548</width>
+    <height>285</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>614</width>
-    <height>303</height>
+    <width>548</width>
+    <height>285</height>
    </size>
   </property>
   <property name="sizeIncrement">
@@ -34,8 +34,8 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>270</x>
-     <y>260</y>
+     <x>200</x>
+     <y>248</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -52,8 +52,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>591</width>
-     <height>241</height>
+     <width>525</width>
+     <height>229</height>
     </rect>
    </property>
    <property name="currentIndex">
@@ -69,16 +69,11 @@
     <widget class="QGroupBox" name="AntennaSizeGroupBox">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>10</y>
-       <width>266</width>
-       <height>181</height>
+       <x>8</x>
+       <y>28</y>
+       <width>233</width>
+       <height>129</height>
       </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
      </property>
      <property name="title">
       <string>Antenna Size Options</string>
@@ -86,10 +81,10 @@
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>40</y>
+        <x>4</x>
+        <y>24</y>
         <width>221</width>
-        <height>131</height>
+        <height>97</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -130,6 +125,9 @@
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>
             <widget class="QLineEdit" name="GainLineEdit">
+             <property name="text">
+              <string>0</string>
+             </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
@@ -159,35 +157,17 @@
          </item>
         </layout>
        </item>
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
       </layout>
      </widget>
     </widget>
     <widget class="QGroupBox" name="groupBox">
      <property name="geometry">
       <rect>
-       <x>310</x>
-       <y>10</y>
-       <width>251</width>
-       <height>181</height>
+       <x>256</x>
+       <y>28</y>
+       <width>233</width>
+       <height>125</height>
       </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
      </property>
      <property name="title">
       <string>Antenna Properties</string>
@@ -195,10 +175,10 @@
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>40</y>
-        <width>234</width>
-        <height>131</height>
+        <x>4</x>
+        <y>24</y>
+        <width>221</width>
+        <height>93</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -211,12 +191,18 @@
              <property name="text">
               <string>Efficiency </string>
              </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
             </widget>
            </item>
            <item>
             <widget class="QLabel" name="FrequencyLabel">
              <property name="text">
               <string>Frequency</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>
@@ -233,6 +219,9 @@
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
             <widget class="QLineEdit" name="EfficiencyLineEdit">
+             <property name="text">
+              <string>0</string>
+             </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
@@ -240,6 +229,9 @@
            </item>
            <item>
             <widget class="QLineEdit" name="FrequencyLineEdit">
+             <property name="text">
+              <string>0</string>
+             </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
@@ -263,19 +255,6 @@
          </item>
         </layout>
        </item>
-       <item>
-        <spacer name="verticalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
       </layout>
      </widget>
     </widget>
@@ -287,16 +266,11 @@
     <widget class="QGroupBox" name="PolarisationGroupBox">
      <property name="geometry">
       <rect>
-       <x>310</x>
-       <y>10</y>
-       <width>268</width>
+       <x>250</x>
+       <y>-4</y>
+       <width>261</width>
        <height>101</height>
       </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
      </property>
      <property name="title">
       <string>Polarisation</string>
@@ -304,9 +278,9 @@
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>20</y>
-        <width>241</width>
+        <x>4</x>
+        <y>24</y>
+        <width>250</width>
         <height>72</height>
        </rect>
       </property>
@@ -317,6 +291,9 @@
           <widget class="QLabel" name="TypePolLabel">
            <property name="text">
             <string>Type</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
           </widget>
          </item>
@@ -353,7 +330,7 @@
          <item>
           <widget class="QLineEdit" name="TiltLineEdit">
            <property name="text">
-            <string/>
+            <string>0</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -368,16 +345,11 @@
     <widget class="QGroupBox" name="ModulationGroupBox">
      <property name="geometry">
       <rect>
-       <x>310</x>
-       <y>110</y>
+       <x>252</x>
+       <y>96</y>
        <width>261</width>
-       <height>91</height>
+       <height>101</height>
       </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
      </property>
      <property name="title">
       <string>Modulation</string>
@@ -385,9 +357,9 @@
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>20</y>
-        <width>231</width>
+        <x>4</x>
+        <y>24</y>
+        <width>249</width>
         <height>72</height>
        </rect>
       </property>
@@ -398,6 +370,9 @@
           <widget class="QLabel" name="TypeModLabel">
            <property name="text">
             <string>Type</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
           </widget>
          </item>
@@ -458,6 +433,9 @@
          </item>
          <item>
           <widget class="QLineEdit" name="DataRateLineEdit">
+           <property name="text">
+            <string>0</string>
+           </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
@@ -471,16 +449,11 @@
     <widget class="QGroupBox" name="EquipmentGroupBox">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>291</width>
-       <height>191</height>
+       <x>8</x>
+       <y>-4</y>
+       <width>237</width>
+       <height>201</height>
       </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
      </property>
      <property name="title">
       <string>Equipment</string>
@@ -488,10 +461,10 @@
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>40</y>
-        <width>261</width>
-        <height>142</height>
+        <x>4</x>
+        <y>24</y>
+        <width>225</width>
+        <height>92</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -504,12 +477,18 @@
              <property name="text">
               <string>Power [dBW]</string>
              </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
             </widget>
            </item>
            <item>
             <widget class="QLabel" name="TxFeederLossLabel">
              <property name="text">
               <string>Feeder Loss [dB]</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>
@@ -532,6 +511,9 @@
                <height>0</height>
               </size>
              </property>
+             <property name="text">
+              <string>0</string>
+             </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
@@ -539,6 +521,9 @@
            </item>
            <item>
             <widget class="QLineEdit" name="TxFeederLossLineEdit">
+             <property name="text">
+              <string>0</string>
+             </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
@@ -546,6 +531,9 @@
            </item>
            <item>
             <widget class="QLineEdit" name="TxDepointingLossLineEdit">
+             <property name="text">
+              <string>0</string>
+             </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
@@ -554,19 +542,6 @@
           </layout>
          </item>
         </layout>
-       </item>
-       <item>
-        <spacer name="verticalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>
@@ -582,10 +557,10 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>170</x>
-       <y>120</y>
-       <width>351</width>
-       <height>101</height>
+       <x>84</x>
+       <y>116</y>
+       <width>345</width>
+       <height>69</height>
       </rect>
      </property>
      <property name="currentIndex">
@@ -595,8 +570,8 @@
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
-         <x>7</x>
-         <y>1</y>
+         <x>84</x>
+         <y>8</y>
          <width>211</width>
          <height>28</height>
         </rect>
@@ -606,6 +581,9 @@
          <widget class="QLabel" name="ConeAngleLabel">
           <property name="text">
            <string>Cone Angle      </string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
@@ -618,7 +596,7 @@
            </size>
           </property>
           <property name="text">
-           <string/>
+           <string>0</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -634,7 +612,7 @@
         <rect>
          <x>4</x>
          <y>1</y>
-         <width>287</width>
+         <width>301</width>
          <height>62</height>
         </rect>
        </property>
@@ -688,10 +666,10 @@
     <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
-       <x>175</x>
-       <y>21</y>
+       <x>168</x>
+       <y>12</y>
        <width>226</width>
-       <height>95</height>
+       <height>91</height>
       </rect>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -715,6 +693,9 @@
          <widget class="QLabel" name="ConeShapeLabel">
           <property name="text">
            <string>Cone Shape</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
@@ -804,10 +785,10 @@
     <widget class="QWidget" name="formLayoutWidget_2">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>20</y>
+       <x>160</x>
+       <y>28</y>
        <width>201</width>
-       <height>151</height>
+       <height>125</height>
       </rect>
      </property>
      <layout class="QFormLayout" name="formLayout_2">
@@ -881,6 +862,36 @@
    <layout class="QHBoxLayout" name="horizontalLayout_8"/>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>GainMaxRadioButton</tabstop>
+  <tabstop>GainLineEdit</tabstop>
+  <tabstop>DiameterRadioButton</tabstop>
+  <tabstop>DiameterLineEdit</tabstop>
+  <tabstop>BeamWidthRadioButton</tabstop>
+  <tabstop>BeamLineEdit</tabstop>
+  <tabstop>EfficiencyLineEdit</tabstop>
+  <tabstop>FrequencyLineEdit</tabstop>
+  <tabstop>TypeBeamComboBox</tabstop>
+  <tabstop>PowerLineEdit</tabstop>
+  <tabstop>TxFeederLossLineEdit</tabstop>
+  <tabstop>TxDepointingLossLineEdit</tabstop>
+  <tabstop>PolarisationComboBox</tabstop>
+  <tabstop>TiltLineEdit</tabstop>
+  <tabstop>TypeModComboBox</tabstop>
+  <tabstop>DataRateLineEdit</tabstop>
+  <tabstop>ElLineEdit</tabstop>
+  <tabstop>AzLineEdit</tabstop>
+  <tabstop>ConeShapeComboBox</tabstop>
+  <tabstop>ConeAngleLineEdit</tabstop>
+  <tabstop>MassLineEdit</tabstop>
+  <tabstop>LengthLineEdit</tabstop>
+  <tabstop>WidthLineEdit</tabstop>
+  <tabstop>HightLineEdit</tabstop>
+  <tabstop>HorAngleLineEdit</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>VertAngleLineEdit</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -922,8 +933,8 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>172</x>
-     <y>109</y>
+     <x>149</x>
+     <y>117</y>
     </hint>
     <hint type="destinationlabel">
      <x>226</x>
@@ -938,8 +949,8 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>167</x>
-     <y>132</y>
+     <x>144</x>
+     <y>144</y>
     </hint>
     <hint type="destinationlabel">
      <x>219</x>
@@ -954,7 +965,7 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>158</x>
+     <x>135</x>
      <y>171</y>
     </hint>
     <hint type="destinationlabel">
@@ -974,8 +985,8 @@
      <y>106</y>
     </hint>
     <hint type="destinationlabel">
-     <x>268</x>
-     <y>144</y>
+     <x>242</x>
+     <y>146</y>
     </hint>
    </hints>
   </connection>
@@ -1018,8 +1029,8 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>68</x>
-     <y>146</y>
+     <x>45</x>
+     <y>144</y>
     </hint>
     <hint type="destinationlabel">
      <x>213</x>
@@ -1034,8 +1045,8 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>99</x>
-     <y>177</y>
+     <x>76</x>
+     <y>171</y>
     </hint>
     <hint type="destinationlabel">
      <x>218</x>
@@ -1050,8 +1061,8 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>121</x>
-     <y>177</y>
+     <x>98</x>
+     <y>171</y>
     </hint>
     <hint type="destinationlabel">
      <x>223</x>
