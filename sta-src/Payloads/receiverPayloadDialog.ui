@@ -7,33 +7,35 @@
     <x>0</x>
     <y>0</y>
     <width>614</width>
-    <height>315</height>
+    <height>323</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>614</width>
-    <height>315</height>
+    <height>323</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>614</width>
-    <height>315</height>
+    <height>323</height>
+   </size>
+  </property>
+  <property name="sizeIncrement">
+   <size>
+    <width>0</width>
+    <height>0</height>
    </size>
   </property>
   <property name="windowTitle">
-   <string>Communications Payload</string>
-  </property>
-  <property name="windowIcon">
-   <iconset resource="../../iconary/sta-icons.qrc">
-    <normaloff>:/icons/ParticipantCOMMUNICATIONS.png</normaloff>:/icons/ParticipantCOMMUNICATIONS.png</iconset>
+   <string>Receiver</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>268</x>
-     <y>276</y>
+     <x>270</x>
+     <y>290</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -48,532 +50,848 @@
   <widget class="QTabWidget" name="tabWidget">
    <property name="geometry">
     <rect>
-     <x>12</x>
-     <y>8</y>
-     <width>589</width>
-     <height>257</height>
+     <x>10</x>
+     <y>10</y>
+     <width>591</width>
+     <height>271</height>
     </rect>
    </property>
    <property name="currentIndex">
     <number>0</number>
    </property>
-   <widget class="QWidget" name="Features">
+   <widget class="QWidget" name="FeaturesPage">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <attribute name="title">
      <string>Features</string>
     </attribute>
-    <widget class="QGroupBox" name="groupBox_3">
+    <widget class="QGroupBox" name="AntennaSizeGroupBox">
      <property name="geometry">
       <rect>
-       <x>24</x>
-       <y>16</y>
-       <width>217</width>
-       <height>189</height>
+       <x>20</x>
+       <y>10</y>
+       <width>266</width>
+       <height>181</height>
       </rect>
      </property>
-     <property name="title">
-      <string>Budgets</string>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
-     <widget class="QWidget" name="formLayoutWidget">
+     <property name="title">
+      <string>Antenna Size Options</string>
+     </property>
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>8</x>
+        <x>20</x>
         <y>40</y>
-        <width>201</width>
-        <height>129</height>
+        <width>221</width>
+        <height>131</height>
        </rect>
       </property>
-      <layout class="QFormLayout" name="formLayout">
-       <property name="fieldGrowthPolicy">
-        <enum>QFormLayout::FieldsStayAtSizeHint</enum>
-       </property>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Mass [Kg]: </string>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QRadioButton" name="GainMaxRadioButton">
+             <property name="text">
+              <string>Gain Max. [dBi]</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+             <property name="autoRepeat">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="DiameterRadioButton">
+             <property name="text">
+              <string>Diameter [m]</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="BeamWidthRadioButton">
+             <property name="text">
+              <string>Beamwidth [deg]</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <widget class="QLineEdit" name="GainLineEdit">
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="DiameterLineEdit">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="BeamLineEdit">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="lineEdit"/>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>Length [m]: </string>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
          </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="lineEdit_2"/>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>Width [m]: </string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="lineEdit_3"/>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_5">
-         <property name="text">
-          <string>Hight [m]: </string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="lineEdit_4"/>
+        </spacer>
        </item>
       </layout>
      </widget>
     </widget>
-    <widget class="QGroupBox" name="groupBox_4">
-     <property name="geometry">
-      <rect>
-       <x>276</x>
-       <y>16</y>
-       <width>281</width>
-       <height>189</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>Antenna</string>
-     </property>
-     <widget class="QWidget" name="formLayoutWidget_4">
-      <property name="geometry">
-       <rect>
-        <x>12</x>
-        <y>24</y>
-        <width>261</width>
-        <height>157</height>
-       </rect>
-      </property>
-      <layout class="QFormLayout" name="formLayout_4">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_14">
-         <property name="text">
-          <string>Maximum gain [dBi}: </string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_15">
-         <property name="text">
-          <string>Diameter [m]: </string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_16">
-         <property name="text">
-          <string>Beamwidth [deg]: </string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="lineEdit_12"/>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="lineEdit_13"/>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="lineEdit_14"/>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_18">
-         <property name="text">
-          <string>Temperature [K]:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QComboBox" name="comboBox">
-         <item>
-          <property name="text">
-           <string>Calculated</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Constant</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_20">
-         <property name="text">
-          <string>Temperature calc [K]: </string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QLineEdit" name="lineEdit_16"/>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="Components">
-    <attribute name="title">
-     <string>Components</string>
-    </attribute>
     <widget class="QGroupBox" name="groupBox">
      <property name="geometry">
       <rect>
-       <x>8</x>
-       <y>-4</y>
-       <width>277</width>
-       <height>221</height>
+       <x>310</x>
+       <y>10</y>
+       <width>251</width>
+       <height>181</height>
       </rect>
      </property>
-     <property name="title">
-      <string>Transmitter</string>
-     </property>
-     <widget class="QWidget" name="formLayoutWidget_2">
-      <property name="geometry">
-       <rect>
-        <x>12</x>
-        <y>27</y>
-        <width>257</width>
-        <height>182</height>
-       </rect>
-      </property>
-      <layout class="QFormLayout" name="formLayout_2">
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_7">
-         <property name="text">
-          <string>Feeder loss [dB]: </string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_8">
-         <property name="text">
-          <string>Depointing loss [dB}: </string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_9">
-         <property name="text">
-          <string>Modulation [-]: </string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_10">
-         <property name="text">
-          <string>Data rate [Mbps]: </string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="lineEdit_5"/>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="lineEdit_6"/>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="lineEdit_7"/>
-       </item>
-       <item row="4" column="1">
-        <widget class="QLineEdit" name="lineEdit_8"/>
-       </item>
-       <item row="3" column="1">
-        <widget class="QComboBox" name="TypeModComboBox">
-         <item>
-          <property name="text">
-           <string>BPSK</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>DE-BPSK</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>D-BPSK</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>QPSK</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>DE-QPSK</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>D-QPSK</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>OQPSK</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>MSK</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="label_6">
-         <property name="text">
-          <string>Power [W]: </string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_19">
-         <property name="text">
-          <string>Temperature [K]: </string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QLineEdit" name="lineEdit_17"/>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="geometry">
-      <rect>
-       <x>296</x>
-       <y>-4</y>
-       <width>277</width>
-       <height>221</height>
-      </rect>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="title">
-      <string>Receiver</string>
+      <string>Antenna Properties</string>
      </property>
-     <widget class="QWidget" name="formLayoutWidget_3">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>8</x>
-        <y>24</y>
-        <width>253</width>
-        <height>185</height>
+        <x>10</x>
+        <y>40</y>
+        <width>234</width>
+        <height>131</height>
        </rect>
       </property>
-      <layout class="QFormLayout" name="formLayout_3">
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_11">
-         <property name="text">
-          <string>Feeder loss [dB]: </string>
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <widget class="QLabel" name="EfficiencyLabel">
+             <property name="text">
+              <string>Efficiency </string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="FrequencyLabel">
+             <property name="text">
+              <string>Frequency</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="TypeBeamLabel">
+             <property name="text">
+              <string>Type of beam</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QLineEdit" name="EfficiencyLineEdit">
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="FrequencyLineEdit">
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="TypeBeamComboBox">
+             <item>
+              <property name="text">
+               <string>Parabolic</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Gaussian</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_12">
-         <property name="text">
-          <string>Depointing loss [dB}: </string>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
          </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_13">
-         <property name="text">
-          <string>Temperature [K]: </string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="lineEdit_9"/>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="lineEdit_10"/>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="lineEdit_11"/>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="lineEdit_15"/>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_17">
-         <property name="text">
-          <string>Noise [dB}: </string>
-         </property>
-        </widget>
+        </spacer>
        </item>
       </layout>
      </widget>
     </widget>
    </widget>
-   <widget class="QWidget" name="Pointing">
+   <widget class="QWidget" name="ReceiverPage">
     <attribute name="title">
-     <string>Pointing</string>
+     <string>Receiver</string>
     </attribute>
-    <widget class="QWidget" name="formLayoutWidget_5">
+    <widget class="QGroupBox" name="PolarisationGroupBox">
      <property name="geometry">
       <rect>
-       <x>132</x>
-       <y>24</y>
-       <width>303</width>
-       <height>185</height>
+       <x>310</x>
+       <y>10</y>
+       <width>268</width>
+       <height>101</height>
       </rect>
      </property>
-     <layout class="QFormLayout" name="formLayout_5">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Azimuth [deg]: </string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="lineEdit_18"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_21">
-        <property name="text">
-         <string>Elevation [deg]: </string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="lineEdit_19"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_22">
-        <property name="text">
-         <string>Shape :</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="ConeShapeComboBox_2">
-        <property name="maximumSize">
-         <size>
-          <width>120</width>
-          <height>30</height>
-         </size>
-        </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="title">
+      <string>Polarisation</string>
+     </property>
+     <widget class="QWidget" name="layoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>20</y>
+        <width>241</width>
+        <height>72</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_10">
+         <item>
+          <widget class="QLabel" name="TypePolLabel">
+           <property name="text">
+            <string>Type</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="TiltLabel">
+           <property name="text">
+            <string>Tilt Angle [deg]</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_11">
+         <item>
+          <widget class="QComboBox" name="PolarisationComboBox">
+           <item>
+            <property name="text">
+             <string>Linear</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Right Circular</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Left Circular</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="TiltLineEdit">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="SystemTempGroupBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>110</y>
+       <width>291</width>
+       <height>131</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>System Temperature</string>
+     </property>
+     <widget class="QWidget" name="layoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>30</y>
+        <width>271</width>
+        <height>97</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_12">
+         <item>
+          <widget class="QLabel" name="RxNoiseFigureLabel">
+           <property name="text">
+            <string>Receiver Noise Figure[dB] </string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="RxFeederTmpLabel">
+           <property name="text">
+            <string>Thermo. Temp. Feeder [K]</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="RxTempLabel">
+           <property name="text">
+            <string>Themo. Temp. Rx [K]</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_13">
+         <item>
+          <widget class="QLineEdit" name="RxNoiseFigureLineEdit">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="RxFeederTmpLineEdit">
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="RxTempLineEdit">
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>116</y>
+       <width>159</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Antenna Temperature</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>140</y>
+       <width>249</width>
+       <height>59</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_20">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_12">
         <item>
-         <property name="text">
-          <string>Circular</string>
-         </property>
+         <widget class="QRadioButton" name="ConstantTempRadioButton">
+          <property name="text">
+           <string>Constant [K]</string>
+          </property>
+         </widget>
         </item>
         <item>
-         <property name="text">
-          <string>Oval</string>
-         </property>
+         <widget class="QLineEdit" name="AntennaTempLineEdit">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
         </item>
-        <item>
-         <property name="text">
-          <string>Rectangular</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>SAR</string>
-         </property>
-        </item>
-       </widget>
+       </layout>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="VerAngleLabel_2">
+      <item>
+       <widget class="QRadioButton" name="CalculatedTempRadioButton">
         <property name="text">
-         <string>Vertical Half Angle [deg]: </string>
+         <string>Calculated</string>
         </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QLineEdit" name="VertAngleLineEdit_2">
-        <property name="maximumSize">
-         <size>
-          <width>100</width>
-          <height>26</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="HorAngleLabel_2">
-        <property name="text">
-         <string>Horizontal Half Angle [deg]: </string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QLineEdit" name="HorAngleLineEdit_2">
-        <property name="maximumSize">
-         <size>
-          <width>100</width>
-          <height>26</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="ConeAngleLabel">
-        <property name="text">
-         <string>Cone Angle [deg]: </string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QLineEdit" name="ConeAngleLineEdit">
-        <property name="maximumSize">
-         <size>
-          <width>100</width>
-          <height>26</height>
-         </size>
-        </property>
-        <property name="text">
-         <string/>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
      </layout>
     </widget>
+    <widget class="QGroupBox" name="EquipmentGroupBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>291</width>
+       <height>91</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Equipment</string>
+     </property>
+     <widget class="QWidget" name="layoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>30</y>
+        <width>271</width>
+        <height>64</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_8">
+         <item>
+          <widget class="QLabel" name="RxFeederLossLabel">
+           <property name="text">
+            <string>Feeder Loss [dB]</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="RxDepointingLossLabel">
+           <property name="text">
+            <string>Depointing Loss [dB]</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_7">
+         <item>
+          <widget class="QLineEdit" name="RxFeederLossLineEdit">
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="RxDepointingLossLineEdit">
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="PointingPage">
+    <attribute name="title">
+     <string>Pointing</string>
+    </attribute>
+    <widget class="QStackedWidget" name="stackedWidget">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>120</y>
+       <width>351</width>
+       <height>101</height>
+      </rect>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="CircularPage">
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>7</x>
+         <y>1</y>
+         <width>211</width>
+         <height>28</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_10">
+        <item>
+         <widget class="QLabel" name="ConeAngleLabel">
+          <property name="text">
+           <string>Cone Angle      </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="ConeAngleLineEdit">
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>26</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="RectangularPage">
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>4</x>
+         <y>1</y>
+         <width>287</width>
+         <height>62</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_17">
+          <item>
+           <widget class="QLabel" name="VerAngleLabel">
+            <property name="text">
+             <string>Vertical Half Angle [deg]</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="HorAngleLabel">
+            <property name="text">
+             <string>Horizontal Half Angle [deg]</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_16">
+          <item>
+           <widget class="QLineEdit" name="VertAngleLineEdit">
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>26</height>
+             </size>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="HorAngleLineEdit">
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>26</height>
+             </size>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>175</x>
+       <y>21</y>
+       <width>226</width>
+       <height>95</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_15">
+        <item>
+         <widget class="QLabel" name="ElevationLabel">
+          <property name="text">
+           <string>Elevation [deg]</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="AzimuthLabel">
+          <property name="text">
+           <string>Azimuth [deg]</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="ConeShapeLabel">
+          <property name="text">
+           <string>Cone Shape</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_14">
+        <item>
+         <widget class="QLineEdit" name="ElLineEdit">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>26</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <italic>false</italic>
+            <underline>false</underline>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>90</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="AzLineEdit">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>26</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>0</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="ConeShapeComboBox">
+          <property name="maximumSize">
+           <size>
+            <width>120</width>
+            <height>30</height>
+           </size>
+          </property>
+          <item>
+           <property name="text">
+            <string>Circular</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Rectangular</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Oval</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="BudgetPage">
+    <attribute name="title">
+     <string>Budget</string>
+    </attribute>
+    <widget class="QWidget" name="formLayoutWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>20</y>
+       <width>201</width>
+       <height>151</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_2">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="MassLabel">
+        <property name="text">
+         <string>Mass [Kg]: </string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="MassLineEdit"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="LengthLabel">
+        <property name="text">
+         <string>Length [m]: </string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="LengthLineEdit"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="WidthLabel">
+        <property name="text">
+         <string>Width [m]: </string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="WidthLineEdit"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="HightLabel">
+        <property name="text">
+         <string>Hight [m]: </string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="HightLineEdit"/>
+      </item>
+     </layout>
+    </widget>
    </widget>
   </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>2</width>
+     <height>2</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_7"/>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>2</width>
+     <height>2</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_8"/>
+  </widget>
  </widget>
- <tabstops>
-  <tabstop>lineEdit</tabstop>
-  <tabstop>lineEdit_2</tabstop>
-  <tabstop>lineEdit_3</tabstop>
-  <tabstop>lineEdit_4</tabstop>
-  <tabstop>lineEdit_12</tabstop>
-  <tabstop>lineEdit_13</tabstop>
-  <tabstop>lineEdit_14</tabstop>
-  <tabstop>comboBox</tabstop>
-  <tabstop>lineEdit_16</tabstop>
-  <tabstop>lineEdit_5</tabstop>
-  <tabstop>lineEdit_6</tabstop>
-  <tabstop>lineEdit_7</tabstop>
-  <tabstop>TypeModComboBox</tabstop>
-  <tabstop>lineEdit_8</tabstop>
-  <tabstop>lineEdit_17</tabstop>
-  <tabstop>lineEdit_9</tabstop>
-  <tabstop>lineEdit_10</tabstop>
-  <tabstop>lineEdit_11</tabstop>
-  <tabstop>lineEdit_15</tabstop>
-  <tabstop>lineEdit_18</tabstop>
-  <tabstop>lineEdit_19</tabstop>
-  <tabstop>ConeShapeComboBox_2</tabstop>
-  <tabstop>VertAngleLineEdit_2</tabstop>
-  <tabstop>HorAngleLineEdit_2</tabstop>
-  <tabstop>ConeAngleLineEdit</tabstop>
-  <tabstop>tabWidget</tabstop>
-  <tabstop>buttonBox</tabstop>
- </tabstops>
- <resources>
-  <include location="../../iconary/sta-icons.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>
@@ -582,8 +900,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>486</x>
-     <y>290</y>
+     <x>248</x>
+     <y>254</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -598,12 +916,156 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>554</x>
-     <y>296</y>
+     <x>316</x>
+     <y>260</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>GainMaxRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>GainLineEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>171</x>
+     <y>106</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>217</x>
+     <y>107</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>GainMaxRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>DiameterLineEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>121</x>
+     <y>114</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>233</x>
+     <y>141</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>GainMaxRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>BeamLineEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>152</x>
+     <y>111</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>249</x>
+     <y>183</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>DiameterRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>GainLineEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>103</x>
+     <y>141</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>226</x>
+     <y>111</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>DiameterRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>DiameterLineEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>125</x>
+     <y>138</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>139</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>DiameterRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>BeamLineEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>134</x>
+     <y>140</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>251</x>
+     <y>181</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>BeamWidthRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>GainLineEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>67</x>
+     <y>169</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>232</x>
+     <y>104</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>BeamWidthRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>DiameterLineEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>165</x>
+     <y>167</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>215</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>BeamWidthRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>BeamLineEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>152</x>
+     <y>173</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>232</x>
+     <y>174</y>
     </hint>
    </hints>
   </connection>

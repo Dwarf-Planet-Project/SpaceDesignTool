@@ -139,7 +139,7 @@ static QByteArray spaceVehicleFragment(const char* name, const char* vehicleType
 {
     ScenarioSC spacecraft;
 
-    /*** fill in defaults ***/
+    /*** fill in defaults ***/   
     QDomDocument doc;
     return fragmentText(CreateSCElement(&spacecraft, doc)).toUtf8();
 }
@@ -388,20 +388,57 @@ static QByteArray externalFragment(const char* name)
 
 ////////////////////////  Creating PAYLOADS fragments /////////////////////////////////
 
-// Guillermo patching the lines added by Ricardo Noriega. Creates a Tx payload fragment representing a single payload
+// These lines added by Ricardo Noriega. Creates a Tx payload fragment representing a single payload and initialized the default values.
 static QByteArray transmitterPayloadFragment(const char* name)
 {
     ScenarioTransmitterPayloadType transmitterPayload;
+
+    transmitterPayload.Transmitter()->PointingDirection()->setElevation(sta::Pi()/2);
+    transmitterPayload.Transmitter()->PointingDirection()->setAzimuth(0);
+
+    transmitterPayload.Transmitter()->EMproperties()->setEfficiency(55);
+    transmitterPayload.Transmitter()->EMproperties()->setTiltAngle(0);
+    transmitterPayload.Transmitter()->EMproperties()->setGainMax(30);
+
+    //THE POWER AND FREQUENCY NEEDED TO BE DEFINED
+
+    transmitterPayload.Transmitter()->setDepointingLossTx(0);
+    transmitterPayload.Transmitter()->setFedderLossTx(0);
+
+    transmitterPayload.Transmitter()->EMproperties()->setTiltAngle(0);
+    transmitterPayload.Transmitter()->Modulation()->setDataRate(16);
+    transmitterPayload.Transmitter()->Modulation()->setModulationType("BPSK");
+
+
+
 
     QDomDocument doc;
     return fragmentText(CreateTransmitterPayloadElement(&transmitterPayload, doc)).toUtf8();
 }
 
 
-// Guillermo patching the lines added by Ricardo Noriega. Creates a Rx payload fragment representing a single payload
+// These lines added by Ricardo Noriega. Creates a Rx payload fragment representing a single payload and initialized the default values.
 static QByteArray receiverPayloadFragment(const char* name)
 {
     ScenarioReceiverPayloadType receiverPayload;
+
+
+    receiverPayload.Receiver()->PointingDirection()->setElevation(sta::Pi()/2);
+    receiverPayload.Receiver()->PointingDirection()->setAzimuth(0);
+    receiverPayload.Receiver()->EMproperties()->setEfficiency(55);
+    receiverPayload.Receiver()->EMproperties()->setTiltAngle(0);
+    receiverPayload.Receiver()->setDepointingLossRx(0);
+    receiverPayload.Receiver()->setFeederLossRx(0);
+    //FREQUENCY IS NOT DEFINED YET!!!!!
+
+    receiverPayload.Receiver()->SystemTemperature()->setRxNoiseFigure(1);
+    receiverPayload.Receiver()->SystemTemperature()->setThermoFeeder(290);
+    receiverPayload.Receiver()->SystemTemperature()->setThermoReveicer(290);
+    receiverPayload.Receiver()->SystemTemperature()->setTotalSystemTemp(0);
+    receiverPayload.Receiver()->SystemTemperature()->Tantenna()->setTground(10);
+    receiverPayload.Receiver()->SystemTemperature()->Tantenna()->setTsky(40);
+
+
 
     QDomDocument doc;
     return fragmentText(CreateReceiverPayloadElement(&receiverPayload, doc)).toUtf8();
