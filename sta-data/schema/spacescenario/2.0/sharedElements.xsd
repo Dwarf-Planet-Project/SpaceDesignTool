@@ -38,7 +38,7 @@
 	<element name="PayloadSet">
 		<complexType>
 			<sequence>
-				<element ref="tns:AbstractPayload" maxOccurs="unbounded"></element>
+				<element ref="tns:AbstractPayload" minOccurs="0" maxOccurs="unbounded"></element>
 			</sequence>
 		</complexType>
 	</element>
