@@ -46,6 +46,7 @@ class ScenarioPropagation;
 class ScenarioEnvironmentType;
 class ScenarioCentralBodyType;
 class ScenarioGravityModel;
+class ScenarioPerturbationsType;
 class ScenarioAbstract3DOFPositionType;
 class ScenarioAbstract6DOFPositionType;
 class ScenarioGroundPositionType;
@@ -600,9 +601,14 @@ public:
     { return m_CentralBody; }
     void setCentralBody(QSharedPointer<ScenarioCentralBodyType> CentralBody)
     { m_CentralBody = CentralBody; }
+    QSharedPointer<ScenarioPerturbationsType> PerturbationsToCentralBody() const
+    { return m_PerturbationsToCentralBody; }
+    void setPerturbationsToCentralBody(QSharedPointer<ScenarioPerturbationsType> PerturbationsToCentralBody)
+    { m_PerturbationsToCentralBody = PerturbationsToCentralBody; }
 
 private:
     QSharedPointer<ScenarioCentralBodyType> m_CentralBody;
+    QSharedPointer<ScenarioPerturbationsType> m_PerturbationsToCentralBody;
 };
 
 
@@ -626,20 +632,25 @@ public:
     { return m_GravityModel; }
     void setGravityModel(QSharedPointer<ScenarioGravityModel> GravityModel)
     { m_GravityModel = GravityModel; }
-    QString atmosphere() const
-    { return m_atmosphere; }
-    void setAtmosphere(QString atmosphere)
-    { m_atmosphere = atmosphere; }
-    bool ellipticity() const
-    { return m_ellipticity; }
-    void setEllipticity(bool ellipticity)
-    { m_ellipticity = ellipticity; }
+    QString AtmosphereModel() const
+    { return m_AtmosphereModel; }
+    void setAtmosphereModel(QString AtmosphereModel)
+    { m_AtmosphereModel = AtmosphereModel; }
+    QString MagneticModel() const
+    { return m_MagneticModel; }
+    void setMagneticModel(QString MagneticModel)
+    { m_MagneticModel = MagneticModel; }
+    bool Ellipticity() const
+    { return m_Ellipticity; }
+    void setEllipticity(bool Ellipticity)
+    { m_Ellipticity = Ellipticity; }
 
 private:
     QString m_Name;
     QSharedPointer<ScenarioGravityModel> m_GravityModel;
-    QString m_atmosphere;
-    bool m_ellipticity;
+    QString m_AtmosphereModel;
+    QString m_MagneticModel;
+    bool m_Ellipticity;
 };
 
 
@@ -672,6 +683,68 @@ private:
     QString m_modelName;
     int m_numberOfZonals;
     int m_numberOfTesserals;
+};
+
+
+// ScenarioPerturbationsType
+class ScenarioPerturbationsType : public ScenarioObject
+{
+public:
+    ScenarioPerturbationsType();
+    static ScenarioPerturbationsType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "PerturbationsType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    bool gravityEffets() const
+    { return m_gravityEffets; }
+    void setGravityEffets(bool gravityEffets)
+    { m_gravityEffets = gravityEffets; }
+    bool atmosphereDrag() const
+    { return m_atmosphereDrag; }
+    void setAtmosphereDrag(bool atmosphereDrag)
+    { m_atmosphereDrag = atmosphereDrag; }
+    bool solarPressure() const
+    { return m_solarPressure; }
+    void setSolarPressure(bool solarPressure)
+    { m_solarPressure = solarPressure; }
+    bool albedo() const
+    { return m_albedo; }
+    void setAlbedo(bool albedo)
+    { m_albedo = albedo; }
+    bool IR() const
+    { return m_IR; }
+    void setIR(bool IR)
+    { m_IR = IR; }
+    int Cr() const
+    { return m_Cr; }
+    void setCr(int Cr)
+    { m_Cr = Cr; }
+    bool micrometeoroids() const
+    { return m_micrometeoroids; }
+    void setMicrometeoroids(bool micrometeoroids)
+    { m_micrometeoroids = micrometeoroids; }
+    bool thirdBody() const
+    { return m_thirdBody; }
+    void setThirdBody(bool thirdBody)
+    { m_thirdBody = thirdBody; }
+    bool userDefined() const
+    { return m_userDefined; }
+    void setUserDefined(bool userDefined)
+    { m_userDefined = userDefined; }
+
+private:
+    bool m_gravityEffets;
+    bool m_atmosphereDrag;
+    bool m_solarPressure;
+    bool m_albedo;
+    bool m_IR;
+    int m_Cr;
+    bool m_micrometeoroids;
+    bool m_thirdBody;
+    bool m_userDefined;
 };
 
 

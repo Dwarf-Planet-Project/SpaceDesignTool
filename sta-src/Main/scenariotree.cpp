@@ -702,7 +702,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
 
     else if (dynamic_cast<ScenarioLoiteringTrajectory*>(scenarioObject) != NULL)
     {
-        Lagrmode=-1;
+	Lagrmode=-1;  // Guillermo says: take this away
         ScenarioLoiteringTrajectory* loitering = dynamic_cast<ScenarioLoiteringTrajectory*>(scenarioObject);
         LoiteringDialog editDialog(this);
         if (!editDialog.loadValues(loitering))

@@ -700,6 +700,7 @@ QList<QSharedPointer<ScenarioObject> >ScenarioPropagation::children() const
 ScenarioEnvironmentType::ScenarioEnvironmentType()
 {
     m_CentralBody = QSharedPointer<ScenarioCentralBodyType>(new ScenarioCentralBodyType());
+    m_PerturbationsToCentralBody = QSharedPointer<ScenarioPerturbationsType>(new ScenarioPerturbationsType());
 }
 
 ScenarioEnvironmentType* ScenarioEnvironmentType::create(const QDomElement& e)
@@ -720,6 +721,9 @@ bool ScenarioEnvironmentType::load(const QDomElement& e, QDomElement* next)
     if (next->tagName() == "tns:CentralBody")
         m_CentralBody = QSharedPointer<ScenarioCentralBodyType>(ScenarioCentralBodyType::create(*next));
     *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:PerturbationsToCentralBody")
+        m_PerturbationsToCentralBody = QSharedPointer<ScenarioPerturbationsType>(ScenarioPerturbationsType::create(*next));
+    *next = next->nextSiblingElement();
     return true;
 }
 
@@ -732,6 +736,12 @@ QDomElement ScenarioEnvironmentType::toDomElement(QDomDocument& doc, const QStri
         QDomElement child = m_CentralBody->toDomElement(doc, tagName);
         e.appendChild(child);
     }
+    if (!m_PerturbationsToCentralBody.isNull())
+    {
+        QString tagName = "PerturbationsToCentralBody";
+        QDomElement child = m_PerturbationsToCentralBody->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
     return e;
 }
 
@@ -739,6 +749,7 @@ QList<QSharedPointer<ScenarioObject> >ScenarioEnvironmentType::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
     if (!m_CentralBody.isNull()) children << m_CentralBody;
+    if (!m_PerturbationsToCentralBody.isNull()) children << m_PerturbationsToCentralBody;
     return children;
 }
 
@@ -771,14 +782,19 @@ bool ScenarioCentralBodyType::load(const QDomElement& e, QDomElement* next)
     if (next->tagName() == "tns:GravityModel")
         m_GravityModel = QSharedPointer<ScenarioGravityModel>(ScenarioGravityModel::create(*next));
     *next = next->nextSiblingElement();
-    if (next->tagName() == "tns:atmosphere")
+    if (next->tagName() == "tns:AtmosphereModel")
     {
-        m_atmosphere = (next->firstChild().toText().data());
+        m_AtmosphereModel = (next->firstChild().toText().data());
         *next = next->nextSiblingElement();
     }
-    if (next->tagName() == "tns:ellipticity")
+    if (next->tagName() == "tns:MagneticModel")
     {
-        m_ellipticity = parseBoolean(next->firstChild().toText().data());
+        m_MagneticModel = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    if (next->tagName() == "tns:Ellipticity")
+    {
+        m_Ellipticity = parseBoolean(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
     }
     return true;
@@ -794,8 +810,9 @@ QDomElement ScenarioCentralBodyType::toDomElement(QDomDocument& doc, const QStri
         QDomElement child = m_GravityModel->toDomElement(doc, tagName);
         e.appendChild(child);
     }
-    e.appendChild(createSimpleElement(doc, "tns:atmosphere", m_atmosphere));
-    e.appendChild(createSimpleElement(doc, "tns:ellipticity", m_ellipticity));
+    e.appendChild(createSimpleElement(doc, "tns:AtmosphereModel", m_AtmosphereModel));
+    e.appendChild(createSimpleElement(doc, "tns:MagneticModel", m_MagneticModel));
+    e.appendChild(createSimpleElement(doc, "tns:Ellipticity", m_Ellipticity));
     return e;
 }
 
@@ -850,6 +867,99 @@ QDomElement ScenarioGravityModel::toDomElement(QDomDocument& doc, const QString&
 }
 
 QList<QSharedPointer<ScenarioObject> >ScenarioGravityModel::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
+// ScenarioPerturbationsType
+ScenarioPerturbationsType::ScenarioPerturbationsType() :
+    m_Cr(0)
+{
+}
+
+ScenarioPerturbationsType* ScenarioPerturbationsType::create(const QDomElement& e)
+{
+    ScenarioPerturbationsType* v;
+    {
+        v = new ScenarioPerturbationsType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioPerturbationsType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:gravityEffets")
+    {
+        m_gravityEffets = parseBoolean(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    if (next->tagName() == "tns:atmosphereDrag")
+    {
+        m_atmosphereDrag = parseBoolean(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    if (next->tagName() == "tns:solarPressure")
+    {
+        m_solarPressure = parseBoolean(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    if (next->tagName() == "tns:albedo")
+    {
+        m_albedo = parseBoolean(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    if (next->tagName() == "tns:IR")
+    {
+        m_IR = parseBoolean(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    if (next->tagName() == "tns:Cr")
+    {
+        m_Cr = parseInt(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    if (next->tagName() == "tns:micrometeoroids")
+    {
+        m_micrometeoroids = parseBoolean(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    if (next->tagName() == "tns:thirdBody")
+    {
+        m_thirdBody = parseBoolean(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    if (next->tagName() == "tns:userDefined")
+    {
+        m_userDefined = parseBoolean(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    return true;
+}
+
+QDomElement ScenarioPerturbationsType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:gravityEffets", m_gravityEffets));
+    e.appendChild(createSimpleElement(doc, "tns:atmosphereDrag", m_atmosphereDrag));
+    e.appendChild(createSimpleElement(doc, "tns:solarPressure", m_solarPressure));
+    e.appendChild(createSimpleElement(doc, "tns:albedo", m_albedo));
+    e.appendChild(createSimpleElement(doc, "tns:IR", m_IR));
+    e.appendChild(createSimpleElement(doc, "tns:Cr", m_Cr));
+    e.appendChild(createSimpleElement(doc, "tns:micrometeoroids", m_micrometeoroids));
+    e.appendChild(createSimpleElement(doc, "tns:thirdBody", m_thirdBody));
+    e.appendChild(createSimpleElement(doc, "tns:userDefined", m_userDefined));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioPerturbationsType::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
     return children;

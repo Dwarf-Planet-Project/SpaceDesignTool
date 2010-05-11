@@ -146,10 +146,10 @@
 
 
 	<element name="Environment" type="tns:EnvironmentType"></element>
-
 	<complexType name="EnvironmentType">
 		<sequence>
 			<element name="CentralBody" type="tns:CentralBodyType"></element>
+			<element name="PerturbationsToCentralBody" type="tns:PerturbationsType"></element>
 		</sequence>
 	</complexType>
 
@@ -165,8 +165,23 @@
 					</sequence>
 				</complexType>
 			</element>
-			<element name="atmosphere" type="string" minOccurs="0"></element> <!-- file name OR "exponential" -->
-			<element name="ellipticity" type="boolean" minOccurs="0"></element>
+			<element name="AtmosphereModel" type="string" minOccurs="0"></element> <!-- file name OR "exponential" -->
+			<element name="MagneticModel" type="string" minOccurs="0"></element>
+			<element name="Ellipticity" type="boolean" minOccurs="0"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="PerturbationsType">
+		<sequence>
+			<element name="gravityEffets" type="boolean" minOccurs="0"></element>
+			<element name="atmosphereDrag" type="boolean" minOccurs="0"></element>
+			<element name="solarPressure" type="boolean" minOccurs="0"></element>
+			<element name="albedo" type="boolean" minOccurs="0"></element>
+			<element name="IR" type="boolean" minOccurs="0"></element>
+			<element name="Cr" type="int" minOccurs="0"></element>
+			<element name="micrometeoroids" type="boolean" minOccurs="0"></element>
+			<element name="thirdBody" type="boolean" minOccurs="0"></element>
+			<element name="userDefined" type="boolean" minOccurs="0"></element>
 		</sequence>
 	</complexType>
 

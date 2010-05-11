@@ -444,6 +444,7 @@ bool ReEntryDialog::loadValues(ScenarioEnvironmentType* environment)
             }
         }
 
+	/*
         QString atmospheremodel = centralBody->atmosphere().trimmed();
         atmospheremodel.remove(".stad");
         //Set something to check if model is valid
@@ -456,6 +457,7 @@ bool ReEntryDialog::loadValues(ScenarioEnvironmentType* environment)
                 }
             }
 
+	    */
 
     }
     else
@@ -477,8 +479,12 @@ bool ReEntryDialog::saveValues(ScenarioEnvironmentType* environment)
         qWarning("Unknown central body %s", CentralBodyComboBox->currentText().toAscii().data());
         return false;
     }
+
+    /*
     QString atmospheremodel = AtmosphereComboBox->itemData(AtmosphereComboBox->currentIndex()).toString();
     environment->CentralBody()->setAtmosphere(atmospheremodel);
+    */
+
     return true;
 }
 
