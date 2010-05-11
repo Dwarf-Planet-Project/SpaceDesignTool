@@ -171,7 +171,8 @@ int main(int argc, char *argv[])
     // Splash screen
     QPixmap pixmap(":/icons/STAsplash.png");
     QSplashScreen splash(pixmap);
-    splash.resize(700, 415);
+    //splash.resize(700, 415);
+    splash.resize(550, 326);
 
     splash.show();
     app.processEvents();

@@ -103,12 +103,18 @@ using namespace std;
 
 // Defining the URLs that STA will use for browsing and mailing agents
 QUrl STAwebSite("http://sta.estec.esa.int");
-//QUrl STAWiki("http://sta.wiki.sourceforge.net");
-//QUrl STAUserManual("http://sta.wiki.sourceforge.net");  // The user's manual is disabled in this version
-QUrl STABugTracker("http://sourceforge.net/apps/trac/sta/");
-QUrl STAForums("http://sourceforge.net/apps/phpbb/sta/");
-QUrl STADownloads("http://sourceforge.net/projects/sta");
+QUrl STABugTracker("http://forge.osor.eu/tracker/?group_id=134");
+
+QUrl STAForums("http://forge.osor.eu/forum/?group_id=134");
+QUrl STADownloads("http://forge.osor.eu/frs/?group_id=134");
 QUrl STAmail("mailto:space.trajectory.analysis@gmail.com?subject=Help&body=Need help with STA...");
+
+// QUrl STAWiki("http://sta.wiki.sourceforge.net");
+// QUrl STAForums("http://sourceforge.net/apps/phpbb/sta/");  // Moving the forums to OSOR
+// QUrl STAUserManual("http://sta.wiki.sourceforge.net");  // The user's manual is disabled in this version
+// QUrl STABugTracker("http://sourceforge.net/apps/trac/sta/"); // Moving the bugtracker to OSOR
+// QUrl STADownloads("http://sourceforge.net/projects/sta"); // Moving the downloads to OSOR
+
 
 
 const QGLContext* glctx = NULL;
