@@ -22,53 +22,25 @@
 
  */
 
-#ifndef COMMANALYSIS_H
-#define COMMANALYSIS_H
+#ifndef ENVIRONMENTDIALOG_H
+#define ENVIRONMENTDIALOG_H
 
-#include <Eigen/Core>
-#include <Eigen/Geometry>
+#include "ui_environmentDialog.h"
+#include <QDialog>
 #include "Scenario/staschema.h"
-#include <QFile>
-#include <QDebug>
-#include <QTextStream>
-#include <QDir>
-#include <QProcess>
-#include <string.h>
-#include <stdlib.h>// for MAX_PATH
-#include <math.h>
-#include <Main/propagatedscenario.h>
-#include <Astro-Core/constants.h>
 
-using namespace sta;
-
-class CommAnalysis
+class environmentDialog : public QDialog , private Ui::environmentDialog
 {
+Q_OBJECT
 public:
+	environmentDialog( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+	~environmentDialog();
 
-    //CONSTRUCTORS
-
-    CommAnalysis();
-
-    CommAnalysis(ScenarioTransmitterPayloadType* ,ScenarioReceiverPayloadType*, PropagatedScenario*);
-
-    //Default Destructor
-    ~CommAnalysis();
+        bool loadValues(ScenarioGroundStationEnvironment* environment);
+        bool saveValues(ScenarioGroundStationEnvironment* environment);
 
 
-    //FUNCTIONS
-
-
-    void getRange();
-    double FreeSpaceLoss();
-    double OxygenSpecificAttenuation();
-
-private:
-    ScenarioTransmitterPayloadType* m_transmitter;
-    ScenarioReceiverPayloadType* m_receiver;
-    PropagatedScenario* m_propagatedScenario;
-    ScenarioGroundStation* m_groundStation;
-
-
+protected slots:
+	
 };
-
-#endif // COMMANALYSIS_H
+#endif //ENVIRONMENTDIALOG_H

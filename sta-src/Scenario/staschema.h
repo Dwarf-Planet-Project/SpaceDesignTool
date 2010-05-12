@@ -1670,10 +1670,14 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    double powerConsumption() const
-    { return m_powerConsumption; }
-    void setPowerConsumption(double powerConsumption)
-    { m_powerConsumption = powerConsumption; }
+    double powerConsumptionInEclipse() const
+    { return m_powerConsumptionInEclipse; }
+    void setPowerConsumptionInEclipse(double powerConsumptionInEclipse)
+    { m_powerConsumptionInEclipse = powerConsumptionInEclipse; }
+    double powerConsumptionInDaylight() const
+    { return m_powerConsumptionInDaylight; }
+    void setPowerConsumptionInDaylight(double powerConsumptionInDaylight)
+    { m_powerConsumptionInDaylight = powerConsumptionInDaylight; }
     double powerOnPercentageInEclipse() const
     { return m_powerOnPercentageInEclipse; }
     void setPowerOnPercentageInEclipse(double powerOnPercentageInEclipse)
@@ -1684,7 +1688,8 @@ public:
     { m_powerOnPercentageInDaylight = powerOnPercentageInDaylight; }
 
 private:
-    double m_powerConsumption;
+    double m_powerConsumptionInEclipse;
+    double m_powerConsumptionInDaylight;
     double m_powerOnPercentageInEclipse;
     double m_powerOnPercentageInDaylight;
 };
@@ -1769,6 +1774,10 @@ public:
     { return m_DepointingLossTx; }
     void setDepointingLossTx(double DepointingLossTx)
     { m_DepointingLossTx = DepointingLossTx; }
+    double TransmittingPower() const
+    { return m_TransmittingPower; }
+    void setTransmittingPower(double TransmittingPower)
+    { m_TransmittingPower = TransmittingPower; }
     QSharedPointer<ScenarioModulation> Modulation() const
     { return m_Modulation; }
     void setModulation(QSharedPointer<ScenarioModulation> Modulation)
@@ -1777,6 +1786,7 @@ public:
 private:
     double m_FedderLossTx;
     double m_DepointingLossTx;
+    double m_TransmittingPower;
     QSharedPointer<ScenarioModulation> m_Modulation;
 };
 

@@ -2341,7 +2341,8 @@ QList<QSharedPointer<ScenarioObject> >ScenarioBudgetType::children() const
 
 // ScenarioPower
 ScenarioPower::ScenarioPower() :
-    m_powerConsumption(0.0),
+    m_powerConsumptionInEclipse(0.0),
+    m_powerConsumptionInDaylight(0.0),
     m_powerOnPercentageInEclipse(0.0),
     m_powerOnPercentageInDaylight(0.0)
 {
@@ -2362,7 +2363,9 @@ ScenarioPower* ScenarioPower::create(const QDomElement& e)
 bool ScenarioPower::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-        m_powerConsumption = parseDouble(next->firstChild().toText().data());
+        m_powerConsumptionInEclipse = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_powerConsumptionInDaylight = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
         m_powerOnPercentageInEclipse = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
@@ -2374,7 +2377,8 @@ bool ScenarioPower::load(const QDomElement& e, QDomElement* next)
 QDomElement ScenarioPower::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc, elementName);
-    e.appendChild(createSimpleElement(doc, "tns:powerConsumption", m_powerConsumption));
+    e.appendChild(createSimpleElement(doc, "tns:powerConsumptionInEclipse", m_powerConsumptionInEclipse));
+    e.appendChild(createSimpleElement(doc, "tns:powerConsumptionInDaylight", m_powerConsumptionInDaylight));
     e.appendChild(createSimpleElement(doc, "tns:powerOnPercentageInEclipse", m_powerOnPercentageInEclipse));
     e.appendChild(createSimpleElement(doc, "tns:powerOnPercentageInDaylight", m_powerOnPercentageInDaylight));
     return e;
@@ -2488,7 +2492,8 @@ QList<QSharedPointer<ScenarioObject> >ScenarioTemperatureRange::children() const
 // ScenarioTransmitter
 ScenarioTransmitter::ScenarioTransmitter() :
     m_FedderLossTx(0.0),
-    m_DepointingLossTx(0.0)
+    m_DepointingLossTx(0.0),
+    m_TransmittingPower(0.0)
 {
     m_Modulation = QSharedPointer<ScenarioModulation>(new ScenarioModulation());
 }
@@ -2512,6 +2517,8 @@ bool ScenarioTransmitter::load(const QDomElement& e, QDomElement* next)
         *next = next->nextSiblingElement();
         m_DepointingLossTx = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
+        m_TransmittingPower = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
     if (next->tagName() == "tns:Modulation")
         m_Modulation = QSharedPointer<ScenarioModulation>(ScenarioModulation::create(*next));
     *next = next->nextSiblingElement();
@@ -2523,6 +2530,7 @@ QDomElement ScenarioTransmitter::toDomElement(QDomDocument& doc, const QString& 
     QDomElement e = ScenarioAntennaType::toDomElement(doc, elementName);
     e.appendChild(createSimpleElement(doc, "tns:FedderLossTx", m_FedderLossTx));
     e.appendChild(createSimpleElement(doc, "tns:DepointingLossTx", m_DepointingLossTx));
+    e.appendChild(createSimpleElement(doc, "tns:TransmittingPower", m_TransmittingPower));
     if (!m_Modulation.isNull())
     {
         QString tagName = "Modulation";

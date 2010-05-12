@@ -28,7 +28,9 @@
 #include "ui_receiverPayloadDialog.h"
 #include <QDialog>
 #include "sta-src/Scenario/staschema.h"
-
+#include <QObject>
+#include <QStackedWidget>
+#include <QtGui>
 
 
 
@@ -43,6 +45,8 @@ public:
 
         bool loadValues(ScenarioReceiverPayloadType*);
         bool saveValues(ScenarioReceiverPayloadType*);
+
+        void antennaCalculations(ScenarioReceiverPayloadType*);
 
 
 protected slots:

@@ -195,9 +195,12 @@ EXTERNAL_HEADERS = sta-src/External/external.h
 EXTERNAL_FORMS = sta-src/External/external.ui
 
 # ############## Locations Module ################
-LOCATIONS_SOURCES = sta-src/Locations/locationeditor.cpp
-LOCATIONS_HEADERS = sta-src/Locations/locationeditor.h
-LOCATIONS_FORMS = sta-src/Locations/locationeditor.ui
+LOCATIONS_SOURCES = sta-src/Locations/locationeditor.cpp \
+                    sta-src/Locations/environmentdialog.cpp
+LOCATIONS_HEADERS = sta-src/Locations/locationeditor.h \
+                    sta-src/Locations/environmentdialog.h
+LOCATIONS_FORMS = sta-src/Locations/locationeditor.ui \
+                  sta-src/Locations/environmentDialog.ui
 
 # ############# Rendezvous Module ##############
 RENDEZVOUS_SOURCES = sta-src/RendezVous/rendezvous.cpp
@@ -205,9 +208,8 @@ RENDEZVOUS_HEADERS = sta-src/RendezVous/rendezvous.h
 RENDEZVOUS_FORMS = sta-src/RendezVous/rendezvous.ui
 
 # ############# Coverage Module ##############
-COVERAGE_SOURCES = sta-src/Coverage/coverage.cpp
-COVERAGE_HEADERS = sta-src/Coverage/coverage.h
-COVERAGE_FORMS = sta-src/Coverage/coverage.ui
+COVERAGE_SOURCES = sta-src/Coverage/commanalysis.cpp
+COVERAGE_HEADERS = sta-src/Coverage/commanalysis.h
 
 # ############# SEM Module ##############
 SEM_SOURCES = sta-src/SEM/sem.cpp
@@ -292,7 +294,6 @@ PAYLOAD_FORMS = sta-src/Payloads/transmitterPayloadDialog.ui \
     sta-src/Payloads/opticalPayloadDialog.ui \
     sta-src/Payloads/radarPayloadDialog.ui
 
-
 # ########################## Scenario  #################################
 SCENARIO_SOURCES = sta-src/Scenario/staschema.cpp \
     sta-src/Scenario/stascenarioutil.cpp \
@@ -335,13 +336,11 @@ UTIL_HEADERS = $$CEL/celutil/basictypes.h \
     $$CEL/celutil/utf8.h \
     $$CEL/celutil/util.h \
     $$CEL/celutil/watcher.h
-
 win32 { 
     UTIL_SOURCES += $$CEL/celutil/windirectory.cpp \
         $$CEL/celutil/wintimer.cpp
     UTIL_HEADERS += $$CEL/celutil/winutil.h
 }
-
 unix:UTIL_SOURCES += $$CEL/celutil/unixdirectory.cpp \
     $$CEL/celutil/unixtimer.cpp
 
@@ -759,7 +758,8 @@ SOURCES = $$MAIN_SOURCES \
     $$NORAD_SOURCES \
     $$HELPBROWSER_SOURCES \
     $$PAYLOAD_SOURCES \
-    $$ANALYSIS_SOURCES
+    $$ANALYSIS_SOURCES \
+    $$COVERAGE_SOURCES
 HEADERS = $$MAIN_HEADERS \
     $$ASTROCORE_HEADERS \
     $$SEM_HEADERS \
@@ -781,7 +781,8 @@ HEADERS = $$MAIN_HEADERS \
     $$NORAD_HEADERS \
     $$HELPBROWSER_HEADERS \
     $$PAYLOAD_HEADERS \
-    $$ANALYSIS_HEADERS
+    $$ANALYSIS_HEADERS \
+    $$COVERAGE_HEADERS
 FORMS = $$MAIN_FORMS \
     $$ASTROCORE_FORMS \
     $$SEM_FORMS \
@@ -801,11 +802,10 @@ FORMS = $$MAIN_FORMS \
     $$NORAD_FORMS \
     $$HELPBROWSER_FORMS \
     $$PAYLOAD_FORMS \
-    $$ANALYSIS_FORMS
-
+    $$ANALYSIS_FORMS \
+    $$COVERAGE_FORMS
 RESOURCES = $$CELESTIA_RESOURCES \
     iconary/sta-icons.qrc
-
 UI_HEADERS_DIR = sta-src/ui/include
 UI_SOURCES_DIR = sta-src/ui/src
 INCLUDEPATH += .
@@ -816,7 +816,6 @@ INCLUDEPATH += thirdparty/glew/include
 INCLUDEPATH += thirdparty/curveplot/include
 INCLUDEPATH += thirdparty/qwtplot3d/include
 INCLUDEPATH += thirdparty/noradtle
-
 win32 { 
     # SPICE support
     # SOURCES += $$SPICE_SOURCES
@@ -840,7 +839,6 @@ win32 {
     # Disable the regrettable min and max macros in windows.h
     DEFINES += NOMINMAX
 }
-
 win32-g++ { 
     # Work around alignment problems with MinGW. Fixed-size Eigen matrices
     # are sometimes allocated on the stack at unaligned addresses even though

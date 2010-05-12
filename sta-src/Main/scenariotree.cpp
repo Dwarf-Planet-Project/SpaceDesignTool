@@ -50,6 +50,7 @@
 #include "Payloads/receiverPayloadDialog.h"
 #include "Payloads/opticalPayloadDialog.h"
 #include "Payloads/radarPayloadDialog.h"
+#include "Locations/environmentdialog.h"
 
 
 #include <QtGui>
@@ -456,6 +457,17 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
         if (editDialog.exec() == QDialog::Accepted)
         {
             editDialog.saveValues(location);
+            updateTreeItems(editItem, scenarioObject);
+        }
+    }
+    else if (dynamic_cast<ScenarioGroundStationEnvironment*>(scenarioObject) != NULL)
+    {
+        ScenarioGroundStationEnvironment* environment = dynamic_cast<ScenarioGroundStationEnvironment*>(scenarioObject);
+        environmentDialog editDialog(this);
+        editDialog.loadValues(environment);
+        if (editDialog.exec() == QDialog::Accepted)
+        {
+            editDialog.saveValues(environment);
             updateTreeItems(editItem, scenarioObject);
         }
     }

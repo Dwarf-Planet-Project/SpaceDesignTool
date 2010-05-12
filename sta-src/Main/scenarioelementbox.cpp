@@ -38,7 +38,6 @@
 #include <QMimeData>
 #include <QTextStream>
 #include <QtDebug>
-//#include "Coverage/maincoveragegui.h"
 
 
 static const QString SCENARIO_MIME_TYPE("application/sta.scenario.xml");
@@ -178,6 +177,7 @@ static QByteArray groundStationFragment(const char* name,
     groundPosition->setLongitude(longitude);
     groundPosition->setAltitude(altitude);
     groundStation.Location()->setAbstract3DOFPosition(groundPosition);
+    groundStation.GroundStationEnvironment()->Rain()->setPercentageExceededLimit(0.01);//Line added by Ricardo to put this value as a default
 
     QDomDocument doc;
     return fragmentText(CreateGroundStationElement(&groundStation, doc)).toUtf8();
@@ -399,13 +399,16 @@ static QByteArray transmitterPayloadFragment(const char* name)
     transmitterPayload.Transmitter()->EMproperties()->setEfficiency(55);
     transmitterPayload.Transmitter()->EMproperties()->setTiltAngle(0);
     transmitterPayload.Transmitter()->EMproperties()->setGainMax(30);
+    transmitterPayload.Transmitter()->EMproperties()->setDiameter(0);
+    transmitterPayload.Transmitter()->EMproperties()->setAngularBeamWidth(0);
+
+    transmitterPayload.Transmitter()->setTransmittingPower(0);
 
     //THE POWER AND FREQUENCY NEEDED TO BE DEFINED
 
     transmitterPayload.Transmitter()->setDepointingLossTx(0);
     transmitterPayload.Transmitter()->setFedderLossTx(0);
 
-    transmitterPayload.Transmitter()->EMproperties()->setTiltAngle(0);
     transmitterPayload.Transmitter()->Modulation()->setDataRate(16);
     transmitterPayload.Transmitter()->Modulation()->setModulationType("BPSK");
 
@@ -426,6 +429,7 @@ static QByteArray receiverPayloadFragment(const char* name)
     receiverPayload.Receiver()->PointingDirection()->setElevation(sta::Pi()/2);
     receiverPayload.Receiver()->PointingDirection()->setAzimuth(0);
     receiverPayload.Receiver()->EMproperties()->setEfficiency(55);
+    receiverPayload.Receiver()->EMproperties()->setGainMax(30);
     receiverPayload.Receiver()->EMproperties()->setTiltAngle(0);
     receiverPayload.Receiver()->setDepointingLossRx(0);
     receiverPayload.Receiver()->setFeederLossRx(0);

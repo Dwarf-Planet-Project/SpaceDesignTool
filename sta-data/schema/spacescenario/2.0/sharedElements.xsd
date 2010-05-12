@@ -498,7 +498,8 @@
 			<element name="Power">
 				<complexType>
 					<sequence>
-						<element name="powerConsumption" type="double"></element>
+						<element name="powerConsumptionInEclipse" type="double"></element>
+						<element name="powerConsumptionInDaylight" type="double"></element>
 						<element name="powerOnPercentageInEclipse" type="double"></element>
 						<element name="powerOnPercentageInDaylight" type="double"></element>
 					</sequence>
@@ -534,6 +535,7 @@
 					<sequence>
 						<element name="FedderLossTx" type="double"></element>
 						<element name="DepointingLossTx" type="double"></element>
+						<element name="TransmittingPower" type="double"></element>
 						<element name="Modulation">
 							<complexType>
 								<sequence>

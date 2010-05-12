@@ -33,6 +33,7 @@
 #include <QStackedWidget>
 #include <QtGui>
 
+
 class transmitterPayloadDialog : public QDialog , private Ui::transmitterPayloadDialog
 {
 Q_OBJECT
@@ -42,6 +43,9 @@ public:
 	
 	bool loadValues(ScenarioTransmitterPayloadType*);
 	bool saveValues(ScenarioTransmitterPayloadType*);
+
+        void antennaCalculations(ScenarioTransmitterPayloadType*);
+
 
 protected slots:
 	void on_buttonBox_helpRequested();

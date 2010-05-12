@@ -23,10 +23,40 @@
  */
 
 #include "receiverPayloadDialog.h"
+#include <QDebug>
+#include <Astro-Core/constants.h>
+
+
+int antennaRadioButtonReceiver;
+QString polarisationTypeReceiver="Linear";
 
 receiverPayloadDialog::receiverPayloadDialog( QWidget * parent, Qt::WindowFlags f) : QDialog(parent,f)
 {
         setupUi(this);
+
+
+        QDoubleValidator* positiveDoubleValidator = new QDoubleValidator(this);
+        positiveDoubleValidator->setBottom(0.0);
+
+        ElLineEdit->setValidator(positiveDoubleValidator);
+
+        RxFeederLossLineEdit->setValidator(positiveDoubleValidator);
+        RxDepointingLossLineEdit->setValidator(positiveDoubleValidator);
+        RxFeederTmpLineEdit->setValidator(positiveDoubleValidator);
+        RxTempLineEdit->setValidator(positiveDoubleValidator);
+        RxNoiseFigureLineEdit->setValidator(positiveDoubleValidator);
+
+        GainLineEdit->setValidator(positiveDoubleValidator);
+        DiameterLineEdit->setValidator(positiveDoubleValidator);
+        BeamLineEdit->setValidator(positiveDoubleValidator);
+        TiltLineEdit->setValidator(positiveDoubleValidator);
+        EfficiencyLineEdit->setValidator(positiveDoubleValidator);
+        FrequencyLineEdit->setValidator(positiveDoubleValidator);
+
+
+        ConeAngleLineEdit->setValidator(positiveDoubleValidator);
+        HorAngleLineEdit->setValidator(positiveDoubleValidator);
+        VertAngleLineEdit->setValidator(positiveDoubleValidator);
 }
 
 receiverPayloadDialog::~receiverPayloadDialog()
@@ -37,6 +67,11 @@ receiverPayloadDialog::~receiverPayloadDialog()
 // This is the function that load the values from the XML schema to the GUI
 bool receiverPayloadDialog::loadValues(ScenarioReceiverPayloadType* commPayload)
 {
+    //These lines allow the GUI to remember which choice the user did for the antenna parameters
+    if(antennaRadioButtonReceiver==1)
+        DiameterRadioButton->toggle();
+    if(antennaRadioButtonReceiver==2)
+        BeamWidthRadioButton->toggle();
 
     ElLineEdit->setText(QString::number((commPayload->Receiver()->PointingDirection()->elevation())*57.2957794));
     AzLineEdit->setText(QString::number(commPayload->Receiver()->PointingDirection()->azimuth()));
@@ -56,6 +91,17 @@ bool receiverPayloadDialog::loadValues(ScenarioReceiverPayloadType* commPayload)
     RxFeederTmpLineEdit->setText(QString::number(commPayload->Receiver()->SystemTemperature()->ThermoFeeder()));
     RxTempLineEdit->setText(QString::number(commPayload->Receiver()->SystemTemperature()->ThermoReveicer()));
     RxNoiseFigureLineEdit->setText(QString::number(commPayload->Receiver()->SystemTemperature()->RxNoiseFigure()));
+
+
+    antennaCalculations(commPayload);
+
+    //These lines allow the GUI to remember which choice the user did for the type of polarisation
+    if(polarisationTypeReceiver=="Linear")
+        PolarisationComboBox->setCurrentIndex(0);
+    if(polarisationTypeReceiver=="Right")
+        PolarisationComboBox->setCurrentIndex(1);
+    if(polarisationTypeReceiver=="Left")
+        PolarisationComboBox->setCurrentIndex(2);
 
 
     return true;
@@ -81,11 +127,97 @@ bool receiverPayloadDialog::saveValues(ScenarioReceiverPayloadType* commPayload)
     commPayload->Receiver()->setFeederLossRx(RxFeederLossLineEdit->text().toDouble());
     commPayload->Receiver()->setDepointingLossRx(RxDepointingLossLineEdit->text().toDouble());
 
+
+    antennaCalculations(commPayload);
+
+    //These lines allow the GUI to remember which choice the user did for the antenna parameters
+    if(GainMaxRadioButton->isChecked()==true)
+        antennaRadioButtonReceiver=0;
+    if(DiameterRadioButton->isChecked()==true)
+        antennaRadioButtonReceiver=1;
+    if(BeamWidthRadioButton->isChecked()==true)
+        antennaRadioButtonReceiver=2;
+
+
+    //These lines allow the GUI to remember which choice the user did for the type of polarisation
+    if(PolarisationComboBox->currentText()=="Linear")
+        polarisationTypeReceiver="Linear";
+    if(PolarisationComboBox->currentText()=="Right Circular")
+        polarisationTypeReceiver="Right";
+    if(PolarisationComboBox->currentText()=="Left Circular")
+        polarisationTypeReceiver="Left";
+
+
     return true;
 }
 
 
+void receiverPayloadDialog::antennaCalculations(ScenarioReceiverPayloadType* commPayload){
 
+    double Pi=3.141592;
+    double lightSpeed=SPEED_OF_LIGHT;
+    double efficiency=commPayload->Receiver()->EMproperties()->Efficiency();
+    double frequency=14.5E9;
+
+
+    double diameter, beamwidth, gainMaxDb, gainMax;
+
+    if(GainMaxRadioButton->isChecked()==true)
+    {
+        qDebug()<<"This means that GainRadioButton is checked";
+        //Since we have the Gain max
+        gainMaxDb=commPayload->Receiver()->EMproperties()->GainMax();
+        gainMax=pow(10, gainMaxDb/10);
+        diameter=(lightSpeed/(Pi*frequency))*sqrt(gainMax/(efficiency/100));
+        beamwidth=70*(lightSpeed/(frequency*diameter));
+
+
+        //Put the values in the GUI
+        DiameterLineEdit->setText(QString::number(diameter));
+        BeamLineEdit->setText(QString::number(beamwidth));
+        qDebug()<<"The value of the diameter is: "<<diameter;
+        qDebug()<<"The value of the beam is: "<<beamwidth;
+
+    }
+    if(DiameterRadioButton->isChecked()==true)
+    {
+        qDebug()<<"This means that DiameterRadioButton is checked";
+        diameter=commPayload->Receiver()->EMproperties()->Diameter();
+
+
+        gainMax=(efficiency/100)*pow((Pi*diameter*frequency/lightSpeed),2); //natural units
+        gainMaxDb=10*log10(gainMax); //in dB
+        beamwidth=70*(lightSpeed/(frequency*diameter));
+
+        //Put the values in the GUI
+        BeamLineEdit->setText(QString::number(beamwidth));
+        GainLineEdit->setText(QString::number(gainMaxDb));
+        qDebug()<<"The value of the gainMax in dB is: "<<gainMaxDb;
+        qDebug()<<"The value of the beam is: "<<beamwidth;
+    }
+    if(BeamWidthRadioButton->isChecked()==true)
+    {
+        qDebug()<<"This means that BeamRadioButton is checked";
+        beamwidth=commPayload->Receiver()->EMproperties()->AngularBeamWidth();
+
+        gainMax=(efficiency/100)*48360/pow(beamwidth,2);
+        gainMaxDb=10*log10(gainMax); //in dB
+        diameter=(lightSpeed/(Pi*frequency))*sqrt(gainMax/(efficiency/100));
+
+
+
+        //Put the values in the GUI
+        DiameterLineEdit->setText(QString::number(diameter));
+        GainLineEdit->setText(QString::number(gainMaxDb));
+        qDebug()<<"The value of the gainMax in dB is: "<<gainMaxDb;
+        qDebug()<<"The value of the diameter is: "<<diameter;
+
+
+    }
+
+
+
+}
 
 
 void receiverPayloadDialog::on_buttonBox_helpRequested()
