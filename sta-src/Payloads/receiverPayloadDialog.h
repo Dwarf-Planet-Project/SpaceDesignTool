@@ -48,6 +48,8 @@ public:
 
         void antennaCalculations(ScenarioReceiverPayloadType*);
 
+        ScenarioReceiverPayloadType* m_receiverPayload;
+
 
 protected slots:
         void on_buttonBox_helpRequested();

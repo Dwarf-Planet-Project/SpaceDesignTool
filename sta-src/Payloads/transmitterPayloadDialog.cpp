@@ -40,6 +40,12 @@ transmitterPayloadDialog::transmitterPayloadDialog( QWidget * parent, Qt::Window
         QDoubleValidator* positiveDoubleValidator = new QDoubleValidator(this);
         positiveDoubleValidator->setBottom(0.0);
 
+        QDoubleValidator* efficiencyValidator = new QDoubleValidator(this);
+        efficiencyValidator->setBottom(0.0);
+        efficiencyValidator->setTop(100.0);
+
+
+
         ElLineEdit->setValidator(positiveDoubleValidator);
         TxFeederLossLineEdit->setValidator(positiveDoubleValidator);
         TxDepointingLossLineEdit->setValidator(positiveDoubleValidator);
@@ -47,7 +53,7 @@ transmitterPayloadDialog::transmitterPayloadDialog( QWidget * parent, Qt::Window
         DiameterLineEdit->setValidator(positiveDoubleValidator);
         BeamLineEdit->setValidator(positiveDoubleValidator);
         TiltLineEdit->setValidator(positiveDoubleValidator);
-        EfficiencyLineEdit->setValidator(positiveDoubleValidator);
+        EfficiencyLineEdit->setValidator(efficiencyValidator);
         FrequencyLineEdit->setValidator(positiveDoubleValidator);
         PowerLineEdit->setValidator(positiveDoubleValidator);
         DataRateLineEdit->setValidator(positiveDoubleValidator);
@@ -64,8 +70,10 @@ transmitterPayloadDialog::~transmitterPayloadDialog()
 
 
 // This is the function that load the values of the XML schema on the GUI
-bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* commPayload)
+bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* transmitterPayload)
 {
+    m_transmitterPayload=transmitterPayload;
+    
     //These lines allow the GUI to remember which choice the user did for the antenna parameters
     if(antennaRadioButtonTransmitter==1)
         DiameterRadioButton->toggle();
@@ -73,27 +81,32 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* commPa
         BeamWidthRadioButton->toggle();
 
 
-    ElLineEdit->setText(QString::number(commPayload->Transmitter()->PointingDirection()->elevation()));
-    AzLineEdit->setText(QString::number(commPayload->Transmitter()->PointingDirection()->azimuth()));
+    ElLineEdit->setText(QString::number(transmitterPayload->Transmitter()->PointingDirection()->elevation()));
+    AzLineEdit->setText(QString::number(transmitterPayload->Transmitter()->PointingDirection()->azimuth()));
 
-    TxFeederLossLineEdit->setText(QString::number(commPayload->Transmitter()->FedderLossTx()));
-    TxDepointingLossLineEdit->setText(QString::number(commPayload->Transmitter()->DepointingLossTx()));
+    TxFeederLossLineEdit->setText(QString::number(transmitterPayload->Transmitter()->FedderLossTx()));
+    TxDepointingLossLineEdit->setText(QString::number(transmitterPayload->Transmitter()->DepointingLossTx()));
 
-    GainLineEdit->setText(QString::number(commPayload->Transmitter()->EMproperties()->GainMax()));
-    DiameterLineEdit->setText(QString::number(commPayload->Transmitter()->EMproperties()->Diameter()));
-    BeamLineEdit->setText(QString::number(commPayload->Transmitter()->EMproperties()->AngularBeamWidth()));
-    EfficiencyLineEdit->setText(QString::number(commPayload->Transmitter()->EMproperties()->Efficiency()));
-    TiltLineEdit->setText(QString::number(commPayload->Transmitter()->EMproperties()->TiltAngle()));
-    PowerLineEdit->setText(QString::number(commPayload->Transmitter()->TransmittingPower()));
-    //FREQUENCY IS MISSING BY NOW, SEE THE SCHEMA AND BUDGETS...
+    GainLineEdit->setText(QString::number(transmitterPayload->Transmitter()->EMproperties()->GainMax()));
+    DiameterLineEdit->setText(QString::number(transmitterPayload->Transmitter()->EMproperties()->Diameter()));
+    BeamLineEdit->setText(QString::number(transmitterPayload->Transmitter()->EMproperties()->AngularBeamWidth()));
+    EfficiencyLineEdit->setText(QString::number(transmitterPayload->Transmitter()->EMproperties()->Efficiency()));
+    TiltLineEdit->setText(QString::number(transmitterPayload->Transmitter()->EMproperties()->TiltAngle()));
+    PowerLineEdit->setText(QString::number(transmitterPayload->Transmitter()->TransmittingPower()));
+
+    double frequency=transmitterPayload->Budget()->FrequencyBand();
+    frequency=frequency/1000000000;//from Hz to GHz
+    FrequencyLineEdit->setText(QString::number(frequency));//This is the frequency taken from the budget!!
 
 
-    DataRateLineEdit->setText(QString::number(commPayload->Transmitter()->Modulation()->DataRate()));
+
+
+    DataRateLineEdit->setText(QString::number(transmitterPayload->Transmitter()->Modulation()->DataRate()));
     //For the Modulation combo box
     QString modType;
 
     int i=0;
-    modType=commPayload->Transmitter()->Modulation()->ModulationType();
+    modType=transmitterPayload->Transmitter()->Modulation()->ModulationType();
 
 
    if(modType=="BPSK")
@@ -117,7 +130,7 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* commPa
     TypeModComboBox->setCurrentIndex(i);
     //qDebug()<<TypeModComboBox->currentText()<< "   Este es la modulación del esquema por defecto!!!!";
 
-     antennaCalculations(commPayload);
+     antennaCalculations(transmitterPayload);
 
      //These lines allow the GUI to remember which choice the user did for the type of polarisation
      if(polarisationTypeTransmitter=="Linear")
@@ -133,28 +146,33 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* commPa
 }
 
 // This is the function that load the values of the GUI into the XML schema
-bool transmitterPayloadDialog::saveValues(ScenarioTransmitterPayloadType* commPayload)
+bool transmitterPayloadDialog::saveValues(ScenarioTransmitterPayloadType* transmitterPayload)
 {
 
 
-    commPayload->Transmitter()->PointingDirection()->setElevation(ElLineEdit->text().toDouble());
-    commPayload->Transmitter()->PointingDirection()->setAzimuth(AzLineEdit->text().toDouble());
+    transmitterPayload->Transmitter()->PointingDirection()->setElevation(ElLineEdit->text().toDouble());
+    transmitterPayload->Transmitter()->PointingDirection()->setAzimuth(AzLineEdit->text().toDouble());
 
-    commPayload->Transmitter()->EMproperties()->setGainMax(GainLineEdit->text().toDouble());
-    commPayload->Transmitter()->EMproperties()->setDiameter(DiameterLineEdit->text().toDouble());
-    commPayload->Transmitter()->EMproperties()->setAngularBeamWidth(BeamLineEdit->text().toDouble());
-    commPayload->Transmitter()->EMproperties()->setEfficiency(EfficiencyLineEdit->text().toDouble());
-    commPayload->Transmitter()->EMproperties()->setTiltAngle(TiltLineEdit->text().toDouble());
-    //FREQUENCY IS MISSING BY NOW, SEE THE SCHEMA AND BUDGETS...
-    commPayload->Transmitter()->setTransmittingPower(PowerLineEdit->text().toDouble());
-    commPayload->Transmitter()->setFedderLossTx(TxFeederLossLineEdit->text().toDouble());
-    commPayload->Transmitter()->setDepointingLossTx(TxDepointingLossLineEdit->text().toDouble());
+    transmitterPayload->Transmitter()->EMproperties()->setGainMax(GainLineEdit->text().toDouble());
+    transmitterPayload->Transmitter()->EMproperties()->setDiameter(DiameterLineEdit->text().toDouble());
+    transmitterPayload->Transmitter()->EMproperties()->setAngularBeamWidth(BeamLineEdit->text().toDouble());
+    transmitterPayload->Transmitter()->EMproperties()->setEfficiency(EfficiencyLineEdit->text().toDouble());
+    transmitterPayload->Transmitter()->EMproperties()->setTiltAngle(TiltLineEdit->text().toDouble());
 
-    commPayload->Transmitter()->Modulation()->setDataRate(DataRateLineEdit->text().toDouble());
-    commPayload->Transmitter()->Modulation()->setModulationType(TypeModComboBox->currentText());
+    double frequency=FrequencyLineEdit->text().toDouble();
+    frequency=frequency*1000000000;
+    transmitterPayload->Budget()->setFrequencyBand(frequency);
 
 
-    antennaCalculations(commPayload);
+    transmitterPayload->Transmitter()->setTransmittingPower(PowerLineEdit->text().toDouble());
+    transmitterPayload->Transmitter()->setFedderLossTx(TxFeederLossLineEdit->text().toDouble());
+    transmitterPayload->Transmitter()->setDepointingLossTx(TxDepointingLossLineEdit->text().toDouble());
+
+    transmitterPayload->Transmitter()->Modulation()->setDataRate(DataRateLineEdit->text().toDouble());
+    transmitterPayload->Transmitter()->Modulation()->setModulationType(TypeModComboBox->currentText());
+
+
+    antennaCalculations(transmitterPayload);
 
     //These lines allow the GUI to remember which choice the user did for the antenna parameters
     if(GainMaxRadioButton->isChecked()==true)
@@ -176,12 +194,12 @@ bool transmitterPayloadDialog::saveValues(ScenarioTransmitterPayloadType* commPa
 }
 
 
-void transmitterPayloadDialog::antennaCalculations(ScenarioTransmitterPayloadType* commPayload){
+void transmitterPayloadDialog::antennaCalculations(ScenarioTransmitterPayloadType* transmitterPayload){
 
     double Pi=3.141592;
     double lightSpeed=SPEED_OF_LIGHT;
-    double efficiency=commPayload->Transmitter()->EMproperties()->Efficiency();
-    double frequency=14.5E9;
+    double efficiency=transmitterPayload->Transmitter()->EMproperties()->Efficiency();
+    double frequency=transmitterPayload->Budget()->FrequencyBand();
 
 
     double diameter, beamwidth, gainMaxDb, gainMax;
@@ -190,7 +208,7 @@ void transmitterPayloadDialog::antennaCalculations(ScenarioTransmitterPayloadTyp
     {
         qDebug()<<"This means that GainRadioButton is checked";
         //Since we have the Gain max
-        gainMaxDb=commPayload->Transmitter()->EMproperties()->GainMax();
+        gainMaxDb=transmitterPayload->Transmitter()->EMproperties()->GainMax();
         gainMax=pow(10, gainMaxDb/10);
         diameter=(lightSpeed/(Pi*frequency))*sqrt(gainMax/(efficiency/100));
         beamwidth=70*(lightSpeed/(frequency*diameter));
@@ -206,7 +224,7 @@ void transmitterPayloadDialog::antennaCalculations(ScenarioTransmitterPayloadTyp
     if(DiameterRadioButton->isChecked()==true)
     {
         qDebug()<<"This means that DiameterRadioButton is checked";
-        diameter=commPayload->Transmitter()->EMproperties()->Diameter();
+        diameter=transmitterPayload->Transmitter()->EMproperties()->Diameter();
 
 
         gainMax=(efficiency/100)*pow((Pi*diameter*frequency/lightSpeed),2); //natural units
@@ -222,7 +240,7 @@ void transmitterPayloadDialog::antennaCalculations(ScenarioTransmitterPayloadTyp
     if(BeamWidthRadioButton->isChecked()==true)
     {
         qDebug()<<"This means that BeamRadioButton is checked";
-        beamwidth=commPayload->Transmitter()->EMproperties()->AngularBeamWidth();
+        beamwidth=transmitterPayload->Transmitter()->EMproperties()->AngularBeamWidth();
 
         gainMax=(efficiency/100)*48360/pow(beamwidth,2);
         gainMaxDb=10*log10(gainMax); //in dB
@@ -253,9 +271,11 @@ void transmitterPayloadDialog::on_buttonBox_helpRequested()
 void transmitterPayloadDialog::on_buttonBox_clicked(QAbstractButton*)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-        CommAnalysis commanalysis;
-        commanalysis.FreeSpaceLoss();
-        commanalysis.OxygenSpecificAttenuation();
+
+        /*CommAnalysis commanalysis;
+        commanalysis.FreeSpaceLoss(FrequencyLineEdit->text().toDouble());
+        commanalysis.OxygenSpecificAttenuation(FrequencyLineEdit->text().toDouble());
+        commanalysis.WaterVapourSpecificAttenuation(FrequencyLineEdit->text().toDouble(), 40, 77.322);//Como saco la latitud y longitud?? Tiene que ser una ground station...como leo the parent object???*/
         //commanalysis.getRange();
 }
 

@@ -139,6 +139,7 @@ QList<QSharedPointer<ScenarioObject> >ScenarioAbstractTrajectoryType::children()
 // ScenarioAbstractPayloadType
 ScenarioAbstractPayloadType::ScenarioAbstractPayloadType()
 {
+    m_Budget = QSharedPointer<ScenarioBudgetType>(new ScenarioBudgetType());
 }
 
 ScenarioAbstractPayloadType* ScenarioAbstractPayloadType::create(const QDomElement& e)
@@ -156,18 +157,28 @@ ScenarioAbstractPayloadType* ScenarioAbstractPayloadType::create(const QDomEleme
 bool ScenarioAbstractPayloadType::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:Budget")
+        m_Budget = QSharedPointer<ScenarioBudgetType>(ScenarioBudgetType::create(*next));
+    *next = next->nextSiblingElement();
     return true;
 }
 
 QDomElement ScenarioAbstractPayloadType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    if (!m_Budget.isNull())
+    {
+        QString tagName = "Budget";
+        QDomElement child = m_Budget->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
     return e;
 }
 
 QList<QSharedPointer<ScenarioObject> >ScenarioAbstractPayloadType::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Budget.isNull()) children << m_Budget;
     return children;
 }
 

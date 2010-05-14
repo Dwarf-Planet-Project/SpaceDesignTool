@@ -38,6 +38,10 @@ receiverPayloadDialog::receiverPayloadDialog( QWidget * parent, Qt::WindowFlags 
         QDoubleValidator* positiveDoubleValidator = new QDoubleValidator(this);
         positiveDoubleValidator->setBottom(0.0);
 
+        QDoubleValidator* efficiencyValidator = new QDoubleValidator(this);
+        efficiencyValidator->setBottom(0.0);
+        efficiencyValidator->setTop(100.0);
+
         ElLineEdit->setValidator(positiveDoubleValidator);
 
         RxFeederLossLineEdit->setValidator(positiveDoubleValidator);
@@ -50,7 +54,7 @@ receiverPayloadDialog::receiverPayloadDialog( QWidget * parent, Qt::WindowFlags 
         DiameterLineEdit->setValidator(positiveDoubleValidator);
         BeamLineEdit->setValidator(positiveDoubleValidator);
         TiltLineEdit->setValidator(positiveDoubleValidator);
-        EfficiencyLineEdit->setValidator(positiveDoubleValidator);
+        EfficiencyLineEdit->setValidator(efficiencyValidator);
         FrequencyLineEdit->setValidator(positiveDoubleValidator);
 
 
@@ -65,35 +69,40 @@ receiverPayloadDialog::~receiverPayloadDialog()
 
 
 // This is the function that load the values from the XML schema to the GUI
-bool receiverPayloadDialog::loadValues(ScenarioReceiverPayloadType* commPayload)
+bool receiverPayloadDialog::loadValues(ScenarioReceiverPayloadType* receiverPayload)
 {
+
+    m_receiverPayload=receiverPayload;
+
     //These lines allow the GUI to remember which choice the user did for the antenna parameters
     if(antennaRadioButtonReceiver==1)
         DiameterRadioButton->toggle();
     if(antennaRadioButtonReceiver==2)
         BeamWidthRadioButton->toggle();
 
-    ElLineEdit->setText(QString::number((commPayload->Receiver()->PointingDirection()->elevation())*57.2957794));
-    AzLineEdit->setText(QString::number(commPayload->Receiver()->PointingDirection()->azimuth()));
+    ElLineEdit->setText(QString::number((receiverPayload->Receiver()->PointingDirection()->elevation())*57.2957794));
+    AzLineEdit->setText(QString::number(receiverPayload->Receiver()->PointingDirection()->azimuth()));
 
     //The cones are missing
-    RxFeederLossLineEdit->setText(QString::number(commPayload->Receiver()->FeederLossRx()));
-    RxDepointingLossLineEdit->setText(QString::number(commPayload->Receiver()->DepointingLossRx()));
+    RxFeederLossLineEdit->setText(QString::number(receiverPayload->Receiver()->FeederLossRx()));
+    RxDepointingLossLineEdit->setText(QString::number(receiverPayload->Receiver()->DepointingLossRx()));
 
-    GainLineEdit->setText(QString::number(commPayload->Receiver()->EMproperties()->GainMax()));
-    DiameterLineEdit->setText(QString::number(commPayload->Receiver()->EMproperties()->Diameter()));
-    BeamLineEdit->setText(QString::number(commPayload->Receiver()->EMproperties()->AngularBeamWidth()));
-    EfficiencyLineEdit->setText(QString::number(commPayload->Receiver()->EMproperties()->Efficiency()));
-    TiltLineEdit->setText(QString::number(commPayload->Receiver()->EMproperties()->TiltAngle()));
+    GainLineEdit->setText(QString::number(receiverPayload->Receiver()->EMproperties()->GainMax()));
+    DiameterLineEdit->setText(QString::number(receiverPayload->Receiver()->EMproperties()->Diameter()));
+    BeamLineEdit->setText(QString::number(receiverPayload->Receiver()->EMproperties()->AngularBeamWidth()));
+    EfficiencyLineEdit->setText(QString::number(receiverPayload->Receiver()->EMproperties()->Efficiency()));
+    TiltLineEdit->setText(QString::number(receiverPayload->Receiver()->EMproperties()->TiltAngle()));
 
-    //FREQUENCY IS MISSING BY NOW, SEE THE SCHEMA AND BUDGETS...
+    double frequency=receiverPayload->Budget()->FrequencyBand();
+    frequency=frequency/1000000000;//from Hz to GHz
+    FrequencyLineEdit->setText(QString::number(frequency));
 
-    RxFeederTmpLineEdit->setText(QString::number(commPayload->Receiver()->SystemTemperature()->ThermoFeeder()));
-    RxTempLineEdit->setText(QString::number(commPayload->Receiver()->SystemTemperature()->ThermoReveicer()));
-    RxNoiseFigureLineEdit->setText(QString::number(commPayload->Receiver()->SystemTemperature()->RxNoiseFigure()));
+    RxFeederTmpLineEdit->setText(QString::number(receiverPayload->Receiver()->SystemTemperature()->ThermoFeeder()));
+    RxTempLineEdit->setText(QString::number(receiverPayload->Receiver()->SystemTemperature()->ThermoReveicer()));
+    RxNoiseFigureLineEdit->setText(QString::number(receiverPayload->Receiver()->SystemTemperature()->RxNoiseFigure()));
 
 
-    antennaCalculations(commPayload);
+    antennaCalculations(receiverPayload);
 
     //These lines allow the GUI to remember which choice the user did for the type of polarisation
     if(polarisationTypeReceiver=="Linear")
@@ -108,27 +117,31 @@ bool receiverPayloadDialog::loadValues(ScenarioReceiverPayloadType* commPayload)
 }
 
 // This is the function that load the values of the GUI into the XML schema
-bool receiverPayloadDialog::saveValues(ScenarioReceiverPayloadType* commPayload)
+bool receiverPayloadDialog::saveValues(ScenarioReceiverPayloadType* receiverPayload)
 {
 
-    commPayload->Receiver()->PointingDirection()->setElevation(ElLineEdit->text().toDouble());
-    commPayload->Receiver()->PointingDirection()->setAzimuth(AzLineEdit->text().toDouble());
+    receiverPayload->Receiver()->PointingDirection()->setElevation(ElLineEdit->text().toDouble());
+    receiverPayload->Receiver()->PointingDirection()->setAzimuth(AzLineEdit->text().toDouble());
     //The cones are missing
-    commPayload->Receiver()->EMproperties()->setEfficiency(EfficiencyLineEdit->text().toDouble());
-    commPayload->Receiver()->EMproperties()->setTiltAngle(TiltLineEdit->text().toDouble());
-    commPayload->Receiver()->EMproperties()->setGainMax(GainLineEdit->text().toDouble());
-    commPayload->Receiver()->EMproperties()->setDiameter(DiameterLineEdit->text().toDouble());
-    commPayload->Receiver()->EMproperties()->setAngularBeamWidth(BeamLineEdit->text().toDouble());
+    receiverPayload->Receiver()->EMproperties()->setEfficiency(EfficiencyLineEdit->text().toDouble());
+    receiverPayload->Receiver()->EMproperties()->setTiltAngle(TiltLineEdit->text().toDouble());
+    receiverPayload->Receiver()->EMproperties()->setGainMax(GainLineEdit->text().toDouble());
+    receiverPayload->Receiver()->EMproperties()->setDiameter(DiameterLineEdit->text().toDouble());
+    receiverPayload->Receiver()->EMproperties()->setAngularBeamWidth(BeamLineEdit->text().toDouble());
 
-    commPayload->Receiver()->SystemTemperature()->setRxNoiseFigure(RxNoiseFigureLineEdit->text().toDouble());
-    commPayload->Receiver()->SystemTemperature()->setThermoFeeder(RxFeederTmpLineEdit->text().toDouble());
-    commPayload->Receiver()->SystemTemperature()->setThermoReveicer(RxTempLineEdit->text().toDouble());
+    double frequency=FrequencyLineEdit->text().toDouble();
+    frequency=frequency*1000000000;
+    receiverPayload->Budget()->setFrequencyBand(frequency);
 
-    commPayload->Receiver()->setFeederLossRx(RxFeederLossLineEdit->text().toDouble());
-    commPayload->Receiver()->setDepointingLossRx(RxDepointingLossLineEdit->text().toDouble());
+    receiverPayload->Receiver()->SystemTemperature()->setRxNoiseFigure(RxNoiseFigureLineEdit->text().toDouble());
+    receiverPayload->Receiver()->SystemTemperature()->setThermoFeeder(RxFeederTmpLineEdit->text().toDouble());
+    receiverPayload->Receiver()->SystemTemperature()->setThermoReveicer(RxTempLineEdit->text().toDouble());
+
+    receiverPayload->Receiver()->setFeederLossRx(RxFeederLossLineEdit->text().toDouble());
+    receiverPayload->Receiver()->setDepointingLossRx(RxDepointingLossLineEdit->text().toDouble());
 
 
-    antennaCalculations(commPayload);
+    antennaCalculations(receiverPayload);
 
     //These lines allow the GUI to remember which choice the user did for the antenna parameters
     if(GainMaxRadioButton->isChecked()==true)
@@ -152,12 +165,13 @@ bool receiverPayloadDialog::saveValues(ScenarioReceiverPayloadType* commPayload)
 }
 
 
-void receiverPayloadDialog::antennaCalculations(ScenarioReceiverPayloadType* commPayload){
+void receiverPayloadDialog::antennaCalculations(ScenarioReceiverPayloadType* receiverPayload){
 
     double Pi=3.141592;
     double lightSpeed=SPEED_OF_LIGHT;
-    double efficiency=commPayload->Receiver()->EMproperties()->Efficiency();
-    double frequency=14.5E9;
+    double efficiency=receiverPayload->Receiver()->EMproperties()->Efficiency();
+    double frequency=receiverPayload->Budget()->FrequencyBand();
+
 
 
     double diameter, beamwidth, gainMaxDb, gainMax;
@@ -166,7 +180,7 @@ void receiverPayloadDialog::antennaCalculations(ScenarioReceiverPayloadType* com
     {
         qDebug()<<"This means that GainRadioButton is checked";
         //Since we have the Gain max
-        gainMaxDb=commPayload->Receiver()->EMproperties()->GainMax();
+        gainMaxDb=receiverPayload->Receiver()->EMproperties()->GainMax();
         gainMax=pow(10, gainMaxDb/10);
         diameter=(lightSpeed/(Pi*frequency))*sqrt(gainMax/(efficiency/100));
         beamwidth=70*(lightSpeed/(frequency*diameter));
@@ -182,7 +196,7 @@ void receiverPayloadDialog::antennaCalculations(ScenarioReceiverPayloadType* com
     if(DiameterRadioButton->isChecked()==true)
     {
         qDebug()<<"This means that DiameterRadioButton is checked";
-        diameter=commPayload->Receiver()->EMproperties()->Diameter();
+        diameter=receiverPayload->Receiver()->EMproperties()->Diameter();
 
 
         gainMax=(efficiency/100)*pow((Pi*diameter*frequency/lightSpeed),2); //natural units
@@ -198,7 +212,7 @@ void receiverPayloadDialog::antennaCalculations(ScenarioReceiverPayloadType* com
     if(BeamWidthRadioButton->isChecked()==true)
     {
         qDebug()<<"This means that BeamRadioButton is checked";
-        beamwidth=commPayload->Receiver()->EMproperties()->AngularBeamWidth();
+        beamwidth=receiverPayload->Receiver()->EMproperties()->AngularBeamWidth();
 
         gainMax=(efficiency/100)*48360/pow(beamwidth,2);
         gainMaxDb=10*log10(gainMax); //in dB

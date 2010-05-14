@@ -314,8 +314,13 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioBudgetType> Budget() const
+    { return m_Budget; }
+    void setBudget(QSharedPointer<ScenarioBudgetType> Budget)
+    { m_Budget = Budget; }
 
 private:
+    QSharedPointer<ScenarioBudgetType> m_Budget;
 };
 
 
