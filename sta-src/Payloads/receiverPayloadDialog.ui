@@ -252,7 +252,7 @@
      <property name="geometry">
       <rect>
        <x>300</x>
-       <y>-4</y>
+       <y>10</y>
        <width>257</width>
        <height>105</height>
       </rect>
@@ -339,7 +339,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>88</y>
+       <y>90</y>
        <width>281</width>
        <height>129</height>
       </rect>
@@ -429,7 +429,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>-4</y>
+       <y>10</y>
        <width>281</width>
        <height>93</height>
       </rect>
@@ -443,7 +443,7 @@
         <x>34</x>
         <y>24</y>
         <width>237</width>
-        <height>61</height>
+        <height>64</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -711,7 +711,7 @@
         <item>
          <widget class="QLineEdit" name="ElLineEdit">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="maximumSize">
            <size>
@@ -737,7 +737,7 @@
         <item>
          <widget class="QLineEdit" name="AzLineEdit">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="maximumSize">
            <size>
@@ -961,8 +961,8 @@
      <y>114</y>
     </hint>
     <hint type="destinationlabel">
-     <x>233</x>
-     <y>141</y>
+     <x>265</x>
+     <y>171</y>
     </hint>
    </hints>
   </connection>
@@ -977,8 +977,8 @@
      <y>111</y>
     </hint>
     <hint type="destinationlabel">
-     <x>249</x>
-     <y>183</y>
+     <x>265</x>
+     <y>212</y>
     </hint>
    </hints>
   </connection>
@@ -1009,8 +1009,8 @@
      <y>162</y>
     </hint>
     <hint type="destinationlabel">
-     <x>266</x>
-     <y>162</y>
+     <x>265</x>
+     <y>171</y>
     </hint>
    </hints>
   </connection>
@@ -1025,8 +1025,8 @@
      <y>162</y>
     </hint>
     <hint type="destinationlabel">
-     <x>266</x>
-     <y>203</y>
+     <x>265</x>
+     <y>212</y>
     </hint>
    </hints>
   </connection>
@@ -1073,8 +1073,40 @@
      <y>198</y>
     </hint>
     <hint type="destinationlabel">
-     <x>266</x>
-     <y>203</y>
+     <x>265</x>
+     <y>212</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ConstantTempRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>AntennaTempLineEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>384</x>
+     <y>193</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>468</x>
+     <y>192</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CalculatedTempRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>AntennaTempLineEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>376</x>
+     <y>225</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>453</x>
+     <y>199</y>
     </hint>
    </hints>
   </connection>

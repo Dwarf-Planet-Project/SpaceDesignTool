@@ -138,6 +138,7 @@ public:
 
     bool realize3DViewRepresentation(CelestiaInterface* celestia);
     double elevationAngle(const SpaceObject* spacecraft, double t) const;
+    double getRange(const SpaceObject* spacecraft, double t) const;
 
     QString name;
     const StaBody* centralBody;

@@ -84,7 +84,7 @@
         <x>4</x>
         <y>24</y>
         <width>221</width>
-        <height>97</height>
+        <height>99</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -178,7 +178,7 @@
         <x>4</x>
         <y>24</y>
         <width>221</width>
-        <height>93</height>
+        <height>99</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -267,7 +267,7 @@
      <property name="geometry">
       <rect>
        <x>250</x>
-       <y>-4</y>
+       <y>10</y>
        <width>261</width>
        <height>101</height>
       </rect>
@@ -346,9 +346,9 @@
      <property name="geometry">
       <rect>
        <x>252</x>
-       <y>96</y>
+       <y>100</y>
        <width>261</width>
-       <height>101</height>
+       <height>91</height>
       </rect>
      </property>
      <property name="title">
@@ -450,9 +450,9 @@
      <property name="geometry">
       <rect>
        <x>8</x>
-       <y>-4</y>
+       <y>10</y>
        <width>237</width>
-       <height>201</height>
+       <height>181</height>
       </rect>
      </property>
      <property name="title">
@@ -464,7 +464,7 @@
         <x>4</x>
         <y>24</y>
         <width>225</width>
-        <height>92</height>
+        <height>99</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -475,7 +475,7 @@
            <item>
             <widget class="QLabel" name="PowerLabel">
              <property name="text">
-              <string>Power [dBW]</string>
+              <string>Power [W]</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -512,7 +512,7 @@
               </size>
              </property>
              <property name="text">
-              <string>0</string>
+              <string/>
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -669,7 +669,7 @@
        <x>168</x>
        <y>12</y>
        <width>226</width>
-       <height>91</height>
+       <height>95</height>
       </rect>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -706,7 +706,7 @@
         <item>
          <widget class="QLineEdit" name="ElLineEdit">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="maximumSize">
            <size>
@@ -732,7 +732,7 @@
         <item>
          <widget class="QLineEdit" name="AzLineEdit">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="maximumSize">
            <size>
@@ -788,7 +788,7 @@
        <x>160</x>
        <y>28</y>
        <width>201</width>
-       <height>125</height>
+       <height>128</height>
       </rect>
      </property>
      <layout class="QFormLayout" name="formLayout_2">
@@ -985,8 +985,8 @@
      <y>106</y>
     </hint>
     <hint type="destinationlabel">
-     <x>242</x>
-     <y>146</y>
+     <x>241</x>
+     <y>155</y>
     </hint>
    </hints>
   </connection>

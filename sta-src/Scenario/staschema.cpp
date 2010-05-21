@@ -2636,6 +2636,8 @@ bool ScenarioReceiver::load(const QDomElement& e, QDomElement* next)
         *next = next->nextSiblingElement();
         m_DepointingLossRx = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
+        m_TrackingChoice = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
     if (next->tagName() == "tns:SystemTemperature")
         m_SystemTemperature = QSharedPointer<ScenarioSystemTemperature>(ScenarioSystemTemperature::create(*next));
     *next = next->nextSiblingElement();
@@ -2648,6 +2650,7 @@ QDomElement ScenarioReceiver::toDomElement(QDomDocument& doc, const QString& ele
     e.appendChild(createSimpleElement(doc, "tns:GoverT", m_GoverT));
     e.appendChild(createSimpleElement(doc, "tns:FeederLossRx", m_FeederLossRx));
     e.appendChild(createSimpleElement(doc, "tns:DepointingLossRx", m_DepointingLossRx));
+    e.appendChild(createSimpleElement(doc, "tns:TrackingChoice", m_TrackingChoice));
     if (!m_SystemTemperature.isNull())
     {
         QString tagName = "SystemTemperature";
@@ -2669,12 +2672,12 @@ QList<QSharedPointer<ScenarioObject> >ScenarioReceiver::children() const
 
 // ScenarioSystemTemperature
 ScenarioSystemTemperature::ScenarioSystemTemperature() :
+    m_Tantenna(0.0),
     m_RxNoiseFigure(0.0),
     m_ThermoFeeder(0.0),
     m_ThermoReveicer(0.0),
     m_TotalSystemTemp(0.0)
 {
-    m_Tantenna = QSharedPointer<ScenarioTantenna>(new ScenarioTantenna());
 }
 
 ScenarioSystemTemperature* ScenarioSystemTemperature::create(const QDomElement& e)
@@ -2692,9 +2695,10 @@ ScenarioSystemTemperature* ScenarioSystemTemperature::create(const QDomElement& 
 bool ScenarioSystemTemperature::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    if (next->tagName() == "tns:Tantenna")
-        m_Tantenna = QSharedPointer<ScenarioTantenna>(ScenarioTantenna::create(*next));
-    *next = next->nextSiblingElement();
+        m_choiceTantenna = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_Tantenna = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
         m_RxNoiseFigure = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
         m_ThermoFeeder = parseDouble(next->firstChild().toText().data());
@@ -2709,12 +2713,8 @@ bool ScenarioSystemTemperature::load(const QDomElement& e, QDomElement* next)
 QDomElement ScenarioSystemTemperature::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc, elementName);
-    if (!m_Tantenna.isNull())
-    {
-        QString tagName = "Tantenna";
-        QDomElement child = m_Tantenna->toDomElement(doc, tagName);
-        e.appendChild(child);
-    }
+    e.appendChild(createSimpleElement(doc, "tns:choiceTantenna", m_choiceTantenna));
+    e.appendChild(createSimpleElement(doc, "tns:Tantenna", m_Tantenna));
     e.appendChild(createSimpleElement(doc, "tns:RxNoiseFigure", m_RxNoiseFigure));
     e.appendChild(createSimpleElement(doc, "tns:ThermoFeeder", m_ThermoFeeder));
     e.appendChild(createSimpleElement(doc, "tns:ThermoReveicer", m_ThermoReveicer));
@@ -2723,53 +2723,6 @@ QDomElement ScenarioSystemTemperature::toDomElement(QDomDocument& doc, const QSt
 }
 
 QList<QSharedPointer<ScenarioObject> >ScenarioSystemTemperature::children() const
-{
-    QList<QSharedPointer<ScenarioObject> > children;
-    if (!m_Tantenna.isNull()) children << m_Tantenna;
-    return children;
-}
-
-
-
-
-// ScenarioTantenna
-ScenarioTantenna::ScenarioTantenna() :
-    m_Tsky(0.0),
-    m_Tground(0.0)
-{
-}
-
-ScenarioTantenna* ScenarioTantenna::create(const QDomElement& e)
-{
-    ScenarioTantenna* v;
-    {
-        v = new ScenarioTantenna;
-        QDomElement nextElement = e.firstChildElement();
-        v->load(e, &nextElement);
-        return v;
-    }
-    return NULL;
-}
-
-bool ScenarioTantenna::load(const QDomElement& e, QDomElement* next)
-{
-    ScenarioObject::load(e, next);
-        m_Tsky = parseDouble(next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-        m_Tground = parseDouble(next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-    return true;
-}
-
-QDomElement ScenarioTantenna::toDomElement(QDomDocument& doc, const QString& elementName) const
-{
-    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
-    e.appendChild(createSimpleElement(doc, "tns:Tsky", m_Tsky));
-    e.appendChild(createSimpleElement(doc, "tns:Tground", m_Tground));
-    return e;
-}
-
-QList<QSharedPointer<ScenarioObject> >ScenarioTantenna::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
     return children;
@@ -2937,7 +2890,11 @@ bool ScenarioGroundStationEnvironment::load(const QDomElement& e, QDomElement* n
     *next = next->nextSiblingElement();
         m_OxygenAtt = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
+        m_OxChoice = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
         m_WaterVapourAtt = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_WaterVapourChoice = (next->firstChild().toText().data());
         *next = next->nextSiblingElement();
     return true;
 }
@@ -2952,7 +2909,9 @@ QDomElement ScenarioGroundStationEnvironment::toDomElement(QDomDocument& doc, co
         e.appendChild(child);
     }
     e.appendChild(createSimpleElement(doc, "tns:OxygenAtt", m_OxygenAtt));
+    e.appendChild(createSimpleElement(doc, "tns:OxChoice", m_OxChoice));
     e.appendChild(createSimpleElement(doc, "tns:WaterVapourAtt", m_WaterVapourAtt));
+    e.appendChild(createSimpleElement(doc, "tns:WaterVapourChoice", m_WaterVapourChoice));
     return e;
 }
 
@@ -2989,6 +2948,8 @@ bool ScenarioRain::load(const QDomElement& e, QDomElement* next)
     ScenarioObject::load(e, next);
         m_PercentageExceededLimit = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
+        m_RainChoice = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
     return true;
 }
 
@@ -2996,6 +2957,7 @@ QDomElement ScenarioRain::toDomElement(QDomDocument& doc, const QString& element
 {
     QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     e.appendChild(createSimpleElement(doc, "tns:PercentageExceededLimit", m_PercentageExceededLimit));
+    e.appendChild(createSimpleElement(doc, "tns:RainChoice", m_RainChoice));
     return e;
 }
 

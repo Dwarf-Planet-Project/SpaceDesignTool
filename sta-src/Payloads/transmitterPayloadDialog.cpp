@@ -81,8 +81,16 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* transm
         BeamWidthRadioButton->toggle();
 
 
-    ElLineEdit->setText(QString::number(transmitterPayload->Transmitter()->PointingDirection()->elevation()));
-    AzLineEdit->setText(QString::number(transmitterPayload->Transmitter()->PointingDirection()->azimuth()));
+    double elevation=transmitterPayload->Transmitter()->PointingDirection()->elevation();
+    elevation=elevation*RAD2DEG;
+    if(elevation>90)
+        ElLineEdit->setText(QString::number(90));
+    else
+        ElLineEdit->setText(QString::number(elevation));
+
+    double azimuth=transmitterPayload->Transmitter()->PointingDirection()->azimuth();
+    azimuth=azimuth*RAD2DEG;
+    AzLineEdit->setText(QString::number(azimuth));
 
     TxFeederLossLineEdit->setText(QString::number(transmitterPayload->Transmitter()->FedderLossTx()));
     TxDepointingLossLineEdit->setText(QString::number(transmitterPayload->Transmitter()->DepointingLossTx()));
@@ -91,8 +99,11 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* transm
     DiameterLineEdit->setText(QString::number(transmitterPayload->Transmitter()->EMproperties()->Diameter()));
     BeamLineEdit->setText(QString::number(transmitterPayload->Transmitter()->EMproperties()->AngularBeamWidth()));
     EfficiencyLineEdit->setText(QString::number(transmitterPayload->Transmitter()->EMproperties()->Efficiency()));
-    TiltLineEdit->setText(QString::number(transmitterPayload->Transmitter()->EMproperties()->TiltAngle()));
     PowerLineEdit->setText(QString::number(transmitterPayload->Transmitter()->TransmittingPower()));
+
+    double tilt=transmitterPayload->Transmitter()->EMproperties()->TiltAngle();
+    tilt=tilt*RAD2DEG;
+    TiltLineEdit->setText(QString::number(tilt));
 
     double frequency=transmitterPayload->Budget()->FrequencyBand();
     frequency=frequency/1000000000;//from Hz to GHz
@@ -133,12 +144,19 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* transm
      antennaCalculations(transmitterPayload);
 
      //These lines allow the GUI to remember which choice the user did for the type of polarisation
-     if(polarisationTypeTransmitter=="Linear")
-         PolarisationComboBox->setCurrentIndex(0);
-     if(polarisationTypeTransmitter=="Right")
-         PolarisationComboBox->setCurrentIndex(1);
-     if(polarisationTypeTransmitter=="Left")
-         PolarisationComboBox->setCurrentIndex(2);
+     if(polarisationTypeTransmitter=="Linear"){
+         TiltLineEdit->setEnabled(true);
+         PolarisationComboBox->setCurrentIndex(0);}
+     if(polarisationTypeTransmitter=="rightCircular"){
+         TiltLineEdit->setText(QString::number(45));
+         TiltLineEdit->setDisabled(true);
+         transmitterPayload->Transmitter()->EMproperties()->setTiltAngle(45*DEG2RAD);
+         PolarisationComboBox->setCurrentIndex(1);}
+     if(polarisationTypeTransmitter=="leftCircular"){
+         TiltLineEdit->setText(QString::number(45));
+         TiltLineEdit->setDisabled(true);
+         transmitterPayload->Transmitter()->EMproperties()->setTiltAngle(45*DEG2RAD);
+         PolarisationComboBox->setCurrentIndex(2);}
 
 
 
@@ -149,15 +167,26 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* transm
 bool transmitterPayloadDialog::saveValues(ScenarioTransmitterPayloadType* transmitterPayload)
 {
 
+    double elevation=ElLineEdit->text().toDouble();
+    if(elevation<=90){
+    elevation=elevation*DEG2RAD;
+    }else{
+    elevation=90*DEG2RAD;
+    }
+    transmitterPayload->Transmitter()->PointingDirection()->setElevation(elevation);
 
-    transmitterPayload->Transmitter()->PointingDirection()->setElevation(ElLineEdit->text().toDouble());
-    transmitterPayload->Transmitter()->PointingDirection()->setAzimuth(AzLineEdit->text().toDouble());
+    double azimuth=AzLineEdit->text().toDouble();
+    azimuth=azimuth*DEG2RAD;
+    transmitterPayload->Transmitter()->PointingDirection()->setAzimuth(azimuth);
 
     transmitterPayload->Transmitter()->EMproperties()->setGainMax(GainLineEdit->text().toDouble());
     transmitterPayload->Transmitter()->EMproperties()->setDiameter(DiameterLineEdit->text().toDouble());
     transmitterPayload->Transmitter()->EMproperties()->setAngularBeamWidth(BeamLineEdit->text().toDouble());
     transmitterPayload->Transmitter()->EMproperties()->setEfficiency(EfficiencyLineEdit->text().toDouble());
-    transmitterPayload->Transmitter()->EMproperties()->setTiltAngle(TiltLineEdit->text().toDouble());
+
+    double tilt=TiltLineEdit->text().toDouble();
+    tilt=tilt*DEG2RAD;
+    transmitterPayload->Transmitter()->EMproperties()->setTiltAngle(tilt);
 
     double frequency=FrequencyLineEdit->text().toDouble();
     frequency=frequency*1000000000;
@@ -183,12 +212,18 @@ bool transmitterPayloadDialog::saveValues(ScenarioTransmitterPayloadType* transm
         antennaRadioButtonTransmitter=2;
 
     //These lines allow the GUI to remember which choice the user did for the type of polarisation
-    if(PolarisationComboBox->currentText()=="Linear")
+    if(PolarisationComboBox->currentText()=="Linear"){
         polarisationTypeTransmitter="Linear";
-    if(PolarisationComboBox->currentText()=="Right Circular")
-        polarisationTypeTransmitter="Right";
-    if(PolarisationComboBox->currentText()=="Left Circular")
-        polarisationTypeTransmitter="Left";
+        transmitterPayload->Transmitter()->EMproperties()->setPolarisation("Linear");
+    }
+    if(PolarisationComboBox->currentText()=="Right Circular"){
+        polarisationTypeTransmitter="rightCircular";
+        transmitterPayload->Transmitter()->EMproperties()->setPolarisation("rightCircular");
+    }
+    if(PolarisationComboBox->currentText()=="Left Circular"){
+        transmitterPayload->Transmitter()->EMproperties()->setPolarisation("leftCircular");
+        polarisationTypeTransmitter="leftCircular";
+    }
 
     return true;
 }
@@ -348,6 +383,14 @@ void transmitterPayloadDialog::on_PolarisationGroupBox_toggled(bool)
 
 void transmitterPayloadDialog::on_PolarisationComboBox_activated(const QString&)
 {
+        if(PolarisationComboBox->currentText()=="Right Circular" || PolarisationComboBox->currentText()=="Left Circular")
+       {
+         TiltLineEdit->setText(QString::number(45));
+         TiltLineEdit->setDisabled(true);
+       }
+        if(PolarisationComboBox->currentText()=="Linear"){
+            TiltLineEdit->setText(QString::number(0));
+            TiltLineEdit->setEnabled(true);}
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 

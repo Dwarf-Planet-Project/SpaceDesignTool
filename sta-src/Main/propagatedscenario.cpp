@@ -429,7 +429,23 @@ GroundObject::elevationAngle(const SpaceObject* spacecraft, double t) const
     return sta::halfPi() - angleFromZenith;
 }
 
+//This function is added by Ricardo Noriega to get the range between a groundStation and a spacecraft
+double GroundObject::getRange(const SpaceObject *spacecraft, double t) const{
 
+    sta::StateVector spacecraftState;
+
+    spacecraft->getStateVector(t, *centralBody, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &spacecraftState);
+    Vector3d stationPos = centralBody->planetographicToCartesian(latitude, longitude, 0.0);
+
+    // TODO: should use ellipsoid normal
+
+    Vector3d toSpacecraft = (spacecraftState.position - stationPos);
+
+    double range=toSpacecraft.norm();
+
+    return range; //Km
+
+}
 
 /****** PropagatedScenario ******/
 

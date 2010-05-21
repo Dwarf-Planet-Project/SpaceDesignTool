@@ -16,11 +16,14 @@
 										<complexType>
 											<sequence>
 												<element name="PercentageExceededLimit" type="double"></element>
+												<element name="RainChoice" type="string"></element>
 											</sequence>
 										</complexType>
 									</element>
 									<element name="OxygenAtt" type="double"></element>
+									<element name="OxChoice" type="string"></element>
 									<element name="WaterVapourAtt" type="double"></element>
+									<element name="WaterVapourChoice" type="string"></element>
 								</sequence>
 							</complexType>
 						</element>

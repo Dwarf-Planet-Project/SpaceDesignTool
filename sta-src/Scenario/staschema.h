@@ -77,7 +77,6 @@ class ScenarioTransmitter;
 class ScenarioModulation;
 class ScenarioReceiver;
 class ScenarioSystemTemperature;
-class ScenarioTantenna;
 class ScenarioAeroCoefFileType;
 class ScenarioGroundStation;
 class ScenarioGroundStationEnvironment;
@@ -1847,6 +1846,10 @@ public:
     { return m_DepointingLossRx; }
     void setDepointingLossRx(double DepointingLossRx)
     { m_DepointingLossRx = DepointingLossRx; }
+    QString TrackingChoice() const
+    { return m_TrackingChoice; }
+    void setTrackingChoice(QString TrackingChoice)
+    { m_TrackingChoice = TrackingChoice; }
     QSharedPointer<ScenarioSystemTemperature> SystemTemperature() const
     { return m_SystemTemperature; }
     void setSystemTemperature(QSharedPointer<ScenarioSystemTemperature> SystemTemperature)
@@ -1856,6 +1859,7 @@ private:
     double m_GoverT;
     double m_FeederLossRx;
     double m_DepointingLossRx;
+    QString m_TrackingChoice;
     QSharedPointer<ScenarioSystemTemperature> m_SystemTemperature;
 };
 
@@ -1872,9 +1876,13 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioTantenna> Tantenna() const
+    QString choiceTantenna() const
+    { return m_choiceTantenna; }
+    void setChoiceTantenna(QString choiceTantenna)
+    { m_choiceTantenna = choiceTantenna; }
+    double Tantenna() const
     { return m_Tantenna; }
-    void setTantenna(QSharedPointer<ScenarioTantenna> Tantenna)
+    void setTantenna(double Tantenna)
     { m_Tantenna = Tantenna; }
     double RxNoiseFigure() const
     { return m_RxNoiseFigure; }
@@ -1894,38 +1902,12 @@ public:
     { m_TotalSystemTemp = TotalSystemTemp; }
 
 private:
-    QSharedPointer<ScenarioTantenna> m_Tantenna;
+    QString m_choiceTantenna;
+    double m_Tantenna;
     double m_RxNoiseFigure;
     double m_ThermoFeeder;
     double m_ThermoReveicer;
     double m_TotalSystemTemp;
-};
-
-
-// ScenarioTantenna
-class ScenarioTantenna : public ScenarioObject
-{
-public:
-    ScenarioTantenna();
-    static ScenarioTantenna* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "Tantenna"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    double Tsky() const
-    { return m_Tsky; }
-    void setTsky(double Tsky)
-    { m_Tsky = Tsky; }
-    double Tground() const
-    { return m_Tground; }
-    void setTground(double Tground)
-    { m_Tground = Tground; }
-
-private:
-    double m_Tsky;
-    double m_Tground;
 };
 
 
@@ -2041,15 +2023,25 @@ public:
     { return m_OxygenAtt; }
     void setOxygenAtt(double OxygenAtt)
     { m_OxygenAtt = OxygenAtt; }
+    QString OxChoice() const
+    { return m_OxChoice; }
+    void setOxChoice(QString OxChoice)
+    { m_OxChoice = OxChoice; }
     double WaterVapourAtt() const
     { return m_WaterVapourAtt; }
     void setWaterVapourAtt(double WaterVapourAtt)
     { m_WaterVapourAtt = WaterVapourAtt; }
+    QString WaterVapourChoice() const
+    { return m_WaterVapourChoice; }
+    void setWaterVapourChoice(QString WaterVapourChoice)
+    { m_WaterVapourChoice = WaterVapourChoice; }
 
 private:
     QSharedPointer<ScenarioRain> m_Rain;
     double m_OxygenAtt;
+    QString m_OxChoice;
     double m_WaterVapourAtt;
+    QString m_WaterVapourChoice;
 };
 
 
@@ -2069,9 +2061,14 @@ public:
     { return m_PercentageExceededLimit; }
     void setPercentageExceededLimit(double PercentageExceededLimit)
     { m_PercentageExceededLimit = PercentageExceededLimit; }
+    QString RainChoice() const
+    { return m_RainChoice; }
+    void setRainChoice(QString RainChoice)
+    { m_RainChoice = RainChoice; }
 
 private:
     double m_PercentageExceededLimit;
+    QString m_RainChoice;
 };
 
 

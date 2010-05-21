@@ -556,17 +556,12 @@
 						<element name="GoverT" type="double"></element>
 						<element name="FeederLossRx" type="double"></element>
 						<element name="DepointingLossRx" type="double"></element>
+						<element name="TrackingChoice" type="string"></element>
 						<element name="SystemTemperature">
 							<complexType>
 								<sequence>
-									<element name="Tantenna">
-										<complexType>
-											<sequence>
-												<element name="Tsky" type="double"></element>
-												<element name="Tground" type="double"></element>
-											</sequence>
-										</complexType>
-									</element>
+									<element name="choiceTantenna" type="string"></element>
+									<element name="Tantenna" type="double"></element>
 									<element name="RxNoiseFigure" type="double"></element>
 									<element name="ThermoFeeder" type="double"></element>
 									<element name="ThermoReveicer" type="double"></element>

@@ -26,7 +26,6 @@
 #include <QDebug>
 #include <Astro-Core/constants.h>
 
-
 int antennaRadioButtonReceiver;
 QString polarisationTypeReceiver="Linear";
 
@@ -42,7 +41,10 @@ receiverPayloadDialog::receiverPayloadDialog( QWidget * parent, Qt::WindowFlags 
         efficiencyValidator->setBottom(0.0);
         efficiencyValidator->setTop(100.0);
 
-        ElLineEdit->setValidator(positiveDoubleValidator);
+        QDoubleValidator* elevationValidator = new QDoubleValidator(this);
+        elevationValidator->setRange(0, 90, 2);
+
+        ElLineEdit->setValidator(elevationValidator);
 
         RxFeederLossLineEdit->setValidator(positiveDoubleValidator);
         RxDepointingLossLineEdit->setValidator(positiveDoubleValidator);
@@ -80,8 +82,18 @@ bool receiverPayloadDialog::loadValues(ScenarioReceiverPayloadType* receiverPayl
     if(antennaRadioButtonReceiver==2)
         BeamWidthRadioButton->toggle();
 
-    ElLineEdit->setText(QString::number((receiverPayload->Receiver()->PointingDirection()->elevation())*57.2957794));
-    AzLineEdit->setText(QString::number(receiverPayload->Receiver()->PointingDirection()->azimuth()));
+    double elevation=receiverPayload->Receiver()->PointingDirection()->elevation();
+    elevation=elevation*RAD2DEG;
+    qDebug()<<"Que coño elevación tengo? "<<elevation;
+    if(elevation>90)
+        ElLineEdit->setText(QString::number(90));
+    else
+        ElLineEdit->setText(QString::number(elevation));
+
+
+    double azimuth=receiverPayload->Receiver()->PointingDirection()->azimuth();
+    azimuth=azimuth*RAD2DEG;
+    AzLineEdit->setText(QString::number(azimuth));
 
     //The cones are missing
     RxFeederLossLineEdit->setText(QString::number(receiverPayload->Receiver()->FeederLossRx()));
@@ -91,7 +103,10 @@ bool receiverPayloadDialog::loadValues(ScenarioReceiverPayloadType* receiverPayl
     DiameterLineEdit->setText(QString::number(receiverPayload->Receiver()->EMproperties()->Diameter()));
     BeamLineEdit->setText(QString::number(receiverPayload->Receiver()->EMproperties()->AngularBeamWidth()));
     EfficiencyLineEdit->setText(QString::number(receiverPayload->Receiver()->EMproperties()->Efficiency()));
-    TiltLineEdit->setText(QString::number(receiverPayload->Receiver()->EMproperties()->TiltAngle()));
+
+    double tilt=receiverPayload->Receiver()->EMproperties()->TiltAngle();
+    tilt=tilt*RAD2DEG;
+    TiltLineEdit->setText(QString::number(tilt));
 
     double frequency=receiverPayload->Budget()->FrequencyBand();
     frequency=frequency/1000000000;//from Hz to GHz
@@ -101,16 +116,32 @@ bool receiverPayloadDialog::loadValues(ScenarioReceiverPayloadType* receiverPayl
     RxTempLineEdit->setText(QString::number(receiverPayload->Receiver()->SystemTemperature()->ThermoReveicer()));
     RxNoiseFigureLineEdit->setText(QString::number(receiverPayload->Receiver()->SystemTemperature()->RxNoiseFigure()));
 
+    if(receiverPayload->Receiver()->SystemTemperature()->choiceTantenna()=="calculated")
+        CalculatedTempRadioButton->setChecked(true);
+    if(receiverPayload->Receiver()->SystemTemperature()->choiceTantenna()=="constant")
+        ConstantTempRadioButton->setChecked(true);
+
+    AntennaTempLineEdit->setText(QString::number(receiverPayload->Receiver()->SystemTemperature()->Tantenna()));
+
 
     antennaCalculations(receiverPayload);
 
     //These lines allow the GUI to remember which choice the user did for the type of polarisation
-    if(polarisationTypeReceiver=="Linear")
-        PolarisationComboBox->setCurrentIndex(0);
-    if(polarisationTypeReceiver=="Right")
-        PolarisationComboBox->setCurrentIndex(1);
-    if(polarisationTypeReceiver=="Left")
-        PolarisationComboBox->setCurrentIndex(2);
+    if(polarisationTypeReceiver=="Linear"){
+
+        TiltLineEdit->setEnabled(true);
+        PolarisationComboBox->setCurrentIndex(0);}
+    if(polarisationTypeReceiver=="rightCircular"){
+        TiltLineEdit->setText(QString::number(45));
+        TiltLineEdit->setDisabled(true);
+        receiverPayload->Receiver()->EMproperties()->setTiltAngle(45*DEG2RAD);
+        PolarisationComboBox->setCurrentIndex(1);}
+
+    if(polarisationTypeReceiver=="leftCircular"){
+        TiltLineEdit->setText(QString::number(45));
+        TiltLineEdit->setDisabled(true);
+        receiverPayload->Receiver()->EMproperties()->setTiltAngle(45*DEG2RAD);
+        PolarisationComboBox->setCurrentIndex(2);}
 
 
     return true;
@@ -120,14 +151,28 @@ bool receiverPayloadDialog::loadValues(ScenarioReceiverPayloadType* receiverPayl
 bool receiverPayloadDialog::saveValues(ScenarioReceiverPayloadType* receiverPayload)
 {
 
-    receiverPayload->Receiver()->PointingDirection()->setElevation(ElLineEdit->text().toDouble());
-    receiverPayload->Receiver()->PointingDirection()->setAzimuth(AzLineEdit->text().toDouble());
+    double elevation=ElLineEdit->text().toDouble();
+    if(elevation<=90){
+    elevation=elevation*DEG2RAD;
+    }else{
+    elevation=90*DEG2RAD;
+    }
+    receiverPayload->Receiver()->PointingDirection()->setElevation(elevation);
+
+    double azimuth=AzLineEdit->text().toDouble();
+    azimuth=azimuth*DEG2RAD;
+    receiverPayload->Receiver()->PointingDirection()->setAzimuth(azimuth);
+
     //The cones are missing
     receiverPayload->Receiver()->EMproperties()->setEfficiency(EfficiencyLineEdit->text().toDouble());
-    receiverPayload->Receiver()->EMproperties()->setTiltAngle(TiltLineEdit->text().toDouble());
+
     receiverPayload->Receiver()->EMproperties()->setGainMax(GainLineEdit->text().toDouble());
     receiverPayload->Receiver()->EMproperties()->setDiameter(DiameterLineEdit->text().toDouble());
     receiverPayload->Receiver()->EMproperties()->setAngularBeamWidth(BeamLineEdit->text().toDouble());
+
+    double tilt=TiltLineEdit->text().toDouble();
+    tilt=tilt*DEG2RAD;
+    receiverPayload->Receiver()->EMproperties()->setTiltAngle(tilt);
 
     double frequency=FrequencyLineEdit->text().toDouble();
     frequency=frequency*1000000000;
@@ -136,6 +181,13 @@ bool receiverPayloadDialog::saveValues(ScenarioReceiverPayloadType* receiverPayl
     receiverPayload->Receiver()->SystemTemperature()->setRxNoiseFigure(RxNoiseFigureLineEdit->text().toDouble());
     receiverPayload->Receiver()->SystemTemperature()->setThermoFeeder(RxFeederTmpLineEdit->text().toDouble());
     receiverPayload->Receiver()->SystemTemperature()->setThermoReveicer(RxTempLineEdit->text().toDouble());
+
+    if(CalculatedTempRadioButton->isChecked()==true)
+        receiverPayload->Receiver()->SystemTemperature()->setChoiceTantenna("calculated");
+    else if(ConstantTempRadioButton->isChecked()==true)
+        receiverPayload->Receiver()->SystemTemperature()->setChoiceTantenna("constant");
+
+    receiverPayload->Receiver()->SystemTemperature()->setTantenna(AntennaTempLineEdit->text().toDouble());
 
     receiverPayload->Receiver()->setFeederLossRx(RxFeederLossLineEdit->text().toDouble());
     receiverPayload->Receiver()->setDepointingLossRx(RxDepointingLossLineEdit->text().toDouble());
@@ -153,12 +205,15 @@ bool receiverPayloadDialog::saveValues(ScenarioReceiverPayloadType* receiverPayl
 
 
     //These lines allow the GUI to remember which choice the user did for the type of polarisation
-    if(PolarisationComboBox->currentText()=="Linear")
+    if(PolarisationComboBox->currentText()=="Linear"){
         polarisationTypeReceiver="Linear";
-    if(PolarisationComboBox->currentText()=="Right Circular")
-        polarisationTypeReceiver="Right";
-    if(PolarisationComboBox->currentText()=="Left Circular")
-        polarisationTypeReceiver="Left";
+        receiverPayload->Receiver()->EMproperties()->setPolarisation("Linear");}
+    if(PolarisationComboBox->currentText()=="Right Circular"){
+        polarisationTypeReceiver="rightCircular";
+        receiverPayload->Receiver()->EMproperties()->setPolarisation("rightCircular");}
+    if(PolarisationComboBox->currentText()=="Left Circular"){
+        polarisationTypeReceiver="leftCircular";
+        receiverPayload->Receiver()->EMproperties()->setPolarisation("leftCircular");}
 
 
     return true;
@@ -310,6 +365,15 @@ void receiverPayloadDialog::on_PolarisationGroupBox_toggled(bool)
 
 void receiverPayloadDialog::on_PolarisationComboBox_activated(const QString&)
 {
+
+    if(PolarisationComboBox->currentText()=="Right Circular" || PolarisationComboBox->currentText()=="Left Circular")
+   {
+     TiltLineEdit->setText(QString::number(45));
+     TiltLineEdit->setDisabled(true);
+   }
+    if(PolarisationComboBox->currentText()=="Linear"){
+        TiltLineEdit->setText(QString::number(0));
+        TiltLineEdit->setEnabled(true);}
         qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
