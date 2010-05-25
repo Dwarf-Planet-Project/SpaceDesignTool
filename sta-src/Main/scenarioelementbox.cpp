@@ -33,6 +33,7 @@
 #include "sheetDelegate.h"
 #include "Scenario/scenario.h"
 #include "Astro-Core/stamath.h"
+#include <Astro-Core/constants.h>
 #include <QPushButton>
 #include <QHeaderView>
 #include <QMimeData>
@@ -178,6 +179,9 @@ static QByteArray groundStationFragment(const char* name,
     groundPosition->setAltitude(altitude);
     groundStation.Location()->setAbstract3DOFPosition(groundPosition);
     groundStation.GroundStationEnvironment()->Rain()->setPercentageExceededLimit(0.01);//Line added by Ricardo to put this value as a default
+    groundStation.GroundStationEnvironment()->setOxChoice("true");
+    groundStation.GroundStationEnvironment()->setWaterVapourChoice("true");
+    groundStation.GroundStationEnvironment()->Rain()->setRainChoice("true");
 
     QDomDocument doc;
     return fragmentText(CreateGroundStationElement(&groundStation, doc)).toUtf8();
@@ -392,8 +396,8 @@ static QByteArray externalFragment(const char* name)
 static QByteArray transmitterPayloadFragment(const char* name)
 {
     ScenarioTransmitterPayloadType transmitterPayload;
-
-    transmitterPayload.Transmitter()->PointingDirection()->setElevation(sta::Pi()/2);
+    double ElInit=(90*DEG2RAD)-0.000002;
+    transmitterPayload.Transmitter()->PointingDirection()->setElevation(ElInit);
     transmitterPayload.Transmitter()->PointingDirection()->setAzimuth(0);
 
     transmitterPayload.Transmitter()->EMproperties()->setEfficiency(55);
@@ -401,10 +405,10 @@ static QByteArray transmitterPayloadFragment(const char* name)
     transmitterPayload.Transmitter()->EMproperties()->setGainMax(30);
     transmitterPayload.Transmitter()->EMproperties()->setDiameter(0);
     transmitterPayload.Transmitter()->EMproperties()->setAngularBeamWidth(0);
+    transmitterPayload.Transmitter()->EMproperties()->setPolarisation("Linear");
 
-    transmitterPayload.Transmitter()->setTransmittingPower(0);
-
-    //THE POWER AND FREQUENCY NEEDED TO BE DEFINED
+    transmitterPayload.Transmitter()->setTransmittingPower(1000);
+    transmitterPayload.Budget()->setFrequencyBand(14500000000);//It is in hertz!!
 
     transmitterPayload.Transmitter()->setDepointingLossTx(0);
     transmitterPayload.Transmitter()->setFedderLossTx(0);
@@ -425,22 +429,27 @@ static QByteArray receiverPayloadFragment(const char* name)
 {
     ScenarioReceiverPayloadType receiverPayload;
 
-
-    receiverPayload.Receiver()->PointingDirection()->setElevation(sta::Pi()/2);
+    double ElInit=(90*DEG2RAD)-0.000002;
+    receiverPayload.Receiver()->PointingDirection()->setElevation(ElInit);
     receiverPayload.Receiver()->PointingDirection()->setAzimuth(0);
     receiverPayload.Receiver()->EMproperties()->setEfficiency(55);
     receiverPayload.Receiver()->EMproperties()->setGainMax(30);
     receiverPayload.Receiver()->EMproperties()->setTiltAngle(0);
+    receiverPayload.Receiver()->EMproperties()->setPolarisation("Linear");
+
+
     receiverPayload.Receiver()->setDepointingLossRx(0);
     receiverPayload.Receiver()->setFeederLossRx(0);
-    //FREQUENCY IS NOT DEFINED YET!!!!!
+
+    receiverPayload.Budget()->setFrequencyBand(14500000000);//It's in hertz
+
 
     receiverPayload.Receiver()->SystemTemperature()->setRxNoiseFigure(1);
     receiverPayload.Receiver()->SystemTemperature()->setThermoFeeder(290);
     receiverPayload.Receiver()->SystemTemperature()->setThermoReveicer(290);
-    receiverPayload.Receiver()->SystemTemperature()->setTotalSystemTemp(0);
-    receiverPayload.Receiver()->SystemTemperature()->Tantenna()->setTground(10);
-    receiverPayload.Receiver()->SystemTemperature()->Tantenna()->setTsky(40);
+
+    receiverPayload.Receiver()->SystemTemperature()->setChoiceTantenna("calculated");
+
 
 
 
