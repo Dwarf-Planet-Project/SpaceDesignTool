@@ -17,7 +17,7 @@ class CoverageAnalysis
 {
 public:
     CoverageAnalysis();
-    CoverageAnalysis(PropagatedScenario*);
+    CoverageAnalysis(PropagatedScenario*, int, int, int);
 
     void reportAER();
 
@@ -25,7 +25,9 @@ public:
 private:
 
     PropagatedScenario* m_propagatedScenario;
-
+    int m_indexSC;
+    int m_indexGS;
+    int m_indexMA;
 
 
 };
