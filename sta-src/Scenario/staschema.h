@@ -1603,6 +1603,14 @@ public:
     { return m_AngularBeamWidth; }
     void setAngularBeamWidth(double AngularBeamWidth)
     { m_AngularBeamWidth = AngularBeamWidth; }
+    double BandWidth() const
+    { return m_BandWidth; }
+    void setBandWidth(double BandWidth)
+    { m_BandWidth = BandWidth; }
+    QString BeamType() const
+    { return m_BeamType; }
+    void setBeamType(QString BeamType)
+    { m_BeamType = BeamType; }
 
 private:
     double m_GainMax;
@@ -1612,6 +1620,8 @@ private:
     double m_Diameter;
     double m_Efficiency;
     double m_AngularBeamWidth;
+    double m_BandWidth;
+    QString m_BeamType;
 };
 
 
@@ -1846,10 +1856,6 @@ public:
     { return m_DepointingLossRx; }
     void setDepointingLossRx(double DepointingLossRx)
     { m_DepointingLossRx = DepointingLossRx; }
-    QString TrackingChoice() const
-    { return m_TrackingChoice; }
-    void setTrackingChoice(QString TrackingChoice)
-    { m_TrackingChoice = TrackingChoice; }
     QSharedPointer<ScenarioSystemTemperature> SystemTemperature() const
     { return m_SystemTemperature; }
     void setSystemTemperature(QSharedPointer<ScenarioSystemTemperature> SystemTemperature)
@@ -1859,7 +1865,6 @@ private:
     double m_GoverT;
     double m_FeederLossRx;
     double m_DepointingLossRx;
-    QString m_TrackingChoice;
     QSharedPointer<ScenarioSystemTemperature> m_SystemTemperature;
 };
 

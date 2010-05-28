@@ -38,6 +38,9 @@
 #include <math.h>
 #include <Main/propagatedscenario.h>
 #include <Astro-Core/constants.h>
+#include <Astro-Core/stacoordsys.h>
+#include <Astro-Core/stabody.h>
+#include <Locations/environmentdialog.h>
 
 using namespace sta;
 
@@ -49,25 +52,55 @@ public:
 
     CommAnalysis();
 
-    CommAnalysis(ScenarioTransmitterPayloadType* ,ScenarioReceiverPayloadType*, PropagatedScenario*);
+    CommAnalysis(ScenarioTransmitterPayloadType* ,ScenarioReceiverPayloadType*, ScenarioGroundStationEnvironment* ,PropagatedScenario*, int, int, int, bool, bool);
 
     //Default Destructor
     ~CommAnalysis();
-
-
-    //FUNCTIONS
-
-
-    void getRange();
-    double FreeSpaceLoss();
-    double OxygenSpecificAttenuation();
+    //Public function to create the output of this module. It is the only public function in order to preserve the input data
+    void CommReports();
+double DopplerShift();
 
 private:
+
+    ///////////////////////////// PRIVATE FUNCTIONS NOT TO BE USED OUTSIDE THIS CLASS /////////////////////////////////////
+    
+    double FreeSpaceLoss();
+    double OxygenSpecificAttenuation(double frequency); //Here I pass the frequency as argument coz It has to be the groundStation frequency...I don't know how to get the parent object yet!
+    double WaterVapourSpecificAttenuation(double frequency, double latitude, double longitude);
+    double AtmosphericAttenuation(double frequency, double wpSpecAtt, double oxSpecAtt);
+    double RainAttenuation(double latitude, double longitude);
+    double SystemTempCalculations();
+    double Modulations(double EbNo);
+
+    ///////////////////////////// PRIVATE MEMBERS NOT TO BE USED OUTSIDE THIS CLASS /////////////////////////////////////
     ScenarioTransmitterPayloadType* m_transmitter;
     ScenarioReceiverPayloadType* m_receiver;
     PropagatedScenario* m_propagatedScenario;
-    ScenarioGroundStation* m_groundStation;
+    ScenarioGroundStationEnvironment* m_environment;
 
+    int m_indexSC;
+    int m_indexGS;
+    int m_indexMA;
+    bool m_flagTX; //If this flag is 1 means that the transmitter is on board a spacecraft, if it is 0, on a ground station
+    bool m_flagRX; //If this flag is 1 means that the receiver is on board a spacecraft, if it is 0, on a ground station
+
+    QList<double> elevationAngleList;//in radians
+    QList<double> rangeList;//in metres
+    QList<double> dopplerList;
+    QList<double> freeSpaceLossList;//in dB
+    QList<double> oxAttList;//in dB
+    QList<double> wvAttList;//in dB
+    QList<double> mjdList;//in mjd
+    QList<double> atmosphericAttList;//in dB
+    QList<double> rainAttenuationList;//in dB
+    QList<double> antennaTempList;//in K
+    QList<double> systemTempList;//in K
+    QList<double> carrierToNoiseDensityList;//in dB
+
+    QString antennaTempChoice;
+    QString oxcheck;
+    QString wvcheck;
+    QString raincheck;
 
 };
 

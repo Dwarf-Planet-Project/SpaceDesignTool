@@ -110,7 +110,8 @@ ASTROCORE_SOURCES = sta-src/Astro-Core/calendarTOjulian.cpp \
     sta-src/Astro-Core/propagateTHREEbody.cpp \
     sta-src/Astro-Core/rotatingTOcartesian.cpp \
     sta-src/Astro-Core/Interpolators.cpp \
-    sta-src/Astro-Core/trueAnomalyTOmeanAnomaly.cpp
+    sta-src/Astro-Core/trueAnomalyTOmeanAnomaly.cpp \
+    sta-src/Astro-Core/surfaceVelocity.cpp
 ASTROCORE_HEADERS = sta-src/Astro-Core/calendarTOjulian.h \
     sta-src/Astro-Core/date.h \
     sta-src/Astro-Core/EarthRotationState.h \
@@ -156,7 +157,8 @@ ASTROCORE_HEADERS = sta-src/Astro-Core/calendarTOjulian.h \
     sta-src/Astro-Core/propagateTHREEbody.h \
     sta-src/Astro-Core/rotatingTOcartesian.h \
     sta-src/Astro-Core/Interpolators.h \
-    sta-src/Astro-Core/trueAnomalyTOmeanAnomaly.h
+    sta-src/Astro-Core/trueAnomalyTOmeanAnomaly.h \
+    sta-src/Astro-Core/surfaceVelocity.h
 ASTROCORE_FORMS = sta-src/Astro-Core/trajectorypropagation.ui
 
 # ############# Entry module ##################
@@ -196,11 +198,11 @@ EXTERNAL_FORMS = sta-src/External/external.ui
 
 # ############## Locations Module ################
 LOCATIONS_SOURCES = sta-src/Locations/locationeditor.cpp \
-                    sta-src/Locations/environmentdialog.cpp
+    sta-src/Locations/environmentdialog.cpp
 LOCATIONS_HEADERS = sta-src/Locations/locationeditor.h \
-                    sta-src/Locations/environmentdialog.h
+    sta-src/Locations/environmentdialog.h
 LOCATIONS_FORMS = sta-src/Locations/locationeditor.ui \
-                  sta-src/Locations/environmentDialog.ui
+    sta-src/Locations/environmentDialog.ui
 
 # ############# Rendezvous Module ##############
 RENDEZVOUS_SOURCES = sta-src/RendezVous/rendezvous.cpp
@@ -208,8 +210,10 @@ RENDEZVOUS_HEADERS = sta-src/RendezVous/rendezvous.h
 RENDEZVOUS_FORMS = sta-src/RendezVous/rendezvous.ui
 
 # ############# Coverage Module ##############
-COVERAGE_SOURCES = sta-src/Coverage/commanalysis.cpp
-COVERAGE_HEADERS = sta-src/Coverage/commanalysis.h
+COVERAGE_SOURCES = sta-src/Coverage/commanalysis.cpp \
+    sta-src/Coverage/coverageanalysis.cpp
+COVERAGE_HEADERS = sta-src/Coverage/commanalysis.h \
+    sta-src/Coverage/coverageanalysis.h
 
 # ############# SEM Module ##############
 SEM_SOURCES = sta-src/SEM/sem.cpp

@@ -112,6 +112,10 @@ bool receiverPayloadDialog::loadValues(ScenarioReceiverPayloadType* receiverPayl
     frequency=frequency/1000000000;//from Hz to GHz
     FrequencyLineEdit->setText(QString::number(frequency));
 
+    double bandWidth=receiverPayload->Receiver()->EMproperties()->BandWidth();
+    bandWidth=bandWidth/1000000;//from Hz to MHz
+    BandWidthLineEdit->setText(QString::number(bandWidth));
+
     RxFeederTmpLineEdit->setText(QString::number(receiverPayload->Receiver()->SystemTemperature()->ThermoFeeder()));
     RxTempLineEdit->setText(QString::number(receiverPayload->Receiver()->SystemTemperature()->ThermoReveicer()));
     RxNoiseFigureLineEdit->setText(QString::number(receiverPayload->Receiver()->SystemTemperature()->RxNoiseFigure()));
@@ -177,6 +181,10 @@ bool receiverPayloadDialog::saveValues(ScenarioReceiverPayloadType* receiverPayl
     double frequency=FrequencyLineEdit->text().toDouble();
     frequency=frequency*1000000000;
     receiverPayload->Budget()->setFrequencyBand(frequency);
+
+    double bandWidth=BandWidthLineEdit->text().toDouble();
+    bandWidth=bandWidth*1000000;
+    receiverPayload->Receiver()->EMproperties()->setBandWidth(bandWidth);
 
     receiverPayload->Receiver()->SystemTemperature()->setRxNoiseFigure(RxNoiseFigureLineEdit->text().toDouble());
     receiverPayload->Receiver()->SystemTemperature()->setThermoFeeder(RxFeederTmpLineEdit->text().toDouble());

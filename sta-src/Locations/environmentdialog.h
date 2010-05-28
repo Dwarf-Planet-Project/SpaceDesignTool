@@ -28,6 +28,7 @@
 #include "ui_environmentDialog.h"
 #include <QDialog>
 #include "Scenario/staschema.h"
+#include "Coverage/commanalysis.h"
 
 class environmentDialog : public QDialog , private Ui::environmentDialog
 {
@@ -38,9 +39,8 @@ public:
 
         bool loadValues(ScenarioGroundStationEnvironment* environment);
         bool saveValues(ScenarioGroundStationEnvironment* environment);
+        ScenarioGroundStationEnvironment m_environment;
 
-
-protected slots:
 	
 };
 #endif //ENVIRONMENTDIALOG_H

@@ -483,6 +483,8 @@
 						<element name="Diameter" type="double"></element>
 						<element name="Efficiency" type="double"></element>
 						<element name="AngularBeamWidth" type="double"></element>
+						<element name="BandWidth" type="double"></element>
+						<element name="BeamType" type="string"></element>
 					</sequence>
 				</complexType>
 			</element>
@@ -556,7 +558,6 @@
 						<element name="GoverT" type="double"></element>
 						<element name="FeederLossRx" type="double"></element>
 						<element name="DepointingLossRx" type="double"></element>
-						<element name="TrackingChoice" type="string"></element>
 						<element name="SystemTemperature">
 							<complexType>
 								<sequence>

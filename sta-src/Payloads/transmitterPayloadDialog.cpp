@@ -109,7 +109,9 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* transm
     frequency=frequency/1000000000;//from Hz to GHz
     FrequencyLineEdit->setText(QString::number(frequency));//This is the frequency taken from the budget!!
 
-
+    double bandWidth=transmitterPayload->Transmitter()->EMproperties()->BandWidth();
+    bandWidth=bandWidth/1000000;//from Hz to MHz
+    BandWidthLineEdit->setText(QString::number(bandWidth));
 
 
     DataRateLineEdit->setText(QString::number(transmitterPayload->Transmitter()->Modulation()->DataRate()));
@@ -132,14 +134,14 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* transm
         i=4;
    else if (modType=="D-QPSK")
         i=5;
-   else if (modType=="OPSK")
+   else if (modType=="OQPSK")
         i=6;
    else if (modType=="MSK")
         i=7;
 
 
     TypeModComboBox->setCurrentIndex(i);
-    //qDebug()<<TypeModComboBox->currentText()<< "   Este es la modulación del esquema por defecto!!!!";
+
 
      antennaCalculations(transmitterPayload);
 
@@ -191,6 +193,10 @@ bool transmitterPayloadDialog::saveValues(ScenarioTransmitterPayloadType* transm
     double frequency=FrequencyLineEdit->text().toDouble();
     frequency=frequency*1000000000;
     transmitterPayload->Budget()->setFrequencyBand(frequency);
+
+    double bandWidth=BandWidthLineEdit->text().toDouble();
+    bandWidth=bandWidth*1000000;
+    transmitterPayload->Transmitter()->EMproperties()->setBandWidth(bandWidth);
 
 
     transmitterPayload->Transmitter()->setTransmittingPower(PowerLineEdit->text().toDouble());

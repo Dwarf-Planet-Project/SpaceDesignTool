@@ -25,6 +25,8 @@
 
 #include <QDialog>
 #include "ui_locationeditor.h"
+#include "Locations/environmentdialog.h"
+#include "Coverage/commanalysis.h"
 
 class ScenarioLocationType;
 

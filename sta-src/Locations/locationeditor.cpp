@@ -48,7 +48,7 @@ LocationEditorDialog::LocationEditorDialog(QWidget* parent) :
 
 
 LocationEditorDialog::~LocationEditorDialog()
-{
+{  
 }
 
 

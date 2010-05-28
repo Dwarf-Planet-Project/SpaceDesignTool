@@ -26,7 +26,6 @@
 
 environmentDialog::environmentDialog( QWidget * parent, Qt::WindowFlags f) : QDialog(parent,f)
 {
-
     setupUi(this);
 
     QDoubleValidator* positiveDoubleValidator = new QDoubleValidator(this);
@@ -41,29 +40,31 @@ environmentDialog::~environmentDialog()
 {
 }
 ///////////////////////// VARIABLES TO SAVE THE CHECKBOXES CHOICE//////////////////////////
-bool rainchoice=true;
-bool wvchoice=true;
-bool oxchoice=true;
+
 
 
 
 bool environmentDialog::loadValues(ScenarioGroundStationEnvironment* environment)
 {
     OutageLineEdit->setText(QString::number(environment->Rain()->PercentageExceededLimit()));
-    if(oxchoice)
+    if(environment->OxChoice()=="true")
         oxygenCheckBox->setChecked(1);
-    if(!oxchoice)
+    if(environment->OxChoice()=="false")
         oxygenCheckBox->setChecked(0);
 
-    if(wvchoice)
+    if(environment->WaterVapourChoice()=="true")
         waterVapourCheckBox->setChecked(1);
-    if(!wvchoice)
+    if(environment->WaterVapourChoice()=="false")
         waterVapourCheckBox->setChecked(0);
 
-    if(rainchoice)
+    if(environment->Rain()->RainChoice()=="true")
         groupBox->setChecked(1);
-    if(!rainchoice)
+    if(environment->Rain()->RainChoice()=="false")
         groupBox->setChecked(0);
+
+
+
+
 
     return true;
 }
@@ -73,19 +74,24 @@ bool environmentDialog::saveValues(ScenarioGroundStationEnvironment* environment
     environment->Rain()->setPercentageExceededLimit(OutageLineEdit->text().toDouble());
 
     if(oxygenCheckBox->isChecked()==true)
-        oxchoice=true;
+        environment->setOxChoice("true");
     if(oxygenCheckBox->isChecked()==false)
-        oxchoice=false;
+        environment->setOxChoice("false");
 
     if(waterVapourCheckBox->isChecked()==true)
-        wvchoice=true;
+        environment->setWaterVapourChoice("true");
     if(waterVapourCheckBox->isChecked()==false)
-        wvchoice=false;
+        environment->setWaterVapourChoice("false");
 
     if(groupBox->isChecked()==true)
-        rainchoice=true;
+        environment->Rain()->setRainChoice("true");
     if(groupBox->isChecked()==false)
-        rainchoice=false;
+        environment->Rain()->setRainChoice("false");
+
+
+
 
     return true;
 }
+
+

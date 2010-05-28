@@ -396,7 +396,7 @@ static QByteArray externalFragment(const char* name)
 static QByteArray transmitterPayloadFragment(const char* name)
 {
     ScenarioTransmitterPayloadType transmitterPayload;
-    double ElInit=(90*DEG2RAD)-0.000002;
+    double ElInit=(90*DEG2RAD);
     transmitterPayload.Transmitter()->PointingDirection()->setElevation(ElInit);
     transmitterPayload.Transmitter()->PointingDirection()->setAzimuth(0);
 
@@ -406,6 +406,7 @@ static QByteArray transmitterPayloadFragment(const char* name)
     transmitterPayload.Transmitter()->EMproperties()->setDiameter(0);
     transmitterPayload.Transmitter()->EMproperties()->setAngularBeamWidth(0);
     transmitterPayload.Transmitter()->EMproperties()->setPolarisation("Linear");
+    transmitterPayload.Transmitter()->EMproperties()->setBandWidth(32000000);//in Hz
 
     transmitterPayload.Transmitter()->setTransmittingPower(1000);
     transmitterPayload.Budget()->setFrequencyBand(14500000000);//It is in hertz!!
@@ -429,13 +430,14 @@ static QByteArray receiverPayloadFragment(const char* name)
 {
     ScenarioReceiverPayloadType receiverPayload;
 
-    double ElInit=(90*DEG2RAD)-0.000002;
+    double ElInit=(90*DEG2RAD);
     receiverPayload.Receiver()->PointingDirection()->setElevation(ElInit);
     receiverPayload.Receiver()->PointingDirection()->setAzimuth(0);
     receiverPayload.Receiver()->EMproperties()->setEfficiency(55);
     receiverPayload.Receiver()->EMproperties()->setGainMax(30);
     receiverPayload.Receiver()->EMproperties()->setTiltAngle(0);
     receiverPayload.Receiver()->EMproperties()->setPolarisation("Linear");
+    receiverPayload.Receiver()->EMproperties()->setBandWidth(32000000);//in Hz
 
 
     receiverPayload.Receiver()->setDepointingLossRx(0);

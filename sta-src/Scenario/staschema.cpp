@@ -2209,7 +2209,8 @@ ScenarioEMproperties::ScenarioEMproperties() :
     m_AreaEff(0.0),
     m_Diameter(0.0),
     m_Efficiency(0.0),
-    m_AngularBeamWidth(0.0)
+    m_AngularBeamWidth(0.0),
+    m_BandWidth(0.0)
 {
 }
 
@@ -2242,6 +2243,10 @@ bool ScenarioEMproperties::load(const QDomElement& e, QDomElement* next)
         *next = next->nextSiblingElement();
         m_AngularBeamWidth = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
+        m_BandWidth = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_BeamType = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
     return true;
 }
 
@@ -2255,6 +2260,8 @@ QDomElement ScenarioEMproperties::toDomElement(QDomDocument& doc, const QString&
     e.appendChild(createSimpleElement(doc, "tns:Diameter", m_Diameter));
     e.appendChild(createSimpleElement(doc, "tns:Efficiency", m_Efficiency));
     e.appendChild(createSimpleElement(doc, "tns:AngularBeamWidth", m_AngularBeamWidth));
+    e.appendChild(createSimpleElement(doc, "tns:BandWidth", m_BandWidth));
+    e.appendChild(createSimpleElement(doc, "tns:BeamType", m_BeamType));
     return e;
 }
 
@@ -2636,8 +2643,6 @@ bool ScenarioReceiver::load(const QDomElement& e, QDomElement* next)
         *next = next->nextSiblingElement();
         m_DepointingLossRx = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
-        m_TrackingChoice = (next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
     if (next->tagName() == "tns:SystemTemperature")
         m_SystemTemperature = QSharedPointer<ScenarioSystemTemperature>(ScenarioSystemTemperature::create(*next));
     *next = next->nextSiblingElement();
@@ -2650,7 +2655,6 @@ QDomElement ScenarioReceiver::toDomElement(QDomDocument& doc, const QString& ele
     e.appendChild(createSimpleElement(doc, "tns:GoverT", m_GoverT));
     e.appendChild(createSimpleElement(doc, "tns:FeederLossRx", m_FeederLossRx));
     e.appendChild(createSimpleElement(doc, "tns:DepointingLossRx", m_DepointingLossRx));
-    e.appendChild(createSimpleElement(doc, "tns:TrackingChoice", m_TrackingChoice));
     if (!m_SystemTemperature.isNull())
     {
         QString tagName = "SystemTemperature";

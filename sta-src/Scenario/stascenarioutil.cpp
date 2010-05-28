@@ -83,7 +83,7 @@ QString convertToString(const QString& s)
 
 QString convertToString(double d)
 {
-    return QString::number(d);
+    return QString::number(d, 'g', 16);
 }
 
 QString convertToString(int n)
