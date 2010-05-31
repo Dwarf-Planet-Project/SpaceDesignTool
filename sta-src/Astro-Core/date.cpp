@@ -26,6 +26,7 @@
  ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
  // Patched by Guillermo June 12 2009 to modify how STA inteprets the dates (all now as UTC)
+ // Patched by Guillermo to correct the conversion to modified Julian Dates
  */
 
 #include "Astro-Core/date.h"
@@ -33,7 +34,19 @@
 #include <cmath>
 
 
-double sta::J2000 = 2451545.0;
+
+/*! While any event in recorded human history can be written as a positive
+ * Julian day number, when working with contemporary events all those digits
+ * can be cumbersome. A Modified Julian Day (MJD) is created by subtracting 2400000.5
+ * from a Julian day number, and thus represents the number of days elapsed
+ * since midnight (00:00) Universal Time on November 17, 1858.
+ * Modified Julian Days are widely used to specify the epoch in tables of orbital
+ * elements of artificial Earth satellites. Since no such objects existed prior to
+ * October 4, 1957, all satellite-related MJDs are positive.
+ */
+//double sta::J2000 = 2451545.0;
+double sta::J2000 = 2400000.5;
+
 
 
 /*! Convert a Qt4 date-time object to a Julian date.

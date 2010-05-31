@@ -873,7 +873,15 @@ PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
     sta::StateVector reference = initialState;
     double q = 0.0;
 
+    // Next lines cretaed by Guillermo for trace purposes. To delete in future
+    //double MyJulianDate = sta::CalendarToJd(timeline->StartTime());
+    //QTextStream out (stdout);
+    //out << "MyJulianDate: " << MyJulianDate << endl;
+
     double startTime = sta::JdToMjd(sta::CalendarToJd(timeline->StartTime()));
+    //out << "MyModifiedJulianDate: " << startTime << endl;
+
+
     sampleTimes << startTime;
     samples << stateVector;
 
