@@ -38,7 +38,7 @@ class transmitterPayloadDialog : public QDialog , private Ui::transmitterPayload
 {
 Q_OBJECT
 public:
-	transmitterPayloadDialog( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+        transmitterPayloadDialog( QWidget * parent = 0, Qt::WindowFlags f = 0 );
 	~transmitterPayloadDialog();
 	
 	bool loadValues(ScenarioTransmitterPayloadType*);

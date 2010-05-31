@@ -33,6 +33,7 @@
 #include <Astro-Core/date.h>
 #include <Astro-Core/getGreenwichHourAngle.h>
 #include <Astro-Core/inertialTOfixed.h>
+#include <Astro-Core/constants.h>
 
 class CelestiaBody;
 class CelestiaLocation;
@@ -138,6 +139,7 @@ public:
 
     bool realize3DViewRepresentation(CelestiaInterface* celestia);
     double elevationAngle(const SpaceObject* spacecraft, double t) const;
+    double azimuthAngle(const SpaceObject* spacecraft, double t) const;
     double getRange(const SpaceObject* spacecraft, double t) const;
 
     QString name;

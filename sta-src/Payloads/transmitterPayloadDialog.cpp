@@ -30,6 +30,7 @@
 
 int antennaRadioButtonTransmitter;
 QString polarisationTypeTransmitter="Linear";
+QString beamTypeTx="Parabolic";
 
 
 
@@ -73,7 +74,7 @@ transmitterPayloadDialog::~transmitterPayloadDialog()
 bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* transmitterPayload)
 {
     m_transmitterPayload=transmitterPayload;
-    
+
     //These lines allow the GUI to remember which choice the user did for the antenna parameters
     if(antennaRadioButtonTransmitter==1)
         DiameterRadioButton->toggle();
@@ -87,6 +88,8 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* transm
         ElLineEdit->setText(QString::number(90));
     else
         ElLineEdit->setText(QString::number(elevation));
+
+
 
     double azimuth=transmitterPayload->Transmitter()->PointingDirection()->azimuth();
     azimuth=azimuth*RAD2DEG;
@@ -160,7 +163,19 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* transm
          transmitterPayload->Transmitter()->EMproperties()->setTiltAngle(45*DEG2RAD);
          PolarisationComboBox->setCurrentIndex(2);}
 
+     //These lines allow the GUI to remember which choice the user did for the type of beam
 
+     if(beamTypeTx=="Parabolic"){
+        TypeBeamComboBox->setCurrentIndex(0);
+        transmitterPayload->Transmitter()->EMproperties()->setBeamType("Parabolic");
+        AntennaSizeGroupBox->setEnabled(true);
+    } else if (beamTypeTx=="Omni-directional"){
+        TypeBeamComboBox->setCurrentIndex(1);
+        transmitterPayload->Transmitter()->EMproperties()->setBeamType("Omni-directional");
+        AntennaSizeGroupBox->setDisabled(true);
+    }
+
+    qDebug()<<"The gain and the beam is:"<<transmitterPayload->Transmitter()->EMproperties()->BeamType()<<transmitterPayload->Transmitter()->EMproperties()->GainMax();
 
     return true;
 }
@@ -231,6 +246,16 @@ bool transmitterPayloadDialog::saveValues(ScenarioTransmitterPayloadType* transm
         polarisationTypeTransmitter="leftCircular";
     }
 
+    if(TypeBeamComboBox->currentText()=="Parabolic"){
+        beamTypeTx="Parabolic";
+        transmitterPayload->Transmitter()->EMproperties()->setBeamType("Parabolic");
+    } else if(TypeBeamComboBox->currentText()=="Omni-directional"){
+        beamTypeTx="Omni-directional";
+        transmitterPayload->Transmitter()->EMproperties()->setBeamType("Omni-directional");
+    }
+
+
+
     return true;
 }
 
@@ -252,7 +277,7 @@ void transmitterPayloadDialog::antennaCalculations(ScenarioTransmitterPayloadTyp
         gainMaxDb=transmitterPayload->Transmitter()->EMproperties()->GainMax();
         gainMax=pow(10, gainMaxDb/10);
         diameter=(lightSpeed/(Pi*frequency))*sqrt(gainMax/(efficiency/100));
-        beamwidth=70*(lightSpeed/(frequency*diameter));
+        beamwidth=58*(lightSpeed/(frequency*diameter));
 
 
         //Put the values in the GUI
@@ -270,7 +295,7 @@ void transmitterPayloadDialog::antennaCalculations(ScenarioTransmitterPayloadTyp
 
         gainMax=(efficiency/100)*pow((Pi*diameter*frequency/lightSpeed),2); //natural units
         gainMaxDb=10*log10(gainMax); //in dB
-        beamwidth=70*(lightSpeed/(frequency*diameter));
+        beamwidth=58*(lightSpeed/(frequency*diameter));
 
         //Put the values in the GUI
         BeamLineEdit->setText(QString::number(beamwidth));
@@ -494,6 +519,17 @@ void transmitterPayloadDialog::on_FrequencyLineEdit_textChanged(const QString&)
 
 void transmitterPayloadDialog::on_TypeBeamComboBox_activated(const QString&)
 {
+        if(TypeBeamComboBox->currentText()=="Omni-directional")
+        {
+            GainLineEdit->setText(QString::number(0));
+            AntennaSizeGroupBox->setDisabled(1);
+        } else if(TypeBeamComboBox->currentText()=="Parabolic"){
+            AntennaSizeGroupBox->setEnabled(1);
+            GainLineEdit->setText(QString::number(30));
+
+        }
+
+
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 

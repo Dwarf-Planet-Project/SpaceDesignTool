@@ -21,6 +21,7 @@
  ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
  // Patched bu Guillermo June 20th 2009
+ //Patched by Ricardo Noriega May 2010
  */
 
 #include <Eigen/Core>
@@ -428,6 +429,76 @@ GroundObject::elevationAngle(const SpaceObject* spacecraft, double t) const
 
     return sta::halfPi() - angleFromZenith;
 }
+//This function is added by Ricardo Noriega to calculate the azimuth between a groundStation and a given spacecraft at a certain time
+double GroundObject::azimuthAngle(const SpaceObject *spacecraft, double t) const
+{
+
+    //First, calculate the vector R between SC and GS
+
+    sta::StateVector spacecraftState;
+
+    spacecraft->getStateVector(t, *centralBody, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &spacecraftState);
+    Vector3d stationPos = centralBody->planetographicToCartesian(latitude, longitude, 0.0);
+
+    // TODO: should use ellipsoid normal
+
+    Vector3d toSpacecraft = (spacecraftState.position - stationPos);
+
+    //Some parameters
+    double lat=latitude*DEG2RAD;
+    double lon=longitude*DEG2RAD;
+    double cl=cos(lat);
+    double sl=sin(lat);
+    double co=cos(lon);
+    double so=sin(lon);
+
+    //Calculate groundStation's unit vectors UP, EAST and NORHT in Geocentric coords.
+
+    double Ux, Uy, Uz;
+    double Ex, Ey, Ez;
+    double Nx, Ny, Nz;
+
+    Ux=cl*co;
+    Uy=cl*so;
+    Uz=sl;
+
+    Ex=-so;
+    Ey=co;
+    Ez=0;
+
+    Nx=-sl*co;
+    Ny=-sl*so;
+    Nz=cl;
+
+
+    //GroundObject's XYZ coords at Earth's surface
+
+   double Rx, Ry, Rz;
+
+    Rx=toSpacecraft.x();
+    Ry=toSpacecraft.y();
+    Rz=toSpacecraft.z();
+
+    //Resolution
+
+    double Rxn, Ryn, Rzn;
+    double range=toSpacecraft.norm();
+    Rxn=Rx/range;
+    Ryn=Ry/range;
+    Rzn=Rz/range;
+
+    double E, N;
+
+    E=(Rxn*Ex)+(Ryn*Ry);
+    N=(Rxn*Nx)+(Ryn*Ny)+(Rzn*Nz);
+
+    double AZ=atan2(E,N);
+    AZ=AZ*RAD2DEG;
+
+    return AZ;
+
+}
+
 
 //This function is added by Ricardo Noriega to get the range between a groundStation and a spacecraft
 double GroundObject::getRange(const SpaceObject *spacecraft, double t) const{
