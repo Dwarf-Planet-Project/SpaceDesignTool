@@ -1589,7 +1589,7 @@ void MainWindow::initCelestiaState()
     m_celestiaCore->getRenderer()->setRenderFlags(Renderer::ShowAtmospheres |
                                                   Renderer::ShowAutoMag     |
                                                   Renderer::ShowEclipseShadows |
-                                                  Renderer::ShowOrbits      |
+						  Renderer::ShowOrbits      |
                                                   Renderer::ShowPlanets     |
                                                   Renderer::ShowRingShadows |
                                                   Renderer::ShowStars);

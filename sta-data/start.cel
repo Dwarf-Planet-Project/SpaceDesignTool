@@ -184,7 +184,7 @@
 
 # Field of View (UNcomment / modify to meet your needs)...
 # Default is 25 degrees, at a screen resolution of 1024 x 768
-  set {name "FOV" value 25.0}
+  set {name "FOV" value 35.0}
 
 
 # Ambient light level (UNcomment / modify to meet your needs)...
@@ -209,7 +209,7 @@
 #  renderflags {clear "atmospheres"}
 #  renderflags {clear "automag"}
 #  renderflags {clear "boundaries"}
-  renderflags {clear "cloudmaps"}
+#  renderflags {clear "cloudmaps"}
 #  renderflags {clear "comettails"}
 #  renderflags {clear "constellations"}
 #  renderflags {clear "eclipseshadows"}

@@ -305,6 +305,7 @@ void CelestiaActions::syncWithRenderer(const Renderer* renderer)
     labelLocationsAction->setChecked(labelMode & Renderer::LocationLabels);
     labelConstellationsAction->setChecked(labelMode & Renderer::ConstellationLabels);
 
+    // Next lines patch by Guillermo to establish as deaults only spacecraft trajectories
     starOrbitsAction->setChecked(orbitMask & Body::Stellar);
     planetOrbitsAction->setChecked(orbitMask & Body::Planet);
     dwarfPlanetOrbitsAction->setChecked(orbitMask & Body::DwarfPlanet);

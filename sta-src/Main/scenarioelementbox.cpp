@@ -27,6 +27,7 @@
   Modified by Valentino Zuccarelli June 14th 2009
   Extensvely modified by Guillermo on October 2009 to include TLEs
   Modified by Guillermo April 2010 to include coverage
+  Modified by Guillermo May 2010 to change the big integers of Ricardo into floats
  */
 
 #include "scenarioelementbox.h"
@@ -406,10 +407,10 @@ static QByteArray transmitterPayloadFragment(const char* name)
     transmitterPayload.Transmitter()->EMproperties()->setDiameter(0);
     transmitterPayload.Transmitter()->EMproperties()->setAngularBeamWidth(0);
     transmitterPayload.Transmitter()->EMproperties()->setPolarisation("Linear");
-    transmitterPayload.Transmitter()->EMproperties()->setBandWidth(32000000);//in Hz
+    transmitterPayload.Transmitter()->EMproperties()->setBandWidth(32000000.0);//in Hz
 
-    transmitterPayload.Transmitter()->setTransmittingPower(1000);
-    transmitterPayload.Budget()->setFrequencyBand(14500000000);//It is in hertz!!
+    transmitterPayload.Transmitter()->setTransmittingPower(1000.0);
+    transmitterPayload.Budget()->setFrequencyBand(14500000000.0);//It is in hertz!!
 
     transmitterPayload.Transmitter()->setDepointingLossTx(0);
     transmitterPayload.Transmitter()->setFedderLossTx(0);
@@ -437,13 +438,13 @@ static QByteArray receiverPayloadFragment(const char* name)
     receiverPayload.Receiver()->EMproperties()->setGainMax(30);
     receiverPayload.Receiver()->EMproperties()->setTiltAngle(0);
     receiverPayload.Receiver()->EMproperties()->setPolarisation("Linear");
-    receiverPayload.Receiver()->EMproperties()->setBandWidth(32000000);//in Hz
+    receiverPayload.Receiver()->EMproperties()->setBandWidth(32000000.0);//in Hz
 
 
     receiverPayload.Receiver()->setDepointingLossRx(0);
     receiverPayload.Receiver()->setFeederLossRx(0);
 
-    receiverPayload.Budget()->setFrequencyBand(14500000000);//It's in hertz
+    receiverPayload.Budget()->setFrequencyBand(14500000000.0);//It's in hertz
 
 
     receiverPayload.Receiver()->SystemTemperature()->setRxNoiseFigure(1);
