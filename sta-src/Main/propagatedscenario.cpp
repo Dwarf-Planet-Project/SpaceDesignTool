@@ -489,7 +489,7 @@ double GroundObject::azimuthAngle(const SpaceObject *spacecraft, double t) const
 
     double E, N;
 
-    E=(Rxn*Ex)+(Ryn*Ry);
+    E=(Rxn*Ex)+(Ryn*Ey);
     N=(Rxn*Nx)+(Ryn*Ny)+(Rzn*Nz);
 
     double AZ=atan2(E,N);
