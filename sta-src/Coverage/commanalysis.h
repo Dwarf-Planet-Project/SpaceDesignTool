@@ -58,12 +58,13 @@ public:
     ~CommAnalysis();
     //Public function to create the output of this module. It is the only public function in order to preserve the input data
     void CommReports();
-double DopplerShift();
+
 
 private:
 
     ///////////////////////////// PRIVATE FUNCTIONS NOT TO BE USED OUTSIDE THIS CLASS /////////////////////////////////////
     
+    double DopplerShift();
     double FreeSpaceLoss();
     double OxygenSpecificAttenuation(double frequency); //Here I pass the frequency as argument coz It has to be the groundStation frequency...I don't know how to get the parent object yet!
     double WaterVapourSpecificAttenuation(double frequency, double latitude, double longitude);

@@ -72,6 +72,7 @@ double Pi=mypi;
 
 double CommAnalysis::DopplerShift(){
 
+    double dopplerShift;
 
     for(int i=0; i<m_propagatedScenario->spaceObjects().at(m_indexSC)->mission().at(m_indexMA)->trajectorySampleCount(); i++)
     {
@@ -110,20 +111,20 @@ double CommAnalysis::DopplerShift(){
 
             Vector3d stationPos=normPosition.cwise() * STA_SOLAR_SYSTEM->lookup("Earth")->radii() + normPosition * altitudeGS;
 
-            Vector3d toSpacecraft = (samples.position - stationPos);
+            Vector3d toSpacecraft = (samples.position - stationPos).normalized();
 
-            double toSpacecraftNorm=toSpacecraft.norm();
+            //double toSpacecraftNorm=toSpacecraft.normalized();
 
             double speedSat=samples.velocity.norm();
             surfaceVelocity earthVel;
             double speedGS=earthVel.earthStationLinearVelocity(latitudeGS);
 
 
-            double radialVelToGS=(speedSat-speedGS)*toSpacecraftNorm;
+            double radialVelToGS=(speedSat-speedGS)*toSpacecraft.norm();
 
             radialVelToGS=radialVelToGS*1000; //The result is in Km/sec so I convert it to m/s
 
-            double dopplerShift=radialVelToGS*frequency/lightSpeed;
+            dopplerShift=radialVelToGS*frequency/lightSpeed;
             dopplerList.append(dopplerShift);
 
             /*sta::StateVector spacecraftState;
@@ -154,7 +155,7 @@ double CommAnalysis::DopplerShift(){
         }
     }
      //qDebug()<<"The lenght of the doppler list is: "<<dopplerList.length();
-
+    return dopplerShift;
 }
 
 
@@ -839,6 +840,7 @@ void CommAnalysis::CommReports(){
 
     ///////////////////// FUNCTIONS CALLED TO CALCULATE DATA /////////////////////////////////
 
+    CommAnalysis::DopplerShift();
     CommAnalysis::FreeSpaceLoss();
 
     double oxAttenuation;
