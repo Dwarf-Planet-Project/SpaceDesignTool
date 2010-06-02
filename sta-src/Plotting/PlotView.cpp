@@ -31,6 +31,8 @@
 #include "PlotView.h"
 #include <QPainter>
 
+using namespace Eigen;
+
 
 PlotView::PlotView(QWidget* parent) :
     QWidget(parent)
@@ -78,14 +80,35 @@ PlotView::removeAllPlots()
 
 
 void
-PlotView::paintEvent(QPaintEvent* event)
+PlotView::paintEvent(QPaintEvent* /* event */)
 {
     QPainter painter(this);
 
     painter.fillRect(0, 0, width(), height(), QColor(0, 0, 255));
 
-    painter.setPen(Qt::white);
+    painter.setPen(Qt::lightGray);
     painter.drawText(100, 100, m_title);
+
+    // Draw grid
+
+    // Draw plots
+    foreach (PlotDataSource* plot, m_plots)
+    {
+        painter.setPen(Qt::red);
+        QPointF lastPoint(0.0f, 0.0f);
+        for (unsigned int i = 0; i < plot->getPointCount(); ++i)
+        {
+            Vector2d point = plot->getPoint(i);
+            QPointF pf(float(point.x()), float(point.y()));
+            if (i != 0)
+            {
+                painter.drawLine(lastPoint, pf);
+            }
+            lastPoint = pf;
+        }
+    }
+
+    // Draw axes
 }
 
 
