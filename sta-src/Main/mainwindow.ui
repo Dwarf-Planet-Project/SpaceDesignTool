@@ -53,6 +53,7 @@
      <string>Tools</string>
     </property>
     <addaction name="actionAnalyse"/>
+    <addaction name="actionCreateConstellation"/>
    </widget>
    <widget class="QMenu" name="menuCalculate">
     <property name="title">
@@ -319,6 +320,11 @@
   <action name="actionActivateSTACalc">
    <property name="text">
     <string>Calculator</string>
+   </property>
+  </action>
+  <action name="actionCreateConstellation">
+   <property name="text">
+    <string>Constellation</string>
    </property>
   </action>
  </widget>

@@ -111,7 +111,8 @@ ASTROCORE_SOURCES = sta-src/Astro-Core/calendarTOjulian.cpp \
     sta-src/Astro-Core/rotatingTOcartesian.cpp \
     sta-src/Astro-Core/Interpolators.cpp \
     sta-src/Astro-Core/trueAnomalyTOmeanAnomaly.cpp \
-    sta-src/Astro-Core/surfaceVelocity.cpp
+    sta-src/Astro-Core/surfaceVelocity.cpp \
+    sta-src/Astro-Core/nedTOfixed.cpp
 ASTROCORE_HEADERS = sta-src/Astro-Core/calendarTOjulian.h \
     sta-src/Astro-Core/date.h \
     sta-src/Astro-Core/EarthRotationState.h \
@@ -158,7 +159,8 @@ ASTROCORE_HEADERS = sta-src/Astro-Core/calendarTOjulian.h \
     sta-src/Astro-Core/rotatingTOcartesian.h \
     sta-src/Astro-Core/Interpolators.h \
     sta-src/Astro-Core/trueAnomalyTOmeanAnomaly.h \
-    sta-src/Astro-Core/surfaceVelocity.h
+    sta-src/Astro-Core/surfaceVelocity.h \
+    sta-src/Astro-Core/nedTOfixed.h
 ASTROCORE_FORMS = sta-src/Astro-Core/trajectorypropagation.ui
 
 # ############# Entry module ##################
@@ -308,9 +310,21 @@ SCENARIO_HEADERS = sta-src/Scenario/staschema.h \
     sta-src/Scenario/scenario.h
 
 # ############# Constellations Module ##############
-CONSTELLATIONS_SOURCES = sta-src/Constellations/cwizard.cpp
-CONSTELLATIONS_HEADERS = sta-src/Constellations/cwizard.h
-CONSTELLATIONS_FORMS = sta-src/Constellations/cwizard.ui
+CONSTELLATIONS_SOURCES = sta-src/Constellations/cwizard.cpp \
+    sta-src/Constellations/constellationwizard.cpp \
+    sta-src/Constellations/constellationmodule.cpp \
+    sta-src/Constellations/discretization.cpp \
+    sta-src/Constellations/canalysis.cpp \
+    sta-src/Constellations/analysisprop.cpp
+CONSTELLATIONS_HEADERS = sta-src/Constellations/cwizard.h \
+    sta-src/Constellations/constellationwizard.h \
+    sta-src/Constellations/constellationmodule.h \
+    sta-src/Constellations/discretization.h \
+    sta-src/Constellations/canalysis.h \
+    sta-src/Constellations/analysisprop.h
+CONSTELLATIONS_FORMS = sta-src/Constellations/cwizard.ui \
+    sta-src/Constellations/constellationwizard.ui \
+    sta-src/Constellations/analysisprop.ui
 
 # ############# Help Browser Module ##############
 HELPBROWSER_SOURCES = sta-src/Help/HelpBrowser.cpp
@@ -763,7 +777,8 @@ SOURCES = $$MAIN_SOURCES \
     $$HELPBROWSER_SOURCES \
     $$PAYLOAD_SOURCES \
     $$ANALYSIS_SOURCES \
-    $$COVERAGE_SOURCES
+    $$COVERAGE_SOURCES \
+    $$CONSTELLATIONS_SOURCES
 HEADERS = $$MAIN_HEADERS \
     $$ASTROCORE_HEADERS \
     $$SEM_HEADERS \
@@ -786,7 +801,8 @@ HEADERS = $$MAIN_HEADERS \
     $$HELPBROWSER_HEADERS \
     $$PAYLOAD_HEADERS \
     $$ANALYSIS_HEADERS \
-    $$COVERAGE_HEADERS
+    $$COVERAGE_HEADERS \
+    $$CONSTELLATIONS_HEADERS
 FORMS = $$MAIN_FORMS \
     $$ASTROCORE_FORMS \
     $$SEM_FORMS \
@@ -807,7 +823,8 @@ FORMS = $$MAIN_FORMS \
     $$HELPBROWSER_FORMS \
     $$PAYLOAD_FORMS \
     $$ANALYSIS_FORMS \
-    $$COVERAGE_FORMS
+    $$COVERAGE_FORMS \
+    $$CONSTELLATIONS_FORMS
 RESOURCES = $$CELESTIA_RESOURCES \
     iconary/sta-icons.qrc
 UI_HEADERS_DIR = sta-src/ui/include

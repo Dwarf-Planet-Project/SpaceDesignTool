@@ -25,6 +25,7 @@
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
  Patched extensively by Guillermo to handle about, web sites, TLEs, etc.
  Patched again by Guillermo April 2010 to include Analysis and SEM modules
+ Patched again by Guillermo June 2010 to include Constellation module
  */
 
 #ifndef _MAIN_MAINWINDOW_H_
@@ -110,6 +111,7 @@ public slots:
     void on_actionSTA_Forums_triggered();
     void on_actionSTA_Downloads_triggered();
     void on_actionAnalyse_triggered();
+    void on_actionCreateConstellation_triggered(); // Constellation (Claas Grohnfeldt, Steffen Peter)
     void on_menuEdit_aboutToShow();
     void about();
     void preferencesSTA();

@@ -28,6 +28,11 @@ This program is free software; you can redistribute it and/or modify it under
 #include <QToolBar>
 #include <QComboBox>
 
+// Analysis (Claas Grohnfeldt, Steffen Peter)
+#include <QMenu>
+#include "Constellations/canalysis.h"
+
+
 class StaBody;
 
 // The visualization toolbar contains a list of buttons used for both the ground track
@@ -39,6 +44,10 @@ class VisualizationToolBar : public QToolBar
 public:
     VisualizationToolBar(const QString& title, QWidget* parent = 0);
     ~VisualizationToolBar();
+
+    // Analysis (Claas Grohnfeldt, Steffen Peter)
+   void enableAnalysisTools(Analysis* analysis);
+   void disableAnalysisTools();
 
 private slots:
     void mapSetTickInterval();
@@ -52,6 +61,14 @@ signals:
     void saveImageRequested();
     void tickIntervalChanged(double seconds);
 
+    // Analysis (Claas Grohnfeldt, Steffen Peter)
+    void discretizationToggled(bool enable);
+    void coverageCurrentToggled(bool enable);
+    void coverageHistoryToggled(bool enable);
+    void linkSOToggled(bool enabled);
+    void linkGOToggled(bool enabled);
+
+
 private:
     QComboBox* m_bodySelectCombo;
     QAction* m_tickIntervalAction;
@@ -62,6 +79,16 @@ private:
     // Possibly move these 2D-specific buttons to a subclass
     QAction* m_enable2DViewAction;
     QAction* m_enable25DViewAction;
+
+    // Analysis (Claas Grohnfeldt, Steffen Peter)
+    QMenu* m_analysisMenu;
+    QAction* m_discretizationAction;
+    QAction* m_coverageCurrentAction;
+    QAction* m_coverageHistoryAction;
+    QAction* m_analysisAction;
+    QAction* m_linkSOAction;
+    QAction* m_linkGOAction;
+
 };
 
 #endif // _PLOTTING_VISUALIZATION_TOOLBAR_H_

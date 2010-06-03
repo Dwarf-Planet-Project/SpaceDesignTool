@@ -23,6 +23,7 @@ This program is free software; you can redistribute it and/or modify it under
  ------------------ Guillermo Ortega (ESA) ---------------------------------------
  */
 
+
 #include "groundtrackplottool.h"
 #include "visualizationtoolbar.h"
 #include "Main/propagatedscenario.h"
@@ -38,6 +39,14 @@ This program is free software; you can redistribute it and/or modify it under
 #include <cmath>
 #include <limits>
 #include <algorithm>
+
+//#include "Scenario/scenariospacevehicle.h"
+//#include "Scenario/scenariotrajectoryplan.h"
+//#include "Scenario/scenarioabstracttrajectory.h"
+
+
+// Analysis (Claas Grohnfeldt, Steffen Peter)
+#include "Constellations/constellationmodule.h"
 
 using namespace Eigen;
 
@@ -139,7 +148,7 @@ static double chooseGridSpacing(double range, double maxTicks)
 
 
 // For now, use a constant minimum elevation angle for all ground stations
-static const double GroundStationElevationAngle = 5.0;
+static const double GroundStationElevationAngle = 15.0;
 static const QColor GroundStationColor(255, 64, 20);
 
 
@@ -163,7 +172,13 @@ GroundTrackView::GroundTrackView(QWidget* parent) :
     m_lastMousePosition(0.0f, 0.0f),
     m_projection(Planar),
     m_scene(NULL),
-    m_maxHeightSlider(NULL)
+    m_maxHeightSlider(NULL),
+    m_showAnalysis(true), // Analysis (Claas Grohnfeldt, Steffen Peter)
+    m_showDiscretization(false), // Analysis
+    m_showCoverageCurrent(false), // Analysis
+    m_showCoverageHistory(false), // Analysis
+    m_showSOLink(false), // Analysis
+    m_showGOLink(false) // Analysis
 {
     setBody(STA_SOLAR_SYSTEM->lookup(STA_EARTH));
 
@@ -759,8 +774,8 @@ static void clippedLine(const AlignedBox<float, 3>& clipBox,
         }
         else if (clippingRequired)
         {
-            float clipX = 0.0f;
-            float clipY = 0.0f;
+            float clipX;
+            float clipY;
 
             // One or both endpoints outside the clip volume. Pick one of them.
             unsigned int outcodeOut = outcode0 ? outcode0: outcode1;
@@ -857,9 +872,9 @@ static void clippedLine(const AlignedBox<float, 3>& clipBox,
         }
         else if (clippingRequired)
         {
-            float clipX = 0.0f;
-            float clipY = 0.0f;
-            float clipZ = 0.0f;
+            float clipX;
+            float clipY;
+            float clipZ;
 
             // One or both endpoints outside the clip volume. Pick one of them.
             unsigned int outcodeOut = outcode0 ? outcode0: outcode1;
@@ -1637,7 +1652,6 @@ GroundTrackView::paint2DView(QPainter& painter)
             }
         }
 
-
         for (int i = 1; i < track->samples.size() && !complete; i++)
         {
             double long0 = track->samples[i - 1].longitude;
@@ -1809,6 +1823,181 @@ GroundTrackView::paint2DView(QPainter& painter)
             }
         }
     }
+    // show Analysis (Claas Grohnfeldt, Steffen Peter)
+    if (m_showCoverageCurrent || m_showCoverageHistory)
+    {
+        // draw covered points
+        for (int i=0; i < m_analysis->m_anaSpaceObjectList.length(); i++)
+        {
+            if (!(m_analysis->m_anaSpaceObjectList.at(i).coveragesample.back().curtime < m_currentTime ||
+                m_analysis->m_anaSpaceObjectList.at(i).coveragesample.first().curtime > m_currentTime))
+            {
+                CoverageSample tmpS;
+                tmpS.curtime = m_currentTime;
+                QList<CoverageSample>::const_iterator iter = qLowerBound(m_analysis->m_anaSpaceObjectList.at(i).coveragesample.begin(),
+                                                                 m_analysis->m_anaSpaceObjectList.at(i).coveragesample.end(),
+                                                                 tmpS,
+                                                                 coverageSampleLessThan);
+                if (m_showCoverageHistory)
+                {
+                    drawCoverage(painter, m_analysis->m_anaSpaceObjectList.at(i).asocolor, false, iter->histpoints);
+                }
+                if (m_showCoverageCurrent)
+                {
+                    drawCoverage(painter, m_analysis->m_anaSpaceObjectList.at(i).asocolor, true, iter->curpoints);
+                }
+            }
+        }
+    }
+    if (m_showDiscretization)
+    {
+        drawDiscretization(painter, m_analysis->m_discreteMesh->meshAsList);
+    }
+    AlignedBox<float, 3> clipBox;
+    clipBox.min() = Vector3f(m_west, m_south, 0.0f);
+    clipBox.max() = Vector3f(m_east, m_north, m_maxHeight);
+    if(m_showAnalysis)
+    {
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(Qt::NoBrush);
+        QPen linkPen = painter.pen();
+        linkPen.setStyle(Qt::DotLine);
+        linkPen.setColor(Qt::white);
+        painter.setPen(linkPen);
+        m_trackPoints.clear();   
+
+        // Show Links between Space Objects
+        // Todo: merge m_showSOLink and m_showGOLink (it is too much code duplication)
+        if (m_showSOLink)
+        {
+            for (int i = 0; i < m_analysis->m_anaSpaceObjectList.length(); i++)
+            {
+                LinkSample tmpLS;
+                tmpLS.curtime = m_currentTime;
+
+                // search for closest time step of the Linksample
+                QList<LinkSample>::const_iterator iter = qLowerBound(m_analysis->m_anaSpaceObjectList.at(i).linksamples.begin(),
+                                                                     m_analysis->m_anaSpaceObjectList.at(i).linksamples.end(),
+                                                                     tmpLS,
+                                                                     linkSampleLessThan);
+                if (iter >= m_analysis->m_anaSpaceObjectList.at(i).linksamples.begin() &&
+                    iter < m_analysis->m_anaSpaceObjectList.at(i).linksamples.end())
+                {
+                    SpaceObject* spaceObject1 = m_analysis->m_anaSpaceObjectList.at(i).m_spaceObject;
+                    // Calculate the current latitude and longitude of the vehicle
+                    sta::StateVector v1;
+                    double longNow1 = 0.0;
+                    double latNow1  = 0.0;
+                    double altNow1  = 0.0;
+                    bool activeNow1 = false;
+                    if (spaceObject1->getStateVector(m_currentTime, *m_body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v1))
+                    {
+                        planetographicCoords(v1.position, m_body, &longNow1, &latNow1, &altNow1);
+                        activeNow1 = true;
+                        /*if (!selectedSpacecraft)
+                        {
+                            selectedSpacecraft = track1->vehicle;
+                            selectedSpacecraftAltitude = altNow1;
+                        }*/
+
+                        if (longNow1 < m_west)
+                            longNow1 += 360.0;
+                    }
+
+                    //for (int j = 0; j < m_analysis->m_anaSpaceObjectList.at(i).linksamples.at(*iter).connection.length(); j++)
+                    for (int j = 0; j < iter->connection.length(); j++)
+                    {
+                        //SpaceObject* spaceObject2 = m_analysis->m_anaSpaceObjectList.at(i).linksamples.at((int) iter).connection.at(j);
+                        SpaceObject* spaceObject2 = iter->connection.at(j);
+                        sta::StateVector v2;
+                        double longNow2 = 0.0;
+                        double latNow2  = 0.0;
+                        double altNow2  = 0.0;
+                        bool activeNow2 = false;
+                        if (spaceObject2->getStateVector(m_currentTime, *m_body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v2))
+                        {
+                            planetographicCoords(v2.position, m_body, &longNow2, &latNow2, &altNow2);
+                            activeNow2 = true;
+                            /*if (!selectedSpacecraft)
+                            {
+                                selectedSpacecraft = track2->vehicle;
+                                selectedSpacecraftAltitude = altNow2;
+                            }*/
+
+                            if (longNow2 < m_west)
+                                longNow2 += 360.0;
+                        }
+                        clippedWrappedLine(clipBox, longNow1, latNow1, longNow2, latNow2, m_trackPoints);
+                    }
+                }
+            }
+        }
+        // Show Links between Ground Objects and Space Objects
+        if (m_showGOLink)
+        {
+            for (int i = 0; i < m_analysis->m_anaSpaceObjectList.length(); i++)
+            {
+                // linear search for time step (todo: replace by an efficient algorithm)
+                int iter = 0;
+                while ((iter < m_analysis->m_anaSpaceObjectList.at(i).groundlinksamples.length()-1) &&
+                       (m_analysis->m_anaSpaceObjectList.at(i).groundlinksamples.at(iter).curtime < m_currentTime))
+                {
+                    iter++;
+                }
+                if (iter == m_analysis->m_anaSpaceObjectList.at(i).groundlinksamples.length())
+                {
+                    iter = 0; // Error
+                }
+                SpaceObject* spaceObject1 = m_analysis->m_anaSpaceObjectList.at(i).m_spaceObject;
+                // Calculate the current latitude and longitude of the vehicle
+                sta::StateVector v1;
+                double longNow1 = 0.0;
+                double latNow1  = 0.0;
+                double altNow1  = 0.0;
+                bool activeNow1 = false;
+                if (spaceObject1->getStateVector(m_currentTime, *m_body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v1))
+                {
+                    planetographicCoords(v1.position, m_body, &longNow1, &latNow1, &altNow1);
+                    activeNow1 = true;
+                    /*if (!selectedSpacecraft)
+                    {
+                        selectedSpacecraft = track1->vehicle;
+                        selectedSpacecraftAltitude = altNow1;
+                    }*/
+
+                    if (longNow1 < m_west)
+                        longNow1 += 360.0;
+                }
+                for (int j = 0; j < m_analysis->m_anaSpaceObjectList.at(i).groundlinksamples.at(iter).connection.length(); j++)
+                {
+                    GroundObject* groundObject = m_analysis->m_anaSpaceObjectList.at(i).groundlinksamples.at(iter).connection.at(j);
+                    /*sta::StateVector v2;
+                    double longNow2 = 0.0;
+                    double latNow2  = 0.0;
+                    double altNow2  = 0.0;
+                    bool activeNow2 = false;
+                    if (spaceObject2->getStateVector(m_currentTime, *m_body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v2))
+                    {
+                        planetographicCoords(v2.position, m_body, &longNow2, &latNow2, &altNow2);
+                        activeNow2 = true;
+                        if (!selectedSpacecraft)
+                        {
+                            selectedSpacecraft = track2->vehicle;
+                            selectedSpacecraftAltitude = altNow2;
+                        }
+
+                        if (longNow2 < m_west)
+                            longNow2 += 360.0;
+                    }*/
+                    clippedWrappedLine(clipBox, longNow1, latNow1, groundObject->longitude, groundObject->latitude, m_trackPoints);
+                }
+            }
+        }
+        painter.drawLines(m_trackPoints);
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(Qt::NoBrush);
+    }
+
 }
 
 
@@ -1853,6 +2042,128 @@ GroundTrackView::contextMenuEvent(QContextMenuEvent* event)
     m_contextMenu->addAction(gridAction);
 
     m_contextMenu->popup(event->globalPos());
+}
+
+// Analysis (Claas Grohnfeldt, Steffen Peter)
+void
+GroundTrackView::setAnalysis(Analysis* analysis)
+{
+    m_showDiscretization = false;
+    m_showCoverageCurrent = false;
+    m_showCoverageHistory = false;
+    m_showSOLink = false;
+    m_showGOLink = false;
+    m_analysis = analysis;
+}
+
+void
+GroundTrackView::setDiscretizationVisible(bool visible)
+{
+    m_showDiscretization = visible;
+    viewport()->update();
+}
+
+void
+GroundTrackView::setCoverageCurrentVisible(bool visible)
+{
+    m_showCoverageCurrent = visible;
+    viewport()->update();
+}
+
+void
+GroundTrackView::setCoverageHistoryVisible(bool visible)
+{
+    m_showCoverageHistory = visible;
+    viewport()->update();
+}
+
+void
+GroundTrackView::setLinkSOVisible(bool visible)
+{
+    m_showSOLink = visible;
+    viewport()->update();
+}
+
+void
+GroundTrackView::setLinkGOVisible(bool visible)
+{
+    m_showGOLink = visible;
+    viewport()->update();
+}
+
+void
+GroundTrackView::drawDiscretization(QPainter& painter, QList<DiscretizationPoint> discretePoints)
+{
+    painter.setBrush(Qt::NoBrush);
+    painter.setPen(Qt::NoPen);
+    // plots the whole mesh
+    painter.setPen(QColor(0, 0, 0, 30));
+    int numRows = m_analysis->m_discreteMesh->numberRows;
+    //plot the list of all discrete points
+    int numberDiscretePoints = discretePoints.length();
+    float ellipseHeight = (4.0/5.0)*90.0/(double)numRows;
+    for (int k = 0; k < numberDiscretePoints; k++)
+    {
+        //float ellipseWidth = (discretePoints.at(k).rectangleWidth)/2;
+        float lon = discretePoints.at(k).longitude;
+        float lat = discretePoints.at(k).latitude;
+        if (lon < m_west)
+        {
+            lon += 360.0f;
+        }
+        if( lat -ellipseHeight > m_south &&
+            lat +ellipseHeight < m_north &&
+            lon -ellipseHeight > m_west &&
+            lon +ellipseHeight < m_east )
+        {
+            QPointF circleCenter = QPointF(lon, lat);
+            painter.drawEllipse(circleCenter, ellipseHeight, ellipseHeight);
+        }
+    }
+    painter.setBrush(Qt::NoBrush);
+    painter.setPen(Qt::NoPen);
+}
+
+void
+GroundTrackView::drawCoverage(QPainter& painter, QColor asocolor, bool colored, QList<DiscretizationPoint> discretePoints)
+{
+    painter.setBrush(Qt::NoBrush);
+    painter.setPen(Qt::NoPen);
+    //convert the space object color to a more transparent one
+    int redpart = int(double(asocolor.red())*0.96);
+    int greenpart = int(double(asocolor.green())*0.96);
+    int bluepart = int(double(asocolor.blue())*0.96);
+    painter.setPen(QColor(0, 0, 0, 30));
+    if(colored)
+    {
+        painter.setBrush(QColor(redpart, greenpart, bluepart,100));//QColor(0, 0, 0, 80));
+    }else{
+        painter.setBrush(QColor(0, 0, 0, 60));
+    }
+    int numRows = m_analysis->m_discreteMesh->numberRows;
+    //plot the list of all discrete points
+    int numberDiscretePoints = discretePoints.length();
+    float ellipseHeight = (4.0/5.0)*90.0/(double)numRows;
+    for (int k = 0; k < numberDiscretePoints; k++)
+    {
+        //float ellipseWidth = (discretePoints.at(k).rectangleWidth)/2;
+        float lon = discretePoints.at(k).longitude;
+        float lat = discretePoints.at(k).latitude;
+        if (lon < m_west)
+        {
+            lon += 360.0f;
+        }
+        if( lat -ellipseHeight > m_south &&
+            lat +ellipseHeight < m_north &&
+            lon -ellipseHeight > m_west &&
+            lon +ellipseHeight < m_east )
+        {
+            QPointF circleCenter = QPointF(lon, lat);
+            painter.drawEllipse(circleCenter, ellipseHeight, ellipseHeight);
+        }
+    }
+    painter.setBrush(Qt::NoBrush);
+    painter.setPen(Qt::NoPen);
 }
 
 
@@ -2155,24 +2466,32 @@ GroundTrackView::drawDaylitRegion(QPainter& painter)
 
 GroundTrackPlotTool::GroundTrackPlotTool(QWidget* parent) :
     QWidget(parent),
-    m_view(NULL)
+    m_view(NULL),
+    m_toolBar(NULL)
 {
     m_view = new GroundTrackView(this);
 
     // Create and hook up the tool bar
-    VisualizationToolBar* toolBar = new VisualizationToolBar(tr("View Controls"), this);
-    connect(toolBar, SIGNAL(bodyChanged(const StaBody*)),  m_view, SLOT(setBody(const StaBody*)));
-    connect(toolBar, SIGNAL(gridToggled(bool)),            m_view, SLOT(setShowGrid(bool)));
-    connect(toolBar, SIGNAL(terminatorToggled(bool)),      m_view, SLOT(setTerminatorVisible(bool)));
-    connect(toolBar, SIGNAL(tickIntervalChanged(double)),  m_view, SLOT(setTickInterval(double)));
-    connect(toolBar, SIGNAL(projectionChanged(bool)),      m_view, SLOT(set2HalfDView(bool)));
-    connect(toolBar, SIGNAL(saveImageRequested()),         m_view, SLOT(saveImage()));
+    m_toolBar = new VisualizationToolBar(tr("View Controls"), this);
+    connect(m_toolBar, SIGNAL(bodyChanged(const StaBody*)),  m_view, SLOT(setBody(const StaBody*)));
+    connect(m_toolBar, SIGNAL(gridToggled(bool)),            m_view, SLOT(setShowGrid(bool)));
+    connect(m_toolBar, SIGNAL(terminatorToggled(bool)),      m_view, SLOT(setTerminatorVisible(bool)));
+    connect(m_toolBar, SIGNAL(tickIntervalChanged(double)),  m_view, SLOT(setTickInterval(double)));
+    connect(m_toolBar, SIGNAL(projectionChanged(bool)),      m_view, SLOT(set2HalfDView(bool)));
+    connect(m_toolBar, SIGNAL(saveImageRequested()),         m_view, SLOT(saveImage()));
+
+    // Analysis Button signals (Claas Grohnfeldt, Steffen Peter)
+    connect(m_toolBar, SIGNAL(discretizationToggled(bool)),  m_view, SLOT(setDiscretizationVisible(bool)));
+    connect(m_toolBar, SIGNAL(coverageCurrentToggled(bool)), m_view, SLOT(setCoverageCurrentVisible(bool)));
+    connect(m_toolBar, SIGNAL(coverageHistoryToggled(bool)), m_view, SLOT(setCoverageHistoryVisible(bool)));
+    connect(m_toolBar, SIGNAL(linkSOToggled(bool)),          m_view, SLOT(setLinkSOVisible(bool)));
+    connect(m_toolBar, SIGNAL(linkGOToggled(bool)),          m_view, SLOT(setLinkGOVisible(bool)));
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->setSpacing(1);
     layout->setContentsMargins(3, 3, 3, 3);
     layout->addWidget(m_view);
-    layout->addWidget(toolBar);
+    layout->addWidget(m_toolBar);
     setLayout(layout);
 
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -2183,6 +2502,14 @@ GroundTrackPlotTool::~GroundTrackPlotTool()
 {
 }
 
+
+
+// Analysis (Claas Grohnfeldt, Steffen Peter)
+void GroundTrackPlotTool::setAnalysis(Analysis* analysis)
+{
+    m_toolBar->enableAnalysisTools(analysis);
+    m_view->setAnalysis(analysis);
+}
 
 
 

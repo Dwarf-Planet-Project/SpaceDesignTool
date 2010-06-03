@@ -25,6 +25,7 @@
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
   Modified by Guillermo on October 2009 to allow shorcuts on dialogues and change the "calculate" dialogue
   Patched by Guillermo April 2010 to add analyis module
+  Patched by Guillermo June 2010 to add constellations module
 
  */
 
@@ -65,6 +66,10 @@
 #include "Help/HelpBrowser.h"
 
 #include "about.h"
+
+// Constellations
+#include "Constellations/canalysis.h"
+#include "Constellations/constellationwizard.h"
 
 // Celestia headers
 #include "celestia/qt/qtglwidget.h"
@@ -1138,13 +1143,23 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
         }
     }
 
+    // calculate Analysis (Claas Grohnfeldt, Steffen Peter)
+    //QTextStream out (stdout);
+    //out << "Creating analysis: " << endl;
+    Analysis* analysis = new Analysis(propScenario);
+
     if (propScenario)
     {
         // Update all of the propagated scenario views:
         //   Timeline, ground track, 3D view
         if (m_groundTrackPlotTool)
+	{
             m_groundTrackPlotTool->view()->setScenario(propScenario);
 
+	    // calculate Analysis Data (Claas Grohnfeldt, Steffen Peter)
+	    //out << "Calculating analysis: " << endl;
+	    m_groundTrackPlotTool->setAnalysis(analysis);
+	}
         if (m_plottingTool)
         {
             m_plottingTool->setScenario(propScenario);
@@ -1803,3 +1818,13 @@ void ContextMenu(float x, float y, Selection sel)
     MainWindowInstance->contextMenu(x, y, sel);
 }
 
+
+
+// Constellation (Claas Grohnfeldt, Steffen Peter)
+// Call constellation Wizard
+void MainWindow::on_actionCreateConstellation_triggered()
+{
+    ConstellationWizardDialog* constellationwizard = new ConstellationWizardDialog(this);
+    constellationwizard->exec();
+    constellationwizard->setFocus();
+}

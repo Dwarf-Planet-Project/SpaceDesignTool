@@ -31,6 +31,10 @@ This program is free software; you can redistribute it and/or modify it under
 #include <QGraphicsView>
 #include <Eigen/Geometry>
 
+// Analysis (Claas Grohnfeldt, Steffen Peter)
+#include "Constellations/canalysis.h"
+#include "visualizationtoolbar.h"
+
 class QPixmap;
 class QMenu;
 class QSlider;
@@ -93,6 +97,9 @@ Q_OBJECT
     bool showGrid() const { return m_showGrid; }
     bool showTicks() const { return m_showTicks; }
     double tickInterval() const { return m_tickInterval; }
+
+    // Analysis (Claas Grohnfeldt, Steffen Peter)
+    void setAnalysis(Analysis* analysis);
         
  public slots:
     void setCurrentTime(double jd);
@@ -108,6 +115,13 @@ Q_OBJECT
     void saveImage();
     void setZoomFactor(float zoomFactor);
     void setCenter(QPointF center);
+
+    // Analysis (Claas Grohnfeldt, Steffen Peter)
+    void setDiscretizationVisible(bool visible);
+    void setCoverageCurrentVisible(bool visible);
+    void setCoverageHistoryVisible(bool visible);
+    void setLinkSOVisible(bool visible);
+    void setLinkGOVisible(bool visible);
 
  protected:
     void mouseMoveEvent(QMouseEvent* event);
@@ -146,8 +160,15 @@ Q_OBJECT
     void drawSubsolarPoint(QPainter& painter, QColor color, float size);
     void drawDaylitRegion(QPainter& painter);
 
+    // Analysis (Claas Grohnfeldt, Steffen Peter)
+    void drawDiscretization(QPainter& painter, QList<DiscretizationPoint> discretePoints);
+    void drawCoverage(QPainter& painter, QColor asocolor, bool seenPoints, QList<DiscretizationPoint> discretePoints);
+
  private:
     PropagatedScenario* m_scenario;
+    // Analysis (Claas Grohnfeldt, Steffen Peter)
+    Analysis* m_analysis;
+
     double m_currentTime;
     QPixmap* m_pixmap;
     bool m_pixmapOk;
@@ -160,6 +181,14 @@ Q_OBJECT
     bool m_showTerminator;
     double m_tickInterval;
     const StaBody* m_body;
+
+    // Analysis (Claas Grohnfeldt, Steffen Peter)
+    bool m_showAnalysis;
+    bool m_showDiscretization;
+    bool m_showCoverageCurrent;
+    bool m_showCoverageHistory;
+    bool m_showSOLink;
+    bool m_showGOLink;
 
     float m_zoomFactor;
     QPointF m_center;
@@ -189,9 +218,14 @@ public:
     ~GroundTrackPlotTool();
     
     GroundTrackView* view() const { return m_view; }
+
+    // Analysis (Claas Grohnfeldt, Steffen Peter)
+    void setAnalysis(Analysis* analysis);
     
 private:
     GroundTrackView* m_view;
+    // Analysis (Claas Grohnfeldt, Steffen Peter)
+    VisualizationToolBar* m_toolBar;
 };
 
 #endif // _PLOTTING_GROUNDTRACKPLOTTOOL_H_

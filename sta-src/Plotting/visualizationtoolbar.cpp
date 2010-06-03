@@ -118,6 +118,46 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     m_saveImageAction = new QAction(QIcon(":/icons/IconDOWNLOAD.png"), tr("Save"), this);
     m_saveImageAction->setToolTip(tr("Save plot to a file"));
 
+    // Analysis (Claas Grohnfeldt, Steffen Peter)
+    m_discretizationAction = new QAction(tr("Show Discretization"), this);
+    m_discretizationAction->setCheckable(true);
+    m_discretizationAction->setToolTip(tr("Toggle discretization"));
+    m_discretizationAction->setVisible(false);
+
+    m_coverageCurrentAction = new QAction(tr("Show Current Coverage"), this);
+    m_coverageCurrentAction->setCheckable(true);
+    m_coverageCurrentAction->setToolTip(tr("Toggle current coverage"));
+    m_coverageCurrentAction->setVisible(false);
+
+    m_coverageHistoryAction = new QAction(tr("Show History Coverage"), this);
+    m_coverageHistoryAction->setCheckable(true);
+    m_coverageHistoryAction->setToolTip(tr("Toggle history coverage"));
+    m_coverageHistoryAction->setVisible(false);
+
+    m_linkSOAction = new QAction(tr("Show Links Sat-Sat"), this);
+    m_linkSOAction->setCheckable(true);
+    m_linkSOAction->setToolTip(tr("Show links between satellites"));
+    m_linkSOAction->setVisible(false);
+
+    m_linkGOAction = new QAction(tr("Show Links Sat-GS"), this);
+    m_linkGOAction->setCheckable(true);
+    m_linkGOAction->setToolTip(tr("Show links between satellites and ground stations"));
+    m_linkGOAction->setVisible(false);
+
+    // create Analysis Menu
+    //QMenu* tickMenu = new QMenu(tr("Ticks"), this);
+    //QMenu* m_analysisMenu = new QMenu(tr("Analysis Tools"), this);
+    m_analysisMenu = new QMenu(this);
+    m_analysisMenu->addAction(m_linkSOAction);
+    m_analysisMenu->addAction(m_linkGOAction);
+    m_analysisMenu->addAction(m_discretizationAction);
+    m_analysisMenu->addAction(m_coverageCurrentAction);
+    m_analysisMenu->addAction(m_coverageHistoryAction);
+    m_analysisAction = new QAction(tr("Analysis Tools"), this);
+    m_analysisAction->setMenu(m_analysisMenu);
+    //m_analysisAction->setVisible(false); // hide button until scenario is propagated
+
+
     // Add all actions and widgets to the toolbar
     addWidget(m_bodySelectCombo);
     addAction(m_tickIntervalAction);
@@ -126,6 +166,11 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     addAction(m_enable25DViewAction);
     addAction(m_saveImageAction);
 
+    // Guillermo on widget patching
+    addAction(m_analysisAction);
+
+
+
     // Set the initial state of the actions and widgets
     m_enable25DViewAction->setChecked(false);
     // Next line patch by Guillermo to set to false initial grid
@@ -133,11 +178,28 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     m_gridAction->setChecked(false);
     m_terminatorAction->setChecked(false);
 
+    // Guillermo
+    m_analysisAction->setVisible(false);
+
+
+
     connect(m_bodySelectCombo,     SIGNAL(currentIndexChanged(QString)), this, SLOT(mapBodyChanged(QString)));
     connect(m_gridAction,          SIGNAL(triggered(bool)),              this, SIGNAL(gridToggled(bool)));
     connect(m_terminatorAction,    SIGNAL(triggered(bool)),              this, SIGNAL(terminatorToggled(bool)));
     connect(m_enable25DViewAction, SIGNAL(toggled(bool)),                this, SIGNAL(projectionChanged(bool)));
     connect(m_saveImageAction,     SIGNAL(triggered()),                  this, SIGNAL(saveImageRequested()));
+
+    // Analysis (Claas Grohnfeldt, Steffen Peter)
+    m_discretizationAction->setChecked(false);
+    connect(m_discretizationAction,SIGNAL(triggered(bool)),              this, SIGNAL(discretizationToggled(bool)));
+    connect(m_coverageCurrentAction,      SIGNAL(triggered(bool)),              this, SIGNAL(coverageCurrentToggled(bool)));
+    connect(m_coverageHistoryAction,      SIGNAL(triggered(bool)),              this, SIGNAL(coverageHistoryToggled(bool)));
+    connect(m_linkSOAction,        SIGNAL(triggered(bool)),              this, SIGNAL(linkSOToggled(bool)));
+    connect(m_linkGOAction,        SIGNAL(triggered(bool)),              this, SIGNAL(linkGOToggled(bool)));
+
+
+
+
 }
 
 
@@ -169,4 +231,57 @@ VisualizationToolBar::mapBodyChanged(QString bodyName)
     {
         emit bodyChanged(body);
     }
+}
+
+
+
+// Analysis (Claas Grohnfeldt, Steffen Peter)
+// Procedure to create and show the Analysis Toolbar
+void
+VisualizationToolBar::enableAnalysisTools(Analysis* analysis)
+{
+    // reset
+    m_analysisAction->setVisible(false);
+    m_linkSOAction->setVisible(false);
+    m_linkGOAction->setVisible(false);
+    m_discretizationAction->setVisible(false);
+    m_coverageCurrentAction->setVisible(false);
+    m_coverageHistoryAction->setVisible(false);
+    m_analysisAction->setChecked(false);
+    m_linkSOAction->setChecked(false);
+    m_linkGOAction->setChecked(false);
+    m_discretizationAction->setChecked(false);
+    m_coverageCurrentAction->setChecked(false);
+    m_coverageHistoryAction->setChecked(false);
+    // set
+    if (analysis != NULL)
+    {
+	if (!analysis->m_anaSpaceObjectList.at(0).linksamples.isEmpty()) // link SO
+	{
+	    m_linkSOAction->setVisible(true);
+	    m_analysisAction->setVisible(true);
+	}
+	if (!analysis->m_anaSpaceObjectList.at(0).groundlinksamples.isEmpty()) // link GO
+	{
+	    m_linkGOAction->setVisible(true);
+	    m_analysisAction->setVisible(true);
+	}
+	if(!analysis->m_discreteMesh->meshAsList.isEmpty()) // discretization
+	{
+	    m_discretizationAction->setVisible(true);
+	    m_analysisAction->setVisible(true);
+	}
+	if(!analysis->m_anaSpaceObjectList.at(0).coveragesample.isEmpty()) // coverage
+	{
+	    m_coverageCurrentAction->setVisible(true);
+	    m_coverageHistoryAction->setVisible(true);
+	    m_analysisAction->setVisible(true);
+	}
+    }
+}
+
+void
+VisualizationToolBar::disableAnalysisTools()
+{
+    m_analysisAction->setVisible(false);
 }
