@@ -927,6 +927,9 @@ PropagateLagrangian()
 int luna;
 void MainWindow::on_actionPropagate_Scenario_triggered()
 {
+
+    QTextStream out (stdout);
+
     if (!scenario())
     {
         return;
@@ -934,6 +937,8 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
 
     PropagationFeedback feedback;
     PropagatedScenario* propScenario = new PropagatedScenario();
+
+    out << "PropagatedScenario created " << endl;
 
     extern int Lagrmode;
 
@@ -985,6 +990,7 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
 
                     if (dynamic_cast<ScenarioLoiteringType*>(trajectory.data()))
                     {
+			out << "ScenarioLoiteringType in process " << endl;
                         ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
                         PropagateLoiteringTrajectory(loitering, sampleTimes, samples, feedback);
                         if (feedback.status() != PropagationFeedback::PropagationOk)

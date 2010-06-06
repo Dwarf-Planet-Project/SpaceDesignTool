@@ -797,6 +797,12 @@ PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
                              QList<sta::StateVector>& samples,
                              PropagationFeedback& propFeedback)
 {
+
+    QTextStream out (stdout);
+
+    QString loiteringLabel = loitering->ElementIdentifier()->Name();
+    out << "PropagateLoiteringTrajectory called with ARC name: " << loiteringLabel << endl;
+
     QString centralBodyName = loitering->Environment()->CentralBody()->Name();
     StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
     if (!centralBody)

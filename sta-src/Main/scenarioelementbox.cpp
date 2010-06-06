@@ -28,6 +28,7 @@
   Extensvely modified by Guillermo on October 2009 to include TLEs
   Modified by Guillermo April 2010 to include coverage
   Modified by Guillermo May 2010 to change the big integers of Ricardo into floats
+  Modified by Guillermo to add labels to identify the scenario elements
  */
 
 #include "scenarioelementbox.h"
@@ -63,6 +64,7 @@ ScenarioElementWidget::ScenarioElementWidget(QWidget* parent) :
     setItemDelegate(new SheetDelegate(this));
     setAlternatingRowColors(true);
     setDragDropMode(DragOnly);
+    setAutoFillBackground(true);
     model()->setSupportedDragActions(Qt::CopyAction);
 }
 
@@ -128,6 +130,7 @@ static void setDragAndDropInfo(QTreeWidgetItem* item,
 {
     item->setData(0, ScenarioFragmentTypeRole, mimeType);
     item->setData(0, ScenarioFragmentRole, mimeData);
+
 }
 
 
@@ -140,7 +143,9 @@ static QByteArray spaceVehicleFragment(const char* name, const char* vehicleType
 {
     ScenarioSC spacecraft;
 
-    /*** fill in defaults ***/   
+    /*** fill in defaults ***/
+    spacecraft.setName("Satellite");
+
     QDomDocument doc;
     return fragmentText(CreateSCElement(&spacecraft, doc)).toUtf8();
 }
@@ -316,7 +321,7 @@ static QByteArray loiteringFragment(const char* name)
     loitering.PropagationPosition()->setPropagator("TWO BODY");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
-    //loitering.Label()->setName("Arc name");
+    loitering.ElementIdentifier()->setName("arc name");
 
     QDomDocument doc;
     return fragmentText(CreateLoiteringElement(&loitering, doc)).toUtf8();

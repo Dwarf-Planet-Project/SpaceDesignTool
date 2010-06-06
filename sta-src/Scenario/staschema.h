@@ -44,6 +44,7 @@ class ScenarioOptVarString;
 class ScenarioTimeLine;
 class ScenarioPropagation;
 class ScenarioEnvironmentType;
+class ScenarioElementIdentifierType;
 class ScenarioCentralBodyType;
 class ScenarioGravityModel;
 class ScenarioPerturbationsType;
@@ -613,6 +614,33 @@ public:
 private:
     QSharedPointer<ScenarioCentralBodyType> m_CentralBody;
     QSharedPointer<ScenarioPerturbationsType> m_PerturbationsToCentralBody;
+};
+
+
+// ScenarioElementIdentifierType
+class ScenarioElementIdentifierType : public ScenarioObject
+{
+public:
+    ScenarioElementIdentifierType();
+    static ScenarioElementIdentifierType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "ElementIdentifierType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QString Name() const
+    { return m_Name; }
+    void setName(QString Name)
+    { m_Name = Name; }
+    int Order() const
+    { return m_Order; }
+    void setOrder(int Order)
+    { m_Order = Order; }
+
+private:
+    QString m_Name;
+    int m_Order;
 };
 
 
@@ -6471,6 +6499,10 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
+    { return m_ElementIdentifier; }
+    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
+    { m_ElementIdentifier = ElementIdentifier; }
     QSharedPointer<ScenarioSCEnvironmentType> Environment() const
     { return m_Environment; }
     void setEnvironment(QSharedPointer<ScenarioSCEnvironmentType> Environment)
@@ -6497,6 +6529,7 @@ public:
     { m_PropagationAttitude = PropagationAttitude; }
 
 private:
+    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
     QSharedPointer<ScenarioSCEnvironmentType> m_Environment;
     QSharedPointer<ScenarioTimeLine> m_TimeLine;
     QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
@@ -7820,6 +7853,7 @@ QDomElement CreateLoiteringTLEElement(ScenarioLoiteringTLEType* e, QDomDocument&
 QDomElement CreateReceiverPayloadElement(ScenarioReceiverPayloadType* e, QDomDocument& doc);
 QDomElement CreateOpticalPayloadElement(ScenarioOpticalPayloadType* e, QDomDocument& doc);
 QDomElement CreateInitialAttitudeElement(ScenarioInitialAttitudeType* e, QDomDocument& doc);
+QDomElement CreateElementIdentifierElement(ScenarioElementIdentifierType* e, QDomDocument& doc);
 QDomElement CreateLoiteringElement(ScenarioLoiteringType* e, QDomDocument& doc);
 QDomElement CreateReceiverElement(ScenarioReceiver* e, QDomDocument& doc);
 QDomElement CreateSphericalCoordinatesElement(ScenarioSphericalCoordinatesType* e, QDomDocument& doc);

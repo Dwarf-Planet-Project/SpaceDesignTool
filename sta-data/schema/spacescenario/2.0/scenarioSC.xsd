@@ -89,6 +89,7 @@
 		<complexContent>
 			<extension base="tns:AbstractTrajectoryType">
 				<sequence>
+				    <element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
 					<element name="Environment" type="tns:SCEnvironmentType"></element>
 					<element ref="tns:TimeLine"></element>
 					<element ref="tns:InitialPosition" />

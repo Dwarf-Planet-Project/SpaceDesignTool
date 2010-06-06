@@ -767,6 +767,51 @@ QList<QSharedPointer<ScenarioObject> >ScenarioEnvironmentType::children() const
 
 
 
+// ScenarioElementIdentifierType
+ScenarioElementIdentifierType::ScenarioElementIdentifierType() :
+    m_Order(0)
+{
+}
+
+ScenarioElementIdentifierType* ScenarioElementIdentifierType::create(const QDomElement& e)
+{
+    ScenarioElementIdentifierType* v;
+    {
+        v = new ScenarioElementIdentifierType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioElementIdentifierType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_Name = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_Order = parseInt(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioElementIdentifierType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:Name", m_Name));
+    e.appendChild(createSimpleElement(doc, "tns:Order", m_Order));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioElementIdentifierType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
 // ScenarioCentralBodyType
 ScenarioCentralBodyType::ScenarioCentralBodyType()
 {
@@ -10247,6 +10292,7 @@ QList<QSharedPointer<ScenarioObject> >ScenarioSCEnvironmentType::children() cons
 // ScenarioLoiteringType
 ScenarioLoiteringType::ScenarioLoiteringType()
 {
+    m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(new ScenarioElementIdentifierType());
     m_Environment = QSharedPointer<ScenarioSCEnvironmentType>(new ScenarioSCEnvironmentType());
     m_TimeLine = QSharedPointer<ScenarioTimeLine>(new ScenarioTimeLine());
     m_InitialPosition = QSharedPointer<ScenarioInitialPositionType>(new ScenarioInitialPositionType());
@@ -10270,6 +10316,9 @@ ScenarioLoiteringType* ScenarioLoiteringType::create(const QDomElement& e)
 bool ScenarioLoiteringType::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioAbstractTrajectoryType::load(e, next);
+    if (next->tagName() == "tns:ElementIdentifier")
+        m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(ScenarioElementIdentifierType::create(*next));
+    *next = next->nextSiblingElement();
     if (next->tagName() == "tns:Environment")
         m_Environment = QSharedPointer<ScenarioSCEnvironmentType>(ScenarioSCEnvironmentType::create(*next));
     *next = next->nextSiblingElement();
@@ -10294,6 +10343,12 @@ bool ScenarioLoiteringType::load(const QDomElement& e, QDomElement* next)
 QDomElement ScenarioLoiteringType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc, elementName);
+    if (!m_ElementIdentifier.isNull())
+    {
+        QString tagName = "ElementIdentifier";
+        QDomElement child = m_ElementIdentifier->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
     if (!m_Environment.isNull())
     {
         QString tagName = "Environment";
@@ -10336,6 +10391,7 @@ QDomElement ScenarioLoiteringType::toDomElement(QDomDocument& doc, const QString
 QList<QSharedPointer<ScenarioObject> >ScenarioLoiteringType::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_ElementIdentifier.isNull()) children << m_ElementIdentifier;
     if (!m_Environment.isNull()) children << m_Environment;
     if (!m_TimeLine.isNull()) children << m_TimeLine;
     if (!m_InitialPosition.isNull()) children << m_InitialPosition;
@@ -12849,6 +12905,11 @@ QDomElement CreateOpticalPayloadElement(ScenarioOpticalPayloadType* e, QDomDocum
 QDomElement CreateInitialAttitudeElement(ScenarioInitialAttitudeType* e, QDomDocument& doc)
 {
     return e->toDomElement(doc, "InitialAttitude");
+}
+
+QDomElement CreateElementIdentifierElement(ScenarioElementIdentifierType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "ElementIdentifier");
 }
 
 QDomElement CreateLoiteringElement(ScenarioLoiteringType* e, QDomDocument& doc)
