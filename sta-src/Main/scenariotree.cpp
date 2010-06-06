@@ -85,7 +85,10 @@ ScenarioTree::ScenarioTree(QWidget *parent)
             this, SLOT(editItem(QTreeWidgetItem*, int)));
     connect(this, SIGNAL(itemChanged(QTreeWidgetItem*, int)),
             this, SLOT(editItemInline(QTreeWidgetItem*, int)));
-    setExpandsOnDoubleClick(true);
+
+
+    setExpandsOnDoubleClick(false);
+    setAnimated(true);	// Tree spands now slowly (nicer for the user)
     
     // Set drag and drop behavior
     setDragEnabled(true);
@@ -901,14 +904,18 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
 }
 
 
-void ScenarioTree::editItem(QTreeWidgetItem* item, int /* column */)
+//void ScenarioTree::editItem(QTreeWidgetItem* item, int /* column */)
+void ScenarioTree::editItem(QTreeWidgetItem* item, int column)
 {
+
+    QTextStream out (stdout);
+
     if (item == NULL)
     {
         return;
     }
 
-	ScenarioObject* scenarioObject = NULL;
+    ScenarioObject* scenarioObject = NULL;
 
     QVariant data = item->data(0, ScenarioObjectRole);
     if (qVariantCanConvert<void*>(data))
@@ -916,6 +923,7 @@ void ScenarioTree::editItem(QTreeWidgetItem* item, int /* column */)
         void* pointer = qVariantValue<void*>(data);
         scenarioObject = reinterpret_cast<ScenarioObject*>(pointer);
     }
+
 
 #ifdef OLDSCENARIO
     // Some items in the tree view are just data fields; if the user has
@@ -937,10 +945,20 @@ void ScenarioTree::editItem(QTreeWidgetItem* item, int /* column */)
     }
 #endif
 
-    if (scenarioObject != NULL && item != NULL)
+    if (scenarioObject != NULL && item != NULL && column == 0)
     {
         editScenarioObject(scenarioObject, item);
+	out << "Editing column 0 " << endl;
     }
+
+    if (scenarioObject != NULL && item != NULL && column == 1)
+    {
+	//editScenarioObject(scenarioObject, item);
+	editItemInline(item, 1);
+	out << "Editing column 1 " << endl;
+    }
+
+
 }
 
 
@@ -949,6 +967,24 @@ void ScenarioTree::editItem(QTreeWidgetItem* item, int /* column */)
  */
 void ScenarioTree::editItemInline(QTreeWidgetItem* item, int column)
 {
+
+    QTextStream out (stdout);
+
+    ScenarioObject* object = objectForItem(item);
+    if (object == NULL)
+	return;
+
+    if (dynamic_cast<SpaceScenario*>(object) && column == 1)
+	{
+	    SpaceScenario* scenario = dynamic_cast<SpaceScenario*>(object);
+	    item->setFlags(item->flags() | (Qt::ItemIsEditable));
+	    //editItem(item, 1);
+	    scenario->setName(item->text(1));
+	    //scenario->setName("mama");
+	    updateTreeItems(item, scenario);
+	    out << "Editing scenario name: " << scenario->Name() << endl;
+	}
+
 #if OLDSCENARIO
     ScenarioObject* object = objectForItem(item);
     if (object == NULL)

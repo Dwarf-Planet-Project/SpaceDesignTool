@@ -179,7 +179,7 @@ static QByteArray groundStationFragment(const char* name,
     groundPosition->setLongitude(longitude);
     groundPosition->setAltitude(altitude);
     groundStation.Location()->setAbstract3DOFPosition(groundPosition);
-    groundStation.GroundStationEnvironment()->Rain()->setPercentageExceededLimit(0.01);//Line added by Ricardo to put this value as a default
+    groundStation.GroundStationEnvironment()->Rain()->setPercentageExceededLimit(0.01); //Line added by Ricardo to put this value as a default
     groundStation.GroundStationEnvironment()->setOxChoice("true");
     groundStation.GroundStationEnvironment()->setWaterVapourChoice("true");
     groundStation.GroundStationEnvironment()->Rain()->setRainChoice("true");
@@ -315,6 +315,8 @@ static QByteArray loiteringFragment(const char* name)
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
     loitering.PropagationPosition()->setTimeStep(60.0);
+
+    //loitering.Label()->setName("Arc name");
 
     QDomDocument doc;
     return fragmentText(CreateLoiteringElement(&loitering, doc)).toUtf8();
