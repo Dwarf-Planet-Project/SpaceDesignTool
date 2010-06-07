@@ -711,7 +711,6 @@ QList<QSharedPointer<ScenarioObject> >ScenarioPropagation::children() const
 ScenarioEnvironmentType::ScenarioEnvironmentType()
 {
     m_CentralBody = QSharedPointer<ScenarioCentralBodyType>(new ScenarioCentralBodyType());
-    m_PerturbationsToCentralBody = QSharedPointer<ScenarioPerturbationsType>(new ScenarioPerturbationsType());
 }
 
 ScenarioEnvironmentType* ScenarioEnvironmentType::create(const QDomElement& e)
@@ -734,7 +733,8 @@ bool ScenarioEnvironmentType::load(const QDomElement& e, QDomElement* next)
     *next = next->nextSiblingElement();
     if (next->tagName() == "tns:PerturbationsToCentralBody")
         m_PerturbationsToCentralBody = QSharedPointer<ScenarioPerturbationsType>(ScenarioPerturbationsType::create(*next));
-    *next = next->nextSiblingElement();
+if (!m_PerturbationsToCentralBody.isNull())
+        *next = next->nextSiblingElement();
     return true;
 }
 
@@ -2843,6 +2843,7 @@ QList<QSharedPointer<ScenarioObject> >ScenarioAeroCoefFileType::children() const
 // ScenarioGroundStation
 ScenarioGroundStation::ScenarioGroundStation()
 {
+    m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(new ScenarioElementIdentifierType());
     m_Location = QSharedPointer<ScenarioLocationType>(new ScenarioLocationType());
     m_PayloadSet = QSharedPointer<ScenarioPayloadSet>(new ScenarioPayloadSet());
     m_GroundStationEnvironment = QSharedPointer<ScenarioGroundStationEnvironment>(new ScenarioGroundStationEnvironment());
@@ -2863,6 +2864,9 @@ ScenarioGroundStation* ScenarioGroundStation::create(const QDomElement& e)
 bool ScenarioGroundStation::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioParticipantType::load(e, next);
+    if (next->tagName() == "tns:ElementIdentifier")
+        m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(ScenarioElementIdentifierType::create(*next));
+    *next = next->nextSiblingElement();
     if (next->tagName() == "tns:Location")
         m_Location = QSharedPointer<ScenarioLocationType>(ScenarioLocationType::create(*next));
     *next = next->nextSiblingElement();
@@ -2878,6 +2882,12 @@ bool ScenarioGroundStation::load(const QDomElement& e, QDomElement* next)
 QDomElement ScenarioGroundStation::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioParticipantType::toDomElement(doc, elementName);
+    if (!m_ElementIdentifier.isNull())
+    {
+        QString tagName = "ElementIdentifier";
+        QDomElement child = m_ElementIdentifier->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
     if (!m_Location.isNull())
     {
         QString tagName = "Location";
@@ -2902,6 +2912,7 @@ QDomElement ScenarioGroundStation::toDomElement(QDomDocument& doc, const QString
 QList<QSharedPointer<ScenarioObject> >ScenarioGroundStation::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_ElementIdentifier.isNull()) children << m_ElementIdentifier;
     if (!m_Location.isNull()) children << m_Location;
     if (!m_PayloadSet.isNull()) children << m_PayloadSet;
     if (!m_GroundStationEnvironment.isNull()) children << m_GroundStationEnvironment;
@@ -3023,6 +3034,7 @@ QList<QSharedPointer<ScenarioObject> >ScenarioRain::children() const
 ScenarioLaunchPad::ScenarioLaunchPad() :
     m_clearingAltitude(0.0)
 {
+    m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(new ScenarioElementIdentifierType());
     m_Location = QSharedPointer<ScenarioLocationType>(new ScenarioLocationType());
     m_PayloadSet = QSharedPointer<ScenarioPayloadSet>(new ScenarioPayloadSet());
 }
@@ -3042,6 +3054,9 @@ ScenarioLaunchPad* ScenarioLaunchPad::create(const QDomElement& e)
 bool ScenarioLaunchPad::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioParticipantType::load(e, next);
+    if (next->tagName() == "tns:ElementIdentifier")
+        m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(ScenarioElementIdentifierType::create(*next));
+    *next = next->nextSiblingElement();
     if (next->tagName() == "tns:Location")
         m_Location = QSharedPointer<ScenarioLocationType>(ScenarioLocationType::create(*next));
     *next = next->nextSiblingElement();
@@ -3056,6 +3071,12 @@ bool ScenarioLaunchPad::load(const QDomElement& e, QDomElement* next)
 QDomElement ScenarioLaunchPad::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioParticipantType::toDomElement(doc, elementName);
+    if (!m_ElementIdentifier.isNull())
+    {
+        QString tagName = "ElementIdentifier";
+        QDomElement child = m_ElementIdentifier->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
     if (!m_Location.isNull())
     {
         QString tagName = "Location";
@@ -3075,6 +3096,7 @@ QDomElement ScenarioLaunchPad::toDomElement(QDomDocument& doc, const QString& el
 QList<QSharedPointer<ScenarioObject> >ScenarioLaunchPad::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_ElementIdentifier.isNull()) children << m_ElementIdentifier;
     if (!m_Location.isNull()) children << m_Location;
     if (!m_PayloadSet.isNull()) children << m_PayloadSet;
     return children;
@@ -3086,6 +3108,7 @@ QList<QSharedPointer<ScenarioObject> >ScenarioLaunchPad::children() const
 // ScenarioPoint
 ScenarioPoint::ScenarioPoint()
 {
+    m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(new ScenarioElementIdentifierType());
     m_Location = QSharedPointer<ScenarioLocationType>(new ScenarioLocationType());
     m_PayloadSet = QSharedPointer<ScenarioPayloadSet>(new ScenarioPayloadSet());
 }
@@ -3105,6 +3128,9 @@ ScenarioPoint* ScenarioPoint::create(const QDomElement& e)
 bool ScenarioPoint::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioParticipantType::load(e, next);
+    if (next->tagName() == "tns:ElementIdentifier")
+        m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(ScenarioElementIdentifierType::create(*next));
+    *next = next->nextSiblingElement();
     if (next->tagName() == "tns:Location")
         m_Location = QSharedPointer<ScenarioLocationType>(ScenarioLocationType::create(*next));
     *next = next->nextSiblingElement();
@@ -3117,6 +3143,12 @@ bool ScenarioPoint::load(const QDomElement& e, QDomElement* next)
 QDomElement ScenarioPoint::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioParticipantType::toDomElement(doc, elementName);
+    if (!m_ElementIdentifier.isNull())
+    {
+        QString tagName = "ElementIdentifier";
+        QDomElement child = m_ElementIdentifier->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
     if (!m_Location.isNull())
     {
         QString tagName = "Location";
@@ -3135,6 +3167,7 @@ QDomElement ScenarioPoint::toDomElement(QDomDocument& doc, const QString& elemen
 QList<QSharedPointer<ScenarioObject> >ScenarioPoint::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_ElementIdentifier.isNull()) children << m_ElementIdentifier;
     if (!m_Location.isNull()) children << m_Location;
     if (!m_PayloadSet.isNull()) children << m_PayloadSet;
     return children;
@@ -6952,6 +6985,7 @@ QList<QSharedPointer<ScenarioObject> >ScenarioLVTrajectoryConstraintsType::child
 // ScenarioREV
 ScenarioREV::ScenarioREV()
 {
+    m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(new ScenarioElementIdentifierType());
     m_REVProgram = QSharedPointer<ScenarioREVProgramType>(new ScenarioREVProgramType());
     m_REVMission = QSharedPointer<ScenarioREVMissionType>(new ScenarioREVMissionType());
     m_REVSystem = QSharedPointer<ScenarioREVSystemType>(new ScenarioREVSystemType());
@@ -6974,6 +7008,9 @@ ScenarioREV* ScenarioREV::create(const QDomElement& e)
 bool ScenarioREV::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioParticipantType::load(e, next);
+    if (next->tagName() == "tns:ElementIdentifier")
+        m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(ScenarioElementIdentifierType::create(*next));
+    *next = next->nextSiblingElement();
     if (next->tagName() == "tns:REVProgram")
         m_REVProgram = QSharedPointer<ScenarioREVProgramType>(ScenarioREVProgramType::create(*next));
     *next = next->nextSiblingElement();
@@ -6995,6 +7032,12 @@ bool ScenarioREV::load(const QDomElement& e, QDomElement* next)
 QDomElement ScenarioREV::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioParticipantType::toDomElement(doc, elementName);
+    if (!m_ElementIdentifier.isNull())
+    {
+        QString tagName = "ElementIdentifier";
+        QDomElement child = m_ElementIdentifier->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
     if (!m_REVProgram.isNull())
     {
         QString tagName = "REVProgram";
@@ -7031,6 +7074,7 @@ QDomElement ScenarioREV::toDomElement(QDomDocument& doc, const QString& elementN
 QList<QSharedPointer<ScenarioObject> >ScenarioREV::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_ElementIdentifier.isNull()) children << m_ElementIdentifier;
     if (!m_REVProgram.isNull()) children << m_REVProgram;
     if (!m_REVMission.isNull()) children << m_REVMission;
     if (!m_REVSystem.isNull()) children << m_REVSystem;
@@ -7228,6 +7272,7 @@ QList<QSharedPointer<ScenarioObject> >ScenarioREVTrajectoryPlanType::children() 
 // ScenarioEntryArcType
 ScenarioEntryArcType::ScenarioEntryArcType()
 {
+    m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(new ScenarioElementIdentifierType());
     m_Environment = QSharedPointer<ScenarioEnvironmentType>(new ScenarioEnvironmentType());
     m_TimeLine = QSharedPointer<ScenarioTimeLine>(new ScenarioTimeLine());
     m_InitialPosition = QSharedPointer<ScenarioInitialPositionType>(new ScenarioInitialPositionType());
@@ -7255,6 +7300,9 @@ ScenarioEntryArcType* ScenarioEntryArcType::create(const QDomElement& e)
 bool ScenarioEntryArcType::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioAbstractTrajectoryType::load(e, next);
+    if (next->tagName() == "tns:ElementIdentifier")
+        m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(ScenarioElementIdentifierType::create(*next));
+    *next = next->nextSiblingElement();
     if (next->tagName() == "tns:Environment")
         m_Environment = QSharedPointer<ScenarioEnvironmentType>(ScenarioEnvironmentType::create(*next));
     *next = next->nextSiblingElement();
@@ -7291,6 +7339,12 @@ bool ScenarioEntryArcType::load(const QDomElement& e, QDomElement* next)
 QDomElement ScenarioEntryArcType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc, elementName);
+    if (!m_ElementIdentifier.isNull())
+    {
+        QString tagName = "ElementIdentifier";
+        QDomElement child = m_ElementIdentifier->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
     if (!m_Environment.isNull())
     {
         QString tagName = "Environment";
@@ -7357,6 +7411,7 @@ QDomElement ScenarioEntryArcType::toDomElement(QDomDocument& doc, const QString&
 QList<QSharedPointer<ScenarioObject> >ScenarioEntryArcType::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_ElementIdentifier.isNull()) children << m_ElementIdentifier;
     if (!m_Environment.isNull()) children << m_Environment;
     if (!m_TimeLine.isNull()) children << m_TimeLine;
     if (!m_InitialPosition.isNull()) children << m_InitialPosition;
@@ -9977,6 +10032,7 @@ QList<QSharedPointer<ScenarioObject> >ScenarioREVSubsystemsReliablityType::child
 // ScenarioSC
 ScenarioSC::ScenarioSC()
 {
+    m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(new ScenarioElementIdentifierType());
     m_SCProgram = QSharedPointer<ScenarioSCProgram>(new ScenarioSCProgram());
     m_SCMission = QSharedPointer<ScenarioSCMission>(new ScenarioSCMission());
     m_System = QSharedPointer<ScenarioSCSystemType>(new ScenarioSCSystemType());
@@ -9999,6 +10055,9 @@ ScenarioSC* ScenarioSC::create(const QDomElement& e)
 bool ScenarioSC::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioParticipantType::load(e, next);
+    if (next->tagName() == "tns:ElementIdentifier")
+        m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(ScenarioElementIdentifierType::create(*next));
+    *next = next->nextSiblingElement();
     if (next->tagName() == "tns:SCProgram")
         m_SCProgram = QSharedPointer<ScenarioSCProgram>(ScenarioSCProgram::create(*next));
     *next = next->nextSiblingElement();
@@ -10020,6 +10079,12 @@ bool ScenarioSC::load(const QDomElement& e, QDomElement* next)
 QDomElement ScenarioSC::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioParticipantType::toDomElement(doc, elementName);
+    if (!m_ElementIdentifier.isNull())
+    {
+        QString tagName = "ElementIdentifier";
+        QDomElement child = m_ElementIdentifier->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
     if (!m_SCProgram.isNull())
     {
         QString tagName = "SCProgram";
@@ -10056,6 +10121,7 @@ QDomElement ScenarioSC::toDomElement(QDomDocument& doc, const QString& elementNa
 QList<QSharedPointer<ScenarioObject> >ScenarioSC::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_ElementIdentifier.isNull()) children << m_ElementIdentifier;
     if (!m_SCProgram.isNull()) children << m_SCProgram;
     if (!m_SCMission.isNull()) children << m_SCMission;
     if (!m_System.isNull()) children << m_System;
@@ -10642,6 +10708,7 @@ QList<QSharedPointer<ScenarioObject> >ScenarioManoeuvrePlan::children() const
 // ScenarioLoiteringTLEType
 ScenarioLoiteringTLEType::ScenarioLoiteringTLEType()
 {
+    m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(new ScenarioElementIdentifierType());
     m_TimeLine = QSharedPointer<ScenarioTimeLine>(new ScenarioTimeLine());
 }
 
@@ -10660,6 +10727,9 @@ ScenarioLoiteringTLEType* ScenarioLoiteringTLEType::create(const QDomElement& e)
 bool ScenarioLoiteringTLEType::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioAbstractTrajectoryType::load(e, next);
+    if (next->tagName() == "tns:ElementIdentifier")
+        m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(ScenarioElementIdentifierType::create(*next));
+    *next = next->nextSiblingElement();
     if (next->tagName() == "tns:TimeLine")
         m_TimeLine = QSharedPointer<ScenarioTimeLine>(ScenarioTimeLine::create(*next));
     *next = next->nextSiblingElement();
@@ -10675,6 +10745,12 @@ bool ScenarioLoiteringTLEType::load(const QDomElement& e, QDomElement* next)
 QDomElement ScenarioLoiteringTLEType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc, elementName);
+    if (!m_ElementIdentifier.isNull())
+    {
+        QString tagName = "ElementIdentifier";
+        QDomElement child = m_ElementIdentifier->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
     if (!m_TimeLine.isNull())
     {
         QString tagName = "TimeLine";
@@ -10690,6 +10766,7 @@ QDomElement ScenarioLoiteringTLEType::toDomElement(QDomDocument& doc, const QStr
 QList<QSharedPointer<ScenarioObject> >ScenarioLoiteringTLEType::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_ElementIdentifier.isNull()) children << m_ElementIdentifier;
     if (!m_TimeLine.isNull()) children << m_TimeLine;
     return children;
 }
@@ -12062,6 +12139,7 @@ ScenarioColdCoating::ScenarioColdCoating() :
     m_emissivity(0.0),
     m_absorptivity(0.0)
 {
+    m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(new ScenarioElementIdentifierType());
 }
 
 ScenarioColdCoating* ScenarioColdCoating::create(const QDomElement& e)
@@ -12079,6 +12157,9 @@ ScenarioColdCoating* ScenarioColdCoating::create(const QDomElement& e)
 bool ScenarioColdCoating::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:ElementIdentifier")
+        m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(ScenarioElementIdentifierType::create(*next));
+    *next = next->nextSiblingElement();
         m_emissivity = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
         m_absorptivity = parseDouble(next->firstChild().toText().data());
@@ -12089,6 +12170,12 @@ bool ScenarioColdCoating::load(const QDomElement& e, QDomElement* next)
 QDomElement ScenarioColdCoating::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    if (!m_ElementIdentifier.isNull())
+    {
+        QString tagName = "ElementIdentifier";
+        QDomElement child = m_ElementIdentifier->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
     e.appendChild(createSimpleElement(doc, "tns:emissivity", m_emissivity));
     e.appendChild(createSimpleElement(doc, "tns:absorptivity", m_absorptivity));
     return e;
@@ -12097,6 +12184,7 @@ QDomElement ScenarioColdCoating::toDomElement(QDomDocument& doc, const QString& 
 QList<QSharedPointer<ScenarioObject> >ScenarioColdCoating::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_ElementIdentifier.isNull()) children << m_ElementIdentifier;
     return children;
 }
 
@@ -12161,6 +12249,7 @@ ScenarioHotCoating::ScenarioHotCoating() :
     m_emissivity(0.0),
     m_absorptivity(0.0)
 {
+    m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(new ScenarioElementIdentifierType());
 }
 
 ScenarioHotCoating* ScenarioHotCoating::create(const QDomElement& e)
@@ -12178,6 +12267,9 @@ ScenarioHotCoating* ScenarioHotCoating::create(const QDomElement& e)
 bool ScenarioHotCoating::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:ElementIdentifier")
+        m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(ScenarioElementIdentifierType::create(*next));
+    *next = next->nextSiblingElement();
         m_emissivity = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
         m_absorptivity = parseDouble(next->firstChild().toText().data());
@@ -12188,6 +12280,12 @@ bool ScenarioHotCoating::load(const QDomElement& e, QDomElement* next)
 QDomElement ScenarioHotCoating::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    if (!m_ElementIdentifier.isNull())
+    {
+        QString tagName = "ElementIdentifier";
+        QDomElement child = m_ElementIdentifier->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
     e.appendChild(createSimpleElement(doc, "tns:emissivity", m_emissivity));
     e.appendChild(createSimpleElement(doc, "tns:absorptivity", m_absorptivity));
     return e;
@@ -12196,6 +12294,7 @@ QDomElement ScenarioHotCoating::toDomElement(QDomDocument& doc, const QString& e
 QList<QSharedPointer<ScenarioObject> >ScenarioHotCoating::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_ElementIdentifier.isNull()) children << m_ElementIdentifier;
     return children;
 }
 
@@ -12574,6 +12673,7 @@ QList<QSharedPointer<ScenarioObject> >ScenarioOBDH::children() const
 // ScenarioTransmitterPayloadType
 ScenarioTransmitterPayloadType::ScenarioTransmitterPayloadType()
 {
+    m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(new ScenarioElementIdentifierType());
     m_Transmitter = QSharedPointer<ScenarioTransmitter>(new ScenarioTransmitter());
 }
 
@@ -12592,6 +12692,9 @@ ScenarioTransmitterPayloadType* ScenarioTransmitterPayloadType::create(const QDo
 bool ScenarioTransmitterPayloadType::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioAbstractPayloadType::load(e, next);
+    if (next->tagName() == "tns:ElementIdentifier")
+        m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(ScenarioElementIdentifierType::create(*next));
+    *next = next->nextSiblingElement();
     if (next->tagName() == "tns:Transmitter")
         m_Transmitter = QSharedPointer<ScenarioTransmitter>(ScenarioTransmitter::create(*next));
     *next = next->nextSiblingElement();
@@ -12601,6 +12704,12 @@ bool ScenarioTransmitterPayloadType::load(const QDomElement& e, QDomElement* nex
 QDomElement ScenarioTransmitterPayloadType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioAbstractPayloadType::toDomElement(doc, elementName);
+    if (!m_ElementIdentifier.isNull())
+    {
+        QString tagName = "ElementIdentifier";
+        QDomElement child = m_ElementIdentifier->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
     if (!m_Transmitter.isNull())
     {
         QString tagName = "Transmitter";
@@ -12613,6 +12722,7 @@ QDomElement ScenarioTransmitterPayloadType::toDomElement(QDomDocument& doc, cons
 QList<QSharedPointer<ScenarioObject> >ScenarioTransmitterPayloadType::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_ElementIdentifier.isNull()) children << m_ElementIdentifier;
     if (!m_Transmitter.isNull()) children << m_Transmitter;
     return children;
 }
@@ -12623,6 +12733,7 @@ QList<QSharedPointer<ScenarioObject> >ScenarioTransmitterPayloadType::children()
 // ScenarioReceiverPayloadType
 ScenarioReceiverPayloadType::ScenarioReceiverPayloadType()
 {
+    m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(new ScenarioElementIdentifierType());
     m_Receiver = QSharedPointer<ScenarioReceiver>(new ScenarioReceiver());
 }
 
@@ -12641,6 +12752,9 @@ ScenarioReceiverPayloadType* ScenarioReceiverPayloadType::create(const QDomEleme
 bool ScenarioReceiverPayloadType::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioAbstractPayloadType::load(e, next);
+    if (next->tagName() == "tns:ElementIdentifier")
+        m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(ScenarioElementIdentifierType::create(*next));
+    *next = next->nextSiblingElement();
     if (next->tagName() == "tns:Receiver")
         m_Receiver = QSharedPointer<ScenarioReceiver>(ScenarioReceiver::create(*next));
     *next = next->nextSiblingElement();
@@ -12650,6 +12764,12 @@ bool ScenarioReceiverPayloadType::load(const QDomElement& e, QDomElement* next)
 QDomElement ScenarioReceiverPayloadType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioAbstractPayloadType::toDomElement(doc, elementName);
+    if (!m_ElementIdentifier.isNull())
+    {
+        QString tagName = "ElementIdentifier";
+        QDomElement child = m_ElementIdentifier->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
     if (!m_Receiver.isNull())
     {
         QString tagName = "Receiver";
@@ -12662,6 +12782,7 @@ QDomElement ScenarioReceiverPayloadType::toDomElement(QDomDocument& doc, const Q
 QList<QSharedPointer<ScenarioObject> >ScenarioReceiverPayloadType::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_ElementIdentifier.isNull()) children << m_ElementIdentifier;
     if (!m_Receiver.isNull()) children << m_Receiver;
     return children;
 }
@@ -12672,6 +12793,7 @@ QList<QSharedPointer<ScenarioObject> >ScenarioReceiverPayloadType::children() co
 // ScenarioOpticalPayloadType
 ScenarioOpticalPayloadType::ScenarioOpticalPayloadType()
 {
+    m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(new ScenarioElementIdentifierType());
     m_Telescope = QSharedPointer<ScenarioTelescopeType>(new ScenarioTelescopeType());
 }
 
@@ -12690,6 +12812,9 @@ ScenarioOpticalPayloadType* ScenarioOpticalPayloadType::create(const QDomElement
 bool ScenarioOpticalPayloadType::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioAbstractPayloadType::load(e, next);
+    if (next->tagName() == "tns:ElementIdentifier")
+        m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(ScenarioElementIdentifierType::create(*next));
+    *next = next->nextSiblingElement();
     if (next->tagName() == "tns:Telescope")
         m_Telescope = QSharedPointer<ScenarioTelescopeType>(ScenarioTelescopeType::create(*next));
     *next = next->nextSiblingElement();
@@ -12699,6 +12824,12 @@ bool ScenarioOpticalPayloadType::load(const QDomElement& e, QDomElement* next)
 QDomElement ScenarioOpticalPayloadType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioAbstractPayloadType::toDomElement(doc, elementName);
+    if (!m_ElementIdentifier.isNull())
+    {
+        QString tagName = "ElementIdentifier";
+        QDomElement child = m_ElementIdentifier->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
     if (!m_Telescope.isNull())
     {
         QString tagName = "Telescope";
@@ -12711,6 +12842,7 @@ QDomElement ScenarioOpticalPayloadType::toDomElement(QDomDocument& doc, const QS
 QList<QSharedPointer<ScenarioObject> >ScenarioOpticalPayloadType::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_ElementIdentifier.isNull()) children << m_ElementIdentifier;
     if (!m_Telescope.isNull()) children << m_Telescope;
     return children;
 }
@@ -12721,6 +12853,7 @@ QList<QSharedPointer<ScenarioObject> >ScenarioOpticalPayloadType::children() con
 // ScenarioRadarPayloadType
 ScenarioRadarPayloadType::ScenarioRadarPayloadType()
 {
+    m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(new ScenarioElementIdentifierType());
     m_Radar = QSharedPointer<ScenarioRadarType>(new ScenarioRadarType());
 }
 
@@ -12739,6 +12872,9 @@ ScenarioRadarPayloadType* ScenarioRadarPayloadType::create(const QDomElement& e)
 bool ScenarioRadarPayloadType::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioAbstractPayloadType::load(e, next);
+    if (next->tagName() == "tns:ElementIdentifier")
+        m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(ScenarioElementIdentifierType::create(*next));
+    *next = next->nextSiblingElement();
     if (next->tagName() == "tns:Radar")
         m_Radar = QSharedPointer<ScenarioRadarType>(ScenarioRadarType::create(*next));
     *next = next->nextSiblingElement();
@@ -12748,6 +12884,12 @@ bool ScenarioRadarPayloadType::load(const QDomElement& e, QDomElement* next)
 QDomElement ScenarioRadarPayloadType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioAbstractPayloadType::toDomElement(doc, elementName);
+    if (!m_ElementIdentifier.isNull())
+    {
+        QString tagName = "ElementIdentifier";
+        QDomElement child = m_ElementIdentifier->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
     if (!m_Radar.isNull())
     {
         QString tagName = "Radar";
@@ -12760,6 +12902,7 @@ QDomElement ScenarioRadarPayloadType::toDomElement(QDomDocument& doc, const QStr
 QList<QSharedPointer<ScenarioObject> >ScenarioRadarPayloadType::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_ElementIdentifier.isNull()) children << m_ElementIdentifier;
     if (!m_Radar.isNull()) children << m_Radar;
     return children;
 }

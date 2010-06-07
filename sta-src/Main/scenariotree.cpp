@@ -144,9 +144,9 @@ ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioOb
     //Taking care of the second column for the identifier of the loitering ARC
     if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject))
     {
-	//item->setText(1, scenarioObject->elementName());
+	item->setText(1, scenarioObject->elementName());
 	// Guillermo says: TODO make this compatible with the label of loitering
-	item->setText(1, "arc name");
+	//item->setText(1, "arc name");
 
     }
 
@@ -994,15 +994,7 @@ void ScenarioTree::editItemInline(QTreeWidgetItem* item, int column)
 	    //updateTreeItems(item, scenario);  // do not do that. The complete scenario will disapear
 	    //out << "Editing scenario name: " << scenario->Name() << endl;
 	}
-    /*
-    else if (dynamic_cast<ScenarioLoiteringType*>(object) && column == 1)   // Guillermo says: the name of the Loitering arc
-	{
-	    ScenarioLoiteringType* myLoitering = dynamic_cast<ScenarioLoiteringType*>(object);
-	    item->setFlags(item->flags() | (Qt::ItemIsEditable));
-	    myLoitering->ElementIdentifier()->setName(item->text(1));
-	}
-    */
-    else if (dynamic_cast<ScenarioElementIdentifierType*>(object) && column == 1)   // Guillermo says: the name of the Loitering arc
+    else if (dynamic_cast<ScenarioElementIdentifierType*>(object) && column == 1)   // Guillermo says: the name of the arcs, etc.
 	{
 	    ScenarioElementIdentifierType* myIdentifier = dynamic_cast<ScenarioElementIdentifierType*>(object);
 	    item->setFlags(item->flags() | (Qt::ItemIsEditable));

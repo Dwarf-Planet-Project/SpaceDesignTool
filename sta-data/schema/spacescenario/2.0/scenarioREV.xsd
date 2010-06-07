@@ -7,6 +7,7 @@
 			<complexContent>
 				<extension base="tns:ParticipantType">
 					<sequence>
+					    <element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
 						<element name="REVProgram" type="tns:REVProgramType"></element>
 						<element name="REVMission" type="tns:REVMissionType"></element>
 						<element name="REVSystem" type="tns:REVSystemType"></element>
@@ -48,6 +49,7 @@
 		<complexContent>
 			<extension base="tns:AbstractTrajectoryType">
 				<sequence>
+				    <element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
 					<element ref="tns:Environment"></element>
 					<element ref="tns:TimeLine"></element>
 					<element ref="tns:InitialPosition"></element>

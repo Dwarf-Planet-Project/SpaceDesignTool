@@ -2016,6 +2016,10 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
+    { return m_ElementIdentifier; }
+    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
+    { m_ElementIdentifier = ElementIdentifier; }
     QSharedPointer<ScenarioLocationType> Location() const
     { return m_Location; }
     void setLocation(QSharedPointer<ScenarioLocationType> Location)
@@ -2030,6 +2034,7 @@ public:
     { m_GroundStationEnvironment = GroundStationEnvironment; }
 
 private:
+    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
     QSharedPointer<ScenarioLocationType> m_Location;
     QSharedPointer<ScenarioPayloadSet> m_PayloadSet;
     QSharedPointer<ScenarioGroundStationEnvironment> m_GroundStationEnvironment;
@@ -2117,6 +2122,10 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
+    { return m_ElementIdentifier; }
+    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
+    { m_ElementIdentifier = ElementIdentifier; }
     QSharedPointer<ScenarioLocationType> Location() const
     { return m_Location; }
     void setLocation(QSharedPointer<ScenarioLocationType> Location)
@@ -2131,6 +2140,7 @@ public:
     { m_clearingAltitude = clearingAltitude; }
 
 private:
+    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
     QSharedPointer<ScenarioLocationType> m_Location;
     QSharedPointer<ScenarioPayloadSet> m_PayloadSet;
     double m_clearingAltitude;
@@ -2149,6 +2159,10 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
+    { return m_ElementIdentifier; }
+    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
+    { m_ElementIdentifier = ElementIdentifier; }
     QSharedPointer<ScenarioLocationType> Location() const
     { return m_Location; }
     void setLocation(QSharedPointer<ScenarioLocationType> Location)
@@ -2159,6 +2173,7 @@ public:
     { m_PayloadSet = PayloadSet; }
 
 private:
+    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
     QSharedPointer<ScenarioLocationType> m_Location;
     QSharedPointer<ScenarioPayloadSet> m_PayloadSet;
 };
@@ -4564,6 +4579,10 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
+    { return m_ElementIdentifier; }
+    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
+    { m_ElementIdentifier = ElementIdentifier; }
     QSharedPointer<ScenarioREVProgramType> REVProgram() const
     { return m_REVProgram; }
     void setREVProgram(QSharedPointer<ScenarioREVProgramType> REVProgram)
@@ -4586,6 +4605,7 @@ public:
     { m_OutputFiles = OutputFiles; }
 
 private:
+    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
     QSharedPointer<ScenarioREVProgramType> m_REVProgram;
     QSharedPointer<ScenarioREVMissionType> m_REVMission;
     QSharedPointer<ScenarioREVSystemType> m_REVSystem;
@@ -4684,6 +4704,10 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
+    { return m_ElementIdentifier; }
+    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
+    { m_ElementIdentifier = ElementIdentifier; }
     QSharedPointer<ScenarioEnvironmentType> Environment() const
     { return m_Environment; }
     void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
@@ -4726,6 +4750,7 @@ public:
     { m_EntryCharacteristics = EntryCharacteristics; }
 
 private:
+    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
     QSharedPointer<ScenarioEnvironmentType> m_Environment;
     QSharedPointer<ScenarioTimeLine> m_TimeLine;
     QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
@@ -6355,6 +6380,10 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
+    { return m_ElementIdentifier; }
+    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
+    { m_ElementIdentifier = ElementIdentifier; }
     QSharedPointer<ScenarioSCProgram> SCProgram() const
     { return m_SCProgram; }
     void setSCProgram(QSharedPointer<ScenarioSCProgram> SCProgram)
@@ -6377,6 +6406,7 @@ public:
     { m_OutputFiles = OutputFiles; }
 
 private:
+    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
     QSharedPointer<ScenarioSCProgram> m_SCProgram;
     QSharedPointer<ScenarioSCMission> m_SCMission;
     QSharedPointer<ScenarioSCSystemType> m_System;
@@ -6639,6 +6669,10 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
+    { return m_ElementIdentifier; }
+    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
+    { m_ElementIdentifier = ElementIdentifier; }
     QSharedPointer<ScenarioTimeLine> TimeLine() const
     { return m_TimeLine; }
     void setTimeLine(QSharedPointer<ScenarioTimeLine> TimeLine)
@@ -6657,6 +6691,7 @@ public:
     { m_tleLine2 = tleLine2; }
 
 private:
+    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
     QSharedPointer<ScenarioTimeLine> m_TimeLine;
     QString m_tleLine0;
     QString m_tleLine1;
@@ -7431,6 +7466,10 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
+    { return m_ElementIdentifier; }
+    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
+    { m_ElementIdentifier = ElementIdentifier; }
     double emissivity() const
     { return m_emissivity; }
     void setEmissivity(double emissivity)
@@ -7441,6 +7480,7 @@ public:
     { m_absorptivity = absorptivity; }
 
 private:
+    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
     double m_emissivity;
     double m_absorptivity;
 };
@@ -7485,6 +7525,10 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
+    { return m_ElementIdentifier; }
+    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
+    { m_ElementIdentifier = ElementIdentifier; }
     double emissivity() const
     { return m_emissivity; }
     void setEmissivity(double emissivity)
@@ -7495,6 +7539,7 @@ public:
     { m_absorptivity = absorptivity; }
 
 private:
+    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
     double m_emissivity;
     double m_absorptivity;
 };
@@ -7736,12 +7781,17 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
+    { return m_ElementIdentifier; }
+    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
+    { m_ElementIdentifier = ElementIdentifier; }
     QSharedPointer<ScenarioTransmitter> Transmitter() const
     { return m_Transmitter; }
     void setTransmitter(QSharedPointer<ScenarioTransmitter> Transmitter)
     { m_Transmitter = Transmitter; }
 
 private:
+    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
     QSharedPointer<ScenarioTransmitter> m_Transmitter;
 };
 
@@ -7758,12 +7808,17 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
+    { return m_ElementIdentifier; }
+    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
+    { m_ElementIdentifier = ElementIdentifier; }
     QSharedPointer<ScenarioReceiver> Receiver() const
     { return m_Receiver; }
     void setReceiver(QSharedPointer<ScenarioReceiver> Receiver)
     { m_Receiver = Receiver; }
 
 private:
+    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
     QSharedPointer<ScenarioReceiver> m_Receiver;
 };
 
@@ -7780,12 +7835,17 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
+    { return m_ElementIdentifier; }
+    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
+    { m_ElementIdentifier = ElementIdentifier; }
     QSharedPointer<ScenarioTelescopeType> Telescope() const
     { return m_Telescope; }
     void setTelescope(QSharedPointer<ScenarioTelescopeType> Telescope)
     { m_Telescope = Telescope; }
 
 private:
+    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
     QSharedPointer<ScenarioTelescopeType> m_Telescope;
 };
 
@@ -7802,12 +7862,17 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
+    { return m_ElementIdentifier; }
+    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
+    { m_ElementIdentifier = ElementIdentifier; }
     QSharedPointer<ScenarioRadarType> Radar() const
     { return m_Radar; }
     void setRadar(QSharedPointer<ScenarioRadarType> Radar)
     { m_Radar = Radar; }
 
 private:
+    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
     QSharedPointer<ScenarioRadarType> m_Radar;
 };
 

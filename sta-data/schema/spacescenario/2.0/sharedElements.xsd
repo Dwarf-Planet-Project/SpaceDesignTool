@@ -149,7 +149,7 @@
 	<complexType name="EnvironmentType">
 		<sequence>
 			<element name="CentralBody" type="tns:CentralBodyType"></element>
-			<element name="PerturbationsToCentralBody" type="tns:PerturbationsType"></element>
+			<element name="PerturbationsToCentralBody" type="tns:PerturbationsType" minOccurs="0"></element>
 		</sequence>
 	</complexType>
 	
@@ -158,7 +158,7 @@
 
 	<complexType name="ElementIdentifierType">
 		<sequence>
-			<element name="Name" type="string" minOccurs="1"></element>
+			<element name="Name" type="string"></element>
 			<element name="Order" type="int"></element>
 		</sequence>
 	</complexType>

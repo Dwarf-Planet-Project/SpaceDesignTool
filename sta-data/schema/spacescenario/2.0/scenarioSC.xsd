@@ -7,6 +7,7 @@
 			<complexContent>
 				<extension base="tns:ParticipantType">
 					<sequence>
+					    <element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
 						<element ref="tns:SCProgram"></element>
 						<element ref="tns:SCMission"></element>
 						<element name="System" type="tns:SCSystemType"></element>
@@ -132,6 +133,7 @@
 		<complexContent>
 			<extension base="tns:AbstractTrajectoryType">
 				<sequence>
+				    <element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
 					<element ref="tns:TimeLine"></element>
 					<element name="tleLine0" type="string"></element>
 					<element name="tleLine1" type="string"></element>
@@ -379,6 +381,7 @@
 												<element name="ColdCoating">
 													<complexType>
 														<sequence>
+														    <element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
 															<element name="emissivity" type="double"></element>
 															<element name="absorptivity" type="double"></element>
 														</sequence>
@@ -394,6 +397,7 @@
 												<element name="HotCoating">
 													<complexType>
 														<sequence>
+														    <element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
 															<element name="emissivity" type="double"></element>
 															<element name="absorptivity" type="double"></element>
 														</sequence>
@@ -478,6 +482,7 @@
 		<complexContent>
 			<extension base="tns:AbstractPayloadType">
 				<sequence>
+				    <element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
 					<element ref="tns:Transmitter"></element>
 				</sequence>
 			</extension>
@@ -488,6 +493,7 @@
 		<complexContent>
 			<extension base="tns:AbstractPayloadType">
 				<sequence>
+    				<element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
 					<element ref="tns:Receiver"></element>
 				</sequence>
 			</extension>
@@ -499,6 +505,7 @@
 		<complexContent>
 			<extension base="tns:AbstractPayloadType">
 				<sequence>
+				    <element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
 					<element ref="tns:Telescope"></element>
 				</sequence>
 			</extension>
@@ -509,6 +516,7 @@
 		<complexContent>
 			<extension base="tns:AbstractPayloadType">
 				<sequence>
+				    <element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
 					<element ref="tns:Radar"></element>
 				</sequence>
 			</extension>
