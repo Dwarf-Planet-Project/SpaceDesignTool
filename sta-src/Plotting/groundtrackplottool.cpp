@@ -21,6 +21,7 @@ This program is free software; you can redistribute it and/or modify it under
  ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
  ------------------ Guillermo Ortega (ESA) ---------------------------------------
+ Patched by Guillermoon June 2010 to include the code of Claas and Stephen
  */
 
 
@@ -148,7 +149,8 @@ static double chooseGridSpacing(double range, double maxTicks)
 
 
 // For now, use a constant minimum elevation angle for all ground stations
-static const double GroundStationElevationAngle = 15.0;
+// Guillermo patch June 2010 to make it 5 degrees. TODO: make it generic
+static const double GroundStationElevationAngle = 5.0;
 static const QColor GroundStationColor(255, 64, 20);
 
 

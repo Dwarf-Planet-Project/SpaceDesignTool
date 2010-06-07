@@ -145,6 +145,8 @@ static QByteArray spaceVehicleFragment(const char* name, const char* vehicleType
 
     /*** fill in defaults ***/
     spacecraft.setName("Satellite");
+    //spacecraft.setName(name);
+
 
     QDomDocument doc;
     return fragmentText(CreateSCElement(&spacecraft, doc)).toUtf8();

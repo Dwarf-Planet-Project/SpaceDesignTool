@@ -138,15 +138,17 @@ ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioOb
         }
     }
 
-    // Guillermo: expand items by default
+    // Guillermo: expand items by default or not
     item->setExpanded(true);
 
     //Taking care of the second column for the identifier of the loitering ARC
     if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject))
     {
-	item->setText(1, scenarioObject->elementName());
+	//item->setText(1, scenarioObject->elementName());
 	// Guillermo says: TODO make this compatible with the label of loitering
-	//item->setText(1, "arc name");
+	item->setText(1, "name");
+
+
 
     }
 
@@ -422,12 +424,19 @@ void ScenarioTree::updateTreeItems(QTreeWidgetItem* parentItem,
 void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
                                       QTreeWidgetItem* editItem)
 {
+
+
     if (scenarioObject == NULL || editItem == NULL)
     {
         return;
     }
 
-    if (dynamic_cast<ScenarioLoiteringType*>(scenarioObject) != NULL)
+    if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject) != NULL)
+    {
+	//ScenarioElementIdentifierType* myIdentifier = dynamic_cast<ScenarioElementIdentifierType*>(object);
+	updateTreeItems(editItem, scenarioObject);
+     }
+    else if (dynamic_cast<ScenarioLoiteringType*>(scenarioObject) != NULL)
     {
 	Lagrmode=-1;    // Guillermo: to remove this from here !!!!!!!!!!!!
         ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(scenarioObject);
@@ -970,7 +979,6 @@ void ScenarioTree::editItem(QTreeWidgetItem* item, int column)
 	//out << "Editing column 1 " << endl;
     }
 
-
 }
 
 
@@ -983,22 +991,35 @@ void ScenarioTree::editItemInline(QTreeWidgetItem* item, int column)
     QTextStream out (stdout);
 
     ScenarioObject* object = objectForItem(item);
+    SpaceScenario* scenario = dynamic_cast<SpaceScenario*>(object);
     if (object == NULL)
 	return;
 
     if (dynamic_cast<SpaceScenario*>(object) && column == 1)	// Guillermo says: the name of the scenario
 	{
-	    SpaceScenario* scenario = dynamic_cast<SpaceScenario*>(object);
+	    //SpaceScenario* scenario = dynamic_cast<SpaceScenario*>(object);
 	    item->setFlags(item->flags() | (Qt::ItemIsEditable));
 	    scenario->setName(item->text(1));
 	    //updateTreeItems(item, scenario);  // do not do that. The complete scenario will disapear
 	    //out << "Editing scenario name: " << scenario->Name() << endl;
 	}
-    else if (dynamic_cast<ScenarioElementIdentifierType*>(object) && column == 1)   // Guillermo says: the name of the arcs, etc.
+    else if (dynamic_cast<ScenarioElementIdentifierType*>(object) && column == 1)   // Guillermo says: the name of the arcs, payloads, etc.
 	{
 	    ScenarioElementIdentifierType* myIdentifier = dynamic_cast<ScenarioElementIdentifierType*>(object);
 	    item->setFlags(item->flags() | (Qt::ItemIsEditable));
 	    myIdentifier->Name() = item->text(1);
+	    updateTreeItems(item, scenario);
+	    //Getting now to know the parent of this item
+	    QTreeWidgetItem* myParent = item->parent();
+	    ScenarioObject* objectParent = objectForItem(myParent);
+	    if (dynamic_cast<ScenarioSC*>(objectParent))
+	    {
+		ScenarioSC* spacecraft = dynamic_cast<ScenarioSC*>(objectParent);
+		spacecraft->Name() = item->text(1);
+		//updateTreeItems(myParent, spacecraft);
+		//updateTreeItems(myParent, scenario);
+		updateTreeItems(item, scenario);
+	    }
 	}
 
 
