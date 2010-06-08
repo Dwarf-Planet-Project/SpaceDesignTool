@@ -1,0 +1,4 @@
+NAME		ModulusOfElasticity	Emmissivity	Absorbtivity 	Density(kg/m3)
+Aluminium 	68.0E+9			0.03		0.09		2700
+Steel		196.0E+9		0.03		0.63		7850
+UNDEFINED	0.0			0.0		0.0		0.0

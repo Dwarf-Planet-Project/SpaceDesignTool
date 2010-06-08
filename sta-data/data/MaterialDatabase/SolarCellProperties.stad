@@ -1,0 +1,5 @@
+NAME		Efficiency	DegradationPerYear
+Silicon		0.148		0.0375
+GaAs		0.185		0.0275
+Multijunction	0.22		0.005
+UNDEFINED	0.0		0.0

@@ -1,0 +1,6 @@
+MissionType  	Payload[%]	Structure[%]	Thermal[%]	Power[%]	TTC[%]		ADCS[%]		Propulsion[%]
+Communication	27.4		21.3		3.6		31.9		4.8		6.9		3.8
+Navigation  	21.2		23.5		9.9		32.1		4.7		5.6		3.2
+Remote_Sensing	34.6		18.9		2.1		24.3		3.4		4.5		6.1
+Light_Satellite	24.4		22.7		1.7		24.6		12.7		11.3		2.7
+UNDEFINED	0.0		0.0		0.0		0.0		0.0		0.0		0.0		

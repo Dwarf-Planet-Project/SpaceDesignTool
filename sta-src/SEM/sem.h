@@ -18,7 +18,7 @@
 /*
  ------ Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
  ------------------ Author: Guillermo Ortega  -------------------------------------------------
-
+ ------------------ CoAuthor: Ozgun YILMAZ    ------------------------------------------
  */
 
 
@@ -28,12 +28,15 @@
 #include "ui_sem.h"
 #include <QDialog>
 
+#include "Scenario/staschema.h"
+
 class sem : public QDialog , private Ui::SEMDialogClass
 {
 Q_OBJECT
 public:
-	sem( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+        sem(SpaceScenario* SCscenario, QWidget * parent = 0, Qt::WindowFlags f = 0 );
 	~sem();
+
 protected slots:
 	void on_buttonBox_helpRequested();
 	void on_buttonBox_clicked(QAbstractButton*);
@@ -42,6 +45,9 @@ protected slots:
 	void on_buttonBox_customContextMenuRequested(const QPoint&);
 	void on_buttonBox_accepted();
 	void on_buttonBox_rejected();
+private:
+       SpaceScenario* scenario;
+
 
 };
 #endif //SEM_H

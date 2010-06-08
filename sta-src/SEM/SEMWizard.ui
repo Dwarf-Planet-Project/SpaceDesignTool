@@ -1,0 +1,2950 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Wizard</class>
+ <widget class="QWizard" name="Wizard">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>412</width>
+    <height>398</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Systems Engineering Wizard</string>
+  </property>
+  <widget class="QWizardPage" name="wizardPage1">
+   <property name="title">
+    <string>Mission Definition</string>
+   </property>
+   <property name="subTitle">
+    <string>Describe the mission that you would like to build your S/C for.</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_5">
+    <item row="0" column="1">
+     <spacer name="verticalSpacer_3">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Preferred</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>68</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer_5">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Preferred</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>48</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="1">
+     <layout class="QFormLayout" name="formLayout">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Mission Type</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="MissionTypeComboBox">
+        <item>
+         <property name="text">
+          <string>Select Mission</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Communication</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Remote_Sensing</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Navigation</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Light_Satellite</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Planet of the Mission</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="PlanetNameComboBox">
+        <item>
+         <property name="text">
+          <string>Select Planet</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Mercury</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Venus</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Earth</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Mars</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Jupiter</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Saturn</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Uranus</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Neptune</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Pluto</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Mission Start Time</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QDateTimeEdit" name="MissionStartTimeDateTimeEdit"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Mission End Time</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QDateTimeEdit" name="MissionEndTimeDateTimeEdit"/>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="2">
+     <spacer name="horizontalSpacer_6">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>73</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="1">
+     <spacer name="verticalSpacer_4">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>98</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage2">
+   <property name="title">
+    <string>Orbit Definition</string>
+   </property>
+   <property name="subTitle">
+    <string>Give the details of the orbit for your mission. (Keplerian Elements of Your Orbit)</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_4">
+    <item row="0" column="1">
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Preferred</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>46</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Preferred</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>32</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="1">
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Semimajor Axis [km]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="SemimajorAxisLineEdit"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Eccentricity</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="EccentricityLineEdit"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Inclination [deg]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="InclinationLineEdit"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>RAAN [deg]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="RAANLineEdit"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>Argument of Periapsis [deg]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="ArgumentOfPeriapsisLineEdit"/>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>True Anomaly [deg]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLineEdit" name="TrueAnomalyLineEdit"/>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="2">
+     <spacer name="horizontalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>58</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="1">
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>68</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage3">
+   <property name="title">
+    <string>Payload Selection</string>
+   </property>
+   <property name="subTitle">
+    <string>You can create your Payload from scratch or get the help of the database.</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_7">
+    <item row="0" column="1">
+     <spacer name="verticalSpacer_6">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Preferred</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>70</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer_7">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Preferred</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>58</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="1">
+     <layout class="QGridLayout" name="gridLayout_6">
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="NewPayloadRadioButton">
+        <property name="text">
+         <string>Create Your Own Payload </string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QRadioButton" name="DatabasePayloadRadioButton">
+        <property name="text">
+         <string>Select from the Database</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QComboBox" name="PayloadSetComboBox">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>Select Payload</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Optical_Telescope</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>UV_Telescope</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>GammaRay_Telescope</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>SAR</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Microwave_Radiometer</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Ion_Mass_Spectrometer</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Photometric_Imaging</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="2">
+     <spacer name="horizontalSpacer_9">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>149</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="1">
+     <spacer name="verticalSpacer_7">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>128</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage4">
+   <property name="title">
+    <string>Payload Details</string>
+   </property>
+   <property name="subTitle">
+    <string>Give your Payload Details</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_19">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_12">
+      <property name="text">
+       <string>Name</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1" colspan="2">
+     <widget class="QLineEdit" name="PayloadNameLineEdit">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="2">
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="title">
+       <string>Structural Details</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_27">
+         <property name="text">
+          <string>Width [m]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="PayloadWidthLineEdit">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_29">
+         <property name="text">
+          <string>Length [m]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="PayladLengthLineEdit">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_30">
+         <property name="text">
+          <string>Height [m]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="PayloadHeightLineEdit">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_28">
+         <property name="text">
+          <string>Mass[kg]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="PayloadMassLineEdit">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="2" colspan="2">
+     <widget class="QGroupBox" name="groupBox">
+      <property name="title">
+       <string>Design Details</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_17">
+       <item row="0" column="0">
+        <widget class="QLabel" name="ResolutionLabel">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <italic>true</italic>
+           <bold>false</bold>
+           <underline>true</underline>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>Resolution</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="PayloadResolutionLineEdit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>[arcseconds] or [m]</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="WavelengthLabel">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="font">
+          <font>
+           <italic>true</italic>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Wavelength [m]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="PayloadWavelengthLineEdit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="NumberOfPixelsLabel">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="font">
+          <font>
+           <italic>true</italic>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Number of Pixels</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="NumberOfPixelLineEdit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_17">
+         <property name="text">
+          <string>Data Rate[Mbps]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="PayloadDataRateLineEdit">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="2" column="0" colspan="2">
+     <widget class="QGroupBox" name="groupBox_4">
+      <property name="title">
+       <string>Thermal Details</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_16">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_22">
+         <property name="text">
+          <string>Minimum* [K] </string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="PayloadMinTempLineEdit">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_23">
+         <property name="text">
+          <string>Maximum* [K]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="PayloadMaxTempLineEdit">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="2">
+        <widget class="QLabel" name="label_19">
+         <property name="font">
+          <font>
+           <pointsize>7</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>* Operating Temperature</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="2" column="2" colspan="2">
+     <widget class="QGroupBox" name="groupBox_3">
+      <property name="title">
+       <string>Power Details</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_18">
+       <item row="0" column="1">
+        <widget class="QLabel" name="label_89">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>In Eclipse</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="label_90">
+         <property name="font">
+          <font>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>In Daylight</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_18">
+         <property name="text">
+          <string>Consumption[W]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="PayloadPowerEclipseLineEdit">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLineEdit" name="PayloadPowerDaylightLineEdit">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_20">
+         <property name="text">
+          <string> On Time [%]      </string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="PayloadPowerTimeEclipseLineEdit">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QLineEdit" name="PayloadPowerTimeDaylightLineEdit">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="3" column="3">
+     <widget class="QCheckBox" name="NumberOfPayloadCheckBox">
+      <property name="text">
+       <string>Payload Set is completed</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage3b">
+   <property name="title">
+    <string>Payload Selection -2</string>
+   </property>
+   <property name="subTitle">
+    <string>You can create your Payload from scratch or get the help of the database.</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_20">
+    <item row="0" column="1">
+     <spacer name="verticalSpacer_8">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Preferred</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>88</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer_10">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Preferred</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>78</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="1">
+     <layout class="QGridLayout" name="gridLayout_8">
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="NewPayloadRadioButton_2">
+        <property name="text">
+         <string>Create Your Own Payload </string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QRadioButton" name="DatabasePayloadRadioButton_2">
+        <property name="text">
+         <string>Select from the Database</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QComboBox" name="PayloadSetComboBox_2">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>Select Payload</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Optical_Telescope</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>UV_Telescope</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>GammaRay_Telescope</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>SAR</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Microwave_Radiometer</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Ion_Mass_Spectrometer</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Photometric_Imaging</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="2">
+     <spacer name="horizontalSpacer_15">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>129</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="1">
+     <spacer name="verticalSpacer_9">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>110</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage4b">
+   <property name="title">
+    <string>Payload Details - 2</string>
+   </property>
+   <property name="subTitle">
+    <string>Give your Payload Details</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_27">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_21">
+      <property name="text">
+       <string>Name</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1" colspan="2">
+     <widget class="QLineEdit" name="PayloadNameLineEdit_2">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="2">
+     <widget class="QGroupBox" name="groupBox_6">
+      <property name="title">
+       <string>Structural Details</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_24">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_46">
+         <property name="text">
+          <string>Width [m]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="PayloadWidthLineEdit_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_47">
+         <property name="text">
+          <string>Length [m]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="PayladLengthLineEdit_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_48">
+         <property name="text">
+          <string>Height [m]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="PayloadHeightLineEdit_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_49">
+         <property name="text">
+          <string>Mass[kg]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="PayloadMassLineEdit_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="2" colspan="2">
+     <widget class="QGroupBox" name="groupBox_7">
+      <property name="title">
+       <string>Design Details</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_25">
+       <item row="0" column="0">
+        <widget class="QLabel" name="ResolutionLabel_2">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <italic>true</italic>
+           <bold>false</bold>
+           <underline>true</underline>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>Resolution</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="PayloadResolutionLineEdit_2">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>[arcseconds] or [m]</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="WavelengthLabel_2">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="font">
+          <font>
+           <italic>true</italic>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Wavelength [m]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="PayloadWavelengthLineEdit_2">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="NumberOfPixelsLabel_2">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="font">
+          <font>
+           <italic>true</italic>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Number of Pixels</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="NumberOfPixelLineEdit_2">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_53">
+         <property name="text">
+          <string>Data Rate[Mbps]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="PayloadDataRateLineEdit_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="2" column="0" colspan="2">
+     <widget class="QGroupBox" name="groupBox_8">
+      <property name="title">
+       <string>Thermal Details</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_26">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_54">
+         <property name="text">
+          <string>Minimum* [K] </string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="PayloadMinTempLineEdit_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_55">
+         <property name="text">
+          <string>Maximum* [K]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="PayloadMaxTempLineEdit_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="2">
+        <widget class="QLabel" name="label_56">
+         <property name="font">
+          <font>
+           <pointsize>7</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>* Operating Temperature</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="2" column="2" colspan="2">
+     <widget class="QGroupBox" name="groupBox_5">
+      <property name="title">
+       <string>Power Details</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_23">
+       <item row="0" column="1">
+        <widget class="QLabel" name="label_105">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>In Eclipse</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="label_106">
+         <property name="font">
+          <font>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>In Daylight</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_44">
+         <property name="text">
+          <string>Consumption[W]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="PayloadPowerEclipseLineEdit_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLineEdit" name="PayloadPowerDaylightLineEdit_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_45">
+         <property name="text">
+          <string> On Time [%]      </string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="PayloadPowerTimeEclipseLineEdit_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QLineEdit" name="PayloadPowerTimeDaylightLineEdit_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="3" column="3">
+     <widget class="QCheckBox" name="NumberOfPayloadCheckBox_2">
+      <property name="text">
+       <string>Payload Set is completed</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage3c">
+   <property name="title">
+    <string>Payload Selection -3</string>
+   </property>
+   <property name="subTitle">
+    <string>You can create your Payload from scratch or get the help of the database.</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_21">
+    <item row="0" column="1">
+     <spacer name="verticalSpacer_10">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Preferred</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>60</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer_16">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Preferred</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>88</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="1">
+     <layout class="QGridLayout" name="gridLayout_9">
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="NewPayloadRadioButton_3">
+        <property name="text">
+         <string>Create Your Own Payload </string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QRadioButton" name="DatabasePayloadRadioButton_3">
+        <property name="text">
+         <string>Select from the Database</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QComboBox" name="PayloadSetComboBox_3">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>Select Payload</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Optical_Telescope</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>UV_Telescope</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>GammaRay_Telescope</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>SAR</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Microwave_Radiometer</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Ion_Mass_Spectrometer</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Photometric_Imaging</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="2">
+     <spacer name="horizontalSpacer_17">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>119</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="1">
+     <spacer name="verticalSpacer_11">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>138</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage4c">
+   <property name="title">
+    <string>Payload Details -3</string>
+   </property>
+   <property name="subTitle">
+    <string>Give your Payload Details</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_31">
+      <property name="text">
+       <string>Name</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1" colspan="2">
+     <widget class="QLineEdit" name="PayloadNameLineEdit_3">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="2">
+     <widget class="QGroupBox" name="groupBox_11">
+      <property name="title">
+       <string>Structural Details</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_30">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_62">
+         <property name="text">
+          <string>Width [m]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="PayloadWidthLineEdit_3">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_63">
+         <property name="text">
+          <string>Length [m]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="PayladLengthLineEdit_3">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_64">
+         <property name="text">
+          <string>Height [m]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="PayloadHeightLineEdit_3">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_65">
+         <property name="text">
+          <string>Mass[kg]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="PayloadMassLineEdit_3">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="2" colspan="2">
+     <widget class="QGroupBox" name="groupBox_12">
+      <property name="title">
+       <string>Design Details</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_31">
+       <item row="0" column="0">
+        <widget class="QLabel" name="ResolutionLabel_3">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <italic>true</italic>
+           <bold>false</bold>
+           <underline>true</underline>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>Resolution</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="PayloadResolutionLineEdit_3">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>[arcseconds] or [m]</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="WavelengthLabel_3">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="font">
+          <font>
+           <italic>true</italic>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Wavelength [m]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="PayloadWavelengthLineEdit_3">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="NumberOfPixelsLabel_3">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="font">
+          <font>
+           <italic>true</italic>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Number of Pixels</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="NumberOfPixelLineEdit_3">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_69">
+         <property name="text">
+          <string>Data Rate[Mbps]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="PayloadDataRateLineEdit_3">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="2" column="0" colspan="2">
+     <widget class="QGroupBox" name="groupBox_9">
+      <property name="title">
+       <string>Thermal Details</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_28">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_57">
+         <property name="text">
+          <string>Minimum* [K] </string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="PayloadMinTempLineEdit_3">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_58">
+         <property name="text">
+          <string>Maximum* [K]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="PayloadMaxTempLineEdit_3">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="2">
+        <widget class="QLabel" name="label_59">
+         <property name="font">
+          <font>
+           <pointsize>7</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>* Operating Temperature</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="2" column="2" colspan="2">
+     <widget class="QGroupBox" name="groupBox_10">
+      <property name="title">
+       <string>Power Details</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_29">
+       <item row="0" column="1">
+        <widget class="QLabel" name="label_107">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>In Eclipse</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="label_108">
+         <property name="font">
+          <font>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>In Daylight</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_60">
+         <property name="text">
+          <string>Consumption[W]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="PayloadPowerEclipseLineEdit_3">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLineEdit" name="PayloadPowerDaylightLineEdit_3">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_61">
+         <property name="text">
+          <string> On Time [%]      </string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="PayloadPowerTimeEclipseLineEdit_3">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QLineEdit" name="PayloadPowerTimeDaylightLineEdit_3">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="3" column="3">
+     <widget class="QCheckBox" name="NumberOfPayloadCheckBox_3">
+      <property name="text">
+       <string>Payload Set is completed</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage3d">
+   <property name="title">
+    <string>Payload Selection -4</string>
+   </property>
+   <property name="subTitle">
+    <string>You can create your Payload from scratch or get the help of the database.</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_22">
+    <item row="0" column="1">
+     <spacer name="verticalSpacer_12">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>99</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer_18">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>99</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="1">
+     <layout class="QGridLayout" name="gridLayout_10">
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="NewPayloadRadioButton_4">
+        <property name="text">
+         <string>Create Your Own Payload </string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QRadioButton" name="DatabasePayloadRadioButton_4">
+        <property name="text">
+         <string>Select from the Database</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QComboBox" name="PayloadSetComboBox_4">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>Select Payload</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Optical_Telescope</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>UV_Telescope</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>GammaRay_Telescope</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>SAR</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Microwave_Radiometer</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Ion_Mass_Spectrometer</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Photometric_Imaging</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="2">
+     <spacer name="horizontalSpacer_19">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>108</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="1">
+     <spacer name="verticalSpacer_13">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>99</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage4d">
+   <property name="title">
+    <string>Payload Details -4</string>
+   </property>
+   <property name="subTitle">
+    <string>Give your Payload Details</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_3">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_75">
+      <property name="text">
+       <string>Name</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1" colspan="2">
+     <widget class="QLineEdit" name="PayloadNameLineEdit_4">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="2">
+     <widget class="QGroupBox" name="groupBox_15">
+      <property name="title">
+       <string>Structural Details</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_34">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_76">
+         <property name="text">
+          <string>Width [m]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="PayloadWidthLineEdit_4">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_77">
+         <property name="text">
+          <string>Length [m]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="PayladLengthLineEdit_4">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_78">
+         <property name="text">
+          <string>Height [m]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="PayloadHeightLineEdit_4">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_79">
+         <property name="text">
+          <string>Mass[kg]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="PayloadMassLineEdit_4">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="2" colspan="2">
+     <widget class="QGroupBox" name="groupBox_16">
+      <property name="title">
+       <string>Design Details</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_35">
+       <item row="0" column="0">
+        <widget class="QLabel" name="ResolutionLabel_4">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <italic>true</italic>
+           <bold>false</bold>
+           <underline>true</underline>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>Resolution</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="PayloadResolutionLineEdit_4">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>[arcseconds] or [m]</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="WavelengthLabel_4">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="font">
+          <font>
+           <italic>true</italic>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Wavelength [m]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="PayloadWavelengthLineEdit_4">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="NumberOfPixelsLabel_4">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="font">
+          <font>
+           <italic>true</italic>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Number of Pixels</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="NumberOfPixelLineEdit_4">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_83">
+         <property name="text">
+          <string>Data Rate[Mbps]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="PayloadDataRateLineEdit_4">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="2" column="0" colspan="2">
+     <widget class="QGroupBox" name="groupBox_13">
+      <property name="title">
+       <string>Thermal Details</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_32">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_70">
+         <property name="text">
+          <string>Minimum* [K] </string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="PayloadMinTempLineEdit_4">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_71">
+         <property name="text">
+          <string>Maximum* [K]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="PayloadMaxTempLineEdit_4">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="2">
+        <widget class="QLabel" name="label_72">
+         <property name="font">
+          <font>
+           <pointsize>7</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>* Operating Temperature</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="2" column="2" colspan="2">
+     <widget class="QGroupBox" name="groupBox_14">
+      <property name="title">
+       <string>Power Details</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_33">
+       <item row="0" column="1">
+        <widget class="QLabel" name="label_109">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>In Eclipse</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="label_110">
+         <property name="font">
+          <font>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>In Daylight</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_73">
+         <property name="text">
+          <string>Consumption[W]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="PayloadPowerEclipseLineEdit_4">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLineEdit" name="PayloadPowerDaylightLineEdit_4">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_74">
+         <property name="text">
+          <string> On Time [%]      </string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="PayloadPowerTimeEclipseLineEdit_4">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QLineEdit" name="PayloadPowerTimeDaylightLineEdit_4">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="3" column="3">
+     <widget class="QCheckBox" name="NumberOfPayloadCheckBox_4">
+      <property name="text">
+       <string>Payload Set is completed</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage5">
+   <property name="title">
+    <string>Power Subsystem</string>
+   </property>
+   <property name="subTitle">
+    <string>Select your components for the Power Subsystem</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_11">
+    <item row="0" column="0">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>Select the Solar Cells that your Array will be made of:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QFormLayout" name="formLayout_6">
+        <item row="0" column="0">
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>188</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="SolarCellTypeComboBox">
+          <item>
+           <property name="text">
+            <string>Select Solar Cells</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Silicon</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>GaAs</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Multijunction</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_14">
+        <property name="text">
+         <string>Select the Battaery that will support your S/C in Eclipse Duration:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QFormLayout" name="formLayout_5">
+        <item row="0" column="0">
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>188</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="BatteryTypeComboBox">
+          <item>
+           <property name="text">
+            <string>Select Battery</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Lithium_Ion</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Nickel_Cadmium</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Lead_Acid</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage6">
+   <property name="title">
+    <string>Structural Details</string>
+   </property>
+   <property name="subTitle">
+    <string>Set the material that you would like and shape of your S/C</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_12">
+    <item row="0" column="0">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <layout class="QFormLayout" name="formLayout_7">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_15">
+          <property name="text">
+           <string>The Structure of your S/C is made of :</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="StructuralMaterialComboBox">
+          <item>
+           <property name="text">
+            <string>Select Material</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Aluminium</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Steel</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <spacer name="verticalSpacer_5">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Preferred</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>10</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="label_16">
+          <property name="text">
+           <string>The Shape of your S/C is:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_8">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>58</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QComboBox" name="SCShapeComboBox">
+          <item>
+           <property name="text">
+            <string>Select Shape</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Cube</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Cylinder</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Sphere</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="0">
+     <spacer name="verticalSpacer_26">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>168</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage7">
+   <property name="title">
+    <string>Thermal Details</string>
+   </property>
+   <property name="subTitle">
+    <string>Define your thermal coating of your S/C for cold and hot faces.</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_13">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_24">
+      <property name="text">
+       <string>Cold Faces Thermal Properties : </string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QComboBox" name="ColdFaceCoatingComboBox">
+      <item>
+       <property name="text">
+        <string>Select Coating</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>No_Coating</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>User_Defined</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>White_Paint</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Black_Paint</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <layout class="QFormLayout" name="formLayout_8">
+      <item row="0" column="0">
+       <spacer name="horizontalSpacer_11">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>80</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label_25">
+        <property name="text">
+         <string>Emmissivity :</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="ColdFaceEmmissivityLineEdit">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <layout class="QFormLayout" name="formLayout_9">
+      <item row="0" column="0">
+       <spacer name="horizontalSpacer_12">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>80</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label_26">
+        <property name="text">
+         <string>Absorptivity :</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLineEdit" name="ColdFaceAbsorptivityLineEdit">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_34">
+      <property name="text">
+       <string>Hot Faces Thermal Properties :</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QComboBox" name="HotFaceCoatingComboBox">
+      <item>
+       <property name="text">
+        <string>Select Coating</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>No_Coating</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>User_Defined</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>White_Paint</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Black_Paint</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <layout class="QFormLayout" name="formLayout_11">
+      <item row="0" column="0">
+       <spacer name="horizontalSpacer_13">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>80</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label_35">
+        <property name="text">
+         <string>Emmissivity :</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="4" column="1">
+     <widget class="QLineEdit" name="HotFaceEmmissivityLineEdit">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <layout class="QFormLayout" name="formLayout_10">
+      <item row="0" column="0">
+       <spacer name="horizontalSpacer_14">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>80</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label_36">
+        <property name="text">
+         <string>Absorptivity :</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="5" column="1">
+     <widget class="QLineEdit" name="HotFaceAbsorptivityLineEdit">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage8">
+   <property name="title">
+    <string>TT/C Details</string>
+   </property>
+   <property name="subTitle">
+    <string>Give the Antenna parameters and Link Budget Informations.</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_14">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_41">
+      <property name="text">
+       <string>Communication Link Duration per Orbit [%]</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="CommLinDurationPercentageLineEdit"/>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_37">
+      <property name="text">
+       <string>Antenna Efficiency</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="AntennaEfficiencyLineEdit"/>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_38">
+      <property name="text">
+       <string>Antenna Gain</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLineEdit" name="AntennaGainLineEdit"/>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_39">
+      <property name="text">
+       <string>TX Frequency [GHz]</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QLineEdit" name="TXFrequencyLineEdit"/>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="label_40">
+      <property name="text">
+       <string>TX Power [W]</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <widget class="QLineEdit" name="TXPowerLineEdit"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage10">
+   <property name="title">
+    <string>On Board Data Handling Details</string>
+   </property>
+   <property name="subTitle">
+    <string>For How long you should be capable of saving data in your payload memory and what is your coding preferance for on borads data transfers.</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_15">
+    <item row="0" column="0" colspan="2">
+     <widget class="QLabel" name="label_42">
+      <property name="text">
+       <string>Number Of Orbit Capability with No Downlink :</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QLineEdit" name="NumberOfNoLinkOrbitLineEdit"/>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_43">
+      <property name="text">
+       <string>Coding for On Board communication :</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1" colspan="2">
+     <widget class="QComboBox" name="CodingTypeComboBox">
+      <item>
+       <property name="text">
+        <string>Select Coding</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>No Coding</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>EDAC</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

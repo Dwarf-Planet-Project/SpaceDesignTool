@@ -18,6 +18,8 @@
 /*
  ------ Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
  ------------------ Author: Guillermo Ortega  -------------------------------------------------
+ ------------------ Author: Ozgun YILMAZ      ---------------------------------------------
+ ------------------ email: ozgunus@yahoo.com  ---------------------------------------------
 
  */
 
@@ -30,12 +32,39 @@
 #include <QDebug>
 #include <QComboBox>
 
+#include "semmaingui.h"
+#include "semwizard.h"
+
+#include <QSharedPointer>
+#include <QList>
 
 using namespace std;
 
-sem::sem( QWidget * parent, Qt::WindowFlags f) : QDialog(parent,f)
+sem::sem(SpaceScenario* SCscenario,  QWidget * parent, Qt::WindowFlags f) : QDialog(parent,f)
 {
 	setupUi(this);
+
+        scenario = SCscenario;
+
+        foreach (QSharedPointer<ScenarioParticipantType> participant, scenario->AbstractParticipant())
+        {
+            // For space vehicles, we need to show in the drop down menu
+            if (dynamic_cast<ScenarioSC*>(participant.data()))
+            {
+                ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
+//                const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList
+//                        = vehicle->SCMission()
+//                          ->SCMission()->TrajectoryPlan()->AbstractTrajectory();
+//
+//                // Initial state is stored in the first trajectory (for now); so,
+//                // the empty trajectory plan case has to be treated specially.
+//                if (!trajectoryList.isEmpty())
+                qDebug()<<"VEHICLE NAME "<<vehicle->ElementIdentifier()->Name();
+
+                //add the sc to the combobox list
+                SelectSpacecraftComboBox->addItem(vehicle->ElementIdentifier()->Name());
+            }
+        }
 }
 
 sem::~sem()
@@ -69,6 +98,45 @@ void sem::on_buttonBox_customContextMenuRequested(const QPoint&)
 
 void sem::on_buttonBox_accepted()
 {
+    // Process each participant
+    foreach (QSharedPointer<ScenarioParticipantType> participant, scenario->AbstractParticipant())
+    {
+        // For space vehicles, we need to find which one we are interested in
+        if (dynamic_cast<ScenarioSC*>(participant.data()))
+        {
+            ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
+
+            if (SelectSpacecraftComboBox->currentText()== vehicle->ElementIdentifier()->Name())
+            {
+                //------------------------------------------------------------------
+                if (WizardSelectionRadioButton->isChecked())
+                {//Wizard is selected
+                    if (SelectSpacecraftComboBox->currentIndex() != 0)
+                    {
+                        //open the wizard
+                        SEMWizard NewWizard(vehicle, this);
+                        NewWizard.exec();
+                        break;
+                    }
+                }
+                else
+                {
+                    if (GUISelectionRadioButton->isChecked())
+                    {//GUI is selected
+                        if (SelectSpacecraftComboBox->currentIndex() != 0)
+                        {
+                            //open the GUI
+                            SemMainGUI NewDialog(vehicle, this);
+                            NewDialog.exec();
+                            break;
+                        }
+                    }
+                }
+                //--------------------------------------------
+            }
+        }
+    }
+
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 

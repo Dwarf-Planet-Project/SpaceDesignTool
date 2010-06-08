@@ -52,6 +52,11 @@
 #include "Plotting/threedvisualizationtool.h"
 #include "Astro-Core/date.h"
 
+//********************************************************************** /OZGUN
+#include "Astro-Core/EclipseDuration.h"
+#include <QDebug>
+//********************************************************************** OZGUN/
+
 #include "propagatedscenario.h"
 #include "RendezVous/rendezvous.h"
 #include "Entry/reentry.h"
@@ -993,6 +998,17 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
 			//out << "ScenarioLoiteringType in process " << endl;
                         ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
                         PropagateLoiteringTrajectory(loitering, sampleTimes, samples, feedback);
+
+                        //******************************************************************** /OZGUN
+                        // Eclipse function is called and the "data/EclipseStarLight.stad" is generated
+                        EclipseDuration* Eclipse = new EclipseDuration();
+
+                        Eclipse->StarLightTimeFunction(sampleTimes,
+                                                       samples,
+                                                       STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                       STA_SOLAR_SYSTEM->lookup("Sun"));
+                        //******************************************************************** OZGUN/
+
                         if (feedback.status() != PropagationFeedback::PropagationOk)
                         {
                             // An error occurred during propagate. Clean up everything and return immediately.
@@ -1214,7 +1230,10 @@ void MainWindow::on_actionSystem_Engineering_triggered()
     if (!scenario())
     return;
 
-    sem* SEMWidget = new sem(this);  // Creating the widget as a tool
+    //************************************************************ /OZGUN
+    sem* SEMWidget = new sem(scenario(), this);  // Creating the widget as a tool and transferring the scenerio
+    //************************************************************ OZGUN/
+
     SEMWidget->show(); // Creating the window modeless. This requires the declaration of the variable on the *.h file
     SEMWidget->raise(); // Required to keep the modeless window alive
     SEMWidget->activateWindow(); // Required to keep the modeless window alive

@@ -778,7 +778,22 @@ SOURCES = $$MAIN_SOURCES \
     $$PAYLOAD_SOURCES \
     $$ANALYSIS_SOURCES \
     $$COVERAGE_SOURCES \
-    $$CONSTELLATIONS_SOURCES
+    $$CONSTELLATIONS_SOURCES \
+    sta-src/Astro-Core/EclipseDuration.cpp \
+    sta-src/SEM/TTCSubsystem.cpp \
+    sta-src/SEM/ThermalSubsystem.cpp \
+    sta-src/SEM/thermalgui.cpp \
+    sta-src/SEM/StructureSubsystem.cpp \
+    sta-src/SEM/structuregui.cpp \
+    sta-src/SEM/semwizard.cpp \
+    sta-src/SEM/semmaingui.cpp \
+    sta-src/SEM/SemMain.cpp \
+    sta-src/SEM/PowerSubsystem.cpp \
+    sta-src/SEM/powergui.cpp \
+    sta-src/SEM/PayloadSubsystem.cpp \
+    sta-src/SEM/OBDHSubsystem.cpp \
+    sta-src/SEM/MissionDetails.cpp \
+    sta-src/SEM/datacommgui.cpp
 HEADERS = $$MAIN_HEADERS \
     $$ASTROCORE_HEADERS \
     $$SEM_HEADERS \
@@ -802,7 +817,22 @@ HEADERS = $$MAIN_HEADERS \
     $$PAYLOAD_HEADERS \
     $$ANALYSIS_HEADERS \
     $$COVERAGE_HEADERS \
-    $$CONSTELLATIONS_HEADERS
+    $$CONSTELLATIONS_HEADERS \
+    sta-src/Astro-Core/EclipseDuration.h \
+    sta-src/SEM/TTCSubsystem.h \
+    sta-src/SEM/ThermalSubsystem.h \
+    sta-src/SEM/thermalgui.h \
+    sta-src/SEM/StructureSubsystem.h \
+    sta-src/SEM/structuregui.h \
+    sta-src/SEM/semwizard.h \
+    sta-src/SEM/semmaingui.h \
+    sta-src/SEM/SemMain.h \
+    sta-src/SEM/PowerSubsystem.h \
+    sta-src/SEM/powergui.h \
+    sta-src/SEM/PayloadSubsystem.h \
+    sta-src/SEM/OBDHSubsystem.h \
+    sta-src/SEM/MissionDetails.h \
+    sta-src/SEM/datacommgui.h
 FORMS = $$MAIN_FORMS \
     $$ASTROCORE_FORMS \
     $$SEM_FORMS \
@@ -824,7 +854,13 @@ FORMS = $$MAIN_FORMS \
     $$PAYLOAD_FORMS \
     $$ANALYSIS_FORMS \
     $$COVERAGE_FORMS \
-    $$CONSTELLATIONS_FORMS
+    $$CONSTELLATIONS_FORMS \
+    sta-src/SEM/ThermalGUI.ui \
+    sta-src/SEM/StructureGUI.ui \
+    sta-src/SEM/SEMWizard.ui \
+    sta-src/SEM/SemMainGUI.ui \
+    sta-src/SEM/PowerGUI.ui \
+    sta-src/SEM/DataCommGUI.ui
 RESOURCES = $$CELESTIA_RESOURCES \
     iconary/sta-icons.qrc
 UI_HEADERS_DIR = sta-src/ui/include

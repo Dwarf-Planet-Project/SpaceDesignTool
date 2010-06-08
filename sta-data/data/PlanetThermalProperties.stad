@@ -1,0 +1,11 @@
+Planet		Radius(m)	GravityParameter(m3s-2)	SolarConstant(W/m2)	AlbedoConstant	BlackBodyTemperature(K)	
+Mercury		2440000		2.202512E+13		9126.6			0.106 		433.9
+Venus		6052000		3.250374E+14		2613.9			0.65		231.7
+Earth		6378000		3.984545E+14		1367.6			0.367		254.3
+Mars		3397000		4.284888E+13		589.2			0.150		210.1
+Jupiter		71492000	1.268113E+17		50.50			0.52		110.0	
+Saturn		60268000	3.790991E+16		14.90			0.47		81.1
+Uranus		25559000	5.793275E+15		3.71			0.51		58.2
+Neptune		24766000	6.807766E+15		1.51			0.41		46.6
+Pluto		1150000		8.476336E+11		0.89			0.3		37.5
+UNDEFINED	0.0		0.0			0.0			0.0		0.0

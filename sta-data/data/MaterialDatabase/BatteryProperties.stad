@@ -1,0 +1,5 @@
+NAME		SpecificEnergyDensity(Wh/kg)	SpecificPower(W/kg)	VolumeEnergyDensity(Wh/liter)
+Lithium_Ion	145.0				300.0			390.0
+Nickel_Cadmium	65.0	 			150.0			145.0
+Lead_Acid	45.0				180.0			95.0
+UNDEFINED	0.0				0.0			0.0

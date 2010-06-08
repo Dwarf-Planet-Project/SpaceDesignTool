@@ -1,0 +1,9 @@
+Payload	  	   Width(m) Height(m) Length(m) Mass(kg) DataRate(Mbps) Power(W) OnEclipse(%) OnDaylight(%) SpectrumRange Wavelength(m) MinTemp(K) MaxTemp(K)
+Optical_Telescope     3.8      7.3      0.0      6600      50            2000        50            20        Visible         0.7E-6	   273        323
+UV_Telescope	      0.86     0.254    2.78     128       1.28          164         50            50        UV              0.1E-8	   273        323
+GammaRay_Telescope    3.0      4.0      0.0      10000     0.003         100         50            50        GammaRay        0.1E-10	   273        323
+SAR                   3.7      1.4      2.8      808       120           3000        50            50        Radio           1.0	   273        323
+Photometric_Imaging   1.4      1.4      0.5      147       0.01          330         0.0           80        Visible         0.7E-6        273        323
+Ion_Mass_Spectrometer 0.5      0.4      0.5      80        0.01          334         50            50        Undefined       0.0	   273        323
+Microwave_Radiometer  4.0      4.0      4.0      325       0.20          470         50            50        Microwave       1.0-6 	   273        323
+UNDEFINED             0.0      0.0      0.0      0.0       0.0           0.0         0.0           0.0       Undefined       0.0	   0          0
