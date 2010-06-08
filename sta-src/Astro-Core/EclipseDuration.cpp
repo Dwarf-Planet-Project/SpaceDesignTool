@@ -10,6 +10,9 @@
 
 #include <QDebug>
 
+//erase -#include "Astro-Core/date.h"- after analysis module integration
+#include "Astro-Core/calendarTOjulian.h"
+
 #include <Astro-Core/date.h>
 
 using namespace sta;
@@ -121,13 +124,16 @@ void EclipseDuration::StarLightTimeFunction(QList<double> &sampleTimes,
 //       qDebug()<<"EclipseStarLight.fileName()"<<EclipseStarLight.fileName();
 //       qDebug()<<"EclipseStarLight.isOpen()"<<EclipseStarLight.isOpen();
     QTextStream EclipseStarLightStream(&EclipseStarLight);
+    EclipseStarLightStream.setRealNumberPrecision(16);
 
     int i;
     for (i=0;i<sampleTimes.size();i++)
     {
         //sample Time
-        EclipseStarLightStream<<sta::JdToCalendar
-                (sta::MjdToJd(sampleTimes.at(i))).toString(Qt::ISODate);
+//        EclipseStarLightStream<<sta::JdToCalendar
+//                (sta::MjdToJd(sampleTimes.at(i))).toString(Qt::ISODate);
+        EclipseStarLightStream<<sampleTimes.at(i);
+        qDebug()<<"SAMPLE"<<sampleTimes.at(i);
         EclipseStarLightStream<<"          ";
 
         double tempEclipse = 0.0;
@@ -177,6 +183,7 @@ void EclipseDuration::StarLightTimeFunction(QList<double> &sampleTimes,
 //       qDebug()<<"EclipseStarLight.fileName()"<<EclipseStarLight.fileName();
 //       qDebug()<<"EclipseStarLight.isOpen()"<<EclipseStarLight.isOpen();
     QTextStream EclipseStarLightStream(&EclipseStarLight);
+    EclipseStarLightStream.setRealNumberPrecision(16);
 
     Vector3d  PlanetCoordinates;
     PlanetCoordinates.setZero(3);
@@ -185,8 +192,9 @@ void EclipseDuration::StarLightTimeFunction(QList<double> &sampleTimes,
     for (i=0;i<sampleTimes.size();i++)
     {
         //sample Time
-        EclipseStarLightStream<<sta::JdToCalendar
-                (sta::MjdToJd(sampleTimes.at(i))).toString(Qt::ISODate);
+//        EclipseStarLightStream<<sta::JdToCalendar
+//                (sta::MjdToJd(sampleTimes.at(i))).toString(Qt::ISODate);
+        EclipseStarLightStream<<sampleTimes.at(i);
         EclipseStarLightStream<<"          ";
 
         double tempEclipse = 0.0;
@@ -219,5 +227,180 @@ void EclipseDuration::StarLightTimeFunction(QList<double> &sampleTimes,
     EclipseStarLightStream<<endl;
 
     EclipseStarLight.close();
+    CreateEclipseDetailsFile();
 
+}
+
+void EclipseDuration::CreateEclipseDetailsFile()
+{
+    //open the eclipse time function to read
+    //reach to the Eclipse information file------------
+    QString path = QString("data/EclipseStarLight.stad");
+
+    QFile EclipseStarLight(path);
+    EclipseStarLight.open(QIODevice::ReadOnly);
+//       qDebug()<<"EclipseStarLight.fileName()"<<EclipseStarLight.fileName();
+//       qDebug()<<"EclipseStarLight.isOpen()"<<EclipseStarLight.isOpen();
+    QTextStream EclipseStarLightStream(&EclipseStarLight);
+//    EclipseStarLightStream.setRealNumberPrecision(16);
+
+    //open the file you want to put the results--------
+    QString path2 = QString
+                   ("data/EclipseDetailedReport.stad");
+
+    QFile DetailedReport(path2);
+    DetailedReport.open(QIODevice::ReadWrite);
+//           qDebug()<<"GeneratedPowerTime.fileName()"<<DetailedReport.fileName();
+//           qDebug()<<"GeneratedPowerTime.isOpen()"<<DetailedReport.isOpen();
+    QTextStream DetailedReportStream(&DetailedReport);
+    DetailedReportStream.setRealNumberPrecision(16);
+
+    //write a description to the title of the report
+    DetailedReportStream << "State" << "\t\t";
+    DetailedReportStream << "Start(mjd)" << "\t\t";
+    DetailedReportStream << "End(mjd)" << "\t\t";
+    DetailedReportStream << "Duration(s)" << "\t";
+    DetailedReportStream << "#ofSteps"<<"\t";
+
+    double State;
+    double missionStartMjd = 0.0;
+    double missionEndMjd = 0.0;
+    double tempState;
+    double tempMissionEndMjd = 0.0;
+    int    numberOfStepsInState = 0;
+
+    numberOfStepsInState = 0;
+    EclipseStarLightStream >> missionStartMjd;
+    EclipseStarLightStream >> State;
+
+    while (!EclipseStarLightStream.atEnd())
+    {
+        while (State <= 0.5 )//Penumbra + Umbra
+        {
+            EclipseStarLightStream >> tempMissionEndMjd;
+            EclipseStarLightStream >> tempState;
+            numberOfStepsInState++; //increase the number of steps
+
+            if (!EclipseStarLightStream.atEnd())
+            {
+                missionEndMjd = tempMissionEndMjd;
+                State = tempState;
+            }
+            else
+            {
+                State = 1.0;
+            }
+
+            //if the state is changed or the file is ended
+            if (State > 0.5)
+            {
+                //write the detailed report
+                DetailedReportStream << "Eclipse" << "\t\t";
+                DetailedReportStream << missionStartMjd << "\t";
+                DetailedReportStream << missionEndMjd << "\t";
+                //calculate duration from ANas module but it has
+                //to be replied after her commit
+                DetailedReportStream << MjdToFromEpoch(missionStartMjd,
+                                                       missionEndMjd,
+                                                       "Seconds") << "\t";
+                DetailedReportStream << (numberOfStepsInState -1) << "\t";
+
+                missionStartMjd = missionEndMjd;
+                numberOfStepsInState = 1;
+                break;
+            }
+        }
+
+        while (State > 0.5) //Daylight
+        {
+            EclipseStarLightStream >> tempMissionEndMjd;
+            EclipseStarLightStream >> tempState;
+            numberOfStepsInState++; //increase the number of steps
+
+            if (!EclipseStarLightStream.atEnd())
+            {
+                missionEndMjd = tempMissionEndMjd;
+                State = tempState;
+            }
+            else
+            {
+                State = 0.0;
+            }
+
+            qDebug()<<"******missionStartMjd"<<missionStartMjd;
+            qDebug()<<"missionEndMjd"<<missionEndMjd;
+            qDebug()<<"numberOfStepsInState"<<numberOfStepsInState;
+
+            if (State <= 0.5)
+            {
+                //write the detailed report
+                DetailedReportStream << "Daylight" << "\t";
+                DetailedReportStream << missionStartMjd << "\t";
+                DetailedReportStream << missionEndMjd << "\t";
+                //calculate duration from ANas module but it has
+                //to be replied after her commit
+                DetailedReportStream << MjdToFromEpoch(missionStartMjd,
+                                                       missionEndMjd,
+                                                       "Seconds") << "\t";
+                DetailedReportStream << (numberOfStepsInState -1) << "\t";
+
+                missionStartMjd = missionEndMjd;
+                numberOfStepsInState = 1;
+
+                qDebug()<<"missionStartMjd"<<missionStartMjd;
+                qDebug()<<"missionEndMjd"<<missionEndMjd;
+                qDebug()<<"numberOfStepsInState"<<numberOfStepsInState;
+                break;
+            }
+        }
+    }
+
+    qDebug()<<"missionStartMjd"<<missionStartMjd;
+    qDebug()<<"missionEndMjd"<<missionEndMjd;
+    qDebug()<<"numberOfStepsInState"<<numberOfStepsInState;
+    
+    DetailedReportStream << endl;
+
+    DetailedReport.close();
+    EclipseStarLight.close();
+}
+
+
+//erase the following after analysis module inegration
+
+double EclipseDuration::MjdToFromEpoch(double StartEpoch,
+                                       double mjd,
+                                       QString Units)
+{
+    double ElapsedTime=mjd-StartEpoch;
+
+      if(Units=="Seconds")
+      {
+        double SecondJD=calendarTOjulian(1858,11,17,0,0,1);//convert 1second into MJD
+        double Second=sta::JdToMjd(SecondJD);
+        double ElapsedTimeSeconds=ElapsedTime/Second;
+     return(ElapsedTimeSeconds);
+     }
+      if(Units=="Minutes")
+      {
+         double MinuteJD=calendarTOjulian(1858,11,17,0,1,0); //convert 1minute into MJD
+         double MinuteMJD=sta::JdToMjd(MinuteJD);
+         double ElapsedTimeMinutes=ElapsedTime/MinuteMJD;
+    return(ElapsedTimeMinutes);
+  }
+      if(Units=="Hours")
+      {
+          double HourJD=calendarTOjulian(1858,11,17,1,0,0); //convert 1hour into MJD
+          double HourMJD=sta::JdToMjd(HourJD);
+          double ElapsedTimeHours=ElapsedTime/HourMJD;
+    return(ElapsedTimeHours);
+      }
+      if(Units=="Days")
+      {
+          double DayJD=calendarTOjulian(1858,11,18,0,0,0); //convert 1day into MJD
+          double DayMJD=sta::JdToMjd(DayJD);
+          double ElapsedTimeDays=ElapsedTime/DayMJD;
+    return(ElapsedTimeDays);
+      }
+      return 0.0;
 }

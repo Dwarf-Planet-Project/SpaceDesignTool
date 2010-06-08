@@ -681,8 +681,9 @@ void PowerSubsystem::CreateGeneratedPowerTimeFunctionOfSpacecraft()
 
         EclipseStarLightStream >> sampleTimeString;
         qDebug()<<"sampleTimeString; "<<sampleTimeString;
-        MissionStart = sta::CalendarToJd
-                       (QDateTime::fromString(sampleTimeString,Qt::ISODate));
+//        MissionStart = sta::CalendarToJd
+//                       (QDateTime::fromString(sampleTimeString,Qt::ISODate));
+        MissionStart = sampleTimeString.toDouble();
         qDebug()<<"MissionStart "<<MissionStart;
 
         EclipseStarLightStream >> StarLightExitance;
@@ -693,8 +694,9 @@ void PowerSubsystem::CreateGeneratedPowerTimeFunctionOfSpacecraft()
         while(!EclipseStarLightStream.atEnd())
         {
             EclipseStarLightStream >> sampleTimeString;
-            sampleTime = sta::CalendarToJd
-                         (QDateTime::fromString(sampleTimeString,Qt::ISODate));
+//            sampleTime = sta::CalendarToJd
+//                         (QDateTime::fromString(sampleTimeString,Qt::ISODate));
+            sampleTime = sampleTimeString.toDouble();
             EclipseStarLightStream >> StarLightExitance;
 
             //Calculate the short time calculations

@@ -10,8 +10,6 @@ SEMWizard::SEMWizard(ScenarioSC* SCVehicle, QWidget * parent, Qt::WindowFlags f)
 {
     setupUi(this);
 
-    qDebug()<<"NELER OLUYOR";
-
     //extract the scenario information of the SC that is wanted to be
     //analyse by SEM
     Vehicle = SCVehicle;
