@@ -17,8 +17,8 @@ MACOSX_LIBRARIES_DIR = thirdparty/macosx
 LINUX_LIBRARIES_DIR = thirdparty/linux
 CEL = thirdparty/celestia-src
 QWT3D_DIR = thirdparty/qwtplot3d
-CATALOG_SOURCE = sta-data/data
 EIGEN_DIR = thirdparty/Eigen
+
 
 # ################### Main files ################################
 MAIN_SOURCES = sta-src/Main/celestiainterface.cpp \
@@ -954,7 +954,8 @@ linux-g++ {
     }
 }
 
-# ################## Package files ###################
+################### Package files ###################
+CATALOG_SOURCE = sta-data/data
 CATALOG_FILES = $$CATALOG_SOURCE/stars.dat \
     $$CATALOG_SOURCE/starnames.dat \
     $$CATALOG_SOURCE/saoxindex.dat \
@@ -982,6 +983,10 @@ CATALOG_FILES = $$CATALOG_SOURCE/stars.dat \
     $$CATALOG_SOURCE/extrasolar.ssc \
     $$CATALOG_SOURCE/asterisms.dat \
     $$CATALOG_SOURCE/boundaries.dat
+SEMMISCELANEOUS_SOURCE = sta-data/data
+SEMMISCELANEOUS_FILES = $$SEMMISCELANEOUS_SOURCE/EclipseDetailedReport.stad \
+    $$SEMMISCELANEOUS_SOURCE/EclipseStarLight.stad \
+    $$SEMMISCELANEOUS_SOURCE/PlanetThermalProperties.stad
 CONFIGURATION_SOURCE = sta-data
 CONFIGURATION_FILES = $$CONFIGURATION_SOURCE/STA.cfg \
     $$CONFIGURATION_SOURCE/ESA_tour.cel \
@@ -1129,6 +1134,8 @@ macx {
     TLEs.files = $$TLEs_FILES
     EXAMPLES.path = Contents/Resources/STAResources/scenario-examples
     EXAMPLES.files = $$EXAMPLES_FILES
+    SEMMISCELANEOUS.path = Contents/Resources/STAResources/data
+    SEMMISCELANEOUS.files = $$SEMMISCELANEOUS_FILES
     USERMANUAL.path = Contents/Resources/STAResources/help
     USERMANUAL.files = $$USERMANUAL_FILES
     MACOSXIconFiles.path = Contents/Resources
@@ -1146,6 +1153,7 @@ macx {
         TLEs \
         SCHEMA \
         EXAMPLES \
+	SEMMISCELANEOUS \
         USERMANUAL \
         MACOSXIconFiles
     QMAKE_BUNDLE_DATA += HEATRATES \
