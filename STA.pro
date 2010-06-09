@@ -112,6 +112,7 @@ ASTROCORE_SOURCES = sta-src/Astro-Core/calendarTOjulian.cpp \
     sta-src/Astro-Core/Interpolators.cpp \
     sta-src/Astro-Core/trueAnomalyTOmeanAnomaly.cpp \
     sta-src/Astro-Core/surfaceVelocity.cpp \
+    sta-src/Astro-Core/EclipseDuration.cpp \
     sta-src/Astro-Core/nedTOfixed.cpp
 ASTROCORE_HEADERS = sta-src/Astro-Core/calendarTOjulian.h \
     sta-src/Astro-Core/date.h \
@@ -160,6 +161,7 @@ ASTROCORE_HEADERS = sta-src/Astro-Core/calendarTOjulian.h \
     sta-src/Astro-Core/Interpolators.h \
     sta-src/Astro-Core/trueAnomalyTOmeanAnomaly.h \
     sta-src/Astro-Core/surfaceVelocity.h \
+    sta-src/Astro-Core/EclipseDuration.h \
     sta-src/Astro-Core/nedTOfixed.h
 ASTROCORE_FORMS = sta-src/Astro-Core/trajectorypropagation.ui
 
@@ -218,9 +220,44 @@ COVERAGE_HEADERS = sta-src/Coverage/commanalysis.h \
     sta-src/Coverage/coverageanalysis.h
 
 # ############# SEM Module ##############
-SEM_SOURCES = sta-src/SEM/sem.cpp
-SEM_HEADERS = sta-src/SEM/sem.h
-SEM_FORMS = sta-src/SEM/sem.ui
+SEM_SOURCES = sta-src/SEM/sem.cpp \
+    sta-src/SEM/TTCSubsystem.cpp \
+    sta-src/SEM/ThermalSubsystem.cpp \
+    sta-src/SEM/thermalgui.cpp \
+    sta-src/SEM/StructureSubsystem.cpp \
+    sta-src/SEM/structuregui.cpp \
+    sta-src/SEM/semwizard.cpp \
+    sta-src/SEM/semmaingui.cpp \
+    sta-src/SEM/SemMain.cpp \
+    sta-src/SEM/PowerSubsystem.cpp \
+    sta-src/SEM/powergui.cpp \
+    sta-src/SEM/PayloadSubsystem.cpp \
+    sta-src/SEM/OBDHSubsystem.cpp \
+    sta-src/SEM/MissionDetails.cpp \
+    sta-src/SEM/datacommgui.cpp
+SEM_HEADERS = sta-src/SEM/sem.h \
+    sta-src/SEM/TTCSubsystem.h \
+    sta-src/SEM/ThermalSubsystem.h \
+    sta-src/SEM/thermalgui.h \
+    sta-src/SEM/StructureSubsystem.h \
+    sta-src/SEM/structuregui.h \
+    sta-src/SEM/semwizard.h \
+    sta-src/SEM/semmaingui.h \
+    sta-src/SEM/SemMain.h \
+    sta-src/SEM/PowerSubsystem.h \
+    sta-src/SEM/powergui.h \
+    sta-src/SEM/PayloadSubsystem.h \
+    sta-src/SEM/OBDHSubsystem.h \
+    sta-src/SEM/MissionDetails.h \
+    sta-src/SEM/datacommgui.h
+SEM_FORMS = sta-src/SEM/sem.ui \
+    sta-src/SEM/ThermalGUI.ui \
+    sta-src/SEM/StructureGUI.ui \
+    sta-src/SEM/SEMWizard.ui \
+    sta-src/SEM/SemMainGUI.ui \
+    sta-src/SEM/PowerGUI.ui \
+    sta-src/SEM/DataCommGUI.ui
+
 
 # ############# 3-Body Module ##############
 LAGRANGIAN_SOURCES = sta-src/Lagrangian/trajectoryprinting.cpp \
@@ -778,22 +815,7 @@ SOURCES = $$MAIN_SOURCES \
     $$PAYLOAD_SOURCES \
     $$ANALYSIS_SOURCES \
     $$COVERAGE_SOURCES \
-    $$CONSTELLATIONS_SOURCES \
-    sta-src/Astro-Core/EclipseDuration.cpp \
-    sta-src/SEM/TTCSubsystem.cpp \
-    sta-src/SEM/ThermalSubsystem.cpp \
-    sta-src/SEM/thermalgui.cpp \
-    sta-src/SEM/StructureSubsystem.cpp \
-    sta-src/SEM/structuregui.cpp \
-    sta-src/SEM/semwizard.cpp \
-    sta-src/SEM/semmaingui.cpp \
-    sta-src/SEM/SemMain.cpp \
-    sta-src/SEM/PowerSubsystem.cpp \
-    sta-src/SEM/powergui.cpp \
-    sta-src/SEM/PayloadSubsystem.cpp \
-    sta-src/SEM/OBDHSubsystem.cpp \
-    sta-src/SEM/MissionDetails.cpp \
-    sta-src/SEM/datacommgui.cpp
+    $$CONSTELLATIONS_SOURCES
 HEADERS = $$MAIN_HEADERS \
     $$ASTROCORE_HEADERS \
     $$SEM_HEADERS \
@@ -817,22 +839,7 @@ HEADERS = $$MAIN_HEADERS \
     $$PAYLOAD_HEADERS \
     $$ANALYSIS_HEADERS \
     $$COVERAGE_HEADERS \
-    $$CONSTELLATIONS_HEADERS \
-    sta-src/Astro-Core/EclipseDuration.h \
-    sta-src/SEM/TTCSubsystem.h \
-    sta-src/SEM/ThermalSubsystem.h \
-    sta-src/SEM/thermalgui.h \
-    sta-src/SEM/StructureSubsystem.h \
-    sta-src/SEM/structuregui.h \
-    sta-src/SEM/semwizard.h \
-    sta-src/SEM/semmaingui.h \
-    sta-src/SEM/SemMain.h \
-    sta-src/SEM/PowerSubsystem.h \
-    sta-src/SEM/powergui.h \
-    sta-src/SEM/PayloadSubsystem.h \
-    sta-src/SEM/OBDHSubsystem.h \
-    sta-src/SEM/MissionDetails.h \
-    sta-src/SEM/datacommgui.h
+    $$CONSTELLATIONS_HEADERS
 FORMS = $$MAIN_FORMS \
     $$ASTROCORE_FORMS \
     $$SEM_FORMS \
@@ -854,13 +861,7 @@ FORMS = $$MAIN_FORMS \
     $$PAYLOAD_FORMS \
     $$ANALYSIS_FORMS \
     $$COVERAGE_FORMS \
-    $$CONSTELLATIONS_FORMS \
-    sta-src/SEM/ThermalGUI.ui \
-    sta-src/SEM/StructureGUI.ui \
-    sta-src/SEM/SEMWizard.ui \
-    sta-src/SEM/SemMainGUI.ui \
-    sta-src/SEM/PowerGUI.ui \
-    sta-src/SEM/DataCommGUI.ui
+    $$CONSTELLATIONS_FORMS
 RESOURCES = $$CELESTIA_RESOURCES \
     iconary/sta-icons.qrc
 UI_HEADERS_DIR = sta-src/ui/include
@@ -981,6 +982,12 @@ SHADER_SOURCE = sta-data/shaders
 SHADER_FILES = 
 FONT_SOURCE = sta-data/fonts
 FONT_FILES = 
+ESTIMATIONS_SOURCE = sta-data/data/Estimations
+ESTIMATIONS_FILES =
+MATERIALS_SOURCE = sta-data/data/MaterialDatabase
+MATERIALS_FILES =
+SEMREPORTS_SOURCE = sta-data/data/SystemsEngineeringReports
+SEMREPORTS_FILES =
 HEATRATE_SOURCE = sta-data/data/heatrates
 HEATRATE_FILES = 
 AERO_SOURCE = sta-data/data/aerodynamics
@@ -1011,6 +1018,12 @@ macx {
     SHADER_FILES = $$join(FILES, " $$SHADER_SOURCE/", $$SHADER_SOURCE/)
     FILES = $$system(ls $$FONT_SOURCE)
     FONT_FILES = $$join(FILES, " $$FONT_SOURCE/", $$FONT_SOURCE/)
+    FILES = $$system(ls $$ESTIMATIONS_SOURCE)
+    ESTIMATIONS_FILES = $$join(FILES, " $$ESTIMATIONS_SOURCE/", $$ESTIMATIONS_SOURCE/)
+    FILES = $$system(ls $$MATERIALS_SOURCE)
+    MATERIALS_FILES = $$join(FILES, " $$MATERIALS_SOURCE/", $$MATERIALS_SOURCE/)
+    FILES = $$system(ls $$SEMREPORTS_SOURCE)
+    SEMREPORTS_FILES = $$join(FILES, " $$SEMREPORTS_SOURCE/", $$SEMREPORTS_SOURCE/)
     FILES = $$system(ls $$HEATRATE_SOURCE)
     HEATRATE_FILES = $$join(FILES, " $$HEATRATE_SOURCE/", $$HEATRATE_SOURCE/)
     FILES = $$system(ls $$AERO_SOURCE)
@@ -1070,6 +1083,12 @@ macx {
     SHADERS.files = $$SHADER_FILES
     EPHEMERIDES.path = Contents/Resources/STAResources/ephemerides
     EPHEMERIDES.files = $$EPHEMERIS_FILES
+    ESTIMATIONS.path = Contents/Resources/STAResources/data/Estimations
+    ESTIMATIONS.files = $$ESTIMATIONS_FILES
+    MATERIALS.path = Contents/Resources/STAResources/data/MaterialDatabase
+    MATERIALS.files = $$MATERIALS_FILES
+    SEMREPORTS.path = Contents/Resources/STAResources/data/SystemsEngineeringReports
+    SEMREPORTS.files = $$SEMREPORTS_FILES
     HEATRATES.path = Contents/Resources/STAResources/data/heatrates
     HEATRATES.files = $$HEATRATE_FILES
     AERODYNAMICS.path = Contents/Resources/STAResources/data/aerodynamics
@@ -1095,6 +1114,9 @@ macx {
         FONTS \
         SHADERS \
         EPHEMERIDES \
+	ESTIMATIONS \
+	MATERIALS \
+	SEMREPORTS \
         TLEs \
         SCHEMA \
         EXAMPLES \
