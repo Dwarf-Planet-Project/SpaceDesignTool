@@ -166,7 +166,7 @@ ASTROCORE_HEADERS = sta-src/Astro-Core/calendarTOjulian.h \
     sta-src/Astro-Core/trueAnomalyTOmeanAnomaly.h \
     sta-src/Astro-Core/surfaceVelocity.h \
     sta-src/Astro-Core/EclipseDuration.h \
-    sta-src/Astro-Core/bodyTOwinf.h \
+    sta-src/Astro-Core/bodyTOwind.h \
     sta-src/Astro-Core/nedTOfixed.h
 ASTROCORE_FORMS = sta-src/Astro-Core/trajectorypropagation.ui
 
@@ -1047,9 +1047,9 @@ macx {
     FILES = $$system(ls $$AERO_SOURCE)
     AERO_FILES = $$join(FILES, " $$AERO_SOURCE/", $$AERO_SOURCE/)
     FILES = $$system(ls $$ATMOSPHERES_SOURCE)
-    VEHICLEWGS_FILES = $$join(FILES, " $$VEHICLEWGS_SOURCE/", $$VEHICLEWGS_SOURCE)
+    VEHICLEWGS_FILES = $$join(FILES, " $$VEHICLEWGS_SOURCE/", $$VEHICLEWGS_SOURCE/)
     FILES = $$system(ls $$VEHICLEWGS_SOURCE)
-    RAMOUTPUT_FILES = $$join(FILES, " $$RAMOUTPUT_SOURCE/", $$RAMOUTPUT_SOURCE)
+    RAMOUTPUT_FILES = $$join(FILES, " $$RAMOUTPUT_SOURCE/", $$RAMOUTPUT_SOURCE/)
     FILES = $$system(ls $$RAMOUTPUT_SOURCE)
     ATMOSPHERES_FILES = $$join(FILES, " $$ATMOSPHERES_SOURCE/", $$ATMOSPHERES_SOURCE/)
     FILES = $$system(ls $$BODIES_SOURCE)
@@ -1115,7 +1115,7 @@ macx {
     HEATRATES.files = $$HEATRATE_FILES
     AERODYNAMICS.path = Contents/Resources/STAResources/data/aerodynamics
     AERODYNAMICS.files = $$AERO_FILES
-    RAMOUTPUT.path = Contents/Resources/STAResources/data/RAMoutput
+    RAMOUTPUT.path = Contents/Resources/STAResources/data/ramoutput
     RAMOUTPUT.files = $$RAMOUTPUT_FILES
     VEHICLEWGS.path = Contents/Resources/STAResources/data/vehiclewgs
     VEHICLEWGS.files = $$VEHICLEWGS_FILES
