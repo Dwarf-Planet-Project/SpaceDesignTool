@@ -27,13 +27,14 @@
 #include "RAM/aerodynamicmethods.h"
 #include "Scenario/scenario.h"
 #include "QFileDialog"
+#include <QMessageBox>
 #include "QDebug"
+#include "cmath"
 
 AerodynamicPropertiesDialog::AerodynamicPropertiesDialog(ScenarioTree* parent) :
     QDialog(parent)
 {
     setupUi(this);
-
     QDoubleValidator* positiveDoubleValidator = new QDoubleValidator(this);
     positiveDoubleValidator->setBottom(0.0);
 
@@ -42,13 +43,26 @@ AerodynamicPropertiesDialog::AerodynamicPropertiesDialog(ScenarioTree* parent) :
     lineEditRefArea->setValidator(positiveDoubleValidator);
     lineEditRefLength->setValidator(positiveDoubleValidator);
     loadCDDialog = new QFileDialog(this, "Select a file:", "data/aerodynamics/");
+    loadCSDialog = new QFileDialog(this, "Select a file:", "data/aerodynamics/");
+    loadCLDialog = new QFileDialog(this, "Select a file:", "data/aerodynamics/");
+    loadClDialog = new QFileDialog(this, "Select a file:", "data/aerodynamics/");
+    loadCmDialog = new QFileDialog(this, "Select a file:", "data/aerodynamics/");
+    loadCnDialog = new QFileDialog(this, "Select a file:", "data/aerodynamics/");
 
-    //connect(cdButton,SIGNAL(clicked()),loadCDDialog,SLOT(exec()));
-    connect(loadCDDialog,SIGNAL(fileSelected(QString)),this,SLOT(writeCdFile(QString)));
 
-    loadCDpDialog = new QFileDialog(this, "Select a file:", "data/aerodynamics/");
-    //connect(cdpButton,SIGNAL(clicked()),loadCDpDialog,SLOT(exec()));
-    connect(loadCDpDialog,SIGNAL(fileSelected(QString)),this,SLOT(writeCdpFile(QString)));
+    connect(CDPushButton,SIGNAL(clicked()),loadCDDialog,SLOT(exec()));
+    connect(loadCDDialog,SIGNAL(fileSelected(QString)),this,SLOT(writeCDFile(QString)));
+    connect(CSPushButton,SIGNAL(clicked()),loadCSDialog,SLOT(exec()));
+    connect(loadCSDialog,SIGNAL(fileSelected(QString)),this,SLOT(writeCSFile(QString)));
+    connect(CLPushButton,SIGNAL(clicked()),loadCLDialog,SLOT(exec()));
+    connect(loadCLDialog,SIGNAL(fileSelected(QString)),this,SLOT(writeCLFile(QString)));
+    connect(ClPushButton,SIGNAL(clicked()),loadClDialog,SLOT(exec()));
+    connect(loadClDialog,SIGNAL(fileSelected(QString)),this,SLOT(writeClFile(QString)));
+    connect(CmPushButton,SIGNAL(clicked()),loadCmDialog,SLOT(exec()));
+    connect(loadCmDialog,SIGNAL(fileSelected(QString)),this,SLOT(writeCmFile(QString)));
+    connect(CnPushButton,SIGNAL(clicked()),loadCnDialog,SLOT(exec()));
+    connect(loadCnDialog,SIGNAL(fileSelected(QString)),this,SLOT(writeCnFile(QString)));
+
 }
 
 
@@ -56,17 +70,53 @@ bool AerodynamicPropertiesDialog::loadValues(ScenarioREVAeroThermodynamicsType* 
 {
     m_aerothermo=aerothermo;
     lineEditRefArea->setText(QString::number(aerothermo->referenceArea()));
-    lineEditRefLength->setText(QString::number(aerothermo->referenceLength()));
-    if(aerothermo->CoefficientType()==1)
+    
+    QList<QSharedPointer<ScenarioAeroCoefFileType> > & AeroCoefList=aerothermo->AeroCoefFile();
+    foreach (QSharedPointer<ScenarioAeroCoefFileType> CoefFile, AeroCoefList)
+    {
+        if(CoefFile->CoefName()=="CD")
+            CDLineEdit->setText(CoefFile->FileLocation());
+        else if(CoefFile->CoefName()=="CS")
+            CSLineEdit->setText(CoefFile->FileLocation());
+        else if(CoefFile->CoefName()=="CL")
+            CLLineEdit->setText(CoefFile->FileLocation());
+        if(aerothermo->CoefficientType()==3)
+        {
+            if(CoefFile->CoefName()=="Cl")
+                ClLineEdit->setText(CoefFile->FileLocation());
+            else if(CoefFile->CoefName()=="Cm")
+                CmLineEdit->setText(CoefFile->FileLocation());
+            else if(CoefFile->CoefName()=="Cn")
+                CnLineEdit->setText(CoefFile->FileLocation());
+        }
+    }
+
+    if(aerothermo->CoefficientType()!=3)
     {
         xMomLabel->setEnabled(0);
         yMomLabel->setEnabled(0);
         zMomLabel->setEnabled(0);
         xMomLineEdit->setEnabled(0);
-        xMomLineEdit->setEnabled(0);
         yMomLineEdit->setEnabled(0);
         zMomLineEdit->setEnabled(0);
-
+        ClLabel->setEnabled(0);
+        CmLabel->setEnabled(0);
+        CnLabel->setEnabled(0);
+        ClLineEdit->setEnabled(0);
+        CmLineEdit->setEnabled(0);
+        CnLineEdit->setEnabled(0);
+        ClPushButton->setEnabled(0);
+        CmPushButton->setEnabled(0);
+        CnPushButton->setEnabled(0);
+        lineEditRefLength->setEnabled(0);
+        refLengthLabel->setEnabled(0);
+    }
+    else
+    {
+        lineEditRefLength->setText(QString::number(aerothermo->referenceLength()));
+        xMomLineEdit->setText(QString::number(aerothermo->momentReferencePoint()[0]));
+        yMomLineEdit->setText(QString::number(aerothermo->momentReferencePoint()[1]));
+        zMomLineEdit->setText(QString::number(aerothermo->momentReferencePoint()[2]));
     }
     //ScenarioParachuteProperties *parachuteproperties = aerodynamicProperties->parachuteProperties();
     /*
@@ -83,35 +133,101 @@ bool AerodynamicPropertiesDialog::loadValues(ScenarioREVAeroThermodynamicsType* 
 bool AerodynamicPropertiesDialog::saveValues(ScenarioREVAeroThermodynamicsType* aerothermo)
 {
     aerothermo->setReferenceArea(lineEditRefArea->text().toDouble());
-    aerothermo->setReferenceLength(lineEditRefLength->text().toDouble());
+    if (aerothermo->CoefficientType()==3)
+    {
+        QList<double> momRefTemp;
+        momRefTemp.append(xMomLineEdit->text().toDouble());
+        momRefTemp.append(yMomLineEdit->text().toDouble());
+        momRefTemp.append(zMomLineEdit->text().toDouble());
 
-
-    //ScenarioParachuteProperties *parachuteproperties = new ScenarioParachuteProperties();
-    //parachuteproperties->setSurfaceArea(lineEditSurfaceArea->text().toDouble());
-    //parachuteproperties->setCDCoefficients(lineEditCDCoefficients_2->text());
-    //parachuteproperties->setDeploymentMach(lineEditDeploymentMachNumber->text().toDouble());
-
-    //aerodynamicProperties->setParachuteProperties(parachuteproperties);
+        aerothermo->setReferenceLength(lineEditRefLength->text().toDouble());
+        aerothermo->setMomentReferencePoint(momRefTemp);
+    }
+    foreach (QSharedPointer<ScenarioAeroCoefFileType> CoefFile, aerothermo->AeroCoefFile())
+    {
+        if(CoefFile->CoefName()=="CD")
+            CoefFile->setFileLocation(CDLineEdit->text());
+        else if(CoefFile->CoefName()=="CS")
+            CoefFile->setFileLocation(CSLineEdit->text());
+        else if(CoefFile->CoefName()=="CL")
+            CoefFile->setFileLocation(CLLineEdit->text());
+        if(aerothermo->CoefficientType()==3)
+        {
+            if(CoefFile->CoefName()=="Cl")
+                CoefFile->setFileLocation(ClLineEdit->text());
+            else if(CoefFile->CoefName()=="Cm")
+                CoefFile->setFileLocation(CmLineEdit->text());
+            else if(CoefFile->CoefName()=="Cn")
+                CoefFile->setFileLocation(CnLineEdit->text());
+        }
+    }
 
     return true;
 }
 
-/*
-void AerodynamicPropertiesDialog::writeCdFile(QString filename)
+void AerodynamicPropertiesDialog::writeCDFile(QString filename)
 {
     filename.remove(this->loadCDDialog->directory().path() + "/");
-    lineEditCDCoefficients->setText(filename);
+    CDLineEdit->setText(filename);
 }
 
-
-void AerodynamicPropertiesDialog::writeCdpFile(QString filename)
+void AerodynamicPropertiesDialog::writeCSFile(QString filename)
 {
-    filename.remove(this->loadCDpDialog->directory().path() + "/");
-    lineEditCDCoefficients_2->setText(filename);
+    filename.remove(this->loadCSDialog->directory().path() + "/");
+    CSLineEdit->setText(filename);
 }
-*/
+
+void AerodynamicPropertiesDialog::writeCLFile(QString filename)
+{
+    filename.remove(this->loadCLDialog->directory().path() + "/");
+    CLLineEdit->setText(filename);
+}
+
+void AerodynamicPropertiesDialog::writeClFile(QString filename)
+{
+    filename.remove(this->loadClDialog->directory().path() + "/");
+    ClLineEdit->setText(filename);
+}
+
+void AerodynamicPropertiesDialog::writeCmFile(QString filename)
+{
+    filename.remove(this->loadCmDialog->directory().path() + "/");
+    CmLineEdit->setText(filename);
+}
+
+void AerodynamicPropertiesDialog::writeCnFile(QString filename)
+{
+    filename.remove(this->loadCnDialog->directory().path() + "/");
+    CnLineEdit->setText(filename);
+}
+
 void AerodynamicPropertiesDialog::on_fromGeomPushButton_clicked()
 {
-    AerodynamicMethodDialog dialog(m_aerothermo,this);
-    dialog.exec();
+    saveValues(m_aerothermo);
+    if(m_aerothermo->geomFile().isEmpty())
+    {
+        QMessageBox::information(this, tr(""), tr("Geometry file not set, please set file in REVGeometry GUI"));
+    }
+    else
+    {
+        AerodynamicMethodDialog dialog(m_aerothermo,this);
+        QList<QString> aeroList;
+
+        if (dialog.exec() == QDialog::Accepted)
+        {
+        }
+
+        if(m_aerothermo->AeroCoefFile().length()>2)
+        {
+            CDLineEdit->setText(m_aerothermo->AeroCoefFile()[0]->FileLocation());
+            CSLineEdit->setText(m_aerothermo->AeroCoefFile()[1]->FileLocation());
+            CLLineEdit->setText(m_aerothermo->AeroCoefFile()[2]->FileLocation());
+        }
+        if(m_aerothermo->CoefficientType()==3 && m_aerothermo->AeroCoefFile().length()>5)
+        {
+            ClLineEdit->setText(m_aerothermo->AeroCoefFile()[3]->FileLocation());
+            CmLineEdit->setText(m_aerothermo->AeroCoefFile()[4]->FileLocation());
+            CnLineEdit->setText(m_aerothermo->AeroCoefFile()[5]->FileLocation());
+        }
+    }
 }

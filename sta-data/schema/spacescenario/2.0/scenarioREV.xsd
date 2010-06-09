@@ -40,7 +40,7 @@
 
 	<complexType name="REVTrajectoryPlanType">
 		<sequence>
-			<element ref="tns:AbstractTrajectory" maxOccurs="unbounded"></element>
+			<element ref="tns:AbstractTrajectory" minOccurs="0" maxOccurs="unbounded"></element>
 		</sequence>
 	</complexType>
 
@@ -53,9 +53,9 @@
 					<element ref="tns:Environment"></element>
 					<element ref="tns:TimeLine"></element>
 					<element ref="tns:InitialPosition"></element>
-					<element ref="tns:InitialAttitude"></element>
+					<element ref="tns:InitialAttitude" minOccurs="0"></element>
 					<element ref="tns:PropagationPosition"></element>
-					<element ref="tns:PropagationAttitude"></element>
+					<element ref="tns:PropagationAttitude" minOccurs="0"></element>
 					<element name="Constraints" type="tns:REVConstraintsType"></element>
 					<element name="targetFinalState" type="tns:REVFinalStateType"></element>
 					<element name="ConstraintsViolation" type="tns:REVConstraintsViolationType"></element>
@@ -170,6 +170,8 @@
 
 	<complexType name="REVGeometryType">
 		<sequence>
+			<element name="REVvolume" type="double"></element>
+			<element name="REVsurface" type="double"></element>
 			<element name="noseRadius" type="double"></element>
 			<element name="shapeFamily" type="tns:OptVarString"></element>
 			<element name="geometryFile" type="string"></element>
@@ -179,6 +181,7 @@
 						<element name="param1" type="tns:OptVarDouble"></element>
 						<element name="param2" type="tns:OptVarDouble"></element>
 						<element name="param3" type="tns:OptVarDouble"></element>
+						<element name="param4" type="tns:OptVarDouble"></element>
 					</sequence>
 				</complexType>
 			</element>
@@ -188,6 +191,8 @@
 						<element name="param1" type="tns:OptVarDouble"></element>
 						<element name="param2" type="tns:OptVarDouble"></element>
 						<element name="param3" type="tns:OptVarDouble"></element>
+						<element name="param4" type="tns:OptVarDouble"></element>
+						<element name="param5" type="tns:OptVarDouble"></element>
 					</sequence>
 				</complexType>
 			</element>
@@ -197,6 +202,8 @@
 						<element name="param1" type="tns:OptVarDouble"></element>
 						<element name="param2" type="tns:OptVarDouble"></element>
 						<element name="param3" type="tns:OptVarDouble"></element>
+						<element name="param4" type="tns:OptVarDouble"></element>
+						<element name="param5" type="tns:OptVarDouble"></element>
 					</sequence>
 				</complexType>
 			</element>
@@ -300,7 +307,7 @@
 				<element name="CoefficientType" type="int"></element> <!-- 1=only translation as function of Mach, 2=all 6 as function of Mach, 3= all 6 as function of M,a and b -->
 				<element name="emissivity" type="double"></element>
 				<element name="momentReferencePoint" type="tns:ListOfDouble"></element>
-				<element name="tempCDfile" type="string"></element>
+				<element name="geomFile" type="string"></element>
 			</sequence>
 		</complexType>
 

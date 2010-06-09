@@ -154,20 +154,51 @@ static QByteArray spaceVehicleFragment(const char* name, const char* vehicleType
 
 
 //Created by Dominic to allow REV to be dragged and dropped
+
 static QByteArray REVFragment(const char* name, const char* vehicleType)
 {
     ScenarioREV entryVehicle;
-
+    
     /*** fill in defaults ***/
-    entryVehicle.REVSystem()->Weights()->setTotalDryMass(100);
+
     entryVehicle.REVSystem()->Geometry()->setNoseRadius(1);
-    entryVehicle.REVSystem()->AeroThermodynamics()->setReferenceArea(0.5*0.5*3.141592653589793238);
-    entryVehicle.REVSystem()->AeroThermodynamics()->setTempCDfile("CdM.stad");
+    entryVehicle.REVSystem()->Weights()->setTotalDryMass(2000);
+
+    entryVehicle.REVSystem()->AeroThermodynamics()->setReferenceArea(110);
+    entryVehicle.REVSystem()->AeroThermodynamics()->setReferenceLength(13);
+
+
+    entryVehicle.REVSystem()->AeroThermodynamics()->momentReferencePoint().append(0);
+    entryVehicle.REVSystem()->AeroThermodynamics()->momentReferencePoint().append(0);
+    entryVehicle.REVSystem()->AeroThermodynamics()->momentReferencePoint().append(0);
+
     entryVehicle.REVSystem()->AeroThermodynamics()->setCoefficientType(1);
-    //qDebug()<<entryVehicle.REVSystem()->REVAeroThermodynamics()->tempCDfile()<<"  file test";
-    QDomDocument doc;
+    entryVehicle.REVSystem()->Geometry()->setGeometryFile("horus.wgs");
+    //allocte memory for list of aerodynamic coefficient files
+    ScenarioAeroCoefFileType * coef1 = new ScenarioAeroCoefFileType;
+    coef1->setCoefName("CD");
+    entryVehicle.REVSystem()->AeroThermodynamics()->AeroCoefFile().append(QSharedPointer<ScenarioAeroCoefFileType>(coef1));
+    ScenarioAeroCoefFileType * coef2 = new ScenarioAeroCoefFileType;
+    coef2->setCoefName("CS");
+    entryVehicle.REVSystem()->AeroThermodynamics()->AeroCoefFile().append(QSharedPointer<ScenarioAeroCoefFileType>(coef2));
+    ScenarioAeroCoefFileType * coef3 = new ScenarioAeroCoefFileType;
+    coef3->setCoefName("CL");
+    entryVehicle.REVSystem()->AeroThermodynamics()->AeroCoefFile().append(QSharedPointer<ScenarioAeroCoefFileType>(coef3));
+    ScenarioAeroCoefFileType * coef4 = new ScenarioAeroCoefFileType;
+    coef4->setCoefName("Cl");
+    entryVehicle.REVSystem()->AeroThermodynamics()->AeroCoefFile().append(QSharedPointer<ScenarioAeroCoefFileType>(coef4));
+    ScenarioAeroCoefFileType * coef5 = new ScenarioAeroCoefFileType;
+    coef5->setCoefName("Cm");
+    entryVehicle.REVSystem()->AeroThermodynamics()->AeroCoefFile().append(QSharedPointer<ScenarioAeroCoefFileType>(coef5));
+    ScenarioAeroCoefFileType * coef6 = new ScenarioAeroCoefFileType;
+    coef6->setCoefName("Cn");
+    entryVehicle.REVSystem()->AeroThermodynamics()->AeroCoefFile().append(QSharedPointer<ScenarioAeroCoefFileType>(coef6));
+
+     QDomDocument doc;
     return fragmentText(CreateREVElement(&entryVehicle, doc)).toUtf8();
 }
+
+
 
 
 static QByteArray groundStationFragment(const char* name,

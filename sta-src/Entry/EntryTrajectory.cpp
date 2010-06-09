@@ -87,10 +87,6 @@ public:
         //Test for status
         m_trajectory->checkStatus();
         if ( m_trajectory->status != OK) {
-            qDebug()<<"quit"<<m_trajectory->status;
-            qDebug()<<m_trajectory->state2(8);
-            qDebug()<<m_trajectory->settings.maxheatrate;
-            qDebug()<<m_trajectory->state2(5);
             m_trajectory->result.status = m_trajectory->status;
         }
         parameters << gravity, aero, m_trajectory->body.getOmega(), m_trajectory->state2(3), m_trajectory->state2(4);
@@ -163,7 +159,6 @@ sta::StateVector EntryTrajectory::initialise(EntryParameters _parameters,sta::St
     initialState.velocity.x()+=initialState.position.y()*omega;
     initialState.velocity.y()+=-initialState.position.x()*omega;
 
-    //qDebug()<<initialState.position.x()<<" "<<initialState.position.y()<<" "<<initialState.position.z()<<" "<<initialState.velocity.x()<<" "<<initialState.velocity.y()<<" "<<initialState.velocity.z();
     
     //----- Initialise the heat loads to zero
     state(6) = 0.0;
@@ -213,7 +208,7 @@ void EntryTrajectory::saveTrajectory (QList<double>& sampleTimes, QList<sta::Sta
 }
 
 
-sta::StateVector EntryTrajectory::integrate(sta::StateVector stateVector, QList<Perturbations*> perturbationsList)
+sta::StateVector EntryTrajectory::integrate(sta::StateVector stateVector, QList<Perturbations*> perturbationsList)//Modified by Dominic to improve integration stability
 {
     double tau = settings.stepsize;
 
@@ -226,8 +221,6 @@ sta::StateVector EntryTrajectory::integrate(sta::StateVector stateVector, QList<
     //Update gravity, perturbations and aerodynamic accelerations
     body.updateGravity(stateVector, gravity);
     body.updateAero(stateVector, state2, atmosphere, capsule, aero, Cdc);
-    qDebug()<<gravity(0)<<" "<<gravity(1)<<" "<<gravity(2);
-    qDebug()<<aero(0)<<" "<<aero(1)<<" "<<aero(2);
 
     //Vector3d perturbingAcceleration(0, 0, 0);
     //foreach (Perturbations* perturbation, perturbationsList)

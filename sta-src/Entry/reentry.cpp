@@ -1023,12 +1023,6 @@ bool PropagateEntryTrajectory(ScenarioREV* vehicle, ScenarioEntryArcType* entry,
     if(parameters.coordselector==1)
         InitialState=sphericalTOcartesian(parameters.inputstate);
 
-    /*
-    else if(parameters.coordselector==2)
-        InitialState=
-    */
-    //qDebug()<<InitialState.position.x()<<" "<<InitialState.position.y()<<" "<<InitialState.position.z()<<" "<<InitialState.velocity.x()<<" "<<InitialState.velocity.y()<<" "<<InitialState.velocity.z();
-
     double startTime = sta::JdToMjd(sta::CalendarToJd(timeline->StartTime()));
     double time_jd = sta::MjdToJd(startTime);
     double time_s = sta::daysToSecs(startTime);
@@ -1089,18 +1083,12 @@ bool PropagateEntryTrajectory(ScenarioREV* vehicle, ScenarioEntryArcType* entry,
         Eigen::Vector3d pos = Vector3d(posx/1000, posy/1000, posz/1000);
         Eigen::Vector3d vel = Vector3d(velx/1000, vely/1000, velz/1000);
         sta::StateVector statevector = sta::StateVector(pos, vel);
-        //if(trajectory.status==OK)\
-        //{
-            samples << statevector;
-            sampleTimes << jd;
-        //}
 
-
+        samples << statevector;
+        sampleTimes << jd;
 
         i++;
-        //qDebug()<<i;
     }
-    //qDebug()<<status;
 
 
 

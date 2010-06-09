@@ -45,6 +45,7 @@
 #include "physicalproperties.h"
 #include "aerodynamicproperties.h"
 #include "propulsionproperties.h"
+#include "entrymass.h"
 //#include "payloadproperties.h"
 #include "Payloads/transmitterPayloadDialog.h"
 #include "Payloads/receiverPayloadDialog.h"
@@ -608,13 +609,26 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             {
                 editDialog.saveValues(geometry);
                 updateTreeItems(editItem, scenarioObject);
+                if(geometry->geometryFile()!="")//Dominic: Quick fix for communicating with aerodynamics
+                {
+                    geomForAero.fileName=geometry->geometryFile();
+                    geomForAero.refArea=editDialog.getRefArea();
+
+                }
             }
         }
 
     }
+
     else if (dynamic_cast<ScenarioREVAeroThermodynamicsType*>(scenarioObject) != NULL)  //Added by Dominic to allow opening of aerodynamic GUI
     {
         ScenarioREVAeroThermodynamicsType* aerothermo = dynamic_cast<ScenarioREVAeroThermodynamicsType*>(scenarioObject);
+        if (!geomForAero.fileName.isEmpty())//Dominic: quick fix to pass geometry to aerodynamics GUI
+        {
+            aerothermo->setGeomFile(geomForAero.fileName);
+            if(geomForAero.refArea!=0)
+                aerothermo->setReferenceArea(geomForAero.refArea);
+        }
         AerodynamicPropertiesDialog editDialog(this);
 
         if (!editDialog.loadValues(aerothermo))
@@ -631,6 +645,27 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             }
         }
 
+
+    }
+
+    else if (dynamic_cast<ScenarioREVWeights*>(scenarioObject) != NULL)//Added by Dominic to allow opening of REV mass GUI
+    {
+        ScenarioREVWeights* weights = dynamic_cast<ScenarioREVWeights*>(scenarioObject);
+        EntryMassDialog editDialog(this);
+
+        if (!editDialog.loadValues(weights))
+        {
+            QMessageBox::information(this, tr("Bad REV weights element"), tr("Error in REV weights element"));
+        }
+
+        else
+        {
+            if (editDialog.exec() == QDialog::Accepted)
+            {
+                editDialog.saveValues(weights);
+                updateTreeItems(editItem, scenarioObject);
+            }
+        }
 
     }
 

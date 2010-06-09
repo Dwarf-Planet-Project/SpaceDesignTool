@@ -33,23 +33,26 @@
 class ScenarioTree;
 class ScenarioPhysicalProperties;
 
-class PhysicalPropertiesDialog : public QDialog, private Ui_PhysicalPropertiesDialogClass
+class PhysicalPropertiesDialog : public QDialog, private Ui_PhysicalPropertiesDialog
 {
     Q_OBJECT
 
 public:
     PhysicalPropertiesDialog(ScenarioTree* parent=NULL);
     ~PhysicalPropertiesDialog(){}
-
+    ScenarioREVGeometryType* m_geometry;
     bool loadValues(ScenarioREVGeometryType* REVgeometry);
     bool saveValues(ScenarioREVGeometryType* REVgeometry);
+    double getRefArea();
 
 public slots:
     void writeGeomFile(QString filename);
     void on_geomParaButton_clicked();
+    void setGlobalCharacteristics(QString file);
 
 private:
     QFileDialog* loadGeomDialog;
+    bool fileLoaded;
 
 };
 

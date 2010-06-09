@@ -7856,6 +7856,8 @@ QList<QSharedPointer<ScenarioObject> >ScenarioREVPayloadType::children() const
 
 // ScenarioREVGeometryType
 ScenarioREVGeometryType::ScenarioREVGeometryType() :
+    m_REVvolume(0.0),
+    m_REVsurface(0.0),
     m_noseRadius(0.0)
 {
     m_shapeFamily = QSharedPointer<ScenarioOptVarString>(new ScenarioOptVarString());
@@ -7876,6 +7878,10 @@ ScenarioREVGeometryType* ScenarioREVGeometryType::create(const QDomElement& e)
 bool ScenarioREVGeometryType::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
+        m_REVvolume = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_REVsurface = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
         m_noseRadius = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
     if (next->tagName() == "tns:shapeFamily")
@@ -7905,6 +7911,8 @@ if (!m_sphereconeShape.isNull())
 QDomElement ScenarioREVGeometryType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:REVvolume", m_REVvolume));
+    e.appendChild(createSimpleElement(doc, "tns:REVsurface", m_REVsurface));
     e.appendChild(createSimpleElement(doc, "tns:noseRadius", m_noseRadius));
     if (!m_shapeFamily.isNull())
     {
@@ -7960,6 +7968,7 @@ ScenariocapsuleShape::ScenariocapsuleShape()
     m_param1 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
     m_param2 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
     m_param3 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_param4 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
 }
 
 ScenariocapsuleShape* ScenariocapsuleShape::create(const QDomElement& e)
@@ -7986,6 +7995,9 @@ bool ScenariocapsuleShape::load(const QDomElement& e, QDomElement* next)
     if (next->tagName() == "tns:param3")
         m_param3 = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
     *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:param4")
+        m_param4 = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
     return true;
 }
 
@@ -8010,6 +8022,12 @@ QDomElement ScenariocapsuleShape::toDomElement(QDomDocument& doc, const QString&
         QDomElement child = m_param3->toDomElement(doc, tagName);
         e.appendChild(child);
     }
+    if (!m_param4.isNull())
+    {
+        QString tagName = "param4";
+        QDomElement child = m_param4->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
     return e;
 }
 
@@ -8019,6 +8037,7 @@ QList<QSharedPointer<ScenarioObject> >ScenariocapsuleShape::children() const
     if (!m_param1.isNull()) children << m_param1;
     if (!m_param2.isNull()) children << m_param2;
     if (!m_param3.isNull()) children << m_param3;
+    if (!m_param4.isNull()) children << m_param4;
     return children;
 }
 
@@ -8031,6 +8050,8 @@ ScenarioprobeShape::ScenarioprobeShape()
     m_param1 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
     m_param2 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
     m_param3 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_param4 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_param5 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
 }
 
 ScenarioprobeShape* ScenarioprobeShape::create(const QDomElement& e)
@@ -8057,6 +8078,12 @@ bool ScenarioprobeShape::load(const QDomElement& e, QDomElement* next)
     if (next->tagName() == "tns:param3")
         m_param3 = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
     *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:param4")
+        m_param4 = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:param5")
+        m_param5 = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
     return true;
 }
 
@@ -8081,6 +8108,18 @@ QDomElement ScenarioprobeShape::toDomElement(QDomDocument& doc, const QString& e
         QDomElement child = m_param3->toDomElement(doc, tagName);
         e.appendChild(child);
     }
+    if (!m_param4.isNull())
+    {
+        QString tagName = "param4";
+        QDomElement child = m_param4->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_param5.isNull())
+    {
+        QString tagName = "param5";
+        QDomElement child = m_param5->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
     return e;
 }
 
@@ -8090,6 +8129,8 @@ QList<QSharedPointer<ScenarioObject> >ScenarioprobeShape::children() const
     if (!m_param1.isNull()) children << m_param1;
     if (!m_param2.isNull()) children << m_param2;
     if (!m_param3.isNull()) children << m_param3;
+    if (!m_param4.isNull()) children << m_param4;
+    if (!m_param5.isNull()) children << m_param5;
     return children;
 }
 
@@ -8102,6 +8143,8 @@ ScenariobiconicShape::ScenariobiconicShape()
     m_param1 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
     m_param2 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
     m_param3 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_param4 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
+    m_param5 = QSharedPointer<ScenarioOptVarDouble>(new ScenarioOptVarDouble());
 }
 
 ScenariobiconicShape* ScenariobiconicShape::create(const QDomElement& e)
@@ -8128,6 +8171,12 @@ bool ScenariobiconicShape::load(const QDomElement& e, QDomElement* next)
     if (next->tagName() == "tns:param3")
         m_param3 = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
     *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:param4")
+        m_param4 = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:param5")
+        m_param5 = QSharedPointer<ScenarioOptVarDouble>(ScenarioOptVarDouble::create(*next));
+    *next = next->nextSiblingElement();
     return true;
 }
 
@@ -8152,6 +8201,18 @@ QDomElement ScenariobiconicShape::toDomElement(QDomDocument& doc, const QString&
         QDomElement child = m_param3->toDomElement(doc, tagName);
         e.appendChild(child);
     }
+    if (!m_param4.isNull())
+    {
+        QString tagName = "param4";
+        QDomElement child = m_param4->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_param5.isNull())
+    {
+        QString tagName = "param5";
+        QDomElement child = m_param5->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
     return e;
 }
 
@@ -8161,6 +8222,8 @@ QList<QSharedPointer<ScenarioObject> >ScenariobiconicShape::children() const
     if (!m_param1.isNull()) children << m_param1;
     if (!m_param2.isNull()) children << m_param2;
     if (!m_param3.isNull()) children << m_param3;
+    if (!m_param4.isNull()) children << m_param4;
+    if (!m_param5.isNull()) children << m_param5;
     return children;
 }
 
@@ -8822,7 +8885,7 @@ bool ScenarioREVAeroThermodynamicsType::load(const QDomElement& e, QDomElement* 
         *next = next->nextSiblingElement();
         m_momentReferencePoint = parseDoubleList(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
-        m_tempCDfile = (next->firstChild().toText().data());
+        m_geomFile = (next->firstChild().toText().data());
         *next = next->nextSiblingElement();
     return true;
 }
@@ -8848,7 +8911,7 @@ QDomElement ScenarioREVAeroThermodynamicsType::toDomElement(QDomDocument& doc, c
     e.appendChild(createSimpleElement(doc, "tns:CoefficientType", m_CoefficientType));
     e.appendChild(createSimpleElement(doc, "tns:emissivity", m_emissivity));
     e.appendChild(createSimpleElement(doc, "tns:momentReferencePoint", m_momentReferencePoint));
-    e.appendChild(createSimpleElement(doc, "tns:tempCDfile", m_tempCDfile));
+    e.appendChild(createSimpleElement(doc, "tns:geomFile", m_geomFile));
     return e;
 }
 

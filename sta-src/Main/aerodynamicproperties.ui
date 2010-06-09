@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>AerodynamicPropertiesDialogClass</class>
- <widget class="QDialog" name="AerodynamicPropertiesDialogClass">
+ <class>AerodynamicPropertiesDialog</class>
+ <widget class="QDialog" name="AerodynamicPropertiesDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>415</width>
+    <width>411</width>
     <height>505</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>415</width>
+    <width>350</width>
     <height>505</height>
    </size>
   </property>
@@ -29,7 +29,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Aerodynamic and Thermical Properties</string>
+   <string>Aerodynamic Properties</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <property name="margin">
@@ -79,7 +79,7 @@
                 </widget>
                </item>
                <item row="1" column="0">
-                <widget class="QLabel" name="label_3">
+                <widget class="QLabel" name="refLengthLabel">
                  <property name="text">
                   <string>Reference Length [m]:</string>
                  </property>
@@ -92,6 +92,58 @@
                 <widget class="QLineEdit" name="lineEditRefLength">
                  <property name="alignment">
                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_2">
+                 <property name="text">
+                  <string>Reference Area [m2]:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="xMomLabel">
+                 <property name="text">
+                  <string>Moment reference point x [m]</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QLineEdit" name="xMomLineEdit">
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QLineEdit" name="yMomLineEdit">
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="1">
+                <widget class="QLineEdit" name="zMomLineEdit">
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="yMomLabel">
+                 <property name="text">
+                  <string>Moment reference point y [m]</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="0">
+                <widget class="QLabel" name="zMomLabel">
+                 <property name="text">
+                  <string>Moment reference point z [m]</string>
                  </property>
                 </widget>
                </item>
@@ -120,46 +172,6 @@
                   </size>
                  </property>
                 </spacer>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_2">
-                 <property name="text">
-                  <string>Reference Area [m2]:</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="0">
-                <widget class="QLabel" name="xMomLabel">
-                 <property name="text">
-                  <string>Moment reference point x [m]</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="1">
-                <widget class="QLineEdit" name="xMomLineEdit"/>
-               </item>
-               <item row="3" column="1">
-                <widget class="QLineEdit" name="yMomLineEdit"/>
-               </item>
-               <item row="4" column="1">
-                <widget class="QLineEdit" name="zMomLineEdit"/>
-               </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="yMomLabel">
-                 <property name="text">
-                  <string>Moment reference point y [m]</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="0">
-                <widget class="QLabel" name="zMomLabel">
-                 <property name="text">
-                  <string>Moment reference point z [m]</string>
-                 </property>
-                </widget>
                </item>
               </layout>
              </item>
@@ -201,46 +213,46 @@ p, li { white-space: pre-wrap; }
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QLineEdit" name="lineEdit_2"/>
+              <widget class="QLineEdit" name="CDLineEdit"/>
              </item>
              <item row="1" column="1">
-              <widget class="QLineEdit" name="lineEdit_3"/>
+              <widget class="QLineEdit" name="CLLineEdit"/>
              </item>
              <item row="2" column="1">
-              <widget class="QLineEdit" name="lineEdit_4"/>
+              <widget class="QLineEdit" name="CSLineEdit"/>
              </item>
              <item row="3" column="1">
-              <widget class="QLineEdit" name="lineEdit_5"/>
+              <widget class="QLineEdit" name="ClLineEdit"/>
              </item>
              <item row="4" column="1">
-              <widget class="QLineEdit" name="lineEdit_6"/>
+              <widget class="QLineEdit" name="CmLineEdit"/>
              </item>
              <item row="5" column="1">
-              <widget class="QLineEdit" name="lineEdit_7"/>
+              <widget class="QLineEdit" name="CnLineEdit"/>
              </item>
              <item row="2" column="0">
-              <widget class="QLabel" name="label_10">
+              <widget class="QLabel" name="CSlabel">
                <property name="text">
                 <string>C&lt;sub&gt;S&lt;/sub&gt; File</string>
                </property>
               </widget>
              </item>
              <item row="3" column="0">
-              <widget class="QLabel" name="label_11">
+              <widget class="QLabel" name="ClLabel">
                <property name="text">
                 <string>C&lt;sub&gt;l&lt;/sub&gt; File</string>
                </property>
               </widget>
              </item>
              <item row="4" column="0">
-              <widget class="QLabel" name="label_12">
+              <widget class="QLabel" name="CmLabel">
                <property name="text">
                 <string>C&lt;sub&gt;m&lt;/sub&gt; File</string>
                </property>
               </widget>
              </item>
              <item row="5" column="0">
-              <widget class="QLabel" name="label_13">
+              <widget class="QLabel" name="CnLabel">
                <property name="text">
                 <string>C&lt;sub&gt;n&lt;/sub&gt; File</string>
                </property>
@@ -278,88 +290,49 @@ p, li { white-space: pre-wrap; }
               </widget>
              </item>
              <item row="0" column="2">
-              <widget class="QPushButton" name="pushButton">
+              <widget class="QPushButton" name="CDPushButton">
                <property name="text">
                 <string>Load file</string>
                </property>
               </widget>
              </item>
              <item row="1" column="2">
-              <widget class="QPushButton" name="pushButton_2">
+              <widget class="QPushButton" name="CLPushButton">
                <property name="text">
                 <string>Load file</string>
                </property>
               </widget>
              </item>
              <item row="2" column="2">
-              <widget class="QPushButton" name="pushButton_3">
+              <widget class="QPushButton" name="CSPushButton">
                <property name="text">
                 <string>Load file</string>
                </property>
               </widget>
              </item>
              <item row="3" column="2">
-              <widget class="QPushButton" name="pushButton_4">
+              <widget class="QPushButton" name="ClPushButton">
                <property name="text">
                 <string>Load file</string>
                </property>
               </widget>
              </item>
              <item row="4" column="2">
-              <widget class="QPushButton" name="pushButton_5">
+              <widget class="QPushButton" name="CmPushButton">
                <property name="text">
                 <string>Load file</string>
                </property>
               </widget>
              </item>
              <item row="5" column="2">
-              <widget class="QPushButton" name="pushButton_6">
+              <widget class="QPushButton" name="CnPushButton">
                <property name="text">
                 <string>Load file</string>
                </property>
               </widget>
              </item>
-             <item row="0" column="3">
-              <spacer name="horizontalSpacer_3">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="1" column="3">
-              <spacer name="horizontalSpacer_4">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="2" column="3">
-              <spacer name="horizontalSpacer_5">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="3" column="3">
-              <spacer name="horizontalSpacer_6">
+             <item row="5" column="3">
+              <spacer name="horizontalSpacer_8">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
@@ -384,8 +357,47 @@ p, li { white-space: pre-wrap; }
                </property>
               </spacer>
              </item>
-             <item row="5" column="3">
-              <spacer name="horizontalSpacer_8">
+             <item row="3" column="3">
+              <spacer name="horizontalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="2" column="3">
+              <spacer name="horizontalSpacer_5">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="1" column="3">
+              <spacer name="horizontalSpacer_4">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="0" column="3">
+              <spacer name="horizontalSpacer_3">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
@@ -429,7 +441,7 @@ p, li { white-space: pre-wrap; }
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>AerodynamicPropertiesDialogClass</receiver>
+   <receiver>AerodynamicPropertiesDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -445,7 +457,7 @@ p, li { white-space: pre-wrap; }
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>AerodynamicPropertiesDialogClass</receiver>
+   <receiver>AerodynamicPropertiesDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

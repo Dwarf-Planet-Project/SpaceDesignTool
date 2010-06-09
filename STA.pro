@@ -37,6 +37,7 @@ MAIN_SOURCES = sta-src/Main/celestiainterface.cpp \
     sta-src/Main/propulsionproperties.cpp \
     sta-src/Main/initialstateThreebodyEditor.cpp \
     sta-src/Main/exportdialog.cpp \
+    sta-src/Main/entrymass.cpp \
     sta-src/Main/about.cpp
 MAIN_HEADERS = sta-src/Main/celestiainterface.h \
     sta-src/Main/initialstateeditor.h \
@@ -55,6 +56,7 @@ MAIN_HEADERS = sta-src/Main/celestiainterface.h \
     sta-src/Main/propulsionproperties.h \
     sta-src/Main/initialstateThreebodyEditor.h \
     sta-src/Main/exportdialog.h \
+    sta-src/Main/entrymass.h \
     sta-src/Main/about.h
 MAIN_FORMS = sta-src/Main/initialstateeditor.ui \
     sta-src/Main/mainwindow.ui \
@@ -66,6 +68,7 @@ MAIN_FORMS = sta-src/Main/initialstateeditor.ui \
     sta-src/Main/propulsionproperties.ui \
     sta-src/Main/initialstateThreebodyEditor.ui \
     sta-src/Main/exportdialog.ui \
+    sta-src/Main/entrymass.ui \
     sta-src/Main/about.ui
 
 # ##################### Astro Core ############################
@@ -113,6 +116,7 @@ ASTROCORE_SOURCES = sta-src/Astro-Core/calendarTOjulian.cpp \
     sta-src/Astro-Core/trueAnomalyTOmeanAnomaly.cpp \
     sta-src/Astro-Core/surfaceVelocity.cpp \
     sta-src/Astro-Core/EclipseDuration.cpp \
+    sta-src/Astro-Core/bodyTowind.cpp \
     sta-src/Astro-Core/nedTOfixed.cpp
 ASTROCORE_HEADERS = sta-src/Astro-Core/calendarTOjulian.h \
     sta-src/Astro-Core/date.h \
@@ -162,6 +166,7 @@ ASTROCORE_HEADERS = sta-src/Astro-Core/calendarTOjulian.h \
     sta-src/Astro-Core/trueAnomalyTOmeanAnomaly.h \
     sta-src/Astro-Core/surfaceVelocity.h \
     sta-src/Astro-Core/EclipseDuration.h \
+    sta-src/Astro-Core/bodyTOwinf.h \
     sta-src/Astro-Core/nedTOfixed.h
 ASTROCORE_FORMS = sta-src/Astro-Core/trajectorypropagation.ui
 
@@ -312,10 +317,19 @@ PLOT_FORMS = sta-src/Plotting/plottingtool.ui
 
 # ################ RAM ############
 RAM_SOURCES = sta-src/RAM/parametrization.cpp \
-    sta-src/RAM/aerodynamicmethods.cpp
+    sta-src/RAM/aerodynamicmethods.cpp \
+    sta-src/RAM/partgeometry.cpp \
+    sta-src/RAM/vehiclegeometry.cpp \
+    sta-src/RAM/advancedselectionGUI.cpp \
+    sta-src/RAM/aeroanalysis.cpp
 RAM_HEADERS = sta-src/RAM/parametrization.h \
-    sta-src/RAM/aerodynamicmethods.h
+    sta-src/RAM/aerodynamicmethods.h \
+    sta-src/RAM/partgeometry.h \
+    sta-src/RAM/vehiclegeometry.h \
+    sta-src/RAM/advancedselectionGUI.h \
+    sta-src/RAM/aeroanalysis.h
 RAM_FORMS = sta-src/RAM/parametrizedgeometry.ui \
+    sta-src/RAM/advancedselectionGUI.ui \
     sta-src/RAM/aerodynamicmethods.ui
 
 # ################ Analysis ############
@@ -992,6 +1006,10 @@ HEATRATE_SOURCE = sta-data/data/heatrates
 HEATRATE_FILES = 
 AERO_SOURCE = sta-data/data/aerodynamics
 AERO_FILES = 
+RAMOUTPUT_SOURCE = sta-data/data/ramoutput
+RAMOUTPUT_FILES =
+VEHICLEWGS_SOURCE = sta-data/data/vehiclewgs
+VEHICLEWGS_FILES =
 ATMOSPHERES_SOURCE = sta-data/data/atmospheres
 ATMOSPHERES_FILES = 
 BODIES_SOURCE = sta-data/data/bodies
@@ -1029,6 +1047,10 @@ macx {
     FILES = $$system(ls $$AERO_SOURCE)
     AERO_FILES = $$join(FILES, " $$AERO_SOURCE/", $$AERO_SOURCE/)
     FILES = $$system(ls $$ATMOSPHERES_SOURCE)
+    VEHICLEWGS_FILES = $$join(FILES, " $$VEHICLEWGS_SOURCE/", $$VEHICLEWGS_SOURCE)
+    FILES = $$system(ls $$VEHICLEWGS_SOURCE)
+    RAMOUTPUT_FILES = $$join(FILES, " $$RAMOUTPUT_SOURCE/", $$RAMOUTPUT_SOURCE)
+    FILES = $$system(ls $$RAMOUTPUT_SOURCE)
     ATMOSPHERES_FILES = $$join(FILES, " $$ATMOSPHERES_SOURCE/", $$ATMOSPHERES_SOURCE/)
     FILES = $$system(ls $$BODIES_SOURCE)
     BODIES_FILES = $$join(FILES, " $$BODIES_SOURCE/", $$BODIES_SOURCE/)
@@ -1093,6 +1115,10 @@ macx {
     HEATRATES.files = $$HEATRATE_FILES
     AERODYNAMICS.path = Contents/Resources/STAResources/data/aerodynamics
     AERODYNAMICS.files = $$AERO_FILES
+    RAMOUTPUT.path = Contents/Resources/STAResources/data/RAMoutput
+    RAMOUTPUT.files = $$RAMOUTPUT_FILES
+    VEHICLEWGS.path = Contents/Resources/STAResources/data/vehiclewgs
+    VEHICLEWGS.files = $$VEHICLEWGS_FILES
     ATMOSPHERES.path = Contents/Resources/STAResources/data/atmospheres
     ATMOSPHERES.files = $$ATMOSPHERES_FILES
     SCHEMA.path = Contents/Resources/STAResources/schema/spacescenario/2.0
@@ -1124,6 +1150,8 @@ macx {
         MACOSXIconFiles
     QMAKE_BUNDLE_DATA += HEATRATES \
         AERODYNAMICS \
+        RAMOUTPUT \
+        VEHICLEWGS \
         ATMOSPHERES \
         BODIES
 }

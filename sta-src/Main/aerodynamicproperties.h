@@ -34,7 +34,7 @@
 class ScenarioTree;
 class ScenarioAerodynamicProperties;
 
-class AerodynamicPropertiesDialog : public QDialog, private Ui_AerodynamicPropertiesDialogClass
+class AerodynamicPropertiesDialog : public QDialog, private Ui_AerodynamicPropertiesDialog
 {
     Q_OBJECT
 
@@ -47,14 +47,23 @@ public:
 
 
 public slots:
-    //void writeCdFile(QString filename);
-    //void writeCdpFile(QString filename);
+    void writeCDFile(QString filename);
+    void writeCSFile(QString filename);
+    void writeCLFile(QString filename);
+    void writeClFile(QString filename);
+    void writeCmFile(QString filename);
+    void writeCnFile(QString filename);
     void on_fromGeomPushButton_clicked();
 
 
 private:
     QFileDialog* loadCDDialog;
-    QFileDialog* loadCDpDialog;
+    QFileDialog* loadCSDialog;
+    QFileDialog* loadCLDialog;
+    QFileDialog* loadClDialog;
+    QFileDialog* loadCmDialog;
+    QFileDialog* loadCnDialog;
+
     ScenarioREVAeroThermodynamicsType* m_aerothermo;
 
 };

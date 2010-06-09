@@ -24,6 +24,7 @@
 
 #include "scenariotree.h"
 #include "physicalproperties.h"
+#include "Astro-Core/stamath.h"
 #include "Scenario/scenario.h"
 #include "RAM/parametrization.h"
 #include <QDebug>
@@ -36,19 +37,16 @@ PhysicalPropertiesDialog::PhysicalPropertiesDialog(ScenarioTree* parent):
     QDoubleValidator* positiveDoubleValidator = new QDoubleValidator(this);
     positiveDoubleValidator->setBottom(0.0);
     loadGeomDialog = new QFileDialog(this, "Select a file:", "data/vehiclewgs/");
-
+    fileLoaded=0;
     connect(geomFileButton,SIGNAL(clicked()),loadGeomDialog,SLOT(exec()));
     connect(loadGeomDialog,SIGNAL(fileSelected(QString)),this,SLOT(writeGeomFile(QString)));
+    connect(loadGeomDialog,SIGNAL(fileSelected(QString)),this,SLOT(setGlobalCharacteristics(QString)));
+
     //ParametrizationDialog* editDialog = new ParametrizationDialog();
     //QObject::connect(geomParaButton,SIGNAL(clicked()),editDialog,SLOT(exec()));
-    /*
-    connect(FileRadioButton, SIGNAL(toggled(bool)), lineEditGeomFile, SLOT(setEnabled(bool)));
-    connect(FileRadioButton, SIGNAL(toggled(bool)), geomFileButton, SLOT(setEnabled(bool)));
-    connect(ParaRadioButton, SIGNAL(toggled(bool)), lineEditGeomPara, SLOT(setEnabled(bool)));
-    connect(ParaRadioButton, SIGNAL(toggled(bool)), geomParaButton, SLOT(setEnabled(bool)));
-*/
 
-    lineEditMass->setValidator(positiveDoubleValidator);
+
+    //lineEditMass->setValidator(positiveDoubleValidator);
     lineEditSurface->setValidator(positiveDoubleValidator);
     lineEditVolume->setValidator(positiveDoubleValidator);
     //lineEditRadiusBase->setValidator(positiveDoubleValidator);
@@ -58,77 +56,78 @@ PhysicalPropertiesDialog::PhysicalPropertiesDialog(ScenarioTree* parent):
 
 bool PhysicalPropertiesDialog::loadValues(ScenarioREVGeometryType* REVgeometry)
 {
-
-   /*
-    if(physicalcharacteristics)
-    {
-        lineEditMass->setText(QString::number(physicalcharacteristics->mass()));
-        lineEditSurface->setText(QString::number(physicalcharacteristics->surfaceArea()));
-        lineEditVolume->setText(QString::number(physicalcharacteristics->volume()));
-    }
-    else return false;
-    */
-    //lineEditVolume->setText(QString::number(REVgeometry->totalVolume()));
-    //lineEditSurface->setText(QString::number(REVgeometry->surfaceArea()));
+    m_geometry=REVgeometry;
     lineEditRadiusNose->setText(QString::number(REVgeometry->noseRadius()));
-    if(REVgeometry->shapeFamily()->value()=="" && REVgeometry->geometryFile()!="")
-        lineEditGeomFile->setText(REVgeometry->geometryFile());
-    else if(REVgeometry->shapeFamily()->value()!="")
-        lineEditGeomPara->setText(REVgeometry->geometryFile());
-
-
-
+    lineEditSurface->setText(QString::number(REVgeometry->REVsurface()));
+    lineEditVolume->setText(QString::number(REVgeometry->REVvolume()));
+    fileLineEdit->setText(REVgeometry->geometryFile());
     return true;
 }
 
-bool PhysicalPropertiesDialog::saveValues(ScenarioREVGeometryType* REVgeometry){
+bool PhysicalPropertiesDialog::saveValues(ScenarioREVGeometryType* REVgeometry)
+{
+    REVgeometry->setNoseRadius(lineEditRadiusNose->text().toDouble());
+    REVgeometry->setREVsurface(lineEditSurface->text().toDouble());
+    REVgeometry->setREVvolume(lineEditVolume->text().toDouble());
 
-
-        //physicalcharacteristics->setMass(lineEditMass->text().toDouble());
-        //physicalcharacteristics->setSurfaceArea(lineEditSurface->text().toDouble());
-        //physicalcharacteristics->setVolume(lineEditVolume->text().toDouble());
-
-        //geometricalcharacteristics->setRadiusBase(lineEditRadiusBase->text().toDouble());
-        REVgeometry->setNoseRadius(lineEditRadiusNose->text().toDouble());
-        //REVgeometry->setSurfaceArea(lineEditSurface->text().toDouble());
-        //REVgeometry->setTotalVolume(lineEditVolume->text().toDouble());
-
-//        propulsion->setEngineCount(lineEditNEngine->text().toUInt());
-//        propulsion->setPropellantMass(lineEditPropellant->text().toDouble());
-//        propulsion->setSpecificImpulse(lineEditIsp->text().toDouble());
-//        propulsion->setThrustPerEngine(lineEditThrust->text().toDouble());
-//        propulsion->setType(comboBoxTypePropulsion->currentText());
-
-        //physicalProperties->setPhysicalCharacteristics(physicalcharacteristics);
-        //physicalProperties->setGeometricalCharacteristics(geometricalcharacteristics);
-        //tc->setPropulsion(propulsion);
-
-        return true;
+    REVgeometry->setGeometryFile(fileLineEdit->text());
+    if(fileLoaded)
+        REVgeometry->shapeFamily()->setValue(QString(""));
+    return true;
 }
-
-//void PropertiesDialog::openSEM(){
-//        if(m_semDialog == NULL)
-//                m_semDialog = new SEM(this);
-//        m_semDialog->show();
-//        m_semDialog->raise();
-//        m_semDialog->activateWindow();
-//}
-
-//void PropertiesDialog::reshape(){
-//        SubsystemDesignButton->setVisible(!SubsystemDesignButton->isVisible());
-//        AddButton->setVisible(!AddButton->isVisible());
-//        OverviewGroupBox->setVisible(!OverviewGroupBox->isVisible());
-//        line->setVisible(!line->isVisible());
-//}
 
 void PhysicalPropertiesDialog::writeGeomFile(QString filename)
 {
     filename.remove(this->loadGeomDialog->directory().path() + "/");
-    lineEditGeomFile->setText(filename);
+    fileLineEdit->setText(filename);
+    //fileLoaded=1;
 }
 
 void PhysicalPropertiesDialog::on_geomParaButton_clicked()
 {
-    ParametrizationDialog dialog(this);
-    dialog.exec();
+    double Rn, Vol, Surf;
+    ParametrizationDialog editDialog(this);
+    editDialog.loadValues(m_geometry);
+    if (editDialog.exec() == QDialog::Accepted)
+    {
+        editDialog.saveValues(m_geometry);
+        writeGeomFile(m_geometry->geometryFile());
+        if (editDialog.currentType!=-1)
+        {
+            editDialog.getGlobalCharacteristics(Rn,Vol,Surf);
+            lineEditSurface->setText(QString::number(Surf));
+            lineEditVolume->setText(QString::number(Vol));
+            lineEditRadiusNose->setText(QString::number(Rn));
+        }
+    }
+
+}
+
+void PhysicalPropertiesDialog::setGlobalCharacteristics(QString file)
+{
+    if(!file.isEmpty())
+    {
+        VehicleGeometry vehicle=VehicleGeometry(file);
+        vehicle.CalculateGlobalCharacteristics();
+        lineEditSurface->setText(QString::number(vehicle.Surface));
+        lineEditVolume->setText(QString::number(vehicle.Volume));
+        lineEditRadiusNose->setText(QString::number(vehicle.NoseRadius));
+    }
+}
+
+
+double PhysicalPropertiesDialog::getRefArea()//temporary fix for communicating with aerodynamics GUI
+{
+    double refArea;
+    if(m_geometry->shapeFamily()->value()=="spherecone")
+        refArea=sta::Pi()*pow(m_geometry->sphereconeShape()->param2()->value(),2);
+    else if(m_geometry->shapeFamily()->value()=="capsule")
+         refArea=sta::Pi()*pow(m_geometry->capsuleShape()->param2()->value(),2);
+    else if(m_geometry->shapeFamily()->value()=="probe")
+        refArea=sta::Pi()*pow(m_geometry->probeShape()->param2()->value(),2);
+    else if(m_geometry->shapeFamily()->value()=="biconic")
+        refArea=sta::Pi()*pow(m_geometry->biconicShape()->param3()->value(),2);
+    else
+        refArea=0;
+    return refArea;
 }

@@ -52,14 +52,16 @@ void capsule_class::selectCdCprofile(QString name) {
 
     cprofile.open(QIODevice::ReadOnly);
     QTextStream cprofilestream(&cprofile);
+    //Code modified by Dominic to read files in ASTOS format
+    double temp;
     NdatapointsC = 0;                //initialise counter to keep track of number of lines
     //------
     while (!cprofilestream.atEnd())
     {
-        cprofilestream.readLine();      //read in a line just to count it
+        cprofilestream >> temp;      //read in a line just to count it
         NdatapointsC++;                      //increase the counter
     }
-    //NdatapointsC--;                  //The loop ends after 1 extra count, we need to subtract by 1
+    NdatapointsC/=2;
     //------ Allocate the memory for the data arrays ------
     MachC_array = new double[NdatapointsC];
     Cdc_array = new double[NdatapointsC];
@@ -67,9 +69,12 @@ void capsule_class::selectCdCprofile(QString name) {
     cprofile.close();
 
     cprofile.open(QIODevice::ReadOnly);
+
     //------ Fill up the data arrays ------
     for (int i=0; i<NdatapointsC; i++) {
         cprofilestream >> MachC_array[i];
+    }
+    for (int i=0; i<NdatapointsC; i++) {
         cprofilestream >> Cdc_array[i];
     }
     //------ Close the data file ------

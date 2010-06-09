@@ -5078,6 +5078,14 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double REVvolume() const
+    { return m_REVvolume; }
+    void setREVvolume(double REVvolume)
+    { m_REVvolume = REVvolume; }
+    double REVsurface() const
+    { return m_REVsurface; }
+    void setREVsurface(double REVsurface)
+    { m_REVsurface = REVsurface; }
     double noseRadius() const
     { return m_noseRadius; }
     void setNoseRadius(double noseRadius)
@@ -5108,6 +5116,8 @@ public:
     { m_sphereconeShape = sphereconeShape; }
 
 private:
+    double m_REVvolume;
+    double m_REVsurface;
     double m_noseRadius;
     QSharedPointer<ScenarioOptVarString> m_shapeFamily;
     QString m_geometryFile;
@@ -5142,11 +5152,16 @@ public:
     { return m_param3; }
     void setParam3(QSharedPointer<ScenarioOptVarDouble> param3)
     { m_param3 = param3; }
+    QSharedPointer<ScenarioOptVarDouble> param4() const
+    { return m_param4; }
+    void setParam4(QSharedPointer<ScenarioOptVarDouble> param4)
+    { m_param4 = param4; }
 
 private:
     QSharedPointer<ScenarioOptVarDouble> m_param1;
     QSharedPointer<ScenarioOptVarDouble> m_param2;
     QSharedPointer<ScenarioOptVarDouble> m_param3;
+    QSharedPointer<ScenarioOptVarDouble> m_param4;
 };
 
 
@@ -5174,11 +5189,21 @@ public:
     { return m_param3; }
     void setParam3(QSharedPointer<ScenarioOptVarDouble> param3)
     { m_param3 = param3; }
+    QSharedPointer<ScenarioOptVarDouble> param4() const
+    { return m_param4; }
+    void setParam4(QSharedPointer<ScenarioOptVarDouble> param4)
+    { m_param4 = param4; }
+    QSharedPointer<ScenarioOptVarDouble> param5() const
+    { return m_param5; }
+    void setParam5(QSharedPointer<ScenarioOptVarDouble> param5)
+    { m_param5 = param5; }
 
 private:
     QSharedPointer<ScenarioOptVarDouble> m_param1;
     QSharedPointer<ScenarioOptVarDouble> m_param2;
     QSharedPointer<ScenarioOptVarDouble> m_param3;
+    QSharedPointer<ScenarioOptVarDouble> m_param4;
+    QSharedPointer<ScenarioOptVarDouble> m_param5;
 };
 
 
@@ -5206,11 +5231,21 @@ public:
     { return m_param3; }
     void setParam3(QSharedPointer<ScenarioOptVarDouble> param3)
     { m_param3 = param3; }
+    QSharedPointer<ScenarioOptVarDouble> param4() const
+    { return m_param4; }
+    void setParam4(QSharedPointer<ScenarioOptVarDouble> param4)
+    { m_param4 = param4; }
+    QSharedPointer<ScenarioOptVarDouble> param5() const
+    { return m_param5; }
+    void setParam5(QSharedPointer<ScenarioOptVarDouble> param5)
+    { m_param5 = param5; }
 
 private:
     QSharedPointer<ScenarioOptVarDouble> m_param1;
     QSharedPointer<ScenarioOptVarDouble> m_param2;
     QSharedPointer<ScenarioOptVarDouble> m_param3;
+    QSharedPointer<ScenarioOptVarDouble> m_param4;
+    QSharedPointer<ScenarioOptVarDouble> m_param5;
 };
 
 
@@ -5588,10 +5623,10 @@ public:
     { return m_momentReferencePoint; }
     void setMomentReferencePoint(QList<double> momentReferencePoint)
     { m_momentReferencePoint = momentReferencePoint; }
-    QString tempCDfile() const
-    { return m_tempCDfile; }
-    void setTempCDfile(QString tempCDfile)
-    { m_tempCDfile = tempCDfile; }
+    QString geomFile() const
+    { return m_geomFile; }
+    void setGeomFile(QString geomFile)
+    { m_geomFile = geomFile; }
 
 private:
     QSharedPointer<ScenarioOptVarDouble> m_hypersonicTrimAngle;
@@ -5602,7 +5637,7 @@ private:
     int m_CoefficientType;
     double m_emissivity;
     QList<double> m_momentReferencePoint;
-    QString m_tempCDfile;
+    QString m_geomFile;
 };
 
 
