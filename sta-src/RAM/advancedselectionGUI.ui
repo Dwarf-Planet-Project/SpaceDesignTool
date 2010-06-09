@@ -1,0 +1,986 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>advancedSelectionGUI</class>
+ <widget class="QDialog" name="advancedSelectionGUI">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>413</width>
+    <height>439</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Adv. Method Selection</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_3">
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Methods</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QComboBox" name="geomBox">
+          <item>
+           <property name="text">
+            <string>Blunt</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Curved</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Uncurved</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_23">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QStackedWidget" name="stackedWidget">
+        <property name="currentIndex">
+         <number>2</number>
+        </property>
+        <widget class="QWidget" name="BluntPage">
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="1">
+           <widget class="QComboBox" name="comboBox11">
+            <item>
+             <property name="text">
+              <string>Newtonian</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Newtonian</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Newtonian - Prandtl Meyer</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Tangent Wedge</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Tangent Wedge Empirical</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Tangent Cone Empirical</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Dahlem Buck</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Van Dyke Unified</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Smyth Delta Wing</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Hankey Flat Surface</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="comboBox12">
+            <item>
+             <property name="text">
+              <string>Vacuum</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Newtonian</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Newtonian - Prandtl Meyer</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Freestream Prandtl Meyer</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>High Mach Base Pressure</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Van Dyke Unified</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>ACM Empirical</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>High Hypersonic Compression</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>High Hypersonic Expansion</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Low Hypersonic Compression</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>Low Hypersonic Expansion</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="comboBox13">
+            <item>
+             <property name="text">
+              <string>Newtonian</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Newtonian</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Newtonian - Prandtl Meyer</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Tangent Wedge</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Tangent Wedge Empirical</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Tangent Cone Empirical</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Dahlem Buck</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Van Dyke Unified</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Smyth Delta Wing</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Hankey Flat Surface</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QComboBox" name="comboBox14">
+            <item>
+             <property name="text">
+              <string>Vacuum</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Newtonian</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Newtonian - Prandtl Meyer</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Freestream Prandtl Meyer</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>High Mach Base Pressure</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Van Dyke Unified</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>ACM Empirical</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="CurvedPage">
+         <layout class="QGridLayout" name="gridLayout_6">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_15">
+            <property name="text">
+             <string>High Hypersonic Compression</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="comboBox21">
+            <item>
+             <property name="text">
+              <string>Newtonian</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Newtonian</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Newtonian - Prandtl Meyer</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Tangent Wedge</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Tangent Wedge Empirical</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Tangent Cone Empirical</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Dahlem Buck</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Van Dyke Unified</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Smyth Delta Wing</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Hankey Flat Surface</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_17">
+            <property name="text">
+             <string>High Hypersonic Expansion</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="comboBox22">
+            <item>
+             <property name="text">
+              <string>Vacuum</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Newtonian</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Newtonian - Pranftl Meyer</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Freestream Prandtl Meyer</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>High Mach Base Pressure</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Van Dyke Unified</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>ACM Empirical</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_18">
+            <property name="text">
+             <string>Low Hypersonic Compression</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="comboBox23">
+            <item>
+             <property name="text">
+              <string>Newtonian</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Newtonian</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Newtonian - Prandtl Meyer</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Tangent Wedge</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Tangent Wedge Empirical</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Tangent Cone Empirical</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Dahlem Buck</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Van Dyke Unified</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Smyth Delta Wing</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Hankey Flat Surface</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_16">
+            <property name="text">
+             <string>Low Hypersonic Expansion</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QComboBox" name="comboBox24">
+            <item>
+             <property name="text">
+              <string>Vacuum</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Newtonian</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Newtonian - Pranftl Meyer</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Freestream Prandtl Meyer</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>High Mach Base Pressure</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Van Dyke Unified</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>ACM Empirical</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="UncurvedPage">
+         <layout class="QGridLayout" name="gridLayout_7">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_19">
+            <property name="text">
+             <string>High Hypersonic Compression</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="comboBox31">
+            <item>
+             <property name="text">
+              <string>Newtonian</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Newtonian</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Newtonian - Prandtl Meyer</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Tangent Wedge</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Tangent Wedge Empirical</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Tangent Cone Empirical</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Dahlem Buck</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Van Dyke Unified</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Smyth Delta Wing</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Hankey Flat Surface</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_21">
+            <property name="text">
+             <string>High Hypersonic Expansion</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="comboBox32">
+            <item>
+             <property name="text">
+              <string>Vacuum</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Newtonian</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Newtonian - Prandtl Meyer</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Freestream Prandtl Meyer</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>High Mach Base Pressure</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Van Dyke Unified</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>ACM Empirical</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_22">
+            <property name="text">
+             <string>Low Hypersonic Compression</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="comboBox33">
+            <item>
+             <property name="text">
+              <string>Newtonian</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Newtonian</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Newtonian - Prandtl Meyer</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Tangent Wedge</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Tangent Wedge Empirical</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Tangent Cone Empirical</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Dahlem Buck</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Van Dyke Unified</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Smyth Delta Wing</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Hankey Flat Surface</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_20">
+            <property name="text">
+             <string>Low Hypersonic Expansion</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QComboBox" name="comboBox34">
+            <item>
+             <property name="text">
+              <string>Vacuum</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Newtonian</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Modified Newtonian - Prandtl Meyer</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Freestream Prandtl Meyer</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>High Mach Base Pressure</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Van Dyke Unified</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>ACM Empirical</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="title">
+        <string>Bluntness parameters</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="C1LineEdit"/>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="C2LineEdit"/>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;C&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;1&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;C&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;2 &lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;[%]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="C3LineEdit"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;C&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;3  &lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;[deg]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;C&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;4&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;C&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;5 &lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;[-]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="C4LineEdit"/>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLineEdit" name="C5LineEdit"/>
+        </item>
+        <item row="0" column="2">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="6" column="1">
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;C&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;6&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [-]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QLineEdit" name="C6LineEdit"/>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox_2">
+       <property name="title">
+        <string>Curvedness parameters</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="k1LineEdit"/>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="k2LineEdit"/>
+        </item>
+        <item row="3" column="1">
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="k3LineEdit"/>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="k1LineEdit_2">
+          <property name="text">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;k&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;1&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="k2LineEdit_2">
+          <property name="text">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;k&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;2&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [%]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="k3LineEdit_2">
+          <property name="text">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;k&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;3 &lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;[deg]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>advancedSelectionGUI</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>advancedSelectionGUI</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>geomBox</sender>
+   <signal>activated(int)</signal>
+   <receiver>stackedWidget</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>59</x>
+     <y>43</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>206</x>
+     <y>118</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
