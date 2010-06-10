@@ -60,6 +60,10 @@
      <string>Calculate</string>
     </property>
     <addaction name="actionPropagate_Scenario"/>
+    <addaction name="actionPropagateCoverage"/>
+    <addaction name="actionSat_to_Sat"/>
+    <addaction name="actionSat_to_Ground"/>
+    <addaction name="separator"/>
     <addaction name="actionSystem_Engineering"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -325,6 +329,21 @@
   <action name="actionCreateConstellation">
    <property name="text">
     <string>Constellation</string>
+   </property>
+  </action>
+  <action name="actionPropagateCoverage">
+   <property name="text">
+    <string>Coverage</string>
+   </property>
+  </action>
+  <action name="actionSat_to_Sat">
+   <property name="text">
+    <string>Sat-to-Sat</string>
+   </property>
+  </action>
+  <action name="actionSat_to_Ground">
+   <property name="text">
+    <string>Sat-to-Ground</string>
    </property>
   </action>
  </widget>

@@ -305,7 +305,6 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
             return false;
         }
     }
-
     else if (payload)  //Modified by Ricardo to avoid dragging communication payload into SC Trajectory Plan
     {
         //qDebug() << "Dropping payload";
@@ -328,6 +327,9 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
     // wrong place in the tree view.)
     return false;
 }
+
+
+
 
 
 QMimeData* ScenarioTree::mimeData(const QList<QTreeWidgetItem*> items) const

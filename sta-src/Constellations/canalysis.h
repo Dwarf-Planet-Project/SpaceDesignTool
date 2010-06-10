@@ -128,11 +128,13 @@ class AnaSpaceObject
         bool m_chosen;
 
 };
+
+
 class Analysis
 {
     public:
 	Analysis(PropagatedScenario* scenario);
-	~Analysis();
+        ~Analysis();
 
         QList<AnaSpaceObject> m_anaSpaceObjectList;
         DiscreteMesh* m_discreteMesh;
@@ -150,8 +152,36 @@ class Analysis
         bool m_calcSOLink;
         bool m_calcGOLink;
 
+};
+
+
+class CoverageAnalysis
+{
+    public:
+        CoverageAnalysis(PropagatedScenario* scenario, bool m_calcCoverage, bool m_calcSOLink, bool m_calcGOLink);
+        ~CoverageAnalysis();
+
+        QList<AnaSpaceObject> m_anaSpaceObjectList;
+        DiscreteMesh* m_discreteMesh;
+    private:
+        AnalysisPropDialog* m_askfeature;
+
+        PropagatedScenario* m_scenario;
+        QList<double> m_samples;
+        //QList<double> m_samplesLinkGroundObjects;
+        double m_startTime;
+        double m_endTime;
+        double m_timeStep;
+        const StaBody* m_body;
+        bool m_calcCoverage;
+        bool m_calcSOLink;
+        bool m_calcGOLink;
 
 };
+
+
+
+
 // compare functions
 bool linkSampleLessThan(const LinkSample &s1, const LinkSample &s2);
 bool groundlinkSampleLessThan(const GroundLinkSample &s1, const GroundLinkSample &s2);

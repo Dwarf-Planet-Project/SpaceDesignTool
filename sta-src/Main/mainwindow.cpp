@@ -27,6 +27,7 @@
   Patched by Guillermo April 2010 to add analyis module
   Patched by Guillermo June 2010 to add constellations module
 
+
  */
 
 
@@ -307,6 +308,9 @@ MainWindow::MainWindow() :
     // Initial state has no scenario loaded, so disable the propagate, Engineer, and analise
     // scenario actions. Patched by Guillermo to make it work correctly
     actionPropagate_Scenario->setEnabled(m_scenario != NULL);
+    actionPropagateCoverage->setEnabled(m_scenario != NULL);
+    actionSat_to_Sat->setEnabled(m_scenario != NULL);
+    actionSat_to_Ground->setEnabled(m_scenario != NULL);
     actionSystem_Engineering->setEnabled(m_scenario != NULL);
     actionAnalyse->setEnabled(m_scenario != NULL);
 
@@ -1168,7 +1172,8 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
     // calculate Analysis (Claas Grohnfeldt, Steffen Peter)
     //QTextStream out (stdout);
     //out << "Creating analysis: " << endl;
-    Analysis* analysis = new Analysis(propScenario);
+    // Guillermo has de-activate the pop up menu
+    //Analysis* analysis = new Analysis(propScenario);
 
     if (propScenario)
     {
@@ -1180,7 +1185,8 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
 
 	    // calculate Analysis Data (Claas Grohnfeldt, Steffen Peter)
 	    //out << "Calculating analysis: " << endl;
-	    m_groundTrackPlotTool->setAnalysis(analysis);
+            // Guillermo has de-activate the pop up menu
+            //m_groundTrackPlotTool->setAnalysis(analysis);
 	}
         if (m_plottingTool)
         {
@@ -1257,8 +1263,8 @@ void MainWindow::on_actionAnalyse_triggered()
     m_plottingTool->resize(650, 500);
     m_plottingTool->show();
 */
-qDebug()<<m_propagatedScenario->spaceObjects().size()<<" list size";
-    analysis* AnalysisWidget = new analysis(m_scenario,m_propagatedScenario,this);  // Creating the widget as a tool
+
+    analysis* AnalysisWidget = new analysis(this);  // Creating the widget as a tool
     AnalysisWidget->show(); // Creating the window modeless. This requires the declaration of the variable on the *.h file
     AnalysisWidget->raise(); // Required to keep the modeless window alive
     AnalysisWidget->activateWindow(); // Required to keep the modeless window alive
@@ -1852,4 +1858,30 @@ void MainWindow::on_actionCreateConstellation_triggered()
     ConstellationWizardDialog* constellationwizard = new ConstellationWizardDialog(this);
     constellationwizard->exec();
     constellationwizard->setFocus();
+}
+
+
+
+
+
+///////// Activating the function were propagation is performed using the CONSTELLATIONS module ///////////////
+void MainWindow::on_actionPropagateCoverage_triggered()
+{
+
+
+}
+
+///////// Activating the function were propagation is performed using the CONSTELLATIONS module ///////////////
+void MainWindow::on_actionSat_to_Sat_triggered()
+{
+
+
+}
+
+
+///////// Activating the function were propagation is performed using the CONSTELLATIONS module ///////////////
+void MainWindow::on_actionSat_to_Ground_triggered()
+{
+
+
 }

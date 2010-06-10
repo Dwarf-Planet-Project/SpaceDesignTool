@@ -101,6 +101,9 @@ public slots:
     void on_actionExport_triggered();
     void on_actionOpenScript_triggered();
     void on_actionPropagate_Scenario_triggered();
+    void on_actionPropagateCoverage_triggered();
+    void on_actionSat_to_Sat_triggered();
+    void on_actionSat_to_Ground_triggered();
     void on_actionSystem_Engineering_triggered();
     void on_actionScenarioElements_toggled(bool checked);
     void on_action3dViewPreferences_triggered();

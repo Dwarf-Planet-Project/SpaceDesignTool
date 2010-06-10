@@ -741,7 +741,7 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
 
     ///////////////////// Creating now the mission arcs: ascent, loitering, fly-by, re-entry, rendezvous
 
-    // Diabling the complete function for the time being. Patched by Guillermo
+    // Disabling the complete function for the time being. Patched by Guillermo
     //QTreeWidgetItem* ascentItem       = new QTreeWidgetItem(missionArcsItem);
     //ascentItem->isDisabled();
     //ascentItem->setText(0, tr("Ascent"));

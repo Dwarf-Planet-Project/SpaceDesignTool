@@ -100,6 +100,7 @@ Q_OBJECT
 
     // Analysis (Claas Grohnfeldt, Steffen Peter)
     void setAnalysis(Analysis* analysis);
+    void setCoverageAnalysis(CoverageAnalysis* coverageAnalysis);
         
  public slots:
     void setCurrentTime(double jd);
@@ -168,6 +169,7 @@ Q_OBJECT
     PropagatedScenario* m_scenario;
     // Analysis (Claas Grohnfeldt, Steffen Peter)
     Analysis* m_analysis;
+    CoverageAnalysis* m_coverageAnalysis;
 
     double m_currentTime;
     QPixmap* m_pixmap;
@@ -221,6 +223,7 @@ public:
 
     // Analysis (Claas Grohnfeldt, Steffen Peter)
     void setAnalysis(Analysis* analysis);
+    void setCoverageAnalysis(CoverageAnalysis* coverageAnalysis);
     
 private:
     GroundTrackView* m_view;
