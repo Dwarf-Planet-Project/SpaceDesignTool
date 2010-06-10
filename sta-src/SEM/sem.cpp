@@ -63,6 +63,17 @@ sem::sem(SpaceScenario* SCscenario,  QWidget * parent, Qt::WindowFlags f) : QDia
 
                 //add the sc to the combobox list
                 SelectSpacecraftComboBox->addItem(vehicle->ElementIdentifier()->Name());
+
+                //look at the existing payloads of the each SC-------------/*
+                foreach (QSharedPointer<ScenarioAbstractPayloadType> Payload,
+                         vehicle->SCMission()->PayloadSet()->AbstractPayload())
+                {
+                    Payload->Budget()->DataRate();
+                }
+
+                //look at the existing payloads of the each SC-------------*/
+
+
             }
         }
 }

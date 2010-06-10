@@ -1,3 +1,27 @@
+/*
+ This program is free software; you can redistribute it and/or modify it under
+ the terms of the European Union Public Licence - EUPL v.1.1 as published by
+ the European Commission.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE. See the European Union Public Licence - EUPL v.1.1
+ for more details.
+
+ You should have received a copy of the European Union Public Licence - EUPL v.1.1
+ along with this program.
+
+ Further information about the European Union Public Licence - EUPL v.1.1 can
+ also be found on the world wide web at http://ec.europa.eu/idabc/eupl
+ */
+
+/*
+ ------ Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
+ ------------------ Author: Ozgun YILMAZ      ---------------------------------------------
+ ------------------ email: ozgunus@yahoo.com  ---------------------------------------------
+
+ */
+
 #include "ThermalSubsystem.h"
 
 #include <QDebug>
@@ -539,6 +563,81 @@ void ThermalSubsystem::setNeededHeater(double heater)
 double ThermalSubsystem::getNeededHeater()
 {
     return NeededHeater;
+}
+
+void ThermalSubsystem::CreateTemperatureTimeFunction()
+{
+    //reach to the Eclipse information file------------
+    QString path = QString("data/EclipseStarLight.stad");
+
+    QFile EclipseStarLight(path);
+    EclipseStarLight.open(QIODevice::ReadOnly);
+    //       qDebug()<<EclipseStarLight.fileName();
+    //       qDebug()<<EclipseStarLight.isOpen();
+    QTextStream EclipseStarLightStream(&EclipseStarLight);
+
+    //open the consumed power file -----------------------------
+    QString path2 = QString
+                   ("data/SystemsEngineeringReports/PowerConsumptionTimeFunction.stad");
+
+    QFile ConsumedPowerTime(path2);
+    ConsumedPowerTime.open(QIODevice::ReadOnly);
+//           qDebug()<<"ConsumedPowerTime.fileName()"<<ConsumedPowerTime.fileName();
+//           qDebug()<<"ConsumedPowerTime.isOpen()"<<ConsumedPowerTime.isOpen();
+    QTextStream ConsumedPowerTimeStream(&ConsumedPowerTime);
+
+    //open the file you want to put your results-----------------------------
+    QString path3 = QString
+                   ("data/SystemsEngineeringReports/SCTemperatureTimeFunction.stad");
+
+    QFile TemperatureTime(path3);
+    TemperatureTime.open(QIODevice::ReadWrite);
+           qDebug()<<"TemperatureTime.fileName()"<<TemperatureTime.fileName();
+           qDebug()<<"TemperatureTime.isOpen()"<<TemperatureTime.isOpen();
+    QTextStream TemperatureTimeStream(&TemperatureTime);
+    TemperatureTimeStream.setRealNumberPrecision(16);
+
+    double mjd = 0.0;
+    double powerConsumption = 0.0;
+    double eclipseState = 0.0;
+    double temp = 0.0;
+
+    ConsumedPowerTimeStream >> mjd;
+    ConsumedPowerTimeStream >> powerConsumption;
+
+    EclipseStarLightStream >> mjd;
+    EclipseStarLightStream >> eclipseState;
+
+    //calculate the temperature at a time
+    while((!ConsumedPowerTimeStream.atEnd()&&(!EclipseStarLightStream.atEnd())))
+    {       
+        temp = pow(
+                ((ReceivedPlanetIRHeat
+                  + (SolarFluxHeat+ AlbedoHeat)*eclipseState
+                  + powerConsumption)
+                 /
+                 (TotalAreaOfHotFace
+                    * STEFAN_BOLTZMANN_CONSTANT
+                    * HotFaceCoatingProperties.Emmissivity
+                  + TotalAreaOfColdFace
+                    * STEFAN_BOLTZMANN_CONSTANT
+                    * ColdFaceCoatingProperties.Emmissivity)
+                        ),0.25);
+
+        TemperatureTimeStream << mjd<<"\t";
+        TemperatureTimeStream << temp<<"\t";
+
+        ConsumedPowerTimeStream >> mjd;
+        ConsumedPowerTimeStream >> powerConsumption;
+
+        EclipseStarLightStream >> mjd;
+        EclipseStarLightStream >> eclipseState;
+    }
+
+    //close the files you opened
+    EclipseStarLight.close();
+    ConsumedPowerTime.close();
+    TemperatureTime.close();
 }
 
 void ThermalSubsystem::CalculateAndSetNeededRadiator()

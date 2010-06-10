@@ -1,3 +1,27 @@
+/*
+ This program is free software; you can redistribute it and/or modify it under
+ the terms of the European Union Public Licence - EUPL v.1.1 as published by
+ the European Commission.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE. See the European Union Public Licence - EUPL v.1.1
+ for more details.
+
+ You should have received a copy of the European Union Public Licence - EUPL v.1.1
+ along with this program.
+
+ Further information about the European Union Public Licence - EUPL v.1.1 can
+ also be found on the world wide web at http://ec.europa.eu/idabc/eupl
+ */
+
+/*
+ ------ Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
+ ------------------ Author: Ozgun YILMAZ      ---------------------------------------------
+ ------------------ email: ozgunus@yahoo.com  ---------------------------------------------
+
+ */
+
 #include "PowerSubsystem.h"
 #include <math.h>
 
@@ -479,8 +503,10 @@ PowerSubsystem::PowerSubsystem()
         PowerSubsystem::Payloads[i].Name = "";
         PowerSubsystem::Payloads[i].PowerConsumptionInEclipse = 0.0;
         PowerSubsystem::Payloads[i].PowerOnTimeInEclipse =0.0;
+        PowerSubsystem::Payloads[i].PowerOnPercentageInEclipse = 0.0;
         PowerSubsystem::Payloads[i].PowerConsumptionInDaylight = 0.0;
         PowerSubsystem::Payloads[i].PowerOnTimeInDaylight = 0.0;
+        PowerSubsystem::Payloads[i].PowerOnPercentageInDaylight = 0.0;
     }
 
     PossibleMaximumPowerConsumptionsOfPayloads= 0.0;
@@ -531,10 +557,14 @@ void PowerSubsystem::setPayloadsPower(int    Index,
     PowerSubsystem::Payloads[Index].Name = Name;
     PowerSubsystem::Payloads[Index].PowerConsumptionInEclipse =
             PowerConsumptionInEclipse;
+    PowerSubsystem::Payloads[Index].PowerOnPercentageInEclipse =
+            PowerOnPercentageInEclipse;
     PowerSubsystem::Payloads[Index].PowerOnTimeInEclipse =
             PowerOnPercentageInEclipse / 100 * EclipseDuration;
     PowerSubsystem::Payloads[Index].PowerConsumptionInDaylight =
             PowerConsumptionInDaylight;
+    PowerSubsystem::Payloads[Index].PowerOnPercentageInDaylight =
+            PowerOnPercentageInDaylight;
     PowerSubsystem::Payloads[Index].PowerOnTimeInDaylight =
             PowerOnPercentageInDaylight / 100 * DaylightDuration;
 
@@ -645,6 +675,174 @@ double PowerSubsystem::getMaximumPowerConsumptionInDaylight()
     return PowerSubsystem::MaximumPowerConsumptionInDaylight;
 }
 
+void PowerSubsystem::CreatePowerConsumptionFunctionOfSpacecraft()
+{
+    qDebug()<<"CreatePowerConsumptionFunctionOfSpacecraft()";
+    //open the EclipseStarLight file for the sample times--------------------
+    QString path2 = QString("data/EclipseStarLight.stad");
+
+    QFile EclipseStarLight(path2);
+    EclipseStarLight.open(QIODevice::ReadOnly);
+//           qDebug()<<EclipseStarLight.fileName();
+//           qDebug()<<EclipseStarLight.isOpen();
+    QTextStream EclipseStarLightStream(&EclipseStarLight);
+
+    //open the file that you get the information of Eclipse Durations--------
+    QString path3 = QString
+                   ("data/EclipseDetailedReport.stad");
+
+    QFile DetailedReport(path3);
+    DetailedReport.open(QIODevice::ReadOnly);
+//           qDebug()<<"DetailedReport.fileName()"<<DetailedReport.fileName();
+//           qDebug()<<"DetailedReport.isOpen()"<<DetailedReport.isOpen();
+    QTextStream DetailedReportStream(&DetailedReport);
+
+    QString header;
+    int i;
+    for (i=0;i<5;i++)
+    {    // read the descriptive header of the file
+        DetailedReportStream >> header;
+    }
+
+    //open the file you want to write your results-----------------------------
+    QString path = QString
+                   ("data/SystemsEngineeringReports/PowerConsumptionTimeFunction.stad");
+
+    QFile ConsumedPowerTime(path);
+    ConsumedPowerTime.open(QIODevice::ReadWrite);
+//           qDebug()<<"ConsumedPowerTime.fileName()"<<ConsumedPowerTime.fileName();
+//           qDebug()<<"ConsumedPowerTime.isOpen()"<<ConsumedPowerTime.isOpen();
+    QTextStream ConsumedPowerTimeStream(&ConsumedPowerTime);
+    ConsumedPowerTimeStream.setRealNumberPrecision(16);
+
+    double tempEclipse = 0.0;
+    double tempDaylight = 0.0;
+    double endMjd = 0.0;
+    double startMjd = 0.0;
+    double duration = 0.0;
+//    double stepsDuration = 0.0;
+    double eclipseCondition = 0.0;
+    int payloadNumberOfSteps[4] = {0};
+    int numberOfSteps = 0;
+    int j;
+    QString State = "";
+
+//    DetailedReportStream >> State;
+//    DetailedReportStream >> endMjd;
+//    DetailedReportStream >> startMjd;
+//    DetailedReportStream >> duration;
+//    DetailedReportStream >> numberOfSteps;
+
+    //generation of the function
+    do
+    {
+        DetailedReportStream >> State;
+        qDebug()<<"STATE"<<State;
+
+        if (State == "Eclipse")
+        {
+//            qDebug()<<"inside Eclipse";
+            //read the details of the state
+            DetailedReportStream >> endMjd;
+            DetailedReportStream >> startMjd;
+            DetailedReportStream >> duration;
+            DetailedReportStream >> numberOfSteps;
+//            stepsDuration = duration / numberOfSteps;
+
+            //in eclipse the power dissipation is alligned to
+            //the end of eclipse so read the sampleTimes first
+            //set the number of steps for each payload
+
+            for(i=0;i<4;i++)
+            {
+                if (Payloads[i].PowerConsumptionInEclipse > 0.0)
+                {
+                    payloadNumberOfSteps[i]
+                            = int(numberOfSteps
+                                  * Payloads[i].PowerOnPercentageInEclipse
+                                  /100);
+                    qDebug()<<"E payloadNumberOfSteps[i]"<<payloadNumberOfSteps[i];
+                }
+            }
+
+            for(i=0;i<numberOfSteps;i++)
+            {
+                EclipseStarLightStream >> startMjd;
+                EclipseStarLightStream >> eclipseCondition;
+                ConsumedPowerTimeStream << startMjd <<"\t";
+
+                tempEclipse = SCPowerDetails.SubsystemsTotalPower;
+                for(j=0;j<4;j++)//collect the data from every payload
+                {
+                    if (i >= (numberOfSteps - payloadNumberOfSteps[j]))
+                    {
+                       tempEclipse += Payloads[j].PowerConsumptionInEclipse;
+                    }
+                }
+
+                ConsumedPowerTimeStream << tempEclipse <<"\t";
+            }
+        }
+        else
+        {
+            if (State == "Daylight")
+            {
+                qDebug()<<"inside Daylight";
+                //read the details of the state
+                DetailedReportStream >> endMjd;
+                DetailedReportStream >> startMjd;
+                DetailedReportStream >> duration;
+                DetailedReportStream >> numberOfSteps;
+//                stepsDuration = duration / numberOfSteps;
+
+                //in daylight the power dissipation is alligned to
+                //the beginning of daylight so read the sampleTimes first
+                //set the number of steps for each payload
+
+                for(i=0;i<4;i++)
+                {
+                    if (Payloads[i].PowerConsumptionInDaylight > 0.0)
+                    {
+                        payloadNumberOfSteps[i]
+                                = int(numberOfSteps
+                                      * Payloads[i].PowerOnPercentageInDaylight
+                                      /100);
+                        qDebug()<<"D payloadNumberOfSteps[i]"<<payloadNumberOfSteps[i];
+                    }
+                }
+
+                for(i=0;i<numberOfSteps;i++)
+                {
+                    EclipseStarLightStream >> startMjd;
+                    EclipseStarLightStream >> eclipseCondition;
+                    ConsumedPowerTimeStream << startMjd <<"\t";
+
+                    tempDaylight = SCPowerDetails.SubsystemsTotalPower;
+                    for(j=0;j<4;j++)//collect the data from every payload
+                    {
+                        if ((payloadNumberOfSteps[j]) >= i)
+                        {
+                           tempDaylight += Payloads[j].PowerConsumptionInDaylight;
+                        }
+                    }
+
+                    ConsumedPowerTimeStream << tempDaylight <<"\t";
+                }
+            }
+            else
+            {
+//                qDebug()<<"inside break";
+                break;
+            }            
+        }
+    }while (!DetailedReportStream.atEnd());
+
+    //close all the files that are opened in the beginning
+    EclipseStarLight.close();
+    DetailedReport.close();
+    ConsumedPowerTime.close();
+}
+
 void PowerSubsystem::CreateGeneratedPowerTimeFunctionOfSpacecraft()
 {
 //***************************************************************************
@@ -716,7 +914,7 @@ void PowerSubsystem::CreateGeneratedPowerTimeFunctionOfSpacecraft()
 //            qDebug()<<"POWER OF "<<pow((1.0 - SolarArrays.getLifeTimeDegradation()),((sampleTime-MissionStart)/365));
             GeneratedPowerTimeStream << powerLongTime <<"        ";
 
-            qDebug()<<"EclipseStarLightStream END"<<EclipseStarLightStream.atEnd();
+//            qDebug()<<"EclipseStarLightStream END"<<EclipseStarLightStream.atEnd();
         }
 
         GeneratedPowerTimeStream <<endl;
@@ -724,6 +922,65 @@ void PowerSubsystem::CreateGeneratedPowerTimeFunctionOfSpacecraft()
         EclipseStarLight.close();
 
     }
+}
+
+void PowerSubsystem::CreateNetPowerTimeFunctionOfSpacecraft()
+{
+    //open the generated power file --------------------------
+    QString path = QString
+                   ("data/SystemsEngineeringReports/GeneratedPowerTimeFunction.stad");
+
+    QFile GeneratedPowerTime(path);
+    GeneratedPowerTime.open(QIODevice::ReadOnly);
+           qDebug()<<"GeneratedPowerTime.fileName()"<<GeneratedPowerTime.fileName();
+           qDebug()<<"GeneratedPowerTime.isOpen()"<<GeneratedPowerTime.isOpen();
+    QTextStream GeneratedPowerTimeStream(&GeneratedPowerTime);
+
+    //open the consumed power file -----------------------------
+    QString path2 = QString
+                   ("data/SystemsEngineeringReports/PowerConsumptionTimeFunction.stad");
+
+    QFile ConsumedPowerTime(path2);
+    ConsumedPowerTime.open(QIODevice::ReadOnly);
+//           qDebug()<<"ConsumedPowerTime.fileName()"<<ConsumedPowerTime.fileName();
+//           qDebug()<<"ConsumedPowerTime.isOpen()"<<ConsumedPowerTime.isOpen();
+    QTextStream ConsumedPowerTimeStream(&ConsumedPowerTime);
+
+    //open the file that you would like to write your results
+    QString path3 = QString
+                   ("data/SystemsEngineeringReports/NetPowerTimeFunction.stad");
+
+    QFile NetPowerTime(path3);
+    NetPowerTime.open(QIODevice::ReadWrite);
+//           qDebug()<<"NetPowerTime.fileName()"<<NetPowerTime.fileName();
+//           qDebug()<<"NetPowerTime.isOpen()"<<NetPowerTime.isOpen();
+    QTextStream NetPowerTimeStream(&NetPowerTime);
+    NetPowerTimeStream.setRealNumberPrecision(16);
+
+    double mjd;
+    double consumedPower;
+    double generatedPower;
+
+    do
+    {
+        GeneratedPowerTimeStream >> mjd;
+        GeneratedPowerTimeStream >> generatedPower;
+
+        ConsumedPowerTimeStream >> mjd;
+        ConsumedPowerTimeStream >> consumedPower;
+
+        NetPowerTimeStream << mjd<<"\t";
+        NetPowerTimeStream << (generatedPower - consumedPower)<<"\t";
+
+    }while((!ConsumedPowerTimeStream.atEnd())
+        &&(!GeneratedPowerTimeStream.atEnd()));
+
+
+        //close the functions you opened
+        GeneratedPowerTime.close();
+        ConsumedPowerTime.close();
+        NetPowerTime.close();
+
 }
 
 void PowerSubsystem::CalculateAndSetPowerSubsystemMass()

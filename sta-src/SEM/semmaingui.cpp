@@ -1,3 +1,27 @@
+/*
+ This program is free software; you can redistribute it and/or modify it under
+ the terms of the European Union Public Licence - EUPL v.1.1 as published by
+ the European Commission.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE. See the European Union Public Licence - EUPL v.1.1
+ for more details.
+
+ You should have received a copy of the European Union Public Licence - EUPL v.1.1
+ along with this program.
+
+ Further information about the European Union Public Licence - EUPL v.1.1 can
+ also be found on the world wide web at http://ec.europa.eu/idabc/eupl
+ */
+
+/*
+ ------ Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
+ ------------------ Author: Ozgun YILMAZ      ---------------------------------------------
+ ------------------ email: ozgunus@yahoo.com  ---------------------------------------------
+
+ */
+
 #include "semmaingui.h"
 
 #include "QDebug"
@@ -820,6 +844,7 @@ void SemMainGUI::on_ThermalSubsystemGraphComboBox_2_activated(const QString&)
 
 void SemMainGUI::on_ThermalGraphPushButton_2_clicked()
 {
+    SC.getNewSCThermal()->CreateTemperatureTimeFunction();
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
@@ -862,6 +887,8 @@ void SemMainGUI::on_PowerGraphComboBox_2_activated(const QString&)
 void SemMainGUI::on_PowerGraphPushButton_clicked()
 {
     SC.getNewSCPower()->CreateGeneratedPowerTimeFunctionOfSpacecraft();
+    SC.getNewSCPower()->CreatePowerConsumptionFunctionOfSpacecraft();
+    SC.getNewSCPower()->CreateNetPowerTimeFunctionOfSpacecraft();
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
