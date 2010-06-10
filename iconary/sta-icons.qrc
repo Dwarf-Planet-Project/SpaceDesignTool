@@ -98,5 +98,6 @@
         <file>ParticipantCOMMUNICATIONS.png</file>
         <file>ParticipantTELESCOPE.png</file>
         <file>ParticipantRADAR.png</file>
+        <file>IconCONSTELLATION.png</file>
     </qresource>
 </RCC>
