@@ -26,7 +26,7 @@
    <string>Analysis</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../iconary/sta-icons.qrc">
+   <iconset>
     <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
@@ -50,7 +50,7 @@
     <rect>
      <x>220</x>
      <y>16</y>
-     <width>505</width>
+     <width>501</width>
      <height>149</height>
     </rect>
    </property>
@@ -62,41 +62,6 @@
      <string>Participants and Mission Arcs</string>
     </property>
    </column>
-  </widget>
-  <widget class="QComboBox" name="ComboBoxAnalysisFormat">
-   <property name="geometry">
-    <rect>
-     <x>24</x>
-     <y>20</y>
-     <width>149</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <item>
-    <property name="text">
-     <string>Report</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>2D</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>2.5D</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>3D</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Histogram</string>
-    </property>
-   </item>
   </widget>
   <widget class="QPushButton" name="GeneratePushButton">
    <property name="geometry">
@@ -114,8 +79,8 @@
   <widget class="QPushButton" name="TotalHelpPushButton">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>60</y>
+     <x>10</x>
+     <y>80</y>
      <width>117</width>
      <height>32</height>
     </rect>
@@ -128,13 +93,13 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>176</y>
-     <width>737</width>
-     <height>261</height>
+     <y>170</y>
+     <width>731</width>
+     <height>241</height>
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="pageReport">
     <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -143,840 +108,878 @@
        <property name="title">
         <string>Report - Selection of Parameters</string>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout">
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <item>
-           <widget class="QTreeWidget" name="treeWidgetReportOptions">
-            <column>
-             <property name="text">
-              <string>Parameters</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Coordinate System</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Units</string>
-             </property>
-            </column>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
             <item>
-             <property name="text">
-              <string>Aerodynamics</string>
-             </property>
-             <item>
-              <property name="text">
-               <string>CL</string>
+             <widget class="QTreeWidget" name="treeWidgetReportOptions">
+              <property name="selectionMode">
+               <enum>QAbstractItemView::MultiSelection</enum>
               </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>CD</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>CS</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Cl</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Cm</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Cn</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>CL/CD</string>
-              </property>
-             </item>
+              <column>
+               <property name="text">
+                <string>Parameters</string>
+               </property>
+              </column>
+              <item>
+               <property name="text">
+                <string>Aerodynamics</string>
+               </property>
+               <item>
+                <property name="text">
+                 <string>CL</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>CD</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>CS</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Cl</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Cm</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Cn</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>CL/CD</string>
+                </property>
+               </item>
+              </item>
+              <item>
+               <property name="text">
+                <string>Analysis</string>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Altitude</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Latitude</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Longitude</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Radius</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Time</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>State Vector</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>x position</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>y position</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>z position</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>x velocity</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>y velocity</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>z velocity</string>
+                 </property>
+                </item>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Keplerian Elements</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Eccentricity</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Semimajor Axis</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Inclination</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Longitude of the Ascending Node</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Argument of Periapsis</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Mean Anomaly at Epoch</string>
+                 </property>
+                </item>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Apparent Position Vector between the participant and</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Sun</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Mercury</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Venus</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Earth</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Moon</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Mars</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Jupiter</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Saturn</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Uranus</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Neptune</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Pluto</string>
+                 </property>
+                </item>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Ecliptic Crossing Times</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Time crossing the J2000 epoch</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Time crossing the Mean Ecliptic Plane of Date</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Time crossing the True Ecliptic Plane of Date</string>
+                 </property>
+                </item>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Pass Data</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Apogee Planetocentric Altitude</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Apogee Planetocentric Radius</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Perigee Planetocentric Altitude</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Perigee Planetocentric Radius</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Longitude when passing Ascending Node</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Longitude when passing Descending Node</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Maximum Geodetic Latitude</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Minimum Geodetic Latitude</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Number of revolutions within a repeating cycle</string>
+                 </property>
+                </item>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Pass Times</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Local Time of Ascending Node</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Local Time of Descending Node</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Time of Ascending Node</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Time of Descending Node</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Time of Apogee</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Time of Perigee</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Time of Minimum Latitude</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Time of Maximum Altitude</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Time of Maximum Sun Elevation</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Time of Apparent Noon</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Time of Apparent Midnight</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Time of Apparent Dawn</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Time of Apparent Dusk</string>
+                 </property>
+                </item>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Covariance</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Weak</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Normal</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Eigenvalues</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Eigenvectors</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>RootMeanSquare</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Mean</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Median</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Min</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Max</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Range</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Ellipsoid</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Error</string>
+                 </property>
+                </item>
+               </item>
+              </item>
+              <item>
+               <property name="text">
+                <string>Coverage</string>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Access Time</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Azimuth</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Elevation</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Range</string>
+                </property>
+               </item>
+              </item>
+              <item>
+               <property name="text">
+                <string>Communication</string>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Equivalent Isotropical Radiated Power</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Received Frequency</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Doppler Shift</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Received Power</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Flux Density</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Overlap Bandwidth Factor</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Free Space Loss</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Oxygen Loss</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Water Vapour Loss</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Rain Loss</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Atmospheric Loss</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Propagation Loss</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>G/T</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C/No</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>C/N</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Eb/No</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>BER</string>
+                </property>
+               </item>
+              </item>
+              <item>
+               <property name="text">
+                <string>Re-entry</string>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Flight Path Angle</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Heading Angle</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Modulus of Velocity Vector</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Decceleration</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Mach Number</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Stagnation point heat flux</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Stagnation point heat load</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Density</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Temperature</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Pressure</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Drag Coefficient</string>
+                </property>
+               </item>
+              </item>
+              <item>
+               <property name="text">
+                <string>Systems Enginnering Data</string>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Data Handling</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Total OBDH Mass</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Total Size of Memory</string>
+                 </property>
+                </item>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Payload Elements</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Angular Resolution</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Linear Resolution</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Number of Pixels</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Wavelength</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Mass</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Power</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Power on Percentage in Eclipse</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Power on Percentage in Daylight</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Data Rates</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Volume</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Width/Length/Height</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Minimum Temperature</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Maximum Temperature</string>
+                 </property>
+                </item>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Power Subsystem Elements</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Mass of Solar Array</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Area of Solar Array</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Total Mass of Batteries</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Number of Batteries</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Total Volume of Batteries</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Mass of PCU</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Total EPS Mass</string>
+                 </property>
+                </item>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Telemetry</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Total TTC Mass</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Total power Dissipation for Communication</string>
+                 </property>
+                </item>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Thermal Subsystem</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Maximum SC Temperature</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Minimum SC Temperature</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Heater Power</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Radiated Power</string>
+                 </property>
+                </item>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Structural Subsystem Elements</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Volume</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Width/Length/Height</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Moment of Inertia xAxis</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Moment of Inertia yAxis</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Moment of Inertia zAxis</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Second Moment of Area xAxis</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Second Moment of Area yAxis</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Second Moment of Area zAxis</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Axial Frequency</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Lateral Frequency</string>
+                 </property>
+                </item>
+               </item>
+               <item>
+                <property name="text">
+                 <string>System Elements of the S/C</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Dry Mass</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Total Power BoL</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Total Power EoL</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Maximum Power Consumption in Eclipse</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Maximum Power Consumption in Daylight</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Minimum Power Consumption in Eclipse</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Minimum Power Consumption in Daylight</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Total Link Duration</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Total Downlink Data Rate</string>
+                 </property>
+                </item>
+               </item>
+              </item>
+             </widget>
             </item>
-            <item>
-             <property name="text">
-              <string>Analysis</string>
-             </property>
-             <item>
-              <property name="text">
-               <string>Altitude</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Latitude</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Longitude</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Radius</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Time</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>State Vector</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>x position</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>y position</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>z position</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>x velocity</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>y velocity</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>z velocity</string>
-               </property>
-              </item>
-             </item>
-             <item>
-              <property name="text">
-               <string>Keplerian Elements</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>eccentricity</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>semimajor axis</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>inclination</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>longitude of the ascending node</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>argument of periapsis</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>mean anomaly at epoch</string>
-               </property>
-              </item>
-             </item>
-             <item>
-              <property name="text">
-               <string>Apparent Position Vector between the participant and</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>Sun</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Mercury</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Venus</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Earth</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Moon</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Mars</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Jupiter</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Saturn</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Uranus</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Neptune</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Pluto</string>
-               </property>
-              </item>
-             </item>
-             <item>
-              <property name="text">
-               <string>Ecliptic Crossing Times</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>Time crossing the J2000 epoch</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Time crossing the Mean Ecliptic Plane of Date</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Time crossing the True Ecliptic Plane of Date</string>
-               </property>
-              </item>
-             </item>
-             <item>
-              <property name="text">
-               <string>Pass Data</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>Apogee Planetocentric Altitude</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Apogee Planetocentric Radius</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Perigee Planetocentric Altitude </string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Perigee Planetocentric Radius</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Longitude when passing Ascending Node</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Longitude when passing Descending Node</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Maximum Geodetic Latitude</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Minimum Geodetic Latitude </string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Number of revolutions within a repeating cycle</string>
-               </property>
-              </item>
-             </item>
-             <item>
-              <property name="text">
-               <string>Pass Times</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>Local Time of Ascending Node</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Local Time of Descending Node</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Time of Ascending Node</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Time of Descending Node</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Time of Apogee</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Time of Perigee</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Time of Minimum Latitude</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Time of Maximum Altitude</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Time of Maximum Sun Elevation</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Time of Apparent Noon</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Time of Apparent Midnight</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Time of Apparent Dawn</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Time of Apparent Dusk</string>
-               </property>
-              </item>
-             </item>
-             <item>
-              <property name="text">
-               <string>Covariance</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>Weak</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Normal</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Eigenvalues</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Eigenvectors</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>RootMeanSquare</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Mean</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Median</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Min</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Max</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Range</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Ellipsoid</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Error</string>
-               </property>
-              </item>
-             </item>
-            </item>
-            <item>
-             <property name="text">
-              <string>Coverage</string>
-             </property>
-             <item>
-              <property name="text">
-               <string>Access Time</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Azimuth</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Elevation</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Range</string>
-              </property>
-             </item>
-            </item>
-            <item>
-             <property name="text">
-              <string>Re-entry</string>
-             </property>
-             <item>
-              <property name="text">
-               <string>Altitude</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Longitude</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Latitude</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Flight Path angle</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Heading Angle</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Modulus of Velocity Vector</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>x position</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>y position</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>z position</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>x velocity</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>y velocity</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>z velocity</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Decceleration</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Mach Number</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Stagnation point heat flux</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Stagnation point heat load</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Density</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Temperature</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Pressure</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Drag Coefficient</string>
-              </property>
-             </item>
-            </item>
-            <item>
-             <property name="text">
-              <string>Systems Enginnering Data</string>
-             </property>
-             <item>
-              <property name="text">
-               <string>Data Handling</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>Total OBDH Mass</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Total Size of Memory</string>
-               </property>
-              </item>
-             </item>
-             <item>
-              <property name="text">
-               <string>Payload Elements</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>Angular Resolution</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Linear Resolution</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Number of Pixels</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Wavelength</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Mass</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Power</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Power on Percentage in Eclipse</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Power on Percentage in Daylight</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Data Rates</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Volume</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Width/Length/Height</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Minimum Temperature</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Maximum Temperature</string>
-               </property>
-              </item>
-             </item>
-             <item>
-              <property name="text">
-               <string>Power Subsystem Elements</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>Mass of Solar Array</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Area of Solar Array</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Total Mass of Batteries</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Number of Batteries</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Total Volume of Batteries</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Mass of PCU</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Total EPS Mass</string>
-               </property>
-              </item>
-             </item>
-             <item>
-              <property name="text">
-               <string>Telemetry</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>Total TTC Mass</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Total power Dissipation for Communication</string>
-               </property>
-              </item>
-             </item>
-             <item>
-              <property name="text">
-               <string>Thermal Subsystem</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>Maximum SC Temperature</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Minimum SC Temperature</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Heater Power</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Radiated Power</string>
-               </property>
-              </item>
-             </item>
-             <item>
-              <property name="text">
-               <string>Structural Subsystem Elements</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>Volume</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Width/Length/Height</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Moment of Inertia xAxis</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Moment of Inertia yAxis</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Moment of Inertia zAxis</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Second Moment of Area xAxis</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Second Moment of Area yAxis</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Second Moment of Area zAxis</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Axial Frequency</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Lateral Frequency</string>
-               </property>
-              </item>
-             </item>
-             <item>
-              <property name="text">
-               <string>System Elements of the S/C</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>Dry Mass</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Total Power BoL</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Total Power EoL</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Maximum Power Consumption in Eclipse</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Maximum Power Consumption in Daylight</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Minimum Power Consumption in Eclipse</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Minimum Power Consumption in Daylight</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Total Link Duration</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Total Downlink Data Rate</string>
-               </property>
-              </item>
-             </item>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_8">
             <item>
              <layout class="QVBoxLayout" name="verticalLayout_13">
               <item>
@@ -1037,14 +1040,31 @@
               </item>
              </layout>
             </item>
-            <item>
-             <widget class="QListWidget" name="listWidgetShowInReport"/>
-            </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QTreeWidget" name="treeWidgetShowInReport">
+            <column>
+             <property name="text">
+              <string>Parameters</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Coordinate Systems</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Units</string>
+             </property>
+            </column>
+           </widget>
           </item>
          </layout>
         </item>
        </layout>
+       <zorder></zorder>
       </widget>
      </item>
     </layout>
@@ -1068,7 +1088,12 @@
             </column>
             <column>
              <property name="text">
-              <string>Units/Coordinate Systems</string>
+              <string>Coordinate Systems</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Units</string>
              </property>
             </column>
             <item>
@@ -1520,31 +1545,7 @@
              </property>
              <item>
               <property name="text">
-               <string>Altitude</string>
-              </property>
-              <property name="text">
-               <string>Km</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Longitude</string>
-              </property>
-              <property name="text">
-               <string>deg</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Latitude</string>
-              </property>
-              <property name="text">
-               <string>deg</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Flight Path angle</string>
+               <string>Flight Path Angle</string>
               </property>
               <property name="text">
                <string>deg</string>
@@ -1568,50 +1569,42 @@
              </item>
              <item>
               <property name="text">
-               <string>x Velocity Vector Components</string>
-              </property>
-              <property name="text">
-               <string>Km/s</string>
+               <string>Desceleration</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>y Velocity Vector Component</string>
-              </property>
-              <property name="text">
-               <string>Km/s</string>
+               <string>Mach Number</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>z Velocity Vector Component</string>
-              </property>
-              <property name="text">
-               <string>Km/s</string>
+               <string>Stagnation Point Heat Flux </string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>x Position Vector Component</string>
-              </property>
-              <property name="text">
-               <string>Km</string>
+               <string>Stagnation Point Heat Load</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>y Position Vector Component</string>
-              </property>
-              <property name="text">
-               <string>Km</string>
+               <string>Density</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>z Position Vector Component</string>
+               <string>Temperature</string>
               </property>
+             </item>
+             <item>
               <property name="text">
-               <string>Km</string>
+               <string>Pressure</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Drag Coefficient</string>
               </property>
              </item>
              <item>
@@ -2159,7 +2152,12 @@
             </column>
             <column>
              <property name="text">
-              <string>Units/Coordinate Systems</string>
+              <string>Coordinate Systems</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Units</string>
              </property>
             </column>
             <item>
@@ -2596,30 +2594,6 @@
              </property>
              <item>
               <property name="text">
-               <string>Altitude</string>
-              </property>
-              <property name="text">
-               <string>Km</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Longitude</string>
-              </property>
-              <property name="text">
-               <string>deg</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Latitude</string>
-              </property>
-              <property name="text">
-               <string>deg</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
                <string>Flight Path angle</string>
               </property>
               <property name="text">
@@ -2644,50 +2618,42 @@
              </item>
              <item>
               <property name="text">
-               <string>x Velocity Vector Components</string>
-              </property>
-              <property name="text">
-               <string>Km/s</string>
+               <string>Desceleration</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>y Velocity Vector Component</string>
-              </property>
-              <property name="text">
-               <string>Km/s</string>
+               <string>Mach Number</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>z Velocity Vector Component</string>
-              </property>
-              <property name="text">
-               <string>Km/s</string>
+               <string>Stagnation Point Heat Flux</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>x Position Vector Component</string>
-              </property>
-              <property name="text">
-               <string>Km</string>
+               <string>Stagnation Point Heat Load</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>y Position Vector Component</string>
-              </property>
-              <property name="text">
-               <string>Km</string>
+               <string>Density</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>z Position Vector Component</string>
+               <string>Temperature</string>
               </property>
+             </item>
+             <item>
               <property name="text">
-               <string>Km</string>
+               <string>Pressure</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Drag Coefficient</string>
               </property>
              </item>
              <item>
@@ -3235,7 +3201,12 @@
             </column>
             <column>
              <property name="text">
-              <string>Units/Coordinate Systems</string>
+              <string>Coordinate Systems</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Units</string>
              </property>
             </column>
             <item>
@@ -3672,30 +3643,6 @@
              </property>
              <item>
               <property name="text">
-               <string>Altitude</string>
-              </property>
-              <property name="text">
-               <string>Km</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Longitude</string>
-              </property>
-              <property name="text">
-               <string>deg</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Latitude</string>
-              </property>
-              <property name="text">
-               <string>deg</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
                <string>Flight Path angle</string>
               </property>
               <property name="text">
@@ -3720,50 +3667,42 @@
              </item>
              <item>
               <property name="text">
-               <string>x Velocity Vector Components</string>
-              </property>
-              <property name="text">
-               <string>Km/s</string>
+               <string>Desceleration</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>y Velocity Vector Component</string>
-              </property>
-              <property name="text">
-               <string>Km/s</string>
+               <string>Mach Number</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>z Velocity Vector Component</string>
-              </property>
-              <property name="text">
-               <string>Km/s</string>
+               <string>Stagnation Point Heat Flux</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>x Position Vector Component</string>
-              </property>
-              <property name="text">
-               <string>Km</string>
+               <string>Stagnation Point Heat Load</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>y Position Vector Component</string>
-              </property>
-              <property name="text">
-               <string>Km</string>
+               <string>Density</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>z Position Vector Component</string>
+               <string>Temperature</string>
               </property>
+             </item>
+             <item>
               <property name="text">
-               <string>Km</string>
+               <string>Pressure</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Drag Coefficient</string>
               </property>
              </item>
              <item>
@@ -4313,8 +4252,8 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>12</x>
-     <y>424</y>
+     <x>10</x>
+     <y>410</y>
      <width>473</width>
      <height>181</height>
     </rect>
@@ -4339,6 +4278,9 @@
          </property>
          <property name="editTriggers">
           <set>QAbstractItemView::DoubleClicked</set>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::MultiSelection</enum>
          </property>
          <column>
           <property name="text">
@@ -4435,20 +4377,87 @@
     </item>
    </layout>
   </widget>
-  <zorder>stackedWidget</zorder>
-  <zorder>buttonBox</zorder>
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>161</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Analysis Format</string>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QComboBox" name="ComboBoxAnalysisFormat">
+      <item>
+       <property name="text">
+        <string>Report</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2D</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2.5D</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>3D</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Histogram</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>2</width>
+     <height>2</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout"/>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>2</width>
+     <height>2</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_4"/>
+  </widget>
   <zorder>layoutWidget</zorder>
+  <zorder>layoutWidget</zorder>
+  <zorder>buttonBox</zorder>
   <zorder>TreeWidgetMissionArc</zorder>
-  <zorder>ComboBoxAnalysisFormat</zorder>
   <zorder>GeneratePushButton</zorder>
   <zorder>TotalHelpPushButton</zorder>
+  <zorder>stackedWidget</zorder>
+  <zorder>layoutWidget</zorder>
+  <zorder>groupBox</zorder>
  </widget>
  <tabstops>
   <tabstop>ComboBoxAnalysisFormat</tabstop>
   <tabstop>TreeWidgetMissionArc</tabstop>
   <tabstop>TotalHelpPushButton</tabstop>
   <tabstop>treeWidgetReportOptions</tabstop>
-  <tabstop>listWidgetShowInReport</tabstop>
   <tabstop>AddParameterPushButton</tabstop>
   <tabstop>RemoveParameterPushButton</tabstop>
   <tabstop>treeWidgetTimeSpecifications</tabstop>
@@ -4461,9 +4470,7 @@
   <tabstop>treeWidgetYaxis</tabstop>
   <tabstop>treeWidgetZaxis</tabstop>
  </tabstops>
- <resources>
-  <include location="../../iconary/sta-icons.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

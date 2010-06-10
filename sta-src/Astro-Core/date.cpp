@@ -27,11 +27,15 @@
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
  // Patched by Guillermo June 12 2009 to modify how STA inteprets the dates (all now as UTC)
  // Patched by Guillermo to correct the conversion to modified Julian Dates
+
+ //Patched by Ana Raposo to include Mission Elapsed Time, Time from Epoch, transformations between a calendar date and JulianDate and Day of the Year;
+   There is now a function to check for leap years.
  */
 
 #include "Astro-Core/date.h"
 #include "Astro-Core/calendarTOjulian.h"
 #include <cmath>
+#include <QDebug>
 
 
 
@@ -117,7 +121,6 @@ QDateTime sta::JdToCalendar(double jd)
     return QDateTime(QDate(year, month, day), QTime(hour, minute, second, msec), Qt::UTC);
 }
 
-
 /*! Convert a modified Julian date (day offset from J2000.0) to a 
  *  standard Julian date.
  */
@@ -125,7 +128,6 @@ double sta::MjdToJd(double mjd)
 {
     return mjd + sta::J2000;
 }
-
 
 /*! Convert a standard Julian date to a modified Julian date (day offset
  *  from J2000.0.)
@@ -135,4 +137,98 @@ double sta::JdToMjd(double jd)
     return jd - sta::J2000;
 }
 
+/*! functions added by Ana Raposo to fulfill some Analysis Module requirements*/
 
+bool sta::CheckIfLeapYear(int year)
+{
+    if((year%4==0)&&(year%100!=0))
+    {
+        return (true);
+    }
+    if((year%4==0)&&(year%100==0)&&(year%400)!=0)
+    {
+        return(false);
+    }
+    if((year%4==0)&&(year%100==0)&&(year%400)==0)
+    {
+        return(true);
+    }
+    return(false);
+}
+double sta::DateTimeTOjulian(QDateTime DateTime)
+{
+    int Year=DateTime.date().year();
+    int Month=DateTime.date().month();
+    int Day=DateTime.date().day();
+    int Hour=DateTime.time().hour();
+    int Minute=DateTime.time().minute();
+    int Second=DateTime.time().second();
+    double JulianDate=calendarTOjulian(Year,Month,Day,Hour,Minute,Second);
+    return JulianDate;
+}
+double sta::calendarToDayOfYear(QDateTime DateTime)
+{
+    int DaysInMonths=0;
+    int Days=0;
+    int DayOfYear=0;
+    int MonthsLength[12];
+    MonthsLength[0]=MonthsLength[2]=MonthsLength[4]=MonthsLength[6]=MonthsLength[7]=MonthsLength[9]=MonthsLength[11];
+    MonthsLength[3]=MonthsLength[5]=MonthsLength[8]=MonthsLength[10]=30;
+    MonthsLength[1]=28;
+    if(sta::CheckIfLeapYear(DateTime.date().year()))
+    {
+        MonthsLength[1]=29;
+    }
+qDebug()<<"month"<<DateTime.date().month();
+    if(DateTime.date().month()!=0)
+    {
+      for(int i=0;i<DateTime.date().month();i++)
+      {
+        DaysInMonths=DaysInMonths+MonthsLength[i];
+        qDebug()<<"number of days of int months"<<DaysInMonths;
+      }
+    }
+ qDebug()<<"number of days of int months-after the loop"<<DaysInMonths;
+    if(DateTime.date().day()!=1)
+    {
+    Days=DateTime.date().day()-1;
+    }
+qDebug()<<"number of days in the month"<<Days;
+    DayOfYear=DaysInMonths+Days;
+    qDebug()<<"days of year"<<DayOfYear;
+    return DayOfYear;
+}
+
+double sta::MjdToFromEpoch(double StartEpoch, double mjd, QString Units)
+{
+    double ElapsedTime=mjd-StartEpoch;
+
+    if(Units=="Seconds")
+    {
+      double SecondJD=calendarTOjulian(1858,11,17,0,0,1);//convert 1second into MJD
+      double Second=sta::JdToMjd(SecondJD);
+      double ElapsedTimeSeconds=ElapsedTime/Second;
+   return(ElapsedTimeSeconds);
+   }
+    if(Units=="Minutes")
+    {
+       double MinuteJD=calendarTOjulian(1858,11,17,0,1,0); //convert 1minute into MJD
+       double MinuteMJD=sta::JdToMjd(MinuteJD);
+       double ElapsedTimeMinutes=ElapsedTime/MinuteMJD;
+  return(ElapsedTimeMinutes);
+}
+    if(Units=="Hours")
+    {
+        double HourJD=calendarTOjulian(1858,11,17,1,0,0); //convert 1hour into MJD
+        double HourMJD=sta::JdToMjd(HourJD);
+        double ElapsedTimeHours=ElapsedTime/HourMJD;
+  return(ElapsedTimeHours);
+    }
+    if(Units=="Days")
+    {
+        double DayJD=calendarTOjulian(1858,11,18,0,0,0); //convert 1day into MJD
+        double DayMJD=sta::JdToMjd(DayJD);
+        double ElapsedTimeDays=ElapsedTime/DayMJD;
+  return(ElapsedTimeDays);
+    }
+}

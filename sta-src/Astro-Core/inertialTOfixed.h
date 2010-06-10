@@ -65,8 +65,9 @@
 //          (Email: astrodynamics.esa@gmail.com)
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#include "Astro-Core/statevector.h"
 void inertialTOfixed(int , double , 
 					double , double , double , double , double , double ,
 					double& , double& , double& , double& , double& , double& );
 										
+sta::StateVector inertialTOfixed(int,sta::StateVector,double);

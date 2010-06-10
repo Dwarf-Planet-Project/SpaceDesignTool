@@ -52,6 +52,7 @@ AerodynamicMethodDialog::~AerodynamicMethodDialog()
         delete treeItem;
 
     }
+
     delete m_vehicle;
 }
 

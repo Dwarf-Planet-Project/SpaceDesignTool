@@ -35,6 +35,8 @@
 
 
 #include <cmath>
+#include"Astro-Core/statevector.h"
+#include "Astro-Core/date.h"
 
 double calendarTOjulian (int year,  int month, int day, int hour, int minute, int second)
 
@@ -106,3 +108,10 @@ double calendarTOjulianTDB (int year,  int month, int day, int hour, int minute,
 
     return(J_date);
 }
+
+/*sta::mjdTOcalendar convertTOcalendar(double mjd)
+{
+    double jd=mjd+2400000.5;
+    double T1900=(jd - 2415019.5)/365.25;
+    double Year=1900;
+}*/

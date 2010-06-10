@@ -159,7 +159,6 @@ Polar coordinates
         double ElevationRate;
   };
 
-
     
 class StateVector
 {

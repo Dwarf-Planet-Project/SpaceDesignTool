@@ -19,7 +19,7 @@ void CoverageAnalysis::reportAER(){
        QTextStream streamReportCov1(&reportCov1);
        streamReportCov1.setRealNumberPrecision(16);
 
-       streamReportCov1<<"MJD"<<"       "<<"Range[Km]"<<"    "<<"Elevation[deg]"<<"   "<<"Azimuth[deg]"<<endl;
+       streamReportCov1<<"MJD"<<"\t"<<"Range[Km]"<<"\t"<<"Elevation[deg]"<<"\t"<<"Azimuth[deg]"<<endl;
 
 
                for(int i=0; i<m_propagatedScenario->spaceObjects().at(m_indexSC)->mission().at(m_indexMA)->trajectorySampleCount(); i++)
@@ -30,7 +30,7 @@ void CoverageAnalysis::reportAER(){
                     double range=m_propagatedScenario->groundObjects().at(m_indexGS)->getRange(m_propagatedScenario->spaceObjects().at(m_indexSC), mjd);
                     double azimuth=m_propagatedScenario->groundObjects().at(m_indexGS)->azimuthAngle(m_propagatedScenario->spaceObjects().at(m_indexSC), mjd);
                     if(elevationAngle>=5.0)
-                        streamReportCov1<<mjd<<"   "<<range<<"   "<<elevationAngle<<"    "<<azimuth<<endl;
+                        streamReportCov1<<mjd<<"\t"<<range<<"\t"<<elevationAngle<<"\t"<<azimuth<<endl;
                }
         reportCov1.close();
 }

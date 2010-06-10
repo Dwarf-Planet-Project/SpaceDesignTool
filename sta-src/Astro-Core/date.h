@@ -34,11 +34,16 @@
 
 namespace sta
 {
+    int MjdToElapsed(double StartEpoch, int ArrayIndex); //added by Ana
     QDateTime JdToCalendar(double jd);
     double CalendarToJd(QDateTime calendarDate);
     double MjdToJd(double mjd);
     double JdToMjd(double jd);
-    
+    double MjdToFromEpoch(double StartEpoch, double mjd, QString Units); //added by Ana
+    double DateTimeTOjulian(QDateTime DateTime); //Added by Ana
+    bool CheckIfLeapYear(int year); //added by Ana
+    double calendarToDayOfYear(QDateTime DateTime);
+
     template <typename T> T secsToDays(T secs)
     {
         return secs / 86400.0;

@@ -51,12 +51,12 @@ CommAnalysis::CommAnalysis()
 
 CommAnalysis::CommAnalysis(ScenarioTransmitterPayloadType *transmitter, ScenarioReceiverPayloadType *receiver, ScenarioGroundStationEnvironment* environment, PropagatedScenario* propagatedScenario, int indexSC, int indexGS, int indexMA, bool flagTX, bool flagRX):m_transmitter(transmitter), m_receiver(receiver), m_propagatedScenario(propagatedScenario), m_environment(environment), m_indexSC(indexSC), m_indexGS(indexGS), m_indexMA(indexMA), m_flagTX(flagTX), m_flagRX(flagRX)
 {
-//qDebug()<<"Now this function is working, let's try this and then try to see the values";
+qDebug()<<"The constructor of CommAnalysis is fine";
 //This constructor probably should input ScenarioSC and ScenarioGE, then check if this participants have transmitters/receivers.... then we could overload another constructor for 2 SpaceCrafts...
 //qDebug()<<"The gain of the transmitter is "<<transmitter->Transmitter()->EMproperties()->GainMax()<<"and the gain of the receiver is "<<receiver->Receiver()->EMproperties()->GainMax()<<" and it's readed from the constructor!!";
 //qDebug()<<"Frequency in tx and rx are: "<<transmitter->Budget()->FrequencyBand()<<", "<<receiver->Budget()->FrequencyBand();
-//qDebug()<<"Gain Tx from constructor: "<<transmitter->Transmitter()->EMproperties()->GainMax();
-//qDebug()<<"Gain Rx from constructor: "<<receiver->Receiver()->EMproperties()->GainMax();
+qDebug()<<"Gain Tx from constructor: "<<transmitter->Transmitter()->EMproperties()->GainMax();
+qDebug()<<"Gain Rx from constructor: "<<receiver->Receiver()->EMproperties()->GainMax();
 }
 
 //Default destructor
@@ -828,6 +828,8 @@ double CommAnalysis::Modulations(double EbNo){ //the EbNo is passed in dB
 
 void CommAnalysis::CommReports(){
 
+    qDebug()<<"Ricky is the best";
+
     double frequency;
 
     if(m_flagTX==false && m_flagRX==true){
@@ -855,7 +857,7 @@ void CommAnalysis::CommReports(){
 
     /////////////// FIXED VALUES THAT COME FROM TRANSMITTER AND RECEIVER //////////////////////
 
-
+    qDebug()<<"We call most of the functions of the class";
 
 
 
@@ -879,7 +881,7 @@ void CommAnalysis::CommReports(){
          polLoss=-20*(log10(cos(fabs(txAngle-rxAngle))));
      }
 
-     //qDebug()<<"Las perdidas por polarización sonnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn: "<<polLoss;
+     qDebug()<<"Las perdidas por polarización sonnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn: "<<polLoss;
 
      double transmittedFrequency;
 
@@ -910,13 +912,7 @@ void CommAnalysis::CommReports(){
      QList<double> pathLossList;
      QList<double> GoverTList;
 
-     /*qDebug()<<"Length of elevation is: "<<elevationAngleList.length();
-     //qDebug()<<"Length of fsl is: "<<freeSpaceLossList.length();
-     qDebug()<<"Length of mjd is: "<<mjdList.length();
-     qDebug()<<"Length of atmos att is: "<<atmosphericAttList.length();
-     qDebug()<<"Length of rain is: "<<rainAttenuationList.length();
-     qDebug()<<"Length of antenna Temp is: "<<antennaTempList.length();
-     qDebug()<<"Length of system Temp is: "<<systemTempList.length();*/
+
 
      QFile reportComm1("reportComm1.txt");
      QFile reportComm2("reportComm2.txt");
@@ -937,8 +933,20 @@ void CommAnalysis::CommReports(){
      streamReportComm1<<"MJD  "<<"EIRP    "<<"Rcvd.Freq.  "<<"DopplerShift    "<<"Rcvd.Power  "<<"FluxDensity  "<<"OverlapBWfactor  "<<endl;
      streamReportComm2<<"MJD         "<<"FSL    "<<"OxLoss  "<<"WvLoss    "<<"RainLoss  "<<"AtmosLoss    "<<"PropLoss "<<endl;
      streamReportComm3<<"MJD   "<<"G/T    "<<"C/No    "<<"C/N    "<<"Eb/No  "<<"BER "<<endl;
-
+     qDebug()<<"The files are open correctly";
+     qDebug()<<"length: "<<mjdList.length();
      for(int p=0; p<mjdList.length(); p++){
+        qDebug()<<"We enter in the loop";
+
+        qDebug()<<"Length of elevation is: "<<elevationAngleList.length();
+        qDebug()<<"Length of fsl is: "<<freeSpaceLossList.length();
+        qDebug()<<"Length of mjd is: "<<mjdList.length();
+        qDebug()<<"Length of atmos att is: "<<atmosphericAttList.length();
+        qDebug()<<"Length of rain is: "<<rainAttenuationList.length();
+        qDebug()<<"Length of antenna Temp is: "<<antennaTempList.length();
+        qDebug()<<"Length of system Temp is: "<<systemTempList.length();
+        qDebug()<<"Length of system Temp is: "<<dopplerList.length();
+
 
          rcvdFrequencyList.append(transmittedFrequency+dopplerList[p]);
          rcvdPower=eirp-freeSpaceLossList[p]+gainRxDb;
@@ -948,7 +956,7 @@ void CommAnalysis::CommReports(){
          carrierToNoiseDensityList.append(eirp-pathLossList[p]+GoverTList[p]+228.6+(10*log10(overLapBWfactor)));//The units are dBHz, the 228.6 factor is in dBW/HzK and it is the Bolztman constant in decibels
 
 
-         //qDebug()<<"EIRP "<<eirp;
+         qDebug()<<"EIRP "<<eirp;
          //qDebug()<<" pathloss "<<pathLossList[p];
          //qDebug()<<"G/T  "<<GoverTList[p];
 
@@ -957,19 +965,19 @@ void CommAnalysis::CommReports(){
          carrierToNoise=carrierToNoiseDensityList[p]-(10*log10(txBW));
          EbNo=carrierToNoiseDensityList[p]-(10*log10(txDataRate));
          BER=CommAnalysis::Modulations(EbNo);
-         //qDebug()<<" ALABULIEEEE"<<m_transmitter->Transmitter()->Modulation()->ModulationType();
+         qDebug()<<" ALABULIEEEE"<<m_transmitter->Transmitter()->Modulation()->ModulationType();
 
 
-         streamReportComm1<<mjdList[p]<<"  "<<eirp<<"   "<<rcvdFrequencyList[p]<<"   "<<dopplerList[p]<<"   "<<rcvdPower<<"     "<<fluxDensity<<"          "<<overLapBWfactor<<endl;
-         streamReportComm2<<mjdList[p]<<"   "<<freeSpaceLossList[p]<<"   "<<oxAttList[p]<<"  "<<wvAttList[p]<<"   "<<rainAttenuationList[p]<<"   "<<atmosphericAttList[p]<<"   "<<propLoss<<endl;
-         streamReportComm3<<mjdList[p]<<"   "<<GoverTList[p]<<"   "<<carrierToNoiseDensityList[p]<<"    "<<carrierToNoise<<"    "<<EbNo<<"  "<<BER<<endl;
+         streamReportComm1<<mjdList[p]<<"\t"<<eirp<<"\t"<<rcvdFrequencyList[p]<<"\t"<<dopplerList[p]<<"\t"<<rcvdPower<<"\t"<<fluxDensity<<"\t"<<overLapBWfactor<<endl;
+         streamReportComm2<<mjdList[p]<<"\t"<<freeSpaceLossList[p]<<"\t"<<oxAttList[p]<<"\t"<<wvAttList[p]<<"\t"<<rainAttenuationList[p]<<"\t"<<atmosphericAttList[p]<<"\t"<<propLoss<<endl;
+         streamReportComm3<<mjdList[p]<<"\t"<<GoverTList[p]<<"\t"<<carrierToNoiseDensityList[p]<<"\t"<<carrierToNoise<<"\t"<<EbNo<<"\t"<<BER<<endl;
 
 
 
 
      }
 
-             //qDebug()<<"Length of pathLoss is: "<<pathLossList.length();
+             qDebug()<<"Length of pathLoss is: "<<pathLossList.length();
              //qDebug()<<"Length of G/T is: "<<GoverTList.length();
              //qDebug()<<"Length of CNo is: "<<carrierToNoiseDensityList.length();
 
@@ -977,4 +985,6 @@ void CommAnalysis::CommReports(){
        reportComm1.close();
        reportComm2.close();
        reportComm3.close();
+
+       qDebug()<<"FINAL TOMAAAAA!!!!!";
 }

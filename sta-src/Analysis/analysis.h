@@ -17,7 +17,7 @@
 
 /*
  ------ Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
- ------------------ Author: Ana Raposo and Guillermo Ortega  -------------------------------
+ ------------------ Authors: Ana Raposo (am.raposo AT gmail.com) and Guillermo Ortega  -------------------------------
 
  */
 
@@ -27,13 +27,21 @@
 
 #include "ui_analysis.h"
 #include <QDialog>
+#include "Scenario/staschema.h"
+#include"Main/propagatedscenario.h"
 
 class analysis : public QDialog , private Ui::analysisDialogClass
 {
 Q_OBJECT
 public:
-	analysis( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+        analysis(SpaceScenario * scenario, PropagatedScenario*propagatedScenario,QWidget * parent = 0, Qt::WindowFlags f = 0 );
 	~analysis();
+        void readScenario();
+int ObjectsIndex(QStringList AllObjects, int Index, QString ObjectType);
+QString CovCommCalc();
+int InputsControl();
+void Warnings(int i);
+
 protected slots:
 	// Classical action written by Guillermo
 	void on_buttonBox_helpRequested();
@@ -44,22 +52,22 @@ protected slots:
 	void on_buttonBox_accepted();
 	void on_buttonBox_rejected();
 
-	/*
+
 	// Actions written by Ana
-	void on_groupBoxAnalysisFormat_toggled(bool);
-	//void on_ComboBoxAnalysisFormat_activated(const QString&);
+        //void on_groupBoxAnalysisFormat_toggled(bool);
+        //void on_ComboBoxAnalysisFormat_activated(const QString&);
 	void on_groupBoxParameters_toggled(bool);
 	void on_groupBoxTimeSpecifications_toggled(bool);
 	void on_AddDefaultPushButton_clicked();
 	void on_AddNewPushButton_clicked();
-	void on_EditTimePushButton_clicked();
+        void on_EditTimePushButton_clicked();
 	void on_DeleteTimePushButton_clicked();
 	//void on_groupBoxReport_toggled(bool);
 	//void on_AddParameterPushButton_clicked();
 	//void on_RemoveParameterPushButton_clicked();
-	void on_groupBoxPlotAxesSettings_toggled(bool);
+        //void on_groupBoxPlotAxesSettings_toggled(bool);
 	void on_GeneratePushButton_clicked();
-	void on_TotalHelpPushButton_clicked();  // Guillermo says: Why is this required? Can you used my action?
+        //void on_TotalHelpPushButton_clicked();  // Guillermo says: Why is this required? Can you used my action?
 	// void on_ClosePushButton_clicked();   // Guillermo says: not needed any more
 
     public slots:  // Added by Ana
@@ -69,9 +77,30 @@ protected slots:
 	void enableReportOption(int i);
        // void AddDefaultTime();
 
-	*/
+private:
+        SpaceScenario* m_scenario;
+        PropagatedScenario*m_propagatedScenario;
+        //PropagatedScenario*m_propagatedScenario;
+        bool CheckIfMissionArc();
+        void InsertingComboBox();
+        void ComboBoxOptions();
 
-
+        QComboBox * TimeFramesBox();
+        QComboBox * TimeUnitsBox();
+        QComboBox * AngleUnitsBox();
+        QComboBox * DistanceUnitsBox();
+        QComboBox * CoordinateBox();
+        QComboBox * VelocityUnitsBox();
+        QList<MissionArc*> m_missionArcs;
+        QList<SpaceObject*> m_spaceObjectList;
+        //double* ReadTime(int column);
+        void ReadTime(int column, double *MJD);
+        double ReadStopTime();
+        QList<ScenarioTransmitterPayloadType*>TxSC;
+        QList<ScenarioTransmitterPayloadType*>TxGS;
+        QList<ScenarioReceiverPayloadType*>RxSC;
+        QList<ScenarioReceiverPayloadType*>RxGS;
+        QList<ScenarioGroundStationEnvironment*>GSEnvironment;
 };
 #endif //analysis_H
 

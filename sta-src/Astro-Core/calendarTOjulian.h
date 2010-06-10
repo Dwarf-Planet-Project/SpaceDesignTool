@@ -34,6 +34,7 @@
 //
 // Created March 11th 2009
 // Modified June 1st, 2009 to include the TDB varient of the Julian day
+#include "Astro-Core/statevector.h"
 
 double calendarTOjulian (int year,  int month, int day, int hour, int minute, int second);
 
@@ -41,5 +42,6 @@ double calendarTOjulian (int year,  int month, int day, int hour, int minute, in
 
 double calendarTOjulianTDB (int year,  int month, int day, int hour, int minute, double second);
 
+//sta::mjdTOcalendar convertTOcalendar(double mjd);
 
 
