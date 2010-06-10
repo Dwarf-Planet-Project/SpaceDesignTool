@@ -6,12 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>412</width>
-    <height>398</height>
+    <width>693</width>
+    <height>500</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Systems Engineering Wizard</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
+  <property name="wizardStyle">
+   <enum>QWizard::MacStyle</enum>
+  </property>
+  <property name="options">
+   <set>QWizard::CancelButtonOnLeft|QWizard::HaveHelpButton|QWizard::NoDefaultButton</set>
   </property>
   <widget class="QWizardPage" name="wizardPage1">
    <property name="title">
@@ -21,38 +30,6 @@
     <string>Describe the mission that you would like to build your S/C for.</string>
    </property>
    <layout class="QGridLayout" name="gridLayout_5">
-    <item row="0" column="1">
-     <spacer name="verticalSpacer_3">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeType">
-       <enum>QSizePolicy::Preferred</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>68</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="1" column="0">
-     <spacer name="horizontalSpacer_5">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeType">
-       <enum>QSizePolicy::Preferred</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>48</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
     <item row="1" column="1">
      <layout class="QFormLayout" name="formLayout">
       <property name="fieldGrowthPolicy">
@@ -112,58 +89,91 @@
          <property name="text">
           <string>Mercury</string>
          </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/ComboMercury.png</normaloff>:/icons/ComboMercury.png</iconset>
+         </property>
         </item>
         <item>
          <property name="text">
           <string>Venus</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/ComboVenus.png</normaloff>:/icons/ComboVenus.png</iconset>
          </property>
         </item>
         <item>
          <property name="text">
           <string>Earth</string>
          </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/ComboEarth.png</normaloff>:/icons/ComboEarth.png</iconset>
+         </property>
         </item>
         <item>
          <property name="text">
           <string>Mars</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/ComboMars.png</normaloff>:/icons/ComboMars.png</iconset>
          </property>
         </item>
         <item>
          <property name="text">
           <string>Jupiter</string>
          </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/ComboJupiter.png</normaloff>:/icons/ComboJupiter.png</iconset>
+         </property>
         </item>
         <item>
          <property name="text">
           <string>Saturn</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/ComboSaturn.png</normaloff>:/icons/ComboSaturn.png</iconset>
          </property>
         </item>
         <item>
          <property name="text">
           <string>Uranus</string>
          </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/ComboUranus.png</normaloff>:/icons/ComboUranus.png</iconset>
+         </property>
         </item>
         <item>
          <property name="text">
           <string>Neptune</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/ComboNeptune.png</normaloff>:/icons/ComboNeptune.png</iconset>
          </property>
         </item>
         <item>
          <property name="text">
           <string>Pluto</string>
          </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/ComboPluto.png</normaloff>:/icons/ComboPluto.png</iconset>
+         </property>
         </item>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Mission Start Time</string>
+      <item row="2" column="1">
+       <widget class="QDateTimeEdit" name="MissionStartTimeDateTimeEdit">
+        <property name="displayFormat">
+         <string>dd/MM/yyyy HH:mm:ss</string>
         </property>
        </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QDateTimeEdit" name="MissionStartTimeDateTimeEdit"/>
       </item>
       <item row="3" column="0">
        <widget class="QLabel" name="label_4">
@@ -173,7 +183,18 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QDateTimeEdit" name="MissionEndTimeDateTimeEdit"/>
+       <widget class="QDateTimeEdit" name="MissionEndTimeDateTimeEdit">
+        <property name="displayFormat">
+         <string>dd/MM/yyyy HH:mm:ss</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Mission Start Time</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -193,6 +214,22 @@
       </property>
      </spacer>
     </item>
+    <item row="0" column="1">
+     <spacer name="verticalSpacer_3">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Preferred</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>68</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
     <item row="2" column="1">
      <spacer name="verticalSpacer_4">
       <property name="orientation">
@@ -205,6 +242,22 @@
        <size>
         <width>20</width>
         <height>98</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer_5">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Preferred</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>48</width>
+        <height>20</height>
        </size>
       </property>
      </spacer>
@@ -261,7 +314,11 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="SemimajorAxisLineEdit"/>
+       <widget class="QLineEdit" name="SemimajorAxisLineEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_7">
@@ -271,7 +328,11 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QLineEdit" name="EccentricityLineEdit"/>
+       <widget class="QLineEdit" name="EccentricityLineEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_8">
@@ -281,7 +342,11 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QLineEdit" name="InclinationLineEdit"/>
+       <widget class="QLineEdit" name="InclinationLineEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
       <item row="3" column="0">
        <widget class="QLabel" name="label_9">
@@ -291,7 +356,11 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QLineEdit" name="RAANLineEdit"/>
+       <widget class="QLineEdit" name="RAANLineEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
       <item row="4" column="0">
        <widget class="QLabel" name="label_10">
@@ -301,7 +370,11 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QLineEdit" name="ArgumentOfPeriapsisLineEdit"/>
+       <widget class="QLineEdit" name="ArgumentOfPeriapsisLineEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
       <item row="5" column="0">
        <widget class="QLabel" name="label_11">
@@ -311,25 +384,13 @@
        </widget>
       </item>
       <item row="5" column="1">
-       <widget class="QLineEdit" name="TrueAnomalyLineEdit"/>
+       <widget class="QLineEdit" name="TrueAnomalyLineEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
      </layout>
-    </item>
-    <item row="1" column="2">
-     <spacer name="horizontalSpacer_2">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeType">
-       <enum>QSizePolicy::MinimumExpanding</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>58</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
     </item>
     <item row="2" column="1">
      <spacer name="verticalSpacer_2">
@@ -522,7 +583,7 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="0" colspan="2">
+    <item row="1" column="0" colspan="3">
      <widget class="QGroupBox" name="groupBox_2">
       <property name="title">
        <string>Structural Details</string>
@@ -599,7 +660,7 @@
       </layout>
      </widget>
     </item>
-    <item row="1" column="2" colspan="2">
+    <item row="1" column="3">
      <widget class="QGroupBox" name="groupBox">
       <property name="title">
        <string>Design Details</string>
@@ -1038,7 +1099,7 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="0" colspan="2">
+    <item row="1" column="0" colspan="3">
      <widget class="QGroupBox" name="groupBox_6">
       <property name="title">
        <string>Structural Details</string>
@@ -1115,7 +1176,7 @@
       </layout>
      </widget>
     </item>
-    <item row="1" column="2" colspan="2">
+    <item row="1" column="3">
      <widget class="QGroupBox" name="groupBox_7">
       <property name="title">
        <string>Design Details</string>
@@ -1554,7 +1615,7 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="0" colspan="2">
+    <item row="1" column="0" colspan="3">
      <widget class="QGroupBox" name="groupBox_11">
       <property name="title">
        <string>Structural Details</string>
@@ -1631,7 +1692,7 @@
       </layout>
      </widget>
     </item>
-    <item row="1" column="2" colspan="2">
+    <item row="1" column="3">
      <widget class="QGroupBox" name="groupBox_12">
       <property name="title">
        <string>Design Details</string>
@@ -2058,7 +2119,7 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="0" colspan="2">
+    <item row="1" column="0" colspan="3">
      <widget class="QGroupBox" name="groupBox_15">
       <property name="title">
        <string>Structural Details</string>
@@ -2135,7 +2196,7 @@
       </layout>
      </widget>
     </item>
-    <item row="1" column="2" colspan="2">
+    <item row="1" column="3">
      <widget class="QGroupBox" name="groupBox_16">
       <property name="title">
        <string>Design Details</string>
@@ -2409,105 +2470,80 @@
     <string>Select your components for the Power Subsystem</string>
    </property>
    <layout class="QGridLayout" name="gridLayout_11">
+    <item row="1" column="2">
+     <widget class="QComboBox" name="BatteryTypeComboBox">
+      <item>
+       <property name="text">
+        <string>Select Battery</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Lithium_Ion</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Nickel_Cadmium</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Lead_Acid</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLabel" name="label_14">
+      <property name="text">
+       <string>Battery type:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QComboBox" name="SolarCellTypeComboBox">
+      <item>
+       <property name="text">
+        <string>Select Solar Cells</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Silicon</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>GaAs</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Multijunction</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLabel" name="label_13">
+      <property name="text">
+       <string>Solar cell type: </string>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QLabel" name="label_13">
-        <property name="text">
-         <string>Select the Solar Cells that your Array will be made of:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QFormLayout" name="formLayout_6">
-        <item row="0" column="0">
-         <spacer name="horizontalSpacer_3">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>188</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="0" column="1">
-         <widget class="QComboBox" name="SolarCellTypeComboBox">
-          <item>
-           <property name="text">
-            <string>Select Solar Cells</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Silicon</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>GaAs</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Multijunction</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_14">
-        <property name="text">
-         <string>Select the Battaery that will support your S/C in Eclipse Duration:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QFormLayout" name="formLayout_5">
-        <item row="0" column="0">
-         <spacer name="horizontalSpacer_4">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>188</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="0" column="1">
-         <widget class="QComboBox" name="BatteryTypeComboBox">
-          <item>
-           <property name="text">
-            <string>Select Battery</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Lithium_Ion</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Nickel_Cadmium</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Lead_Acid</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
+     <spacer name="horizontalSpacer_3">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>
@@ -2519,113 +2555,100 @@
     <string>Set the material that you would like and shape of your S/C</string>
    </property>
    <layout class="QGridLayout" name="gridLayout_12">
-    <item row="0" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item row="1" column="4">
+     <widget class="QComboBox" name="SCShapeComboBox">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+      </property>
       <item>
-       <layout class="QFormLayout" name="formLayout_7">
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_15">
-          <property name="text">
-           <string>The Structure of your S/C is made of :</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QComboBox" name="StructuralMaterialComboBox">
-          <item>
-           <property name="text">
-            <string>Select Material</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Aluminium</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Steel</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-       </layout>
+       <property name="text">
+        <string>Select Shape</string>
+       </property>
       </item>
       <item>
-       <spacer name="verticalSpacer_5">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Preferred</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>10</height>
-         </size>
-        </property>
-       </spacer>
+       <property name="text">
+        <string>Cube</string>
+       </property>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QLabel" name="label_16">
-          <property name="text">
-           <string>The Shape of your S/C is:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer_8">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>58</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QComboBox" name="SCShapeComboBox">
-          <item>
-           <property name="text">
-            <string>Select Shape</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Cube</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Cylinder</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Sphere</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-       </layout>
+       <property name="text">
+        <string>Cylinder</string>
+       </property>
       </item>
-     </layout>
+      <item>
+       <property name="text">
+        <string>Sphere</string>
+       </property>
+      </item>
+     </widget>
     </item>
-    <item row="1" column="0">
-     <spacer name="verticalSpacer_26">
+    <item row="0" column="4">
+     <widget class="QComboBox" name="StructuralMaterialComboBox">
+      <property name="sizeAdjustPolicy">
+       <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+      </property>
+      <property name="minimumContentsLength">
+       <number>0</number>
+      </property>
+      <item>
+       <property name="text">
+        <string>Select Material</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Aluminium</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Steel</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QLabel" name="label_15">
+      <property name="text">
+       <string>Material: </string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QLabel" name="label_16">
+      <property name="text">
+       <string>Shape: </string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <spacer name="horizontalSpacer_8">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="2">
+     <spacer name="verticalSpacer_5">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
-        <height>168</height>
+        <height>40</height>
        </size>
       </property>
      </spacer>
@@ -2705,6 +2728,9 @@
       <property name="enabled">
        <bool>false</bool>
       </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
      </widget>
     </item>
     <item row="2" column="0">
@@ -2735,6 +2761,9 @@
      <widget class="QLineEdit" name="ColdFaceAbsorptivityLineEdit">
       <property name="enabled">
        <bool>false</bool>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
@@ -2803,6 +2832,9 @@
       <property name="enabled">
        <bool>false</bool>
       </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
      </widget>
     </item>
     <item row="5" column="0">
@@ -2834,6 +2866,9 @@
       <property name="enabled">
        <bool>false</bool>
       </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
      </widget>
     </item>
    </layout>
@@ -2854,7 +2889,11 @@
      </widget>
     </item>
     <item row="0" column="1">
-     <widget class="QLineEdit" name="CommLinDurationPercentageLineEdit"/>
+     <widget class="QLineEdit" name="CommLinDurationPercentageLineEdit">
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
     </item>
     <item row="1" column="0">
      <widget class="QLabel" name="label_37">
@@ -2864,7 +2903,11 @@
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QLineEdit" name="AntennaEfficiencyLineEdit"/>
+     <widget class="QLineEdit" name="AntennaEfficiencyLineEdit">
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
     </item>
     <item row="2" column="0">
      <widget class="QLabel" name="label_38">
@@ -2874,7 +2917,11 @@
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QLineEdit" name="AntennaGainLineEdit"/>
+     <widget class="QLineEdit" name="AntennaGainLineEdit">
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
     </item>
     <item row="3" column="0">
      <widget class="QLabel" name="label_39">
@@ -2884,7 +2931,11 @@
      </widget>
     </item>
     <item row="3" column="1">
-     <widget class="QLineEdit" name="TXFrequencyLineEdit"/>
+     <widget class="QLineEdit" name="TXFrequencyLineEdit">
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
     </item>
     <item row="4" column="0">
      <widget class="QLabel" name="label_40">
@@ -2894,7 +2945,11 @@
      </widget>
     </item>
     <item row="4" column="1">
-     <widget class="QLineEdit" name="TXPowerLineEdit"/>
+     <widget class="QLineEdit" name="TXPowerLineEdit">
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -2914,7 +2969,11 @@
      </widget>
     </item>
     <item row="0" column="2">
-     <widget class="QLineEdit" name="NumberOfNoLinkOrbitLineEdit"/>
+     <widget class="QLineEdit" name="NumberOfNoLinkOrbitLineEdit">
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
     </item>
     <item row="1" column="0">
      <widget class="QLabel" name="label_43">
@@ -2945,6 +3004,8 @@
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../iconary/sta-icons.qrc"/>
+ </resources>
  <connections/>
 </ui>
