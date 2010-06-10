@@ -106,6 +106,11 @@ ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioOb
 {
     item->setText(0, scenarioObject->elementName());
 
+    if (dynamic_cast<ScenarioParticipantType*>(scenarioObject))
+    {
+        item->setText(1, dynamic_cast<ScenarioParticipantType*>(scenarioObject)->Name());
+    }
+
     // Store a pointer to the this ScenarioObject in the widget item.
     // This will be used to map a tree widget item to a ScenarioObject.
     // IMPORTANT: The ScenarioObject must not be deleted before the tree
@@ -1037,12 +1042,17 @@ void ScenarioTree::editItemInline(QTreeWidgetItem* item, int column)
 
     if (dynamic_cast<SpaceScenario*>(object) && column == 1)	// Guillermo says: the name of the scenario
 	{
-	    //SpaceScenario* scenario = dynamic_cast<SpaceScenario*>(object);
+        // TODO: replace this special case with reflection/introspection methods for ScenarioObject
 	    item->setFlags(item->flags() | (Qt::ItemIsEditable));
 	    scenario->setName(item->text(1));
 	    //updateTreeItems(item, scenario);  // do not do that. The complete scenario will disapear
-	    //out << "Editing scenario name: " << scenario->Name() << endl;
 	}
+    if (dynamic_cast<ScenarioParticipantType*>(object) && column == 1)  // Participant name
+    {
+        // TODO: replace this special case with reflection/introspection methods for ScenarioObject
+        item->setFlags(item->flags() | (Qt::ItemIsEditable));
+        dynamic_cast<ScenarioParticipantType*>(object)->setName(item->text(1));
+    }
     else if (dynamic_cast<ScenarioElementIdentifierType*>(object) && column == 1)   // Guillermo says: the name of the arcs, payloads, etc.
 	{
 	    ScenarioElementIdentifierType* myIdentifier = dynamic_cast<ScenarioElementIdentifierType*>(object);
