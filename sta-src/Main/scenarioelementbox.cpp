@@ -35,6 +35,8 @@
 #include "sheetDelegate.h"
 #include "Scenario/scenario.h"
 #include "Astro-Core/stamath.h"
+#include "Astro-Core/calendarTOjulian.h"
+#include "Astro-Core/date.h"
 #include <Astro-Core/constants.h>
 #include <QPushButton>
 #include <QHeaderView>
@@ -144,9 +146,40 @@ static QByteArray spaceVehicleFragment(const char* name, const char* vehicleType
     ScenarioSC spacecraft;
 
     /*** fill in defaults ***/
-    spacecraft.setName("Satellite");
+    //spacecraft.setName("This name should be deleted");
     //spacecraft.setName(name);
+    // Guillermo says: this is just a patch to create a random name of the spacecraft right now. It has to be changed in future.
+    QRegExp separator("\\s+");  // the + Means one or more spaces!
+    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime();
+    // Converting from QDateTime into integers via QString
+    QString Temporal = TheCurrentDateAndTime.toString("yyyy MM dd hh mm ss.zzzz");
+    int TheYear           = int (Temporal.section(separator, 0, 0).toDouble());    //out << "YYYY: " << TheYear << endl;
+    int TheMonth          = int (Temporal.section(separator, 1, 1).toDouble());    //out << "MM: " << TheMonth << endl;
+    int TheDay            = int (Temporal.section(separator, 2, 2).toDouble());    //out << "dd: " << TheDay << endl;
+    int TheHour           = int (Temporal.section(separator, 3, 3).toDouble());    //out << "hh: " << TheHour << endl;
+    int TheMinute         = int (Temporal.section(separator, 4, 4).toDouble());    //out << "mm: " << TheMinute << endl;
+    double TheSecond      = int (Temporal.section(separator, 5, 5).toDouble());    //out << "ss: " << TheSecond << endl;
+    // Making the conversion to Julian days.
+    double Epoch = calendarTOjulian (TheYear, TheMonth, TheDay, TheHour, TheMinute, TheSecond);
+    //double ModifiedEpoch = sta::JdToMjd (Epoch);
 
+    int ModifiedEpoch = rand() % 10;
+
+    QTextStream out (stdout);
+    //out << "ModifiedEpoch: " << ModifiedEpoch << endl;
+    out << "TheSecond: " << TheSecond << endl;
+
+    QString ModifiedEpochAsString;
+    //ModifiedEpochAsString.sprintf("%.2f", ModifiedEpoch);
+    //ModifiedEpochAsString.sprintf("%d", TheSecond);
+
+    //ModifiedEpochAsString = ModifiedEpoch.toString();
+    ModifiedEpochAsString.sprintf("%i", ModifiedEpoch);
+
+    out << "ModifiedEpochAsString: " << ModifiedEpochAsString << endl;
+
+    spacecraft.ElementIdentifier()->setName("Satellite " + ModifiedEpochAsString);
+    spacecraft.setName("Satellite " + ModifiedEpochAsString);
 
     QDomDocument doc;
     return fragmentText(CreateSCElement(&spacecraft, doc)).toUtf8();
@@ -354,7 +387,7 @@ static QByteArray loiteringFragment(const char* name)
     loitering.PropagationPosition()->setPropagator("TWO BODY");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
-    loitering.ElementIdentifier()->setName("arc name");
+    loitering.ElementIdentifier()->setName("loitering");
 
     QDomDocument doc;
     return fragmentText(CreateLoiteringElement(&loitering, doc)).toUtf8();

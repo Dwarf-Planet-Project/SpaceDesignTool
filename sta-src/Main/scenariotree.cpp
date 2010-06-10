@@ -157,6 +157,9 @@ ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioOb
 }   // End of addScenarioItems ////////
 
 
+
+
+
 QStringList ScenarioTree::mimeTypes() const
 {
     QStringList types;
