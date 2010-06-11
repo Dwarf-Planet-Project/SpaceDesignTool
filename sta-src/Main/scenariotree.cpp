@@ -53,7 +53,6 @@
 #include "Payloads/radarPayloadDialog.h"
 #include "Locations/environmentdialog.h"
 
-
 #include <QtGui>
 #include <iostream>
 
@@ -101,25 +100,233 @@ ScenarioTree::ScenarioTree(QWidget *parent)
 }
 
 
+// Guillermo says: This method changes the XML schema labels by better readable labels in the scenario view
+void changeLabels(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
+{
+    // Guillermo says: renaming the labels of the first colum to make it compatible with the participants view
+    if ((scenarioObject->elementName()) == "SC")
+	item->setText(0, "Satellite");
+    else if ((scenarioObject->elementName()) == "LV")
+	item->setText(0, "Launcher");
+    else if ((scenarioObject->elementName()) == "GroundStation")
+	item->setText(0, "Ground Station");
+    else if ((scenarioObject->elementName()) == "Point")
+	item->setText(0, "Point");
+    else if ((scenarioObject->elementName()) == "REV")
+	item->setText(0, "Re-entry vehicle");
+    else if ((scenarioObject->elementName()) == "Transmitter")
+	item->setText(0, "Transmitter");
+    else if ((scenarioObject->elementName()) == "TransmitterPayload")
+	item->setText(0, "Transmitter");
+    else if ((scenarioObject->elementName()) == "TransmitterPayloadType")
+	item->setText(0, "Transmitter");
+    else if ((scenarioObject->elementName()) == "ReceiverPayload")
+	item->setText(0, "Receiver");
+    else if ((scenarioObject->elementName()) == "ReceiverPayloadType")
+	item->setText(0, "Receiver");
+    else if ((scenarioObject->elementName()) == "OpticalPayload")
+	item->setText(0, "Telescope");
+    else if ((scenarioObject->elementName()) == "OpticalPayloadType")
+	item->setText(0, "Telescope");
+    else if ((scenarioObject->elementName()) == "RadarPayload")
+	item->setText(0, "Radar");
+    else if ((scenarioObject->elementName()) == "RadarPayloadType")
+	item->setText(0, "Radar");
+    else if ((scenarioObject->elementName()) == "RadarProperties")
+	item->setText(0, "Radar properties");
+    else if ((scenarioObject->elementName()) == "RadarType")
+	item->setText(0, "Radar type");
+    else if ((scenarioObject->elementName()) == "Loitering")
+	item->setText(0, "Loitering");
+    else if ((scenarioObject->elementName()) == "LoiteringType")
+	item->setText(0, "Loitering");
+    else if ((scenarioObject->elementName()) == "Lagrangian")
+	item->setText(0, "Lagrangian");
+    else if ((scenarioObject->elementName()) == "LagrangianType")
+	item->setText(0, "Lagrangian");
+    else if ((scenarioObject->elementName()) == "Rendezvous")
+	item->setText(0, "Rendezvous");
+    else if ((scenarioObject->elementName()) == "FlyBy")
+	item->setText(0, "Fly By");
+    else if ((scenarioObject->elementName()) == "LoiteringTLE")
+	item->setText(0, "TLE");
+    else if ((scenarioObject->elementName()) == "LoiteringTLEType")
+	item->setText(0, "TLE");
+    else if ((scenarioObject->elementName()) == "EntryArc")
+	item->setText(0, "Entry");
+    else if ((scenarioObject->elementName()) == "ElementIdentifierType")
+	item->setText(0, "Identifier");
+    else if ((scenarioObject->elementName()) == "SCProgram")
+	item->setText(0, "Program");
+    else if ((scenarioObject->elementName()) == "SCMission")
+	item->setText(0, "Mission");
+    else if ((scenarioObject->elementName()) == "TrajectoryPlan")
+	item->setText(0, "Trajectory plan:");
+    else if ((scenarioObject->elementName()) == "PayloadSet")
+	item->setText(0, "Payload set:");
+    else if ((scenarioObject->elementName()) == "SCSystemType")
+	item->setText(0, "Platform");
+    else if ((scenarioObject->elementName()) == "SystemBudgets")
+	item->setText(0, "Budgets");
+    else if ((scenarioObject->elementName()) == "MassOfSystem")
+	item->setText(0, "Mass");
+    else if ((scenarioObject->elementName()) == "PowerOfSystem")
+	item->setText(0, "Power");
+    else if ((scenarioObject->elementName()) == "Link")
+	item->setText(0, "Link");
+    else if ((scenarioObject->elementName()) == "SCAerodynamics")
+	item->setText(0, "Aerodynamics");
+    else if ((scenarioObject->elementName()) == "Propulsion")
+	item->setText(0, "Propulsion");
+    else if ((scenarioObject->elementName()) == "Structure")
+	item->setText(0, "Structure");
+    else if ((scenarioObject->elementName()) == "Sizing")
+	item->setText(0, "Size");
+    else if ((scenarioObject->elementName()) == "MomentsOfInertia")
+	item->setText(0, "Inertia");
+    else if ((scenarioObject->elementName()) == "SecondMomentsOfArea")
+	item->setText(0, "More inertia");
+    else if ((scenarioObject->elementName()) == "NaturalFrequency")
+	item->setText(0, "Natural frquency");
+    else if ((scenarioObject->elementName()) == "TCS")
+	item->setText(0, "Thermal control");
+    else if ((scenarioObject->elementName()) == "Temperature")
+	item->setText(0, "Temperature");
+    else if ((scenarioObject->elementName()) == "CoatingArea")
+	item->setText(0, "Coating Area");
+    else if ((scenarioObject->elementName()) == "ColdSurface")
+	item->setText(0, "Cold surface");
+    else if ((scenarioObject->elementName()) == "ColdCoating")
+	item->setText(0, "Cold surface coating");
+    else if ((scenarioObject->elementName()) == "HotSurface")
+	item->setText(0, "Hot surface");
+    else if ((scenarioObject->elementName()) == "HotCoating")
+	item->setText(0, "Hot surface coating");
+    else if ((scenarioObject->elementName()) == "EPS")
+	item->setText(0, "EPS");
+    else if ((scenarioObject->elementName()) == "SolarArray")
+	item->setText(0, "Solar array type");
+    else if ((scenarioObject->elementName()) == "BatteryType")
+	item->setText(0, "Battery type");
+    else if ((scenarioObject->elementName()) == "TTC")
+	item->setText(0, "TTC");
+    else if ((scenarioObject->elementName()) == "TTCAntenna")
+	item->setText(0, "TTC antenna");
+    else if ((scenarioObject->elementName()) == "AOCS")
+	item->setText(0, "AOCS");
+    else if ((scenarioObject->elementName()) == "OBDH")
+	item->setText(0, "OBDH");
+    else if ((scenarioObject->elementName()) == "Optimization")
+	item->setText(0, "Optimization");
+    else if ((scenarioObject->elementName()) == "OutputFiles")
+	item->setText(0, "Output Files");
+    else if ((scenarioObject->elementName()) == "REVProgramType")
+	item->setText(0, "Program");
+    else if ((scenarioObject->elementName()) == "REVMissionType")
+	item->setText(0, "Mission");
+    else if ((scenarioObject->elementName()) == "REVPayloadType")
+	item->setText(0, "Payload");
+    else if ((scenarioObject->elementName()) == "REVTrajectoryPlanType")
+	item->setText(0, "Trajectory plan");
+    else if ((scenarioObject->elementName()) == "REVSystemType")
+	item->setText(0, "System");
+    else if ((scenarioObject->elementName()) == "REVWeights")
+	item->setText(0, "Mass");
+    else if ((scenarioObject->elementName()) == "InertialMatrix")
+	item->setText(0, "Inertia");
+    else if ((scenarioObject->elementName()) == "OptVarString")
+	item->setText(0, "Optimization");
+    else if ((scenarioObject->elementName()) == "REVComponentsType")
+	item->setText(0, "Components");
+    else if ((scenarioObject->elementName()) == "REVComponentsMassType")
+	item->setText(0, "Mass");
+    else if ((scenarioObject->elementName()) == "CoGLongPosition")
+	item->setText(0, "CoG position (L)");
+    else if ((scenarioObject->elementName()) == "REVGeometryType")
+	item->setText(0, "Geometry");
+    else if ((scenarioObject->elementName()) == "REVTPS")
+	    item->setText(0, "Thermal protection");
+    else if ((scenarioObject->elementName()) == "OptVarDouble")
+	item->setText(0, "Optimization");
+    else if ((scenarioObject->elementName()) == "OptVarBool")
+	item->setText(0, "Optimization");
+    else if ((scenarioObject->elementName()) == "REVAeroThermodynamicsType")
+	item->setText(0, "Thermodynamics");
+    else if ((scenarioObject->elementName()) == "AeroCoefFileType")
+	item->setText(0, "Aerodynamics coefficients");
+    else if ((scenarioObject->elementName()) == "Parachutes")
+	item->setText(0, "Parachutes");
+    else if ((scenarioObject->elementName()) == "REVStructureType")
+	item->setText(0, "Structure");
+    else if ((scenarioObject->elementName()) == "REVSecondaryPropulsionType")
+	item->setText(0, "Propulsion (secondary)");
+    else if ((scenarioObject->elementName()) == "REVRCSType")
+	item->setText(0, "Propulsion (primary)");
+    else if ((scenarioObject->elementName()) == "REVCostsType")
+	item->setText(0, "Cost");
+    else if ((scenarioObject->elementName()) == "REVSystemCostsType")
+	item->setText(0, "Cost (system)");
+    else if ((scenarioObject->elementName()) == "REVSubsystemsDevelopCostsType")
+	item->setText(0, "Cost (subsystem)");
+    else if ((scenarioObject->elementName()) == "REVSubsystemsProductionCostsType")
+	item->setText(0, "Cost of production (subsystem");
+    else if ((scenarioObject->elementName()) == "REVReliabilityType")
+	item->setText(0, "Reliability (system)");
+    else if ((scenarioObject->elementName()) == "REVSubsystemsReliablityType")
+	item->setText(0, "Reliability (subsystem)");
+    else if ((scenarioObject->elementName()) == "LocationType")
+	item->setText(0, "Location");
+    else if ((scenarioObject->elementName()) == "GroundPositionType")
+	item->setText(0, "Position");
+    else if ((scenarioObject->elementName()) == "GroundStationEnvironment")
+	item->setText(0, "Environment");
+    else if ((scenarioObject->elementName()) == "Rain")
+	item->setText(0, "Rain");
+    else if ((scenarioObject->elementName()) == "Modulation")
+	item->setText(0, "Modulation");
+    else if ((scenarioObject->elementName()) == "SystemTemperature")
+	item->setText(0, "Temperature");
+    else if ((scenarioObject->elementName()) == "TelescopeType")
+	item->setText(0, "Telescope");
+    else if ((scenarioObject->elementName()) == "OpticalProperties")
+	item->setText(0, "Optical properties");
+    else if ((scenarioObject->elementName()) == "SystemTemperature")
+	item->setText(0, "Temperature");
+    else if ((scenarioObject->elementName()) == "SCEnvironmentType")
+	item->setText(0, "Environment type");
+    else if ((scenarioObject->elementName()) == "TimeLine")
+	item->setText(0, "Time line");
+    else if ((scenarioObject->elementName()) == "InitialPositionType")
+	item->setText(0, "Initial position");
+    else if ((scenarioObject->elementName()) == "KeplerianElementsType")
+	item->setText(0, "Keplerian elements");
+    else if ((scenarioObject->elementName()) == "InitialAttitudeType")
+	item->setText(0, "Initial attitude");
+    else if ((scenarioObject->elementName()) == "EulerBIType")
+	item->setText(0, "Euler angles");
+    else if ((scenarioObject->elementName()) == "PropagationPositionType")
+	item->setText(0, "Propagation of position");
+    else if ((scenarioObject->elementName()) == "PropagationAttitudeType")
+	item->setText(0, "Propagation of attitude");
+    else if ((scenarioObject->elementName()) == "SystemTemperature")
+	item->setText(0, "Temperature");
+    else if ((scenarioObject->elementName()) == "SystemTemperature")
+	item->setText(0, "Temperature");
+
+}
+
+
+
 void
 ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
 {
-    QTextStream out (stdout);
-    item->setText(0, scenarioObject->elementName());
-    //out << "scenarioObject: " << scenarioObject->elementName() << endl;
 
-    /*
-    if (scenarioObject->elementName() == "GroundStation")
-	item->setIcon(0, QIcon(":/icons/antena-pallete.png"));
-    else if (scenarioObject->elementName() == "LaunchPad")
-	item->setIcon(0, QIcon(":/icons/LaunchPad.png"));
-    else if (scenarioObject->elementName() == "Point")
-	item->setIcon(0, QIcon(":/icons/Target.png"));
-    */
-    //item->setIcon(0, QIcon(":/icons/Target.png"));
+    //qDebug() << scenarioObject->elementName() << endl;
+
+    changeLabels(item, scenarioObject);
 
 
-    /*
+    /* the next lines are commented out by Guillermo to prevent naming on participants when adding
     if (dynamic_cast<ScenarioParticipantType*>(scenarioObject))
     {
         item->setText(1, dynamic_cast<ScenarioParticipantType*>(scenarioObject)->Name());
@@ -173,15 +380,14 @@ ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioOb
     item->setExpanded(true);
 
     //Taking care of the second column for the identifier of the loitering ARC
+    /*
     if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject))
     {
 	//item->setText(1, scenarioObject->elementName());
 	// Guillermo says: TODO make this compatible with the label of loitering
 	item->setText(1, "name");
-
-
-
     }
+    */
 
 
 }   // End of addScenarioItems ////////
@@ -289,13 +495,8 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
         SpaceScenario* scenario = dynamic_cast<SpaceScenario*>(parentObject);
         if (scenario)
         {
-	    //qDebug() << "Adding participant";
             scenario->AbstractParticipant().append(QSharedPointer<ScenarioParticipantType>(participant));
             QTreeWidgetItem* participantItem = new QTreeWidgetItem(parent);
-	    // Guillermo says: finally adding the item
-	    addScenarioItems(participantItem, participant);
-	    QTextStream out (stdout);
-
 	    // Guillermo says: now placing nice icons beside the labels
 	    if (participant->elementName() == "GroundStation")
 		participantItem->setIcon(0, QIcon(":/icons/ParticipantSTATION.png"));
@@ -307,7 +508,8 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
 		participantItem->setIcon(0, QIcon(":/icons/ParticipantROCKET.png"));
 	    else if (participant->elementName() == "REV")
 		participantItem->setIcon(0, QIcon(":/icons/ParticipantENTRYVEHICLE.png"));
-
+	    // Guillermo says: finally adding the item
+	    addScenarioItems(participantItem, participant);
         }
         else
         {

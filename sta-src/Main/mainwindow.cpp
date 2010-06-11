@@ -376,7 +376,9 @@ MainWindow::setScenario(SpaceScenario* scenario)
 
     QTreeWidgetItem* rootItem = new QTreeWidgetItem(m_scenarioView->m_scenarioTree);
     rootItem->setExpanded(true);
-    rootItem->setText(0, scenario->elementName());
+    // Guillermo says; put a nicer name
+    //rootItem->setText(0, scenario->elementName());
+    rootItem->setText(0, "Space scenario");
     rootItem->setText(1, scenario->Name());
     rootItem->setFlags(rootItem->flags() & ~Qt::ItemIsDragEnabled);
 

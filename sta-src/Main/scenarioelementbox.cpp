@@ -462,9 +462,6 @@ static QByteArray transmitterPayloadFragment(const char* name)
     transmitterPayload.Transmitter()->Modulation()->setDataRate(16);
     transmitterPayload.Transmitter()->Modulation()->setModulationType("BPSK");
 
-
-
-
     QDomDocument doc;
     return fragmentText(CreateTransmitterPayloadElement(&transmitterPayload, doc)).toUtf8();
 }
@@ -549,8 +546,7 @@ addGroundStationItem(QTreeWidgetItem* parent,
 
 // New method by Guillermo to handle special satellites from ESA
 static void
-addESASatelliteItem(QTreeWidgetItem* parent,
-                     const char* name)
+addESASatelliteItem(QTreeWidgetItem* parent, const char* name)
 {
     QTreeWidgetItem* myESASatelliteItem   = new QTreeWidgetItem(parent);
     myESASatelliteItem->setText(0, name);
@@ -621,7 +617,7 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
     m_elementTreeWidget->addTopLevelItem(missionArcsItem);
     m_elementTreeWidget->addTopLevelItem(payloadsItem);
     m_elementTreeWidget->addTopLevelItem(maneuversItem);
-    m_elementTreeWidget->addTopLevelItem(ESASatellitesItem);
+    //m_elementTreeWidget->addTopLevelItem(ESASatellitesItem);
     m_elementTreeWidget->addTopLevelItem(ESAgroundStationsItem);
     m_elementTreeWidget->addTopLevelItem(NASAgroundStationsItem);
 
@@ -787,7 +783,7 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
     //////////////// Adding now concrete widgets into the scenario
 
     // Some  ESA Satellites
-    addESASatelliteItem(ESASatellitesItem, "Cryosat-2");
+    //addESASatelliteItem(ESASatellitesItem, "Cryosat-2");
 
     // The ESTRACK ground stations (LAT, LON, ALT)
     addGroundStationItem(ESAgroundStationsItem, "Cebreros",     "Earth",  40.45268986,  -4.36754881, 794.1);
@@ -828,7 +824,7 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
 
 
     // Contracting now some elements that should not be shown to the user at a first sight.
-    ESASatellitesItem->setExpanded(false);
+    //ESASatellitesItem->setExpanded(false);
     ESAgroundStationsItem->setExpanded(false);
     NASAgroundStationsItem->setExpanded(false);
 
