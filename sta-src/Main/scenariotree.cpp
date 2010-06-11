@@ -106,10 +106,21 @@ ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioOb
 {
     item->setText(0, scenarioObject->elementName());
 
+    /*
     if (dynamic_cast<ScenarioParticipantType*>(scenarioObject))
     {
         item->setText(1, dynamic_cast<ScenarioParticipantType*>(scenarioObject)->Name());
     }
+    */
+
+    if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject))
+    {
+        ScenarioElementIdentifierType* myIdentifier = dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject);
+        item->setFlags(item->flags() | (Qt::ItemIsEditable));
+        myIdentifier->Name() = item->text(1);
+        updateTreeItems(item, scenarioObject);
+    }
+
 
     // Store a pointer to the this ScenarioObject in the widget item.
     // This will be used to map a tree widget item to a ScenarioObject.
@@ -1055,9 +1066,12 @@ void ScenarioTree::editItemInline(QTreeWidgetItem* item, int column)
     }
     else if (dynamic_cast<ScenarioElementIdentifierType*>(object) && column == 1)   // Guillermo says: the name of the arcs, payloads, etc.
 	{
-	    ScenarioElementIdentifierType* myIdentifier = dynamic_cast<ScenarioElementIdentifierType*>(object);
+            //ScenarioElementIdentifierType* myIdentifier = dynamic_cast<ScenarioElementIdentifierType*>(object);
 	    item->setFlags(item->flags() | (Qt::ItemIsEditable));
-	    myIdentifier->Name() = item->text(1);
+            //myIdentifier->Name() = item->text(1);
+
+            dynamic_cast<ScenarioElementIdentifierType*>(object)->setName(item->text(1));
+
 	    updateTreeItems(item, scenario);
 	    //Getting now to know the parent of this item
 	    QTreeWidgetItem* myParent = item->parent();
