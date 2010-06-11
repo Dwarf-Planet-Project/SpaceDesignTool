@@ -457,6 +457,9 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
     if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject) != NULL)
     {
 	//ScenarioElementIdentifierType* myIdentifier = dynamic_cast<ScenarioElementIdentifierType*>(object);
+	ScenarioElementIdentifierType* myIdentifier = dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject);
+	editItem->setFlags(editItem->flags() | (Qt::ItemIsEditable));
+	myIdentifier->Name() = editItem->text(1);
 	updateTreeItems(editItem, scenarioObject);
      }
     else if (dynamic_cast<ScenarioLoiteringType*>(scenarioObject) != NULL)
@@ -1074,12 +1077,17 @@ void ScenarioTree::editItemInline(QTreeWidgetItem* item, int column)
             //Getting now to know the parent of this item
             QTreeWidgetItem* parentItem = item->parent();
             ScenarioObject* parentObject = objectForItem(parentItem);
-            parentItem->setText(1, item->text(1));
 
-           updateTreeItems(item, scenario);
+	    if (dynamic_cast<ScenarioParticipantType*>(parentObject))
+	    {
+		ScenarioParticipantType* myPartipant = dynamic_cast<ScenarioParticipantType*>(parentObject);
+		dynamic_cast<ScenarioParticipantType*>(myPartipant)->setName(item->text(1));
+		parentItem->setText(1, item->text(1));
+	    }
+
+	    updateTreeItems(item, scenario);
 
 	}
-
 
 #if OLDSCENARIO
     ScenarioObject* object = objectForItem(item);
