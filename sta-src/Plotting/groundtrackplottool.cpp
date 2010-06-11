@@ -1243,7 +1243,7 @@ GroundTrackView::paintObliqueView(QPainter& painter)
                     QTransform xform = painter.worldTransform();
                     painter.setWorldTransform(QTransform());
                     QPointF textOrigin = QPointF((float) lon + labelOffset, (float) lat + labelOffset) * xform;
-                    painter.drawText(textOrigin, groundObject->name);
+                    painter.drawText(textOrigin, groundObject->name);       // Guillermo says: this is the name of the ground object
                     painter.setWorldTransform(xform);
                 }
 
@@ -1771,8 +1771,8 @@ GroundTrackView::paint2DView(QPainter& painter)
             // the matrix.
             QTransform xform = painter.worldTransform();
             painter.setWorldTransform(QTransform());
-            QPointF textOrigin = QPointF((float) longNow + labelOffset, (float) latNow + labelOffset) * xform;
-            painter.drawText(textOrigin, track->vehicle->name());
+            QPointF textOrigin = QPointF((float) longNow + labelOffset, (float) latNow + labelOffset) * xform;            
+            painter.drawText(textOrigin, track->vehicle->name());       // Guillermo says: this is an attribute and should be removed
             painter.setWorldTransform(xform);
         }
     }
@@ -1800,7 +1800,7 @@ GroundTrackView::paint2DView(QPainter& painter)
                 QTransform xform = painter.worldTransform();
                 painter.setWorldTransform(QTransform());
                 QPointF textOrigin = QPointF((float) lon + labelOffset, (float) lat + labelOffset) * xform;
-                painter.drawText(textOrigin, groundObject->name);
+                painter.drawText(textOrigin, groundObject->name);           // Guillermo says: this is an attribute
                 painter.setWorldTransform(xform);
 
                 if (selectedSpacecraft)

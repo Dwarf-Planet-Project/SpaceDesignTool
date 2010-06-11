@@ -146,40 +146,7 @@ static QByteArray spaceVehicleFragment(const char* name, const char* vehicleType
     ScenarioSC spacecraft;
 
     /*** fill in defaults ***/
-    //spacecraft.setName("This name should be deleted");
-    //spacecraft.setName(name);
-    // Guillermo says: this is just a patch to create a random name of the spacecraft right now. It has to be changed in future.
-    QRegExp separator("\\s+");  // the + Means one or more spaces!
-    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime();
-    // Converting from QDateTime into integers via QString
-    QString Temporal = TheCurrentDateAndTime.toString("yyyy MM dd hh mm ss.zzzz");
-    int TheYear           = int (Temporal.section(separator, 0, 0).toDouble());    //out << "YYYY: " << TheYear << endl;
-    int TheMonth          = int (Temporal.section(separator, 1, 1).toDouble());    //out << "MM: " << TheMonth << endl;
-    int TheDay            = int (Temporal.section(separator, 2, 2).toDouble());    //out << "dd: " << TheDay << endl;
-    int TheHour           = int (Temporal.section(separator, 3, 3).toDouble());    //out << "hh: " << TheHour << endl;
-    int TheMinute         = int (Temporal.section(separator, 4, 4).toDouble());    //out << "mm: " << TheMinute << endl;
-    double TheSecond      = int (Temporal.section(separator, 5, 5).toDouble());    //out << "ss: " << TheSecond << endl;
-    // Making the conversion to Julian days.
-    double Epoch = calendarTOjulian (TheYear, TheMonth, TheDay, TheHour, TheMinute, TheSecond);
-    //double ModifiedEpoch = sta::JdToMjd (Epoch);
-
-    int ModifiedEpoch = rand() % 10;
-
-    QTextStream out (stdout);
-    //out << "ModifiedEpoch: " << ModifiedEpoch << endl;
-    out << "TheSecond: " << TheSecond << endl;
-
-    QString ModifiedEpochAsString;
-    //ModifiedEpochAsString.sprintf("%.2f", ModifiedEpoch);
-    //ModifiedEpochAsString.sprintf("%d", TheSecond);
-
-    //ModifiedEpochAsString = ModifiedEpoch.toString();
-    ModifiedEpochAsString.sprintf("%i", ModifiedEpoch);
-
-    out << "ModifiedEpochAsString: " << ModifiedEpochAsString << endl;
-
-    spacecraft.ElementIdentifier()->setName("Satellite " + ModifiedEpochAsString);
-    spacecraft.setName("Satellite " + ModifiedEpochAsString);
+    spacecraft.ElementIdentifier()->setName(name);
 
     QDomDocument doc;
     return fragmentText(CreateSCElement(&spacecraft, doc)).toUtf8();
@@ -193,6 +160,7 @@ static QByteArray REVFragment(const char* name, const char* vehicleType)
     ScenarioREV entryVehicle;
     
     /*** fill in defaults ***/
+    entryVehicle.ElementIdentifier()->setName(name);
 
     entryVehicle.REVSystem()->Geometry()->setNoseRadius(1);
     entryVehicle.REVSystem()->Weights()->setTotalDryMass(2000);
@@ -242,7 +210,8 @@ static QByteArray groundStationFragment(const char* name,
 {
     ScenarioGroundStation groundStation;
     /*** fill in defaults ***/
-    groundStation.setName(name);
+    groundStation.ElementIdentifier()->setName(name);
+    groundStation.setName(name);               // Guillermo says: this has to disapear in the future
     groundStation.Location()->setCentralBody(centralBody);
 
     QSharedPointer<ScenarioGroundPositionType> groundPosition(new ScenarioGroundPositionType());
@@ -268,7 +237,8 @@ static QByteArray launchPadFragment(const char* name,
 {
     ScenarioLaunchPad launchPad;
     /*** fill in defaults ***/
-    launchPad.setName(name);
+    launchPad.ElementIdentifier()->setName(name);
+    launchPad.setName(name);    // Guillermo says: this has to disapear in the future
     launchPad.Location()->setCentralBody(centralBody);
 
     QSharedPointer<ScenarioGroundPositionType> groundPosition(new ScenarioGroundPositionType());
@@ -289,7 +259,8 @@ static QByteArray pointFragment(const char* name,
 {
     ScenarioPoint myPoint;
     /*** fill in defaults ***/
-    myPoint.setName(name);
+    myPoint.ElementIdentifier()->setName(name);
+    myPoint.setName(name);  // Guillermo says: this has to disapear in the future
     myPoint.Location()->setCentralBody(centralBody);
 
     QSharedPointer<ScenarioGroundPositionType> groundPosition(new ScenarioGroundPositionType());

@@ -113,6 +113,7 @@ ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioOb
     }
     */
 
+
     if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject))
     {
         ScenarioElementIdentifierType* myIdentifier = dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject);
@@ -1061,29 +1062,22 @@ void ScenarioTree::editItemInline(QTreeWidgetItem* item, int column)
     if (dynamic_cast<ScenarioParticipantType*>(object) && column == 1)  // Participant name
     {
         // TODO: replace this special case with reflection/introspection methods for ScenarioObject
-        item->setFlags(item->flags() | (Qt::ItemIsEditable));
-        dynamic_cast<ScenarioParticipantType*>(object)->setName(item->text(1));
+        // Guillermo says: commented out for the time being forcing the user to use the ScenarioElementIdentifierType instead
+        //item->setFlags(item->flags() | (Qt::ItemIsEditable));
+        //dynamic_cast<ScenarioParticipantType*>(object)->setName(item->text(1));
     }
     else if (dynamic_cast<ScenarioElementIdentifierType*>(object) && column == 1)   // Guillermo says: the name of the arcs, payloads, etc.
 	{
-            //ScenarioElementIdentifierType* myIdentifier = dynamic_cast<ScenarioElementIdentifierType*>(object);
 	    item->setFlags(item->flags() | (Qt::ItemIsEditable));
-            //myIdentifier->Name() = item->text(1);
-
             dynamic_cast<ScenarioElementIdentifierType*>(object)->setName(item->text(1));
 
-	    updateTreeItems(item, scenario);
-	    //Getting now to know the parent of this item
-	    QTreeWidgetItem* myParent = item->parent();
-	    ScenarioObject* objectParent = objectForItem(myParent);
-	    if (dynamic_cast<ScenarioSC*>(objectParent))
-	    {
-		ScenarioSC* spacecraft = dynamic_cast<ScenarioSC*>(objectParent);
-		spacecraft->Name() = item->text(1);
-		//updateTreeItems(myParent, spacecraft);
-		//updateTreeItems(myParent, scenario);
-		updateTreeItems(item, scenario);
-	    }
+            //Getting now to know the parent of this item
+            QTreeWidgetItem* parentItem = item->parent();
+            ScenarioObject* parentObject = objectForItem(parentItem);
+            parentItem->setText(1, item->text(1));
+
+           updateTreeItems(item, scenario);
+
 	}
 
 
