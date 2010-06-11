@@ -1264,7 +1264,8 @@ void MainWindow::on_actionAnalyse_triggered()
     m_plottingTool->show();
 */
 
-    analysis* AnalysisWidget = new analysis(this);  // Creating the widget as a tool
+    //analysis* AnalysisWidget = new analysis(this);  // Creating the widget as a tool
+    analysis* AnalysisWidget = new analysis(m_scenario,m_propagatedScenario,this);  // Creating the widget as a tool
     AnalysisWidget->show(); // Creating the window modeless. This requires the declaration of the variable on the *.h file
     AnalysisWidget->raise(); // Required to keep the modeless window alive
     AnalysisWidget->activateWindow(); // Required to keep the modeless window alive

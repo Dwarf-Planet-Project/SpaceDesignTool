@@ -34,7 +34,7 @@ class analysis : public QDialog , private Ui::analysisDialogClass
 {
 Q_OBJECT
 public:
-        analysis(SpaceScenario * scenario, PropagatedScenario*propagatedScenario,QWidget * parent = 0, Qt::WindowFlags f = 0 );
+        analysis(SpaceScenario * scenario, PropagatedScenario*propagatedScenario, QWidget * parent = 0, Qt::WindowFlags f = 0 );
 	~analysis();
         void readScenario();
 int ObjectsIndex(QStringList AllObjects, int Index, QString ObjectType);
