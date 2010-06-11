@@ -29,13 +29,6 @@
 using namespace std;
 
 
-//------------------------ Enumerations --------------------------------//
-//enum CoatingType{CoatUndefined,
-//                 UserDefined,
-//                 NoCoating,
-//                 WhitePaint,
-//                 BlackPaint};
-
 enum ThermalControlType{NoControl,
                         Passive,
                         Active,

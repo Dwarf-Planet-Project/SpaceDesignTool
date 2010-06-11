@@ -48,10 +48,14 @@ public:
     void setPayloadName(QString Name);
     QString getPayloadName();
 
-    //m
+    //input/output in meters
     void setPayloadWavelength(double Wavelength);
     double getPayloadWavelength();
 
+    /*
+    * If PayloadDimensions are set, it calculates the volume of
+    * "Rectangular_Prism","Cylinder","Sphere"
+    */
     void CalculateAndSetPayloadVolume(QString Shape);
     double getPayloadVolume();
 
@@ -93,14 +97,20 @@ public:
     void setPayloadDataRate(double DataRate);
     double getPayloadDataRate();
 
-    // CREATE NEW PAYLOAD
+    // CREATE NEW PAYLOAD----------------------------------------------------
+    /**
+      It puts the parameters from the database called
+      "data/Estimations/PayloadSet.stad"
+      @param PayloadName     has to be in the database otherwise the name
+                             will be set to 'UNDEFINED' and the parameters to '0'
+    */
     void setSelectedPayloadProperties(QString PayloadName);
 
     /*
       * Before these functions
       *  void setSelectedPayloadProperties(QString PayloadName);
-      * has to be called to understand what type of payload from the
-      * list is going to be used
+      * has to be called. The user has to be careful to use the following
+      * functions. They do not have the ability make decisions
     */
     void CalculateNewDimensions(double wavelength, double angularResolution);
     void CalculateNewDimensions(double wavelength,

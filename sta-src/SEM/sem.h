@@ -38,6 +38,7 @@ public:
 	~sem();
 
 protected slots:
+        void on_SelectSpacecraftComboBox_activated(const QString&);
 	void on_buttonBox_helpRequested();
 	void on_buttonBox_clicked(QAbstractButton*);
 	void on_buttonBox_destroyed(QObject*);

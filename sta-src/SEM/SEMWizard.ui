@@ -46,11 +46,6 @@
        <widget class="QComboBox" name="MissionTypeComboBox">
         <item>
          <property name="text">
-          <string>Select Mission</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
           <string>Communication</string>
          </property>
         </item>
@@ -82,15 +77,10 @@
        <widget class="QComboBox" name="PlanetNameComboBox">
         <item>
          <property name="text">
-          <string>Select Planet</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
           <string>Mercury</string>
          </property>
          <property name="icon">
-          <iconset resource="../../iconary/sta-icons.qrc">
+          <iconset>
            <normaloff>:/icons/ComboMercury.png</normaloff>:/icons/ComboMercury.png</iconset>
          </property>
         </item>
@@ -99,7 +89,7 @@
           <string>Venus</string>
          </property>
          <property name="icon">
-          <iconset resource="../../iconary/sta-icons.qrc">
+          <iconset>
            <normaloff>:/icons/ComboVenus.png</normaloff>:/icons/ComboVenus.png</iconset>
          </property>
         </item>
@@ -108,7 +98,7 @@
           <string>Earth</string>
          </property>
          <property name="icon">
-          <iconset resource="../../iconary/sta-icons.qrc">
+          <iconset>
            <normaloff>:/icons/ComboEarth.png</normaloff>:/icons/ComboEarth.png</iconset>
          </property>
         </item>
@@ -117,7 +107,7 @@
           <string>Mars</string>
          </property>
          <property name="icon">
-          <iconset resource="../../iconary/sta-icons.qrc">
+          <iconset>
            <normaloff>:/icons/ComboMars.png</normaloff>:/icons/ComboMars.png</iconset>
          </property>
         </item>
@@ -126,7 +116,7 @@
           <string>Jupiter</string>
          </property>
          <property name="icon">
-          <iconset resource="../../iconary/sta-icons.qrc">
+          <iconset>
            <normaloff>:/icons/ComboJupiter.png</normaloff>:/icons/ComboJupiter.png</iconset>
          </property>
         </item>
@@ -135,7 +125,7 @@
           <string>Saturn</string>
          </property>
          <property name="icon">
-          <iconset resource="../../iconary/sta-icons.qrc">
+          <iconset>
            <normaloff>:/icons/ComboSaturn.png</normaloff>:/icons/ComboSaturn.png</iconset>
          </property>
         </item>
@@ -144,7 +134,7 @@
           <string>Uranus</string>
          </property>
          <property name="icon">
-          <iconset resource="../../iconary/sta-icons.qrc">
+          <iconset>
            <normaloff>:/icons/ComboUranus.png</normaloff>:/icons/ComboUranus.png</iconset>
          </property>
         </item>
@@ -153,7 +143,7 @@
           <string>Neptune</string>
          </property>
          <property name="icon">
-          <iconset resource="../../iconary/sta-icons.qrc">
+          <iconset>
            <normaloff>:/icons/ComboNeptune.png</normaloff>:/icons/ComboNeptune.png</iconset>
          </property>
         </item>
@@ -162,7 +152,7 @@
           <string>Pluto</string>
          </property>
          <property name="icon">
-          <iconset resource="../../iconary/sta-icons.qrc">
+          <iconset>
            <normaloff>:/icons/ComboPluto.png</normaloff>:/icons/ComboPluto.png</iconset>
          </property>
         </item>
@@ -474,11 +464,6 @@
         <property name="enabled">
          <bool>false</bool>
         </property>
-        <item>
-         <property name="text">
-          <string>Select Payload</string>
-         </property>
-        </item>
         <item>
          <property name="text">
           <string>Optical_Telescope</string>
@@ -992,11 +977,6 @@
         </property>
         <item>
          <property name="text">
-          <string>Select Payload</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
           <string>Optical_Telescope</string>
          </property>
         </item>
@@ -1508,11 +1488,6 @@
         </property>
         <item>
          <property name="text">
-          <string>Select Payload</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
           <string>Optical_Telescope</string>
          </property>
         </item>
@@ -2018,11 +1993,6 @@
         </property>
         <item>
          <property name="text">
-          <string>Select Payload</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
           <string>Optical_Telescope</string>
          </property>
         </item>
@@ -2474,11 +2444,6 @@
      <widget class="QComboBox" name="BatteryTypeComboBox">
       <item>
        <property name="text">
-        <string>Select Battery</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
         <string>Lithium_Ion</string>
        </property>
       </item>
@@ -2503,11 +2468,6 @@
     </item>
     <item row="0" column="2">
      <widget class="QComboBox" name="SolarCellTypeComboBox">
-      <item>
-       <property name="text">
-        <string>Select Solar Cells</string>
-       </property>
-      </item>
       <item>
        <property name="text">
         <string>Silicon</string>
@@ -2568,11 +2528,6 @@
       </property>
       <item>
        <property name="text">
-        <string>Select Shape</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
         <string>Cube</string>
        </property>
       </item>
@@ -2596,11 +2551,6 @@
       <property name="minimumContentsLength">
        <number>0</number>
       </property>
-      <item>
-       <property name="text">
-        <string>Select Material</string>
-       </property>
-      </item>
       <item>
        <property name="text">
         <string>Aluminium</string>
@@ -2986,11 +2936,6 @@
      <widget class="QComboBox" name="CodingTypeComboBox">
       <item>
        <property name="text">
-        <string>Select Coding</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
         <string>No Coding</string>
        </property>
       </item>
@@ -3004,8 +2949,6 @@
    </layout>
   </widget>
  </widget>
- <resources>
-  <include location="../../iconary/sta-icons.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

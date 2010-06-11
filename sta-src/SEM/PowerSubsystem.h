@@ -91,8 +91,7 @@ public:
     //----------------- Functions ---------------------------------------//
     /**
         * It fills the properties of the solar cell from the database.
-        * (Before the database creation it will be put constant values) It
-        * sets the "SolarCell".
+        * It sets the struct "SolarCell".
         * @param Name    the name of the solar cell
     */
     void setSolarCell(QString Name);
@@ -104,9 +103,23 @@ public:
     */
     SolarCellType getSolarCell();
 
+    /*
+    * It calculates the Solar Array EOL Power However for reliable data
+    * one has to be sure that PayloadWattHourInEclipse,
+    *                         EclipseDuration,
+    *                         PayloadWattHourInDaylight,
+    *                         SystemPower,
+    *                         DaylightDuration is set
+    */
     void CalculateSAEOLPower();
     void setSAEOLPower(double power);
     double getSAEOLPower();
+
+    /*
+     * It calculate the Solar Array BOL Power. However for reliable data
+     * one has to be sure that SAArea,
+     *                         SolarCellBOLPower is set
+    */
     void CalculateSABOLPower();
     void setSABOLPower(double power);
     double getSABOLPower();
@@ -123,10 +136,15 @@ public:
     void CalculatePCUMass();
     double getPCUMass();
 
+    /*
+    * It calculates the area and then
+    * calls "CalculateSABOLPower()"
+    */
     void CalculateArea();
     void setSAArea(double area);
     double getArea();
 
+    //It calls CalculateSABOLPower();
     void CalculateSolarCellBOLPower();
     /*
       *  It gets the "BOLPower" of solar cell. Before this method programmer has to be
@@ -198,10 +216,9 @@ public:
     CBattery();
     //----------------- Functions ---------------------------------------//
     /**
-        * It fills the properties of the solar cell from the database.
-        * (Before the database creation we will put constant values) It
+        * It fills the properties of the battery from the database. It
         * sets the "SCBattery".
-        * @param Name    the name of the solar cell
+        * @param Name    the name of the battery
     */
     void setBatteryProperties(QString Name);
     BatteryType getBatteryProperties();
@@ -299,31 +316,35 @@ public:
       * It produce the Power Consumption Function of SC for an orbit
       * The Details of the Function can be found in STA-OY-TN-1001 1.0
       * Figure 2.4.2
-      * @param EclipseDuration         Eclipse Duration of S/C in seconds
-      * @param DaylightDuration        Daylight Duration of S/C in seconds
-      * @param TimeStep                It will try to be link to the time
-      *                                step of propogator to make a standart
-      *                                output. Power consumption of the S/C
-      *                                at a "index of ConsumptionFunction"
-      *                                times "TimeStep" is ConsumptionFunction[Index]
-      * @return derefrence of ConsumptionFunction
+      * It needs the following files generated before the function call:
+      * "data/EclipseStarLight.stad");
+      * "data/EclipseDetailedReport.stad");
+      * -----------------------------------
+      * It writes the results to:
+      * "data/SystemsEngineeringReports/PowerConsumptionTimeFunction.stad");
     */
     void CreatePowerConsumptionFunctionOfSpacecraft();
 
     /**
-      * It produce the Generated Power Function of SC by SolarArrays for an mission
-      * @param EclipseDuration         Eclipse Duration of S/C in seconds
-      * @param DaylightDuration        Daylight Duration of S/C in seconds
-      * @param MissionDuration         Mission Duration of S/C in seconds
-      * @param TimeStep                It will try to be link to the time
-      *                                step of propogator to make a standart
-      *                                output. Power consumption of the S/C
-      *                                at a "index of ConsumptionFunction"
-      *                                times "TimeStep" is ConsumptionFunction[Index]
-      * @return derefrence of ConsumptionFunction
+      * It produce the Generated Power Function of SC by SolarArrays during
+      * the mission
+      * It needs the following files generated before the function call:
+      * "data/EclipseStarLight.stad"
+      * -----------------------------------
+      * It writes the results to:
     */
     void CreateGeneratedPowerTimeFunctionOfSpacecraft();
 
+    /**
+      * It produce the Net Power Function of SC during the mission
+      * It needs the following files generated before the function call:
+      * "data/SystemsEngineeringReports/GeneratedPowerTimeFunction.stad"
+      * "data/SystemsEngineeringReports/PowerConsumptionTimeFunction.stad"
+      *
+      * -----------------------------------
+      * It writes the results to:
+      * "data/SystemsEngineeringReports/NetPowerTimeFunction.stad"
+    */
     void CreateNetPowerTimeFunctionOfSpacecraft();
 
     void CalculateAndSetPowerSubsystemMass();

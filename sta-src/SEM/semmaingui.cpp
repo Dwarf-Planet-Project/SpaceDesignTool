@@ -26,6 +26,11 @@
 
 #include "QDebug"
 
+//to propogate after closing the wizard if the start and end time is changed
+#include "Loitering/loitering.h"
+#include "Scenario/propagationfeedback.h"
+#include "Astro-Core/EclipseDuration.h"
+
 #include "datacommgui.h"
 //#include "launchergui.h"
 #include "powergui.h"
@@ -33,6 +38,7 @@
 #include "thermalgui.h"
 
 SemMainGUI::SemMainGUI(ScenarioSC* SCVehicle,
+                       QString MissionArc,
                        QWidget * parent,
                        Qt::WindowFlags f) : QDialog(parent,f)
 {
@@ -56,30 +62,50 @@ SemMainGUI::SemMainGUI(ScenarioSC* SCVehicle,
                     //for now SEM is only capable of doing loitering systems engineering
                     ScenarioLoiteringType* loitering
                             = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
+                    if (loitering->ElementIdentifier()->Name()== MissionArc)
+                    {
+                        //propogate the scenario
+                        QList<double> sampleTimes;
+                        QList<sta::StateVector> samples;
+                        PropagationFeedback feedback;
+                        PropagateLoiteringTrajectory(loitering,
+                                                     sampleTimes,
+                                                     samples,
+                                                     feedback);
 
-                    //collect the mission details and display them in the wizard
-                    SC.getSCMissionDetails()->setMissionStartTime
-                            (loitering->TimeLine().data()->StartTime());
-                    MissionStartDateTimeEdit->setDateTime
-                            (SC.getSCMissionDetails()->getMissionStartTime());
+                        //******************************************************************** /OZGUN
+                        // Eclipse function is called and the "data/EclipseStarLight.stad" is generated
+                        EclipseDuration* Eclipse = new EclipseDuration();
 
-                    SC.getSCMissionDetails()->setMissionEndTime
-                            (loitering->TimeLine().data()->EndTime());
-                    MissionEndDateTimeEdit->setDateTime
-                            (SC.getSCMissionDetails()->getMissionEndTime());
-                    break;
+                        Eclipse->StarLightTimeFunction(sampleTimes,
+                                                       samples,
+                                                       STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                       STA_SOLAR_SYSTEM->lookup("Sun"));
+                        //******************************************************************** OZGUN/
 
+                        //collect the mission details and display them in the wizard
+                        SC.getSCMissionDetails()->setMissionStartTime
+                                (loitering->TimeLine().data()->StartTime());
+                        MissionStartDateTimeEdit->setDateTime
+                                (SC.getSCMissionDetails()->getMissionStartTime());
+
+                        SC.getSCMissionDetails()->setMissionEndTime
+                                (loitering->TimeLine().data()->EndTime());
+                        MissionEndDateTimeEdit->setDateTime
+                                (SC.getSCMissionDetails()->getMissionEndTime());
+
+                        //put the scenario to GUI
+                        RetrieveScenarioSC();
+
+                        RefreshSemMainGUI();
+
+                        RefreshSemMainGUIPayload();
+                        break;
+                    }
                 }
             }
         }
         //----------------end of mission definition
-
-        RetrieveScenarioSC();
-
-        RefreshSemMainGUI();
-
-        RefreshSemMainGUIPayload();
-
 }
 
 SemMainGUI::SemMainGUI(SemMain* SCWizard,

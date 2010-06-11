@@ -157,7 +157,7 @@ void EclipseDuration::StarLightTimeFunction(QList<double> &sampleTimes,
 //                (sta::MjdToJd(sampleTimes.at(i))).toString(Qt::ISODate);
         EclipseStarLightStream<<sampleTimes.at(i);
         qDebug()<<"SAMPLE"<<sampleTimes.at(i);
-        EclipseStarLightStream<<"          ";
+        EclipseStarLightStream<<"\t";
 
         double tempEclipse = 0.0;
 
@@ -183,7 +183,7 @@ void EclipseDuration::StarLightTimeFunction(QList<double> &sampleTimes,
         }
 
         EclipseStarLightStream<<tempEclipse;
-        EclipseStarLightStream<<"        ";
+        EclipseStarLightStream<<"\t";
     }
 
     EclipseStarLightStream<<endl;
@@ -218,7 +218,7 @@ void EclipseDuration::StarLightTimeFunction(QList<double> &sampleTimes,
 //        EclipseStarLightStream<<sta::JdToCalendar
 //                (sta::MjdToJd(sampleTimes.at(i))).toString(Qt::ISODate);
         EclipseStarLightStream<<sampleTimes.at(i);
-        EclipseStarLightStream<<"          ";
+        EclipseStarLightStream<<"\t";
 
         double tempEclipse = 0.0;
 
@@ -244,7 +244,7 @@ void EclipseDuration::StarLightTimeFunction(QList<double> &sampleTimes,
         }
 
         EclipseStarLightStream<<tempEclipse;
-        EclipseStarLightStream<<"        ";
+        EclipseStarLightStream<<"\t";
     }
 
     EclipseStarLightStream<<endl;

@@ -82,6 +82,50 @@ sem::~sem()
 {
 }
 
+void sem::on_SelectSpacecraftComboBox_activated(const QString &)
+{
+    SelectMissionArcComboBox->clear();
+    SelectMissionArcComboBox->addItem("Select Mission Arc");
+    SelectMissionArcComboBox->setEnabled(0);
+
+    if (SelectSpacecraftComboBox->currentIndex() != 0)
+    {
+        // Process each participant
+        foreach (QSharedPointer<ScenarioParticipantType> participant, scenario->AbstractParticipant())
+        {
+            // For space vehicles, we need to find which one we are interested in
+            if (dynamic_cast<ScenarioSC*>(participant.data()))
+            {
+                ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
+
+                if (SelectSpacecraftComboBox->currentText()== vehicle->ElementIdentifier()->Name())
+                {
+                    const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList
+                            = vehicle->SCMission()->TrajectoryPlan()->AbstractTrajectory();
+
+                    // Initial state is stored in the first trajectory (for now); so,
+                    // the empty trajectory plan case has to be treated specially.
+                    if (!trajectoryList.isEmpty())
+                    {
+                        // Propagate all segments of the trajectory plan.
+                        foreach (QSharedPointer<ScenarioAbstractTrajectoryType> trajectory, trajectoryList)
+                        {
+                            if (dynamic_cast<ScenarioLoiteringType*>(trajectory.data()))
+                            {
+                                ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
+                                SelectMissionArcComboBox->addItem(loitering->ElementIdentifier()->Name());
+                            }
+                        }
+                    }
+                    //after all the mission arcs are included Enable the Mission arc combobox
+                    SelectMissionArcComboBox->setEnabled(1);
+                    break;
+                }
+            }
+        }
+    }
+}
+
 void sem::on_buttonBox_helpRequested()
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
@@ -122,10 +166,12 @@ void sem::on_buttonBox_accepted()
                 //------------------------------------------------------------------
                 if (WizardSelectionRadioButton->isChecked())
                 {//Wizard is selected
-                    if (SelectSpacecraftComboBox->currentIndex() != 0)
+                    if (SelectMissionArcComboBox->currentIndex() != 0)
                     {
                         //open the wizard
-                        SEMWizard NewWizard(vehicle, this);
+                        SEMWizard NewWizard(vehicle,
+                                            SelectMissionArcComboBox->currentText(),
+                                            this);
                         NewWizard.exec();
                         break;
                     }
@@ -134,10 +180,12 @@ void sem::on_buttonBox_accepted()
                 {
                     if (GUISelectionRadioButton->isChecked())
                     {//GUI is selected
-                        if (SelectSpacecraftComboBox->currentIndex() != 0)
+                        if (SelectMissionArcComboBox->currentIndex() != 0)
                         {
                             //open the GUI
-                            SemMainGUI NewDialog(vehicle, this);
+                            SemMainGUI NewDialog(vehicle,
+                                                 SelectMissionArcComboBox->currentText(),
+                                                 this);
                             NewDialog.exec();
                             break;
                         }

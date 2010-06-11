@@ -37,11 +37,11 @@ class SemMainGUI : public QDialog , private Ui::SemMainGUI
 {
 Q_OBJECT
 public:
-        SemMainGUI(ScenarioSC* SCVehicle, QWidget * parent = 0, Qt::WindowFlags f = 0 );
-        SemMainGUI(SemMain * SCWizard, ScenarioSC* SCVehicle, QWidget * parent = 0, Qt::WindowFlags f = 0 );
-        ~SemMainGUI();
+    SemMainGUI(ScenarioSC* SCVehicle, QString MissionArc, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    SemMainGUI(SemMain * SCWizard, ScenarioSC* SCVehicle, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    ~SemMainGUI();
 
-       SemMain SC;
+    SemMain SC;
 
 protected slots:
         void on_MainSemTabWidget_currentChanged(int Index);

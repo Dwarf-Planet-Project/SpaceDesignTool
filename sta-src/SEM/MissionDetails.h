@@ -81,20 +81,28 @@ public:
       *             PlanetAngularRadius,
       *             CollimatedSolarEnergyOfPlanet
       * data of the SolarSystem planet that is enquired
+      * If SCMeanAltitude is set before this method, it also sets
+      *             SCMeanAltitude,
+      *             PlanetAngularRadius,
+      *             CollimatedSolarEnergyOfPlanet
       *@param PlanetName    the name of a solar system planet
     */
     void setPlanetProperties(QString PlanetName);
     PlanetInfo * getPlanetProperties();
 
-    //It has to be modified if it is used to calculate other then angular
-    //radius of the SC. For now it takes the mean ofapogee and perigee
-    //altitude
+    /*
+    * It has to be modified if it is used to calculate other then angular
+    * radius of the SC. For now it takes the mean of apogee and perigee
+    * altitude
+    */
     void setSCMeanAltitude(double altitude);
     double getSCMeanAltitude();
 
     /*
       * Enter calendar date but it will convert to modified julian date
-    */
+      * and save as MissionStartTime
+      */
+
     void setMissionStartTime
             (QDateTime calendarDate);
     QDateTime getMissionStartTime();
@@ -105,29 +113,35 @@ public:
     void setEccentricity(double eccentricity);
     double getEccentricity();
 
-    // it will enter in km but saving will be in meters
+    /*
+     * input/output is in 'km' but SemiMajorAxis will be in 'meters'
+     * for internal calculations
+     */
     void setSemiMajorAxis(double semiMajor);
     double getSemiMajorAxis();
 
+    // input/output is in degrees
     void setInclination(double inclination);
     double getInclination();
 
+    // input/output is in degrees
     void setArgumentOfPerigee(double argumentOfPerigee);
     double getArgumentOfPerigee();
 
+    // input/output is in degrees
     void setRightAscensionNode(double RAAN);
     double getRightAscensionNode();
 
+    // input/output is in degrees
     void setTrueAnomaly(double Anomaly);
     double getTrueAnomaly();
 
-    // Eclipse And Daylight Durations are assuming circular
-    //orbit and doing rough calculations for now
+    // Eclipse And Daylight Durations...etc are assuming circular
+    // orbit and doing rough calculations for now
     double getAverageEclipseDuration();
     double getAverageDaylightDuration();
     double getAverageOrbitDuration();
     double getMissionDuration();
-
     double getGroundAverageVelocity();
 
 private:

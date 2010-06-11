@@ -62,7 +62,12 @@ public:
     void setOrbitDuration(double Duration);
     double getOrbitDuration();
 
-    //input julian days set in years
+    /*
+     * input days
+     * set in years
+     * output in years
+     *
+     */
     void setMissionDuration(double Duration);
     double getMissionDuration();
 
@@ -73,17 +78,24 @@ public:
                             double PowerOnTimeInDaylight);
     PayloadOBDHInfo * getPayloadOBDHInfo();
 
-    //it should be percentage
+    /*
+     * it should be percentage like 20% margin
+     * setSafetyMargin(20);
+    */
     void setSafetyMargin(double Margin);
 
-    //Later it can be expended to a database of codings
+    /*
+     * If you give the defined name of the coding it will
+     * set the amount of coding as percentage of the data
+     * Later it can be expended to a database of codings
+     */
     void setCodingPercentage(QString Name);
     QString getCodingName();
 
     void setNumberOfOrbitWithNolink(int Number);
     int getNumberOfOrbitWithNoLink();
 
-    //returns GB
+    //input/output in GBytes
     void CalculateAndSetMemorySizeForPayloads();
     void setMemorySizeForPayloads(double memory);
     double getMemorySizeForPayloads();
