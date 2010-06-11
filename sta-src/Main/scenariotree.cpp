@@ -69,7 +69,7 @@ ScenarioTree::ScenarioTree(QWidget *parent)
     QStringList labels;
     labels << tr("Element") << tr("Name");
     
-    //header()->setResizeMode(QHeaderView::ResizeToContents);
+    header()->setResizeMode(QHeaderView::ResizeToContents);
     header()->setResizeMode(QHeaderView::Interactive);
     header()->setDefaultSectionSize(200);
     header()->setCascadingSectionResizes(true);
@@ -88,7 +88,7 @@ ScenarioTree::ScenarioTree(QWidget *parent)
             this, SLOT(editItemInline(QTreeWidgetItem*, int)));
 
 
-    setExpandsOnDoubleClick(false);
+    setExpandsOnDoubleClick(true);
     setAnimated(true);	// Tree spands now slowly (nicer for the user)
     
     // Set drag and drop behavior
@@ -104,7 +104,20 @@ ScenarioTree::ScenarioTree(QWidget *parent)
 void
 ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
 {
+    QTextStream out (stdout);
     item->setText(0, scenarioObject->elementName());
+    //out << "scenarioObject: " << scenarioObject->elementName() << endl;
+
+    /*
+    if (scenarioObject->elementName() == "GroundStation")
+	item->setIcon(0, QIcon(":/icons/antena-pallete.png"));
+    else if (scenarioObject->elementName() == "LaunchPad")
+	item->setIcon(0, QIcon(":/icons/LaunchPad.png"));
+    else if (scenarioObject->elementName() == "Point")
+	item->setIcon(0, QIcon(":/icons/Target.png"));
+    */
+    //item->setIcon(0, QIcon(":/icons/Target.png"));
+
 
     /*
     if (dynamic_cast<ScenarioParticipantType*>(scenarioObject))
@@ -279,7 +292,22 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
 	    //qDebug() << "Adding participant";
             scenario->AbstractParticipant().append(QSharedPointer<ScenarioParticipantType>(participant));
             QTreeWidgetItem* participantItem = new QTreeWidgetItem(parent);
-            addScenarioItems(participantItem, participant);
+	    // Guillermo says: finally adding the item
+	    addScenarioItems(participantItem, participant);
+	    QTextStream out (stdout);
+
+	    // Guillermo says: now placing nice icons beside the labels
+	    if (participant->elementName() == "GroundStation")
+		participantItem->setIcon(0, QIcon(":/icons/ParticipantSTATION.png"));
+	    else if (participant->elementName() == "Point")
+		participantItem->setIcon(0, QIcon(":/icons/ParticipantPOINT.png"));
+	    else if (participant->elementName() == "SC")
+		participantItem->setIcon(0, QIcon(":/icons/ParticipantSATELLITE.png"));
+	    else if (participant->elementName() == "LV")
+		participantItem->setIcon(0, QIcon(":/icons/ParticipantROCKET.png"));
+	    else if (participant->elementName() == "REV")
+		participantItem->setIcon(0, QIcon(":/icons/ParticipantENTRYVEHICLE.png"));
+
         }
         else
         {
@@ -297,7 +325,9 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
         {
             trajectoryPlan->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
             QTreeWidgetItem* trajectoryItem = new QTreeWidgetItem(parent);
-            addScenarioItems(trajectoryItem, trajectory);
+	    // Guillermo says: now placing nice icons beside the labels
+	    parent->setIcon(0, QIcon(":/icons/mission-arcs-loitering.png"));
+            addScenarioItems(trajectoryItem, trajectory);	    	    
             return true;
         }
         else
@@ -314,6 +344,9 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
         {
             trajectoryPlan->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
             QTreeWidgetItem* trajectoryItem = new QTreeWidgetItem(parent);
+	    // Guillermo says: now placing nice icons beside the labels
+	    parent->setIcon(0, QIcon(":/icons/mission-arcs-reentry.png"));
+	    // Adding the item to the scenario
             addScenarioItems(trajectoryItem, trajectory);
             return true;
         }
@@ -331,7 +364,9 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
         {
             scPayload->AbstractPayload().append(QSharedPointer<ScenarioAbstractPayloadType>(payload));
             QTreeWidgetItem* payloadItem = new QTreeWidgetItem(parent);
-            addScenarioItems(payloadItem, payload);
+	    // Guillermo says: now placing nice icons beside the labels
+	    parent->setIcon(0, QIcon(":/icons/Payload.png"));
+	    addScenarioItems(payloadItem, payload);
             return true;
         }
         else
