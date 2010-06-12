@@ -17,7 +17,7 @@
 
 /*
  ------ Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
- ------------------ Authors: Ana Raposo (am.raposo AT gmail.com) and Guillermo Ortega  -------------------------------
+ ------------------ Author: Ana Raposo and Guillermo Ortega  -------------------------------
 
  */
 
@@ -34,7 +34,7 @@ class analysis : public QDialog , private Ui::analysisDialogClass
 {
 Q_OBJECT
 public:
-        analysis(SpaceScenario * scenario, PropagatedScenario*propagatedScenario, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+        analysis(SpaceScenario * scenario, PropagatedScenario*propagatedScenario,QWidget * parent = 0, Qt::WindowFlags f = 0 );
 	~analysis();
         void readScenario();
 int ObjectsIndex(QStringList AllObjects, int Index, QString ObjectType);
@@ -84,7 +84,6 @@ private:
         bool CheckIfMissionArc();
         void InsertingComboBox();
         void ComboBoxOptions();
-
         QComboBox * TimeFramesBox();
         QComboBox * TimeUnitsBox();
         QComboBox * AngleUnitsBox();
@@ -101,6 +100,11 @@ private:
         QList<ScenarioReceiverPayloadType*>RxSC;
         QList<ScenarioReceiverPayloadType*>RxGS;
         QList<ScenarioGroundStationEnvironment*>GSEnvironment;
+        double calcKeplerianElements(sta::StateVector Vector,StaBody*Body,QString OrbElement,
+                                                               double mjd,
+                                                               QString FromCoordinate,
+                                                               QString ToCoordinate);
+        sta::CoordinateSystem CoordSys(QString Coordinate);
 };
 #endif //analysis_H
 

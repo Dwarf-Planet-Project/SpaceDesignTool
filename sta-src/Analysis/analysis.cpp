@@ -17,7 +17,7 @@
 
 /*
  ------ Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
- ------------------ Author: Ana Raposo (am.raposo AT gmail.com and Guillermo Ortega  ------------------------------
+ ------------------ Author: Ana Raposo and Guillermo Ortega  ------------------------------
 
  */
 
@@ -25,7 +25,7 @@
 #include "math.h"
 #include "Scenario/scenario.h"
 #include"Main/propagatedscenario.h"
-//#include <QDebug>
+#include <QDebug>
 #include <QComboBox>
 #include <QMessageBox>
 #include <QInputDialog>
@@ -38,6 +38,7 @@
 #include<QDesktopServices>
 #include<QUrl>
 #include"Astro-Core/calendarTOjulian.h"
+#include"Astro-Core/cartesianTOorbital.h"
 #include"Astro-Core/date.h"
 #include <Coverage/commanalysis.h>
 #include <Coverage/coverageanalysis.h>
@@ -89,7 +90,6 @@ analysis::~analysis()
     }
       delete MissionItem;
     }
-
     for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++)
     {
         QTreeWidgetItem* showItem=treeWidgetShowInReport->topLevelItem(i);
@@ -104,10 +104,8 @@ analysis::~analysis()
             delete box2;
             delete showItem;
      }
-
     delete m_scenario;
     delete m_propagatedScenario;
-
 }
 
 void analysis::readScenario()
@@ -123,7 +121,6 @@ void analysis::readScenario()
 
     foreach (QSharedPointer<ScenarioParticipantType> participant, m_scenario->AbstractParticipant())
     {
-
         int GroundStation=0; //identify the type of Object
         int SpaceCraft=1; //identify the type of Object
         if ((dynamic_cast<ScenarioSC*>(participant.data())!=NULL)) //SC participant
@@ -180,7 +177,6 @@ void analysis::readScenario()
             {
                 if (dynamic_cast<ScenarioTransmitterPayloadType*>(payloadType.data())) //Transmitter
                 {
-
                     QTreeWidgetItem * payloadItem = new QTreeWidgetItem(PayloadSet);
                     payloadItem->setText(0,"Transmitter");
 
@@ -201,8 +197,6 @@ void analysis::readScenario()
                     PayloadType->setHidden(true);
 
                     TxInd++;
-                    //Transmitter=dynamic_cast<ScenarioTransmitterPayloadType*>(payloadType.data());//Ana&Ricardo
-
 
                     TxSC.append(dynamic_cast<ScenarioTransmitterPayloadType*>(payloadType.data()));
                 }
@@ -244,7 +238,7 @@ void analysis::readScenario()
             //QTreeWidgetItem*allObjectIndex=new QTreeWidgetItem(spacecraftItem);
             //allObjectIndex->setText(0,QString::number(TotalIndex));
             //allObjectIndex->setHidden(true);
-
+            ////qDebug()<<TotalIndex<<"Indice total do scenario";
             SpaceObjectInd+=1;
         }
 
@@ -358,7 +352,7 @@ void analysis::readScenario()
                     RxInd++;
 
                     RxGS.append(dynamic_cast<ScenarioReceiverPayloadType*>(payloadType.data()));
-
+                    ////qDebug()<<RxGS[0];
                     //Receiver=dynamic_cast<ScenarioReceiverPayloadType*>(payloadType.data());//Ricardo&Ana
                 }
 
@@ -374,7 +368,7 @@ void analysis::readScenario()
             AllObjects.append("GroundObject");
         }
 
-
+        //aumentar aqui
     }
 
 }
@@ -508,8 +502,8 @@ void analysis::on_AddDefaultPushButton_clicked()
     {
         int numberOfChildren=TreeWidgetMissionArc->topLevelItem(i)->childCount();
         AllObjects.append(TreeWidgetMissionArc->topLevelItem(i)->child(numberOfChildren-1)->text(0));
-
-
+        ////qDebug()<<"Top Level"<<TreeWidgetMissionArc->topLevelItem(i)->text(0);
+        ////qDebug()<<AllObjects.at(i)<<"All objects";
     }
 
     QList<QTreeWidgetItem *> selected=TreeWidgetMissionArc->selectedItems();
@@ -526,18 +520,6 @@ void analysis::on_AddDefaultPushButton_clicked()
     QList<int>TxLocIndex;
     QList<int>RxParentIndex;
     QList<int>RxLocIndex;
-    //int MObjectsSize=0;
-    //int* MObjectsIndex=(int*) calloc(1,sizeof(int));
-    //int MParentIndexSize=0;
-    //int* MParentIndex=(int*) calloc(1,sizeof(int));
-    //int TxParentIndexSize=0;
-    //int* TxParentIndex=(int*) calloc(1,sizeof(int));
-    //int RxParentIndexSize=0;
-    //int* RxParentIndex=(int*) calloc(1,sizeof(int));
-    //int TxLocIndexSize=0;
-    //int* TxLocIndex=(int*) calloc(1,sizeof(int));
-    //int RxLocIndexSize=0;
-    //int* RxLocIndex=(int*) calloc(1,sizeof(int));
 
     if (CheckIfMissionArc())
     {
@@ -546,55 +528,39 @@ void analysis::on_AddDefaultPushButton_clicked()
             int childnum=selected.at(t)->childCount();
             if (selected.at(t)->child(childnum-1)->text(0)=="ground")
             {
-                //GObjectsSize++;
-                //GObjectsIndex=(int*) realloc(GObjectsIndex,GObjectsSize*sizeof(int));
-                //GObjectsIndex[GObjectsSize-1]=selected.at(t)->child(childnum-2)->text(0).toInt();
+
                 GObjectsIndex.append(selected.at(t)->child(childnum-2)->text(0).toInt());
             }
             if (selected.at(t)->child(childnum-1)->text(0)=="space")
             {
-                //SObjectsSize++;
-                //SObjectsIndex=(int*) realloc(SObjectsIndex,SObjectsSize*sizeof(int));
-                //SObjectsIndex[SObjectsSize-1]=selected.at(t)->child(childnum-2)->text(0).toInt();
+
                 SObjectsIndex.append(selected.at(t)->child(childnum-2)->text(0).toInt());
             }
             if (selected.at(t)->child(childnum-1)->text(0)=="MArc")
             {
-                //MObjectsSize++;
-                //MObjectsIndex=(int*) realloc(MObjectsIndex,MObjectsSize*sizeof(int));
-                //MObjectsIndex[MObjectsSize-1]=selected.at(t)->child(childnum-3)->text(0).toInt();
+
                 MIndex.append(selected.at(t)->child(childnum-3)->text(0).toInt());
-                //MParentIndexSize++;
-                //MParentIndex=(int*) realloc(MParentIndex,MParentIndexSize*sizeof(int));
-                //MParentIndex[MParentIndexSize-1]=selected.at(t)->child(childnum-4)->text(0).toInt();
+
                 MParentIndex.append(selected.at(t)->child(childnum-4)->text(0).toInt());
 
             }
             if(selected.at(t)->child(childnum-1)->text(0)=="Tx")
             {
-                //TxParentIndexSize++;
-                //TxParentIndex=(int*) realloc(TxParentIndex,TxParentIndexSize*sizeof(int));
-                //TxParentIndex[TxParentIndexSize-1]=selected.at(t)->child(childnum-3)->text(0).toInt();
+
                 TxParentIndex.append(selected.at(t)->child(childnum-3)->text(0).toInt());
-                //TxLocIndexSize++;
-                //TxLocIndex=(int*) realloc(TxLocIndex,TxLocIndexSize*sizeof(int));
-                //TxLocIndex[TxLocIndexSize-1]=selected.at(t)->child(childnum-4)->text(0).toInt();
+
                 TxLocIndex.append(selected.at(t)->child(childnum-4)->text(0).toInt());
             }
             if(selected.at(t)->child(childnum-1)->text(0)=="Rx")
             {
-                //RxParentIndexSize++;
-                //RxParentIndex=(int*) realloc(RxParentIndex,RxParentIndexSize*sizeof(int));
-                //RxParentIndex[RxParentIndexSize-1]=selected.at(t)->child(childnum-3)->text(0).toInt();
+
                 RxParentIndex.append(selected.at(t)->child(childnum-3)->text(0).toInt());
-                //RxLocIndexSize++;
-                //RxLocIndex=(int*) realloc(RxLocIndex,RxLocIndexSize*sizeof(int));
-                //RxLocIndex[RxLocIndexSize-1]=selected.at(t)->child(childnum-4)->text(0).toInt();
+
                 RxLocIndex.append(selected.at(t)->child(childnum-4)->text(0).toInt());
             }
 
         }
-
+        ////qDebug()<<"faz os vectores";
 
         for(int i=0;i<MParentIndex.size();i++)
         {
@@ -602,8 +568,6 @@ void analysis::on_AddDefaultPushButton_clicked()
 
         }
 
-        //foreach (QSharedPointer<ScenarioParticipantType> participant, m_scenario->AbstractParticipant())
-        //for(int z=0;z<MParentIndexSize;z++)
         for(int z=0;z<SelectedObjects.size();z++)
         {
 
@@ -615,9 +579,7 @@ void analysis::on_AddDefaultPushButton_clicked()
                 ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
                 const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList =
                         vehicle->SCMission()->TrajectoryPlan()->AbstractTrajectory();
-                //trajectoryList.at(m_Object(z))
-                //foreach (QSharedPointer<ScenarioAbstractTrajectoryType> trajectory,trajectoryList)
-                //for(int y=0;y<MObjectsSize;y++)
+
                 {
 
                     //QSharedPointer<ScenarioAbstractTrajectoryType>trajectory=trajectoryList.at(MObjectsIndex[y]);
@@ -702,7 +664,7 @@ void analysis::on_AddDefaultPushButton_clicked()
                 {
                     if (dynamic_cast<ScenarioEntryArcType*>(trajectory.data()))
                     {
-
+                        //////qDebug()<<"loitering";
                         ScenarioEntryArcType* entry = dynamic_cast<ScenarioEntryArcType*>(trajectory.data());
                         QDateTime StartTimeDate=entry->TimeLine()->StartTime();
 
@@ -981,7 +943,7 @@ int analysis::InputsControl()
         QString ToReport=ShowInReport->text(0);
         if((ToReport=="Azimuth")||(ToReport=="Elevation")||(ToReport=="Range")||(ToReport=="Equivalent Isotropical Radiated Power")||(ToReport=="Received Frequency")||(ToReport=="Doppler Shift")||(ToReport=="Received Power")||(ToReport=="Flux Density")||(ToReport=="Overlap Bandwidth Factor")||(ToReport=="Free Space Loss")||(ToReport=="Oxygen Loss")||(ToReport=="Water Vapour Loss")||(ToReport=="Rain Loss")||(ToReport=="Atmospheric Loss")||(ToReport=="Propagation Loss")||(ToReport=="G/T")||(ToReport=="C/No")||(ToReport=="C/N")||(ToReport=="Eb/No")||(ToReport=="BER"))
         {
-
+            ////qDebug()<<"Cov parameters counting in Inputs Control";
             CovCommCount++;
         }
     }
@@ -997,10 +959,10 @@ int analysis::InputsControl()
 
     if(CovCommCount!=0)
     {
-
+        ////qDebug()<<"doing the if, so we're calculating coverage or communication parameters";
         if(Selected.size()<3)
         {
-
+            ////qDebug()<<"select one Tx, one Rx and at least one MArc";
             return 3;
         }
         else
@@ -1010,17 +972,16 @@ int analysis::InputsControl()
                 int childnumber=Selected.at(j)->childCount();
                 if(childnumber==5)
                 {
-                    if(Selected.at(j)->child(childnumber-2)->text(0)=="Loiter")
+                    if(Selected.at(j)->child(3)->text(0)=="loiter")
                     {
-
                         MissionIndexParent.append(Selected.at(j)->child(1)->text(0).toInt());
-
+                        ////qDebug()<<"mission arc index being added"<<Selected.at(j)->child(1)->text(0).toInt();
                     }
                 }
-
+                ////qDebug()<<childnumber<<j<<"hfjuf";
                 if(childnumber==4)//Tx and Rx
                 {
-
+                    ////qDebug()<<"there are Rx and Tx selected"<<Selected.at(j)->child(3)->text(0);
                     if((Selected.at(j)->child(3)->text(0)=="Tx"))
                     {
                         TxCount++;
@@ -1029,21 +990,22 @@ int analysis::InputsControl()
                     {
                         RxCount++;
                     }
-
+                    ////qDebug()<<Selected.at(j)->child(3)->text(0);"child 3";
                     if((Selected.at(j)->child(0)->text(0)=="1"))
                     {
                         spaceObjCount++;
-                        SpaceIndex.append((Selected.at(j)->child(1)->text(0)).toInt());
-
+                        SpaceIndex.append(Selected.at(j)->child(1)->text(0).toInt());
+                        ////qDebug()<<spaceObjCount<<"number of parents of Tx/Rx that are space objects";
                     }
                     if((Selected.at(j)->child(0)->text(0)=="0"))
                     {
-
+                        ////qDebug()<<"there are ground objects too";
                         groundObjCount++;
-
+                        ////qDebug()<<groundObjCount<<"number of parents of Tx/Rx that are ground objects";
                     }
                 }
-
+                ////qDebug()<<TxCount<<RxCount<<"tx e Rx number";
+                ////qDebug()<<spaceObjCount<<groundObjCount<<"space and ground number";
             }
 
             if((RxCount!=1)||(TxCount!=1))
@@ -1056,10 +1018,10 @@ int analysis::InputsControl()
             }
             if((TxCount==1) && (RxCount==1)&&(spaceObjCount==1)&&(groundObjCount==1))
             {
-
-                for(int i=0;i<SpaceIndex.size();i++)
+                for(int i=0;i<MissionIndexParent.size();i++)
                 {
-
+                    ////qDebug()<<"m parent index"<<MissionIndexParent.at(i);
+                    ////qDebug()<<"space index"<<SpaceIndex.at(0);
                     if(MissionIndexParent.at(i)!=SpaceIndex.at(0))
                     {
                         loiterCountCheck++;
@@ -1070,7 +1032,7 @@ int analysis::InputsControl()
             {
                 return 4; //Choose only loiterings belonging to the space object with the payload
             }
-
+            ////qDebug()<<loiterCountCheck<<"loiter count";
             if((RxCount==1)&&(TxCount==1)&&(spaceObjCount==1)&&(groundObjCount==1)&&(loiterCountCheck==0))
             {
                 return 0; //correct inputs, proceed
@@ -1157,15 +1119,11 @@ void analysis::on_GeneratePushButton_clicked()
                 }
                 else
                 {
-
-                    QList<QTreeWidgetItem *> selectedTimes=treeWidgetTimeSpecifications->selectedItems();
-                    int size=selectedTimes.size();
+                    ////qDebug()<<"ha dados para os calculos, todos os erros foram evitados";
                     QList<int>SObjectsIndex;
                     QList<int>GObjectsIndex;
                     QList<int>MObjectsIndex;
                     QList<int>MParentIndex;
-                    double StartTime[size];
-                    double StopTime[size];
 
                     int TxParentIndex;
                     bool RxParentType;
@@ -1203,14 +1161,14 @@ void analysis::on_GeneratePushButton_clicked()
 
                         if(selected.at(t)->child(childnum-1)->text(0)=="Tx")
                         {
-
+                            ////qDebug()<<"entra no if do Tx";
                             TxParentIndex=selected.at(t)->child(1)->text(0).toInt();
-
+                            ////qDebug()<<"save tx parent index"<<TxParentIndex;
                             TxArrayIndex=selected.at(t)->child(2)->text(0).toInt();
-
+                            ////qDebug()<<"save the index of the selected tx"<<TxArrayIndex;
                             int TxParentTy=selected.at(t)->child(0)->text(0).toInt();
 
-
+                            ////qDebug()<<"parent type do tx"<<TxParentTy;
 
                             if(TxParentTy==0)
                             {
@@ -1224,10 +1182,11 @@ void analysis::on_GeneratePushButton_clicked()
                                 indSC=TxParentIndex;
                                 Transmitter=TxSC.at(TxArrayIndex);
                                 TxParentType=true;
-
+                                ////qDebug()<<"tx no sc,qual o parent?"<<indSC;
                             }
                         }
-
+                        ////qDebug()<<"em bool, parent do Tx"<<TxParentType;
+                        //////qDebug()<<"le o RX?";
                         if(selected.at(t)->child(childnum-1)->text(0)=="Rx")
                         {
                             RxParentIndex=selected.at(t)->child(childnum-3)->text(0).toInt();
@@ -1235,17 +1194,17 @@ void analysis::on_GeneratePushButton_clicked()
                             int RxParentTy=(selected.at(t)->child(0)->text(0)).toInt();
                             if(RxParentTy==0)
                             {
-
+                                ////qDebug()<<"entrou no if de GS para parent Type de Rx";
                                 indGS=RxParentIndex;
                                 Receiver=RxGS.at(RxArrayIndex);
                                 Environment=GSEnvironment.at(indGS);
                                 RxParentType=false;
-
+                                ////qDebug()<<"rx na GS,qual o parent?"<<indGS;
                             }
                             //indGS=0;
                             if(RxParentTy==1)
                             {
-
+                                ////qDebug()<<"entrou no if de SC para parent type de Rx";
                                 indSC=RxParentIndex;
                                 Receiver=RxSC.at(RxArrayIndex);
                                 RxParentType=true;
@@ -1296,8 +1255,9 @@ void analysis::on_GeneratePushButton_clicked()
                             int indMissionArc=MObjectsIndex.at(z);
                             MissionArc*arc=spaceObj->mission().at(MObjectsIndex.at(z));
 
-                            //QList<QTreeWidgetItem *> selectedTimes=treeWidgetTimeSpecifications->selectedItems();
-
+                            QList<QTreeWidgetItem *> selectedTimes=treeWidgetTimeSpecifications->selectedItems();
+double StartTime[selectedTimes.size()];
+double StopTime[selectedTimes.size()];
                             int countStart[selectedTimes.size()];
                             int countStop[selectedTimes.size()];
 
@@ -1328,7 +1288,7 @@ void analysis::on_GeneratePushButton_clicked()
                                     while(( (arc->trajectorySampleTime(i))/*+MJDoffset*/)<StartTime[j])
                                     {
 
-
+                                        //////qDebug()<<"startTime"<<StartTime[j];
                                         i=i+1;
                                     }
                                     countStart[j]=i;
@@ -1378,7 +1338,7 @@ void analysis::on_GeneratePushButton_clicked()
                             {
                                 CoverageAnalysis covAna=CoverageAnalysis(m_propagatedScenario, indSC, indGS, indMissionArc);
                                 covAna.reportAER();
-
+                                ////qDebug()<<"Ricky function2";
 
                                 //file.open(QIODevice::WriteOnly);
                                 //QTextStream cov(&file);
@@ -1449,13 +1409,12 @@ void analysis::on_GeneratePushButton_clicked()
                             }
                             for (int k=0;k<selectedTimes.size();k++)
                             {
-
+                                //qDebug()<<"le as opçoes de report-inicio";
                                 QList<QTreeWidgetItem*>SelTime=treeWidgetTimeSpecifications->selectedItems();
                                 QString Start=SelTime[k]->text(0);
                                 QString Stop=SelTime[k]->text(1);
 
                                 stream<<"#######Beginning of time"<<" "<<(k+1)<<"######"<<"\r\n"<<"######"<<"Start Time"<<" "<<Start<<"\t"<<"Stop Time"<<" "<<Stop<<"######"<<"\r\n"<<"MJD"<<"\r\t";
-                                double CurrentJulianDate=sta::DateTimeTOjulian(QDateTime::currentDateTime()); //the first time step of each time interval
 
                                 //printing the labels of the displayed parameters
                                 for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++)
@@ -1468,21 +1427,16 @@ void analysis::on_GeneratePushButton_clicked()
                                     {
                                         stream<<"\r\n";
                                     }
-
+                                    //qDebug()<<"escreve titulos";
 
                                 }
 
                                 inumber=countStop[k]-countStart[k];
 
                                 double MJDdate[inumber];
-                                double DayOfYear[inumber];
                                 double JulianDate[inumber];
-                                double JulianLCL[inumber];
-                                //double JulianLocal[inumber];
                                 QDateTime TimeDateVector[inumber];
-                                QDateTime GregorianLCL[inumber];
-                                //QDateTime CurrentLocalTime;
-                                //double ElapsedTime[inumber];
+                                double ElapsedTime[inumber];
 
                                 for(int j=countStart[k];j<=countStop[k];j++)
                                 {
@@ -1548,20 +1502,21 @@ void analysis::on_GeneratePushButton_clicked()
                                                 if(Coordinate=="EME J2000")
                                                 {
 
-
+                                                    ////qDebug()<<"Receiver no state vector x "<<index<<Receiver->Budget()->FrequencyBand();
+                                                    ////qDebug()<<"linha seguinte ao ouro debug,funciona?";
                                                     sta::StateVector ModifVector[inumber];
                                                     sta::CoordinateSystem EME2000("INERTIAL J2000");
-
+                                                    ////qDebug()<<"define os vectores";
                                                     ModifVector[index]=CoordinateSystem::convert(Vector[index],
                                                                                                  MJDdate[index],
                                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                                  EME2000,
                                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                                  EME2000);
-
+                                                    ////qDebug()<<"a transformaçao foi efectuada com sucesso";
                                                     stream<<"\t"<<ModifVector[index].position.x()<<"\t";
 
-
+                                                    ////qDebug()<<"escreveu no ficheiro";
                                                 }
                                                 if(Coordinate=="EME B1950")
                                                 {
@@ -1920,85 +1875,26 @@ void analysis::on_GeneratePushButton_clicked()
                                             if(TimeCoordinate=="MJD")
                                             {
                                                 stream<<MJDdate[index]<<"\t";
+
                                             }
+
                                             if(TimeCoordinate=="Julian Date")
                                             {
                                                 JulianDate[index]=sta::MjdToJd(MJDdate[index]);
                                                 stream<<JulianDate[index]<<"\t";
                                             }
-                                            if(TimeCoordinate=="Julian LCL")
-                                            {
-                                                JulianDate[index]=sta::MjdToJd(MJDdate[index]); //for each time step
-                                                double ABSdifference=fabs(JulianDate[0]-CurrentJulianDate); //the different between both times is the same for every time step, so we do this for the first time step
-                                                if(JulianDate[0]<CurrentJulianDate)
-                                                {
-                                                    JulianLCL[index]=JulianDate[index]+ABSdifference;
-                                                }
-                                                else
-                                                {
-                                                    JulianLCL[index]=JulianDate[index]-ABSdifference;
-                                                }
-                                                stream<<JulianLCL[index]<<"\t";
-                                            }
-                                            if(TimeCoordinate=="YYDDD")
-                                            {
-                                            JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
-                                            TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
-                                            int Year=TimeDateVector[index].date().year();
-                                            QDateTime FirstDayCurrentYear(QDate(Year,1,1),QTime(0,0,0));
-                                            double StartYearTime=sta::JdToMjd(sta::CalendarToJd(FirstDayCurrentYear));
-                                            QString YearPreLastDigit=QString::number(Year).at(2);
-                                            QString YearLastDigit=QString::number(Year).at(3);
 
-                                            DayOfYear[index]=sta::MjdToFromEpoch(StartYearTime,MJDdate[index],"Days");
-                                            stream<<"YY:"<<YearPreLastDigit<<YearLastDigit<<" "<<"DDD:"<<DayOfYear[index]<<"\t";
-                                            }
                                             if(TimeCoordinate=="Gregorian UTC")
                                             {
                                                 JulianDate[index]=sta::MjdToJd(MJDdate[index])+0.00001;
                                                 TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
                                                 stream<<TimeDateVector[index].date().day()<<"/"<<TimeDateVector[index].date().month()<<"/"<<TimeDateVector[index].date().year()<<" "<<TimeDateVector[index].time().hour()<<":"<<TimeDateVector[index].time().minute()<<":"<<TimeDateVector[index].time().second();
-                                             }
-                                            if(TimeCoordinate=="Gregorian LCL")
-                                            {
-                                                JulianDate[index]=sta::MjdToJd(MJDdate[index]);
-                                                double ABSdifference=fabs(JulianDate[0]-CurrentJulianDate);
-                                                if(JulianDate[0]<CurrentJulianDate)
-                                                {
-                                                    JulianLCL[index]=JulianDate[index]+ABSdifference;
-                                                    GregorianLCL[index]=sta::JdToCalendar(JulianLCL[index]);
-                                                }
-                                                else
-                                                {
-                                                    JulianLCL[index]=JulianDate[index]-ABSdifference;
-                                                    GregorianLCL[index]=sta::JdToCalendar(JulianLCL[index]);
-                                                }
-                                                stream<<GregorianLCL[index].date().day()<<"/"<<GregorianLCL[index].date().month()<<"/"<<GregorianLCL[index].date().year()<<" "<<GregorianLCL[index].time().hour()<<":"<<GregorianLCL[index].time().minute()<<":"<<GregorianLCL[index].time().second();
+
                                             }
                                             if(TimeCoordinate=="Mission Elapsed Time")
                                             {
-                                                QWidget*Box=treeWidgetShowInReport->itemWidget(parameter,2);
-                                                QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
-                                                QString TimeUnits=ComboBox->currentText();
-
-                                                double ElapsedTime=MjdToFromEpoch(StartEpoch,MJDdate[index],TimeUnits);
-                                                if(TimeUnits=="Seconds")
-                                                {
-                                                    stream<<"Seconds from Epoch"<<" "<<ElapsedTime;
-                                                }
-                                                if(TimeUnits=="Minutes")
-                                                {
-                                                    stream<<"Minutes from Epoch"<<" "<<ElapsedTime;
-                                                }
-                                                if(TimeUnits=="Hours")
-                                                {
-                                                    stream<<"Hours from Epoch"<<" "<<ElapsedTime;
-                                                }
-                                                if(TimeUnits=="Days")
-                                                {
-                                                    stream<<"Days from Epoch"<<" "<<ElapsedTime;
-                                                }
                                             }
+
                                             if(TimeCoordinate=="Days,hours,minutes,and seconds from epoch")
                                             {
                                                 QWidget*Box=treeWidgetShowInReport->itemWidget(parameter,2);
@@ -2024,25 +1920,24 @@ void analysis::on_GeneratePushButton_clicked()
                                                     stream<<"Days from Epoch"<<" "<<ElapsedTime;
                                                 }
                                             }
-                                            if(TimeCoordinate=="GMT")
-                                            {
-
-                                            }
                                         }
-                                        //Coverage and Communication
                                         if(name=="Azimuth")
                                         {
+
                                             if(CovIndex[0]<LineOfCoverageReport.size())
                                             {
                                                 QString Line=LineOfCoverageReport.at(CovIndex[0]);
+
                                                 double TimeCovReport=(Line.section("\t",0,0)).toDouble();
                                                 double Azimuth=(Line.section("\t",3,3)).toDouble();
+
                                                 if(abs(MJDdate[index]-TimeCovReport)<10e-6)
                                                 {
                                                     stream<<Azimuth<<"\t";
                                                     CovIndex[0]++;
                                                 }
-                                              else
+
+                                                else
                                                 {
                                                     stream<<"No visibility";
                                                 }
@@ -2074,8 +1969,6 @@ void analysis::on_GeneratePushButton_clicked()
                                                     stream<<"No visibility";
                                                 }
 
-                                                //qDebug()<<"CovIndex"<<CovIndex[1];
-                                                //qDebug()<<"index"<<index;
                                             }
                                             else
                                             {
@@ -2084,7 +1977,6 @@ void analysis::on_GeneratePushButton_clicked()
                                         }
                                         if(name=="Range")
                                         {
-
                                             if(CovIndex[2]<LineOfCoverageReport.length())
                                             {
                                                 QString Line=LineOfCoverageReport.at(CovIndex[2]);
@@ -2103,7 +1995,8 @@ void analysis::on_GeneratePushButton_clicked()
                                                     stream<<"No visibility";
                                                 }
 
-
+                                                //qDebug()<<"CovIndex"<<CovIndex[2];
+                                                //qDebug()<<"index"<<index;
                                             }
                                             else
                                             {
@@ -2112,7 +2005,7 @@ void analysis::on_GeneratePushButton_clicked()
                                         }
                                         if(name=="Equivalent Isotropical Radiated Power")
                                         {
-
+                                            ////qDebug()<<LineOfCommReport.length()<<Comm1Index[0]<<"blabla";
                                             if(Comm1Index[0]<LineOfComm1Report.length())
                                             {
                                                 QString Line=LineOfComm1Report.at(Comm1Index[0]);
@@ -2538,18 +2431,91 @@ void analysis::on_GeneratePushButton_clicked()
                                                 stream<<"No visibility"<<"\t";
                                             }
                                         }
+                                        if(name=="Eccentricity")
+                                        {
+                                            QWidget*Box=treeWidgetShowInReport->itemWidget(parameter,1);
+                                            QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
+                                            QString ToCoord=ComboBox->currentText();
+
+                                          sta::StateVector Vector[inumber];
+                                          Vector[index]=arc->trajectorySample(j);
+                                          double Eccentricity=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"Eccentricity",
+                                                                                                   MJDdate[index],
+                                                                                                   "EME J2000",
+                                                                                                   ToCoord);
+                                            stream<<Eccentricity<<"\t";
+                                        }
+                                        if((name=="Inclination")||
+                                           (name=="Longitude of the Ascending Node")||
+                                           (name=="Argument of Periapsis")||
+                                           (name=="Mean Anomaly at Epoch")||
+                                           (name=="Semimajor Axis"))
+                                        {
+                                            QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,1);
+                                            QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
+                                            QString ToCoord=ComboBox1->currentText();
+                                            QWidget*Box2=treeWidgetShowInReport->itemWidget(parameter,1);
+                                            QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
+                                            QString ToUnit=ComboBox2->currentText();
+
+                                            sta::StateVector Vector[inumber];
+                                            Vector[index]=arc->trajectorySample(j);
+
+                                           if(name=="Inclination")
+                                            {
+                                               double Inclination=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                                        MJDdate[index],
+                                                                                                        "EME J2000",
+                                                                                                        ToCoord);
+                                           stream<<Inclination<<"\t";
+                                           }
+                                           if(name=="Longitude of the Ascending Node")
+                                           {
+                                               double Ascending=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                                        MJDdate[index],
+                                                                                                        "EME J2000",
+                                                                                                        ToCoord);
+                                           stream<<Ascending<<"\t";
+                                           }
+                                           if(name=="Mean Anomaly at Epoch")
+                                           {
+                                               double MeanAnom=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                                        MJDdate[index],
+                                                                                                        "EME J2000",
+                                                                                                        ToCoord);
+                                           stream<<MeanAnom<<"\t";
+                                           }
+                                           if(name=="Argument of Periapsis")
+                                           {
+                                               double Periapsis=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                                        MJDdate[index],
+                                                                                                        "EME J2000",
+                                                                                                        ToCoord);
+                                           stream<<Periapsis<<"\t";
+                                           }
+                                           if(name=="Semimajor Axis")
+                                           {
+                                               double SemAxis=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                                        MJDdate[index],
+                                                                                                        "EME J2000",
+                                                                                                        ToCoord);
+                                           stream<<SemAxis<<"\t";
+                                           }
+                                        }
+
                                     }
 stream<<"\r\n";
                                 }
                             }
 
-
+                            //CovIndex[0]++;
+                            ////qDebug()<<CovIndex[0]<<"linha do ficheiro de coverage que estou a ler";
                             stream<<"\r\n";
                         }
                     }
                     //}
                     //  }
-
+                    //qDebug()<<"file done";
                     file.close();
 
                     QDesktopServices::openUrl(QUrl(tr("file:///analysisReport.txt")));
@@ -2570,7 +2536,74 @@ stream<<"\r\n";
 	this->close();
 
 }*/
+sta::CoordinateSystem analysis::CoordSys(QString Coordinate)
+{
 
+
+    if(Coordinate=="EME J2000")
+    {
+        sta::CoordinateSystem Coord("INERTIAL J2000");
+        return Coord;
+    }
+    if(Coordinate=="EME B1950")
+    {
+       sta::CoordinateSystem Coord("INERTIAL B1950");
+        return Coord;
+    }
+    if(Coordinate=="Fixed")
+    {
+        sta::CoordinateSystem Coord("PLANETO FIXED");
+        return Coord;
+    }
+    if(Coordinate=="Ecliptic J2000")
+    {
+        sta::CoordinateSystem Coord("ECLIPTIC");
+        return Coord;
+    }
+}
+double analysis::calcKeplerianElements(sta::StateVector Vector,StaBody*Body,QString OrbElement,
+                                                       double mjd,
+                                                       QString FromCoordinate,
+                                                       QString ToCoordinate)
+{
+
+    sta::StateVector ModifVector=CoordinateSystem::convert(Vector,
+                                                           mjd,
+                                                           STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                           analysis::CoordSys(FromCoordinate),
+                                                           STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                           analysis::CoordSys(ToCoordinate));
+    double mu = Body->mu();
+    sta::KeplerianElements KepElemList=cartesianTOorbital(mu, ModifVector);
+
+    double Element=0;
+    if(OrbElement=="Eccentricity")
+    {
+        Element=KepElemList.Eccentricity;
+    }
+    if(OrbElement=="Inclination")
+    {
+        Element=KepElemList.Inclination;
+    }
+    if(OrbElement=="Semimajor Axis")
+    {
+        Element=KepElemList.SemimajorAxis;
+    }
+    if(OrbElement=="Longitude of the Ascending Node")
+    {
+        Element=KepElemList.AscendingNode;
+    }
+    if(OrbElement=="Argument of Periapsis")
+    {
+        Element=KepElemList.ArgumentOfPeriapsis;
+    }
+    if(OrbElement=="Mean Anomaly at Epoch")
+    {
+        Element=KepElemList.MeanAnomaly;
+    }
+
+    return Element;
+}
 void analysis::addParameter()
 
 {
@@ -2672,8 +2705,6 @@ QComboBox*analysis::TimeFramesBox()
     TimeBox->addItem(tr("GMT"));
     TimeBox->addItem(tr("MJD"));
     TimeBox->addItem(tr("Days,hours,minutes,and seconds from epoch"));
-    //TimeBox->addItem(tr("MJD"));
-    //TimeBox->addItem(tr("Days,hours,minutes,and seconds from epoch"));
     return TimeBox;
 }
 
@@ -2691,8 +2722,8 @@ QComboBox*analysis::TimeUnitsBox()
 QComboBox*analysis::AngleUnitsBox()
 {
     QComboBox*AngleBox=new QComboBox();
-    AngleBox->addItem(tr("Degrees"),0);
-    AngleBox->addItem(tr("Radians"),1);
+    AngleBox->addItem(tr("Rad"),0);
+    AngleBox->addItem(tr("Deg"),1);
     return AngleBox;
 }
 
@@ -2718,7 +2749,7 @@ void analysis::ComboBoxOptions()
     treeWidgetShowInReport->setColumnWidth(0,138);
     treeWidgetShowInReport->setColumnWidth(1,120);
     treeWidgetShowInReport->setColumnWidth(2,50);
-
+    //qDebug()<<treeWidgetShowInReport->topLevelItemCount();
     for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++)
     {
         QTreeWidgetItem*item=treeWidgetShowInReport->topLevelItem(i);
@@ -2741,10 +2772,16 @@ void analysis::ComboBoxOptions()
             (name=="Apogee Planetocentric Radius")||
             (name=="Perigee Planetocentric Radius")||
             (name=="Range")||
-            (name=="semimajor axis"))
+            (name=="Semimajor Axis"))
         {
             treeWidgetShowInReport->setItemWidget(item,1,CoordinateBox());
             treeWidgetShowInReport->setItemWidget(item,2,DistanceUnitsBox());
+        }
+        if((name=="Eccentricity"))
+
+        {
+            treeWidgetShowInReport->setItemWidget(item,1,CoordinateBox());
+
         }
         if((name=="x velocity")||
            (name=="y velocity")||
@@ -2791,7 +2828,8 @@ void analysis::ComboBoxOptions()
            (name=="Longitude")||
            (name=="Azimuth")||
            (name=="Elevation")||
-           (name=="Flight Path Angle"))
+           (name=="Flight Path Angle")
+           )
         {
             treeWidgetShowInReport->setItemWidget(item,1,CoordinateBox());
             treeWidgetShowInReport->setItemWidget(item,2,AngleUnitsBox());
