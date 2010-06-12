@@ -2058,17 +2058,6 @@ void GroundTrackView::setAnalysis(Analysis* analysis)
 }
 
 
-void GroundTrackView::setCoverageAnalysis(CoverageAnalysis* coverageAnalysis)
-{
-    m_showDiscretization = false;
-    m_showCoverageCurrent = false;
-    m_showCoverageHistory = false;
-    m_showSOLink = false;
-    m_showGOLink = false;
-    //m_analysis = coverageAnalysis;
-}
-
-
 void GroundTrackView::setDiscretizationVisible(bool visible)
 {
     m_showDiscretization = visible;
@@ -2522,14 +2511,6 @@ void GroundTrackPlotTool::setAnalysis(Analysis* analysis)
     m_toolBar->enableAnalysisTools(analysis);
     m_view->setAnalysis(analysis);
 }
-
-void GroundTrackPlotTool::setCoverageAnalysis(CoverageAnalysis* coverageAnalysis)
-{
-    //m_toolBar->enableAnalysisTools(coverageAnalysis);
-    //m_view->setCoverageAnalysis(coverageAnalysis);
-}
-
-
 
 
 
