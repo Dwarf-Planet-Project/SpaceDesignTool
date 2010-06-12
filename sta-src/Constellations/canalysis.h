@@ -14,11 +14,18 @@ class SpaceObject;
 class GroundObject;
 // just a working version, to implement the features, later we use STA internal data
 // ---------------------------------------------------------------------------------
+
+
 struct ConeType
 {
     int shape; // 1 circular, 2 rectangular, ...
     double coneangle;
 };
+
+
+
+
+
 class Antenna
 {
     public:
@@ -33,13 +40,16 @@ class Antenna
                                          cos(m_elevation)*sin(m_azimuth),
                                          sin(m_elevation));
     }
+
     ~Antenna()
     {
     }
+
     int getShape()
     {
         return m_cone.shape;
     }
+
     Eigen::Vector3d VDGdirection()
     {
         return m_VDGdirection;
@@ -133,7 +143,7 @@ class AnaSpaceObject
 class Analysis
 {
     public:
-	Analysis(PropagatedScenario* scenario);
+	Analysis(PropagatedScenario* scenario, bool m_calcCoverage, bool m_calcSOLink, bool m_calcGOLink);
         ~Analysis();
 
         QList<AnaSpaceObject> m_anaSpaceObjectList;
@@ -153,34 +163,6 @@ class Analysis
         bool m_calcGOLink;
 
 };
-
-
-class CoverageAnalysis
-{
-    public:
-        CoverageAnalysis(PropagatedScenario* scenario, bool m_calcCoverage, bool m_calcSOLink, bool m_calcGOLink);
-        ~CoverageAnalysis();
-
-        QList<AnaSpaceObject> m_anaSpaceObjectList;
-        DiscreteMesh* m_discreteMesh;
-    private:
-        AnalysisPropDialog* m_askfeature;
-
-        PropagatedScenario* m_scenario;
-        QList<double> m_samples;
-        //QList<double> m_samplesLinkGroundObjects;
-        double m_startTime;
-        double m_endTime;
-        double m_timeStep;
-        const StaBody* m_body;
-        bool m_calcCoverage;
-        bool m_calcSOLink;
-        bool m_calcGOLink;
-
-};
-
-
-
 
 // compare functions
 bool linkSampleLessThan(const LinkSample &s1, const LinkSample &s2);
