@@ -18,8 +18,7 @@
 /*
  ------ Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
  ------------------ Author: Ana Raposo and Guillermo Ortega  ------------------------------
-
- */
+*/
 
 #include "analysis.h"
 #include "math.h"

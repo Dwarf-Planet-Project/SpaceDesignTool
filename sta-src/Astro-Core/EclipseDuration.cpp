@@ -13,10 +13,14 @@
 
  Further information about the European Union Public Licence - EUPL v.1.1 can
  also be found on the world wide web at http://ec.europa.eu/idabc/eupl
- */
+
+*/
 
 /*
  ------ Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
+*/
+
+/*
  ------------------ Author: Ozgun YILMAZ    ------------------------------------------
  ------------------ email:ozgunus@yahoo.com ------------------------------------------
  */
