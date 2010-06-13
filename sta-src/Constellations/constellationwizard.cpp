@@ -1,40 +1,52 @@
 /*
  This program is free software; you can redistribute it and/or modify it under
- the terms of the GNU Lesser General Public License as published by the Free Software
- Foundation; either version 2 of the License, or (at your option) any later
- version.
+ the terms of the European Union Public Licence - EUPL v.1.1 as published by
+ the European Commission.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- details.
+ FOR A PARTICULAR PURPOSE. See the European Union Public Licence - EUPL v.1.1
+ for more details.
 
- You should have received a copy of the GNU Lesser General Public License along with
- this program; if not, write to the Free Software Foundation, Inc., 59 Temple
- Place - Suite 330, Boston, MA 02111-1307, USA.
- Further information about the GNU Lesser General Public License can also be found on
- the world wide web at http://www.gnu.org.
+ You should have received a copy of the European Union Public Licence - EUPL v.1.1
+ along with this program.
+
+ Further information about the European Union Public Licence - EUPL v.1.1 can
+ also be found on the world wide web at http://ec.europa.eu/idabc/eupl
  */
 
 /*
- ------ Copyright (C) 2009 European Space Agency (space.trajectory.analysis AT gmail.com) ----
  ------------------ Author: Claas Grohnfeldt, Steffen Peter  -------------------------------------------------
  ------------------ E-mail: (claasgr@math.uni-bremen.de, spezisteffen@gmx.de) ----------------------------
- */
+ Patched by Guillermo June 2010 to make it compatible with Cambrian
+
+*/
+
 
 #include "Constellations/constellationwizard.h"
+
 #include "Constellations/constellationmodule.h"
-#include "Scenario/scenario.h"
-#include "Main/mainwindow.h"
+
+//#include "Scenario/scenario.h"
+
 #include "Loitering/loitering.h"
+
 #include "Astro-Core/stamath.h"
+
+#include "Main/mainwindow.h"
+#include "Main/scenariotree.h"
+//#include "Main/scenarioelementbox.h"
+
 #include <QMessageBox>
 #include <QDebug>
+#include <iostream>
+#include <QTextStream>
 
 
 
-ConstellationWizardDialog::ConstellationWizardDialog(MainWindow* parent) :
-        mainwindow(parent)
+
+ConstellationWizardDialog::ConstellationWizardDialog(MainWindow* parent)
+    : mainwindow(parent)
 {
     setupUi(this);
 
@@ -68,6 +80,9 @@ ConstellationWizardDialog::ConstellationWizardDialog(MainWindow* parent) :
 
 }
 
+
+
+
 ConstellationWizardDialog::~ConstellationWizardDialog()
 {
 }
@@ -79,24 +94,29 @@ void ConstellationWizardDialog::disableflower()
 }
 
 
+
+
 void ConstellationWizardDialog::accept()
 {
+
 
     // close Constellation Wizard
     close();
 
-    /* Guillermo disables this class
-
     // open Loitering Dialog and get additional Properties
     LoiteringDialog* loiteringdialog = new LoiteringDialog();
     loiteringdialog->setFocus();
-    loiteringdialog->disableInitialStateParameters();
+    //loiteringdialog->groupBox->enabledChange(true);
+    //loiteringdialog->groupBox->hide();
+    //loiteringdialog->disableInitialStateParameters();
     loiteringdialog->exec();
     loiteringdialog->clearFocus();
 
     // generate keplerian elements of the satellites
     SatelliteKeplerian* satellitekeplerian;
     int n; // number of Satellites
+
+
     if (constTypeComboBox->currentIndex() == 0) // Walker
     {
         bool ok;
@@ -134,9 +154,16 @@ void ConstellationWizardDialog::accept()
         double domega;
         if (!scheme) domega = fakdg * limitedOrbitNodeRangeLineEdit->text().toDouble(&ok);
         // get central body data
-        ScenarioEnvironment* env = new ScenarioEnvironment();
-        loiteringdialog->saveValues(env);
-        const StaBody* body =  env->centralBody()->body();
+	// ScenarioEnvironment* env = new ScenarioEnvironment();    // Guillermo comented out
+	ScenarioSCEnvironmentType* env = new ScenarioSCEnvironmentType();
+	loiteringdialog->saveValues(env);
+	// const StaBody* body =  env->centralBody()->body(); // Guillermo comented out
+	const StaBody* body = STA_SOLAR_SYSTEM->lookup("Earth");
+	//loitering.Environment()->CentralBody()->setName("EARTH");
+	//loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
+	//loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+
+
         // rotation angular velocity
         double rotV = 1/(body->rotationState()->rotationPeriod()*86400);
         if (body->name()=="Earth") {
@@ -172,28 +199,38 @@ void ConstellationWizardDialog::accept()
         return;
     }
 
-    SpaceScenario* scenario = new SpaceScenario();
+
+    //////////////////////////// Creating a new scenario //////////////////////////////////
+    // Creating a new scenario
+    QDomDocument scenarioDoc;
+    QDomElement rootElement = scenarioDoc.firstChildElement("tns:SpaceScenario");
+    SpaceScenario* scenario = SpaceScenario::create(rootElement);
     scenario->setName(constTypeComboBox->currentText());
+    ScenarioTree* constelationTree = new ScenarioTree();
+
+    QTreeWidgetItem* invisibleRoot = constelationTree->invisibleRootItem();
+    QTreeWidgetItem* rootItem = new QTreeWidgetItem(invisibleRoot);
+
+    //m_scenarioView->m_scenarioTree->addScenarioItems(rootItem, scenario);
+    //m_scenarioView->m_scenarioTree->addTopLevelItem(rootItem);
 
     // create new Participants, Properties and trajectories
     for (int i = 0; i < n; i++)
     {
 
-        ScenarioSpaceVehicle* satellite;
-        satellite = new ScenarioSpaceVehicle();
-        satellite->setType("Satellite");
-        satellite->setName(satellitekeplerian[i].name);
+	/*
+	// Commented out by Guillermo to comply with new scenario in Cambrian
+	ScenarioSpaceVehicle* satellite;
+	satellite = new ScenarioSpaceVehicle();
+	satellite->setType("Satellite");
+	satellite->setName(satellitekeplerian[i].name);
         scenario->addParticipant(satellite);
-
         ScenarioTrajectoryPlan* trajectoryplan = new ScenarioTrajectoryPlan();
-
         satellite->setTrajectoryPlan(trajectoryplan);
-
         ScenarioLoiteringTrajectory* loiteringtrajectory = new ScenarioLoiteringTrajectory();
         loiteringdialog->saveValues(loiteringtrajectory->environment());
         loiteringdialog->saveValues(loiteringtrajectory->trajectoryPropagation());
         trajectoryplan->addTrajectory(loiteringtrajectory);
-
         ScenarioSimulationParameters* simulationparameters = new ScenarioSimulationParameters(0);
         StaBody* body = (StaBody*) loiteringtrajectory->environment()->centralBody()->body();
         ScenarioBody* centralsystemBody = new ScenarioBody(body);
@@ -204,7 +241,41 @@ void ConstellationWizardDialog::accept()
         ScenarioInitialStatePosition* initialstateposition = new ScenarioInitialStatePosition();
         initialstateposition->setCentralsystemBody(centralsystemBody);
         simulationparameters->setInitialStatePosition(initialstateposition);
+	*/
 
+
+
+	// First, creating the scenario elements
+	ScenarioParticipantType* participant = NULL;
+
+	// The participant is a satellite
+	participant = ScenarioSC::create(rootElement);
+	participant->setName(satellitekeplerian[i].name);
+	// Adding the participant to the scenario
+	scenario->AbstractParticipant().append(QSharedPointer<ScenarioParticipantType>(participant));
+	QTreeWidgetItem* participantItem = new QTreeWidgetItem(rootItem);
+	participantItem->setIcon(0, QIcon(":/icons/ParticipantSATELLITE.png"));
+	constelationTree->addScenarioItems(participantItem, participant);
+
+
+	//QDomElement elementElementIdentifier = doc.firstChildElement(); // the ElementIdentifier
+	//QDomElement elementSCProgram = doc.nextSiblingElement(); // the SCProgram
+	//QDomElement elementSCMission = doc.nextSiblingElement(); // the SCMission
+
+	ScenarioTrajectoryPlan* trajectoryPlan = dynamic_cast<ScenarioTrajectoryPlan*>(participant);
+	ScenarioAbstractTrajectoryType* trajectory = NULL;
+
+	QDomElement elementTrajectory = scenarioDoc.nextSiblingElement();
+	QString elementTrajectoryName = elementTrajectory.tagName();
+
+	trajectory = ScenarioLoiteringType::create(elementTrajectory);
+	if (trajectoryPlan)
+	{
+	    trajectoryPlan->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
+	}
+
+
+	/*
         ScenarioKeplerianElements* keplerian = new ScenarioKeplerianElements();
         keplerian->m_semimajorAxis = satellitekeplerian[i].param[0];
         keplerian->m_eccentricity = satellitekeplerian[i].param[1];
@@ -217,14 +288,13 @@ void ConstellationWizardDialog::accept()
 
         loiteringtrajectory->setSimulationParameters(simulationparameters);
         loiteringdialog->saveValuesConstellation(simulationparameters);
+	*/
+
     }
 
     mainwindow->setScenario(scenario);
     return;
 
-*/
-
 
 }
-
 

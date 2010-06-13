@@ -32,18 +32,25 @@
 #include "canalysis.h"
 #include "discretization.h"
 #include <QList>
+
 class Antenna;
+
 struct SatelliteKeplerian
 {
     QString name; // satellite's name
     double param[6]; // eccentricity, inclination, RAAN, argument of periapsis, true anomaly
 };
+
 bool walkerConstellation(int numPl, int numSat, double sem, double incl, int f, SatelliteKeplerian* satellitekeplerian);
+
 bool flowerConstellation(int np, int nd, int ns, double om, double inc, double hp, bool scheme, double omega1, double psi1, double domega,
                          double radiusCB, double omegaCB, double muCB, double j2CB, SatelliteKeplerian* satellitekeplerian);
+
 bool selfDefinedConstellation(int n, SatelliteKeplerian* satellitekeplerian);
 
+
 double getfa(double a, int np, int nd, double inc, double hp, double radiusCB, double omegaCB, double muCB, double j2CB);
+
 double getfmean(double arg, double e, double mean);
 
 // antennas stick always on transmitter
