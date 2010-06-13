@@ -72,12 +72,7 @@ Q_OBJECT
         void updateTreeItems(QTreeWidgetItem* parentItem, ScenarioObject* scenarioObject);
         void editScenarioObject(ScenarioObject* scenarioObject,
                                 QTreeWidgetItem* item);
-        struct geomStruct // Added by Dominic for communication between geometry and aerothermodynamics
-        {
-            QString fileName;
-            double refArea;
-        };
-        geomStruct geomForAero;
+
         QDomDocument m_domDocument;
         QHash<QTreeWidgetItem *, QDomElement> m_domElementForItem;
         QIcon m_folderIcon;

@@ -67,6 +67,7 @@ public:
 
     VehicleGeometry(QString path);
     VehicleGeometry(int VehicleType, double* params, int Nlines, int Npoints);
+    VehicleGeometry(const VehicleGeometry & vehicle);
     VehicleGeometry();
     ~VehicleGeometry();
     void CalculateGlobalCharacteristics();

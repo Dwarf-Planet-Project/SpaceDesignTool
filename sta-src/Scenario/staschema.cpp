@@ -7135,8 +7135,8 @@ QList<QSharedPointer<ScenarioObject> >ScenarioREVProgramType::children() const
 // ScenarioREVMissionType
 ScenarioREVMissionType::ScenarioREVMissionType()
 {
-    m_Payload = QSharedPointer<ScenarioREVPayloadType>(new ScenarioREVPayloadType());
     m_REVTrajectoryPlan = QSharedPointer<ScenarioREVTrajectoryPlanType>(new ScenarioREVTrajectoryPlanType());
+    m_Payload = QSharedPointer<ScenarioREVPayloadType>(new ScenarioREVPayloadType());
 }
 
 ScenarioREVMissionType* ScenarioREVMissionType::create(const QDomElement& e)
@@ -7154,11 +7154,11 @@ ScenarioREVMissionType* ScenarioREVMissionType::create(const QDomElement& e)
 bool ScenarioREVMissionType::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
-    if (next->tagName() == "tns:Payload")
-        m_Payload = QSharedPointer<ScenarioREVPayloadType>(ScenarioREVPayloadType::create(*next));
-    *next = next->nextSiblingElement();
     if (next->tagName() == "tns:REVTrajectoryPlan")
         m_REVTrajectoryPlan = QSharedPointer<ScenarioREVTrajectoryPlanType>(ScenarioREVTrajectoryPlanType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:Payload")
+        m_Payload = QSharedPointer<ScenarioREVPayloadType>(ScenarioREVPayloadType::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
@@ -7166,16 +7166,16 @@ bool ScenarioREVMissionType::load(const QDomElement& e, QDomElement* next)
 QDomElement ScenarioREVMissionType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc, elementName);
-    if (!m_Payload.isNull())
-    {
-        QString tagName = "Payload";
-        QDomElement child = m_Payload->toDomElement(doc, tagName);
-        e.appendChild(child);
-    }
     if (!m_REVTrajectoryPlan.isNull())
     {
         QString tagName = "REVTrajectoryPlan";
         QDomElement child = m_REVTrajectoryPlan->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_Payload.isNull())
+    {
+        QString tagName = "Payload";
+        QDomElement child = m_Payload->toDomElement(doc, tagName);
         e.appendChild(child);
     }
     return e;
@@ -7184,8 +7184,8 @@ QDomElement ScenarioREVMissionType::toDomElement(QDomDocument& doc, const QStrin
 QList<QSharedPointer<ScenarioObject> >ScenarioREVMissionType::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
-    if (!m_Payload.isNull()) children << m_Payload;
     if (!m_REVTrajectoryPlan.isNull()) children << m_REVTrajectoryPlan;
+    if (!m_Payload.isNull()) children << m_Payload;
     return children;
 }
 
@@ -7276,9 +7276,7 @@ ScenarioEntryArcType::ScenarioEntryArcType()
     m_Environment = QSharedPointer<ScenarioEnvironmentType>(new ScenarioEnvironmentType());
     m_TimeLine = QSharedPointer<ScenarioTimeLine>(new ScenarioTimeLine());
     m_InitialPosition = QSharedPointer<ScenarioInitialPositionType>(new ScenarioInitialPositionType());
-    m_InitialAttitude = QSharedPointer<ScenarioInitialAttitudeType>(new ScenarioInitialAttitudeType());
     m_PropagationPosition = QSharedPointer<ScenarioPropagationPositionType>(new ScenarioPropagationPositionType());
-    m_PropagationAttitude = QSharedPointer<ScenarioPropagationAttitudeType>(new ScenarioPropagationAttitudeType());
     m_Constraints = QSharedPointer<ScenarioREVConstraintsType>(new ScenarioREVConstraintsType());
     m_targetFinalState = QSharedPointer<ScenarioREVFinalStateType>(new ScenarioREVFinalStateType());
     m_ConstraintsViolation = QSharedPointer<ScenarioREVConstraintsViolationType>(new ScenarioREVConstraintsViolationType());
@@ -7314,13 +7312,15 @@ bool ScenarioEntryArcType::load(const QDomElement& e, QDomElement* next)
     *next = next->nextSiblingElement();
     if (next->tagName() == "tns:InitialAttitude")
         m_InitialAttitude = QSharedPointer<ScenarioInitialAttitudeType>(ScenarioInitialAttitudeType::create(*next));
-    *next = next->nextSiblingElement();
+if (!m_InitialAttitude.isNull())
+        *next = next->nextSiblingElement();
     if (next->tagName() == "tns:PropagationPosition")
         m_PropagationPosition = QSharedPointer<ScenarioPropagationPositionType>(ScenarioPropagationPositionType::create(*next));
     *next = next->nextSiblingElement();
     if (next->tagName() == "tns:PropagationAttitude")
         m_PropagationAttitude = QSharedPointer<ScenarioPropagationAttitudeType>(ScenarioPropagationAttitudeType::create(*next));
-    *next = next->nextSiblingElement();
+if (!m_PropagationAttitude.isNull())
+        *next = next->nextSiblingElement();
     if (next->tagName() == "tns:Constraints")
         m_Constraints = QSharedPointer<ScenarioREVConstraintsType>(ScenarioREVConstraintsType::create(*next));
     *next = next->nextSiblingElement();
@@ -7432,7 +7432,6 @@ QList<QSharedPointer<ScenarioObject> >ScenarioEntryArcType::children() const
 ScenarioREVFinalStateType::ScenarioREVFinalStateType() :
     m_degreesOfFreedom(0)
 {
-    m_FinalPositionState = QSharedPointer<ScenarioREVFinalPositionStateType>(new ScenarioREVFinalPositionStateType());
     m_DispersionAnalysis = QSharedPointer<ScenarioREVDispersionAnalysisType>(new ScenarioREVDispersionAnalysisType());
 }
 
@@ -7453,9 +7452,6 @@ bool ScenarioREVFinalStateType::load(const QDomElement& e, QDomElement* next)
     ScenarioObject::load(e, next);
         m_entryType = (next->firstChild().toText().data());
         *next = next->nextSiblingElement();
-    if (next->tagName() == "tns:FinalPositionState")
-        m_FinalPositionState = QSharedPointer<ScenarioREVFinalPositionStateType>(ScenarioREVFinalPositionStateType::create(*next));
-    *next = next->nextSiblingElement();
         m_degreesOfFreedom = parseInt(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
         m_attitudeController = (next->firstChild().toText().data());
@@ -7470,12 +7466,6 @@ QDomElement ScenarioREVFinalStateType::toDomElement(QDomDocument& doc, const QSt
 {
     QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     e.appendChild(createSimpleElement(doc, "tns:entryType", m_entryType));
-    if (!m_FinalPositionState.isNull())
-    {
-        QString tagName = "FinalPositionState";
-        QDomElement child = m_FinalPositionState->toDomElement(doc, tagName);
-        e.appendChild(child);
-    }
     e.appendChild(createSimpleElement(doc, "tns:degreesOfFreedom", m_degreesOfFreedom));
     e.appendChild(createSimpleElement(doc, "tns:attitudeController", m_attitudeController));
     if (!m_DispersionAnalysis.isNull())
@@ -7490,7 +7480,6 @@ QDomElement ScenarioREVFinalStateType::toDomElement(QDomDocument& doc, const QSt
 QList<QSharedPointer<ScenarioObject> >ScenarioREVFinalStateType::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
-    if (!m_FinalPositionState.isNull()) children << m_FinalPositionState;
     if (!m_DispersionAnalysis.isNull()) children << m_DispersionAnalysis;
     return children;
 }
@@ -8885,8 +8874,6 @@ bool ScenarioREVAeroThermodynamicsType::load(const QDomElement& e, QDomElement* 
         *next = next->nextSiblingElement();
         m_momentReferencePoint = parseDoubleList(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
-        m_geomFile = (next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
     return true;
 }
 
@@ -8911,7 +8898,6 @@ QDomElement ScenarioREVAeroThermodynamicsType::toDomElement(QDomDocument& doc, c
     e.appendChild(createSimpleElement(doc, "tns:CoefficientType", m_CoefficientType));
     e.appendChild(createSimpleElement(doc, "tns:emissivity", m_emissivity));
     e.appendChild(createSimpleElement(doc, "tns:momentReferencePoint", m_momentReferencePoint));
-    e.appendChild(createSimpleElement(doc, "tns:geomFile", m_geomFile));
     return e;
 }
 

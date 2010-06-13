@@ -54,7 +54,7 @@ public:
     PartGeometry();//Default Constructor
     PartGeometry(double* Points, QString name, int* HeaderInts, double* HeaderDoubles);//Constructor from data read from .wgs file
     PartGeometry(Vector3d** Points, int Nlines, int Npoints);
-    PartGeometry(const PartGeometry & MirrorPart);//Constructor of mirrored part
+    PartGeometry(const PartGeometry & PartIn);//Copy Construtor
     PartGeometry(const PartAnalysis & SplitPart,int Type);//Constructor of split part
     PartGeometry(const FusiformPartAnalysis & SplitPart,int Type);//Constructor of split part
     PartGeometry(const PlanarPartAnalysis & SplitPart,int Type);//Constructor of split part

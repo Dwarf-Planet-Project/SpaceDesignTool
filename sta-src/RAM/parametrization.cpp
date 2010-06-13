@@ -91,7 +91,6 @@ void ParametrizationDialog::on_generateGeometryButton_clicked()
                 NoseRadius=params[0];
                 Volume=vehicle->Volume;
                 Surface=vehicle->Surface;
-
                 delete vehicle;
                 delete [] params;
                 currentType=geomStackedWidget->currentIndex();

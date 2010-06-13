@@ -37,6 +37,14 @@
 AerodynamicMethodDialog::~AerodynamicMethodDialog()
 {
     int i,j;
+    delete [] m_Methods[0];
+    delete [] m_Methods[1];
+    delete [] m_Methods;
+    delete [] defaultMethods[0];
+    delete [] defaultMethods[1];
+    delete [] defaultMethods[2];
+    delete [] defaultMethods;
+
     for(i=1;i<aeroTreeWidget->topLevelItemCount();i++)
     {
         QTreeWidgetItem* treeItem=aeroTreeWidget->topLevelItem(i);
@@ -56,54 +64,57 @@ AerodynamicMethodDialog::~AerodynamicMethodDialog()
     delete m_vehicle;
 }
 
-AerodynamicMethodDialog::AerodynamicMethodDialog(ScenarioREVAeroThermodynamicsType* aerothermo, QWidget * parent, Qt::WindowFlags f) : QDialog(parent,f)
+AerodynamicMethodDialog::AerodynamicMethodDialog(ScenarioREVAeroThermodynamicsType* aerothermo, QString geomFileName, QWidget * parent, Qt::WindowFlags f) : QDialog(parent,f)
 {
-	setupUi(this);
-        m_aerothermo=aerothermo;
-        GeomFile="data/vehiclewgs/"+m_aerothermo->geomFile();
-        geomFileLineEdit->setReadOnly(1);
-        geomFileLineEdit->setText(GeomFile);
-        autoSelected=0;
-        attitudeGroupBox->setEnabled(1);
-        forceCoordBox->setCurrentIndex(1);
-        momentCoordBox->setCurrentIndex(0);
-        Parameters=new PartAnalysis::SelectionStruct;
-        if(aerothermo->CoefficientType()!=1)
-        {
-            attitudeGroupBox->setEnabled(0);
-        }
-        else
-        {
-            defaultAlphaLineEdit->setText("0");
-            defaultBetaLineEdit->setText("0");
-            momentCoordLabel->setEnabled(0);
-            momentCoordBox->setEnabled(0);
-        }
+    setupUi(this);
+    loadGeomDialog = new QFileDialog(this, "Select a file:", "data/vehiclewgs/");
+    connect(geomFileButton,SIGNAL(clicked()),loadGeomDialog,SLOT(exec()));
+    connect(loadGeomDialog,SIGNAL(fileSelected(QString)),this,SLOT(writeGeomFile(QString)));
+    m_aerothermo=aerothermo;
+    GeomFile="data/vehiclewgs/"+geomFileName;//m_aerothermo->geomFile();
+    //geomFileLineEdit->setReadOnly(1);
+    geomFileLineEdit->setText(GeomFile);
+    autoSelected=0;
+    attitudeGroupBox->setEnabled(1);
+    forceCoordBox->setCurrentIndex(1);
+    momentCoordBox->setCurrentIndex(0);
+    Parameters=new PartAnalysis::SelectionStruct;
+    if(aerothermo->CoefficientType()!=1)
+    {
+        attitudeGroupBox->setEnabled(0);
+    }
+    else
+    {
+        defaultAlphaLineEdit->setText("0");
+        defaultBetaLineEdit->setText("0");
+        momentCoordLabel->setEnabled(0);
+        momentCoordBox->setEnabled(0);
+    }
 
-        m_vehicle=new VehicleGeometry(GeomFile);
-        m_Methods=new int*[2];
-        int i;
-        for(i=0;i<2;i++)
-        {
-            m_Methods[i]=new int[2*m_vehicle->nParts];
-            for(int j=0;j<2*m_vehicle->nParts;j++)
-                m_Methods[i][j]=1;
+    m_vehicle=new VehicleGeometry(GeomFile);
+    m_Methods=new int*[2];
+    int i;
+    for(i=0;i<2;i++)
+    {
+        m_Methods[i]=new int[2*m_vehicle->nParts];
+        for(int j=0;j<2*m_vehicle->nParts;j++)
+            m_Methods[i][j]=1;
 
-        }
-        defaultMethods=new int*[3];
-        for(i=0; i<3;i++)
-        {
-            defaultMethods[i]=new int[4];
-        }
-        setDefaultMethods();
-        aeroTreeWidget->setColumnWidth(0,200);
-        aeroTreeWidget->setColumnWidth(1,210);
-        aeroTreeWidget->setColumnWidth(2,60);
-        aeroTreeWidget->setColumnWidth(3,60);
+    }
+    defaultMethods=new int*[3];
+    for(i=0; i<3;i++)
+    {
+        defaultMethods[i]=new int[4];
+    }
+    setDefaultMethods();
+    aeroTreeWidget->setColumnWidth(0,200);
+    aeroTreeWidget->setColumnWidth(1,210);
+    aeroTreeWidget->setColumnWidth(2,60);
+    aeroTreeWidget->setColumnWidth(3,60);
 
-        setTreeParts();
-        setAeroMethods();
-        initializeAutoSettings();
+    setTreeParts();
+    setAeroMethods();
+    initializeAutoSettings();
 }
 
 
@@ -324,26 +335,54 @@ bool AerodynamicMethodDialog::on_generatePushButton_clicked()
         aeroAn1->GenerateDatabase(ForceCoord,MomentCoord);
         aeroAn2->GenerateDatabase(ForceCoord,MomentCoord);
         aeroAn=new AeroAnalysis(aeroAn1,aeroAn2,highHypMin,lowHypMax);
+        delete aeroAn1;
+        delete aeroAn2;
     }
     fileList=aeroAn->writeAeroDatabase(ForceCoord,MomentCoord);
     for(i=0;i<aeroAn->CoefsOut;i++)
     {
+        QString CoefName;
         m_aerothermo->AeroCoefFile()[i]->setFileLocation(fileList[i]);
         switch(i)
         {
-        case 0: m_aerothermo->AeroCoefFile()[i]->setCoefName("CD");
+        case 0:
+            if(ForceCoord==0)
+                CoefName="CA";
+            else
+                CoefName="CD";
             break;
-            case 1: m_aerothermo->AeroCoefFile()[i]->setCoefName("CS");
-                break;
-            case 2: m_aerothermo->AeroCoefFile()[i]->setCoefName("CL");
-                break;
-            case 3: m_aerothermo->AeroCoefFile()[i]->setCoefName("Cl");
-                break;
-            case 4: m_aerothermo->AeroCoefFile()[i]->setCoefName("Cm");
-                break;
-            case 5: m_aerothermo->AeroCoefFile()[i]->setCoefName("Cn");
-                break;
-            }
+        case 1:
+            if(ForceCoord==0)
+                CoefName="CY";
+            else
+                CoefName="CS";
+            break;
+        case 2:
+            if(ForceCoord==0)
+                CoefName="CN";
+            else
+                CoefName="CL";
+            break;
+        case 3:
+            if(MomentCoord==0)
+                CoefName="Cl";
+            else
+                CoefName="Clpr";
+            break;
+        case 4:
+            if(MomentCoord==0)
+                CoefName="Cm";
+            else
+                CoefName="Cmpr";
+            break;
+        case 5: if(MomentCoord==0)
+                CoefName="Cn";
+            else
+                CoefName="Cnpr";
+            break;
+        }
+        m_aerothermo->AeroCoefFile()[i]->setCoefName(CoefName);
+
 
         if(aeroAn->CoefsOut==3)
         {
@@ -353,8 +392,48 @@ bool AerodynamicMethodDialog::on_generatePushButton_clicked()
         {
             m_aerothermo->AeroCoefFile()[i]->setNumberOfIndepVars(6);
         }
+        if(m_aerothermo->CoefficientType()==1)
+        {
+            m_aerothermo->AeroCoefFile()[i]->setNumberOfIndepVars(1);
+            QList<int> nPoints;
+            nPoints.append(aeroAn->nMach);
+            m_aerothermo->AeroCoefFile()[i]->setIndepVarDiscretizationPoints(nPoints);
+            QList<QString> nNames;
+            nNames.append("Mach");
+            m_aerothermo->AeroCoefFile()[i]->setIndepVarNames(nNames);
+            QList<double> nMin;
+            m_aerothermo->AeroCoefFile()[i]->setIndepVarMin(nMin);
+            nMin.append(aeroAn->Machs[0]);
+            QList<double> nMax;
+            nMax.append(aeroAn->Machs[aeroAn->nMach-1]);
+            m_aerothermo->AeroCoefFile()[i]->setIndepVarMax(nMax);
+        }
+        else if(m_aerothermo->CoefficientType()==2 || m_aerothermo->CoefficientType()==3)
+        {
+            m_aerothermo->AeroCoefFile()[i]->setNumberOfIndepVars(3);
+            QList<int> nPoints;
+            nPoints.append(aeroAn->nMach);
+            nPoints.append(aeroAn->nAlpha);
+            nPoints.append(aeroAn->nBeta);
+            m_aerothermo->AeroCoefFile()[i]->setIndepVarDiscretizationPoints(nPoints);
+            QList<QString> nNames;
+            nNames.append("Mach");
+            nNames.append("Alpha");
+            nNames.append("Beta");
+            m_aerothermo->AeroCoefFile()[i]->setIndepVarNames(nNames);
+            QList<double> nMin;
+            nMin.append(aeroAn->Machs[0]);
+            nMin.append(aeroAn->alphas[0]);
+            nMin.append(aeroAn->betas[0]);
+            m_aerothermo->AeroCoefFile()[i]->setIndepVarMin(nMin);
+            QList<double> nMax;
+            nMax.append(aeroAn->Machs[aeroAn->nMach-1]);
+            nMax.append(aeroAn->Machs[aeroAn->nAlpha-1]);
+            nMax.append(aeroAn->Machs[aeroAn->nBeta-1]);
+            m_aerothermo->AeroCoefFile()[i]->setIndepVarMax(nMax);
+        }
     }
-
+    delete aeroAn;
     QMessageBox::information(this, tr(""), tr("Aerodynamic coefficient files generated"));
 
     return true;
@@ -388,7 +467,7 @@ void AerodynamicMethodDialog::getAeroMethods()
                 addn=m_vehicle->nParts;
             QComboBox * box = dynamic_cast<QComboBox*>(boxWidget);
             m_Methods[j%2][i+addn]=box->currentIndex();
-         }
+        }
     }
 }
 
@@ -412,9 +491,8 @@ void AerodynamicMethodDialog::setAeroMethods()
                 addn=m_vehicle->nParts;
 
             QComboBox * box = dynamic_cast<QComboBox*>(boxWidget);
-
             box->setCurrentIndex(m_Methods[j%2][i+addn]);
-              }
+        }
     }
 }
 
@@ -507,3 +585,55 @@ void AerodynamicMethodDialog::setDefaultMethods()
 
 }
 
+void AerodynamicMethodDialog::writeGeomFile(QString filename)
+{
+    filename.remove(this->loadGeomDialog->directory().path() + "/");
+    geomFileLineEdit->setText("data/vehiclewgs/"+filename);
+    GeomFile=geomFileLineEdit->text();
+    newVehicleSelected();
+    //fileLoaded=1;
+}
+
+void AerodynamicMethodDialog::newVehicleSelected()
+{
+    int i,j;
+    for(i=1;i<aeroTreeWidget->topLevelItemCount();i++)
+    {
+        QTreeWidgetItem* treeItem=aeroTreeWidget->topLevelItem(i);
+        for(j=0;j<treeItem->childCount();j++)
+        {
+            QTreeWidgetItem * methodItem=treeItem->child(j);
+            QWidget * boxWidget;
+            boxWidget=aeroTreeWidget->itemWidget(methodItem,1);
+            QComboBox * box = dynamic_cast<QComboBox*>(boxWidget);
+            delete box;
+            delete methodItem;
+        }
+        delete treeItem;
+
+    }
+    delete m_vehicle;
+    delete [] m_Methods[0];
+    delete [] m_Methods[1];
+    m_vehicle=new VehicleGeometry(GeomFile);
+    m_vehicle->CalculateGlobalCharacteristics();
+    globChars.Rn=m_vehicle->NoseRadius;
+    globChars.S=m_vehicle->Surface;
+    globChars.V=m_vehicle->Volume;
+    for(i=0;i<2;i++)
+    {
+        m_Methods[i]=new int[2*m_vehicle->nParts];
+        for(int j=0;j<2*m_vehicle->nParts;j++)
+            m_Methods[i][j]=1;
+
+    }
+    setTreeParts();
+    setAeroMethods();
+}
+
+void AerodynamicMethodDialog::getGeomFileInfo(QString& filename, globCharStruct & geomOut)
+{
+    filename=GeomFile;
+    filename.remove(0,16);
+    geomOut=globChars;
+}

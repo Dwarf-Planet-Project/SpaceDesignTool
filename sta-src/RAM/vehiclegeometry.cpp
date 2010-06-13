@@ -38,9 +38,9 @@ VehicleGeometry::VehicleGeometry()
 
 VehicleGeometry::~VehicleGeometry()
 {
-    int i, j, k;
+    int i;
     for(i=0;i<nParts;i++)
-    {       
+    {
        PartsOut[i].deAllocateArrays();
     }
     delete [] PartsOut;
@@ -140,7 +140,7 @@ VehicleGeometry::VehicleGeometry(QString path)
             }
         }
         Parts[k]=PartGeometry(Points,partname,HeaderInts,HeaderDoubles);//Create part and put into Parts-array
-        delete Points;
+        delete [] Points;
         LocSym[k]=HeaderInts[3];
         GlobSym[k]=HeaderInts[4];
         pointstream.readLine();
@@ -181,12 +181,31 @@ VehicleGeometry::VehicleGeometry(QString path)
     PartsOut=new PartGeometry[nParts];
     for(int i=0;i<nParts;i++)
     {
-        PartsOut[i]=Parts[i];
+        PartsOut[i]=PartGeometry(Parts[i]);
+        PartsOut[i].PanelCalculations();
+        Parts[i].deAllocateArrays();
     }
     delete [] Parts;
     while(!pointstream.atEnd())//just to make sure
         pointstream.readLine();
     geom.close();//close
+
+}
+
+VehicleGeometry::VehicleGeometry(const VehicleGeometry & vehicle)
+{
+    int i;
+    nParts=vehicle.nParts;
+    PartsOut=new PartGeometry[nParts];
+    for(int i=0;i<nParts;i++)
+    {
+        PartsOut[i]=PartGeometry(vehicle.PartsOut[i]);
+        PartsOut[i].PanelCalculations();
+    }
+    Volume=vehicle.Volume;
+    Surface=vehicle.Surface;
+    NoseRadius=vehicle.NoseRadius;
+    Filename=vehicle.Filename;
 
 }
 
@@ -669,12 +688,13 @@ void VehicleGeometry::UpdateParts(bool SplitBoolArr[])
         //Changes global variable PartsOut to include split parts
 {
     int i;
-    PartGeometry PartsTemp[nParts];
-    PartGeometry Copy;
+    PartGeometry * PartsTemp;
+    PartsTemp=new PartGeometry[nParts];
     for(i=0;i<nParts;i++)//Copy old entries from PartsOut into temporary array
     {
-        Copy=PartsOut[i];
-        PartsTemp[i]=Copy;
+        PartsTemp[i]=PartGeometry(PartsOut[i]);
+        PartsTemp[i].PanelCalculations();
+        PartsOut[i].deAllocateArrays();
     }
     delete [] PartsOut;//delete old array
     PartsOut=new PartGeometry[nParts+SplitCount];//allocate new array
@@ -683,17 +703,20 @@ void VehicleGeometry::UpdateParts(bool SplitBoolArr[])
     {
         if(SplitBoolArr[i]==0)//Copy old part into new partsOut array if unmodified
         {
-            Copy=PartsTemp[i];
-            PartsOut[OldParts]=Copy;
+            PartsOut[OldParts]=PartGeometry(PartsTemp[i]);
+            PartsOut[OldParts].PanelCalculations();
             OldParts++;
         }
+        PartsTemp[i].deAllocateArrays();
     }
+    delete [] PartsTemp;
     if(SplitCount!=0)
     {
         for(i=0;i<2*SplitCount;i++)//Copy all split parts into new PartsOut array
         {
-            Copy=PartsSplit[i];
-            PartsOut[i+OldParts]=Copy;
+            PartsOut[i+OldParts]=PartGeometry(PartsSplit[i]);
+            PartsOut[i+OldParts].PanelCalculations();
+            PartsSplit[i].deAllocateArrays();
         }
         delete [] PartsSplit; //deallocate
         nParts=nParts+SplitCount;//update number of parts in geometry

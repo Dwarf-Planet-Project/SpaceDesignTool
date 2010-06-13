@@ -32,21 +32,20 @@
 AeroAnalysis::AeroAnalysis(VehicleGeometry *_Vehicle, double _cref, double _Sref, Vector3d _MomentRef,int** _SelectedMethods, QList<double> _writeAeroList, bool _writeGeom)
 {
     gamma=1.4;
-    Vehicle=*_Vehicle;
+    Vehicle=new VehicleGeometry(*_Vehicle);
     cref=_cref;
     Sref=_Sref;
     MomentRef=_MomentRef;
     writeAeroList=_writeAeroList;
     writeGeom=_writeGeom;
-    qDebug()<<writeGeom;
 
-    SelectedMethods=new int* [Vehicle.nParts];
+    SelectedMethods=new int* [Vehicle->nParts];
 
     for(int i=0;i<2;i++)
     {
-        SelectedMethods[i]=new int[Vehicle.nParts];
+        SelectedMethods[i]=new int[Vehicle->nParts];
     }
-    for(int i=0;i<Vehicle.nParts;i++)
+    for(int i=0;i<Vehicle->nParts;i++)
     {
         for(int j=0;j<2;j++)
         {
@@ -76,7 +75,7 @@ AeroAnalysis::AeroAnalysis(AeroAnalysis* Low, AeroAnalysis* High, double Mlow, d
     cref=Low->cref;
     Sref=Low->Sref;
     MomentRef=Low->MomentRef;
-    Vehicle=Low->Vehicle;
+    Vehicle=new VehicleGeometry(*Low->Vehicle);
     nAlpha=Low->nAlpha;
     nBeta=Low->nBeta;
     //nMach=Low->nMach+High->nMach-4;//Four points overlap
@@ -150,7 +149,7 @@ AeroAnalysis::AeroAnalysis(AeroAnalysis* Low, AeroAnalysis* High, double Mlow, d
 AeroAnalysis::~AeroAnalysis()
 {
     int i;
-
+    delete Vehicle;
     for(i=0;i<nCases;i++)
     {
         delete [] VehicleCoefs[i];
@@ -198,9 +197,10 @@ void AeroAnalysis::GenerateDatabase(int ForceCoord,int MomentCoord)
 
 QList<QString> AeroAnalysis::writeAeroDatabase(int ForceCoord, int MomentCoord)
 {
+    qDebug()<<"writing aero database";
     int coef;
     QList<QString> fileList;
-    QString vehicleName=((Vehicle.Filename).c_str());
+    QString vehicleName=((Vehicle->Filename).c_str());
     vehicleName.remove(0,16);
     vehicleName.remove(vehicleName.length()-4,4);
     QString folder="data/aerodynamics/";
@@ -305,7 +305,7 @@ void AeroAnalysis::writeCoefFile(QString filename, int coef)
 
 void AeroAnalysis::writeDetailGeomInfo()
 {
-    QString VehicleName=QString(Vehicle.Filename.c_str());
+    QString VehicleName=QString(Vehicle->Filename.c_str());
     VehicleName.remove(0,16);
     VehicleName.remove(VehicleName.length()-4,4);
     QString File="data/ramoutput/"+VehicleName+"panelDetails.stad";
@@ -313,24 +313,24 @@ void AeroAnalysis::writeDetailGeomInfo()
     geomFile.open(QIODevice::WriteOnly);
     QTextStream geomStream(&geomFile);
     int i,j,k;
-    for(i=0; i<Vehicle.nParts;i++)
+    for(i=0; i<Vehicle->nParts;i++)
     {
         DetermineInclination(i,0.0,0.0);//Also write inclination angles for 0 angle of attack and sideslip
-        for(j=0; j<Vehicle.PartsOut[i].Nlines-1;j++)
+        for(j=0; j<Vehicle->PartsOut[i].Nlines-1;j++)
         {
-            for(k=0; k<Vehicle.PartsOut[i].Npoints-1; k++)
+            for(k=0; k<Vehicle->PartsOut[i].Npoints-1; k++)
             {
                 geomStream << i << " ";
                 geomStream << j << " ";
                 geomStream << k << " ";
-                geomStream << Vehicle.PartsOut[i].Centroid[j][k].x() << " ";
-                geomStream << Vehicle.PartsOut[i].Centroid[j][k].y() << " ";
-                geomStream << Vehicle.PartsOut[i].Centroid[j][k].z() << " ";
-                geomStream << Vehicle.PartsOut[i].Normal[j][k].x() << " ";
-                geomStream << Vehicle.PartsOut[i].Normal[j][k].y() << " ";
-                geomStream << Vehicle.PartsOut[i].Normal[j][k].z() << " ";
-                geomStream << Vehicle.PartsOut[i].Area[j][k] << " ";
-                geomStream << Vehicle.PartsOut[i].theta[j][k] << " ";
+                geomStream << Vehicle->PartsOut[i].Centroid[j][k].x() << " ";
+                geomStream << Vehicle->PartsOut[i].Centroid[j][k].y() << " ";
+                geomStream << Vehicle->PartsOut[i].Centroid[j][k].z() << " ";
+                geomStream << Vehicle->PartsOut[i].Normal[j][k].x() << " ";
+                geomStream << Vehicle->PartsOut[i].Normal[j][k].y() << " ";
+                geomStream << Vehicle->PartsOut[i].Normal[j][k].z() << " ";
+                geomStream << Vehicle->PartsOut[i].Area[j][k] << " ";
+                geomStream << Vehicle->PartsOut[i].theta[j][k] << " ";
                 geomStream<<endl;
 
             }
@@ -341,7 +341,7 @@ void AeroAnalysis::writeDetailGeomInfo()
 
 void AeroAnalysis::writePressures(double M, double a, double b)
 {
-    QString VehicleName=QString(Vehicle.Filename.c_str());
+    QString VehicleName=QString(Vehicle->Filename.c_str());
     VehicleName.remove(0,16);
     VehicleName.remove(VehicleName.length()-4,4);
     QString presFileName="data/ramoutput/"+VehicleName+"_pressure_M"+QString::number(M)+"_a"+QString::number(a)+"_b"+QString::number(b)+".stad";
@@ -349,28 +349,30 @@ void AeroAnalysis::writePressures(double M, double a, double b)
     presFile.open(QIODevice::Append);
     QTextStream presStream(&presFile);
     int i,j,k;
-    for(i=0; i<Vehicle.nParts;i++)
+    for(i=0; i<Vehicle->nParts;i++)
     {
-        for(j=0; j<Vehicle.PartsOut[i].Nlines-1;j++)
+        for(j=0; j<Vehicle->PartsOut[i].Nlines;j++)
         {
-            for(k=0; k<Vehicle.PartsOut[i].Npoints-1; k++)
+            for(k=0; k<Vehicle->PartsOut[i].Npoints; k++)
             {
-                //presStream<<Vehicle.PartsOut[i].Cp[j][k]<<" ";
+                //presStream<<Vehicle->PartsOut[i].Cp[j][k]<<" ";
 
                 presStream<<k+1<<" ";
                 presStream<<i+1<<" ";
                 presStream<<j+1<<" ";
-                presStream<<Vehicle.PartsOut[i].PointsVec[j][k].x()<<" ";
-                presStream<<Vehicle.PartsOut[i].PointsVec[j][k].y()<<" ";
-                presStream<<Vehicle.PartsOut[i].PointsVec[j][k].z()<<" ";
+                presStream<<Vehicle->PartsOut[i].PointsVec[j][k].x()<<" ";
+                presStream<<Vehicle->PartsOut[i].PointsVec[j][k].y()<<" ";
+                presStream<<Vehicle->PartsOut[i].PointsVec[j][k].z()<<" ";
 
-                if((j!=Vehicle.PartsOut[i].Nlines-1) && (k!=Vehicle.PartsOut[i].Npoints-1))
+                if((j!=Vehicle->PartsOut[i].Nlines-1) && (k!=Vehicle->PartsOut[i].Npoints-1))
                 {
-                    presStream<<Vehicle.PartsOut[i].Cp[j][k]<<" ";
+                    presStream<<Vehicle->PartsOut[i].Cp[j][k]<<" ";
+                    presStream<<Vehicle->PartsOut[i].theta[j][k]<<" ";
+
                 }
                 else
                 {
-                    presStream<<0.0<<" ";//Write something to make loading into Matlab more user friendly
+                    presStream<<0.0<<" "<<0.0<<" ";//Write something to make loading into Matlab more user friendly
                 }
                 presStream<<endl;
 
@@ -390,12 +392,12 @@ double* AeroAnalysis::DetermineVehicleCoefs(double M, double alpha, double beta,
     int j;
     for(int i=0;i<CoefsOut;i++)
         VehicleCoefs[i]=0.0;
-    for(i=0;i<Vehicle.nParts;i++)
+    for(i=0;i<Vehicle->nParts;i++)
     {
         DetermineInclination(i,alpha,beta);
     }
-    //Vehicle.ShadowDetermination(); to be implemented in future expansion
-    for(i=0;i<Vehicle.nParts;i++)
+    //Vehicle->ShadowDetermination(); to be implemented in future expansion
+    for(i=0;i<Vehicle->nParts;i++)
     {
         PartCoefs=DeterminePartCoefs(i,M,alpha,beta,ForceCoord,MomentCoord);
         for(j=0;j<CoefsOut;j++)
@@ -452,7 +454,8 @@ void AeroAnalysis::setIndepVariablesFull(int SimType, double* AttitudeBounds, do
         betas[i]=AttitudeBounds[2]+((double)i)/(nBeta-1)*(AttitudeBounds[3]-AttitudeBounds[2]);
     setMachRange(Mmin,Mmax);
 
-    /*//Horus settings
+    //Horus settings
+    /*
     nMach=4;
     Machs=new double[nMach];
     Machs[0]=3;
@@ -546,11 +549,11 @@ double* AeroAnalysis::getForceCoefs(int PartNumber)
     int i;
     int j;
     Vector3d ForceCoef=Vector3d(0,0,0);
-    for(i=0;i<Vehicle.PartsOut[PartNumber].Nlines-1;i++)
+    for(i=0;i<Vehicle->PartsOut[PartNumber].Nlines-1;i++)
     {
-        for(j=0;j<Vehicle.PartsOut[PartNumber].Npoints-1;j++)
+        for(j=0;j<Vehicle->PartsOut[PartNumber].Npoints-1;j++)
         {
-            ForceCoef=ForceCoef-Vehicle.PartsOut[PartNumber].Cp[i][j]*Vehicle.PartsOut[PartNumber].Area[i][j]*Vehicle.PartsOut[PartNumber].Normal[i][j];
+            ForceCoef=ForceCoef-Vehicle->PartsOut[PartNumber].Cp[i][j]*Vehicle->PartsOut[PartNumber].Area[i][j]*Vehicle->PartsOut[PartNumber].Normal[i][j];
         }
     }
     ForceCoef=ForceCoef/Sref;
@@ -568,12 +571,12 @@ double* AeroAnalysis::getMomentCoefs(int PartNumber)
     int j;
     Vector3d MomentCoef=Vector3d(0,0,0);
     Vector3d r;
-    for(i=0;i<Vehicle.PartsOut[PartNumber].Nlines-1;i++)
+    for(i=0;i<Vehicle->PartsOut[PartNumber].Nlines-1;i++)
     {
-        for(j=0;j<Vehicle.PartsOut[PartNumber].Npoints-1;j++)
+        for(j=0;j<Vehicle->PartsOut[PartNumber].Npoints-1;j++)
         {
-            r=(Vehicle.PartsOut[PartNumber].Centroid[i][j]-MomentRef);
-            MomentCoef=MomentCoef-Vehicle.PartsOut[PartNumber].Cp[i][j]*Vehicle.PartsOut[PartNumber].Area[i][j]*(r.cross(Vehicle.PartsOut[PartNumber].Normal[i][j]));
+            r=(Vehicle->PartsOut[PartNumber].Centroid[i][j]-MomentRef);
+            MomentCoef=MomentCoef-Vehicle->PartsOut[PartNumber].Cp[i][j]*Vehicle->PartsOut[PartNumber].Area[i][j]*(r.cross(Vehicle->PartsOut[PartNumber].Normal[i][j]));
 
         }
     }
@@ -593,12 +596,12 @@ void AeroAnalysis::DetermineInclination(int PartNumber, double alpha, double bet
     double Vinfy=-sin(beta);
     double Vinfz=sin(alpha)*cos(beta);
     Vinf=Vector3d(Vinfx,Vinfy,Vinfz);
-    for(i=0;i<Vehicle.PartsOut[PartNumber].Nlines-1;i++)
+    for(i=0;i<Vehicle->PartsOut[PartNumber].Nlines-1;i++)
     {
-        for(j=0;j<Vehicle.PartsOut[PartNumber].Npoints-1;j++)
+        for(j=0;j<Vehicle->PartsOut[PartNumber].Npoints-1;j++)
         {
-            cosdel=-1*Vehicle.PartsOut[PartNumber].Normal[i][j].dot(Vinf);
-            Vehicle.PartsOut[PartNumber].theta[i][j]=sta::Pi()/2-acos(cosdel);
+            cosdel=-1*Vehicle->PartsOut[PartNumber].Normal[i][j].dot(Vinf);
+            Vehicle->PartsOut[PartNumber].theta[i][j]=sta::Pi()/2-acos(cosdel);
         }
     }
 }
@@ -659,13 +662,13 @@ void AeroAnalysis::setStagnationPressure(double M)
 
 void AeroAnalysis::Newtonian(double M, int PartNumber)
 {
-    for(int i=0;i<Vehicle.PartsOut[PartNumber].Nlines-1;i++)
+    for(int i=0;i<Vehicle->PartsOut[PartNumber].Nlines-1;i++)
     {
-        for(int j=0;j<Vehicle.PartsOut[PartNumber].Npoints-1;j++)
+        for(int j=0;j<Vehicle->PartsOut[PartNumber].Npoints-1;j++)
         {
-            if(Vehicle.PartsOut[PartNumber].theta[i][j]>=0)
+            if(Vehicle->PartsOut[PartNumber].theta[i][j]>=0)
             {
-                Vehicle.PartsOut[PartNumber].Cp[i][j]=2*pow(sin(Vehicle.PartsOut[PartNumber].theta[i][j]),2.0);
+                Vehicle->PartsOut[PartNumber].Cp[i][j]=2*pow(sin(Vehicle->PartsOut[PartNumber].theta[i][j]),2.0);
             }
         }
     }
@@ -673,17 +676,17 @@ void AeroAnalysis::Newtonian(double M, int PartNumber)
 
 void AeroAnalysis::ModifiedNewtonian(double M, int PartNumber, int Type)
 {
-    for(int i=0;i<Vehicle.PartsOut[PartNumber].Nlines-1;i++)
+    for(int i=0;i<Vehicle->PartsOut[PartNumber].Nlines-1;i++)
     {
-        for(int j=0;j<Vehicle.PartsOut[PartNumber].Npoints-1;j++)
+        for(int j=0;j<Vehicle->PartsOut[PartNumber].Npoints-1;j++)
         {
-            if(Vehicle.PartsOut[PartNumber].theta[i][j]>=0 && Type==1)
+            if(Vehicle->PartsOut[PartNumber].theta[i][j]>=0 && Type==1)
             {
-                Vehicle.PartsOut[PartNumber].Cp[i][j]=Cps*pow(sin(Vehicle.PartsOut[PartNumber].theta[i][j]),2.0);
+                Vehicle->PartsOut[PartNumber].Cp[i][j]=Cps*pow(sin(Vehicle->PartsOut[PartNumber].theta[i][j]),2.0);
             }
-            else if(Vehicle.PartsOut[PartNumber].theta[i][j]<0 && Type==-1)
+            else if(Vehicle->PartsOut[PartNumber].theta[i][j]<0 && Type==-1)
             {
-                Vehicle.PartsOut[PartNumber].Cp[i][j]=0;
+                Vehicle->PartsOut[PartNumber].Cp[i][j]=0;
             }
         }
     }
@@ -730,30 +733,30 @@ void AeroAnalysis::ModifiedNewtonianPrandtlMeyer(double M, int PartNumber, int T
     q=pow(2/(2+(gamma-1)*pow(Mq,2.0)),gamma/(gamma-1));
     thetalim=asin(pow((q-pcap)/(1-pcap),0.5));
     numq=sqrt((gamma+1)/(gamma-1))*atan(sqrt((gamma-1)/(gamma+1)*(pow(Mq,2.0)-1)))-atan(sqrt(pow(Mq,2.0)-1));
-    for(int i=0;i<Vehicle.PartsOut[PartNumber].Nlines-1;i++)
+    for(int i=0;i<Vehicle->PartsOut[PartNumber].Nlines-1;i++)
     {
-        for(int j=0;j<Vehicle.PartsOut[PartNumber].Npoints-1;j++)
+        for(int j=0;j<Vehicle->PartsOut[PartNumber].Npoints-1;j++)
         {
-            if(Vehicle.PartsOut[PartNumber].theta[i][j]>=-0.01 && Type==1)
+            if(Vehicle->PartsOut[PartNumber].theta[i][j]>=-0.01 && Type==1)
             {
-                if(Vehicle.PartsOut[PartNumber].theta[i][j]>thetalim)
+                if(Vehicle->PartsOut[PartNumber].theta[i][j]>thetalim)
                 {
-                    Vehicle.PartsOut[PartNumber].Cp[i][j]=Cps*pow(sin(Vehicle.PartsOut[PartNumber].theta[i][j]),2.0);
+                    Vehicle->PartsOut[PartNumber].Cp[i][j]=Cps*pow(sin(Vehicle->PartsOut[PartNumber].theta[i][j]),2.0);
                 }
                 else
                 {
-                    Mloc=InversePrandtlMeyer(numq+(sta::Pi()/2-Vehicle.PartsOut[PartNumber].theta[i][j])-(sta::Pi()/2-thetalim));
-                    Vehicle.PartsOut[PartNumber].Cp[i][j]=2/(gamma*Msq)*((1/pcap)*pow(1+(gamma-1)/2*pow(Mloc,2.0),-gamma/(gamma-1))-1);
+                    Mloc=InversePrandtlMeyer(numq+(sta::Pi()/2-Vehicle->PartsOut[PartNumber].theta[i][j])-(sta::Pi()/2-thetalim));
+                    Vehicle->PartsOut[PartNumber].Cp[i][j]=2/(gamma*Msq)*((1/pcap)*pow(1+(gamma-1)/2*pow(Mloc,2.0),-gamma/(gamma-1))-1);
                 }
             }
-            else if(Vehicle.PartsOut[PartNumber].theta[i][j]<0 && Type==-1)
+            else if(Vehicle->PartsOut[PartNumber].theta[i][j]<0 && Type==-1)
             {
-                Mloc=InversePrandtlMeyer(thetalim-Vehicle.PartsOut[PartNumber].theta[i][j]+numq);
+                Mloc=InversePrandtlMeyer(thetalim-Vehicle->PartsOut[PartNumber].theta[i][j]+numq);
                 Cpcheck=(1/pcap)*pow(1+(gamma-1)/2*pow(Mloc,2.0),-gamma/(gamma-1));
                 if (Cpcheck>Cpvac)
-                    Vehicle.PartsOut[PartNumber].Cp[i][j]=Cpcheck;
+                    Vehicle->PartsOut[PartNumber].Cp[i][j]=Cpcheck;
                 else
-                    Vehicle.PartsOut[PartNumber].Cp[i][j]=Cpvac;
+                    Vehicle->PartsOut[PartNumber].Cp[i][j]=Cpvac;
             }
         }
     }
@@ -774,34 +777,34 @@ void AeroAnalysis::TangentWedge(double M, int PartNumber)
     double sinth2;
     double Msq=pow(M,2.0);
     double Mns;
-    for(int i=0;i<Vehicle.PartsOut[PartNumber].Nlines-1;i++)
+    for(int i=0;i<Vehicle->PartsOut[PartNumber].Nlines-1;i++)
     {
-        for(int j=0;j<Vehicle.PartsOut[PartNumber].Npoints-1;j++)
+        for(int j=0;j<Vehicle->PartsOut[PartNumber].Npoints-1;j++)
         {
-            if(Vehicle.PartsOut[PartNumber].theta[i][j]>=0)
+            if(Vehicle->PartsOut[PartNumber].theta[i][j]>=0)
             {
-                if(Vehicle.PartsOut[PartNumber].theta[i][j]>0.7956)
+                if(Vehicle->PartsOut[PartNumber].theta[i][j]>0.7956)
                 {
-                    Mns=M*sin(Vehicle.PartsOut[PartNumber].theta[i][j]);
-                    Vehicle.PartsOut[PartNumber].Cp[i][j]=(pow(1.2*Mns+exp(-0.6*Mns),2.0)-1)/(0.6*pow(M,2.0));
+                    Mns=M*sin(Vehicle->PartsOut[PartNumber].theta[i][j]);
+                    Vehicle->PartsOut[PartNumber].Cp[i][j]=(pow(1.2*Mns+exp(-0.6*Mns),2.0)-1)/(0.6*pow(M,2.0));
                 }
                 else
                 {
-                    b=-1*(Msq+2)/Msq-gamma*pow(sin(Vehicle.PartsOut[PartNumber].theta[i][j]),2.0);
-                    c=(2*Msq+1)/pow(Msq,2.0)+(pow(gamma+1,2.0)/4+(gamma-1)/Msq)*pow(sin(Vehicle.PartsOut[PartNumber].theta[i][j]),2.0);
-                    d=-1*pow(cos(Vehicle.PartsOut[PartNumber].theta[i][j]),2.0)/pow(Msq,2.0);
+                    b=-1*(Msq+2)/Msq-gamma*pow(sin(Vehicle->PartsOut[PartNumber].theta[i][j]),2.0);
+                    c=(2*Msq+1)/pow(Msq,2.0)+(pow(gamma+1,2.0)/4+(gamma-1)/Msq)*pow(sin(Vehicle->PartsOut[PartNumber].theta[i][j]),2.0);
+                    d=-1*pow(cos(Vehicle->PartsOut[PartNumber].theta[i][j]),2.0)/pow(Msq,2.0);
                     p=(-b*b/3+c);
                     q=2*pow((b/3),3.0)-b*c/3+d;
                     if (pow(p/3,3.0)<-1*pow((q/2),2.0))
                     {
                         omega=acos(-1*q/(2*sqrt(-1*pow(p/3,3.0))));
                         R=-2*sqrt(-p/3)*cos(omega/3+sta::Pi()/3)-b/3;
-                        Vehicle.PartsOut[PartNumber].Cp[i][j]=4*(Msq*R-1)/((gamma+1)*Msq);
+                        Vehicle->PartsOut[PartNumber].Cp[i][j]=4*(Msq*R-1)/((gamma+1)*Msq);
                     }
                     else
                     {
-                        Mns=M*sin(Vehicle.PartsOut[PartNumber].theta[i][j]);
-                        Vehicle.PartsOut[PartNumber].Cp[i][j]=(pow(1.2*Mns+exp(-0.6*Mns),2.0)-1)/(0.6*pow(M,2.0));
+                        Mns=M*sin(Vehicle->PartsOut[PartNumber].theta[i][j]);
+                        Vehicle->PartsOut[PartNumber].Cp[i][j]=(pow(1.2*Mns+exp(-0.6*Mns),2.0)-1)/(0.6*pow(M,2.0));
                     }
                 }
             }
@@ -816,14 +819,14 @@ void AeroAnalysis::TangentWedgeEmpirical(double M, int PartNumber)
         //Note: relation is very close for high Mach Numbers, not quite as good for Low hypersonic, see STA-TUD-TN-1001
 {
     double Mns;
-    for(int i=0;i<Vehicle.PartsOut[PartNumber].Nlines-1;i++)
+    for(int i=0;i<Vehicle->PartsOut[PartNumber].Nlines-1;i++)
     {
-        for(int j=0;j<Vehicle.PartsOut[PartNumber].Npoints-1;j++)
+        for(int j=0;j<Vehicle->PartsOut[PartNumber].Npoints-1;j++)
         {
-            if(Vehicle.PartsOut[PartNumber].theta[i][j]>=0)
+            if(Vehicle->PartsOut[PartNumber].theta[i][j]>=0)
             {
-                Mns=M*sin(Vehicle.PartsOut[PartNumber].theta[i][j]);
-                Vehicle.PartsOut[PartNumber].Cp[i][j]=(pow(1.2*Mns+exp(-0.6*Mns),2.0)-1)/(0.6*pow(M,2.0));
+                Mns=M*sin(Vehicle->PartsOut[PartNumber].theta[i][j]);
+                Vehicle->PartsOut[PartNumber].Cp[i][j]=(pow(1.2*Mns+exp(-0.6*Mns),2.0)-1)/(0.6*pow(M,2.0));
             }
         }
     }
@@ -837,15 +840,15 @@ void AeroAnalysis::TangentConeEmpirical(double M, int PartNumber)
 {
     double Mns;
     double temp;
-    for(int i=0;i<Vehicle.PartsOut[PartNumber].Nlines-1;i++)
+    for(int i=0;i<Vehicle->PartsOut[PartNumber].Nlines-1;i++)
     {
-        for(int j=0;j<Vehicle.PartsOut[PartNumber].Npoints-1;j++)
+        for(int j=0;j<Vehicle->PartsOut[PartNumber].Npoints-1;j++)
         {
-            if(Vehicle.PartsOut[PartNumber].theta[i][j]>0)
+            if(Vehicle->PartsOut[PartNumber].theta[i][j]>0)
             {
-                Mns=M*sin(Vehicle.PartsOut[PartNumber].theta[i][j]);
+                Mns=M*sin(Vehicle->PartsOut[PartNumber].theta[i][j]);
                 temp=pow((1.090909*Mns+exp(-0.5454545*Mns)),2);
-                Vehicle.PartsOut[PartNumber].Cp[i][j]=(48*temp*pow(sin(Vehicle.PartsOut[PartNumber].theta[i][j]),2))/(23*temp-5);
+                Vehicle->PartsOut[PartNumber].Cp[i][j]=(48*temp*pow(sin(Vehicle->PartsOut[PartNumber].theta[i][j]),2))/(23*temp-5);
             }
         }
     }
@@ -861,25 +864,25 @@ void AeroAnalysis::ModifiedDahlemBuck(double M, int PartNumber)
     double a;
     double n;
 
-    for(int i=0;i<Vehicle.PartsOut[PartNumber].Nlines-1;i++)
+    for(int i=0;i<Vehicle->PartsOut[PartNumber].Nlines-1;i++)
     {
-        for(int j=0;j<Vehicle.PartsOut[PartNumber].Npoints-1;j++)
+        for(int j=0;j<Vehicle->PartsOut[PartNumber].Npoints-1;j++)
         {
-            if(Vehicle.PartsOut[PartNumber].theta[i][j]>=0)
+            if(Vehicle->PartsOut[PartNumber].theta[i][j]>=0)
             {
-                if(Vehicle.PartsOut[PartNumber].theta[i][j]>thCheck)
-                    Vehicle.PartsOut[PartNumber].Cp[i][j]=2*pow(sin(Vehicle.PartsOut[PartNumber].theta[i][j]),2.0);
+                if(Vehicle->PartsOut[PartNumber].theta[i][j]>thCheck)
+                    Vehicle->PartsOut[PartNumber].Cp[i][j]=2*pow(sin(Vehicle->PartsOut[PartNumber].theta[i][j]),2.0);
                 else
-                    Vehicle.PartsOut[PartNumber].Cp[i][j]=(1+sin(4*pow(Vehicle.PartsOut[PartNumber].theta[i][j],0.75)))/(pow(4*cos(Vehicle.PartsOut[PartNumber].theta[i][j])*cos(2*Vehicle.PartsOut[PartNumber].theta[i][j]),0.75))*pow(sin(Vehicle.PartsOut[PartNumber].theta[i][j]),1.25);
+                    Vehicle->PartsOut[PartNumber].Cp[i][j]=(1+sin(4*pow(Vehicle->PartsOut[PartNumber].theta[i][j],0.75)))/(pow(4*cos(Vehicle->PartsOut[PartNumber].theta[i][j])*cos(2*Vehicle->PartsOut[PartNumber].theta[i][j]),0.75))*pow(sin(Vehicle->PartsOut[PartNumber].theta[i][j]),1.25);
                 if(M>20)
                     f=1.0;
                 else
                 {
                     a=(6-0.3*M)+sin(sta::Pi()*(log(M)-0.588)/1.20);
                     n=1.15+0.5*sin(sta::Pi()*(log(M)-0.916)/3.29);
-                    f=1+a*pow(Vehicle.PartsOut[PartNumber].theta[i][j]*180/sta::Pi(),-1*n);
+                    f=1+a*pow(Vehicle->PartsOut[PartNumber].theta[i][j]*180/sta::Pi(),-1*n);
                 }
-                Vehicle.PartsOut[PartNumber].Cp[i][j]=Vehicle.PartsOut[PartNumber].Cp[i][j]*f;
+                Vehicle->PartsOut[PartNumber].Cp[i][j]=Vehicle->PartsOut[PartNumber].Cp[i][j]*f;
             }
         }
     }
@@ -891,17 +894,17 @@ void AeroAnalysis::HankeyFlatSurface(double M, int PartNumber)
         //Global variables changed: Pressure coefficients on windward panels on said part updated with Hankey flat surface method
 {
     double Cps;
-    for(int i=0;i<Vehicle.PartsOut[PartNumber].Nlines-1;i++)
+    for(int i=0;i<Vehicle->PartsOut[PartNumber].Nlines-1;i++)
     {
-        for(int j=0;j<Vehicle.PartsOut[PartNumber].Npoints-1;j++)
+        for(int j=0;j<Vehicle->PartsOut[PartNumber].Npoints-1;j++)
         {
-            if(Vehicle.PartsOut[PartNumber].theta[i][j]>=0)
+            if(Vehicle->PartsOut[PartNumber].theta[i][j]>=0)
             {
-                if(Vehicle.PartsOut[PartNumber].theta[i][j]<sta::Pi()/18)
-                    Cps=(0.195+0.222594/pow(M,0.3)-0.4)*Vehicle.PartsOut[PartNumber].theta[i][j]*180/sta::Pi()+4;
+                if(Vehicle->PartsOut[PartNumber].theta[i][j]<sta::Pi()/18)
+                    Cps=(0.195+0.222594/pow(M,0.3)-0.4)*Vehicle->PartsOut[PartNumber].theta[i][j]*180/sta::Pi()+4;
                 else
-                    Cps=1.95+0.3925/(pow(M,0.3)*tan(Vehicle.PartsOut[PartNumber].theta[i][j]));
-                Vehicle.PartsOut[PartNumber].Cp[i][j]=Cps*pow(sin(Vehicle.PartsOut[PartNumber].theta[i][j]),2.0);
+                    Cps=1.95+0.3925/(pow(M,0.3)*tan(Vehicle->PartsOut[PartNumber].theta[i][j]));
+                Vehicle->PartsOut[PartNumber].Cp[i][j]=Cps*pow(sin(Vehicle->PartsOut[PartNumber].theta[i][j]),2.0);
             }
         }
     }
@@ -914,18 +917,18 @@ void AeroAnalysis::SmythDeltaWing(double M, int PartNumber)
 {
     double Mns;
     double thetac;
-    for(int i=0;i<Vehicle.PartsOut[PartNumber].Nlines-1;i++)
+    for(int i=0;i<Vehicle->PartsOut[PartNumber].Nlines-1;i++)
     {
-        for(int j=0;j<Vehicle.PartsOut[PartNumber].Npoints-1;j++)
+        for(int j=0;j<Vehicle->PartsOut[PartNumber].Npoints-1;j++)
         {
-            if(Vehicle.PartsOut[PartNumber].theta[i][j]>=0)
+            if(Vehicle->PartsOut[PartNumber].theta[i][j]>=0)
             {
-                if(Vehicle.PartsOut[PartNumber].theta[i][j]<sta::Pi()/180)
+                if(Vehicle->PartsOut[PartNumber].theta[i][j]<sta::Pi()/180)
                     thetac=sta::Pi()/180;
                 else
-                    thetac=Vehicle.PartsOut[PartNumber].theta[i][j];
+                    thetac=Vehicle->PartsOut[PartNumber].theta[i][j];
                 Mns=M*sin(thetac);
-                Vehicle.PartsOut[PartNumber].Cp[i][j]=1.66667*(pow(1.09*Mns+exp(-0.49*Mns),2.0)-1)/pow(M,2.0);
+                Vehicle->PartsOut[PartNumber].Cp[i][j]=1.66667*(pow(1.09*Mns+exp(-0.49*Mns),2.0)-1)/pow(M,2.0);
             }
         }
     }
@@ -940,30 +943,30 @@ void AeroAnalysis::VanDykeUnified(double M, int PartNumber, int Type)
     double beta=pow(pow(M,2.0)-1,0.5);
     double CpVac=-2/(gamma*pow(M,2.0));
     double expon=2*gamma/(gamma-1);
-    for(int i=0;i<Vehicle.PartsOut[PartNumber].Nlines-1;i++)
+    for(int i=0;i<Vehicle->PartsOut[PartNumber].Nlines-1;i++)
     {
-        for(int j=0;j<Vehicle.PartsOut[PartNumber].Npoints-1;j++)
+        for(int j=0;j<Vehicle->PartsOut[PartNumber].Npoints-1;j++)
         {
-            if(Vehicle.PartsOut[PartNumber].theta[i][j]>=0 && Type==1)
+            if(Vehicle->PartsOut[PartNumber].theta[i][j]>=0 && Type==1)
             {
-                Vehicle.PartsOut[PartNumber].Cp[i][j]=pow(Vehicle.PartsOut[PartNumber].theta[i][j],2.0)*(gammaterm+pow(pow(gammaterm,2.0)+4/(pow(Vehicle.PartsOut[PartNumber].theta[i][j]*beta,2.0)),0.5));
+                Vehicle->PartsOut[PartNumber].Cp[i][j]=pow(Vehicle->PartsOut[PartNumber].theta[i][j],2.0)*(gammaterm+pow(pow(gammaterm,2.0)+4/(pow(Vehicle->PartsOut[PartNumber].theta[i][j]*beta,2.0)),0.5));
 
             }
-            else if(Vehicle.PartsOut[PartNumber].theta[i][j]<0 && Type==-1)
+            else if(Vehicle->PartsOut[PartNumber].theta[i][j]<0 && Type==-1)
             {
-                if(-1*Vehicle.PartsOut[PartNumber].theta[i][j]*beta>2/(gamma-1))
-                        Vehicle.PartsOut[PartNumber].Cp[i][j]=CpVac;
+                if(-1*Vehicle->PartsOut[PartNumber].theta[i][j]*beta>2/(gamma-1))
+                        Vehicle->PartsOut[PartNumber].Cp[i][j]=CpVac;
                 else
                 {
-                    Vehicle.PartsOut[PartNumber].Cp[i][j]=2/(gamma*pow(beta,2.0))*(pow(1-(gamma-1)/2*-1*Vehicle.PartsOut[PartNumber].theta[i][j]*beta,expon)-1);
-                    if ( Vehicle.PartsOut[PartNumber].Cp[i][j]<CpVac)
+                    Vehicle->PartsOut[PartNumber].Cp[i][j]=2/(gamma*pow(beta,2.0))*(pow(1-(gamma-1)/2*-1*Vehicle->PartsOut[PartNumber].theta[i][j]*beta,expon)-1);
+                    if ( Vehicle->PartsOut[PartNumber].Cp[i][j]<CpVac)
                     {
-                       Vehicle.PartsOut[PartNumber].Cp[i][j]=CpVac;
+                       Vehicle->PartsOut[PartNumber].Cp[i][j]=CpVac;
                     }
                 }
             }
             //else
-              //  Vehicle.PartsOut[PartNumber].Cp[i][j]=0;
+              //  Vehicle->PartsOut[PartNumber].Cp[i][j]=0;
         }
     }
 }
@@ -979,21 +982,21 @@ void AeroAnalysis::PrandtlMeyerFreestream(double M, int PartNumber)
     double nu0=sqrt(6)*atan(beta/sqrt(6))-atan(beta);
     double nu;
     double Mloc;
-    for(int i=0;i<Vehicle.PartsOut[PartNumber].Nlines-1;i++)
+    for(int i=0;i<Vehicle->PartsOut[PartNumber].Nlines-1;i++)
     {
-        for(int j=0;j<Vehicle.PartsOut[PartNumber].Npoints-1;j++)
+        for(int j=0;j<Vehicle->PartsOut[PartNumber].Npoints-1;j++)
         {
-            if(Vehicle.PartsOut[PartNumber].theta[i][j]<0)
+            if(Vehicle->PartsOut[PartNumber].theta[i][j]<0)
             {
-                nu=nu0-Vehicle.PartsOut[PartNumber].theta[i][j];
+                nu=nu0-Vehicle->PartsOut[PartNumber].theta[i][j];
                 if(nu>numax)
                 {
-                    Vehicle.PartsOut[PartNumber].Cp[i][j]=-2/(gamma*pow(M,2.0));
+                    Vehicle->PartsOut[PartNumber].Cp[i][j]=-2/(gamma*pow(M,2.0));
                 }
                 else
                 {
                     Mloc=InversePrandtlMeyer(nu);
-                    Vehicle.PartsOut[PartNumber].Cp[i][j]=2/(gamma*pow(M,2.0))*(pow((1+(gamma-1)/2*pow(Mloc,2.0))/(1+(gamma-1)/2*pow(M,2.0)),-gamma/(gamma-1))-1);
+                    Vehicle->PartsOut[PartNumber].Cp[i][j]=2/(gamma*pow(M,2.0))*(pow((1+(gamma-1)/2*pow(Mloc,2.0))/(1+(gamma-1)/2*pow(M,2.0)),-gamma/(gamma-1))-1);
                 }
             }
         }
@@ -1002,12 +1005,12 @@ void AeroAnalysis::PrandtlMeyerFreestream(double M, int PartNumber)
 
 void AeroAnalysis::Vacuum(double M, int PartNumber)
 {
-    for(int i=0;i<Vehicle.PartsOut[PartNumber].Nlines-1;i++)
+    for(int i=0;i<Vehicle->PartsOut[PartNumber].Nlines-1;i++)
     {
-        for(int j=0;j<Vehicle.PartsOut[PartNumber].Npoints-1;j++)
+        for(int j=0;j<Vehicle->PartsOut[PartNumber].Npoints-1;j++)
         {
-            if(Vehicle.PartsOut[PartNumber].theta[i][j]<0)
-                Vehicle.PartsOut[PartNumber].Cp[i][j]=-2/(gamma*pow(M,2.0));
+            if(Vehicle->PartsOut[PartNumber].theta[i][j]<0)
+                Vehicle->PartsOut[PartNumber].Cp[i][j]=-2/(gamma*pow(M,2.0));
         }
     }
 }
@@ -1017,12 +1020,12 @@ void AeroAnalysis::HighMachBase(double M, int PartNumber)
         //out: -
         //Global variables changed: Pressure coefficients on leeward panels on said part updated with High Mach base pressure methods
 {
-    for(int i=0;i<Vehicle.PartsOut[PartNumber].Nlines-1;i++)
+    for(int i=0;i<Vehicle->PartsOut[PartNumber].Nlines-1;i++)
     {
-        for(int j=0;j<Vehicle.PartsOut[PartNumber].Npoints-1;j++)
+        for(int j=0;j<Vehicle->PartsOut[PartNumber].Npoints-1;j++)
         {
-            if(Vehicle.PartsOut[PartNumber].theta[i][j]<0)
-                Vehicle.PartsOut[PartNumber].Cp[i][j]=-1/pow(M,2.0);
+            if(Vehicle->PartsOut[PartNumber].theta[i][j]<0)
+                Vehicle->PartsOut[PartNumber].Cp[i][j]=-1/pow(M,2.0);
         }
     }
 }
@@ -1034,17 +1037,17 @@ void AeroAnalysis::ACMempirical(double M, int PartNumber)
 {
     double Cpmin=-1/pow(M,2.0);
     double Cptest;
-    for(int i=0;i<Vehicle.PartsOut[PartNumber].Nlines-1;i++)
+    for(int i=0;i<Vehicle->PartsOut[PartNumber].Nlines-1;i++)
     {
-        for(int j=0;j<Vehicle.PartsOut[PartNumber].Npoints-1;j++)
+        for(int j=0;j<Vehicle->PartsOut[PartNumber].Npoints-1;j++)
         {
-            if(Vehicle.PartsOut[PartNumber].theta[i][j]<0)
+            if(Vehicle->PartsOut[PartNumber].theta[i][j]<0)
             {
-                Cptest=180/sta::Pi()*Vehicle.PartsOut[PartNumber].theta[i][j]/(16*pow(M,2.0));
+                Cptest=180/sta::Pi()*Vehicle->PartsOut[PartNumber].theta[i][j]/(16*pow(M,2.0));
                 if(Cpmin>Cptest)
-                    Vehicle.PartsOut[PartNumber].Cp[i][j]=Cpmin;
+                    Vehicle->PartsOut[PartNumber].Cp[i][j]=Cpmin;
                 else
-                    Vehicle.PartsOut[PartNumber].Cp[i][j]=Cptest;
+                    Vehicle->PartsOut[PartNumber].Cp[i][j]=Cptest;
             }
         }
     }

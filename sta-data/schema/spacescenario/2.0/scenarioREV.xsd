@@ -32,8 +32,8 @@
 
 	<complexType name="REVMissionType">
 		<sequence>
-			<element name="Payload" type="tns:REVPayloadType"></element>
 			<element name="REVTrajectoryPlan" type="tns:REVTrajectoryPlanType"></element>
+			<element name="Payload" type="tns:REVPayloadType"></element>
 		</sequence>
 	</complexType>
 
@@ -69,7 +69,7 @@
 		<sequence>
 			<element name="entryType" type="string"></element>
 			<!-- Ballistic/Glide/Skip -->
-			<element name="FinalPositionState" type="tns:REVFinalPositionStateType"></element>
+			<!--<element name="FinalPositionState" type="tns:REVFinalPositionStateType"></element>-->
 			<element name="degreesOfFreedom" type="int"></element>
 			<element name="attitudeController" type="string"></element>
 			<!--
@@ -307,7 +307,6 @@
 				<element name="CoefficientType" type="int"></element> <!-- 1=only translation as function of Mach, 2=all 6 as function of Mach, 3= all 6 as function of M,a and b -->
 				<element name="emissivity" type="double"></element>
 				<element name="momentReferencePoint" type="tns:ListOfDouble"></element>
-				<element name="geomFile" type="string"></element>
 			</sequence>
 		</complexType>
 

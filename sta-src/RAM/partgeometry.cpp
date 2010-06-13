@@ -40,7 +40,7 @@ PartGeometry::~PartGeometry()//deallocation of arrays done in void deAllocateArr
 
 }
 
-PartGeometry::PartGeometry(double Points[] , QString _name, int HeaderInts[], double HeaderDoubles[])//Constructor for making a part from .wgs reading
+PartGeometry::PartGeometry(double* Points , QString _name, int HeaderInts[], double HeaderDoubles[])//Constructor for making a part from .wgs reading
 {
     int i;
     int j;
@@ -135,7 +135,8 @@ PartGeometry::PartGeometry(const PartGeometry & PartIn)//Copy constructor
             PointsVec[i][j]=PartIn.PointsVec[i][j];
         }
     }
-
+    BluntFront=PartIn.BluntFront;
+    CurvatureType=PartIn.CurvatureType;
     Rotate=PartIn.Rotate;
     Scale=PartIn.Scale;
     Translate=PartIn.Translate;
@@ -230,8 +231,9 @@ PartGeometry::PartGeometry(const PartAnalysis & SplitPart,int Type)//Constructor
         BluntFront=0;
 }
 
-void PartGeometry::deAllocateArrays()
+void PartGeometry::deAllocateArrays()//function for deallocating arrays, to be moved to destructor
 {
+    //qDebug()<<"deallocating arrays";
     int j;
     for(j=0;j<Nlines-1;j++)
     {
@@ -241,10 +243,8 @@ void PartGeometry::deAllocateArrays()
         delete[] Area[j];
         delete[] Cp[j];
         delete[] theta[j];
-
-
     }
-    delete PointsVec[Nlines-1];
+    delete[] PointsVec[Nlines-1];
     delete[] PointsVec;
     delete[] Centroid;
     delete[] Normal;
@@ -254,7 +254,7 @@ void PartGeometry::deAllocateArrays()
 
 }
 
-void PartGeometry::Mirror(int idType)
+void PartGeometry::Mirror(int idType)//applies .wgs header symmetry operation
 {
     int i;
     int j;
@@ -481,16 +481,20 @@ PartAnalysis::PartAnalysis(const PartGeometry & PartToAnalyze,const SelectionStr
 PartAnalysis::~PartAnalysis()
 {
     int i;
+    //qDebug()<<"deleting part analysis";
     for(i=0;i<LCClines;i++)
     {
         delete [] LatCC[i];
         delete [] LineProj[i];
         delete [] alphaSel[i];
+        delete [] thetaSel[i];
     }
     delete [] LatCC;
     delete [] LineProj;
     delete [] alphaSel;
+    delete [] thetaSel;
     delete [] xMean;
+    deAllocateArrays();
 }
 
 PlanarPartAnalysis::PlanarPartAnalysis(const PartGeometry & PartToAnalyze,const SelectionStruct * Parameters):PartAnalysis(PartToAnalyze,Parameters)//Constructor for planarPartAnalysis,
@@ -896,10 +900,10 @@ void PlanarPartAnalysis::PlanarBluntFront()
     MeanInclinationTop=AverageLatCCInclination(TopOrder[0],BluntFrontTopLines);
     BluntFractionTop=DetermineBluntFraction(TopOrder[0],BluntFrontTopLines);
     BluntFractionBottom=DetermineBluntFraction(BottomOrder[0],BluntFrontBottomLines);
-    qDebug()<<BluntFractionTop<<BluntFractionBottom<<" blunt frac top bottom";
-    qDebug()<<MeanInclinationTop<<"mean inc top"<<TopOrder[0];
+    //qDebug()<<BluntFractionTop<<BluntFractionBottom<<" blunt frac top bottom";
+    //qDebug()<<MeanInclinationTop<<"mean inc top"<<TopOrder[0];
     MeanInclinationBottom=AverageLatCCInclination(BottomOrder[0],BluntFrontBottomLines);
-    qDebug()<<MeanInclinationBottom<<"mean inc bottom"<<BottomOrder[0];
+    //qDebug()<<MeanInclinationBottom<<"mean inc bottom"<<BottomOrder[0];
     if (MeanInclinationTop<C3 || BluntFractionTop<C2/100)
         BluntFrontTop=0;
     else
@@ -941,10 +945,10 @@ void FusiformPartAnalysis::DetermineXLow(int i)
 {
     bool found=0;
     double meantheta;
-    int Index;
-
+    //qDebug()<<"aout to determine xlow"<<i;
     while(found==0 && i<LCClines)
     {
+        //qDebug()<<i<<LCClines;
         meantheta=AverageLatCCInclination(i);
         if (meantheta<C4)
             found=1;
@@ -952,7 +956,7 @@ void FusiformPartAnalysis::DetermineXLow(int i)
             i++;
     }
     xLowIndex=i;
-    qDebug()<<xLowIndex<<"xlowindex";
+    //()<<xLowIndex<<"xlowindex";
 }
 
 void PlanarPartAnalysis::DetermineXLow(int iTop, int iBottom)
@@ -998,7 +1002,7 @@ void PlanarPartAnalysis::DetermineXLow(int iTop, int iBottom)
             else
                 i++;
     }
-    qDebug()<<xLowBottomIndex<<xLowTopIndex<<"x low bottom top index";
+    //qDebug()<<xLowBottomIndex<<xLowTopIndex<<"x low bottom top index";
 }
 
 void PartAnalysis::DetermineSplitPoint(bool ConcavityIgnore)
@@ -1009,7 +1013,7 @@ void FusiformPartAnalysis::DetermineSplitPoint(bool ConcavityIgnore)
 {
     double xMinMean=xMean[ixmin];
     double MeanxLow=xMean[xLowIndex];
-    qDebug()<<MeanxLow<<" x low point";
+    //qDebug()<<MeanxLow<<" x low point";
     double SplitPoint=xMinMean+C5*(MeanxLow-xMinMean);
     SplitIndex=BestLineIndexApproximation(SplitPoint);
     qDebug()<<SplitPoint<<"split point"<<SplitIndex<<" split index";
@@ -1039,7 +1043,7 @@ void PlanarPartAnalysis::DetermineSplitPoint(bool ConcavityIgnore)
         if(BluntFrontTop==1)
         {
             double MeanxLowTop=xMean[TopOrder[xLowTopIndex]];
-            qDebug()<<MeanxLowTop<<"mean x low top";
+            //qDebug()<<MeanxLowTop<<"mean x low top";
             xMinMean=xMean[TopOrder[0]];
             double SplitPointTop=xMinMean+C5*(MeanxLowTop-xMinMean);
             SplitIndexTop=Order[BestLineIndexApproximation(SplitPointTop,1)];
@@ -1069,7 +1073,7 @@ void PlanarPartAnalysis::DetermineSplitPoint(bool ConcavityIgnore)
         if(BluntFrontBottom==1)
         {
             double MeanxLowBottom=xMean[BottomOrder[xLowBottomIndex]];
-            qDebug()<<MeanxLowBottom<<"mean x low bottom";
+            //qDebug()<<MeanxLowBottom<<"mean x low bottom";
             xMinMean=xMean[BottomOrder[0]];
             double SplitPointBottom=xMinMean+C5*(MeanxLowBottom-xMinMean);
             SplitIndexBottom=Order[BestLineIndexApproximation(SplitPointBottom,0)];
@@ -1109,8 +1113,8 @@ void PlanarPartAnalysis::DetermineSplitPoint(bool ConcavityIgnore)
         }
         else if(SplitIndexTop!=-1 && SplitIndexBottom!=-1)
             split=1;
-        qDebug()<<SplitIndexTop<<"split index top";
-        qDebug()<<SplitIndexBottom<<"split index bottom";
+        //qDebug()<<SplitIndexTop<<"split index top";
+        //qDebug()<<SplitIndexBottom<<"split index bottom";
 
     }
     else
@@ -1379,7 +1383,7 @@ int FusiformPartAnalysis::CheckConcavities(int StartingLine)
     double dth;
     double xstop=xMinMean+C6*(xMaxMean-xMinMean);
     int ContourCheck=StartingLine;
-    while(xMean[ContourCheck]<xstop && ContourCheck<LCClines)
+    while(xMean[ContourCheck]<xstop && ContourCheck<(LCClines-1))
     {
         for(i=0;i<LCCpoints;i++)
         {
@@ -1398,13 +1402,16 @@ int PlanarPartAnalysis::CheckConcavities(int StartingContour, int TopBottom)//In
     int ConcLine=-1;
     int i;
     double dth;
-    double xMinMean=0.5*(xMean[TopOrder[0]]+xMean[BottomOrder[0]]);
-    double xMaxMean=0.5*(xMean[TopOrder[nTop-1]]+xMean[BottomOrder[nBottom-1]]);
-    double xstop=xmin+C6*(xMaxMean-xMinMean);//This function is only called for a closed contour, so no need to worry about different xmin/xmax for top/bottom
+    double xMinMean;
+    double xMaxMean;
+    double xstop;
     int ContourCheck;
     int ContourCheck2;
     if (TopBottom==1)
     {
+        xMinMean=xMean[TopOrder[0]];
+        xMaxMean=xMean[TopOrder[nTop-1]];
+        xstop=xmin+C6*(xMaxMean-xMinMean);
         int TopContour=StartingContour;
         ContourCheck=TopOrder[TopContour];
         while(xMean[ContourCheck]<xstop && ContourCheck!=TopOrder[nTop-1])
@@ -1422,6 +1429,9 @@ int PlanarPartAnalysis::CheckConcavities(int StartingContour, int TopBottom)//In
     }
     else if(TopBottom==0)
     {
+        xMinMean=xMean[BottomOrder[0]];
+        xMaxMean=xMean[BottomOrder[nBottom-1]];
+        xstop=xmin+C6*(xMaxMean-xMinMean);
         int BottomContour=StartingContour;
         ContourCheck=BottomOrder[BottomContour];
         while(xMean[ContourCheck]<xstop && ContourCheck!=BottomOrder[nBottom-1])
@@ -1437,6 +1447,7 @@ int PlanarPartAnalysis::CheckConcavities(int StartingContour, int TopBottom)//In
             BottomContour++;
         }
     }
+
     return ConcLine;
 }
 

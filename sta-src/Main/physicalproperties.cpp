@@ -64,15 +64,18 @@ bool PhysicalPropertiesDialog::loadValues(ScenarioREVGeometryType* REVgeometry)
     return true;
 }
 
-bool PhysicalPropertiesDialog::saveValues(ScenarioREVGeometryType* REVgeometry)
+bool PhysicalPropertiesDialog::saveValues(ScenarioREVGeometryType* REVgeometry,ScenarioREVAeroThermodynamicsType* REVaerothermo)
 {
     REVgeometry->setNoseRadius(lineEditRadiusNose->text().toDouble());
     REVgeometry->setREVsurface(lineEditSurface->text().toDouble());
     REVgeometry->setREVvolume(lineEditVolume->text().toDouble());
 
     REVgeometry->setGeometryFile(fileLineEdit->text());
+    //REVaerothermo->setGeomFile(fileLineEdit->text());
     if(fileLoaded)
         REVgeometry->shapeFamily()->setValue(QString(""));
+    if (getRefArea()>0)
+        REVaerothermo->setReferenceArea(getRefArea());
     return true;
 }
 
@@ -107,11 +110,15 @@ void PhysicalPropertiesDialog::setGlobalCharacteristics(QString file)
 {
     if(!file.isEmpty())
     {
-        VehicleGeometry vehicle=VehicleGeometry(file);
-        vehicle.CalculateGlobalCharacteristics();
-        lineEditSurface->setText(QString::number(vehicle.Surface));
-        lineEditVolume->setText(QString::number(vehicle.Volume));
-        lineEditRadiusNose->setText(QString::number(vehicle.NoseRadius));
+        int i;
+        VehicleGeometry* vehicle=new VehicleGeometry(file);
+        qDebug()<<"vehicle created";
+        vehicle->CalculateGlobalCharacteristics();
+        qDebug()<<"globs calced";
+        lineEditSurface->setText(QString::number(vehicle->Surface));
+        lineEditVolume->setText(QString::number(vehicle->Volume));
+        lineEditRadiusNose->setText(QString::number(vehicle->NoseRadius));
+        delete vehicle;
     }
 }
 
@@ -128,6 +135,6 @@ double PhysicalPropertiesDialog::getRefArea()//temporary fix for communicating w
     else if(m_geometry->shapeFamily()->value()=="biconic")
         refArea=sta::Pi()*pow(m_geometry->biconicShape()->param3()->value(),2);
     else
-        refArea=0;
+        refArea=-1;
     return refArea;
 }

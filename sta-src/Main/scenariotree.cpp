@@ -855,9 +855,19 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
 
     }
 
+
     else if (dynamic_cast<ScenarioREVGeometryType*>(scenarioObject) != NULL)//Added by Dominic to allow opening of Geometry GUI
     {
         ScenarioREVGeometryType* geometry = dynamic_cast<ScenarioREVGeometryType*>(scenarioObject);
+        ScenarioREVAeroThermodynamicsType* aerothermo;
+        QTreeWidgetItem* parentItem = editItem->parent();
+        ScenarioObject* parentObject = objectForItem(parentItem);
+        if (dynamic_cast<ScenarioREVSystemType*>(parentObject))
+        {
+            ScenarioREVSystemType* REVsystem = dynamic_cast<ScenarioREVSystemType*>(parentObject);
+            aerothermo = REVsystem->AeroThermodynamics().data();
+        }
+
         PhysicalPropertiesDialog editDialog(this);
 
         if (!editDialog.loadValues(geometry))
@@ -869,14 +879,8 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
         {
             if (editDialog.exec() == QDialog::Accepted)
             {
-                editDialog.saveValues(geometry);
+                editDialog.saveValues(geometry,aerothermo);
                 updateTreeItems(editItem, scenarioObject);
-                if(geometry->geometryFile()!="")//Dominic: Quick fix for communicating with aerodynamics
-                {
-                    geomForAero.fileName=geometry->geometryFile();
-                    geomForAero.refArea=editDialog.getRefArea();
-
-                }
             }
         }
 
@@ -885,15 +889,18 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
     else if (dynamic_cast<ScenarioREVAeroThermodynamicsType*>(scenarioObject) != NULL)  //Added by Dominic to allow opening of aerodynamic GUI
     {
         ScenarioREVAeroThermodynamicsType* aerothermo = dynamic_cast<ScenarioREVAeroThermodynamicsType*>(scenarioObject);
-        if (!geomForAero.fileName.isEmpty())//Dominic: quick fix to pass geometry to aerodynamics GUI
+        ScenarioREVGeometryType * geometry;
+        QTreeWidgetItem* parentItem=editItem->parent();//Next part added by Dominic to change REVgeometry from aerodynamics GUI.
+        ScenarioObject * parentObject=objectForItem(parentItem);
+        if(dynamic_cast<ScenarioREVSystemType*>(parentObject))
         {
-            aerothermo->setGeomFile(geomForAero.fileName);
-            if(geomForAero.refArea!=0)
-                aerothermo->setReferenceArea(geomForAero.refArea);
+            ScenarioREVSystemType* parentREVSystem = dynamic_cast<ScenarioREVSystemType*>(parentObject);
+            geometry = parentREVSystem->Geometry().data();
+
         }
         AerodynamicPropertiesDialog editDialog(this);
 
-        if (!editDialog.loadValues(aerothermo))
+        if (!editDialog.loadValues(aerothermo,geometry))
         {
             QMessageBox::information(this, tr("Bad Aerothermodynamics element"), tr("Error in Aerothermodynamics element"));
         }
@@ -902,7 +909,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
         {
             if (editDialog.exec() == QDialog::Accepted)
             {
-                editDialog.saveValues(aerothermo);
+                editDialog.saveValues(aerothermo,geometry);
                 updateTreeItems(editItem, scenarioObject);
             }
         }

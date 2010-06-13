@@ -42,7 +42,7 @@ public:
     ~PhysicalPropertiesDialog(){}
     ScenarioREVGeometryType* m_geometry;
     bool loadValues(ScenarioREVGeometryType* REVgeometry);
-    bool saveValues(ScenarioREVGeometryType* REVgeometry);
+    bool saveValues(ScenarioREVGeometryType* REVgeometry, ScenarioREVAeroThermodynamicsType * REVaerothermo);
     double getRefArea();
 
 public slots:

@@ -4653,18 +4653,18 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioREVPayloadType> Payload() const
-    { return m_Payload; }
-    void setPayload(QSharedPointer<ScenarioREVPayloadType> Payload)
-    { m_Payload = Payload; }
     QSharedPointer<ScenarioREVTrajectoryPlanType> REVTrajectoryPlan() const
     { return m_REVTrajectoryPlan; }
     void setREVTrajectoryPlan(QSharedPointer<ScenarioREVTrajectoryPlanType> REVTrajectoryPlan)
     { m_REVTrajectoryPlan = REVTrajectoryPlan; }
+    QSharedPointer<ScenarioREVPayloadType> Payload() const
+    { return m_Payload; }
+    void setPayload(QSharedPointer<ScenarioREVPayloadType> Payload)
+    { m_Payload = Payload; }
 
 private:
-    QSharedPointer<ScenarioREVPayloadType> m_Payload;
     QSharedPointer<ScenarioREVTrajectoryPlanType> m_REVTrajectoryPlan;
+    QSharedPointer<ScenarioREVPayloadType> m_Payload;
 };
 
 
@@ -4780,10 +4780,6 @@ public:
     { return m_entryType; }
     void setEntryType(QString entryType)
     { m_entryType = entryType; }
-    QSharedPointer<ScenarioREVFinalPositionStateType> FinalPositionState() const
-    { return m_FinalPositionState; }
-    void setFinalPositionState(QSharedPointer<ScenarioREVFinalPositionStateType> FinalPositionState)
-    { m_FinalPositionState = FinalPositionState; }
     int degreesOfFreedom() const
     { return m_degreesOfFreedom; }
     void setDegreesOfFreedom(int degreesOfFreedom)
@@ -4799,7 +4795,6 @@ public:
 
 private:
     QString m_entryType;
-    QSharedPointer<ScenarioREVFinalPositionStateType> m_FinalPositionState;
     int m_degreesOfFreedom;
     QString m_attitudeController;
     QSharedPointer<ScenarioREVDispersionAnalysisType> m_DispersionAnalysis;
@@ -5623,10 +5618,6 @@ public:
     { return m_momentReferencePoint; }
     void setMomentReferencePoint(QList<double> momentReferencePoint)
     { m_momentReferencePoint = momentReferencePoint; }
-    QString geomFile() const
-    { return m_geomFile; }
-    void setGeomFile(QString geomFile)
-    { m_geomFile = geomFile; }
 
 private:
     QSharedPointer<ScenarioOptVarDouble> m_hypersonicTrimAngle;
@@ -5637,7 +5628,6 @@ private:
     int m_CoefficientType;
     double m_emissivity;
     QList<double> m_momentReferencePoint;
-    QString m_geomFile;
 };
 
 

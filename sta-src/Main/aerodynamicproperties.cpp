@@ -66,9 +66,10 @@ AerodynamicPropertiesDialog::AerodynamicPropertiesDialog(ScenarioTree* parent) :
 }
 
 
-bool AerodynamicPropertiesDialog::loadValues(ScenarioREVAeroThermodynamicsType* aerothermo)
+bool AerodynamicPropertiesDialog::loadValues(ScenarioREVAeroThermodynamicsType* aerothermo,ScenarioREVGeometryType * geometry)
 {
     m_aerothermo=aerothermo;
+    geomFileName=geometry->geometryFile();
     lineEditRefArea->setText(QString::number(aerothermo->referenceArea()));
     
     QList<QSharedPointer<ScenarioAeroCoefFileType> > & AeroCoefList=aerothermo->AeroCoefFile();
@@ -130,9 +131,16 @@ bool AerodynamicPropertiesDialog::loadValues(ScenarioREVAeroThermodynamicsType* 
     return true;
 }
 
-bool AerodynamicPropertiesDialog::saveValues(ScenarioREVAeroThermodynamicsType* aerothermo)
+bool AerodynamicPropertiesDialog::saveValues(ScenarioREVAeroThermodynamicsType* aerothermo, ScenarioREVGeometryType * geometry)
 {
     aerothermo->setReferenceArea(lineEditRefArea->text().toDouble());
+    if(geometry!=NULL)
+    {
+        geometry->setGeometryFile(geomFileName);
+        geometry->setNoseRadius(globChars.Rn);
+        geometry->setREVsurface(globChars.S);
+        geometry->setREVvolume(globChars.V);
+    }
     if (aerothermo->CoefficientType()==3)
     {
         QList<double> momRefTemp;
@@ -204,17 +212,17 @@ void AerodynamicPropertiesDialog::writeCnFile(QString filename)
 void AerodynamicPropertiesDialog::on_fromGeomPushButton_clicked()
 {
     saveValues(m_aerothermo);
-    if(m_aerothermo->geomFile().isEmpty())
+    if(geomFileName.isEmpty())
     {
         QMessageBox::information(this, tr(""), tr("Geometry file not set, please set file in REVGeometry GUI"));
     }
-    else
+
     {
-        AerodynamicMethodDialog dialog(m_aerothermo,this);
-        QList<QString> aeroList;
+        AerodynamicMethodDialog dialog(m_aerothermo,geomFileName,this);
 
         if (dialog.exec() == QDialog::Accepted)
         {
+            dialog.getGeomFileInfo(geomFileName, globChars);
         }
 
         if(m_aerothermo->AeroCoefFile().length()>2)

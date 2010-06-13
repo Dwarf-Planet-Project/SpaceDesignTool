@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>860</width>
-    <height>610</height>
+    <width>789</width>
+    <height>531</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,7 +32,18 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="geomFileLineEdit"/>
+           <widget class="QLineEdit" name="geomFileLineEdit">
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="geomFileButton">
+            <property name="text">
+             <string>Load File</string>
+            </property>
+           </widget>
           </item>
           <item>
            <spacer name="horizontalSpacer_3">
@@ -93,6 +104,9 @@
                    <property name="text">
                     <string>8.5</string>
                    </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
                   </widget>
                  </item>
                  <item row="1" column="1">
@@ -100,27 +114,22 @@
                    <property name="text">
                     <string>6.5</string>
                    </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
                   </widget>
                  </item>
                  <item row="0" column="0">
                   <widget class="QLabel" name="lowHypLabel">
                    <property name="text">
-                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Low hypersonic M&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;max&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>Low hypersonic M&lt;sub&gt;max&lt;/sub&gt;</string>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="0">
                   <widget class="QLabel" name="highHypLabel">
                    <property name="text">
-                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;High hypersonic M&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;min&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>High hypersonic M&lt;sub&gt;min&lt;/min&gt;</string>
                    </property>
                   </widget>
                  </item>
@@ -224,13 +233,13 @@ p, li { white-space: pre-wrap; }
         <widget class="QGroupBox" name="attitudeGroupBox">
          <property name="minimumSize">
           <size>
-           <width>250</width>
+           <width>0</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>250</width>
+           <width>16777215</width>
            <height>16777215</height>
           </size>
          </property>
@@ -241,10 +250,18 @@ p, li { white-space: pre-wrap; }
           <item>
            <layout class="QGridLayout" name="gridLayout">
             <item row="0" column="1">
-             <widget class="QLineEdit" name="defaultAlphaLineEdit"/>
+             <widget class="QLineEdit" name="defaultAlphaLineEdit">
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QLineEdit" name="defaultBetaLineEdit"/>
+             <widget class="QLineEdit" name="defaultBetaLineEdit">
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
             </item>
             <item row="0" column="0">
              <widget class="QLabel" name="alphaLabel">
@@ -279,6 +296,19 @@ p, li { white-space: pre-wrap; }
               </property>
              </spacer>
             </item>
+            <item row="0" column="2">
+             <spacer name="horizontalSpacer_9">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
            </layout>
           </item>
          </layout>
@@ -288,7 +318,7 @@ p, li { white-space: pre-wrap; }
         <widget class="QGroupBox" name="groupBox">
          <property name="maximumSize">
           <size>
-           <width>250</width>
+           <width>16777215</width>
            <height>16777215</height>
           </size>
          </property>
@@ -359,6 +389,19 @@ p, li { white-space: pre-wrap; }
               </property>
              </spacer>
             </item>
+            <item row="0" column="2">
+             <spacer name="horizontalSpacer_8">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
            </layout>
           </item>
          </layout>
@@ -368,13 +411,13 @@ p, li { white-space: pre-wrap; }
         <widget class="QGroupBox" name="OutputGorupBox">
          <property name="minimumSize">
           <size>
-           <width>250</width>
+           <width>0</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>250</width>
+           <width>16777215</width>
            <height>16777215</height>
           </size>
          </property>
@@ -542,13 +585,13 @@ p, li { white-space: pre-wrap; }
       <widget class="QDialogButtonBox" name="buttonBox">
        <property name="minimumSize">
         <size>
-         <width>150</width>
+         <width>250</width>
          <height>0</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>150</width>
+         <width>250</width>
          <height>16777215</height>
         </size>
        </property>

@@ -106,7 +106,7 @@ public:
     int nAlpha;
     int nCases;
     int AnalysisType; //2: bridged 1: high hypersonic, 0:low hypersonic
-    VehicleGeometry Vehicle;
+    VehicleGeometry* Vehicle;
     double** VehicleCoefs;
     Vector3d MomentRef;
     double cref;

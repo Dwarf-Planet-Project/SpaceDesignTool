@@ -27,6 +27,7 @@
 
 #include <QDialog>
 #include "ui_aerodynamicproperties.h"
+#include "RAM/aerodynamicmethods.h"
 #include <QFileDialog>
 #include "Scenario/staschema.h"
 
@@ -42,8 +43,11 @@ public:
     AerodynamicPropertiesDialog(ScenarioTree* parent=NULL);
     ~AerodynamicPropertiesDialog(){}
 
-    bool loadValues(ScenarioREVAeroThermodynamicsType* aero);
-    bool saveValues(ScenarioREVAeroThermodynamicsType* aero);
+    bool loadValues(ScenarioREVAeroThermodynamicsType* aero, ScenarioREVGeometryType* geom=NULL);
+    bool saveValues(ScenarioREVAeroThermodynamicsType* aero, ScenarioREVGeometryType* geom=NULL);
+    AerodynamicMethodDialog::globCharStruct globChars;
+    QString geomFileName;
+
 
 
 public slots:
@@ -63,7 +67,6 @@ private:
     QFileDialog* loadClDialog;
     QFileDialog* loadCmDialog;
     QFileDialog* loadCnDialog;
-
     ScenarioREVAeroThermodynamicsType* m_aerothermo;
 
 };

@@ -33,22 +33,34 @@
 #include <QDialog>
 #include <QString>
 #include <QComboBox>
+#include <QFileDialog>
+
 #include "aeroanalysis.h"
 
 class AerodynamicMethodDialog : public QDialog , private Ui_AerodynamicMethodDialog
 {
 Q_OBJECT
 public:
-        AerodynamicMethodDialog(ScenarioREVAeroThermodynamicsType* aero, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+        AerodynamicMethodDialog(ScenarioREVAeroThermodynamicsType* aero, QString geomFileName, QWidget * parent = 0, Qt::WindowFlags f = 0 );
 	~AerodynamicMethodDialog();
+        struct globCharStruct
+        {
+            double Rn;
+            double S;
+            double V;
+        };
+        void getGeomFileInfo(QString& filename, globCharStruct& geomOut);
         QString GeomFile;
         QList<QString> getAeroFiles();
-        PartAnalysis::SelectionStruct * Parameters;
+        PartAnalysis::SelectionStruct * Parameters;        
+        globCharStruct globChars;
 
 private:
+        QFileDialog* loadGeomDialog;
         void displayGeometryError(int Error);
         void setTreeParts();
         void setDefaultMethods();
+        void newVehicleSelected();
         QComboBox* expansionComboBox();
         QComboBox* compressionComboBox();
         void getAeroMethods();
@@ -61,6 +73,8 @@ private:
         bool autoSelected;
         QList<QString> fileList;
 
+public slots:
+        void writeGeomFile(QString filename);
 protected slots:
         void on_advancedSelectionPushButton_clicked();
         bool on_generatePushButton_clicked();

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>490</width>
-    <height>294</height>
+    <height>264</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -104,10 +104,45 @@
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QLineEdit" name="blConeLineEdit1"/>
+               <widget class="QLineEdit" name="blConeLineEdit1">
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QLineEdit" name="blConeLineEdit2"/>
+               <widget class="QLineEdit" name="blConeLineEdit2">
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_19">
+                <property name="text">
+                 <string>th&lt;sub&gt;c&lt;/sub&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="blConeLineEdit3">
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <spacer name="horizontalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
               <item row="3" column="0">
                <spacer name="verticalSpacer_10">
@@ -122,16 +157,6 @@
                 </property>
                </spacer>
               </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_19">
-                <property name="text">
-                 <string>th&lt;sub&gt;c&lt;/sub&gt;</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="blConeLineEdit3"/>
-              </item>
               <item row="3" column="1">
                <spacer name="verticalSpacer_9">
                 <property name="orientation">
@@ -141,19 +166,6 @@
                  <size>
                   <width>20</width>
                   <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="1" column="2">
-               <spacer name="horizontalSpacer_5">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
                  </size>
                 </property>
                </spacer>
@@ -455,10 +467,18 @@
        </property>
        <layout class="QGridLayout" name="gridLayout_6">
         <item row="2" column="1">
-         <widget class="QLineEdit" name="geometryFileLineEdit"/>
+         <widget class="QLineEdit" name="geometryFileLineEdit">
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QLineEdit" name="pointsLineEdit"/>
+         <widget class="QLineEdit" name="pointsLineEdit">
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
         </item>
         <item row="3" column="1">
          <widget class="QPushButton" name="generateGeometryButton">
@@ -478,7 +498,11 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QLineEdit" name="linesLineEdit"/>
+         <widget class="QLineEdit" name="linesLineEdit">
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
         </item>
         <item row="0" column="0">
          <widget class="QLabel" name="label_20">
@@ -503,6 +527,16 @@
           </property>
          </spacer>
         </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>No. of points per contour:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
         <item row="4" column="1">
          <spacer name="verticalSpacer">
           <property name="orientation">
@@ -515,16 +549,6 @@
            </size>
           </property>
          </spacer>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>No. of points per contour:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
         </item>
        </layout>
       </widget>
