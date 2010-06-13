@@ -103,6 +103,9 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     m_tickIntervalAction->setMenu(tickMenu);
     m_tickIntervalAction->setToolTip(tr("Set tick interval"));
 
+    // Making the icons on the visualization bar a little smaller
+    setIconSize(QSize(25, 25)); // Smaller icons are a bit better
+
     m_gridAction = new QAction(QIcon(":/icons/IconGRID.png"), tr("Grid"), this);
     m_gridAction->setCheckable(true);
     m_gridAction->setToolTip(tr("Toggle long/lat grid"));
@@ -143,6 +146,8 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     m_linkGOAction->setCheckable(true);
     m_linkGOAction->setToolTip(tr("Show links between satellites and ground stations"));
     m_linkGOAction->setVisible(false);
+
+
 
     // create Analysis Menu
     //QMenu* tickMenu = new QMenu(tr("Ticks"), this);
