@@ -211,9 +211,6 @@ void ConstellationWizardDialog::accept()
     QTreeWidgetItem* invisibleRoot = constelationTree->invisibleRootItem();
     QTreeWidgetItem* rootItem = new QTreeWidgetItem(invisibleRoot);
 
-    //m_scenarioView->m_scenarioTree->addScenarioItems(rootItem, scenario);
-    //m_scenarioView->m_scenarioTree->addTopLevelItem(rootItem);
-
     // create new Participants, Properties and trajectories
     for (int i = 0; i < n; i++)
     {
@@ -257,18 +254,19 @@ void ConstellationWizardDialog::accept()
 	participantItem->setIcon(0, QIcon(":/icons/ParticipantSATELLITE.png"));
 	constelationTree->addScenarioItems(participantItem, participant);
 
+	QTreeWidgetItem* SCMissionItem = new QTreeWidgetItem(participantItem->child(2));
+	QVariant data = SCMissionItem->data(0, ScenarioObjectRole);
+	void* pointer = qVariantValue<void*>(data);
+	ScenarioObject* SCMissionObject = reinterpret_cast<ScenarioObject*>(pointer);
 
-	//QDomElement elementElementIdentifier = doc.firstChildElement(); // the ElementIdentifier
-	//QDomElement elementSCProgram = doc.nextSiblingElement(); // the SCProgram
-	//QDomElement elementSCMission = doc.nextSiblingElement(); // the SCMission
-
-	ScenarioTrajectoryPlan* trajectoryPlan = dynamic_cast<ScenarioTrajectoryPlan*>(participant);
+	ScenarioTrajectoryPlan* trajectoryPlan = dynamic_cast<ScenarioTrajectoryPlan*>(SCMissionObject);
 	ScenarioAbstractTrajectoryType* trajectory = NULL;
 
 	QDomElement elementTrajectory = scenarioDoc.nextSiblingElement();
 	QString elementTrajectoryName = elementTrajectory.tagName();
 
 	trajectory = ScenarioLoiteringType::create(elementTrajectory);
+
 	if (trajectoryPlan)
 	{
 	    trajectoryPlan->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
