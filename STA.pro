@@ -5,6 +5,7 @@ message(Qt is installed in $$[QT_INSTALL_PREFIX])
 # INSTALLS += target
 CONFIG += debug_and_release
 CONFIG += release
+CONFIG += warn_off
 TEMPLATE = app
 TARGET = STA
 QT += opengl
