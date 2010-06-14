@@ -109,6 +109,7 @@ void ConstellationWizardDialog::accept()
     // close Constellation Wizard
     close();
 
+    /*
     // open Loitering Dialog and get additional Properties
     LoiteringDialog* loiteringdialog = new LoiteringDialog();
     loiteringdialog->setFocus();
@@ -117,6 +118,7 @@ void ConstellationWizardDialog::accept()
     //loiteringdialog->disableInitialStateParameters();
     loiteringdialog->exec();
     loiteringdialog->clearFocus();
+    */
 
     // generate keplerian elements of the satellites
     SatelliteKeplerian* satellitekeplerian;
@@ -162,7 +164,7 @@ void ConstellationWizardDialog::accept()
         // get central body data
 	// ScenarioEnvironment* env = new ScenarioEnvironment();    // Guillermo comented out
 	ScenarioSCEnvironmentType* env = new ScenarioSCEnvironmentType();
-	loiteringdialog->saveValues(env);
+	//loiteringdialog->saveValues(env);
 	// const StaBody* body =  env->centralBody()->body(); // Guillermo comented out
 	const StaBody* body = STA_SOLAR_SYSTEM->lookup("Earth");
 	//loitering.Environment()->CentralBody()->setName("EARTH");
@@ -205,14 +207,18 @@ void ConstellationWizardDialog::accept()
         return;
     }
 
+    // Create a new scenario
     SpaceScenario* scenario = new SpaceScenario();
-    scenario->setName("Constellation");
+    scenario->setName(constTypeComboBox->currentText());
+    //scenario->setName("Constellation");
 
     // create new Participants, Properties and trajectories
     for (int i = 0; i < n; i++)
     {
         ScenarioSC* sc = new ScenarioSC();
-        sc->setName("Satellite");
+	//sc->setName("Satellite");
+	sc->setName(satellitekeplerian[i].name);
+	sc->ElementIdentifier()->setName(satellitekeplerian[i].name);
 
         // Create the initial position (Keplerian elements)
         ScenarioKeplerianElementsType* elements = new ScenarioKeplerianElementsType();

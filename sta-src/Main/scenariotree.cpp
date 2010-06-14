@@ -321,28 +321,6 @@ void
 ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
 {
 
-    //qDebug() << scenarioObject->elementName() << endl;
-
-    changeLabels(item, scenarioObject);
-
-
-    /* the next lines are commented out by Guillermo to prevent naming on participants when adding
-    if (dynamic_cast<ScenarioParticipantType*>(scenarioObject))
-    {
-        item->setText(1, dynamic_cast<ScenarioParticipantType*>(scenarioObject)->Name());
-    }
-    */
-
-
-    if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject))
-    {
-        ScenarioElementIdentifierType* myIdentifier = dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject);
-        item->setFlags(item->flags() | (Qt::ItemIsEditable));
-        myIdentifier->Name() = item->text(1);
-        updateTreeItems(item, scenarioObject);
-    }
-
-
     // Store a pointer to the this ScenarioObject in the widget item.
     // This will be used to map a tree widget item to a ScenarioObject.
     // IMPORTANT: The ScenarioObject must not be deleted before the tree
@@ -377,17 +355,24 @@ ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioOb
     }
 
     // Guillermo: expand items by default or not
-    item->setExpanded(true);
+    //item->setExpanded(true);
 
-    //Taking care of the second column for the identifier of the loitering ARC
-    /*
+
     if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject))
     {
-	//item->setText(1, scenarioObject->elementName());
-	// Guillermo says: TODO make this compatible with the label of loitering
-	item->setText(1, "name");
+	//ScenarioElementIdentifierType* myIdentifier = dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject);
+	item->setFlags(item->flags() | (Qt::ItemIsEditable));
+	//myIdentifier->Name() = item->text(1);
+	item->setText(1, dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject)->Name());
+	//updateTreeItems(item, scenarioObject);
     }
-    */
+    else if (dynamic_cast<ScenarioParticipantType*>(scenarioObject))
+    {
+	item->setText(1, dynamic_cast<ScenarioParticipantType*>(scenarioObject)->Name());
+	//updateTreeItems(item, scenarioObject);
+    }
+
+    changeLabels(item, scenarioObject);
 
 
 }   // End of addScenarioItems ////////
