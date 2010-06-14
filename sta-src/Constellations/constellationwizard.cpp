@@ -205,95 +205,42 @@ void ConstellationWizardDialog::accept()
         return;
     }
 
-
-    //////////////////////////// Creating a new scenario //////////////////////////////////
-    // Creating a new scenario
-    QDomDocument scenarioDoc;
-    QDomElement rootElement = scenarioDoc.firstChildElement("tns:SpaceScenario");
-    SpaceScenario* scenario = SpaceScenario::create(rootElement);
-    scenario->setName(constTypeComboBox->currentText());
-    ScenarioTree* constelationTree = new ScenarioTree();
-
-    QTreeWidgetItem* invisibleRoot = constelationTree->invisibleRootItem();
-    QTreeWidgetItem* rootItem = new QTreeWidgetItem(invisibleRoot);
+    SpaceScenario* scenario = new SpaceScenario();
+    scenario->setName("Constellation");
 
     // create new Participants, Properties and trajectories
     for (int i = 0; i < n; i++)
     {
+        ScenarioSC* sc = new ScenarioSC();
+        sc->setName("Satellite");
 
-	/*
-	// Commented out by Guillermo to comply with new scenario in Cambrian
-	ScenarioSpaceVehicle* satellite;
-	satellite = new ScenarioSpaceVehicle();
-	satellite->setType("Satellite");
-	satellite->setName(satellitekeplerian[i].name);
-        scenario->addParticipant(satellite);
-        ScenarioTrajectoryPlan* trajectoryplan = new ScenarioTrajectoryPlan();
-        satellite->setTrajectoryPlan(trajectoryplan);
-        ScenarioLoiteringTrajectory* loiteringtrajectory = new ScenarioLoiteringTrajectory();
-        loiteringdialog->saveValues(loiteringtrajectory->environment());
-        loiteringdialog->saveValues(loiteringtrajectory->trajectoryPropagation());
-        trajectoryplan->addTrajectory(loiteringtrajectory);
-        ScenarioSimulationParameters* simulationparameters = new ScenarioSimulationParameters(0);
-        StaBody* body = (StaBody*) loiteringtrajectory->environment()->centralBody()->body();
-        ScenarioBody* centralsystemBody = new ScenarioBody(body);
-        ScenarioExtendedTimeline* timeline = new ScenarioExtendedTimeline();
-        simulationparameters->setTimeline(timeline);
-        ScenarioInitialStateAttitude* initialstateattitude = new ScenarioInitialStateAttitude();
-        simulationparameters->setInitialStateAttitude(initialstateattitude);
-        ScenarioInitialStatePosition* initialstateposition = new ScenarioInitialStatePosition();
-        initialstateposition->setCentralsystemBody(centralsystemBody);
-        simulationparameters->setInitialStatePosition(initialstateposition);
-	*/
+        // Create the initial position (Keplerian elements)
+        ScenarioKeplerianElementsType* elements = new ScenarioKeplerianElementsType();
+        elements->setSemiMajorAxis(satellitekeplerian[i].param[0]);
+        elements->setEccentricity(satellitekeplerian[i].param[1]);
+        elements->setInclination(satellitekeplerian[i].param[2]);
+        elements->setRAAN(satellitekeplerian[i].param[3]);
+        elements->setArgumentOfPeriapsis(satellitekeplerian[i].param[4]);
+        elements->setTrueAnomaly(satellitekeplerian[i].param[5]);
 
+        // Create the trajectory arc
+        ScenarioLoiteringType* loitering = new ScenarioLoiteringType();
+        loitering->Environment()->CentralBody()->setName("EARTH");
+        loitering->InitialPosition()->setCoordinateSystem("INERTIAL J2000");
+        loitering->PropagationPosition()->setTimeStep(60.0);
+        loitering->PropagationPosition()->setPropagator("TWO BODY");
 
+        loitering->TimeLine()->setStartTime(QDateTime(QDate(2012, 1, 1)));
+        loitering->TimeLine()->setEndTime(QDateTime(QDate(2012, 1, 2)));
+        loitering->TimeLine()->setStepTime(60.0);
 
-	// First, creating the scenario elements
-	ScenarioParticipantType* participant = NULL;
+        loitering->InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(elements));
 
-	// The participant is a satellite
-	participant = ScenarioSC::create(rootElement);
-	participant->setName(satellitekeplerian[i].name);
-	// Adding the participant to the scenario
-	scenario->AbstractParticipant().append(QSharedPointer<ScenarioParticipantType>(participant));
-	QTreeWidgetItem* participantItem = new QTreeWidgetItem(rootItem);
-	participantItem->setIcon(0, QIcon(":/icons/ParticipantSATELLITE.png"));
-	constelationTree->addScenarioItems(participantItem, participant);
+        // Create the spacecraft
+        sc->SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(loitering));
 
-	QTreeWidgetItem* SCMissionItem = new QTreeWidgetItem(participantItem->child(2));
-	QVariant data = SCMissionItem->data(0, ScenarioObjectRole);
-	void* pointer = qVariantValue<void*>(data);
-	ScenarioObject* SCMissionObject = reinterpret_cast<ScenarioObject*>(pointer);
-
-	ScenarioTrajectoryPlan* trajectoryPlan = dynamic_cast<ScenarioTrajectoryPlan*>(SCMissionObject);
-	ScenarioAbstractTrajectoryType* trajectory = NULL;
-
-	QDomElement elementTrajectory = scenarioDoc.nextSiblingElement();
-	QString elementTrajectoryName = elementTrajectory.tagName();
-
-	trajectory = ScenarioLoiteringType::create(elementTrajectory);
-
-	if (trajectoryPlan)
-	{
-	    trajectoryPlan->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
-	}
-
-
-	/*
-        ScenarioKeplerianElements* keplerian = new ScenarioKeplerianElements();
-        keplerian->m_semimajorAxis = satellitekeplerian[i].param[0];
-        keplerian->m_eccentricity = satellitekeplerian[i].param[1];
-        keplerian->m_inclination = satellitekeplerian[i].param[2];
-        keplerian->m_raan = satellitekeplerian[i].param[3];
-        keplerian->m_argumentOfPeriapsis = satellitekeplerian[i].param[4];
-        keplerian->m_trueAnomaly = satellitekeplerian[i].param[5];
-
-        initialstateposition->setInitialState(keplerian);
-
-        loiteringtrajectory->setSimulationParameters(simulationparameters);
-        loiteringdialog->saveValuesConstellation(simulationparameters);
-	*/
-
+        // Add it to the scenario
+        scenario->AbstractParticipant().append(QSharedPointer<ScenarioParticipantType>(sc));
     }
 
     mainwindow->setScenario(scenario);
