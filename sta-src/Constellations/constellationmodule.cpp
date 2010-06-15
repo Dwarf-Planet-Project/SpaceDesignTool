@@ -34,7 +34,7 @@
 #include <QMessageBox>
 #include <math.h>
 #include "Astro-Core/stamath.h"
-#include "Astro-Core/nedtofixed.h"
+#include "Astro-Core/nedTOfixed.h"
 #include "Astro-Core/rectangularTOpolar.h"
 #include <vector>
 #include <celmath/vecmath.h>
