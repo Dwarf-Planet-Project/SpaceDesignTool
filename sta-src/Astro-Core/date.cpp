@@ -178,23 +178,23 @@ double sta::calendarToDayOfYear(QDateTime DateTime)
     {
         MonthsLength[1]=29;
     }
-qDebug()<<"month"<<DateTime.date().month();
+//qDebug()<<"month"<<DateTime.date().month();
     if(DateTime.date().month()!=0)
     {
       for(int i=0;i<DateTime.date().month();i++)
       {
         DaysInMonths=DaysInMonths+MonthsLength[i];
-        qDebug()<<"number of days of int months"<<DaysInMonths;
+        //qDebug()<<"number of days of int months"<<DaysInMonths;
       }
     }
- qDebug()<<"number of days of int months-after the loop"<<DaysInMonths;
+ //qDebug()<<"number of days of int months-after the loop"<<DaysInMonths;
     if(DateTime.date().day()!=1)
     {
     Days=DateTime.date().day()-1;
     }
-qDebug()<<"number of days in the month"<<Days;
+//qDebug()<<"number of days in the month"<<Days;
     DayOfYear=DaysInMonths+Days;
-    qDebug()<<"days of year"<<DayOfYear;
+    //qDebug()<<"days of year"<<DayOfYear;
     return DayOfYear;
 }
 

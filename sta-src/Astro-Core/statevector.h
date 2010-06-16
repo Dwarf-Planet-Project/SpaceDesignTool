@@ -92,7 +92,15 @@ namespace sta
     double TrueAnomaly;
     double EccentricAnomaly;
 };
-
+struct DelaunayElements
+{
+    double l;
+    double g;
+    double h;
+    double L;
+    double G;
+    double H;
+};
 
 
  struct TwoLineElements  ////////////////////////////////// TLE structure ///////////////////////////////////

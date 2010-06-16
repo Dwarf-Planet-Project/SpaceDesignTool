@@ -78,3 +78,4 @@ void cartesianTOorbital(double mu, double x, double y, double z, double xd, doub
    classical orbital elements. For a defintion about the orbital elements, please see "statevector.h"  
  */
 sta::KeplerianElements cartesianTOorbital(double mu,  sta::StateVector cartesianStateVector);
+sta::DelaunayElements cartesianTOdelaunay(double mu, sta::StateVector cartesianStateVector);

@@ -230,3 +230,19 @@ sta::KeplerianElements cartesianTOorbital(double mu, sta::StateVector cartesianS
       return foundKeplerianElements;
 
 }
+
+sta::DelaunayElements cartesianTOdelaunay(double mu, sta::StateVector cartesianStateVector)
+{
+    DelaunayElements CalcDelaunayElements;
+    KeplerianElements KeplerianElemList=cartesianTOorbital(mu,cartesianStateVector);
+    Eigen::Vector3d OrbitalMomentum;
+    OrbitalMomentum = cartesianStateVector.position.cross(cartesianStateVector.velocity);
+
+    CalcDelaunayElements.l=KeplerianElemList.MeanAnomaly;
+    CalcDelaunayElements.g=KeplerianElemList.ArgumentOfPeriapsis;
+    CalcDelaunayElements.h=KeplerianElemList.AscendingNode;
+    CalcDelaunayElements.L=sqrt(mu*KeplerianElemList.SemimajorAxis);
+    CalcDelaunayElements.G=OrbitalMomentum.norm();
+    CalcDelaunayElements.H=sqrt(mu*KeplerianElemList.SemimajorAxis*(1-(KeplerianElemList.Eccentricity*KeplerianElemList.Eccentricity)))*cos(KeplerianElemList.Inclination);
+return CalcDelaunayElements;
+}

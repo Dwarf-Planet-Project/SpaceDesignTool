@@ -26,7 +26,7 @@ message(Qt is installed in $$[QT_INSTALL_PREFIX])
 # INSTALLS += target
 CONFIG += debug_and_release
 CONFIG += release
-CONFIG += warn_off
+
 TEMPLATE = app
 TARGET = STA
 QT += opengl
@@ -329,12 +329,15 @@ OPTIMIZATION_HEADERS = sta-src/Optimization/GlobalOptimizers.h \
 # ############# Plotting Module ##############
 PLOT_SOURCES = sta-src/Plotting/groundtrackplottool.cpp \
     sta-src/Plotting/plottingtool.cpp \
+    sta-src/Plotting/PlotView.cpp \
     sta-src/Plotting/threedvisualizationtool.cpp \
     sta-src/Plotting/visualizationtoolbar.cpp
 PLOT_HEADERS = sta-src/Plotting/groundtrackplottool.h \
     sta-src/Plotting/plottingtool.h \
+    sta-src/Plotting/PlotDataSource.h \
     sta-src/Plotting/threedvisualizationtool.h \
-    sta-src/Plotting/visualizationtoolbar.h
+    sta-src/Plotting/visualizationtoolbar.h\
+    sta-src/Plotting/PlotView.h
 PLOT_FORMS = sta-src/Plotting/plottingtool.ui
 
 # ################ RAM ############
