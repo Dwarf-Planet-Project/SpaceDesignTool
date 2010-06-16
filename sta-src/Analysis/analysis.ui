@@ -2,24 +2,16 @@
 <ui version="4.0">
  <class>analysisDialogClass</class>
  <widget class="QDialog" name="analysisDialogClass">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>741</width>
-    <height>618</height>
-   </rect>
-  </property>
   <property name="minimumSize">
    <size>
     <width>741</width>
-    <height>618</height>
+    <height>553</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>741</width>
-    <height>618</height>
+    <height>553</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -33,7 +25,7 @@
    <property name="geometry">
     <rect>
      <x>560</x>
-     <y>584</y>
+     <y>512</y>
      <width>165</width>
      <height>32</height>
     </rect>
@@ -48,9 +40,9 @@
   <widget class="QTreeWidget" name="TreeWidgetMissionArc">
    <property name="geometry">
     <rect>
-     <x>220</x>
-     <y>16</y>
-     <width>501</width>
+     <x>372</x>
+     <y>12</y>
+     <width>329</width>
      <height>149</height>
     </rect>
    </property>
@@ -66,9 +58,9 @@
   <widget class="QPushButton" name="GeneratePushButton">
    <property name="geometry">
     <rect>
-     <x>616</x>
-     <y>504</y>
-     <width>105</width>
+     <x>632</x>
+     <y>460</y>
+     <width>89</width>
      <height>32</height>
     </rect>
    </property>
@@ -79,8 +71,8 @@
   <widget class="QPushButton" name="TotalHelpPushButton">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>80</y>
+     <x>16</x>
+     <y>92</y>
      <width>117</width>
      <height>32</height>
     </rect>
@@ -92,8 +84,8 @@
   <widget class="QStackedWidget" name="stackedWidget">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>170</y>
+     <x>4</x>
+     <y>164</y>
      <width>731</width>
      <height>241</height>
     </rect>
@@ -4451,56 +4443,13 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>410</y>
-     <width>473</width>
-     <height>181</height>
+     <x>372</x>
+     <y>412</y>
+     <width>117</width>
+     <height>141</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_3">
-    <item>
-     <widget class="QGroupBox" name="groupBoxTimeSpecifications">
-      <property name="title">
-       <string>Time intervals</string>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_9">
-       <item>
-        <widget class="QTreeWidget" name="treeWidgetTimeSpecifications">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>256</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="editTriggers">
-          <set>QAbstractItemView::DoubleClicked</set>
-         </property>
-         <property name="selectionMode">
-          <enum>QAbstractItemView::MultiSelection</enum>
-         </property>
-         <column>
-          <property name="text">
-           <string>Start</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Stop</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Time Step</string>
-          </property>
-         </column>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_12">
       <item>
@@ -4580,13 +4529,13 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>10</y>
-     <width>161</width>
-     <height>61</height>
+     <y>4</y>
+     <width>137</width>
+     <height>73</height>
     </rect>
    </property>
    <property name="title">
-    <string>Analysis Format</string>
+    <string>Analysis type:</string>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
@@ -4642,8 +4591,55 @@
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_4"/>
   </widget>
-  <zorder>layoutWidget</zorder>
-  <zorder>layoutWidget</zorder>
+  <widget class="QGroupBox" name="groupBoxTimeSpecifications">
+   <property name="geometry">
+    <rect>
+     <x>16</x>
+     <y>400</y>
+     <width>348</width>
+     <height>141</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Time intervals</string>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_9">
+    <item>
+     <widget class="QTreeWidget" name="treeWidgetTimeSpecifications">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>256</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="editTriggers">
+       <set>QAbstractItemView::DoubleClicked</set>
+      </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::MultiSelection</enum>
+      </property>
+      <column>
+       <property name="text">
+        <string>Start</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Stop</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Time Step</string>
+       </property>
+      </column>
+     </widget>
+    </item>
+   </layout>
+  </widget>
   <zorder>buttonBox</zorder>
   <zorder>TreeWidgetMissionArc</zorder>
   <zorder>GeneratePushButton</zorder>
@@ -4651,6 +4647,10 @@
   <zorder>stackedWidget</zorder>
   <zorder>layoutWidget</zorder>
   <zorder>groupBox</zorder>
+  <zorder>layoutWidget</zorder>
+  <zorder>layoutWidget</zorder>
+  <zorder>groupBoxTimeSpecifications</zorder>
+  <zorder>groupBoxTimeSpecifications</zorder>
  </widget>
  <tabstops>
   <tabstop>ComboBoxAnalysisFormat</tabstop>
