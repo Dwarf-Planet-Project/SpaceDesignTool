@@ -33,6 +33,7 @@
 
 #include "Scenario/staschema.h"
 
+
 class SemMainGUI : public QDialog , private Ui::SemMainGUI
 {
 Q_OBJECT

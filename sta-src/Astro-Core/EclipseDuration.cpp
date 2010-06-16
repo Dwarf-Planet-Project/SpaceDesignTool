@@ -136,7 +136,6 @@ bool EclipseDuration::IsSpacecraftInPenumbra(Vector3d StarCoordinates,
 }
 
 void EclipseDuration::StarLightTimeFunction(QList<double> &sampleTimes,
-                                            QList<sta::StateVector> &PlanetCoordinates,
                                             QList<sta::StateVector> &SCCoordinates,
                                             StaBody* Planet,
                                             StaBody* Star)
@@ -153,67 +152,8 @@ void EclipseDuration::StarLightTimeFunction(QList<double> &sampleTimes,
     QTextStream EclipseStarLightStream(&EclipseStarLight);
     EclipseStarLightStream.setRealNumberPrecision(16);
 
-    int i;
-    for (i=0;i<sampleTimes.size();i++)
-    {
-        //sample Time
-//        EclipseStarLightStream<<sta::JdToCalendar
-//                (sta::MjdToJd(sampleTimes.at(i))).toString(Qt::ISODate);
-        EclipseStarLightStream<<sampleTimes.at(i);
-        qDebug()<<"SAMPLE"<<sampleTimes.at(i);
-        EclipseStarLightStream<<"\t";
-
-        double tempEclipse = 0.0;
-
-        //check if it is in Penumbra or Umbra
-        if (EclipseDuration::IsSpacecraftInUmbra
-            (Star->stateVector(sampleTimes.at(i),
-                               Planet,
-                               sta::COORDSYS_BODYFIXED).position,
-             PlanetCoordinates.at(i).position,
-             SCCoordinates.at(i).position))
-            tempEclipse = 0.0;
-        else
-        {
-            if (EclipseDuration::IsSpacecraftInPenumbra
-                (Star->stateVector(sampleTimes.at(i),
-                                   Planet,
-                                   sta::COORDSYS_BODYFIXED).position,
-                 PlanetCoordinates.at(i).position,
-                 SCCoordinates.at(i).position))
-                tempEclipse = 0.5;
-            else
-                tempEclipse = 1.0;
-        }
-
-        EclipseStarLightStream<<tempEclipse;
-        EclipseStarLightStream<<"\t";
-    }
-
-    EclipseStarLightStream<<endl;
-
-    EclipseStarLight.close();
-}
-
-void EclipseDuration::StarLightTimeFunction(QList<double> &sampleTimes,
-                                            QList<sta::StateVector> &SCCoordinates,
-                                            StaBody* Planet,
-                                            StaBody* Star)
-{
-    m_PlanetMeanDiameter = 2 * Planet->meanRadius();
-    m_StarMeanDiameter = 2 * Star->meanRadius();
-
-    QString path = QString("data/EclipseStarLight.stad");
-
-    QFile EclipseStarLight(path);
-    EclipseStarLight.open(QIODevice::ReadWrite);
-//       qDebug()<<"EclipseStarLight.fileName()"<<EclipseStarLight.fileName();
-//       qDebug()<<"EclipseStarLight.isOpen()"<<EclipseStarLight.isOpen();
-    QTextStream EclipseStarLightStream(&EclipseStarLight);
-    EclipseStarLightStream.setRealNumberPrecision(16);
-
-    Vector3d  PlanetCoordinates;
-    PlanetCoordinates.setZero(3);
+//    Vector3d  PlanetCoordinates;
+//    PlanetCoordinates.setZero(3);
 
     int i;
     for (i=0;i<sampleTimes.size();i++)
@@ -228,20 +168,35 @@ void EclipseDuration::StarLightTimeFunction(QList<double> &sampleTimes,
 
         //check if it is in Penumbra or Umbra
         if (EclipseDuration::IsSpacecraftInUmbra
-            (Star->stateVector(sampleTimes.at(i),
-                               Planet,
-                               sta::COORDSYS_BODYFIXED).position,
-             PlanetCoordinates,
+            ((Star->stateVector(sampleTimes.at(i),
+                                Planet,
+                                sta::COORDSYS_EME_J2000).position),
+             (Planet->stateVector(sampleTimes.at(i),
+                                  Planet,
+                                  sta::COORDSYS_EME_J2000).position),
              SCCoordinates.at(i).position))
             tempEclipse = 0.0;
+        //            (Star->stateVector(sampleTimes.at(i),
+        //                               Planet,
+        //                               sta::COORDSYS_BODYFIXED).position,
+        //             PlanetCoordinates,
+        //             SCCoordinates.at(i).position))
+        //            tempEclipse = 0.0;
         else
         {
             if (EclipseDuration::IsSpacecraftInPenumbra
-                (Star->stateVector(sampleTimes.at(i),
-                                   Planet,
-                                   sta::COORDSYS_BODYFIXED).position,
-                 PlanetCoordinates,
+                ((Star->stateVector(sampleTimes.at(i),
+                                    Planet,
+                                    sta::COORDSYS_EME_J2000).position),
+                 (Planet->stateVector(sampleTimes.at(i),
+                                      Planet,
+                                      sta::COORDSYS_EME_J2000).position),
                  SCCoordinates.at(i).position))
+                //                (Star->stateVector(sampleTimes.at(i),
+                //                                   Planet,
+                //                                   sta::COORDSYS_EME_J2000).position,
+                //                 PlanetCoordinates,
+                //                 SCCoordinates.at(i).position))
                 tempEclipse = 0.5;
             else
                 tempEclipse = 1.0;

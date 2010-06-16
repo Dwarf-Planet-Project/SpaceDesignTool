@@ -25,16 +25,19 @@
 #ifndef SEM_H
 #define SEM_H
 
+#include "Main/mainwindow.h"
 #include "ui_sem.h"
 #include <QDialog>
 
 #include "Scenario/staschema.h"
 
+class MainWindow;
+
 class sem : public QDialog , private Ui::SEMDialogClass
 {
 Q_OBJECT
 public:
-        sem(SpaceScenario* SCscenario, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+        sem(SpaceScenario* SCscenario, MainWindow* parent);
 	~sem();
 
 protected slots:
@@ -48,6 +51,7 @@ protected slots:
 	void on_buttonBox_rejected();
 private:
        SpaceScenario* scenario;
+       MainWindow* mainwindow;
 
 
 };

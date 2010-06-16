@@ -40,7 +40,8 @@
 
 using namespace std;
 
-sem::sem(SpaceScenario* SCscenario,  QWidget * parent, Qt::WindowFlags f) : QDialog(parent,f)
+sem::sem(SpaceScenario* SCscenario,  MainWindow* parent)
+    : mainwindow(parent)
 {
 	setupUi(this);
 
@@ -196,7 +197,8 @@ void sem::on_buttonBox_accepted()
         }
     }
 
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    mainwindow->setScenario(scenario);
 }
 
 void sem::on_buttonBox_rejected()

@@ -53,12 +53,6 @@ public:
     */
 
     void StarLightTimeFunction(QList<double>& sampleTimes,
-                              QList<sta::StateVector>& PlanetCoordinates,
-                              QList<sta::StateVector>& SCCoordinates,
-                              StaBody* Planet,
-                              StaBody* StarRadius);
-
-    void StarLightTimeFunction(QList<double>& sampleTimes,
                               QList<sta::StateVector>& SCCoordinates,
                               StaBody* Planet,
                               StaBody* StarRadius);

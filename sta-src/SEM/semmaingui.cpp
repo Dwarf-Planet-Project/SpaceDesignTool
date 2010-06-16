@@ -1013,11 +1013,15 @@ void SemMainGUI::on_SemMainGUISavePushButton_clicked()
             (SC.getNewSCThermal()->getNeededRadiator());
 
     //the name of coating has to be in scenario
+    Vehicle->System()->TCS()->CoatingArea()->ColdSurface()->ColdCoating()->ElementIdentifier()->setName
+            (SC.getNewSCThermal()->getColdFaceCoatingProperties().Type);
     Vehicle->System().data()->TCS().data()->CoatingArea().data()->ColdSurface().data()->ColdCoating().data()->setEmissivity
             (SC.getNewSCThermal()->getColdFaceCoatingProperties().Emmissivity);
     Vehicle->System().data()->TCS().data()->CoatingArea().data()->ColdSurface().data()->ColdCoating().data()->setAbsorptivity
             (SC.getNewSCThermal()->getColdFaceCoatingProperties().Absorptivity);
 
+    Vehicle->System()->TCS()->CoatingArea()->HotSurface()->HotCoating()->ElementIdentifier()->setName
+            (SC.getNewSCThermal()->getHotFaceCoatingProperties().Type);
     Vehicle->System().data()->TCS().data()->CoatingArea().data()->HotSurface().data()->HotCoating().data()->setEmissivity
             (SC.getNewSCThermal()->getHotFaceCoatingProperties().Emmissivity);
     Vehicle->System().data()->TCS().data()->CoatingArea().data()->HotSurface().data()->HotCoating().data()->setAbsorptivity
@@ -1334,11 +1338,11 @@ void SemMainGUI::RetrieveScenarioSC()
     SC.getNewSCThermal()->setNeededRadiator
             (Vehicle->System().data()->TCS().data()->radiatedPower());
     SC.getNewSCThermal()->setColdFaceCoatingProperties //the name has to be in scenario
-            ("ozgun",
+            (Vehicle->System()->TCS()->CoatingArea()->ColdSurface()->ColdCoating()->ElementIdentifier()->Name(),
              Vehicle->System().data()->TCS().data()->CoatingArea().data()->ColdSurface().data()->ColdCoating().data()->emissivity(),
              Vehicle->System().data()->TCS().data()->CoatingArea().data()->ColdSurface().data()->ColdCoating().data()->absorptivity());
     SC.getNewSCThermal()->setHotFaceCoatingProperties //the name has to be in scenario
-            ("ozgun",
+            (Vehicle->System()->TCS()->CoatingArea()->HotSurface()->HotCoating()->ElementIdentifier()->Name(),
              Vehicle->System().data()->TCS().data()->CoatingArea().data()->HotSurface().data()->HotCoating().data()->emissivity(),
              Vehicle->System().data()->TCS().data()->CoatingArea().data()->HotSurface().data()->HotCoating().data()->absorptivity());
     // the cold and hot face area has to be included
@@ -1377,5 +1381,172 @@ void SemMainGUI::RetrieveScenarioSC()
             (Vehicle->System().data()->OBDH().data()->totalOBDHMass());
     SC.getNewSCDataHandling()->setMemorySizeForPayloads
             (Vehicle->System().data()->OBDH().data()->totalSizeOfMemory());
-//--------------------------------system budget transfer from the scenario is completed -------
+    //--------------------------------system budget transfer from the scenario is completed -------
+
+    // transfer the payload infromation from scenario to GUI
+    int i=0;
+
+    const QList<QSharedPointer<ScenarioAbstractPayloadType> >& payloadList
+            = Vehicle->SCMission()->PayloadSet()->AbstractPayload();
+
+    if (!payloadList.isEmpty())
+    {
+        foreach (QSharedPointer<ScenarioAbstractPayloadType> payload, payloadList)
+        {
+            if (dynamic_cast<ScenarioTransmitterPayloadType*>(payload.data()))
+            {
+                ScenarioTransmitterPayloadType* myPayload
+                        = dynamic_cast<ScenarioTransmitterPayloadType*>(payload.data());
+                (SC.getNewPayloads()+i)->setPayloadName
+                        (myPayload->ElementIdentifier()->Name());
+
+                (SC.getNewPayloads()+i)->setPayloadHeight
+                        (myPayload->Budget()->Size()->Height());
+                (SC.getNewPayloads()+i)->setPayloadLength
+                        (myPayload->Budget()->Size()->Length());
+                (SC.getNewPayloads()+i)->setPayloadWidth
+                        (myPayload->Budget()->Size()->Width());
+
+                (SC.getNewPayloads()+i)->setPayloadDataRate
+                        (myPayload->Budget()->DataRate());
+
+                (SC.getNewPayloads()+i)->setPayloadMass
+                        (myPayload->Budget()->Mass());
+
+                (SC.getNewPayloads()+i)->setPayloadMaximumTemperature
+                        (myPayload->Budget()->TemperatureRange()->MaximumTemperature());
+                (SC.getNewPayloads()+i)->setPayloadMinimumTemperature
+                        (myPayload->Budget()->TemperatureRange()->MinimumTemperature());
+
+                (SC.getNewPayloads()+i)->setPayloadPowerInDaylight
+                        (myPayload->Budget()->Power()->powerConsumptionInDaylight());
+                (SC.getNewPayloads()+i)->setPayloadPowerInEclipse
+                        (myPayload->Budget()->Power()->powerConsumptionInEclipse());
+                (SC.getNewPayloads()+i)->setPayloadPowerOnPercentageInDaylight
+                        (myPayload->Budget()->Power()->powerOnPercentageInDaylight());
+                (SC.getNewPayloads()+i)->setPayloadPowerOnPercentageInEclipse
+                        (myPayload->Budget()->Power()->powerOnPercentageInEclipse());
+
+                (SC.getNewPayloads()+i)->setPayloadWavelength
+                        (myPayload->Budget()->FrequencyBand());
+            }
+            if (dynamic_cast<ScenarioReceiverPayloadType*>(payload.data()))
+            {
+                ScenarioReceiverPayloadType* myPayload
+                        = dynamic_cast<ScenarioReceiverPayloadType*>(payload.data());
+                (SC.getNewPayloads()+i)->setPayloadName
+                        (myPayload->ElementIdentifier()->Name());
+
+                (SC.getNewPayloads()+i)->setPayloadHeight
+                        (myPayload->Budget()->Size()->Height());
+                (SC.getNewPayloads()+i)->setPayloadLength
+                        (myPayload->Budget()->Size()->Length());
+                (SC.getNewPayloads()+i)->setPayloadWidth
+                        (myPayload->Budget()->Size()->Width());
+
+                (SC.getNewPayloads()+i)->setPayloadDataRate
+                        (myPayload->Budget()->DataRate());
+
+                (SC.getNewPayloads()+i)->setPayloadMass
+                        (myPayload->Budget()->Mass());
+
+                (SC.getNewPayloads()+i)->setPayloadMaximumTemperature
+                        (myPayload->Budget()->TemperatureRange()->MaximumTemperature());
+                (SC.getNewPayloads()+i)->setPayloadMinimumTemperature
+                        (myPayload->Budget()->TemperatureRange()->MinimumTemperature());
+
+                (SC.getNewPayloads()+i)->setPayloadPowerInDaylight
+                        (myPayload->Budget()->Power()->powerConsumptionInDaylight());
+                (SC.getNewPayloads()+i)->setPayloadPowerInEclipse
+                        (myPayload->Budget()->Power()->powerConsumptionInEclipse());
+                (SC.getNewPayloads()+i)->setPayloadPowerOnPercentageInDaylight
+                        (myPayload->Budget()->Power()->powerOnPercentageInDaylight());
+                (SC.getNewPayloads()+i)->setPayloadPowerOnPercentageInEclipse
+                        (myPayload->Budget()->Power()->powerOnPercentageInEclipse());
+
+                (SC.getNewPayloads()+i)->setPayloadWavelength
+                        (myPayload->Budget()->FrequencyBand());
+            }
+            if (dynamic_cast<ScenarioOpticalPayloadType*>(payload.data()))
+            {
+                ScenarioOpticalPayloadType* myPayload
+                        = dynamic_cast<ScenarioOpticalPayloadType*>(payload.data());
+                (SC.getNewPayloads()+i)->setPayloadName
+                        (myPayload->ElementIdentifier()->Name());
+
+                (SC.getNewPayloads()+i)->setPayloadHeight
+                        (myPayload->Budget()->Size()->Height());
+                (SC.getNewPayloads()+i)->setPayloadLength
+                        (myPayload->Budget()->Size()->Length());
+                (SC.getNewPayloads()+i)->setPayloadWidth
+                        (myPayload->Budget()->Size()->Width());
+
+                (SC.getNewPayloads()+i)->setPayloadDataRate
+                        (myPayload->Budget()->DataRate());
+
+                (SC.getNewPayloads()+i)->setPayloadMass
+                        (myPayload->Budget()->Mass());
+
+                (SC.getNewPayloads()+i)->setPayloadMaximumTemperature
+                        (myPayload->Budget()->TemperatureRange()->MaximumTemperature());
+                (SC.getNewPayloads()+i)->setPayloadMinimumTemperature
+                        (myPayload->Budget()->TemperatureRange()->MinimumTemperature());
+
+                (SC.getNewPayloads()+i)->setPayloadPowerInDaylight
+                        (myPayload->Budget()->Power()->powerConsumptionInDaylight());
+                (SC.getNewPayloads()+i)->setPayloadPowerInEclipse
+                        (myPayload->Budget()->Power()->powerConsumptionInEclipse());
+                (SC.getNewPayloads()+i)->setPayloadPowerOnPercentageInDaylight
+                        (myPayload->Budget()->Power()->powerOnPercentageInDaylight());
+                (SC.getNewPayloads()+i)->setPayloadPowerOnPercentageInEclipse
+                        (myPayload->Budget()->Power()->powerOnPercentageInEclipse());
+
+                (SC.getNewPayloads()+i)->setPayloadWavelength
+                        (myPayload->Budget()->FrequencyBand());
+            }
+            if (dynamic_cast<ScenarioRadarPayloadType*>(payload.data()))
+            {
+                ScenarioRadarPayloadType* myPayload
+                        = dynamic_cast<ScenarioRadarPayloadType*>(payload.data());
+                (SC.getNewPayloads()+i)->setPayloadName
+                        (myPayload->ElementIdentifier()->Name());
+
+                (SC.getNewPayloads()+i)->setPayloadHeight
+                        (myPayload->Budget()->Size()->Height());
+                (SC.getNewPayloads()+i)->setPayloadLength
+                        (myPayload->Budget()->Size()->Length());
+                (SC.getNewPayloads()+i)->setPayloadWidth
+                        (myPayload->Budget()->Size()->Width());
+
+                (SC.getNewPayloads()+i)->setPayloadDataRate
+                        (myPayload->Budget()->DataRate());
+
+                (SC.getNewPayloads()+i)->setPayloadMass
+                        (myPayload->Budget()->Mass());
+
+                (SC.getNewPayloads()+i)->setPayloadMaximumTemperature
+                        (myPayload->Budget()->TemperatureRange()->MaximumTemperature());
+                (SC.getNewPayloads()+i)->setPayloadMinimumTemperature
+                        (myPayload->Budget()->TemperatureRange()->MinimumTemperature());
+
+                (SC.getNewPayloads()+i)->setPayloadPowerInDaylight
+                        (myPayload->Budget()->Power()->powerConsumptionInDaylight());
+                (SC.getNewPayloads()+i)->setPayloadPowerInEclipse
+                        (myPayload->Budget()->Power()->powerConsumptionInEclipse());
+                (SC.getNewPayloads()+i)->setPayloadPowerOnPercentageInDaylight
+                        (myPayload->Budget()->Power()->powerOnPercentageInDaylight());
+                (SC.getNewPayloads()+i)->setPayloadPowerOnPercentageInEclipse
+                        (myPayload->Budget()->Power()->powerOnPercentageInEclipse());
+
+                (SC.getNewPayloads()+i)->setPayloadWavelength
+                        (myPayload->Budget()->FrequencyBand());
+            }
+
+            i++;//next payload
+        }
+    }
+
+
+
+
 }

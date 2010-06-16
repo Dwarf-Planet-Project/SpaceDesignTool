@@ -80,7 +80,7 @@
           <string>Mercury</string>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="../../iconary/sta-icons.qrc">
            <normaloff>:/icons/ComboMercury.png</normaloff>:/icons/ComboMercury.png</iconset>
          </property>
         </item>
@@ -89,7 +89,7 @@
           <string>Venus</string>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="../../iconary/sta-icons.qrc">
            <normaloff>:/icons/ComboVenus.png</normaloff>:/icons/ComboVenus.png</iconset>
          </property>
         </item>
@@ -98,7 +98,7 @@
           <string>Earth</string>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="../../iconary/sta-icons.qrc">
            <normaloff>:/icons/ComboEarth.png</normaloff>:/icons/ComboEarth.png</iconset>
          </property>
         </item>
@@ -107,7 +107,7 @@
           <string>Mars</string>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="../../iconary/sta-icons.qrc">
            <normaloff>:/icons/ComboMars.png</normaloff>:/icons/ComboMars.png</iconset>
          </property>
         </item>
@@ -116,7 +116,7 @@
           <string>Jupiter</string>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="../../iconary/sta-icons.qrc">
            <normaloff>:/icons/ComboJupiter.png</normaloff>:/icons/ComboJupiter.png</iconset>
          </property>
         </item>
@@ -125,7 +125,7 @@
           <string>Saturn</string>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="../../iconary/sta-icons.qrc">
            <normaloff>:/icons/ComboSaturn.png</normaloff>:/icons/ComboSaturn.png</iconset>
          </property>
         </item>
@@ -134,7 +134,7 @@
           <string>Uranus</string>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="../../iconary/sta-icons.qrc">
            <normaloff>:/icons/ComboUranus.png</normaloff>:/icons/ComboUranus.png</iconset>
          </property>
         </item>
@@ -143,7 +143,7 @@
           <string>Neptune</string>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="../../iconary/sta-icons.qrc">
            <normaloff>:/icons/ComboNeptune.png</normaloff>:/icons/ComboNeptune.png</iconset>
          </property>
         </item>
@@ -152,7 +152,7 @@
           <string>Pluto</string>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="../../iconary/sta-icons.qrc">
            <normaloff>:/icons/ComboPluto.png</normaloff>:/icons/ComboPluto.png</iconset>
          </property>
         </item>
@@ -305,6 +305,9 @@
       </item>
       <item row="0" column="1">
        <widget class="QLineEdit" name="SemimajorAxisLineEdit">
+        <property name="text">
+         <string>0</string>
+        </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
@@ -319,6 +322,9 @@
       </item>
       <item row="1" column="1">
        <widget class="QLineEdit" name="EccentricityLineEdit">
+        <property name="text">
+         <string>0</string>
+        </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
@@ -333,6 +339,9 @@
       </item>
       <item row="2" column="1">
        <widget class="QLineEdit" name="InclinationLineEdit">
+        <property name="text">
+         <string>0</string>
+        </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
@@ -347,6 +356,9 @@
       </item>
       <item row="3" column="1">
        <widget class="QLineEdit" name="RAANLineEdit">
+        <property name="text">
+         <string>0</string>
+        </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
@@ -361,6 +373,9 @@
       </item>
       <item row="4" column="1">
        <widget class="QLineEdit" name="ArgumentOfPeriapsisLineEdit">
+        <property name="text">
+         <string>0</string>
+        </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
@@ -375,6 +390,9 @@
       </item>
       <item row="5" column="1">
        <widget class="QLineEdit" name="TrueAnomalyLineEdit">
+        <property name="text">
+         <string>0</string>
+        </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
@@ -586,6 +604,9 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -602,6 +623,9 @@
         <widget class="QLineEdit" name="PayladLengthLineEdit">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -620,6 +644,9 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -636,6 +663,9 @@
         <widget class="QLineEdit" name="PayloadMassLineEdit">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -707,6 +737,9 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -733,6 +766,9 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -749,6 +785,9 @@
         <widget class="QLineEdit" name="PayloadDataRateLineEdit">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -776,6 +815,9 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -792,6 +834,9 @@
         <widget class="QLineEdit" name="PayloadMaxTempLineEdit">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -857,6 +902,9 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -866,6 +914,9 @@
         <widget class="QLineEdit" name="PayloadPowerDaylightLineEdit">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -884,6 +935,9 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -893,6 +947,9 @@
         <widget class="QLineEdit" name="PayloadPowerTimeDaylightLineEdit">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1097,6 +1154,9 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -1113,6 +1173,9 @@
         <widget class="QLineEdit" name="PayladLengthLineEdit_2">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1131,6 +1194,9 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -1147,6 +1213,9 @@
         <widget class="QLineEdit" name="PayloadMassLineEdit_2">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1218,6 +1287,9 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -1244,6 +1316,9 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -1260,6 +1335,9 @@
         <widget class="QLineEdit" name="PayloadDataRateLineEdit_2">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1287,6 +1365,9 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -1303,6 +1384,9 @@
         <widget class="QLineEdit" name="PayloadMaxTempLineEdit_2">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1368,6 +1452,9 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -1377,6 +1464,9 @@
         <widget class="QLineEdit" name="PayloadPowerDaylightLineEdit_2">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1395,6 +1485,9 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -1404,6 +1497,9 @@
         <widget class="QLineEdit" name="PayloadPowerTimeDaylightLineEdit_2">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1608,6 +1704,9 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -1624,6 +1723,9 @@
         <widget class="QLineEdit" name="PayladLengthLineEdit_3">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1642,6 +1744,9 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -1658,6 +1763,9 @@
         <widget class="QLineEdit" name="PayloadMassLineEdit_3">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1729,6 +1837,9 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -1755,6 +1866,9 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -1771,6 +1885,9 @@
         <widget class="QLineEdit" name="PayloadDataRateLineEdit_3">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1798,6 +1915,9 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -1814,6 +1934,9 @@
         <widget class="QLineEdit" name="PayloadMaxTempLineEdit_3">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1879,6 +2002,9 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -1888,6 +2014,9 @@
         <widget class="QLineEdit" name="PayloadPowerDaylightLineEdit_3">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1906,6 +2035,9 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -1915,6 +2047,9 @@
         <widget class="QLineEdit" name="PayloadPowerTimeDaylightLineEdit_3">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2107,6 +2242,9 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -2123,6 +2261,9 @@
         <widget class="QLineEdit" name="PayladLengthLineEdit_4">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2141,6 +2282,9 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -2157,6 +2301,9 @@
         <widget class="QLineEdit" name="PayloadMassLineEdit_4">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2228,6 +2375,9 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -2254,6 +2404,9 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -2270,6 +2423,9 @@
         <widget class="QLineEdit" name="PayloadDataRateLineEdit_4">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2297,6 +2453,9 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -2313,6 +2472,9 @@
         <widget class="QLineEdit" name="PayloadMaxTempLineEdit_4">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2378,6 +2540,9 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -2387,6 +2552,9 @@
         <widget class="QLineEdit" name="PayloadPowerDaylightLineEdit_4">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2405,6 +2573,9 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="text">
+          <string>0</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
@@ -2414,6 +2585,9 @@
         <widget class="QLineEdit" name="PayloadPowerTimeDaylightLineEdit_4">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2840,6 +3014,9 @@
     </item>
     <item row="0" column="1">
      <widget class="QLineEdit" name="CommLinDurationPercentageLineEdit">
+      <property name="text">
+       <string>0</string>
+      </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
@@ -2854,6 +3031,9 @@
     </item>
     <item row="1" column="1">
      <widget class="QLineEdit" name="AntennaEfficiencyLineEdit">
+      <property name="text">
+       <string>0</string>
+      </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
@@ -2868,6 +3048,9 @@
     </item>
     <item row="2" column="1">
      <widget class="QLineEdit" name="AntennaGainLineEdit">
+      <property name="text">
+       <string>0</string>
+      </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
@@ -2882,6 +3065,9 @@
     </item>
     <item row="3" column="1">
      <widget class="QLineEdit" name="TXFrequencyLineEdit">
+      <property name="text">
+       <string>0</string>
+      </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
@@ -2896,6 +3082,9 @@
     </item>
     <item row="4" column="1">
      <widget class="QLineEdit" name="TXPowerLineEdit">
+      <property name="text">
+       <string>0</string>
+      </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
@@ -2920,6 +3109,9 @@
     </item>
     <item row="0" column="2">
      <widget class="QLineEdit" name="NumberOfNoLinkOrbitLineEdit">
+      <property name="text">
+       <string>0</string>
+      </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
@@ -2949,6 +3141,8 @@
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../iconary/sta-icons.qrc"/>
+ </resources>
  <connections/>
 </ui>

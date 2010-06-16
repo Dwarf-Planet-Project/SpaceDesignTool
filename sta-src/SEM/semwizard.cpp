@@ -41,6 +41,7 @@ SEMWizard::SEMWizard(ScenarioSC* SCVehicle,QString MissionArc, QWidget * parent,
 {
     setupUi(this);
 
+//    Scenario = scenario;
     connect(this, SIGNAL(helpRequested()), this, SLOT(showHelp()));
     connect(this, SIGNAL(accepted()), this, SLOT(wizardIsCompleted()));
 
@@ -55,6 +56,9 @@ SEMWizard::SEMWizard(ScenarioSC* SCVehicle,QString MissionArc, QWidget * parent,
     // the empty trajectory plan case has to be treated specially.
     if (!trajectoryList.isEmpty())
     {
+        //To store the Planet name in title case
+        QString tempCentralBody = "";
+
         // details of the mission arcs when do they start when do they end
         foreach (QSharedPointer<ScenarioAbstractTrajectoryType> trajectory, trajectoryList)
         {
@@ -68,17 +72,65 @@ SEMWizard::SEMWizard(ScenarioSC* SCVehicle,QString MissionArc, QWidget * parent,
                     SCLoiteringArc = loitering;
 
                     //collect the mission details and display them in the wizard
+
+                    //planet that SC is orbiting around
+                    //convert the planet name to title case
+                    tempCentralBody = SCLoiteringArc->Environment()->CentralBody()->Name().toLower();
+                    tempCentralBody[0]=tempCentralBody[0].toUpper();
+                    SC.getSCMissionDetails()->setPlanetProperties
+                            (tempCentralBody);
+                    //setting comboBox from a QString
+                    int i;
+                    for (i=0;i<PlanetNameComboBox->count();i++)
+                    {
+                        if (PlanetNameComboBox->itemText(i)
+                            == SC.getSCMissionDetails()->getPlanetProperties()->Planet)
+                        {
+                            PlanetNameComboBox->setCurrentIndex(i);
+                            break;
+                        }
+                    }
+
+
                     //mission start and mission end dateTime
                     SC.getSCMissionDetails()->setMissionStartTime
-                            (loitering->TimeLine().data()->StartTime());
+                            (SCLoiteringArc->TimeLine().data()->StartTime());
                     MissionStartTimeDateTimeEdit->setDateTime
                             (SC.getSCMissionDetails()->getMissionStartTime());
 
                     SC.getSCMissionDetails()->setMissionEndTime
-                            (loitering->TimeLine().data()->EndTime());
+                            (SCLoiteringArc->TimeLine().data()->EndTime());
                     MissionEndTimeDateTimeEdit->setDateTime
                             (SC.getSCMissionDetails()->getMissionEndTime());
+
+                    //see if the mission has keplerian elements
+                    if (!SCLoiteringArc->InitialPosition()->Abstract6DOFPosition().isNull())
+                    {
+                        if (dynamic_cast<ScenarioKeplerianElementsType*>
+                            (SCLoiteringArc->InitialPosition()->Abstract6DOFPosition().data()))
+                        {
+                            //for now SEM is only capable of doing systems engineering for the
+                            //missions who has keplerian elements
+                            ScenarioKeplerianElementsType* keplerian
+                                    = dynamic_cast<ScenarioKeplerianElementsType*>
+                                      (SCLoiteringArc->InitialPosition()->Abstract6DOFPosition().data());
+                            ArgumentOfPeriapsisLineEdit->setText
+                                    (QString::number(keplerian->argumentOfPeriapsis()));
+                            EccentricityLineEdit->setText
+                                    (QString::number(keplerian->eccentricity()));
+                            InclinationLineEdit->setText
+                                    (QString::number(keplerian->inclination()));
+                            RAANLineEdit->setText
+                                    (QString::number(keplerian->RAAN()));
+                            TrueAnomalyLineEdit->setText
+                                    (QString::number(keplerian->trueAnomaly()));
+                            SemimajorAxisLineEdit->setText
+                                    (QString::number(keplerian->semiMajorAxis()));
+                        }
+                    }
+
                 }
+                break;
             }
         }
     }
@@ -95,9 +147,10 @@ void SEMWizard::showHelp()
 
 void SEMWizard::wizardIsCompleted()
 {
-    //make the calculations
+    //fill the scenario
 
     //Propogate the scenario with the new start and end time  of the defined loitering
+    //also with new additional keplerian elements and the orbitting body
     const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList
             = Vehicle->SCMission()->TrajectoryPlan()->AbstractTrajectory();
     PropagationFeedback feedback;
@@ -118,6 +171,40 @@ void SEMWizard::wizardIsCompleted()
 
                 if (loitering->ElementIdentifier()->Name()== SCLoiteringArc->ElementIdentifier()->Name())
                 {
+                    //set mission start time - end time - keplerian element - orbitting body
+                    SCLoiteringArc->TimeLine()->setStartTime
+                            (SC.getSCMissionDetails()->getMissionStartTime());
+                    SCLoiteringArc->TimeLine()->setEndTime
+                            (SC.getSCMissionDetails()->getMissionEndTime());
+                    SCLoiteringArc->Environment()->CentralBody()->setName
+                            (SC.getSCMissionDetails()->getPlanetProperties()->Planet.toUpper());
+                    //see if the mission has keplerian elements to be filled
+                    if (!SCLoiteringArc->InitialPosition()->Abstract6DOFPosition().isNull())
+                    {
+                        if (dynamic_cast<ScenarioKeplerianElementsType*>
+                            (SCLoiteringArc->InitialPosition()->Abstract6DOFPosition().data()))
+                        {
+                            //for now SEM is only capable of doing systems engineering for the
+                            //missions who has keplerian elements
+                            ScenarioKeplerianElementsType* keplerian
+                                    = dynamic_cast<ScenarioKeplerianElementsType*>
+                                      (SCLoiteringArc->InitialPosition()->Abstract6DOFPosition().data());
+                            keplerian->setArgumentOfPeriapsis
+                                    (SC.getSCMissionDetails()->getArgumentOfPerigee());
+                            keplerian->setEccentricity
+                                    (SC.getSCMissionDetails()->getEccentricity());
+                            keplerian->setInclination
+                                    (SC.getSCMissionDetails()->getInclination());
+                            keplerian->setRAAN
+                                    (SC.getSCMissionDetails()->getRightAscensionNode());
+                            keplerian->setSemiMajorAxis
+                                    (SC.getSCMissionDetails()->getSemiMajorAxis());
+                            keplerian->setTrueAnomaly
+                                    (SC.getSCMissionDetails()->getTrueAnomaly());
+                        }
+                    }
+
+                    // propogate the scenario
                     PropagateLoiteringTrajectory(SCLoiteringArc, sampleTimes, samples, feedback);
 
                     //******************************************************************** /OZGUN
@@ -134,6 +221,197 @@ void SEMWizard::wizardIsCompleted()
         }
     }
 
+
+    //---------------------------------------------------------------------------
+    //First Clear all the payloads from th list
+    Vehicle->SCMission()->PayloadSet()->AbstractPayload().clear();
+    //add the payloads to the scenario
+    int i;
+    int PayloadNumber=4;
+    for (i=0;i<PayloadNumber;i++)
+    {
+        if(!(SC.getNewPayloads()+i)->getPayloadName().isEmpty())
+        {
+            if ((SC.getNewPayloads()+i)->getPayloadName()=="Transmitter")
+            {
+                ScenarioTransmitterPayloadType* myPayload = new ScenarioTransmitterPayloadType();
+                myPayload->ElementIdentifier()->setName((SC.getNewPayloads()+i)->getPayloadName());
+                // fill the parameters of created Payload
+                myPayload->Budget()->setMass
+                        ((SC.getNewPayloads()+i)->getPayloadMass());
+                myPayload->Budget()->Size()->setHeight
+                        ((SC.getNewPayloads()+i)->getPayloadHeight());
+                myPayload->Budget()->Size()->setLength
+                        ((SC.getNewPayloads()+i)->getPayloadLength());
+                myPayload->Budget()->Size()->setWidth
+                        ((SC.getNewPayloads()+i)->getPayloadWidth());
+
+                myPayload->Budget()->Power()->setPowerConsumptionInDaylight
+                        ((SC.getNewPayloads()+i)->getPayloadPowerInDaylight());
+                myPayload->Budget()->Power()->setPowerConsumptionInEclipse
+                        ((SC.getNewPayloads()+i)->getPayloadPowerInEclipse());
+                myPayload->Budget()->Power()->setPowerOnPercentageInDaylight
+                        ((SC.getNewPayloads()+i)->getPayloadPowerOnPercentageInDaylight());
+                myPayload->Budget()->Power()->setPowerOnPercentageInEclipse
+                        ((SC.getNewPayloads()+i)->getPayloadPowerOnPercentageInEclipse());
+
+                myPayload->Budget()->setDataRate
+                        ((SC.getNewPayloads()+i)->getPayloadDataRate());
+
+                myPayload->Budget()->setFrequencyBand
+                        ((SC.getNewPayloads()+i)->getPayloadWavelength());
+
+                myPayload->Budget()->TemperatureRange()->setMaximumTemperature
+                        ((SC.getNewPayloads()+i)->getPayloadMaximumTemperature());
+                myPayload->Budget()->TemperatureRange()->setMinimumTemperature
+                        ((SC.getNewPayloads()+i)->getPayloadMinimumTemperature());
+
+                //add the payload to the scenario
+                Vehicle->SCMission()->PayloadSet()->AbstractPayload().append
+                            (QSharedPointer<ScenarioAbstractPayloadType>(myPayload));
+
+
+                qDebug()<<"PAYLOAD"<<myPayload->ElementIdentifier()->Name();
+                qDebug()<<"PAYLOAD Mass"<<myPayload->Budget()->Mass();
+            }
+            else
+            {
+                if ((SC.getNewPayloads()+i)->getPayloadName()=="Receiver")
+                {
+                    ScenarioReceiverPayloadType* myPayload = new ScenarioReceiverPayloadType();
+                    myPayload->ElementIdentifier()->setName((SC.getNewPayloads()+i)->getPayloadName());
+                    // fill the parameters of created Payload
+                    myPayload->Budget()->setMass
+                            ((SC.getNewPayloads()+i)->getPayloadMass());
+                    myPayload->Budget()->Size()->setHeight
+                            ((SC.getNewPayloads()+i)->getPayloadHeight());
+                    myPayload->Budget()->Size()->setLength
+                            ((SC.getNewPayloads()+i)->getPayloadLength());
+                    myPayload->Budget()->Size()->setWidth
+                            ((SC.getNewPayloads()+i)->getPayloadWidth());
+
+                    myPayload->Budget()->Power()->setPowerConsumptionInDaylight
+                            ((SC.getNewPayloads()+i)->getPayloadPowerInDaylight());
+                    myPayload->Budget()->Power()->setPowerConsumptionInEclipse
+                            ((SC.getNewPayloads()+i)->getPayloadPowerInEclipse());
+                    myPayload->Budget()->Power()->setPowerOnPercentageInDaylight
+                            ((SC.getNewPayloads()+i)->getPayloadPowerOnPercentageInDaylight());
+                    myPayload->Budget()->Power()->setPowerOnPercentageInEclipse
+                            ((SC.getNewPayloads()+i)->getPayloadPowerOnPercentageInEclipse());
+
+                    myPayload->Budget()->setDataRate
+                            ((SC.getNewPayloads()+i)->getPayloadDataRate());
+
+                    myPayload->Budget()->setFrequencyBand
+                            ((SC.getNewPayloads()+i)->getPayloadWavelength());
+
+                    myPayload->Budget()->TemperatureRange()->setMaximumTemperature
+                            ((SC.getNewPayloads()+i)->getPayloadMaximumTemperature());
+                    myPayload->Budget()->TemperatureRange()->setMinimumTemperature
+                            ((SC.getNewPayloads()+i)->getPayloadMinimumTemperature());
+
+                    //add the payload to the scenario
+                    Vehicle->SCMission()->PayloadSet()->AbstractPayload().append
+                                (QSharedPointer<ScenarioAbstractPayloadType>(myPayload));
+
+
+                    qDebug()<<"PAYLOAD"<<myPayload->ElementIdentifier()->Name();
+                    qDebug()<<"PAYLOAD Mass"<<myPayload->Budget()->Mass();
+                }
+                else
+                {
+                    if (((SC.getNewPayloads()+i)->getPayloadName()=="SAR")||
+                        ((SC.getNewPayloads()+i)->getPayloadName()=="Radar"))
+                    {
+                        ScenarioRadarPayloadType* myPayload = new ScenarioRadarPayloadType();
+                        myPayload->ElementIdentifier()->setName((SC.getNewPayloads()+i)->getPayloadName());
+                        // fill the parameters of created Payload
+                        myPayload->Budget()->setMass
+                                ((SC.getNewPayloads()+i)->getPayloadMass());
+                        myPayload->Budget()->Size()->setHeight
+                                ((SC.getNewPayloads()+i)->getPayloadHeight());
+                        myPayload->Budget()->Size()->setLength
+                                ((SC.getNewPayloads()+i)->getPayloadLength());
+                        myPayload->Budget()->Size()->setWidth
+                                ((SC.getNewPayloads()+i)->getPayloadWidth());
+
+                        myPayload->Budget()->Power()->setPowerConsumptionInDaylight
+                                ((SC.getNewPayloads()+i)->getPayloadPowerInDaylight());
+                        myPayload->Budget()->Power()->setPowerConsumptionInEclipse
+                                ((SC.getNewPayloads()+i)->getPayloadPowerInEclipse());
+                        myPayload->Budget()->Power()->setPowerOnPercentageInDaylight
+                                ((SC.getNewPayloads()+i)->getPayloadPowerOnPercentageInDaylight());
+                        myPayload->Budget()->Power()->setPowerOnPercentageInEclipse
+                                ((SC.getNewPayloads()+i)->getPayloadPowerOnPercentageInEclipse());
+
+                        myPayload->Budget()->setDataRate
+                                ((SC.getNewPayloads()+i)->getPayloadDataRate());
+
+                        myPayload->Budget()->setFrequencyBand
+                                ((SC.getNewPayloads()+i)->getPayloadWavelength());
+
+                        myPayload->Budget()->TemperatureRange()->setMaximumTemperature
+                                ((SC.getNewPayloads()+i)->getPayloadMaximumTemperature());
+                        myPayload->Budget()->TemperatureRange()->setMinimumTemperature
+                                ((SC.getNewPayloads()+i)->getPayloadMinimumTemperature());
+
+                        //add the payload to the scenario
+                        Vehicle->SCMission()->PayloadSet()->AbstractPayload().append
+                                    (QSharedPointer<ScenarioAbstractPayloadType>(myPayload));
+
+
+                        qDebug()<<"PAYLOAD"<<myPayload->ElementIdentifier()->Name();
+                        qDebug()<<"PAYLOAD Mass"<<myPayload->Budget()->Mass();
+                    }
+                    else
+                    {
+                        ScenarioOpticalPayloadType* myPayload = new ScenarioOpticalPayloadType();
+                        myPayload->ElementIdentifier()->setName((SC.getNewPayloads()+i)->getPayloadName());
+                        // fill the parameters of created Payload
+                        myPayload->Budget()->setMass
+                                ((SC.getNewPayloads()+i)->getPayloadMass());
+                        myPayload->Budget()->Size()->setHeight
+                                ((SC.getNewPayloads()+i)->getPayloadHeight());
+                        myPayload->Budget()->Size()->setLength
+                                ((SC.getNewPayloads()+i)->getPayloadLength());
+                        myPayload->Budget()->Size()->setWidth
+                                ((SC.getNewPayloads()+i)->getPayloadWidth());
+
+                        myPayload->Budget()->Power()->setPowerConsumptionInDaylight
+                                ((SC.getNewPayloads()+i)->getPayloadPowerInDaylight());
+                        myPayload->Budget()->Power()->setPowerConsumptionInEclipse
+                                ((SC.getNewPayloads()+i)->getPayloadPowerInEclipse());
+                        myPayload->Budget()->Power()->setPowerOnPercentageInDaylight
+                                ((SC.getNewPayloads()+i)->getPayloadPowerOnPercentageInDaylight());
+                        myPayload->Budget()->Power()->setPowerOnPercentageInEclipse
+                                ((SC.getNewPayloads()+i)->getPayloadPowerOnPercentageInEclipse());
+
+                        myPayload->Budget()->setDataRate
+                                ((SC.getNewPayloads()+i)->getPayloadDataRate());
+
+                        myPayload->Budget()->setFrequencyBand
+                                ((SC.getNewPayloads()+i)->getPayloadWavelength());
+
+                        myPayload->Budget()->TemperatureRange()->setMaximumTemperature
+                                ((SC.getNewPayloads()+i)->getPayloadMaximumTemperature());
+                        myPayload->Budget()->TemperatureRange()->setMinimumTemperature
+                                ((SC.getNewPayloads()+i)->getPayloadMinimumTemperature());
+
+                        //add the payload to the scenario
+                        Vehicle->SCMission()->PayloadSet()->AbstractPayload().append
+                                    (QSharedPointer<ScenarioAbstractPayloadType>(myPayload));
+
+
+                        qDebug()<<"PAYLOAD"<<myPayload->ElementIdentifier()->Name();
+                        qDebug()<<"PAYLOAD Mass"<<myPayload->Budget()->Mass();
+                    }
+                }
+            }
+        }
+
+    }
+    //-----------------------------------------------------------------------------
+
     //make calculaions of Data handling
     SC.getNewSCDataHandling()->CalculateAndSetMemorySizeForPayloads();
 
@@ -145,6 +423,10 @@ void SEMWizard::wizardIsCompleted()
     SC.getNewSCCommunication()->CalculateAndSetContactTimePerOrbit();
 
     SC.PassTTCSubsystemOutputParameters();
+
+    // calculate the size of SC
+    SC.getNewSCStructure()->CalculateAndSetSCVolume();
+    SC.getNewSCStructure()->CalculateAndSetSpacecraftDimension();
 
     //make calclations for power
 

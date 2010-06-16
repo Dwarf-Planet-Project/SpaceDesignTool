@@ -31,6 +31,8 @@
 #include "SemMain.h"
 #include "Scenario/staschema.h"
 
+//class MainWindow;
+
 class SEMWizard : public QWizard , private Ui::Wizard
 {
 Q_OBJECT
@@ -150,6 +152,8 @@ private:
         SemMain SC;
         ScenarioSC* Vehicle;
         ScenarioLoiteringType* SCLoiteringArc;
+//        MainWindow* mainwindow;
+//        SpaceScenario* Scenario;
 //        int NumberOfPayloads;
 };
 #endif //SEMWIZARD_H
