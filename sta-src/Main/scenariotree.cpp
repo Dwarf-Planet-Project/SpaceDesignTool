@@ -236,6 +236,8 @@ void changeLabels(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
 	item->setText(0, "Inertia");
     else if ((scenarioObject->elementName()) == "OptVarString")
 	item->setText(0, "Optimization");
+    else if ((scenarioObject->elementName()) == "OptVarInt")
+        item->setText(0, "Optimization");
     else if ((scenarioObject->elementName()) == "REVComponentsType")
 	item->setText(0, "Components");
     else if ((scenarioObject->elementName()) == "REVComponentsMassType")
@@ -251,7 +253,7 @@ void changeLabels(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
     else if ((scenarioObject->elementName()) == "OptVarBool")
 	item->setText(0, "Optimization");
     else if ((scenarioObject->elementName()) == "REVAeroThermodynamicsType")
-	item->setText(0, "Thermodynamics");
+        item->setText(0, "Aerothermodynamics");
     else if ((scenarioObject->elementName()) == "AeroCoefFileType")
 	item->setText(0, "Aerodynamics coefficients");
     else if ((scenarioObject->elementName()) == "Parachutes")
@@ -310,8 +312,27 @@ void changeLabels(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
 	item->setText(0, "Propagation of attitude");
     else if ((scenarioObject->elementName()) == "SystemTemperature")
 	item->setText(0, "Temperature");
-    else if ((scenarioObject->elementName()) == "SystemTemperature")
-	item->setText(0, "Temperature");
+    else if ((scenarioObject->elementName()) == "EntryArcType")
+        item->setText(0, "Re-entry Arc");
+    else if ((scenarioObject->elementName()) == "EnvironmentType")
+        item->setText(0, "Environment");
+    else if ((scenarioObject->elementName()) == "CentralBodyType")
+        item->setText(0, "Central Body");
+    else if ((scenarioObject->elementName()) == "REVConstraintsType")
+        item->setText(0, "Constraints");
+    else if ((scenarioObject->elementName()) == "REVFinalStateType")
+        item->setText(0, "Final State");
+    else if ((scenarioObject->elementName()) == "REVConstraintsViolationType")
+        item->setText(0, "Constraints Violations");
+    else if ((scenarioObject->elementName()) == "EntryCharacteristicsType")
+        item->setText(0, "Entry Characteristics");
+    else if ((scenarioObject->elementName()) == "GravityModel")
+        item->setText(0, "Gravity Model");
+    else if ((scenarioObject->elementName()) == "SphericalCoordinatesType")
+        item->setText(0, "Spherical Coordinates");
+    else if ((scenarioObject->elementName()) == "REVDispersionAnalysisType")
+        item->setText(0, "Dispersion Analysis");
+
 
 }
 

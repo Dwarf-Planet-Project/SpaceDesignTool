@@ -54,7 +54,7 @@
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap resource="../../iconary/sta-icons.qrc">:/icons/Surface.png</pixmap>
+             <pixmap>:/icons/Surface.png</pixmap>
             </property>
            </widget>
           </item>
@@ -84,7 +84,7 @@
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap resource="../../iconary/sta-icons.qrc">:/icons/Volume.png</pixmap>
+             <pixmap>:/icons/Volume.png</pixmap>
             </property>
            </widget>
           </item>
@@ -257,7 +257,11 @@
            </spacer>
           </item>
           <item row="3" column="2">
-           <widget class="QLineEdit" name="fileLineEdit"/>
+           <widget class="QLineEdit" name="fileLineEdit">
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
           </item>
           <item row="0" column="0">
            <spacer name="horizontalSpacer">
@@ -348,9 +352,7 @@
   <tabstop>lineEditVolume</tabstop>
   <tabstop>lineEditRadiusNose</tabstop>
  </tabstops>
- <resources>
-  <include location="../../iconary/sta-icons.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>
