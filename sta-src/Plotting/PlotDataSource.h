@@ -28,6 +28,11 @@
 #include <QObject>
 
 
+/** PlotDataSource is an interface used by PlotView. All data to be shown in
+  * a PlotView widget must be wrapped in a PlotDataSource object. At a minimum,
+  * subclasses of PlotDataSource must return the number of data points and the
+  * position of any point in the data set.
+  */
 class PlotDataSource : public QObject
 {
     Q_OBJECT

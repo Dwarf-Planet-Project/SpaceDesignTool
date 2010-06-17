@@ -30,6 +30,74 @@
 
 class PlotDataSource;
 
+
+/** Abstract base class for transformations that scale data before it is
+  * drawn in a PlotView. Subclasses are required to override the scaled()
+  * which maps values into the unit interval.
+  */
+class PlotScale
+{
+public:
+    virtual ~PlotScale() {}
+
+    /** The scaled() method should map values in the visible area of a
+      * plot to [0, 1]
+      */
+    virtual double scaled(double x) const = 0;
+
+    virtual PlotScale* clone() const = 0;
+
+    /** Get a list of tick positions for this scale. This method will
+      * return a list of between about 5 and 20 evenly spaced tick
+      * positions at round numbers.
+      */
+    virtual QList<double> ticks() const = 0;
+};
+
+
+/** LinearPlotScale maps values between the specified minimum and
+  * maximum values onto the unit interval.
+  */
+class LinearPlotScale : public PlotScale
+{
+public:
+    LinearPlotScale(double minValue, double maxValue) :
+        m_minValue(minValue),
+        m_maxValue(maxValue)
+    {
+    }
+
+    virtual double scaled(double x) const
+    {
+        return (x - m_minValue) / (m_maxValue - m_minValue);
+    }
+
+    virtual PlotScale* clone() const
+    {
+        return new LinearPlotScale(m_minValue, m_maxValue);
+    }
+
+    virtual QList<double> ticks() const;
+
+    double minValue() const
+    {
+        return m_minValue;
+    }
+
+    double maxValue() const
+    {
+        return m_maxValue;
+    }
+
+private:
+    double m_minValue;
+    double m_maxValue;
+};
+
+
+/** PlotView is a widget for displaying one or more plots. The data
+  * for each of the plots is provided by a PlotDataSource object.
+  */
 class PlotView : public QWidget
 {
     Q_OBJECT
@@ -46,6 +114,19 @@ public:
         return m_title;
     }
 
+    const PlotScale* horizontalScale() const
+    {
+        return m_horizontalScale;
+    }
+
+    const PlotScale* verticalScale() const
+    {
+        return m_verticalScale;
+    }
+
+    void setHorizontalScale(const PlotScale& scale);
+    void setVerticalScale(const PlotScale& scale);
+
 public slots:
     void setTitle(const QString& title);
 
@@ -55,4 +136,6 @@ protected:
 private:
     QVector<PlotDataSource*> m_plots;
     QString m_title;
+    PlotScale* m_horizontalScale;
+    PlotScale* m_verticalScale;
 };
