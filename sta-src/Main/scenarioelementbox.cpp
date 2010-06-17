@@ -376,15 +376,23 @@ static QByteArray reentryFragment(const char* name) //Modified by Dominic to all
     entry.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
 
     QSharedPointer<ScenarioSphericalCoordinatesType> initPos(new ScenarioSphericalCoordinatesType());
-    initPos->setRadialDistance(6578);
+    initPos->setRadialDistance(6578.21);
     initPos->setFlightPathVelocity(6);
     initPos->setFlightPathAngle(sta::degToRad(-5.0));
     entry.InitialPosition()->setAbstract6DOFPosition(initPos);
 
     entry.PropagationPosition()->setTimeStep(5);
-    entry.Constraints()->setMaxNormalLoad(10000.0);
-    entry.Constraints()->setMaxHeatFlux(500);
-    entry.Constraints()->setMaxAltitude(10000000);
+    entry.Constraints()->setMaxNormalLoad(10000.00);
+    entry.Constraints()->setMaxHeatFlux(500.00);
+    entry.Constraints()->setMaxAltitude(10000000.00);
+
+    // Patched by Guillermo to include an initial time in the future
+    entry.TimeLine()->setStartTime(QDateTime(QDate(2012, 1, 1)));
+    //entry.TimeLine()->setStepTime(5.0);
+    // Patched by Guillermo to include a full initial state vector
+    initPos->setHeadingAngle(sta::degToRad(45.45));
+    initPos->setLatitude(sta::degToRad(38.45));
+    initPos->setLongitude(sta::degToRad(350.32));
 
     QDomDocument doc;
     return fragmentText(CreateEntryArcElement(&entry, doc)).toUtf8();
