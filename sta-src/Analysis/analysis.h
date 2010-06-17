@@ -105,9 +105,10 @@ private:
                                                                QString ToCoordinate);
         sta::CoordinateSystem CoordSys(QString Coordinate);
         double calcDelaunayElements(sta::StateVector Vector,StaBody*Body,QString OrbElement,
-                                                               double mjd,
-                                                               QString FromCoordinate,
-                                                               QString ToCoordinate);
+                                                                       double mjd,
+                                                                       QString FromCoordinate,
+                                                                       QString ToCoordinate);
+
 };
 #endif //analysis_H
 

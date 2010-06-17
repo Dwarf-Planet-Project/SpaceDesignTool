@@ -230,7 +230,6 @@ sta::KeplerianElements cartesianTOorbital(double mu, sta::StateVector cartesianS
       return foundKeplerianElements;
 
 }
-
 sta::DelaunayElements cartesianTOdelaunay(double mu, sta::StateVector cartesianStateVector)
 {
     DelaunayElements CalcDelaunayElements;
