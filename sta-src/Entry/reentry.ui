@@ -99,7 +99,7 @@
          <number>0</number>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="sphericalPage">
          <widget class="QGroupBox" name="SphericalCoordGroupBox">
@@ -1308,13 +1308,25 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_29">
       <item row="0" column="1">
-       <widget class="QLineEdit" name="gLimitLineEdit"/>
+       <widget class="QLineEdit" name="gLimitLineEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QLineEdit" name="SPHeatRateLineEdit"/>
+       <widget class="QLineEdit" name="SPHeatRateLineEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QLineEdit" name="AltitudeLimitLineEdit"/>
+       <widget class="QLineEdit" name="AltitudeLimitLineEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_31">

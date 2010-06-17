@@ -70,6 +70,7 @@ AerodynamicMethodDialog::AerodynamicMethodDialog(ScenarioREVAeroThermodynamicsTy
     loadGeomDialog = new QFileDialog(this, "Select a file:", "data/vehiclewgs/");
     connect(geomFileButton,SIGNAL(clicked()),loadGeomDialog,SLOT(exec()));
     connect(loadGeomDialog,SIGNAL(fileSelected(QString)),this,SLOT(writeGeomFile(QString)));
+    concavityCheckBox->setChecked(1);
     fileChanged=0;
     m_aerothermo=aerothermo;
     GeomFile="data/vehiclewgs/"+geomFileName;//m_aerothermo->geomFile();

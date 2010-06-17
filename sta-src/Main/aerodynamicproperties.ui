@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>411</width>
-    <height>505</height>
+    <width>388</width>
+    <height>528</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,14 +18,14 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>350</width>
-    <height>505</height>
+    <width>0</width>
+    <height>0</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>415</width>
-    <height>505</height>
+    <width>100000</width>
+    <height>100000</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -39,14 +39,14 @@
     <widget class="QGroupBox" name="groupBox">
      <property name="minimumSize">
       <size>
-       <width>411</width>
-       <height>500</height>
+       <width>0</width>
+       <height>0</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>411</width>
-       <height>500</height>
+       <width>100000</width>
+       <height>100000</height>
       </size>
      </property>
      <property name="title">
@@ -204,31 +204,51 @@
              <item row="0" column="0">
               <widget class="QLabel" name="label_8">
                <property name="text">
-                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;C&lt;span style=&quot; vertical-align:sub;&quot;&gt;D &lt;/span&gt;File&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>C&lt;sub&gt;D&lt;/sub&gt; File</string>
                </property>
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QLineEdit" name="CDLineEdit"/>
+              <widget class="QLineEdit" name="CDLineEdit">
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
              </item>
              <item row="1" column="1">
-              <widget class="QLineEdit" name="CLLineEdit"/>
+              <widget class="QLineEdit" name="CLLineEdit">
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
              </item>
              <item row="2" column="1">
-              <widget class="QLineEdit" name="CSLineEdit"/>
+              <widget class="QLineEdit" name="CSLineEdit">
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
              </item>
              <item row="3" column="1">
-              <widget class="QLineEdit" name="ClLineEdit"/>
+              <widget class="QLineEdit" name="ClLineEdit">
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
              </item>
              <item row="4" column="1">
-              <widget class="QLineEdit" name="CmLineEdit"/>
+              <widget class="QLineEdit" name="CmLineEdit">
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
              </item>
              <item row="5" column="1">
-              <widget class="QLineEdit" name="CnLineEdit"/>
+              <widget class="QLineEdit" name="CnLineEdit">
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
              </item>
              <item row="2" column="0">
               <widget class="QLabel" name="CSlabel">
@@ -281,11 +301,7 @@ p, li { white-space: pre-wrap; }
              <item row="1" column="0">
               <widget class="QLabel" name="label_4">
                <property name="text">
-                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;C&lt;span style=&quot; vertical-align:sub;&quot;&gt;L &lt;/span&gt; File&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>C&lt;sub&gt;L&lt;/sub&gt; File</string>
                </property>
               </widget>
              </item>

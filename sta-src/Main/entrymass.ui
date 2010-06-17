@@ -23,12 +23,16 @@
       <item>
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="1">
-         <widget class="QLineEdit" name="dryMassLineEdit"/>
+         <widget class="QLineEdit" name="dryMassLineEdit">
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
         </item>
         <item row="0" column="0">
          <widget class="QLabel" name="label">
           <property name="text">
-           <string>Dry Mass [kg]</string>
+           <string>Dry Mass [kg]:</string>
           </property>
          </widget>
         </item>
