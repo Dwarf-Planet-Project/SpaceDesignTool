@@ -71,7 +71,11 @@ AerodynamicPropertiesDialog::AerodynamicPropertiesDialog(ScenarioTree* parent) :
 bool AerodynamicPropertiesDialog::loadValues(ScenarioREVAeroThermodynamicsType* aerothermo,ScenarioREVGeometryType * geometry)
 {
     m_aerothermo=aerothermo;
+
     geomFileName=geometry->geometryFile();
+    globChars.Rn=geometry->noseRadius();
+    globChars.S=geometry->REVsurface();
+    globChars.V=geometry->REVvolume();
     lineEditRefArea->setText(QString::number(aerothermo->referenceArea()));
     
     QList<QSharedPointer<ScenarioAeroCoefFileType> > & AeroCoefList=aerothermo->AeroCoefFile();
@@ -222,7 +226,7 @@ void AerodynamicPropertiesDialog::on_fromGeomPushButton_clicked()
     {
         AerodynamicMethodDialog dialog(m_aerothermo,geomFileName,this);
 
-        if (dialog.exec() == QDialog::Accepted)
+        if (dialog.exec() == QDialog::Accepted && dialog.fileChanged==1)
         {
             dialog.getGeomFileInfo(geomFileName, globChars);
         }

@@ -54,6 +54,7 @@ public:
         QList<QString> getAeroFiles();
         PartAnalysis::SelectionStruct * Parameters;        
         globCharStruct globChars;
+        bool fileChanged;
 
 private:
         QFileDialog* loadGeomDialog;

@@ -70,6 +70,7 @@ AerodynamicMethodDialog::AerodynamicMethodDialog(ScenarioREVAeroThermodynamicsTy
     loadGeomDialog = new QFileDialog(this, "Select a file:", "data/vehiclewgs/");
     connect(geomFileButton,SIGNAL(clicked()),loadGeomDialog,SLOT(exec()));
     connect(loadGeomDialog,SIGNAL(fileSelected(QString)),this,SLOT(writeGeomFile(QString)));
+    fileChanged=0;
     m_aerothermo=aerothermo;
     GeomFile="data/vehiclewgs/"+geomFileName;//m_aerothermo->geomFile();
     //geomFileLineEdit->setReadOnly(1);
@@ -597,6 +598,7 @@ void AerodynamicMethodDialog::writeGeomFile(QString filename)
 void AerodynamicMethodDialog::newVehicleSelected()
 {
     int i,j;
+    fileChanged=1;
     for(i=1;i<aeroTreeWidget->topLevelItemCount();i++)
     {
         QTreeWidgetItem* treeItem=aeroTreeWidget->topLevelItem(i);
@@ -633,7 +635,8 @@ void AerodynamicMethodDialog::newVehicleSelected()
 
 void AerodynamicMethodDialog::getGeomFileInfo(QString& filename, globCharStruct & geomOut)
 {
-    filename=GeomFile;
-    filename.remove(0,16);
+    geomOut.Rn=globChars.Rn;
+    geomOut.V=globChars.V;
+    geomOut.S=globChars.S;
     geomOut=globChars;
 }
