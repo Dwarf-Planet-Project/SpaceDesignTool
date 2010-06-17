@@ -92,12 +92,12 @@
         <file>IconSUN.png</file>
         <file>ParticipantSATELLITE.png</file>
         <file>ParticipantSTATION.png</file>
-        <file>ParticipantENTRYVEHICLE.png</file>
         <file>ParticipantROCKET.png</file>
         <file>ParticipantPOINT.png</file>
         <file>ParticipantCOMMUNICATIONS.png</file>
         <file>ParticipantTELESCOPE.png</file>
         <file>ParticipantRADAR.png</file>
         <file>IconCONSTELLATION.png</file>
+        <file>ParticipantENTRYVEHICLE.png</file>
     </qresource>
 </RCC>
