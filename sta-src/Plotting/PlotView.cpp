@@ -98,7 +98,7 @@ PlotView::paintEvent(QPaintEvent* /* event */)
 {
     QPainter painter(this);
 
-    painter.fillRect(0, 0, width(), height(), QColor(0, 0, 255));
+    painter.fillRect(0, 0, width(), height(), Qt::white);
 
     painter.setPen(Qt::lightGray);
     painter.drawText(100, 100, m_title);
@@ -119,19 +119,20 @@ PlotView::paintEvent(QPaintEvent* /* event */)
     foreach (double y, yTicks)
     {
         float sy = float(m_verticalScale->scaled(y)) * yscale;
-        painter.drawLine(QPointF(0.0f, sy), QPointF(xscale, sy));
+        painter.drawLine(QPointF(0.0f, yscale - sy), QPointF(xscale, yscale - sy));
+        qDebug("tick %f", y);
     }
 
     // Draw plots
     foreach (PlotDataSource* plot, m_plots)
     {
-        painter.setPen(Qt::red);
+        painter.setPen(QPen(Qt::red, 2.0f));
         QPointF lastPoint(0.0f, 0.0f);
         for (unsigned int i = 0; i < plot->getPointCount(); ++i)
         {
             Vector2d point = plot->getPoint(i);
             QPointF pf(float(m_horizontalScale->scaled(point.x())) * xscale,
-                       float(m_verticalScale->scaled(point.y())) * yscale);
+                       yscale - float(m_verticalScale->scaled(point.y())) * yscale);
             if (i != 0)
             {
                 painter.drawLine(lastPoint, pf);
@@ -181,70 +182,10 @@ LinearPlotScale::ticks() const
     unsigned int tickCount = 10;
     for (unsigned int i = 0; i < tickCount; i++)
     {
-        t << m_minValue + (m_maxValue * m_minValue) * double(i) / double(tickCount - 1);
+        t << m_minValue + (m_maxValue - m_minValue) * double(i) / double(tickCount - 1);
     }
 
     return t;
 }
 
 
-#if 0
-/** TableDataSource is an example PlotDataSource subclass that returns
-  * plot data points from a 2D array of data.
-  */
-class TableDataSource : public PlotDataSource
-{
-public:
-    TableDataSource(unsigned int rows, unsigned int columns, double* data) :
-        m_rowCount(rows),
-        m_columnCount(columns),
-        m_data(data),
-        m_hColumn(0),
-        m_vColumn(0)
-    {
-    }
-
-    /** Overridden method of PlotDataSource. */
-    virtual unsigned int getPointCount() const
-    {
-        return m_rowCount;
-    }
-
-    virtual Eigen::Vector2d getPoint(unsigned int index) const
-    {
-        Vector2d p(0.0, 0.0);
-        if (index < m_rowCount)
-        {
-            p.x() = m_data[m_columnCount * index + m_hColumn];
-            p.y() = m_data[m_columnCount * index + m_vColumn];
-        }
-
-        return p;
-    }
-
-    /** Set the table column to use for the horizontal position of the data points. */
-    void setHColumn(unsigned int column)
-    {
-        if (column < m_columnCount)
-        {
-            m_hColumn = column;
-        }
-    }
-
-    /** Set the table column to use for the vertical position of the data points. */
-    void setVColumn(unsigned int column)
-    {
-        if (column < m_columnCount)
-        {
-            m_vColumn = column;
-        }
-    }
-
-private:
-    unsigned int m_rowCount;
-    unsigned int m_columnCount;
-    double* m_data;
-    unsigned int m_hColumn;
-    unsigned int m_vColumn;
-};
-#endif
