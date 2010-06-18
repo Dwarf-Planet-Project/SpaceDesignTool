@@ -175,15 +175,18 @@ static QByteArray REVFragment(const char* name, const char* vehicleType)
 
     entryVehicle.REVSystem()->AeroThermodynamics()->setCoefficientType(1);
     entryVehicle.REVSystem()->Geometry()->setGeometryFile("horus.wgs");
-    //allocte memory for list of aerodynamic coefficient files
+    //allocate memory for list of aerodynamic coefficient files
     ScenarioAeroCoefFileType * coef1 = new ScenarioAeroCoefFileType;
     coef1->setCoefName("CD");
+    coef1->setFileLocation("horus_f_CD.stad");
     entryVehicle.REVSystem()->AeroThermodynamics()->AeroCoefFile().append(QSharedPointer<ScenarioAeroCoefFileType>(coef1));
     ScenarioAeroCoefFileType * coef2 = new ScenarioAeroCoefFileType;
     coef2->setCoefName("CS");
+    coef2->setFileLocation("horus_f_CS.stad");
     entryVehicle.REVSystem()->AeroThermodynamics()->AeroCoefFile().append(QSharedPointer<ScenarioAeroCoefFileType>(coef2));
     ScenarioAeroCoefFileType * coef3 = new ScenarioAeroCoefFileType;
     coef3->setCoefName("CL");
+    coef3->setFileLocation("horus_f_CL.stad");
     entryVehicle.REVSystem()->AeroThermodynamics()->AeroCoefFile().append(QSharedPointer<ScenarioAeroCoefFileType>(coef3));
     ScenarioAeroCoefFileType * coef4 = new ScenarioAeroCoefFileType;
     coef4->setCoefName("Cl");

@@ -312,7 +312,7 @@ void changeLabels(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
 	item->setText(0, "Propagation of attitude");
     else if ((scenarioObject->elementName()) == "SystemTemperature")
 	item->setText(0, "Temperature");
-    else if ((scenarioObject->elementName()) == "EntryArcType")
+    else if ((scenarioObject->elementName()) == "EntryArcType") //Next lines added by Dominic to remove empty lines in scenario tree
         item->setText(0, "Re-entry Arc");
     else if ((scenarioObject->elementName()) == "EnvironmentType")
         item->setText(0, "Environment");

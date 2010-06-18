@@ -32,6 +32,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <QFile>
 #include "reentry.h"
 #include "Main/scenariotree.h"
 #include "Scenario/scenario.h"
@@ -1063,6 +1064,15 @@ bool PropagateEntryTrajectory(ScenarioREV* vehicle, ScenarioEntryArcType* entry,
         propFeedback.raiseError(QObject::tr("The maximum load factor is zero!"));
         return false;
     }
+    QString file="data/aerodynamics/"+inputSettings.CdCprofilename;
+    qDebug()<<file;
+    QFile cdFile(file);
+    if (cdFile.exists()==0)
+    {
+        propFeedback.raiseError(QObject::tr("No Cd file set!"));
+        return false;
+    }
+    cdFile.close();
 
     double posx, posy, posz, velx, vely, velz;
     int celestialbody;
