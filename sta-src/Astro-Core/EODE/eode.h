@@ -35,6 +35,16 @@
  ------------------ Affiliation:  European Space Agency (ESA)    -------------------
  -----------------------------------------------------------------------------------
  Modified by Tiziana Sabatini on July 2009 (rk4) to convert double[] into Eigen vectors
+ Modified by Guillermo on June 2010 to add the following integrators:
+  - Adams-Bashforth explicit multistep method with fixed step width
+  - Adams-Moulton implicit multistep method with fixed step width
+  - Runge-Kutta explicit methods
+  - Runge-Kutta explicit methods with step size control and sensitivity analysis
+  - Gragg-Bulirsch-Stoer extrapolation method with fixed step width
+  - Nystrom method for second order differential equations with fixed step width
+ These integrators are based on the work of Matthias Gerdts from the University of Wuerzburg
+
+
 */
 
 #include <stdio.h>
@@ -45,26 +55,408 @@
 USING_PART_OF_NAMESPACE_EIGEN
 
 
-int Runge_Kutta_Fehlberg
-        (
-        void f (                    // Input, external f, a user-supplied subroutine to evaluate the derivatives y'(t)
-                double t,           // Input, time independent variable
-                double y[],         // Input, the function to evaluate
-                double param[],
-                double yp[]         // Input, the derivatiev of the function to calculate
-                ),
-        int neqn,                   // Input, the number of equations to be integrated
-        double y[],                 // Input/output, the current solution vector at time t
-        double param[],
-        double yp[],                // Input/output, the derivative of the current solution vector at time t.  The user should not set or alter this information!
-        double *t,                  // Input/output, the current value of the independent variable.
-        double tout,                // Input, the output point at which solution is desired. TOUT = T is allowed on the first call only, in which case the routine returns with FLAG = 2 if continuation is possible.
-        double *relerr,             // Input, the relative error tolerances for the local error test.
-        double abserr,              // Input, the absolute error tolerances for the local error test.
-        int flag                    // Input, indicator for status of integration.
-        );
+////////////////////////////////////// Defining maxmimum steps /////////////////////////////////////////
+/*!
+\brief Maximum order of the multistep method which is implemented.
+Maximum order of the multistep method which is implemented.
+*/
+#define ADAMSBASHFORTH_MAXORDER 5
 
-/*
+
+/*!
+\brief Maximum order of the multistep method which is implemented.
+Maximum order of the multistep method which is implemented.
+*/
+#define ADAMSMOULTON_MAXORDER 5
+
+/*!
+\brief Maximum order of the single step method which is implemented.
+Maximum order of the Nystrom method that has been implemented.
+*/
+#define NYSTROM_MAXORDER 4
+
+/*!
+\brief Minimal order of the single step method which is implemented.
+Minimal order of the Nystrom method that has been implemented.
+*/
+#define NYSTROM_MINORDER 3
+
+
+
+
+
+////////////////////////////////// Defining the structures of the integrators /////////////////////////////
+
+/*! \brief Integrator Flag types
+	  Describes which integrator will be used
+*/
+typedef enum
+{
+    /*! Adams-Bashforth multistep */
+    ADAMSBASHFORTH,
+    /*! Adams-Moulton multistep */
+    ADAMSMOULTON,
+    /*! Extrapolation */
+    EXTRAPOL,
+    /*! Nystrom */
+    NYSTROM,
+    /*! DOPRI5(4), order 4 */
+    RK_DOPRI4,
+    /*! DOPRI5(4), order 5 */
+    RK_DOPRI5,
+    /*! RKF2(3), order 2 */
+    RK_RK2,
+    /*! RKF2(3), order 3 */
+    RK_RK3,
+    /*! RKF4(5), order 4 */
+    RK_RK4,
+    /*! RKF4(5), order 5 */
+    RK_RK5,
+    /*! RKF7(8), order 7 */
+    RK_RK7,
+    /*! RKF7(8), order 8 */
+    RK_RK8,
+    /*! DOPRI5(4), order 5 */
+    RKSE_DOPRI54,
+    /*! RKF2(3), order 2 */
+    RKSE_RK23,
+    /*! RKF4(5), order 4 */
+    RKSE_RK45,
+    /*! RKF7(8), order 7 */
+    RKSE_RK78
+} integrator_flag;
+
+
+
+	/*!
+\brief internal integrator data
+The structure is used to store internal data and to pass them from one call of the integrator to the next call.
+The user should never alter the data.
+*/
+typedef struct
+	{
+	   /*! is the keep-data initialized? */
+	   int initialized;
+	   /*! number of stored old steps */
+	   int s;
+	   /*! index to latest step */
+	   int si;
+	   /*! current time */
+	   double t;
+	   /*! holds the function evaluations \f$ f(t,y(t)) \f$ at the last s steps*/
+	   double** f;
+	   /*! holds the last state vector */
+	   double* y;
+	   /*! number of equations */
+	   int n;
+	   /*! step width */
+	   double h;
+	   /*! order of method */
+	   int order;
+} adamsbashforth_keep;
+
+
+/*!
+   \brief internal integrator data
+
+   The structure is used to store internal data and to pass them from one call of the integrator to the next call.
+   The user should never alter the data.
+*/
+typedef struct
+{
+   /*! is the keep-data initialized? */
+   int initialized;
+   /*! number of stored old steps */
+   int s;
+   /*! index to latest step */
+   int si;
+   /*! current time */
+   double t;
+   /*! holds the function evaluations \f$ f(t,y(t)) \f$ at the last s steps*/
+   double** f;
+   /*! holds the last state vector */
+   double* y;
+   /*! tmporary variables */
+   double* yold;
+   double* yhelp;
+   /*! number of equations */
+   int n;
+   /*! step width */
+   double h;
+   /*! order of method */
+   int order;
+} adamsmoulton_keep;
+
+
+
+/*!
+   \brief internal integrator data
+
+   The structure is used to store internal data and to pass them from one call of the integrator to the next call.
+   The user should never alter the data.
+*/
+typedef struct
+{
+    /*! is the keep-data initialized? */
+    int initialized;
+    /*! current time */
+    double t;
+    /*! holds the last state vector */
+    double* y;
+    /*! storage for approximations */
+    double** S;
+    /*! step size factors */
+    double* ni;
+    /*! temporary storage */
+    double** temp;
+    /*! number of equations */
+    int n;
+    /*! step width */
+    double h;
+    /*! order of method */
+    int order;
+} extrapol_keep;
+
+
+/*!
+   \brief internal integrator data
+
+   The structure is used to store internal data and to pass them from one call of the integrator to the next call.
+   The user should never alter the data.
+*/
+typedef struct
+{
+   /*! is the keep-data initialized? */
+   int initialized;
+   /*! temporary data */
+   double* yak;
+   /*! temporary data */
+   double** k;
+   /*! number of equations */
+   int n;
+   /*! order of method */
+   int order;
+} nystrom_keep;
+
+
+
+/*!
+  \brief Integrator options
+
+  The structure is used to store options for the different integrators. Note that you may call the subroutine \ref integrator_defaults to set default values.
+*/
+typedef struct
+{
+  /*! order of method (only for Adams-Bashforth, Adams-Moulton, Nystrom and Extrapolation integrators) */
+  int order;
+  /*! tolerance for nonlinear fixpoint iteration (only for Adams-Moulton integrator) */
+  double iterTol;
+  /*! maximum number of fixpoint iterations in each step (only for Adams-Moulton integrator) */
+  int iterMax;
+  /*! step size control: abolute tolerance (only for RKSE integrators) */
+  double* atol;
+  /*! step size control: relative tolerance (only for RKSE integrators) */
+  double* rtol;
+  /*! info-array (only for RKSE integrators) */
+  int rkse_info[9];
+} integrator_options;
+
+
+
+/*!
+   \brief internal integrator data
+
+   The structure is used to store internal data and to pass them from one call of the integrator to the next call. The user should never alter the data.
+*/
+typedef struct
+{
+  /*! is the keep-data initialized? */
+  int initialized;
+  /*! internal Runge-Kutta stages */
+  double** k;
+  /*! first dimension of k */
+  int ksize;
+  /*! temporary storage */
+  double* solp;
+  /*! temporary storage */
+  double* solq;
+  /*! rk method */
+  integrator_flag method;
+  /*! order of rk methd */
+  int p;
+} rkse_keep;
+
+/*!
+   \brief internal integrator data
+
+   The structure is used to store internal data and to pass them from one call of the integrator to the next call. The user should never alter the data.
+*/
+typedef struct
+{
+   /*! is the keep-data initialized? */
+   int initialized;
+   /*! current time */
+   double t;
+   /*! holds the last state vector */
+   double* y;
+   /*! holds the evaluation of f */
+   double* dy;
+   /*! internal Runge-Kutta stages */
+   double** k;
+   /*! first dimension of k */
+   int ksize;
+   /*! temporary storage */
+   double* tmp;
+   /*! number of equations */
+   int n;
+   /*! rk method */
+   integrator_flag method;
+} rk_keep;
+
+
+
+
+//////////////////////////////////////////////// Defining auxiliary functions ///////////////////////////////////
+/*!
+   \brief Computes one step of the DOPRI5(4) integration procedure.
+
+   Computes one step of the DOPRI5(4) integration procedure.
+
+   \param[in]  f      right handside function
+   \param[in]  fjac   Jacobian evaluation function
+   \param[in]  ijac   flag
+			- ijac == 1 : user supplied Jacobian in fjac
+			- ijac != 1 : finite difference Jacobian approximation
+   \param[in]  param  parameters
+   \param[in]  t      time
+   \param[in]  h      step size
+   \param[in]  neq    number of equations including sensitivities
+   \param[in]  y      state \f$ y(t) \f$
+   \param[in]  k1     user must provide \f$ f(t,y(t)) \f$
+   \param[out] solp   solution of 5th order method
+   \param[out] solq   solution of 4th order method
+   \param[in]  np     number of parameters
+   \param[in,out] k2  auxiliary array for storing stages of RK
+   \param[in,out] k3  auxiliary array for storing stages of RK
+   \param[in,out] k4  auxiliary array for storing stages of RK
+   \param[in,out] k5  auxiliary array for storing stages of RK
+   \param[in,out] k6  auxiliary array for storing stages of RK
+   \param[in,out] k7  auxiliary array for storing stages of RK
+*/
+void dopristep(void f(double t, double y[], double param[], double yp[]),
+	 void fjac(double t, double y[], double param[], double** jac),
+	 int ijac, double* param, double t, double h, int neq, double* y,
+	 double *k1, double *solp, double *solq, int np, double *k2, double *k3,
+	 double *k4, double *k5, double *k6,double *k7 );
+
+
+///////////////////////////////////////// Defining the integrators //////////////////////////////////////////////
+/*!
+   \brief Computes one step of the RKF4(5) integration procedure.
+
+   Computes one step of the RKF4(5) integration procedure.
+
+   \param[in]  f      right handside function
+   \param[in]  fjac   Jacobian evaluation function
+   \param[in]  ijac   flag
+			- ijac == 1 : user supplied Jacobian in fjac
+			- ijac != 1 : finite difference Jacobian approximation
+   \param[in]  param  parameters
+   \param[in]  t      time
+   \param[in]  h      step size
+   \param[in]  neq    number of equations including sensitivities
+   \param[in]  y      state \f$ y(t) \f$
+   \param[in]  k1     user must provide \f$ f(t,y(t)) \f$
+   \param[out] solp   solution of 4th order method
+   \param[out] solq   solution of 5th order method
+   \param[in]  np     number of parameters
+   \param[in,out] k2  auxiliary array for storing stages of RK
+   \param[in,out] k3  auxiliary array for storing stages of RK
+   \param[in,out] k4  auxiliary array for storing stages of RK
+   \param[in,out] k5  auxiliary array for storing stages of RK
+   \param[in,out] k6  auxiliary array for storing stages of RK
+*/
+void rkf45step(void f(double t, double y[], double param[], double yp[]),
+	 void fjac(double t, double y[], double param[], double** jac),
+	 int ijac,double* param,double t,double h,int neq,double *y,
+	 double *k1,double *solp,double *solq,int np,
+	 double *k2,double *k3,double *k4,double *k5,double *k6 );
+
+
+ /*!
+   \brief Computes one step of the RKF7(8) integration procedure.
+
+   Computes one step of the RKF7(8) integration procedure.
+
+   \param[in]  f      right handside function
+   \param[in]  fjac   Jacobian evaluation function
+   \param[in]  ijac   flag
+			- ijac == 1 : user supplied Jacobian in fjac
+			- ijac != 1 : finite difference Jacobian approximation
+   \param[in]  param  parameters
+   \param[in]  t      time
+   \param[in]  h      step size
+   \param[in]  neq    number of equations including sensitivities
+   \param[in]  y      state \f$ y(t) \f$
+   \param[in]  k1     user must provide \f$ f(t,y(t)) \f$
+   \param[out] solp   solution of 7th order method
+   \param[out] solq   solution of 8th order method
+   \param[in]  np     number of parameters
+   \param[in,out] k2  auxiliary array for storing stages of RK
+   \param[in,out] k3  auxiliary array for storing stages of RK
+   \param[in,out] k4  auxiliary array for storing stages of RK
+   \param[in,out] k5  auxiliary array for storing stages of RK
+   \param[in,out] k6  auxiliary array for storing stages of RK
+   \param[in,out] k7  auxiliary array for storing stages of RK
+   \param[in,out] k8  auxiliary array for storing stages of RK
+   \param[in,out] k9  auxiliary array for storing stages of RK
+   \param[in,out] k10 auxiliary array for storing stages of RK
+   \param[in,out] k11 auxiliary array for storing stages of RK
+   \param[in,out] k12 auxiliary array for storing stages of RK
+*/
+void rkf78step(void f(double t, double y[], double param[], double yp[]),
+	 void fjac(double t, double y[], double param[], double** jac),
+	 int ijac,double* param,double t,double h,int neq,double *y,
+	 double *k1,double *solp,double *solq,int np,
+	 double *k2,double *k3,double *k4,double *k5,double *k6,double* k7,
+	 double *k8,double *k9,double *k10,double *k11,double *k12 );
+
+
+ /*!
+   \brief Computes one step of the RKF2(3) integration procedure.
+
+   Computes one step of the RKF2(3) integration procedure.
+
+   \param[in]  f      right handside function
+   \param[in]  fjac   Jacobian evaluation function
+   \param[in]  ijac   flag
+			- ijac == 1 : user supplied Jacobian in fjac
+			- ijac != 1 : finite difference Jacobian approximation
+   \param[in]  param  parameters
+   \param[in]  t      time
+   \param[in]  h      step size
+   \param[in]  neq    number of equations including sensitivities
+   \param[in]  y      state \f$ y(t) \f$
+   \param[in]  k1     user must provide \f$ f(t,y(t)) \f$
+   \param[out] solp   solution of 2th order method
+   \param[out] solq   solution of 3th order method
+   \param[in]  np     number of parameters
+   \param[in,out] k2  auxiliary array for storing stages of RK
+   \param[in,out] k3  auxiliary array for storing stages of RK
+   \param[in,out] k4  auxiliary array for storing stages of RK
+   \param[in,out] k5  auxiliary array for storing stages of RK
+*/
+void rkf23step(void f(double t, double y[], double param[], double yp[]),
+	 void fjac(double t, double y[], double param[], double** jac),
+	 int ijac,double* param,double t,double h,int neq,double *y,
+	 double *k1,double *solp,double *solq,int np,
+	 double *k2,double *k3,double *k4,double *k5 );
+
+
+
+
+/*!
+   \brief Computes Runge_Kutta_Fehlberg integration procedure.
 
   Purpose:
 
@@ -225,7 +617,26 @@ int Runge_Kutta_Fehlberg
     or -2 indicates normal progress, while any other value indicates a
     problem that should be addressed.
 
-    */
+*/
+
+int Runge_Kutta_Fehlberg
+        (
+        void f (                    // Input, external f, a user-supplied subroutine to evaluate the derivatives y'(t)
+                double t,           // Input, time independent variable
+                double y[],         // Input, the function to evaluate
+                double param[],
+                double yp[]         // Input, the derivatiev of the function to calculate
+                ),
+        int neqn,                   // Input, the number of equations to be integrated
+        double y[],                 // Input/output, the current solution vector at time t
+        double param[],
+        double yp[],                // Input/output, the derivative of the current solution vector at time t.  The user should not set or alter this information!
+        double *t,                  // Input/output, the current value of the independent variable.
+        double tout,                // Input, the output point at which solution is desired. TOUT = T is allowed on the first call only, in which case the routine returns with FLAG = 2 if continuation is possible.
+        double *relerr,             // Input, the relative error tolerances for the local error test.
+        double abserr,              // Input, the absolute error tolerances for the local error test.
+        int flag                    // Input, indicator for status of integration.
+        );
 
 
 
@@ -307,5 +718,481 @@ rk4(typename DERIVCALC::State& state,
     // Return x(t+tau) computed from fourth-order R-K.
     state += (tau / 6.0) * (F1 + F4 + 2.0 * (F2 + F3));
 }
+
+
+
+/*!
+   \brief Adams-Bashforth multistep method
+
+   \section sec-adams-bashforth Adams-Bashforth multistep method
+   Integrate the system of differential equations
+	       \f[ y'(t) = f(t,y),\quad y(t) = y_0 \f]
+   on the time interval \f$[t, t + h \cdot steps] \f$ using Adams-Bashforth multistep method.
+
+   Reference: J. Stoer, R. Burlisch: "Numerische Mathematik 2", Springer-Verlag Berlin-Heidelberg-New York, pp. 135-136.
+
+   \subsection subsec-adams-bashforth-1 Initialization and first step
+   The first call to the integrator must be with parameter \a flag = 1. The method will call a single step method for the first \a order steps which will be stored in the variable \a keep. The user should never alter the variable \a keep and must provide it on subsequent calls.
+
+   \subsection subsec-adams-bashforth-2 Continuation of integration
+   Set \a keep = 2 in order to continue the integration. The values of \a n, \a y, \a t, \a order and \a h are ignored.
+
+   \subsection subsec-adams-bashforth-3 Cleanup
+   The user may call the subroutine with \a keep = -1 in order to free allocated memory. All values else then \a keep are ignored.
+
+   \param[in]     f      A user-supplied subroutine defining the differential equation \f$ y' = f(t,y) \f$
+   \param[in]     param  parameters passed to function f
+   \param[in]     n      (if \a flag = 1) the number of equations to be integrated
+   \param[in,out] t      (if \a flag = 1) on input: initial time \n
+			 on output: final time of integration
+   \param[in,out] y      (if \a flag = 1) on input: the initial values \f$ y_0 = y(t) \f$ \n
+			 on output: solution, the value of \f$ y(t_{out}) \f$
+   \param[out]    yp     solution, the value of \f$ y'(t_{out}) = f(t_{out},y(t_{out})) \f$
+   \param[in]     steps  the number of steps with stepwidth \a h
+   \param[in]     h      (if \a flag = 1) step width \n
+   \param[in]     order  (if \a flag = 1) order of the method, \a order must be between 1 and \ref ADAMSBASHFORTH_MAXORDER \n
+   \param[in]     flag   indicator for status of integration: \n
+			  - \a flag = 1 on first call \n
+			  - \a flag = 2 for continuation of integration \n
+			  - \a flag = -1 cleanup (deallocate array in keep)
+   \param[in,out] keep   internal integrator data \n
+			 the user should never alter \a keep
+   \return status flag: \n
+	   -      0: success \n
+	   -     -1: error: allocation of internal memory failed
+	   -     -2: error: \a keep is not initialized, call method with \a flag = 1
+	   -    -10: error: \a flag has an invalid value
+	   -    -11: error: \a n has an invalid value
+	   -    -12: error: \a h has an invalid value, \a h must be non-zero
+	   -    -13: error: \a order has an invalid value
+
+   \author Martin Kunkel
+   \author interfaced based on EODE (European Space Agency Ordinary Differntial Equations library)
+   \date 2009
+*/
+int adamsbashforth(
+	void f(double t, double y[], double param[], double yp[]),
+	double param[], int n, double* t, double y[], double yp[], int steps, double h, int order, int flag,
+	adamsbashforth_keep* keep);
+
+
+/*!
+   \brief Adams-Moulton multistep method
+
+   \section sec-adams-moulton Adams-Moulton multistep method
+   Integrate the system of differential equations
+	       \f[ y'(t) = f(t,y),\quad y(t) = y_0 \f]
+   on the time interval \f$[t, t + h \cdot steps] \f$ using Adams-Moulton multistep method.
+
+   Reference: J. Stoer, R. Burlisch: "Numerische Mathematik 2", Springer-Verlag Berlin-Heidelberg-New York, pp. 136-137.
+
+   \subsection subsec-adams-moulton-1 Initialization and first step
+   The first call to the integrator must be with parameter \a flag = 1. The method will call a single step method for the first \a order steps which will be stored in the variable \a keep. The user should never alter the variable \a keep and must provide it on subsequent calls.
+
+   \subsection subsec-adams-moulton-2 Continuation of integration
+   Set \a keep = 2 in order to continue the integration. The values of \a n, \a y, \a t, \a order and \a h are ignored.
+
+   \subsection subsec-adams-moulton-3 Cleanup
+   The user may call the subroutine with \a keep = -1 in order to free allocated memory. All values else then \a keep are ignored.
+
+   \param[in]     f       A user-supplied subroutine defining the differential equation \f$ y' = f(t,y) \f$
+   \param[in]     param   parameters passed to function f
+   \param[in]     n       (if \a flag = 1) the number of equations to be integrated
+   \param[in,out] t       (if \a flag = 1) on input: initial time \n
+			  on output: final time of integration
+   \param[in,out] y       (if \a flag = 1) on input: the initial values \f$ y_0 = y(t) \f$ \n
+			  on output: solution, the value of \f$ y(t_{out}) \f$
+   \param[out]    yp      solution, the value of \f$ y'(t_{out}) = f(t_{out},y(t_{out})) \f$
+   \param[in]     steps   the number of steps with stepwidth \a h
+   \param[in]     h       (if \a flag = 1) step width \n
+   \param[in]     order   (if \a flag = 1) order of the method, \a order must be between 1 and \ref ADAMSMOULTON_MAXORDER \n
+   \param[in]     iterTol tolerance for nonlinear fixpoint iteration
+   \param[in]     iterMax maximum number of fixpoint iterations in each step
+   \param[in]     flag    indicator for status of integration: \n
+			   - \a flag = 1 on first call \n
+			   - \a flag = 2 for continuation of integration \n
+			   - \a flag = -1 cleanup (deallocate array in keep)
+   \param[in,out] keep    internal integrator data \n
+			  the user should never alter \a keep
+   \return status flag: \n
+	   -      0: success \n
+	   -     -1: error: allocation of internal memory failed
+	   -     -2: error: \a keep is not initialized, call method with \a flag = 1
+	   -    -10: error: \a flag has an invalid value
+	   -    -11: error: \a n has an invalid value
+	   -    -12: error: \a h has an invalid value, \a h must be non-zero
+	   -    -13: error: \a order has an invalid value
+	   -    -20: error: solution of nonlinear equation failed,
+			    user should call subroutine with \a flag = -1 (cleanup) and restart with \a flag = 1 and smaller \a h
+   \author Martin Kunkel
+   \author interfaced based on EODE (European Space Agency Ordinary Differntial Equations library)
+   \date 2009
+*/
+int adamsmoulton(
+	void f(double t, double y[], double param[], double yp[]),
+	double param[], int n, double* t, double y[], double yp[], int steps, double h, int order,
+	double iterTol, int iterMax,
+	int flag, adamsmoulton_keep* keep);
+
+
+
+/*!
+   \brief Gragg-Bulirsch-Stoer extrapolation method.
+
+   \section sec-extrapol Gragg-Bulirsch-Stoer extrapolation method
+   Integrate the system of differential equations
+	       \f[ y'(t) = f(t,y),\quad y(t) = y_0 \f]
+   on the time interval \f$[t, t + h \cdot steps] \f$ using Gragg-Bulirsch-Stoer extrapolation method.
+
+   Reference: J. Stoer, R. Burlisch: "Numerische Mathematik 2", Springer-Verlag Berlin-Heidelberg-New York, pp. 166-168.
+
+   \subsection subsec-extrapol-1 Initialization and first step
+   The first call to the integrator must be with parameter \a flag = 1. The method will initialize the variable \a keep.
+   The user should never alter the variable \a keep and must provide it on subsequent calls.
+
+   \subsection subsec-extrapol-2 Continuation of integration
+   Set \a keep = 2 in order to continue the integration. The values of \a n, \a y, \a t, \a order and \a h are ignored.
+
+   \subsection subsec-extrapol-3 Cleanup
+   The user may call the subroutine with \a keep = -1 in order to free allocated memory. All values other then \a keep are ignored.
+
+   \param[in]     f      A user-supplied subroutine defining the differential equation \f$ y' = f(t,y) \f$
+   \param[in]     param  parameters passed to function f
+   \param[in]     n      (if \a flag = 1) the number of equations to be integrated
+   \param[in,out] t      (if \a flag = 1) on input: initial time \n
+			 on output: final time of integration
+   \param[in,out] y      (if \a flag = 1) on input: the initial values \f$ y_0 = y(t) \f$ \n
+			 on output: solution, the value of \f$ y(t_{out}) \f$
+   \param[out]    yp     solution, the value of \f$ y'(t_{out}) = f(t_{out},y(t_{out})) \f$
+   \param[in]     steps  the number of steps with stepwidth \a h
+   \param[in]     h      (if \a flag = 1) step width \n
+   \param[in]     order  (if \a flag = 1) order of the method, \a order must be greater than or equal to 0 \n
+   \param[in]     flag   indicator for status of integration: \n
+			  - \a flag = 1 on first call \n
+			  - \a flag = 2 for continuation of integration \n
+			  - \a flag = -1 cleanup (deallocate array in keep)
+   \param[in,out] keep   internal integrator data \n
+			 the user should never alter \a keep
+   \return status flag: \n
+	   -      0: success \n
+	   -     -1: error: allocation of internal memory failed
+	   -     -2: error: \a keep is not initialized, call method with \a flag = 1
+	   -    -10: error: \a flag has an invalid value
+	   -    -11: error: \a n has an invalid value
+	   -    -12: error: \a h has an invalid value
+	   -    -13: error: \a order has an invalid value
+
+   \author Matthias Gerdts
+   \author interfaced based on EODE (European Space Agency Ordinary Differntial Equations library)
+   \date 2009
+*/
+int extrapol(
+	void f(double t, double y[], double param[], double yp[]),
+	double param[], int n, double* t, double y[], double yp[], int steps, double h, int order, int flag,
+	extrapol_keep* keep);
+
+
+
+
+/*!
+   \brief Nystrom single step method
+
+   \section sec-nystrom Nystrom single step method
+   Integrate the system of differential equations
+	       \f[ y'(t) = z(t), \quad z'(t) = f(t,y),\quad y(0) = y_0,  z(t) = z_0\f]
+   on the time interval \f$[t, t + h \cdot steps] \f$ using Nystrom's single step method.
+
+   Reference: K. Strehmel, R. Weiner: "Numerik gewöhnlicher Differentialgleichungen", Teubner Studienbücher, pp. 72-73.
+
+   \param[in]     f      A user-supplied subroutine defining the differential equation \f$ y' = f(t,y) \f$
+   \param[in]     param  parameters passed to function f
+   \param[in]     n      (if \a flag = 1) the number of equations to be integrated
+   \param[in,out] t      (if \a flag = 1) on input: initial time \n
+			 on output: final time of integration
+   \param[in,out] y      (if \a flag = 1) on input: the initial values \f$ y_0 = y(t) \f$ \n
+			 on output: solution, the value of \f$ y(t_{out}) \f$
+   \param[out]    yp     solution, the value of \f$ y'(t_{out}) = f(t_{out},y(t_{out})) \f$
+   \param[in]     steps  the number of steps with stepwidth \a h
+   \param[in]     h      (if \a flag = 1) step width \n
+   \param[in]     order  (if \a flag = 1) order of the method, \a order must be between \ref NYSTROM_MINORDER and \ref NYSTROM_MAXORDER \n
+   \param[in]     flag   indicator for status of integration: \n
+			  - \a flag = 1 on first call \n
+			  - \a flag = 2 for continuation of integration \n
+			  - \a flag = -1 cleanup (deallocate array in keep)
+   \param[in,out] keep   internal integrator data \n
+			 the user should never alter \a keep
+   \return status flag: \n
+	   -      0: success \n
+	   -     -1: error: allocation of internal memory failed
+	   -     -2: error: \a keep is not initialized, call method with \a flag = 1
+	   -    -10: error: \a flag has an invalid value
+	   -    -11: error: \a n has an invalid value
+	   -    -12: error: \a h has an invalid value
+	   -    -13: error: \a order has an invalid value
+
+   \author Bjoern Huepping
+   \author interface and documentation based on adamsbashforth.c by Martin Kunkel
+   \date 2009
+*/
+int nystrom(
+	void f(double t, double y[], double param[], double ypp[]),
+	double param[], int n, double* t, double y[], double yp[], int steps, double h, int order, int flag,
+	nystrom_keep* keep);
+
+
+
+/*!
+   \brief Runge-Kutta single step methods
+
+   \section sec-rk Runge-Kutta single step methods
+   Integrate the system of differential equations
+	       \f[ y'(t) = f(t,y),\quad y(t) = y_0 \f]
+   on the time interval \f$[t, t + h \cdot steps] \f$ using a Runge-Kutta single step method.
+
+   \subsection subsec-rk-1 Initialization and first step
+   The first call to the integrator must be with parameter \a flag = 1. The method will initialize the variables in \a keep. The user should never alter \a keep and must provide it on subsequent calls.
+
+   \subsection subsec-rk-2 Continuation of integration
+   Set \a keep = 2 in order to continue the integration. The values of \a n, \a y, \a t and \a method are ignored.
+
+   \subsection subsec-rk-3 Cleanup
+   The user may call the subroutine with \a flag = -1 in order to free allocated memory. All values else then \a keep are ignored.
+
+   \param[in]     f       A user-supplied subroutine defining the differential equation \f$ y' = f(t,y) \f$
+   \param[in]     param   parameters passed to function f
+   \param[in]     n       (if \a flag = 1) the number of equations to be integrated
+   \param[in,out] t       (if \a flag = 1) on input: initial time \n
+			  on output: final time of integration
+   \param[in,out] y       (if \a flag = 1) on input: the initial values \f$ y_0 = y(t) \f$ \n
+			  on output: solution, the value of \f$ y(t_{out}) \f$
+   \param[out]    yp      solution, the value of \f$ y'(t_{out}) = f(t_{out},y(t_{out})) \f$
+   \param[in]     steps   the number of steps with stepwidth \a h
+   \param[in]     h       step width \n
+   \param[in]     method  (if \a flag = 1) Runge-Kutta method see \ref integrator_flag for possible values
+   \param[in]     flag    indicator for status of integration: \n
+			   - \a flag = 1 on first call \n
+			   - \a flag = 2 for continuation of integration \n
+			   - \a flag = -1 cleanup (deallocate array in keep)
+   \param[in,out] keep    internal integrator data \n
+			  the user should never alter \a keep
+   \return status flag: \n
+	   -      0: success \n
+	   -     -1: error: allocation of internal memory failed
+	   -     -2: error: \a keep is not initialized, call method with \a flag = 1
+	   -     -9: error: \a method has an invalid value
+	   -    -10: error: \a flag has an invalid value
+	   -    -11: error: \a n has an invalid value
+	   -    -12: error: \a h has an invalid value, \a h must be non-zero
+
+   \author Martin Kunkel
+   \author interfaced based on EODE (European Space Agency Ordinary Differntial Equations library)
+   \date 2009
+*/
+int rk(
+	void f(double t, double y[], double param[], double yp[]),
+	double param[], int n, double* t, double y[], double yp[], int steps, double h,
+	integrator_flag method, int flag, rk_keep* keep);
+
+
+
+
+/*!
+   \brief Runge-Kutta single step methods with step-size selection
+
+   \section sec-rk-ss Runge-Kutta single step methods with step-size selection
+   Integrate the system of differential equations
+	       \f[ y'(t) = f(t,y),\quad y(t) = y_0 \f]
+   on the time interval \f$[t, t + h \cdot steps] \f$ using a Runge-Kutta single step method with step-size selection.
+
+   \subsection subsec-rk-1 Initialization and first step
+   The first call to the integrator must be with parameter \a flag = 1. The method will initialize the variables in \a keep. The user should never alter \a keep and must provide it on subsequent calls.
+
+   \subsection subsec-rk-2 Continuation of integration
+   Set \a keep = 2 in order to continue the integration. The values of \a n, \a y, \a t and \a method are ignored.
+
+   \subsection subsec-rk-3 Cleanup
+   The user may call the subroutine with \a flag = -1 in order to free allocated memory. All values else then \a keep are ignored.
+
+   \param[in]     f       A user-supplied subroutine defining the differential equation \f$ y' = f(t,y) \f$
+   \param[in]     fjac    A user-supplied subroutine defining the Jacobian \f$f'_y(t,y)\f$
+   \param[in]     np      number of parameters for sensitivity analysis (np >= 0)
+   \param[in]     param   contains parameters
+   \param[in]     n       (if \a flag = 1) the number of equations to be integrated
+   \param[in,out] t       (if \a flag = 1) on input: initial time \n
+			  on output: final time of integration
+   \param[in]     tout    final time \n
+   \param[in,out] y       (if \a flag = 1) on input: the initial values \f$ y_0 = y(t) \f$ \n
+			  on output: solution, the value of \f$ y(t_{out}) \f$
+   \param[out]    yp      solution, the value of \f$ y'(t_{out}) = f(t_{out},y(t_{out})) \f$
+   \param[in]     rtol    array of relative tolerances
+   \param[in]     atol    array of absolute tolerances
+   \param[in]     info    array of dimension 9 \n
+			  info(0)=0:    rtol and atol are scalars \n
+				  1:    rtol and atol are arrays  \n
+			  info(1)=0:    default value for maximum number of \n
+					integration steps \n
+				 >0:    user defined maximum number of \n
+					integration steps
+			  info(2)=0:    default value for security factor
+					needed for calculation of new step size \n
+				  1:    user defined value of security factor
+					in rpar(np) \n
+			  info(3)=0:    default value for minimal step size
+					multiplication factor \n
+				  1:    minimal step size multiplication factor
+					in rpar(np+1) \n
+			  info(4)=0:    default value for maximal step size
+					multiplication factor \n
+				  1:    maximal step size multiplication factor
+					in rpar(np+2) \n
+			  info(5)=0:    default value for minimal step size \n
+				  1:    minimal step size in rpar(np+3) \n
+			  info(6)=0:    default value for initial step size \n
+				  1:    initial step size in rpar(np+4) \n
+			  info(7)=0:    sensitivities are not included in the
+					error control \n
+				  1:    sensitivities are included in the
+					error control \n
+			  info(8)=0:    numerical approximation of jacobian
+					of f by use of divided differences \n
+				  1:    jacobian of f is provided in fjac
+   \param[in]     method  (if \a flag = 1) Runge-Kutta method see \ref integrator_flag for possible values
+   \param[in]     flag    indicator for status of integration: \n
+			   - \a flag = 1 on first call \n
+			   - \a flag = 2 for continuation of integration \n
+			   - \a flag = -1 cleanup (deallocate array in keep)
+   \param[in,out] keep    internal integrator data \n
+			  the user should never alter \a keep
+   \return status flag: \n
+	   -      1: success, tout has not been reached exactly \n
+	   -      0: success \n
+	   -     -1: error: allocation of internal memory failed
+	   -     -2: error: \a keep is not initialized, call method with \a flag = 1
+	   -     -3: input error in info
+	   -     -4: step size too small
+	   -     -5: maximum number of integration steps
+	   -     -6: t and tout closer than hmin
+	   -     -7: invalid status of initialization
+	   -     -9: \a method has an invalid value
+	   -    -10: error: \a flag has an invalid value
+	   -    -11: error: \a n has an invalid value
+	   -    -12: error: \a h has an invalid value
+
+   \author Matthias Gerdts
+   \author interfaced based on EODE (European Space Agency Ordinary Differntial Equations library)
+   \date 2009
+*/
+int rkse(
+    void f(double t, double y[], double param[], double yp[]),
+    void fjac(double t, double y[], double param[], double **jac),
+    int np, double param[], int n, double* t, double tout, double y[], double yp[],
+    double rtol[],double atol[], int info[],
+    integrator_flag method, int flag, rkse_keep* keep);
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////////////// Defining the control of the integrators ///////////////////////////////////
+/*!
+   \brief Common integrator subroutine
+
+   \section integrator Common integrator.
+   Integrate the system of differential equations
+	       \f[ y'(t) = f(t,y),\quad y(t) = y_0 \f]
+   on the time interval \f$[t, t + h \cdot steps] \f$ using different one-step and multi-step methods with default options. Order for extrapolation, Nystrom and Adams-Integrator is 4.
+
+   \subsection subsec-integrator-1 Initialization and first step
+   The first call to the integrator must be with parameter \a flag = 1. The method will initialize the integrator and the variable \a keep. The user should never alter the variable \a keep and must provide it on subsequent calls.
+
+   \subsection subsec-integrator-2 Continuation of integration
+   Set \a keep = 2 in order to continue the integration. The values of \a n, \a y, \a t, \a order and \a h are ignored.
+
+   \subsection subsec-integrator-3 Cleanup
+   The user may call the subroutine with \a keep = -1 in order to free allocated memory. All values else than \a keep are ignored.
+
+   \param[in]     iflag  indicator for integrator \n
+			 Valid integrators: \n
+			 - ADAMSBASHFORTH
+			 - ADAMSMOULTON
+			 - EXTRAPOL
+			 - NYSTROM
+			 - RK_DOPRI4
+			 - RK_DOPRI5
+			 - RK_RK2
+			 - RK_RK3
+			 - RK_RK4
+			 - RK_RK5
+			 - RK_RK7
+			 - RK_RK8
+			 - RKSE_DOPRI54
+			 - RKSE_RK23
+			 - RKSE_RK45
+			 - RKSE_RK78
+   \param[in]     f      A user-supplied subroutine defining the differential equation \f$ y' = f(t,y) \f$
+   \param[in]     param  parameters passed to function f
+   \param[in]     n      (if \a flag = 1) the number of equations to be integrated
+   \param[in,out] t      (if \a flag = 1) on input: initial time \n
+			 on output: final time of integration \f$ t_{out} = t + h\cdot steps \f$
+   \param[in,out] y      (if \a flag = 1) on input: the initial values \f$ y_0 = y(t) \f$ \n
+			 on output: solution, the value of \f$ y(t_{out}) \f$
+   \param[out]    yp     solution, the value of \f$ y'(t_{out}) = f(t_{out},y(t_{out})) \f$
+   \param[in]     steps  the number of steps with stepwidth \a h
+   \param[in]     h      (if \a flag = 1) step width \n
+   \param[in]     flag   indicator for status of integration: \n
+			  - \a flag = 1 on first call \n
+			  - \a flag = 2 for continuation of integration \n
+			  - \a flag = -1 cleanup (deallocate array in keep)
+   \param[in]     options integrator options
+   \param[in,out] keep   internal integrator data \n
+			 the user should never alter \a keep
+			 \note you need to pass a reference to a keep-variable since the integrator allocates the required memory
+   \return status flag: \n
+	   -      0: success \n
+	   -     -1: error in memory allocation \n
+	   -   <-10: error code of integrator times 10. For a detailed description refer to Sections \ref sec-nystrom,
+		     \ref sec-adams-bashforth, \ref sec-adams-moulton, \ref sec-rk, \ref sec-rk-ss
+
+   \author Martin Kunkel
+   \author interfaced based on EODE (European Space Agency Ordinary Differntial Equations library)
+   \date 2010
+*/
+int integrate(
+	integrator_flag iflag,
+	void f(double t, double y[], double param[], double yp[]),
+	double param[], int n, double* t, double y[], double yp[], int steps, double h, int flag,
+	integrator_options* options, void** keep);
+
+
+/*!
+   \brief Sets default integrator options
+   \param[out]     options  integrator options
+   \param[in]      n        number of equations
+
+   \return status flag: \n
+	   -      0: success \n
+	   -     -1: error in memory allocation
+
+   \author Martin Kunkel
+   \date 2010
+*/
+int integrator_defaults( integrator_options* options, int n );
+
+/*!
+   \brief Cleanup of integrator options
+   \param[out]     options  integrator options
+
+   \author Martin Kunkel
+   \date 2010
+*/
+void integrator_options_cleanup( integrator_options* options );
 
 
