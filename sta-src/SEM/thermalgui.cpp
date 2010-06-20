@@ -66,12 +66,33 @@ ThermalGUI::ThermalGUI( SemMain * SC, QWidget * parent, Qt::WindowFlags f) : QDi
                 (QString::number
                  (((SCVirtual->getNewSCThermal()->getPayloadTemperature()+3)->MaximumTemperature)));
 
+        //set Alerts of Payload
+        if (SCVirtual->getNewSCThermal()->IsPayloadInAlert(0))
+            ThermalGUIPayload1WarningLabel->setEnabled(1);
+        else
+            ThermalGUIPayload1WarningLabel->setEnabled(0);
+
+        if (SCVirtual->getNewSCThermal()->IsPayloadInAlert(1))
+            ThermalGUIPayload2WarningLabel->setEnabled(1);
+        else
+            ThermalGUIPayload2WarningLabel->setEnabled(0);
+
+        if (SCVirtual->getNewSCThermal()->IsPayloadInAlert(2))
+            ThermalGUIPayload3WarningLabel->setEnabled(1);
+        else
+            ThermalGUIPayload3WarningLabel->setEnabled(0);
+
+        if (SCVirtual->getNewSCThermal()->IsPayloadInAlert(3))
+            ThermalGUIPayload4WarningLabel->setEnabled(1);
+        else
+            ThermalGUIPayload4WarningLabel->setEnabled(0);
+
         ThermalGUISCMinTemperatureLineEdit->setText
                 (QString::number
-                 (SCVirtual->getNewSCThermal()->getMinimumSCTemperature()));
+                 (SCVirtual->getNewSCThermal()->getMinimumSCTempWithRadiatorOrHeater()));
         ThermalGUISCMaxTemperatureLineEdit->setText
                 (QString::number
-                 (SCVirtual->getNewSCThermal()->getMaximumSCTemperature()));
+                 (SCVirtual->getNewSCThermal()->getMaximumSCTempWithRadiatorOrHeater()));
 
         //setting comboBox from a QString
         int i;
@@ -99,6 +120,13 @@ ThermalGUI::ThermalGUI( SemMain * SC, QWidget * parent, Qt::WindowFlags f) : QDi
         ThermalGUIHotAbsorptivityLineEdit->setText
                 (QString::number(SCVirtual->getNewSCThermal()
                                  ->getHotFaceCoatingProperties().Absorptivity));
+
+        ThermalGUIHeaterPowerLineEdit->setText
+                (QString::number
+                 (SCVirtual->getNewSCThermal()->getNeededHeater()));
+        ThermalGUIRadiatorLineEdit->setText
+                (QString::number
+                 (SCVirtual->getNewSCThermal()->getNeededRadiator()));
 }
 
 ThermalGUI::~ThermalGUI()

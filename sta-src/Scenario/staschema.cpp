@@ -11690,6 +11690,8 @@ bool ScenarioStructure::load(const QDomElement& e, QDomElement* next)
     ScenarioObject::load(e, next);
         m_StructuralShape = (next->firstChild().toText().data());
         *next = next->nextSiblingElement();
+        m_StructuralMaterial = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
     if (next->tagName() == "tns:Sizing")
         m_Sizing = QSharedPointer<ScenarioSizing>(ScenarioSizing::create(*next));
     *next = next->nextSiblingElement();
@@ -11711,6 +11713,7 @@ QDomElement ScenarioStructure::toDomElement(QDomDocument& doc, const QString& el
 {
     QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     e.appendChild(createSimpleElement(doc, "tns:StructuralShape", m_StructuralShape));
+    e.appendChild(createSimpleElement(doc, "tns:StructuralMaterial", m_StructuralMaterial));
     if (!m_Sizing.isNull())
     {
         QString tagName = "Sizing";
@@ -12578,6 +12581,7 @@ ScenarioTTCAntenna::ScenarioTTCAntenna() :
     m_TransmitterPower(0.0),
     m_TransmitterFrequency(0.0),
     m_TransmitterGain(0.0),
+    m_TransmitterEfficiency(0.0),
     m_LinkDuration(0.0),
     m_DataRate(0.0)
 {
@@ -12604,6 +12608,8 @@ bool ScenarioTTCAntenna::load(const QDomElement& e, QDomElement* next)
         *next = next->nextSiblingElement();
         m_TransmitterGain = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
+        m_TransmitterEfficiency = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
         m_LinkDuration = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
         m_DataRate = parseDouble(next->firstChild().toText().data());
@@ -12617,6 +12623,7 @@ QDomElement ScenarioTTCAntenna::toDomElement(QDomDocument& doc, const QString& e
     e.appendChild(createSimpleElement(doc, "tns:TransmitterPower", m_TransmitterPower));
     e.appendChild(createSimpleElement(doc, "tns:TransmitterFrequency", m_TransmitterFrequency));
     e.appendChild(createSimpleElement(doc, "tns:TransmitterGain", m_TransmitterGain));
+    e.appendChild(createSimpleElement(doc, "tns:TransmitterEfficiency", m_TransmitterEfficiency));
     e.appendChild(createSimpleElement(doc, "tns:LinkDuration", m_LinkDuration));
     e.appendChild(createSimpleElement(doc, "tns:DataRate", m_DataRate));
     return e;

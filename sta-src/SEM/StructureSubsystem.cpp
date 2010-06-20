@@ -82,8 +82,8 @@ StructureSubsystem::StructureSubsystem()
     SCThermalDetails.TotalAreaOfColdFace = 0.0;
     SCThermalDetails.TotalAreaOfHotFace = 0.0;
 
-    //this setting is done by wizard but for now it is constant
-    setMassEstimations("Light_Satellite");
+//    //this setting is done by wizard but for now it is constant
+//    setMassEstimations("Light_Satellite");
 
     SCVolumeDetails.OBDHSubsystemVolume = 0.0;
     SCVolumeDetails.PowerSubsystemVolume = 0.0;
@@ -118,7 +118,7 @@ void StructureSubsystem::CalculateAndSetSCVolume()
                     //20% margin -> (1.0 + 0.2)
                     + SCVolumeDetails.TTCSubsystemVolume * (1.0 + 0.2)
                     + SCVolumeDetails.OBDHSubsystemVolume * (1.0 + 0.2)
-                    + SCVolumeDetails.StructureSubsystemVolume * (1.0 + 0.2)
+//                    + SCVolumeDetails.StructureSubsystemVolume * (1.0 + 0.2)
                     + SCVolumeDetails.ThermalSubsystemVolume * (1.0 + 0.2);
 
     SCVolumeDetails.SCTotalVolume = tempSCVolume * (1.0 + 0.2);
@@ -147,7 +147,7 @@ void StructureSubsystem::CalculateAndSetSpacecraftDimension()
     {
     case Cube: // Cube
         {
-            SCSizing.x() = cbrt(SCVolumeDetails.SCTotalVolume);
+            SCSizing.x() = cbrt(SCVolumeDetails.SCTotalVolume)+0.02;//2 mm for the structural extention
             SCSizing.y() = SCSizing.x();
             SCSizing.z() = SCSizing.y();
 
@@ -162,8 +162,8 @@ void StructureSubsystem::CalculateAndSetSpacecraftDimension()
         }
     case Cylindrical:
         {
-            SCSizing.x() = cbrt(SCVolumeDetails.SCTotalVolume/mypi)*2;    //Diameter
-            SCSizing.y() = cbrt(SCVolumeDetails.SCTotalVolume/mypi);
+            SCSizing.x() = cbrt(SCVolumeDetails.SCTotalVolume/mypi)*2+0.02;//2 mm for the structural extention    //Diameter
+            SCSizing.y() = cbrt(SCVolumeDetails.SCTotalVolume/mypi)+0.02;//2 mm for the structural extention
             SCSizing.z() = 0.0;
 
             //For thermal calculations set the size of areas
@@ -178,7 +178,7 @@ void StructureSubsystem::CalculateAndSetSpacecraftDimension()
     case Spherical:
         {
             SCSizing.x() = cbrt((3 * SCVolumeDetails.SCTotalVolume)
-                                / (4 * mypi))*2;  //Diameter
+                                / (4 * mypi))*2+0.02;//2 mm for the structural extention  //Diameter
             SCSizing.y() = 0.0;
             SCSizing.z() = 0.0;
 
@@ -221,15 +221,7 @@ Vector3d StructureSubsystem::getSpacecraftDimension()
 }
 
 void StructureSubsystem::CalculateAndSetSCMass()
-{
-    //calculate total payload mass
-    int i;
-    SCMassDetails.TotalPayloadMass = 0.0;
-
-    for (i=0; i<4; i++)
-    {
-        SCMassDetails.TotalPayloadMass += PayloadStructureDetails[i].PayloadMass;
-    }       
+{      
 
     // if the masses are Zero, it will estimate
     //otherwise it will set the existing values
@@ -241,6 +233,7 @@ void StructureSubsystem::CalculateAndSetSCMass()
 
     qDebug()<<"estimate"<<estimate;
 
+    SCMassDetails.StructureSubsystemMass = getStructureSubsystemMass();
     if (SCMassDetails.StructureSubsystemMass <= 0.0)
         estimate += SCMassDetails.TotalPayloadMass
                     / SCMassEstimatePercentages.PayloadPercentage
@@ -415,6 +408,26 @@ Shape StructureSubsystem::getSCShape()
     return SCShape;
 }
 
+QString StructureSubsystem::getSCShapeString()
+{
+    switch(SCShape)
+    {
+    case Cube:
+        return "Cube";
+        break;
+    case Cylindrical:
+        return "Cylinder";
+        break;
+    case Spherical:
+        return "Sphere";
+        break;
+    default:
+        return "";
+        break;
+    }
+
+}
+
 void StructureSubsystem::CalculateAndSetLateralFrequency()
 {
     switch (SCShape)
@@ -522,6 +535,15 @@ void StructureSubsystem::setPayloadsStructure(int      Index,
     PayloadStructureDetails[Index].PayloadStructure = PayloadStructure;
     PayloadStructureDetails[Index].PayloadVolume = PayloadVolume;
     PayloadStructureDetails[Index].PayloadMass = PayloadMass;
+
+    //calculate total payload mass
+    int i;
+    SCMassDetails.TotalPayloadMass = 0.0;
+
+    for (i=0; i<4; i++)
+    {
+        SCMassDetails.TotalPayloadMass += PayloadStructureDetails[i].PayloadMass;
+    }
 }
 
 PayloadStructureInfo* StructureSubsystem::getPayloadStructure()
@@ -743,19 +765,22 @@ double StructureSubsystem::getStructureSubsystemMass()
 {
     /*calculate the mass of the Structure sum of the TotalAreaOfColdFace
     * and TotalAreaOfHotFace is the Total Area of the Spacecraft
-    * if we assume the shell of the SC is 0.5cm. the mass will be as the following
+    * if we assume the shell of the SC is 0.2cm. the mass will be as the following
     * 20% margin is to consider the internal structure of the SC for the stability
     */
 
     if (((SCThermalDetails.TotalAreaOfHotFace + SCThermalDetails.TotalAreaOfColdFace) > 0.0)
         &&
         (SCMaterial.Density > 0.0))
+        {
         SCMassDetails.StructureSubsystemMass
                 = (SCThermalDetails.TotalAreaOfHotFace
-                       + SCThermalDetails.TotalAreaOfColdFace)
-                    * 0.005 //0.5cm thickness
-                    * SCMaterial.Density
-                    * 1.2; //20% margin
+                   + SCThermalDetails.TotalAreaOfColdFace)
+                * 0.002 //0.2cm thickness
+                * SCMaterial.Density
+                * 1.2; //20% margin
+//        StructureSubsystem::CalculateAndSetSCMass();
+    }
 
     if (SCMassDetails.StructureSubsystemMass > 0.0)
         return SCMassDetails.StructureSubsystemMass;
@@ -839,6 +864,10 @@ double StructureSubsystem::getTTCSubsystemVolume()
 
 double StructureSubsystem::getStructureSubsystemVolume()
 {
+    SCVolumeDetails.StructureSubsystemVolume =
+            (SCThermalDetails.TotalAreaOfHotFace
+             + SCThermalDetails.TotalAreaOfColdFace)
+            * 0.002; //2mm thickness
     return SCVolumeDetails.StructureSubsystemVolume;
 }
 

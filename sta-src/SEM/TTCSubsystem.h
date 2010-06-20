@@ -77,6 +77,13 @@ public:
 
     double getAntennaDiameter();
 
+    void setRXAntennaPower(double Power);
+    double getRXAntennaPower();
+
+    void setRXAntennaGain(double Gain);
+    double getRXAntennaGain();
+
+
 private:
     //----------------- Member objects ----------------------------------//
     double TTCSubsystemMass;
@@ -95,6 +102,9 @@ private:
     double AntennaEfficiency;
     double AntennaDiameter;
     double AntennaPower;
+
+    double RXAntennaGain;
+    double RXAntennaPower;
 
     double AverageOrbitDuration;
 

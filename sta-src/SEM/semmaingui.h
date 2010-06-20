@@ -33,7 +33,6 @@
 
 #include "Scenario/staschema.h"
 
-
 class SemMainGUI : public QDialog , private Ui::SemMainGUI
 {
 Q_OBJECT
@@ -134,7 +133,7 @@ protected slots:
 //        void on_PowerConsumptionInDaylightLineEdit_2_textChanged(const QString&);
 //        void on_BOLPowerLineEdit_2_textChanged(const QString&);
 //        void on_EOLPowerLineEdit_2_textChanged(const QString&);
-        void on_PowerGraphComboBox_2_activated(const QString&);
+//        void on_PowerGraphComboBox_2_activated(const QString&);
         void on_PowerGraphPushButton_clicked();
         void on_PowerDetailsButton_clicked();
 //        void on_groupBox_16_toggled(bool);
@@ -143,10 +142,10 @@ protected slots:
 //        void on_LauncherInclinationLineEdit_2_textChanged(const QString&);
 //        void on_LauncherLateralFreqCapabilityLineEdit_2_textChanged(const QString&);
 //        void on_LauncherAxialFreqCapabilityLineEdit_2_textChanged(const QString&);
-        void on_PlanetNameComboBox_activated(const QString&);
+//        void on_PlanetNameComboBox_activated(const QString&);
 
-        void on_LauncherDetailsButton_clicked();
-        void on_SemMainGUICalculatePushButton_clicked();
+//        void on_LauncherDetailsButton_clicked();
+//        void on_SemMainGUICalculatePushButton_clicked();
         void on_SemMainGUISavePushButton_clicked();
         void on_SemMainGUICancelPushButton_clicked();
 
@@ -156,5 +155,6 @@ private:
         void RetrieveScenarioSC();
 
         ScenarioSC* Vehicle;
+        QString MissionArc;
 };
 #endif //SEMMAINGUI_H

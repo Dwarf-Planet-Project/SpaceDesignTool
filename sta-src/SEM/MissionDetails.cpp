@@ -134,7 +134,7 @@ void MissionDetails::setPlanetProperties(QString PlanetName)
     qDebug()<<"Albedo Constant -"<<PlanetProperties.AlbedoConstantOfPlanet;
 
     PlanetProperties.PlanetIREnergy =
-            BlackBodyTemperature * STEFAN_BOLTZMANN_CONSTANT;
+            pow(BlackBodyTemperature,4) * STEFAN_BOLTZMANN_CONSTANT;
     qDebug()<<"Planet IR Energy -"<<PlanetProperties.PlanetIREnergy;
 
     // set SC mean altitude if the semiMajor axis is set
@@ -149,14 +149,14 @@ void MissionDetails::setPlanetProperties(QString PlanetName)
     SCDetails.AverageOrbitDuration = 2 * mypi
                                      * sqrt(pow(SCDetails.SemiMajorAxis,3)
                                             /PlanetProperties.GravityParameter);
-    qDebug()<<"SCDetails.AverageOrbitDuration"<<SCDetails.AverageOrbitDuration;
+//    qDebug()<<"SCDetails.AverageOrbitDuration"<<SCDetails.AverageOrbitDuration;
 
     //calculate Angular radius and collimated energy which is depending on SCMeanAltitude
     PlanetProperties.PlanetAngularRadius =
            fabs(asin(PlanetProperties.Radius/
                  (PlanetProperties.Radius + SCDetails.SCMeanAltitude)));
 
-    qDebug()<<"Planet Angular Radius -"<<PlanetProperties.PlanetAngularRadius;
+//    qDebug()<<"Planet Angular Radius -"<<PlanetProperties.PlanetAngularRadius;
 
     //Collimated is only known for Earth
     if (PlanetProperties.Planet=="Earth")
@@ -182,7 +182,7 @@ PlanetInfo * MissionDetails::getPlanetProperties()
 void MissionDetails::setSCMeanAltitude(double altitude)
 {
     SCDetails.SCMeanAltitude = altitude;
-    qDebug()<<"SCDetails.SCMeanAltitude -"<<SCDetails.SCMeanAltitude;
+//    qDebug()<<"SCDetails.SCMeanAltitude -"<<SCDetails.SCMeanAltitude;
 }
 
 double MissionDetails::getSCMeanAltitude()
@@ -203,9 +203,9 @@ void MissionDetails::setMissionStartTime(QDateTime calendarDate)
         SCDetails.MissionDuration
                 = (SCDetails.MissionEndTime
                     - SCDetails.MissionStartTime);
-    qDebug()<<"SCDetails.MissionStartTime"<<SCDetails.MissionStartTime;
-    qDebug()<<"SCDetails.MissionEndTime"<<SCDetails.MissionEndTime;
-    qDebug()<<"SCDetails.MissionDuration"<<SCDetails.MissionDuration;
+//    qDebug()<<"SCDetails.MissionStartTime"<<SCDetails.MissionStartTime;
+//    qDebug()<<"SCDetails.MissionEndTime"<<SCDetails.MissionEndTime;
+//    qDebug()<<"SCDetails.MissionDuration"<<SCDetails.MissionDuration;
 }
 
 QDateTime MissionDetails::getMissionStartTime()
@@ -225,9 +225,9 @@ void MissionDetails::setMissionEndTime(QDateTime calendarDate)
         SCDetails.MissionDuration
                 = (SCDetails.MissionEndTime
                     - SCDetails.MissionStartTime);
-    qDebug()<<"SCDetails.MissionStartTime"<<SCDetails.MissionStartTime;
-    qDebug()<<"SCDetails.MissionEndTime"<<SCDetails.MissionEndTime;
-    qDebug()<<"SCDetails.MissionDuration"<<SCDetails.MissionDuration;
+//    qDebug()<<"SCDetails.MissionStartTime"<<SCDetails.MissionStartTime;
+//    qDebug()<<"SCDetails.MissionEndTime"<<SCDetails.MissionEndTime;
+//    qDebug()<<"SCDetails.MissionDuration"<<SCDetails.MissionDuration;
 }
 
 QDateTime MissionDetails::getMissionEndTime()
@@ -255,10 +255,11 @@ void MissionDetails::setSemiMajorAxis(double semiMajor)
     SCDetails.AverageOrbitDuration = 2 * mypi
                                      * sqrt(pow(SCDetails.SemiMajorAxis,3)
                                             /PlanetProperties.GravityParameter);
-    qDebug()<<"SCDetails.AverageOrbitDuration"<<SCDetails.AverageOrbitDuration;
+//    qDebug()<<"SCDetails.AverageOrbitDuration"<<SCDetails.AverageOrbitDuration;
 
     // set SC mean altitude if the planet radius is set
-    if ((PlanetProperties.Radius > 0.0)&&(SCDetails.SemiMajorAxis > 0.0))
+    if ((PlanetProperties.Radius > 0.0)
+        &&(SCDetails.SemiMajorAxis > 0.0))
         SCDetails.SCMeanAltitude
                 = SCDetails.SemiMajorAxis
                   - PlanetProperties.Radius;
@@ -327,9 +328,9 @@ double MissionDetails::getAverageDaylightDuration()
             = SCDetails.AverageOrbitDuration
               - SCDetails.AverageEclipseDuration;
 
-        qDebug()<<"SCDetails.AverageDaylightDuration"<<SCDetails.AverageDaylightDuration;
-        qDebug()<<"SCDetails.AverageOrbitDuration"<<SCDetails.AverageOrbitDuration;
-        qDebug()<<"SCDetails.AverageEclipseDuration"<<SCDetails.AverageEclipseDuration;
+//        qDebug()<<"SCDetails.AverageDaylightDuration"<<SCDetails.AverageDaylightDuration;
+//        qDebug()<<"SCDetails.AverageOrbitDuration"<<SCDetails.AverageOrbitDuration;
+//        qDebug()<<"SCDetails.AverageEclipseDuration"<<SCDetails.AverageEclipseDuration;
 
     return SCDetails.AverageDaylightDuration;
 }
@@ -345,7 +346,7 @@ double MissionDetails::getMissionDuration()
 }
 
 double MissionDetails::getGroundAverageVelocity()
-{
+{//in m/s
     return (2 * mypi
             * (SCDetails.SCMeanAltitude + PlanetProperties.Radius)
             / SCDetails.AverageOrbitDuration);

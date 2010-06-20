@@ -54,6 +54,9 @@ TTCSubsystem::TTCSubsystem()
     AverageOrbitDuration= 0.0;//s
 
     AntennaDiameter = 0.0;
+
+    RXAntennaGain = 0.0;
+    RXAntennaPower = 0.0;
 }
 
 //-------------------- Functions ---------------------------------------//
@@ -78,16 +81,18 @@ void TTCSubsystem::CalculateAndSetAntennaVolume()
     TTCSubsystemVolume = mypi
                          * AntennaDiameter * AntennaDiameter / 4
                          * FocalLength;
-    qDebug()<<"TTCSubsystemVolume "<<TTCSubsystemVolume;
+    qDebug()<<"**       TTCSubsystemVolume "<<TTCSubsystemVolume;
 }
 
 void TTCSubsystem::CalculateAndSetAntennaDiameter()
 {
     if ((AntennaEfficiency>0.0)&&(AntennaFrequency>0.0))
     {
-        AntennaDiameter = sqrt(AntennaGain / AntennaEfficiency)
-                          * SPEED_OF_LIGHT
-                          /(mypi * AntennaFrequency);
+        AntennaDiameter = sqrt(AntennaGain
+                               / AntennaEfficiency
+                               * SPEED_OF_LIGHT
+                               / mypi
+                               / AntennaFrequency);
 
         CalculateAndSetAntennaVolume();
     }    
@@ -101,7 +106,8 @@ double TTCSubsystem::getTTCSubsystemVolume()
 void TTCSubsystem::setAntennaPower(double Power)
 {
     AntennaPower = Power;
-    TTCSubsystemPower = AntennaPower * (1 + 0.2);  //20% margin
+    TTCSubsystemPower
+            = (AntennaPower + RXAntennaPower) * (1 + 0.2);  //20% margin
 }
 
 double TTCSubsystem::getAntennaPower()
@@ -137,13 +143,13 @@ void TTCSubsystem::setPercentageOfContactTimePerOrbit(double Percentage)
 
 void TTCSubsystem::CalculateAndSetContactTimePerOrbit()
 {
-    if (DownlinkRate != 0)
+    if (DownlinkRate > 0.0)
         ContactTimePerOrbit = ceil(MemorySizeForPayloads / DownlinkRate ) ;
     qDebug()<<"C DownlinkRate"<<DownlinkRate;
     if (ContactTimePerOrbit > AverageOrbitDuration)
         ContactTimePerOrbit = AverageOrbitDuration;
 
-   qDebug()<<"C2 DownlinkRate"<<DownlinkRate;
+   qDebug()<<"**              C2 DownlinkRate"<<DownlinkRate;
    qDebug()<<"C MemorySizeForPayloads"<<MemorySizeForPayloads;
    qDebug()<<"C ContactTimePerOrbit"<<ContactTimePerOrbit;
 }
@@ -165,9 +171,9 @@ void TTCSubsystem::setDownlinkRate(double Rate)
 
 void TTCSubsystem::CalculateAndSetDownLinkRate()
 {
-    if (ContactTimePerOrbit != 0)
+    if (ContactTimePerOrbit > 0.0)
         DownlinkRate = ceil(MemorySizeForPayloads / ContactTimePerOrbit) ;
-    qDebug()<<"D DownlinkRate"<<DownlinkRate;
+    qDebug()<<"**         D DownlinkRate"<<DownlinkRate;
     qDebug()<<"D MemorySizeForPayloads"<<MemorySizeForPayloads;
     qDebug()<<"D ContactTimePerOrbit"<<ContactTimePerOrbit;
 }
@@ -185,6 +191,7 @@ void TTCSubsystem::setAverageOrbitDuration(double Duration)
 void TTCSubsystem::setAntennaGain(double Gain)
 {
     AntennaGain = Gain;
+    qDebug()<<"AntennaGain"<<AntennaGain;
 }
 
 double TTCSubsystem::getAntennaGain()
@@ -211,15 +218,40 @@ void TTCSubsystem::setAntennaEfficiency(double Efficiency)
 
 double TTCSubsystem::getAntennaEfficiency()
 {
-    return AntennaEfficiency;
+    return AntennaEfficiency*100;
 }
 
 void TTCSubsystem::setMemorySizeForPayloads(double MemorySize)
 {
-    MemorySizeForPayloads = MemorySize * 2 * 1024;
+    //1 byte = 8 bit G = 1024*M
+    MemorySizeForPayloads = MemorySize * 8 * 1024;
 }
 
 double TTCSubsystem::getAntennaDiameter()
 {
     return AntennaDiameter;
+}
+
+void TTCSubsystem::setRXAntennaGain(double Gain)
+{
+    RXAntennaGain = Gain;
+    qDebug()<<"RXAntennaGain"<<RXAntennaGain;
+}
+
+double TTCSubsystem::getRXAntennaGain()
+{
+    return RXAntennaGain;
+}
+
+void TTCSubsystem::setRXAntennaPower(double Power)
+{
+    RXAntennaPower = Power;
+    TTCSubsystemPower
+            = (AntennaPower + RXAntennaPower) * (1 + 0.2);  //20% margin
+    qDebug()<<"RXAntennaPower"<<RXAntennaPower;
+}
+
+double TTCSubsystem::getRXAntennaPower()
+{
+    return RXAntennaPower;
 }

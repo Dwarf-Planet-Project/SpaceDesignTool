@@ -88,7 +88,8 @@ public:
                                     double AngularRadius,
                                     double SolarConstant,
                                     double AlbedoConstant,
-                                    double IREnergy);
+                                    double IREnergy,
+                                    double collimatedSolarEnergy);
 
     PlanetThermalInfo getPlanetThermalProperties();
 
@@ -129,6 +130,12 @@ public:
     void setMaximumSCElectronicsHeatInDaylight(double SCElectronicsHeat);
     double getMaximumSCElectronicsHeatInDaylight();
 
+    void setMinimumSCElectronicsHeatInDaylight(double SCElectronicsHeat);
+    double getMinimumSCElectronicsHeatInDaylight();
+
+    void setMaximumSCElectronicsHeatInEclipse(double SCElectronicsHeat);
+    double getMaximumSCElectronicsHeatInEclipse();
+
     void CalculateAndSetSCTemperatureRange();
     void setMinimumSCTemperature(double temperature);
 //    void CalculateAndSetMinimumSCTemperature();
@@ -137,6 +144,9 @@ public:
 //    void CalculateAndSetMaximumSCTemperature();
     void setMaximumSCTemperature(double temperature);
     double getMaximumSCTemperature();
+
+    void setMinimumSCTempWithRadiatorOrHeater(double temp);
+    void setMaximumSCTempWithRadiatorOrHeater(double temp) ;
 
     double getMinimumSCTempWithRadiatorOrHeater() ;
     double getMaximumSCTempWithRadiatorOrHeater() ;
@@ -214,6 +224,8 @@ private:
     double ReceivedPlanetIRHeat;
     double MinimumSCElectronicsHeatInEclipse;
     double MaximumSCElectronicsHeatInDaylight;
+    double MinimumSCElectronicsHeatInDaylight;
+    double MaximumSCElectronicsHeatInEclipse;
 
     double MinimumSCTemperature;
     double MaximumSCTemperature;

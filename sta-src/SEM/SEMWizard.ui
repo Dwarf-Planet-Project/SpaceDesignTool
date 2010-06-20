@@ -612,46 +612,6 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_29">
-         <property name="text">
-          <string>Length [m]</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="PayladLengthLineEdit">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>0</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_30">
-         <property name="text">
-          <string>Height [m]</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="PayloadHeightLineEdit">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>0</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
        <item row="3" column="0">
         <widget class="QLabel" name="label_28">
          <property name="text">
@@ -669,6 +629,46 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="PayladLengthLineEdit">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="PayloadHeightLineEdit">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_29">
+         <property name="text">
+          <string>Length [m]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_30">
+         <property name="text">
+          <string>Height [m]</string>
          </property>
         </widget>
        </item>
@@ -1162,46 +1162,6 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_47">
-         <property name="text">
-          <string>Length [m]</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="PayladLengthLineEdit_2">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>0</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_48">
-         <property name="text">
-          <string>Height [m]</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="PayloadHeightLineEdit_2">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>0</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
        <item row="3" column="0">
         <widget class="QLabel" name="label_49">
          <property name="text">
@@ -1219,6 +1179,46 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="PayloadHeightLineEdit_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="PayladLengthLineEdit_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_47">
+         <property name="text">
+          <string>Length [m]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_48">
+         <property name="text">
+          <string>Height [m]</string>
          </property>
         </widget>
        </item>
@@ -1712,15 +1712,15 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_63">
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_65">
          <property name="text">
-          <string>Length [m]</string>
+          <string>Mass[kg]</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="PayladLengthLineEdit_3">
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="PayloadMassLineEdit_3">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -1733,13 +1733,20 @@
         </widget>
        </item>
        <item row="2" column="0">
+        <widget class="QLabel" name="label_63">
+         <property name="text">
+          <string>Length [m]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
         <widget class="QLabel" name="label_64">
          <property name="text">
           <string>Height [m]</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
+       <item row="1" column="1">
         <widget class="QLineEdit" name="PayloadHeightLineEdit_3">
          <property name="enabled">
           <bool>true</bool>
@@ -1752,15 +1759,8 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_65">
-         <property name="text">
-          <string>Mass[kg]</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="PayloadMassLineEdit_3">
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="PayladLengthLineEdit_3">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -2250,14 +2250,40 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_77">
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_79">
          <property name="text">
-          <string>Length [m]</string>
+          <string>Mass[kg]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="PayloadMassLineEdit_4">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
         </widget>
        </item>
        <item row="1" column="1">
+        <widget class="QLineEdit" name="PayloadHeightLineEdit_4">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
         <widget class="QLineEdit" name="PayladLengthLineEdit_4">
          <property name="enabled">
           <bool>true</bool>
@@ -2271,42 +2297,16 @@
         </widget>
        </item>
        <item row="2" column="0">
+        <widget class="QLabel" name="label_77">
+         <property name="text">
+          <string>Length [m]</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
         <widget class="QLabel" name="label_78">
          <property name="text">
           <string>Height [m]</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="PayloadHeightLineEdit_4">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>0</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_79">
-         <property name="text">
-          <string>Mass[kg]</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="PayloadMassLineEdit_4">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>0</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
         </widget>
        </item>
@@ -3025,7 +3025,7 @@
     <item row="1" column="0">
      <widget class="QLabel" name="label_37">
       <property name="text">
-       <string>Antenna Efficiency</string>
+       <string>TX Antenna Efficiency [%]</string>
       </property>
      </widget>
     </item>
@@ -3042,7 +3042,7 @@
     <item row="2" column="0">
      <widget class="QLabel" name="label_38">
       <property name="text">
-       <string>Antenna Gain</string>
+       <string>TX Antenna Gain [dB]</string>
       </property>
      </widget>
     </item>
@@ -3082,6 +3082,40 @@
     </item>
     <item row="4" column="1">
      <widget class="QLineEdit" name="TXPowerLineEdit">
+      <property name="text">
+       <string>0</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="label_5">
+      <property name="text">
+       <string>RX Antenna Gain [dB]</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1">
+     <widget class="QLineEdit" name="RXAntennaGainLineEdit">
+      <property name="text">
+       <string>0</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLabel" name="label_32">
+      <property name="text">
+       <string>RX Power [W]</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="1">
+     <widget class="QLineEdit" name="RXPowerLineEdit">
       <property name="text">
        <string>0</string>
       </property>
@@ -3141,6 +3175,113 @@
    </layout>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>PlanetNameComboBox</tabstop>
+  <tabstop>MissionStartTimeDateTimeEdit</tabstop>
+  <tabstop>MissionEndTimeDateTimeEdit</tabstop>
+  <tabstop>SemimajorAxisLineEdit</tabstop>
+  <tabstop>EccentricityLineEdit</tabstop>
+  <tabstop>InclinationLineEdit</tabstop>
+  <tabstop>TrueAnomalyLineEdit</tabstop>
+  <tabstop>ArgumentOfPeriapsisLineEdit</tabstop>
+  <tabstop>RAANLineEdit</tabstop>
+  <tabstop>NewPayloadRadioButton</tabstop>
+  <tabstop>DatabasePayloadRadioButton</tabstop>
+  <tabstop>PayloadSetComboBox</tabstop>
+  <tabstop>PayloadNameLineEdit</tabstop>
+  <tabstop>PayloadWidthLineEdit</tabstop>
+  <tabstop>PayloadHeightLineEdit</tabstop>
+  <tabstop>PayladLengthLineEdit</tabstop>
+  <tabstop>PayloadMassLineEdit</tabstop>
+  <tabstop>PayloadResolutionLineEdit</tabstop>
+  <tabstop>PayloadWavelengthLineEdit</tabstop>
+  <tabstop>NumberOfPixelLineEdit</tabstop>
+  <tabstop>PayloadDataRateLineEdit</tabstop>
+  <tabstop>PayloadMinTempLineEdit</tabstop>
+  <tabstop>PayloadMaxTempLineEdit</tabstop>
+  <tabstop>PayloadPowerEclipseLineEdit</tabstop>
+  <tabstop>PayloadPowerDaylightLineEdit</tabstop>
+  <tabstop>PayloadPowerTimeEclipseLineEdit</tabstop>
+  <tabstop>PayloadPowerTimeDaylightLineEdit</tabstop>
+  <tabstop>NumberOfPayloadCheckBox</tabstop>
+  <tabstop>NewPayloadRadioButton_2</tabstop>
+  <tabstop>DatabasePayloadRadioButton_2</tabstop>
+  <tabstop>PayloadSetComboBox_2</tabstop>
+  <tabstop>PayloadNameLineEdit_2</tabstop>
+  <tabstop>PayloadWidthLineEdit_2</tabstop>
+  <tabstop>PayloadHeightLineEdit_2</tabstop>
+  <tabstop>PayladLengthLineEdit_2</tabstop>
+  <tabstop>PayloadMassLineEdit_2</tabstop>
+  <tabstop>PayloadWavelengthLineEdit_2</tabstop>
+  <tabstop>MissionTypeComboBox</tabstop>
+  <tabstop>NumberOfPixelLineEdit_2</tabstop>
+  <tabstop>PayloadDataRateLineEdit_2</tabstop>
+  <tabstop>PayloadMinTempLineEdit_2</tabstop>
+  <tabstop>PayloadMaxTempLineEdit_2</tabstop>
+  <tabstop>PayloadPowerEclipseLineEdit_2</tabstop>
+  <tabstop>PayloadPowerDaylightLineEdit_2</tabstop>
+  <tabstop>PayloadPowerTimeEclipseLineEdit_2</tabstop>
+  <tabstop>PayloadPowerTimeDaylightLineEdit_2</tabstop>
+  <tabstop>NumberOfPayloadCheckBox_2</tabstop>
+  <tabstop>NewPayloadRadioButton_3</tabstop>
+  <tabstop>DatabasePayloadRadioButton_3</tabstop>
+  <tabstop>PayloadSetComboBox_3</tabstop>
+  <tabstop>PayloadNameLineEdit_3</tabstop>
+  <tabstop>PayloadWidthLineEdit_3</tabstop>
+  <tabstop>PayloadHeightLineEdit_3</tabstop>
+  <tabstop>PayladLengthLineEdit_3</tabstop>
+  <tabstop>PayloadMassLineEdit_3</tabstop>
+  <tabstop>PayloadResolutionLineEdit_2</tabstop>
+  <tabstop>PayloadResolutionLineEdit_3</tabstop>
+  <tabstop>PayloadWavelengthLineEdit_3</tabstop>
+  <tabstop>NumberOfPixelLineEdit_3</tabstop>
+  <tabstop>PayloadDataRateLineEdit_3</tabstop>
+  <tabstop>PayloadMinTempLineEdit_3</tabstop>
+  <tabstop>PayloadMaxTempLineEdit_3</tabstop>
+  <tabstop>PayloadPowerEclipseLineEdit_3</tabstop>
+  <tabstop>PayloadPowerDaylightLineEdit_3</tabstop>
+  <tabstop>PayloadPowerTimeEclipseLineEdit_3</tabstop>
+  <tabstop>PayloadPowerTimeDaylightLineEdit_3</tabstop>
+  <tabstop>NumberOfPayloadCheckBox_3</tabstop>
+  <tabstop>NewPayloadRadioButton_4</tabstop>
+  <tabstop>DatabasePayloadRadioButton_4</tabstop>
+  <tabstop>PayloadSetComboBox_4</tabstop>
+  <tabstop>PayloadNameLineEdit_4</tabstop>
+  <tabstop>PayloadWidthLineEdit_4</tabstop>
+  <tabstop>PayloadMassLineEdit_4</tabstop>
+  <tabstop>PayloadHeightLineEdit_4</tabstop>
+  <tabstop>PayladLengthLineEdit_4</tabstop>
+  <tabstop>PayloadResolutionLineEdit_4</tabstop>
+  <tabstop>PayloadWavelengthLineEdit_4</tabstop>
+  <tabstop>NumberOfPixelLineEdit_4</tabstop>
+  <tabstop>PayloadDataRateLineEdit_4</tabstop>
+  <tabstop>PayloadMinTempLineEdit_4</tabstop>
+  <tabstop>PayloadMaxTempLineEdit_4</tabstop>
+  <tabstop>PayloadPowerEclipseLineEdit_4</tabstop>
+  <tabstop>PayloadPowerDaylightLineEdit_4</tabstop>
+  <tabstop>PayloadPowerTimeEclipseLineEdit_4</tabstop>
+  <tabstop>PayloadPowerTimeDaylightLineEdit_4</tabstop>
+  <tabstop>NumberOfPayloadCheckBox_4</tabstop>
+  <tabstop>BatteryTypeComboBox</tabstop>
+  <tabstop>SolarCellTypeComboBox</tabstop>
+  <tabstop>SCShapeComboBox</tabstop>
+  <tabstop>StructuralMaterialComboBox</tabstop>
+  <tabstop>ColdFaceCoatingComboBox</tabstop>
+  <tabstop>ColdFaceEmmissivityLineEdit</tabstop>
+  <tabstop>ColdFaceAbsorptivityLineEdit</tabstop>
+  <tabstop>HotFaceCoatingComboBox</tabstop>
+  <tabstop>HotFaceEmmissivityLineEdit</tabstop>
+  <tabstop>HotFaceAbsorptivityLineEdit</tabstop>
+  <tabstop>CommLinDurationPercentageLineEdit</tabstop>
+  <tabstop>AntennaEfficiencyLineEdit</tabstop>
+  <tabstop>AntennaGainLineEdit</tabstop>
+  <tabstop>TXFrequencyLineEdit</tabstop>
+  <tabstop>TXPowerLineEdit</tabstop>
+  <tabstop>RXAntennaGainLineEdit</tabstop>
+  <tabstop>RXPowerLineEdit</tabstop>
+  <tabstop>NumberOfNoLinkOrbitLineEdit</tabstop>
+  <tabstop>CodingTypeComboBox</tabstop>
+ </tabstops>
  <resources>
   <include location="../../iconary/sta-icons.qrc"/>
  </resources>

@@ -48,6 +48,8 @@ ThermalSubsystem::ThermalSubsystem()
     ReceivedPlanetIRHeat = 0.0;
     MinimumSCElectronicsHeatInEclipse = 0.0;
     MaximumSCElectronicsHeatInDaylight = 0.0;
+    MinimumSCElectronicsHeatInDaylight = 0.0;
+    MaximumSCElectronicsHeatInEclipse = 0.0;
 
     MinimumSCTemperature = 0.0;
     MaximumSCTemperature = 0.0;
@@ -100,7 +102,8 @@ void ThermalSubsystem::setPlanetThermalProperties(QString PName,
                                                   double AngularRadius,
                                                   double SolarConstant,
                                                   double AlbedoConstant,
-                                                  double IREnergy)
+                                                  double IREnergy,
+                                                  double collimatedSolarEnergy)
 {
 
     PlanetThermalProperties.Planet = PName;
@@ -116,7 +119,11 @@ void ThermalSubsystem::setPlanetThermalProperties(QString PName,
     qDebug()<<PlanetThermalProperties.AlbedoConstantOfPlanet;
 
     PlanetThermalProperties.PlanetIREnergy = IREnergy;
-    qDebug()<<PlanetThermalProperties.PlanetIREnergy;
+    qDebug()<<"PlanetIR"<<PlanetThermalProperties.PlanetIREnergy;
+
+    PlanetThermalProperties.CollimatedSolarEnergyOfPlanet =
+            collimatedSolarEnergy;
+    qDebug()<<"PlanetThermalProperties.CollimatedSolarEnergyOfPlanet"<<PlanetThermalProperties.CollimatedSolarEnergyOfPlanet;
 
 }
 
@@ -358,12 +365,31 @@ double ThermalSubsystem::getMaximumSCElectronicsHeatInDaylight()
     return  MaximumSCElectronicsHeatInDaylight;
 }
 
+void ThermalSubsystem::setMinimumSCElectronicsHeatInDaylight(double SCElectronicsHeat)
+{
+    MinimumSCElectronicsHeatInDaylight = SCElectronicsHeat;
+}
+double ThermalSubsystem::getMinimumSCElectronicsHeatInDaylight()
+{
+    return  MinimumSCElectronicsHeatInDaylight;
+}
+
+void ThermalSubsystem::setMaximumSCElectronicsHeatInEclipse(double SCElectronicsHeat)
+{
+     MaximumSCElectronicsHeatInEclipse = SCElectronicsHeat;
+}
+double ThermalSubsystem::getMaximumSCElectronicsHeatInEclipse()
+{
+    return  MaximumSCElectronicsHeatInEclipse;
+}
+
 void ThermalSubsystem::CalculateAndSetSCTemperatureRange()
 {
     //to make sure that following necessary properties are calculated
     CalculateAndSetPlanetIRHeat();
 
-    MinimumSCTemperature = pow((
+    double tempMinimumSCTemperature = 0.0;
+    tempMinimumSCTemperature = pow((
             (ReceivedPlanetIRHeat + MinimumSCElectronicsHeatInEclipse)
             / (TotalAreaOfColdFace
                 * STEFAN_BOLTZMANN_CONSTANT
@@ -377,7 +403,8 @@ void ThermalSubsystem::CalculateAndSetSCTemperatureRange()
     CalculateAndSetSolarFluxHeat();
     CalculateAndSetAlbedoHeat();
 
-    MaximumSCTemperature = pow((
+    double tempMaximumSCTemperature = 0.0;
+    tempMaximumSCTemperature = pow((
             (ReceivedPlanetIRHeat
              + SolarFluxHeat
              + AlbedoHeat
@@ -391,34 +418,95 @@ void ThermalSubsystem::CalculateAndSetSCTemperatureRange()
                * HotFaceCoatingProperties.Emmissivity))
                                ,0.25);
 
-    //temperature with the efect of Heater and radiator
-    MinimumSCTempWithRadiatorOrHeater = pow((
-            (ReceivedPlanetIRHeat
-             + MinimumSCElectronicsHeatInEclipse
-             + NeededHeater
-             - NeededRadiator)
-                / (TotalAreaOfColdFace
-                   * STEFAN_BOLTZMANN_CONSTANT
-                   * ColdFaceCoatingProperties.Emmissivity
-                       + TotalAreaOfHotFace
-                           * STEFAN_BOLTZMANN_CONSTANT
-                           * HotFaceCoatingProperties.Emmissivity))
-                                            ,0.25);
+    if (tempMaximumSCTemperature >= tempMinimumSCTemperature)
+    {
+        MaximumSCTemperature = tempMaximumSCTemperature ;
+        MinimumSCTemperature = tempMinimumSCTemperature;
 
-    MaximumSCTempWithRadiatorOrHeater = pow((
-            (ReceivedPlanetIRHeat
-             + SolarFluxHeat
-             + AlbedoHeat
-             + MaximumSCElectronicsHeatInDaylight
-             + NeededHeater
-             - NeededRadiator)
-                / (TotalAreaOfColdFace
-                   * STEFAN_BOLTZMANN_CONSTANT
-                   * ColdFaceCoatingProperties.Emmissivity
+        //temperature with the efect of Heater and radiator
+        MinimumSCTempWithRadiatorOrHeater = pow((
+                (ReceivedPlanetIRHeat
+                 + MinimumSCElectronicsHeatInEclipse
+                 + NeededHeater
+                 - NeededRadiator)
+                    / (TotalAreaOfColdFace
+                       * STEFAN_BOLTZMANN_CONSTANT
+                       * ColdFaceCoatingProperties.Emmissivity
+                           + TotalAreaOfHotFace
+                               * STEFAN_BOLTZMANN_CONSTANT
+                               * HotFaceCoatingProperties.Emmissivity))
+                                                ,0.25);
+
+        MaximumSCTempWithRadiatorOrHeater = pow((
+                (ReceivedPlanetIRHeat
+                 + SolarFluxHeat
+                 + AlbedoHeat
+                 + MaximumSCElectronicsHeatInDaylight
+                 + NeededHeater
+                 - NeededRadiator)
+                    / (TotalAreaOfColdFace
+                       * STEFAN_BOLTZMANN_CONSTANT
+                       * ColdFaceCoatingProperties.Emmissivity
+                           + TotalAreaOfHotFace
+                               * STEFAN_BOLTZMANN_CONSTANT
+                               * HotFaceCoatingProperties.Emmissivity))
+                                                ,0.25);
+    }
+    else
+    {
+        MaximumSCTemperature = pow((
+                    (ReceivedPlanetIRHeat + MaximumSCElectronicsHeatInEclipse)
+                    / (TotalAreaOfColdFace
+                        * STEFAN_BOLTZMANN_CONSTANT
+                        * ColdFaceCoatingProperties.Emmissivity
                        + TotalAreaOfHotFace
-                           * STEFAN_BOLTZMANN_CONSTANT
-                           * HotFaceCoatingProperties.Emmissivity))
-                                            ,0.25);
+                        * STEFAN_BOLTZMANN_CONSTANT
+                        * HotFaceCoatingProperties.Emmissivity))
+                                       ,0.25);
+        MinimumSCTemperature = pow((
+                    (ReceivedPlanetIRHeat
+                     + SolarFluxHeat
+                     + AlbedoHeat
+                     + MinimumSCElectronicsHeatInDaylight)
+                    / (TotalAreaOfColdFace
+                       * STEFAN_BOLTZMANN_CONSTANT
+                       * ColdFaceCoatingProperties.Emmissivity
+                       +
+                       TotalAreaOfHotFace
+                       * STEFAN_BOLTZMANN_CONSTANT
+                       * HotFaceCoatingProperties.Emmissivity))
+                                       ,0.25);
+
+        //temperature with the efect of Heater and radiator
+        MaximumSCTempWithRadiatorOrHeater = pow((
+                (ReceivedPlanetIRHeat
+                 + MaximumSCElectronicsHeatInEclipse
+                 + NeededHeater
+                 - NeededRadiator)
+                    / (TotalAreaOfColdFace
+                       * STEFAN_BOLTZMANN_CONSTANT
+                       * ColdFaceCoatingProperties.Emmissivity
+                           + TotalAreaOfHotFace
+                               * STEFAN_BOLTZMANN_CONSTANT
+                               * HotFaceCoatingProperties.Emmissivity))
+                                                ,0.25);
+
+        MinimumSCTempWithRadiatorOrHeater = pow((
+                (ReceivedPlanetIRHeat
+                 + SolarFluxHeat
+                 + AlbedoHeat
+                 + MinimumSCElectronicsHeatInDaylight
+                 + NeededHeater
+                 - NeededRadiator)
+                    / (TotalAreaOfColdFace
+                       * STEFAN_BOLTZMANN_CONSTANT
+                       * ColdFaceCoatingProperties.Emmissivity
+                           + TotalAreaOfHotFace
+                               * STEFAN_BOLTZMANN_CONSTANT
+                               * HotFaceCoatingProperties.Emmissivity))
+                                                ,0.25);
+    }
+
 
     qDebug()<<"MinimumSCTemperature"<<MinimumSCTemperature;
     qDebug()<<"ReceivedPlanetIRHeat"<<ReceivedPlanetIRHeat;
@@ -467,6 +555,16 @@ void ThermalSubsystem::setMaximumSCTemperature(double temperature)
 double ThermalSubsystem::getMaximumSCTemperature()
 {
     return MaximumSCTemperature;
+}
+
+void ThermalSubsystem::setMaximumSCTempWithRadiatorOrHeater(double temp)
+{
+    MaximumSCTempWithRadiatorOrHeater = temp;
+}
+
+void ThermalSubsystem::setMinimumSCTempWithRadiatorOrHeater(double temp)
+{
+    MinimumSCTempWithRadiatorOrHeater = temp;
 }
 
 double ThermalSubsystem::getMaximumSCTempWithRadiatorOrHeater()
@@ -625,7 +723,7 @@ void ThermalSubsystem::CreateTemperatureTimeFunction()
                         ),0.25);
 
         TemperatureTimeStream << mjd<<"\t";
-        TemperatureTimeStream << temp<<"\t";
+        TemperatureTimeStream << temp<<"\n";
 
         ConsumedPowerTimeStream >> mjd;
         ConsumedPowerTimeStream >> powerConsumption;
@@ -709,15 +807,23 @@ double ThermalSubsystem::getNeededRadiator()
 
 bool ThermalSubsystem::IsPayloadInAlert(int Index)
 {
-    if ( (PayloadThermalDetails[Index].MaximumTemperature
-            > MaximumSCTempWithRadiatorOrHeater)||
-         (PayloadThermalDetails[Index].MinimumTemperature
-            < MinimumSCTempWithRadiatorOrHeater) )
+    if (PayloadThermalDetails[Index].Name == "")
     {
-        PayloadThermalDetails[Index].Alert = true;
+        return false;
     }
+    else
+    {
+        if ( (PayloadThermalDetails[Index].MaximumTemperature
+                < MaximumSCTempWithRadiatorOrHeater)||
+             (PayloadThermalDetails[Index].MinimumTemperature
+                > MinimumSCTempWithRadiatorOrHeater) )
+        {
+            PayloadThermalDetails[Index].Alert = true;
+        }
+        else PayloadThermalDetails[Index].Alert = false;
 
-    return PayloadThermalDetails[Index].Alert;
+        return PayloadThermalDetails[Index].Alert;
+    }
 }
 
 void ThermalSubsystem::setAreaOfHotFace(double Area)
@@ -782,12 +888,12 @@ void ThermalSubsystem::setThermalSubsystemMass(double PayloadMass)
     qDebug()<<"HotFaceCoatingProperties.Type" <<HotFaceCoatingProperties.Type;
     qDebug()<<"*************---ColdFaceCoatingProperties.Type" <<ColdFaceCoatingProperties.Type;
 
-    qDebug()<<(!(HotFaceCoatingProperties.Type == "No_Coating"));
-    qDebug()<< (!(HotFaceCoatingProperties.Type == "UNDEFINED"));
-    qDebug()<< (!(HotFaceCoatingProperties.Type == ""));
-    qDebug()<<(!(ColdFaceCoatingProperties.Type == "No_Coating"));
-    qDebug()<< (!(ColdFaceCoatingProperties.Type == "UNDEFINED"));
-    qDebug()<< (!(ColdFaceCoatingProperties.Type == "")        ) ;
+//    qDebug()<<(!(HotFaceCoatingProperties.Type == "No_Coating"));
+//    qDebug()<< (!(HotFaceCoatingProperties.Type == "UNDEFINED"));
+//    qDebug()<< (!(HotFaceCoatingProperties.Type == ""));
+//    qDebug()<<(!(ColdFaceCoatingProperties.Type == "No_Coating"));
+//    qDebug()<< (!(ColdFaceCoatingProperties.Type == "UNDEFINED"));
+//    qDebug()<< (!(ColdFaceCoatingProperties.Type == "")        ) ;
 
     //set if it is active or passive control, mass will be changed according to this
     //check if it is passive

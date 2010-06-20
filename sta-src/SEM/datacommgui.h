@@ -66,7 +66,7 @@ protected slots:
 
 	void on_DataCommCalculatePushButton_clicked();
 	void on_DataCommSavePushButton_clicked();
-	void on_DataCommClosePushButton_clicked();
+//	void on_DataCommClosePushButton_clicked();
 	
 private:
         SemMain * SCVirtual;

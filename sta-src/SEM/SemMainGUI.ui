@@ -2,25 +2,26 @@
 <ui version="4.0">
  <class>SemMainGUI</class>
  <widget class="QDialog" name="SemMainGUI">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1120</width>
+    <height>621</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_12">
    <item row="1" column="2">
-    <widget class="QPushButton" name="SemMainGUICalculatePushButton">
-     <property name="text">
-      <string>Calculate</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="3">
     <widget class="QPushButton" name="SemMainGUISavePushButton">
      <property name="text">
       <string>Save</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="5">
+   <item row="0" column="0" colspan="4">
     <widget class="QTabWidget" name="MainSemTabWidget">
      <property name="enabled">
       <bool>true</bool>
@@ -291,6 +292,9 @@
           </item>
           <item row="0" column="1">
            <widget class="QDateTimeEdit" name="MissionStartDateTimeEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="displayFormat">
              <string>dd/MM/yyyy HH:mm:ss</string>
             </property>
@@ -314,6 +318,9 @@
           </item>
           <item row="1" column="1">
            <widget class="QDateTimeEdit" name="MissionEndDateTimeEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="displayFormat">
              <string>dd/MM/yyyy HH:mm:ss</string>
             </property>
@@ -337,6 +344,9 @@
           </item>
           <item row="2" column="1">
            <widget class="QLineEdit" name="SemiMajorAxisLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -363,6 +373,9 @@
           </item>
           <item row="3" column="1">
            <widget class="QLineEdit" name="EccentricityLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -389,6 +402,9 @@
           </item>
           <item row="4" column="1">
            <widget class="QLineEdit" name="InclinationLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -415,6 +431,9 @@
           </item>
           <item row="5" column="1">
            <widget class="QLineEdit" name="ArgumentOfPerigeeLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -441,6 +460,9 @@
           </item>
           <item row="6" column="1">
            <widget class="QLineEdit" name="RAANLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -457,57 +479,10 @@
            </widget>
           </item>
           <item row="7" column="1">
-           <widget class="QComboBox" name="PlanetNameComboBox">
-            <item>
-             <property name="text">
-              <string>Select Planet</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Mercury</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Venus</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Earth</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Mars</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Jupiter</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Saturn</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Uranus</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Neptune</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Pluto</string>
-             </property>
-            </item>
+           <widget class="QLineEdit" name="PlanetNameLineEdit">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
            </widget>
           </item>
          </layout>
@@ -1018,7 +993,7 @@
            </spacer>
           </item>
           <item row="7" column="0">
-           <widget class="QComboBox" name="PowerGraphComboBox_2">
+           <widget class="QComboBox" name="PowerGraphComboBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1042,7 +1017,7 @@
             </item>
             <item>
              <property name="text">
-              <string>S/C Average Ununsed Power - Time</string>
+              <string>S/C Average Net Power - Time</string>
              </property>
             </item>
            </widget>
@@ -1065,7 +1040,7 @@
         </widget>
        </item>
        <item row="1" column="2">
-        <widget class="QGroupBox" name="groupBox_16">
+        <widget class="QGroupBox" name="LauncherGroupBox">
          <property name="maximumSize">
           <size>
            <width>370</width>
@@ -1227,13 +1202,6 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="2">
-           <widget class="QPushButton" name="LauncherDetailsButton">
-            <property name="text">
-             <string>Details</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </widget>
        </item>
@@ -1245,7 +1213,10 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_11">
        <item row="0" column="0">
-        <widget class="QGroupBox" name="groupBox_17">
+        <widget class="QGroupBox" name="Payload1GroupBox">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="title">
           <string>PAYLOAD 1</string>
          </property>
@@ -1304,6 +1275,9 @@
           </item>
           <item row="3" column="3" colspan="4">
            <widget class="QLineEdit" name="Payload1WidthLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -1330,6 +1304,9 @@
           </item>
           <item row="4" column="3" colspan="4">
            <widget class="QLineEdit" name="Payload1LengthLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -1356,6 +1333,9 @@
           </item>
           <item row="5" column="3" colspan="4">
            <widget class="QLineEdit" name="Payload1HeightLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -1420,6 +1400,9 @@
           </item>
           <item row="7" column="4" colspan="3">
            <widget class="QLineEdit" name="Payload1MassLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -1460,7 +1443,7 @@
           <item row="9" column="5" colspan="2">
            <widget class="QLineEdit" name="Payload1PowerConsumptionInEclipseLineEdit">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="text">
              <string>0</string>
@@ -1488,6 +1471,9 @@
           </item>
           <item row="10" column="5" colspan="2">
            <widget class="QLineEdit" name="Payload1PowerOnTimeEclipseLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -1518,6 +1504,9 @@
           </item>
           <item row="12" column="5" colspan="2">
            <widget class="QLineEdit" name="Payload1PowerConsumptionInDaylightLineEdit">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -1544,6 +1533,9 @@
           </item>
           <item row="13" column="5" colspan="2">
            <widget class="QLineEdit" name="Payload1PowerOnTimeDaylightLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -1647,6 +1639,9 @@
           </item>
           <item row="17" column="5" colspan="2">
            <widget class="QLineEdit" name="Payload1DataRateLineEdit">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -1659,7 +1654,7 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QGroupBox" name="groupBox_18">
+        <widget class="QGroupBox" name="Payload2GroupBox">
          <property name="title">
           <string>PAYLOAD 2</string>
          </property>
@@ -1718,6 +1713,9 @@
           </item>
           <item row="2" column="2" colspan="4">
            <widget class="QLineEdit" name="Payload2WidthLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -1744,6 +1742,9 @@
           </item>
           <item row="3" column="2" colspan="4">
            <widget class="QLineEdit" name="Payload2LengthLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -1770,6 +1771,9 @@
           </item>
           <item row="4" column="2" colspan="4">
            <widget class="QLineEdit" name="Payload2HeightLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -1834,6 +1838,9 @@
           </item>
           <item row="6" column="2" colspan="4">
            <widget class="QLineEdit" name="Payload2MassLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -1874,7 +1881,7 @@
           <item row="8" column="3" colspan="3">
            <widget class="QLineEdit" name="Payload2PowerConsumptionInEclipseLineEdit">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="text">
              <string>0</string>
@@ -1902,6 +1909,9 @@
           </item>
           <item row="9" column="3" colspan="3">
            <widget class="QLineEdit" name="Payload2PowerOnTimeEclipseLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -1932,6 +1942,9 @@
           </item>
           <item row="11" column="3" colspan="3">
            <widget class="QLineEdit" name="Payload2PowerConsumptionInDaylightLineEdit">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -1958,6 +1971,9 @@
           </item>
           <item row="12" column="3" colspan="3">
            <widget class="QLineEdit" name="Payload2PowerOnTimeDaylightLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -2062,7 +2078,7 @@
           <item row="16" column="3" colspan="3">
            <widget class="QLineEdit" name="Payload2DataRateLineEdit">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="text">
              <string>0</string>
@@ -2076,7 +2092,7 @@
         </widget>
        </item>
        <item row="0" column="2">
-        <widget class="QGroupBox" name="groupBox_19">
+        <widget class="QGroupBox" name="Payload3GroupBox">
          <property name="title">
           <string>PAYLOAD 3</string>
          </property>
@@ -2135,6 +2151,9 @@
           </item>
           <item row="2" column="4" colspan="3">
            <widget class="QLineEdit" name="Payload3WidthLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -2161,6 +2180,9 @@
           </item>
           <item row="3" column="4" colspan="3">
            <widget class="QLineEdit" name="Payload3LengthLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -2187,6 +2209,9 @@
           </item>
           <item row="4" column="4" colspan="3">
            <widget class="QLineEdit" name="Payload3HeightLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -2251,6 +2276,9 @@
           </item>
           <item row="6" column="4" colspan="3">
            <widget class="QLineEdit" name="Payload3MassLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -2291,7 +2319,7 @@
           <item row="8" column="4" colspan="3">
            <widget class="QLineEdit" name="Payload3PowerConsumptionInEclipseLineEdit">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="text">
              <string>0</string>
@@ -2319,6 +2347,9 @@
           </item>
           <item row="9" column="4" colspan="3">
            <widget class="QLineEdit" name="Payload3PowerOnTimeEclipseLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -2349,6 +2380,9 @@
           </item>
           <item row="11" column="4" colspan="3">
            <widget class="QLineEdit" name="Payload3PowerConsumptionInDaylightLineEdit">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -2469,7 +2503,7 @@
           <item row="16" column="4" colspan="3">
            <widget class="QLineEdit" name="Payload3DataRateLineEdit">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="text">
              <string>0</string>
@@ -2481,6 +2515,9 @@
           </item>
           <item row="12" column="4" colspan="3">
            <widget class="QLineEdit" name="Payload3PowerOnTimeDaylightLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -2493,7 +2530,7 @@
         </widget>
        </item>
        <item row="0" column="3">
-        <widget class="QGroupBox" name="groupBox_20">
+        <widget class="QGroupBox" name="Payload4GroupBox">
          <property name="title">
           <string>PAYLOAD 4</string>
          </property>
@@ -2552,6 +2589,9 @@
           </item>
           <item row="2" column="3" colspan="3">
            <widget class="QLineEdit" name="Payload4WidthLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="layoutDirection">
              <enum>Qt::RightToLeft</enum>
             </property>
@@ -2578,6 +2618,9 @@
           </item>
           <item row="3" column="3" colspan="3">
            <widget class="QLineEdit" name="Payload4LengthLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="layoutDirection">
              <enum>Qt::RightToLeft</enum>
             </property>
@@ -2604,6 +2647,9 @@
           </item>
           <item row="4" column="3" colspan="3">
            <widget class="QLineEdit" name="Payload4HeightLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="layoutDirection">
              <enum>Qt::RightToLeft</enum>
             </property>
@@ -2668,6 +2714,9 @@
           </item>
           <item row="6" column="3" colspan="3">
            <widget class="QLineEdit" name="Payload4MassLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="layoutDirection">
              <enum>Qt::RightToLeft</enum>
             </property>
@@ -2708,7 +2757,7 @@
           <item row="8" column="3" colspan="3">
            <widget class="QLineEdit" name="Payload4PowerConsumptionInEclipseLineEdit">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="layoutDirection">
              <enum>Qt::RightToLeft</enum>
@@ -2736,6 +2785,9 @@
           </item>
           <item row="9" column="3" colspan="3">
            <widget class="QLineEdit" name="Payload4PowerOnTimeEclipseLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="layoutDirection">
              <enum>Qt::RightToLeft</enum>
             </property>
@@ -2766,6 +2818,9 @@
           </item>
           <item row="11" column="3" colspan="3">
            <widget class="QLineEdit" name="Payload4PowerConsumptionInDaylightLineEdit">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -2792,6 +2847,9 @@
           </item>
           <item row="12" column="3" colspan="3">
            <widget class="QLineEdit" name="Payload4PowerOnTimeDaylightLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="layoutDirection">
              <enum>Qt::RightToLeft</enum>
             </property>
@@ -2896,7 +2954,7 @@
           <item row="16" column="3" colspan="3">
            <widget class="QLineEdit" name="Payload4DataRateLineEdit">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="layoutDirection">
              <enum>Qt::RightToLeft</enum>

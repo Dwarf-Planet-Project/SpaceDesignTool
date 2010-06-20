@@ -203,7 +203,7 @@ void EclipseDuration::StarLightTimeFunction(QList<double> &sampleTimes,
         }
 
         EclipseStarLightStream<<tempEclipse;
-        EclipseStarLightStream<<"\t";
+        EclipseStarLightStream<<"\n";
     }
 
     EclipseStarLightStream<<endl;
@@ -242,7 +242,7 @@ void EclipseDuration::CreateEclipseDetailsFile()
     DetailedReportStream << "Start(mjd)" << "\t\t";
     DetailedReportStream << "End(mjd)" << "\t\t";
     DetailedReportStream << "Duration(s)" << "\t";
-    DetailedReportStream << "#ofSteps"<<"\t";
+    DetailedReportStream << "#ofSteps"<<"\n";
 
     double State;
     double missionStartMjd = 0.0;
@@ -285,7 +285,7 @@ void EclipseDuration::CreateEclipseDetailsFile()
                 DetailedReportStream << MjdToFromEpoch(missionStartMjd,
                                                        missionEndMjd,
                                                        "Seconds") << "\t";
-                DetailedReportStream << (numberOfStepsInState -1) << "\t";
+                DetailedReportStream << (numberOfStepsInState -1) << "\n";
 
                 missionStartMjd = missionEndMjd;
                 numberOfStepsInState = 1;
@@ -324,7 +324,7 @@ void EclipseDuration::CreateEclipseDetailsFile()
                 DetailedReportStream << MjdToFromEpoch(missionStartMjd,
                                                        missionEndMjd,
                                                        "Seconds") << "\t";
-                DetailedReportStream << (numberOfStepsInState -1) << "\t";
+                DetailedReportStream << (numberOfStepsInState -1) << "\n";
 
                 missionStartMjd = missionEndMjd;
                 numberOfStepsInState = 1;

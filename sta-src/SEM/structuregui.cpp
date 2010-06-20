@@ -150,6 +150,13 @@ void StructureGUI::on_StructureGUISCShapeComboBox_activated(const QString&)
     StructureGUISCLengthLineEdit->setText(QString::number
          (SCVirtual->getNewSCStructure()->getSpacecraftDimension().z()));
 
+    //refresh the mass the structure subsystems with the defined material
+    StructureSubsystemMassLineEdit->setText
+            (QString::number(SCVirtual->getNewSCStructure()->getStructureSubsystemMass()));
+    //refresh the entire SC mass
+    StructureGUISCMassLineEdit->setText
+            (QString::number(SCVirtual->getNewSCStructure()->getSCMass()));
+
     //Calculate and set SecondMoment of ýnertia and display on GUI
     SCVirtual->getNewSCStructure()->CalculateAndSetSecondMomentsOfArea();
 
@@ -208,6 +215,9 @@ void StructureGUI::on_StructureGUIMaterialComboBox_activated(const QString &)
     //refresh the mass thestructure subsystems with the defined material
     StructureSubsystemMassLineEdit->setText
             (QString::number(SCVirtual->getNewSCStructure()->getStructureSubsystemMass()));
+    //refresh the entire SC mass
+    StructureGUISCMassLineEdit->setText
+            (QString::number(SCVirtual->getNewSCStructure()->getSCMass()));
 }
 
 void StructureGUI::on_StructureGUISavePushButton_clicked()

@@ -162,6 +162,9 @@ void SemMain::PassPayloadOutputParameters()
                     * SCMissionDetails.getAverageDaylightDuration());
     }
 
+    NewSCDataHandling.setOBDHSubsystemMass
+            (NewSCStructure.getTotalPayloadMass());
+
     //make possible structural computations
     NewSCStructure.CalculateAndSetSCVolume();
     NewSCStructure.CalculateAndSetSCMass();
@@ -175,7 +178,7 @@ void SemMain::PassPayloadOutputParameters()
 void SemMain::PassPowerSubsystemOutputParameters()
 {
     //to Structure Subsystem
-    NewSCPower.CalculateAndSetPowerSubsystemMass();
+//    NewSCPower.CalculateAndSetPowerSubsystemMass();
     NewSCStructure.setPowerSubsystemMass
             (NewSCPower.getPowersubsystemMass());
 
@@ -187,6 +190,10 @@ void SemMain::PassPowerSubsystemOutputParameters()
             (NewSCPower.getMaximumPowerConsumptionInDaylight());
     NewSCThermal.setMinimumSCElectronicsHeatInEclipse
             (NewSCPower.getMinimumPowerConsumptionInEclipse());
+    NewSCThermal.setMaximumSCElectronicsHeatInEclipse
+            (NewSCPower.getMaximumPowerConsumptionInEclipse());
+    NewSCThermal.setMinimumSCElectronicsHeatInDaylight
+            (NewSCPower.getMinimumPowerConsumptionInDaylight());
 
 
         qDebug()<<"powersubsystem mass"<< NewSCPower.getPowersubsystemMass();
@@ -231,12 +238,14 @@ void SemMain::PassStructureSubsystemOutputParameters()
 void SemMain::PassTTCSubsystemOutputParameters()
 {
     //to Power subsystem
-    NewSCPower.setTTCSubsystemPower(NewSCCommunication.getTTCSubsystemPower());
+    NewSCPower.setTTCSubsystemPower(NewSCCommunication.getAntennaPower());
     NewSCPower.SolarArrays.CalculateSAEOLPower();
 
     //to Structure Subsystem
     NewSCStructure.setTTCSubsystemVolume
             (NewSCCommunication.getTTCSubsystemVolume());
+    NewSCStructure.setTTCSubsystemMass
+            (NewSCCommunication.getTTCSubsystemMass());
 }
 
 void SemMain::PassMissionDetailsOutputParameters()
@@ -247,7 +256,8 @@ void SemMain::PassMissionDetailsOutputParameters()
              SCMissionDetails.getPlanetProperties()->PlanetAngularRadius,
              SCMissionDetails.getPlanetProperties()->SolarConstantOfPlanet,
              SCMissionDetails.getPlanetProperties()->AlbedoConstantOfPlanet,
-             SCMissionDetails.getPlanetProperties()->PlanetIREnergy);
+             SCMissionDetails.getPlanetProperties()->PlanetIREnergy,
+             SCMissionDetails.getPlanetProperties()->CollimatedSolarEnergyOfPlanet);
 
     //to Power Subsystem
     NewSCPower.SolarArrays.setSolarConstant
@@ -276,16 +286,20 @@ void SemMain::PassMissionDetailsOutputParameters()
 void SemMain::PassOBDHSubsystemOutputParameters()
 {
     //to structure Subsystem
-    NewSCDataHandling.setOBDHSubsystemMass
-            (NewSCStructure.getPayloadStructure()->PayloadMass);
     NewSCStructure.setOBDHSubsystemMass
             (NewSCDataHandling.getOBDHSubsystemMass());
+    NewSCStructure.setOBDHSubsystemVolume
+            (NewSCDataHandling.getOBDHSubsystemVolume());
 
     //to power subsystem
-    NewSCPower.CalculateAndSetTotalSCPower();
-    NewSCDataHandling.setOBDHSubsystemPower
-            (NewSCPower.getSCPower());
+//    NewSCPower.CalculateAndSetTotalSCPower();
+//    NewSCDataHandling.setOBDHSubsystemPower
+//            (NewSCPower.getSCPower());
     NewSCPower.setOBDHSubsystemPower
             (NewSCDataHandling.getOBDHSubsystemPower());
     NewSCPower.SolarArrays.CalculateSAEOLPower();
+
+    //to TTC Subsystem
+    NewSCCommunication.setMemorySizeForPayloads
+            (NewSCDataHandling.getMemorySizeForPayloads());
 }

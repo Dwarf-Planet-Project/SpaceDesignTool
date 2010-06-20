@@ -140,11 +140,11 @@ void CSolarArray::CalculateSAEOLPower()
         double PathEfficiencyDaylight = 0.85;
 
         CSolarArray::SAEOLPower =
-                ((PayloadWattHourInEclipse * 3600 + SystemPower * EclipseDuration)
+                ((PayloadWattHourInEclipse + SystemPower * EclipseDuration / 3600)
                   / PathEfficiencyEclipse
-                   + (PayloadWattHourInDaylight * 3600 + SystemPower * DaylightDuration)
+                   + (PayloadWattHourInDaylight + SystemPower * DaylightDuration / 3600)
                   / PathEfficiencyDaylight)
-                 / DaylightDuration;
+                 / (DaylightDuration / 3600);
 
         qDebug()<<"SAEOLPower"<<SAEOLPower;
         qDebug()<<"PayloadWattHourInEclipse"<<PayloadWattHourInEclipse;
@@ -195,7 +195,6 @@ void CSolarArray::setSAMass(double mass)
 
 double CSolarArray::getSAMass()
 {
-    CalculateSAMass();
     return SAMass;
 }
 
@@ -210,9 +209,13 @@ void CSolarArray::CalculatePCUMass()
     PCUMass = SAEOLPower * (0.02 + 0.025);
 }
 
-double CSolarArray::getPCUMass()
+void CSolarArray::setPCUMass(double mass)
 {
-    CalculatePCUMass();
+   PCUMass = mass;
+}
+
+double CSolarArray::getPCUMass()
+{    
     return PCUMass;
 }
 
@@ -333,6 +336,8 @@ CBattery::CBattery()
     BVolume = 0.0;
     NumberOfBatteries = 0;
 
+    SystemPower = 0.0;
+
     EclipseDuration = 0.0;
     MissionDuration = 0.0;
     DaylightDuration = 0.0;
@@ -408,10 +413,12 @@ BatteryType CBattery::getBatteryProperties()
 void CBattery::CalculateAndSetBMass()
 {
     if (SCBattery.SpecificEnergyDensity > 0.0)
-        CBattery::BMass = PayloadWattHourInEclipse
-                          / SCBattery.SpecificEnergyDensity;
+        CBattery::BMass = (PayloadWattHourInEclipse
+                           + SystemPower * EclipseDuration / 3600)
+                                   / SCBattery.SpecificEnergyDensity;
 
     qDebug()<<"PayloadWattHourInEclipse"<<PayloadWattHourInEclipse;
+    qDebug()<<"PayloadWattHourInDaylight"<<PayloadWattHourInDaylight;
     qDebug()<<"SCBattery.SpecificEnergyDensity"<<SCBattery.SpecificEnergyDensity;
 }
 
@@ -489,6 +496,11 @@ void CBattery::setPayloadWattHourInDaylight(double WattHour)
     PayloadWattHourInDaylight = WattHour;
 }
 
+void CBattery::setSystemPower(double power)
+{
+    SystemPower = power;
+}
+
 
 //----------------- End of CBattery Class Declaration -----------------//
 
@@ -512,6 +524,8 @@ PowerSubsystem::PowerSubsystem()
     PossibleMaximumPowerConsumptionsOfPayloads= 0.0;
     MinimumPowerConsumptionInEclipse= 0.0;
     MaximumPowerConsumptionInDaylight= 0.0;
+    MinimumPowerConsumptionInDaylight= 0.0;
+    MaximumPowerConsumptionInEclipse = 0.0;
 
     //values are only to visualize the calculations before mission class
     //integrated to STA. after that they will be set to zero
@@ -597,6 +611,8 @@ void PowerSubsystem::setPayloadsPower(int    Index,
     CalculateAndSetPossibleMaximumPowerConsumptionsOfPayloads();
     CalculateAndSetMinimumPowerConsumptionInEclipse();
     CalculateAndSetMaximumPowerConsumptionInDaylight();
+    CalculateAndSetMinimumPowerConsumptionInDaylight();
+    CalculateAndSetMaximumPowerConsumptionInEclipse();
     CalculateAndSetAveragePowerConsumptionInEclipseAndDaylight();
 }
 
@@ -659,6 +675,27 @@ double PowerSubsystem::getMinimumPowerConsumptionInEclipse()
     return PowerSubsystem::MinimumPowerConsumptionInEclipse;
 }
 
+void PowerSubsystem::CalculateAndSetMinimumPowerConsumptionInDaylight()
+{
+    int i;
+    double temp = SCPowerDetails.SubsystemsTotalPower;
+
+    for (i=0; i<NumberOfPayloads; i++)
+    {
+        if (PowerSubsystem::Payloads[i].PowerOnTimeInDaylight >= DaylightDuration)
+        {
+            temp += PowerSubsystem::Payloads[i].PowerConsumptionInDaylight;
+        }
+    }
+
+    PowerSubsystem::MinimumPowerConsumptionInDaylight = temp;
+}
+
+double PowerSubsystem::getMinimumPowerConsumptionInDaylight()
+{
+    return PowerSubsystem::MinimumPowerConsumptionInDaylight;
+}
+
 void PowerSubsystem::CalculateAndSetMaximumPowerConsumptionInDaylight()
 {
     int i;
@@ -668,11 +705,31 @@ void PowerSubsystem::CalculateAndSetMaximumPowerConsumptionInDaylight()
     {
         temp += PowerSubsystem::Payloads[i].PowerConsumptionInDaylight;
     }
+
+    MaximumPowerConsumptionInDaylight = temp;
 }
 
 double PowerSubsystem::getMaximumPowerConsumptionInDaylight()
 {
     return PowerSubsystem::MaximumPowerConsumptionInDaylight;
+}
+
+void PowerSubsystem::CalculateAndSetMaximumPowerConsumptionInEclipse()
+{
+    int i;
+    double temp = SCPowerDetails.SubsystemsTotalPower;
+
+    for (i=0; i<NumberOfPayloads; i++)
+    {
+        temp += PowerSubsystem::Payloads[i].PowerConsumptionInEclipse;
+    }
+
+    MaximumPowerConsumptionInEclipse = temp;
+}
+
+double PowerSubsystem::getMaximumPowerConsumptionInEclipse()
+{
+    return PowerSubsystem::MaximumPowerConsumptionInEclipse;
 }
 
 void PowerSubsystem::CreatePowerConsumptionFunctionOfSpacecraft()
@@ -780,7 +837,7 @@ void PowerSubsystem::CreatePowerConsumptionFunctionOfSpacecraft()
                     }
                 }
 
-                ConsumedPowerTimeStream << tempEclipse <<"\t";
+                ConsumedPowerTimeStream << tempEclipse <<"\n";
             }
         }
         else
@@ -826,7 +883,7 @@ void PowerSubsystem::CreatePowerConsumptionFunctionOfSpacecraft()
                         }
                     }
 
-                    ConsumedPowerTimeStream << tempDaylight <<"\t";
+                    ConsumedPowerTimeStream << tempDaylight <<"\n";
                 }
             }
             else
@@ -904,7 +961,7 @@ void PowerSubsystem::CreateGeneratedPowerTimeFunctionOfSpacecraft()
                     * SolarArrays.getArea();
 
             //Calculate and place the generated power function in .stad
-            GeneratedPowerTimeStream << sampleTimeString <<"          ";
+            GeneratedPowerTimeStream << sampleTimeString <<"\t";
             double powerLongTime =
                     powerShortTime
                     * pow((1.0 - SolarArrays.getLifeTimeDegradation()),((sampleTime-MissionStart)/365));
@@ -912,7 +969,7 @@ void PowerSubsystem::CreateGeneratedPowerTimeFunctionOfSpacecraft()
 //            qDebug()<<"(sampleTime-MissionStart) "<<(sampleTime-MissionStart);
 //            qDebug()<<"(sampleTime-MissionStart)/365) "<<(sampleTime-MissionStart)/365;
 //            qDebug()<<"POWER OF "<<pow((1.0 - SolarArrays.getLifeTimeDegradation()),((sampleTime-MissionStart)/365));
-            GeneratedPowerTimeStream << powerLongTime <<"        ";
+            GeneratedPowerTimeStream << powerLongTime <<"\n";
 
 //            qDebug()<<"EclipseStarLightStream END"<<EclipseStarLightStream.atEnd();
         }
@@ -970,7 +1027,7 @@ void PowerSubsystem::CreateNetPowerTimeFunctionOfSpacecraft()
         ConsumedPowerTimeStream >> consumedPower;
 
         NetPowerTimeStream << mjd<<"\t";
-        NetPowerTimeStream << (generatedPower - consumedPower)<<"\t";
+        NetPowerTimeStream << (generatedPower - consumedPower)<<"\n";
 
     }while((!ConsumedPowerTimeStream.atEnd())
         &&(!GeneratedPowerTimeStream.atEnd()));
@@ -989,6 +1046,8 @@ void PowerSubsystem::CalculateAndSetPowerSubsystemMass()
 //    SolarArrays.CalculateSAMass();
 
 //    Battery.CalculateAndSetBMass();
+    SolarArrays.CalculateSAMass();
+    SolarArrays.CalculatePCUMass();
 
     PowerSubsystemMass = SolarArrays.getPCUMass()
                          + SolarArrays.getSAMass()
@@ -1002,6 +1061,7 @@ void PowerSubsystem::CalculateAndSetPowerSubsystemMass()
 
 double PowerSubsystem::getPowersubsystemMass()
 {
+    CalculateAndSetPowerSubsystemMass();
     return PowerSubsystemMass;
 }
 
@@ -1085,13 +1145,17 @@ void PowerSubsystem::CalculateAndSetTotalSCPower()
     SCPowerDetails.SCTotal = SCPowerDetails.TotalPayloadPower
                              + SCPowerDetails.SubsystemsTotalPower;
 
+
     qDebug()<<"SCPowerDetails.TTCSubsystemPower"<<SCPowerDetails.TTCSubsystemPower;
     qDebug()<<"SCPowerDetails.SubsystemsTotalPower"<<SCPowerDetails.SubsystemsTotalPower;
     qDebug()<<"SCPowerDetails.SCTotal"<<SCPowerDetails.SCTotal;
 
     SolarArrays.setSystemPower(SCPowerDetails.SubsystemsTotalPower);
+    Battery.setSystemPower(SCPowerDetails.SubsystemsTotalPower);
 
-    SolarArrays.CalculateSAEOLPower();
+    CalculateAndSetMinimumPowerConsumptionInEclipse();
+    CalculateAndSetMaximumPowerConsumptionInDaylight();
+    CalculateAndSetAveragePowerConsumptionInEclipseAndDaylight();
 }
 
 void PowerSubsystem::setThermalSubsystemPower(double Power)

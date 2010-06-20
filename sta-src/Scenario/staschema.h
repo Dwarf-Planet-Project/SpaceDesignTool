@@ -7197,6 +7197,10 @@ public:
     { return m_StructuralShape; }
     void setStructuralShape(QString StructuralShape)
     { m_StructuralShape = StructuralShape; }
+    QString StructuralMaterial() const
+    { return m_StructuralMaterial; }
+    void setStructuralMaterial(QString StructuralMaterial)
+    { m_StructuralMaterial = StructuralMaterial; }
     QSharedPointer<ScenarioSizing> Sizing() const
     { return m_Sizing; }
     void setSizing(QSharedPointer<ScenarioSizing> Sizing)
@@ -7220,6 +7224,7 @@ public:
 
 private:
     QString m_StructuralShape;
+    QString m_StructuralMaterial;
     QSharedPointer<ScenarioSizing> m_Sizing;
     QSharedPointer<ScenarioMomentsOfInertia> m_MomentsOfInertia;
     QSharedPointer<ScenarioSecondMomentsOfArea> m_SecondMomentsOfArea;
@@ -7727,6 +7732,10 @@ public:
     { return m_TransmitterGain; }
     void setTransmitterGain(double TransmitterGain)
     { m_TransmitterGain = TransmitterGain; }
+    double TransmitterEfficiency() const
+    { return m_TransmitterEfficiency; }
+    void setTransmitterEfficiency(double TransmitterEfficiency)
+    { m_TransmitterEfficiency = TransmitterEfficiency; }
     double LinkDuration() const
     { return m_LinkDuration; }
     void setLinkDuration(double LinkDuration)
@@ -7740,6 +7749,7 @@ private:
     double m_TransmitterPower;
     double m_TransmitterFrequency;
     double m_TransmitterGain;
+    double m_TransmitterEfficiency;
     double m_LinkDuration;
     double m_DataRate;
 };

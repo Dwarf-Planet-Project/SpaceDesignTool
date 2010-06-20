@@ -148,6 +148,7 @@ public:
     void setSCShape(Shape DefinedShape);
     void setSCShape(QString Shape);
     Shape getSCShape();
+    QString getSCShapeString();
 
     void CalculateAndSetLateralFrequency();
     void setLateralFrequency(double Frequency);

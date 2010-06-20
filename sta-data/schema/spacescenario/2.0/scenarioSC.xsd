@@ -319,6 +319,7 @@
 				<complexType>
 					<sequence>
 						<element name="StructuralShape" type="string"></element>
+                                                <element name="StructuralMaterial" type="string"></element>
 						<element name="Sizing">
 							<complexType>
 								<sequence>
@@ -451,6 +452,7 @@
 									<element name="TransmitterPower" type="double"></element>
 									<element name="TransmitterFrequency" type="double"></element>
 									<element name="TransmitterGain" type="double"></element>
+                                                                        <element name="TransmitterEfficiency" type="double"></element>
 									<element name="LinkDuration" type="double"></element>
 									<element name="DataRate" type="double"></element>
 								</sequence>

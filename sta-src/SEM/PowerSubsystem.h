@@ -134,6 +134,7 @@ public:
     * Includes Power Control Unit and Regulators
     */
     void CalculatePCUMass();
+    void setPCUMass(double mass);
     double getPCUMass();
 
     /*
@@ -243,6 +244,7 @@ public:
 
     void setPayloadWattHourInEclipse(double WattHour);
     void setPayloadWattHourInDaylight(double WattHour);
+    void setSystemPower(double power);
 
 private:
     //----------------- Member objects ----------------------------------//
@@ -251,6 +253,7 @@ private:
     int NumberOfBatteries;
 
     //To set the Powersubsystem private members
+    double SystemPower;
     double EclipseDuration;
     double MissionDuration;
     double DaylightDuration;
@@ -309,8 +312,11 @@ public:
     double getPossibleMaximumPowerConsumptionsOfPayloads();
 
     double getMinimumPowerConsumptionInEclipse();
+    double getMinimumPowerConsumptionInDaylight();
 
     double getMaximumPowerConsumptionInDaylight();
+    double getMaximumPowerConsumptionInEclipse();
+
 
     /**
       * It produce the Power Consumption Function of SC for an orbit
@@ -399,10 +405,12 @@ private:
     //Possible Minimum Power that the SC systems and all payloads can
     //consume in Eclipse:
     double MinimumPowerConsumptionInEclipse;
+    double MinimumPowerConsumptionInDaylight;
 
     //Possible Maximum Power that the SC systems and all payloads can
     //consume in Daylight.
     double MaximumPowerConsumptionInDaylight;
+    double MaximumPowerConsumptionInEclipse;
 
     //The information will be extracted from the Payload Subsystem.
     //A Satelite can have at most 4 Payload.
@@ -425,6 +433,7 @@ private:
       * --@param Eclipse          The Eclipse duration of SC in seconds
     */
     void CalculateAndSetMinimumPowerConsumptionInEclipse();
+    void CalculateAndSetMinimumPowerConsumptionInDaylight();
     /*
       *   It compares the maximum power consumption of payloads in
       * Eclipse and the Daylight. And set the PossibleMaximumPower-
@@ -437,6 +446,7 @@ private:
       * MaximumPowerConsumptionInDaylight
     */
    void CalculateAndSetMaximumPowerConsumptionInDaylight();
+   void CalculateAndSetMaximumPowerConsumptionInEclipse();
    /*
      * Simple arithmetic average calculations of power consumption
      * in Daylight and Eclipse

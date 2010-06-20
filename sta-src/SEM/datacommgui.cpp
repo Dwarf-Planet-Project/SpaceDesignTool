@@ -70,13 +70,26 @@ DataCommGUI::DataCommGUI( SemMain * SC, QWidget * parent, Qt::WindowFlags f) : Q
                  ((SCVirtual->getNewSCDataHandling()->getPayloadOBDHInfo()+3)->PowerOnTimeInDaylight
                   + (SCVirtual->getNewSCDataHandling()->getPayloadOBDHInfo()+3)->PowerOnTimeInEclipse));
 
+        //Display the existing values of the OBDH subsystem
+        NumberOfOrbitWithNoLinkLineEdit->setText
+                (QString::number
+                 (SCVirtual->getNewSCDataHandling()->getNumberOfOrbitWithNoLink()));
+        DataHandlingMemorySizeLineEdit->setText
+                (QString::number
+                 (SCVirtual->getNewSCDataHandling()->getMemorySizeForPayloads()));
+
+        //Transfer the calculated data to TTC subsystem
+        SCVirtual->getNewSCCommunication()->setMemorySizeForPayloads
+                (SCVirtual->getNewSCDataHandling()->getMemorySizeForPayloads());
+
         //Display the existing values of the TTC subsystem
         TTC_TXPowerLineEdit->setText
                 (QString::number
-                 (SCVirtual->getNewSCCommunication()->getTTCSubsystemPower()));
+                 (SCVirtual->getNewSCCommunication()->getAntennaPower()));
         TTCLinkDurationLineEdit->setText
                 (QString::number
-                 (SCVirtual->getNewSCCommunication()->getContactTimePerOrbit()));
+                 (SCVirtual->getNewSCCommunication()->getPercentageContactTimePerOrbit()));
+        SCVirtual->getNewSCCommunication()->CalculateAndSetDownLinkRate();
         TTCLinkDataRateLineEdit->setText
                 (QString::number
                  (SCVirtual->getNewSCCommunication()->getDownLinkRate()));
@@ -93,14 +106,6 @@ DataCommGUI::DataCommGUI( SemMain * SC, QWidget * parent, Qt::WindowFlags f) : Q
         TTCAntennaFrequencyLineEdit->setText
                 (QString::number
                  (SCVirtual->getNewSCCommunication()->getAntennaFrequency()));
-
-        //Display the existing values of the OBDH subsystem
-        NumberOfOrbitWithNoLinkLineEdit->setText
-                (QString::number
-                 (SCVirtual->getNewSCDataHandling()->getNumberOfOrbitWithNoLink()));
-        DataHandlingMemorySizeLineEdit->setText
-                (QString::number
-                 (SCVirtual->getNewSCDataHandling()->getMemorySizeForPayloads()));
 
         //setting comboBox from a QString
         int i;
@@ -130,7 +135,7 @@ void DataCommGUI::on_NumberOfOrbitWithNoLinkLineEdit_textChanged(const QString &
 
 void DataCommGUI::on_TTC_TXPowerLineEdit_textChanged(const QString&)
 {
-    SCVirtual->getNewSCCommunication()->setTTCSubsystemPower
+    SCVirtual->getNewSCCommunication()->setAntennaPower
             (TTC_TXPowerLineEdit->text().toDouble());
 
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
@@ -239,12 +244,15 @@ void DataCommGUI::on_DataCommCalculatePushButton_clicked()
 
 void DataCommGUI::on_DataCommSavePushButton_clicked()
 {
+    SCVirtual->PassOBDHSubsystemOutputParameters();
+    SCVirtual->PassTTCSubsystemOutputParameters();
+
     this->close();
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void DataCommGUI::on_DataCommClosePushButton_clicked()
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
+//void DataCommGUI::on_DataCommClosePushButton_clicked()
+//{
+//	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+//}
 
