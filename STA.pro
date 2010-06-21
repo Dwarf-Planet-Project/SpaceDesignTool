@@ -1,24 +1,23 @@
-######################################################################################
+# #####################################################################################
 # This program is free software; you can redistribute it and/or modify it under      #
 # the terms of the European Union Public Licence - EUPL v.1.1 as published by        #
 # the European Commission.                                                           #
-#                                                                                    #
+# #
 # This program is distributed in the hope that it will be useful, but WITHOUT        #
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS      #
 # FOR A PARTICULAR PURPOSE. See the European Union Public Licence - EUPL v.1.1       #
 # for more details.                                                                  #
-#                                                                                    #
+# #
 # You should have received a copy of the European Union Public Licence - EUPL v.1.1  #
 # along with this program.                                                           #
-#                                                                                    #                                                                                    #
+# #                                                                                    #
 # Further information about the European Union Public Licence - EUPL v.1.1 can       #
 # also be found on the world wide web at http://ec.europa.eu/idabc/eupl              #
-#                                                                                    #
-#                                                                                    #
+# #
+# #
 # - Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) - #
-#                                                                                    #
-######################################################################################
-
+# #
+# #####################################################################################
 message(Qt version: $$[QT_VERSION])
 message(Qt is installed in $$[QT_INSTALL_PREFIX])
 
@@ -40,7 +39,6 @@ LINUX_LIBRARIES_DIR = thirdparty/linux
 CEL = thirdparty/celestia-src
 QWT3D_DIR = thirdparty/qwtplot3d
 EIGEN_DIR = thirdparty/Eigen
-
 
 # ################### Main files ################################
 MAIN_SOURCES = sta-src/Main/celestiainterface.cpp \
@@ -285,7 +283,6 @@ SEM_FORMS = sta-src/SEM/sem.ui \
     sta-src/SEM/PowerGUI.ui \
     sta-src/SEM/DataCommGUI.ui
 
-
 # ############# 3-Body Module ##############
 LAGRANGIAN_SOURCES = sta-src/Lagrangian/trajectoryprinting.cpp \
     sta-src/Lagrangian/halorbitcomputation.cpp \
@@ -336,7 +333,7 @@ PLOT_HEADERS = sta-src/Plotting/groundtrackplottool.h \
     sta-src/Plotting/plottingtool.h \
     sta-src/Plotting/PlotDataSource.h \
     sta-src/Plotting/threedvisualizationtool.h \
-    sta-src/Plotting/visualizationtoolbar.h\
+    sta-src/Plotting/visualizationtoolbar.h \
     sta-src/Plotting/PlotView.h
 PLOT_FORMS = sta-src/Plotting/plottingtool.ui
 
@@ -854,7 +851,8 @@ SOURCES = $$MAIN_SOURCES \
     $$PAYLOAD_SOURCES \
     $$ANALYSIS_SOURCES \
     $$COVERAGE_SOURCES \
-    $$CONSTELLATIONS_SOURCES
+    $$CONSTELLATIONS_SOURCES \
+    sta-src/SEM/Launcher.cpp
 HEADERS = $$MAIN_HEADERS \
     $$ASTROCORE_HEADERS \
     $$SEM_HEADERS \
@@ -878,7 +876,8 @@ HEADERS = $$MAIN_HEADERS \
     $$PAYLOAD_HEADERS \
     $$ANALYSIS_HEADERS \
     $$COVERAGE_HEADERS \
-    $$CONSTELLATIONS_HEADERS
+    $$CONSTELLATIONS_HEADERS \
+    sta-src/SEM/Launcher.h
 FORMS = $$MAIN_FORMS \
     $$ASTROCORE_FORMS \
     $$SEM_FORMS \
@@ -979,7 +978,7 @@ linux-g++ {
     }
 }
 
-################### Package files ###################
+# ################## Package files ###################
 CATALOG_SOURCE = sta-data/data
 CATALOG_FILES = $$CATALOG_SOURCE/stars.dat \
     $$CATALOG_SOURCE/starnames.dat \
@@ -1027,19 +1026,19 @@ SHADER_FILES =
 FONT_SOURCE = sta-data/fonts
 FONT_FILES = 
 ESTIMATIONS_SOURCE = sta-data/data/Estimations
-ESTIMATIONS_FILES =
+ESTIMATIONS_FILES = 
 MATERIALS_SOURCE = sta-data/data/MaterialDatabase
-MATERIALS_FILES =
+MATERIALS_FILES = 
 SEMREPORTS_SOURCE = sta-data/data/SystemsEngineeringReports
-SEMREPORTS_FILES =
+SEMREPORTS_FILES = 
 HEATRATE_SOURCE = sta-data/data/heatrates
 HEATRATE_FILES = 
 AERO_SOURCE = sta-data/data/aerodynamics
 AERO_FILES = 
 RAMOUTPUT_SOURCE = sta-data/data/ramoutput
-RAMOUTPUT_FILES =
+RAMOUTPUT_FILES = 
 VEHICLEWGS_SOURCE = sta-data/data/vehiclewgs
-VEHICLEWGS_FILES =
+VEHICLEWGS_FILES = 
 ATMOSPHERES_SOURCE = sta-data/data/atmospheres
 ATMOSPHERES_FILES = 
 BODIES_SOURCE = sta-data/data/bodies
@@ -1172,13 +1171,13 @@ macx {
         FONTS \
         SHADERS \
         EPHEMERIDES \
-	ESTIMATIONS \
-	MATERIALS \
-	SEMREPORTS \
+        ESTIMATIONS \
+        MATERIALS \
+        SEMREPORTS \
         TLEs \
         SCHEMA \
         EXAMPLES \
-	SEMMISCELANEOUS \
+        SEMMISCELANEOUS \
         USERMANUAL \
         MACOSXIconFiles
     QMAKE_BUNDLE_DATA += HEATRATES \

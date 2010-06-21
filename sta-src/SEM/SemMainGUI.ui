@@ -1068,7 +1068,7 @@
            </widget>
           </item>
           <item row="0" column="1" colspan="2">
-           <widget class="QComboBox" name="LauncherSelectionComboBox_2">
+           <widget class="QComboBox" name="LauncherSelectionComboBox">
             <item>
              <property name="text">
               <string>Select Launcher</string>
@@ -1076,18 +1076,41 @@
             </item>
             <item>
              <property name="text">
-              <string>Ariane 5</string>
+              <string>AtlasII</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>Soyuz</string>
+              <string>AtlasIIAS</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>DeltaII6920/25</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>DeltaII7920/25</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Vega</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Ariane5</string>
              </property>
             </item>
            </widget>
           </item>
           <item row="1" column="0" colspan="2">
-           <widget class="QLabel" name="label_115">
+           <widget class="QLabel" name="MassLabel">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1103,7 +1126,7 @@
            </widget>
           </item>
           <item row="1" column="2">
-           <widget class="QLineEdit" name="LauncherPayloadMassLineEdit_2">
+           <widget class="QLineEdit" name="LauncherPayloadMassLineEdit">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -1116,36 +1139,10 @@
            </widget>
           </item>
           <item row="2" column="0" colspan="2">
-           <widget class="QLabel" name="label_116">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Launcher Inclination Range [deg] </string>
-            </property>
-            <property name="indent">
-             <number>0</number>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QLineEdit" name="LauncherInclinationLineEdit_2">
+           <widget class="QLabel" name="LateralFreqLabel">
             <property name="enabled">
              <bool>false</bool>
             </property>
-            <property name="text">
-             <string>0</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" colspan="2">
-           <widget class="QLabel" name="label_117">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1160,8 +1157,8 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="2">
-           <widget class="QLineEdit" name="LauncherLateralFreqCapabilityLineEdit_2">
+          <item row="2" column="2">
+           <widget class="QLineEdit" name="LauncherLateralFreqCapabilityLineEdit">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -1173,8 +1170,11 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_118">
+          <item row="3" column="0">
+           <widget class="QLabel" name="AxialFreqLabel">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1189,8 +1189,8 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="2">
-           <widget class="QLineEdit" name="LauncherAxialFreqCapabilityLineEdit_2">
+          <item row="3" column="2">
+           <widget class="QLineEdit" name="LauncherAxialFreqCapabilityLineEdit">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -1199,6 +1199,52 @@
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2">
+           <widget class="QLineEdit" name="CargoBayDiameterLineEdit">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>0</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="CargoBayDiameterLabel">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Cargo Bay Diameter[m]</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="2">
+           <widget class="QLineEdit" name="CargoBayLengthLineEdit">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>0</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="CargoBayLengthLabel">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Cargo Bay Length[m] </string>
             </property>
            </widget>
           </item>

@@ -33,6 +33,10 @@
 
 #include "Scenario/staschema.h"
 
+//In order to plot
+#include "Plotting/plottingtool.h"
+#include "PlotGraphFromFile.h"
+
 class SemMainGUI : public QDialog , private Ui::SemMainGUI
 {
 Q_OBJECT
@@ -137,11 +141,12 @@ protected slots:
         void on_PowerGraphPushButton_clicked();
         void on_PowerDetailsButton_clicked();
 //        void on_groupBox_16_toggled(bool);
-        void on_LauncherSelectionComboBox_2_activated(const QString&);
-//        void on_LauncherPayloadMassLineEdit_2_textChanged(const QString&);
-//        void on_LauncherInclinationLineEdit_2_textChanged(const QString&);
-//        void on_LauncherLateralFreqCapabilityLineEdit_2_textChanged(const QString&);
-//        void on_LauncherAxialFreqCapabilityLineEdit_2_textChanged(const QString&);
+        void on_LauncherSelectionComboBox_activated(const QString&);
+        void on_LauncherPayloadMassLineEdit_textChanged(const QString&);
+        void on_LauncherLateralFreqCapabilityLineEdit_textChanged(const QString&);
+        void on_LauncherAxialFreqCapabilityLineEdit_textChanged(const QString&);
+        void on_CargoBayDiameterLineEdit_textChanged(const QString&);
+        void on_CargoBayLengthLineEdit_textChanged(const QString&);
 //        void on_PlanetNameComboBox_activated(const QString&);
 
 //        void on_LauncherDetailsButton_clicked();

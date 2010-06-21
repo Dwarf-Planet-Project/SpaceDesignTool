@@ -106,6 +106,16 @@ TTCSubsystem* SemMain::getNewSCCommunication()
     return &NewSCCommunication;
 }
 
+void SemMain::setNewLauncher(Launcher *SCLaunch)
+{
+    NewLauncher = *SCLaunch;
+}
+
+Launcher* SemMain::getNewLauncher()
+{
+    return &NewLauncher;
+}
+
 void SemMain::PassPayloadOutputParameters()
 {
     // setting Stucture parameters with payload

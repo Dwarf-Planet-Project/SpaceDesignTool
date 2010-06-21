@@ -32,6 +32,7 @@
 #include "MissionDetails.h"
 #include "OBDHSubsystem.h"
 #include "TTCSubsystem.h"
+#include "Launcher.h"
 
 class SemMain
 {
@@ -60,6 +61,9 @@ public:
 
     void setNewSCCommunication(TTCSubsystem* NewSCComm);
     TTCSubsystem* getNewSCCommunication();
+
+    void setNewLauncher(Launcher* SCLaunch);
+    Launcher* getNewLauncher();
     /*
       *It passes the outputs of every subsystem to the necessary subsystem
       */
@@ -79,5 +83,6 @@ private:
         ThermalSubsystem NewSCThermal;
         OBDHSubsystem NewSCDataHandling;
         TTCSubsystem NewSCCommunication;
+        Launcher    NewLauncher;
 };
 #endif // SEMMAIN_H

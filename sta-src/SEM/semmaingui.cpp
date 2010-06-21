@@ -37,75 +37,7 @@
 #include "structuregui.h"
 #include "thermalgui.h"
 
-//In order to plot
-#include "Plotting/PlotDataSource.h"
 #include "Plotting/PlotView.h"
-#include <QFile>
-#include "Eigen/Core"
-#include "Plotting/plottingtool.h"
-
-
-class PlotGraphFromFile:public PlotDataSource
-{
-    ~PlotGraphFromFile() {};
-    unsigned int getPointCount()
-    {
-        PointCount = 0;
-        if (Point.size()>0)
-            PointCount = (Point.size()-1);
-        return PointCount;
-    }
-
-    Eigen::Vector2d getPoint(unsigned int index)
-    {
-        return Point.at(index);
-    }
-public:
-    void setPoints(QString FileNameWithExtension)
-    {
-//        // first column is the x-axis
-//        // second column is the y-axis
-//
-//        QString path = "data/SystemsEngineeringReports/";
-//        path.append(FileNameWithExtension);
-//
-//        QFile TimePlot(path);
-//        TimePlot.open(QIODevice::ReadOnly);
-//               qDebug()<<"TimePlot.fileName()"<<TimePlot.fileName();
-//               qDebug()<<"TimePlot.isOpen()"<<TimePlot.isOpen();
-//        QTextStream TimePlotStream(&TimePlot);
-//
-//        unsigned int i = 0;
-//        double temp;
-//        TimePlotStream >> temp;
-//        qDebug()<<temp;
-//        Point.at(i).x() = temp ;
-//        TimePlotStream >> temp;
-//        qDebug()<<temp;
-//        Point.at(i).y() = temp ;
-//
-//        i++;
-//
-//        qDebug()<<"temp";
-//
-//        while (!TimePlotStream.atEnd())
-//        {
-//            TimePlotStream >> temp;
-//            Point.at(i).x() = temp ;
-//            TimePlotStream >> temp;
-//            Point.at(i).y() = temp ;
-//            i++;
-//        }
-//
-//        qDebug()<<"count";
-    }
-
-private:
-    QList<Vector2d> Point;
-    unsigned int PointCount;
-
-
-};
 
 SemMainGUI::SemMainGUI(ScenarioSC* SCVehicle,
                        QString missionArc,
@@ -121,6 +53,11 @@ SemMainGUI::SemMainGUI(ScenarioSC* SCVehicle,
         MissionArc = missionArc;
 
         RetrieveScenarioSC();
+
+        if (!(SC.getSCMissionDetails()->getPlanetProperties()->Planet == "Earth"))
+            LauncherGroupBox->setEnabled(0);
+        else
+            LauncherGroupBox->setEnabled(1);
 
         // ---------------------------------- VALIDATION AND VERIFICATION START
         qDebug()<<"----------GUI---------------VALIDATION AND VERIFICATION START";
@@ -191,6 +128,8 @@ SemMainGUI::SemMainGUI(SemMain* SCWizard,
 
     if (!(SC.getSCMissionDetails()->getPlanetProperties()->Planet == "Earth"))
         LauncherGroupBox->setEnabled(0);
+    else
+        LauncherGroupBox->setEnabled(1);
 
     RefreshSemMainGUI();
     RefreshSemMainGUIPayload();
@@ -998,40 +937,72 @@ void SemMainGUI::on_PowerGraphPushButton_clicked()
     SC.getNewSCPower()->CreateNetPowerTimeFunctionOfSpacecraft();
 
     //plotting process starts
-    PlotGraphFromFile* Data;
-    PlottingTool* PlotWidget ;
-    PlotWidget = new PlottingTool(this);
-    PlotWidget->show();
-    qDebug()<<"PLOT WÝDGET SHOW";
-    PlotView* PlotGraph;
-    PlotGraph = new PlotView(PlotWidget);
-    PlotGraph->show();
-    qDebug()<<"PLOT graph SHOW";
 
-    switch (PowerGraphComboBox->currentIndex())
-    {
-    case 0://SelectGraph
-        break;
-    case 1://consumed power - time
-        qDebug()<<"inside case 1";
-        Data->setPoints("PowerConsumptionTimeFunction.stad");
-        qDebug()<<"points are set";
-        PlotGraph->setTitle("Consumed Power - Time Function");
-        qDebug()<<"title set";
-        PlotGraph->addPlot(Data);
-        qDebug()<<"add it to plot";
-        break;
-    case 2://generate power - time
-        Data->setPoints("GeneratedPowerTimeFunction.stad");
-        PlotGraph->setTitle("Generated Power - Time Function");
-        PlotGraph->addPlot(Data);
-        break;
-    case 3://net power - time
-        Data->setPoints("NetPowerTimeFunction.stad");
-        PlotGraph->setTitle("Net Power - Time Function");
-        PlotGraph->addPlot(Data);
-        break;
-    }
+//    PlotGraphFromFile Data;
+//
+//    PlottingTool* PlotWidget ;
+//    PlotWidget = new PlottingTool(this);
+//    PlotWidget->show();
+//    qDebug()<<"PLOT WIDGET SHOW";
+//    PlotView* PlotGraph;
+//    PlotGraph = new PlotView(PlotWidget);
+//    PlotGraph->setMinimumSize(PlotWidget->width(),PlotWidget->height());
+//    PlotGraph->show();
+//
+//    qDebug()<<"PLOT graph SHOW";
+//
+//    //consumed power - time
+//    qDebug()<<"inside case 1";
+//    Data.setPoints("PowerConsumptionTimeFunction.stad");
+//    qDebug()<<"points are set";
+//    PlotGraph->setTitle("Consumed Power - Time Function");
+//    qDebug()<<"title set";
+//    PlotGraph->addPlot(&Data);
+//    qDebug()<<"add it to plot";
+//
+//    qDebug()<<Data.getPointCount();
+//    qDebug()<<Data.getPoint(2).x();
+
+
+
+//    PlotGraphFromFile Data = new PlotGraphFromFile();
+//    PlotDataSource* DataSource = &Data;
+//
+//    PlottingTool* PlotWidget ;
+//    PlotWidget = new PlottingTool(this);
+//    PlotWidget->show();
+//    qDebug()<<"PLOT WIDGET SHOW";
+//    PlotView* PlotGraph;
+//    PlotGraph = new PlotView(PlotWidget);
+//    PlotGraph->setMinimumSize(PlotWidget->width(),PlotWidget->height());
+//
+//    qDebug()<<"PLOT graph SHOW";
+//
+//    switch (PowerGraphComboBox->currentIndex())
+//    {
+//    case 0://SelectGraph
+//        break;
+//    case 1://consumed power - time
+//        qDebug()<<"inside case 1";
+//        Data.setPoints("PowerConsumptionTimeFunction.stad");
+//        qDebug()<<"points are set";
+//        PlotGraph->setTitle("Consumed Power - Time Function");
+//        qDebug()<<"title set";
+//        PlotGraph->addPlot(DataSource);
+//        qDebug()<<"add it to plot";
+//        PlotGraph->show();
+//        break;
+//    case 2://generate power - time
+//        Data.setPoints("GeneratedPowerTimeFunction.stad");
+//        PlotGraph->setTitle("Generated Power - Time Function");
+//        PlotGraph->addPlot(DataSource);
+//        break;
+//    case 3://net power - time
+//        Data.setPoints("NetPowerTimeFunction.stad");
+//        PlotGraph->setTitle("Net Power - Time Function");
+//        PlotGraph->addPlot(DataSource);
+//        break;
+//    }
 
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
@@ -1045,10 +1016,89 @@ void SemMainGUI::on_PowerDetailsButton_clicked()
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void SemMainGUI::on_LauncherSelectionComboBox_2_activated(const QString&)
+void SemMainGUI::on_LauncherSelectionComboBox_activated(const QString&)
 {
+    if ((SC.getSCMissionDetails()->getPlanetProperties()->Planet.toUpper()=="EARTH")
+        && (LauncherSelectionComboBox->currentIndex()!=0))
+    {
+        SC.getNewLauncher()->setLauncher(LauncherSelectionComboBox->currentText());
 
+        LauncherAxialFreqCapabilityLineEdit->setText
+                (QString::number
+                 (SC.getNewLauncher()->getAxialFreq()));
+        LauncherLateralFreqCapabilityLineEdit->setText
+                (QString::number
+                 (SC.getNewLauncher()->getLateralFreq()));
+        CargoBayDiameterLineEdit->setText
+                (QString::number
+                 (SC.getNewLauncher()->getCargoBayDiameter()));
+        CargoBayLengthLineEdit->setText
+                (QString::number
+                 (SC.getNewLauncher()->getCargoBayLength()));
+        LauncherPayloadMassLineEdit->setText
+                (QString::number
+                 (SC.getNewLauncher()->getMass
+                  (SC.getSCMissionDetails()->getSCMeanAltitude())));
+    }
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+}
+
+void SemMainGUI::on_LauncherAxialFreqCapabilityLineEdit_textChanged(const QString &)
+{
+    if(LauncherAxialFreqCapabilityLineEdit->text().toDouble()>
+       SC.getNewSCStructure()->getAxialFrequency())
+        AxialFreqLabel->setEnabled(1);
+    else
+        AxialFreqLabel->setEnabled(0);
+        qWarning("TODO: %s	%d",__FILE__,__LINE__);
+}
+
+void SemMainGUI::on_LauncherLateralFreqCapabilityLineEdit_textChanged(const QString &)
+{
+    if (LauncherLateralFreqCapabilityLineEdit->text().toDouble()>
+        SC.getNewSCStructure()->getLateralFrequency())
+        LateralFreqLabel->setEnabled(1);
+    else
+        LateralFreqLabel->setEnabled(0);
+        qWarning("TODO: %s	%d",__FILE__,__LINE__);
+}
+
+void SemMainGUI::on_LauncherPayloadMassLineEdit_textChanged(const QString &)
+{
+    if (LauncherPayloadMassLineEdit->text().toDouble()>
+        SC.getNewSCStructure()->getSCMass())
+        MassLabel->setEnabled(0);
+    else
+        MassLabel->setEnabled(1);
+        qWarning("TODO: %s	%d",__FILE__,__LINE__);
+}
+
+void SemMainGUI::on_CargoBayDiameterLineEdit_textChanged(const QString &)
+{
+    if ((CargoBayDiameterLineEdit->text().toDouble()
+            <SC.getNewSCStructure()->getSpacecraftDimension().x())
+        ||(CargoBayDiameterLineEdit->text().toDouble()
+            <SC.getNewSCStructure()->getSpacecraftDimension().y())
+        ||(CargoBayDiameterLineEdit->text().toDouble()
+            <SC.getNewSCStructure()->getSpacecraftDimension().z()))
+        CargoBayDiameterLabel->setEnabled(1);
+    else
+        CargoBayDiameterLabel->setEnabled(0);
+        qWarning("TODO: %s	%d",__FILE__,__LINE__);
+}
+
+void SemMainGUI::on_CargoBayLengthLineEdit_textChanged(const QString &)
+{
+    if ((CargoBayLengthLineEdit->text().toDouble()
+            <SC.getNewSCStructure()->getSpacecraftDimension().x())
+        ||(CargoBayLengthLineEdit->text().toDouble()
+            <SC.getNewSCStructure()->getSpacecraftDimension().y())
+        ||(CargoBayLengthLineEdit->text().toDouble()
+            <SC.getNewSCStructure()->getSpacecraftDimension().z()))
+        CargoBayLengthLabel->setEnabled(1);
+    else
+        CargoBayLengthLabel->setEnabled(0);
+        qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 //void SemMainGUI::on_LauncherDetailsButton_clicked()

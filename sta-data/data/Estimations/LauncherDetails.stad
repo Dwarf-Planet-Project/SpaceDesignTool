@@ -1,0 +1,8 @@
+Launcher	CargoBayDiameter(m)	CargoBayLength(m)	AxialAcc.(g)	LaterialAcc.(g)	AxialFreq(Hz)	LateralFreq(Hz)	MassLEO(kg)	MassGEO()
+AtlasII		4.2			12			5.5		1.2		15		10		6580		570
+AtlasIIAS	4.2			12			5.5		1.2		15		10		8640		1050
+DeltaII6920/25	2.9			8.5			2.4		6		35		15		3990		730
+DeltaII7920/25	2.9			8.5			2.4		6		35		15		5089		910
+Vega		2.6			3.5			5.5		0.9		30		15		1500		0
+Ariane5		5.4			12.72			4.5		2		30		10		22000		0	
+UNDEFINED	0.0			0.0			0.0		0.0		0.0		0.0		0.0		0.0
