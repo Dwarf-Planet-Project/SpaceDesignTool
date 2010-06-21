@@ -34,8 +34,8 @@
 #include "Scenario/staschema.h"
 
 //In order to plot
-#include "Plotting/plottingtool.h"
-#include "PlotGraphFromFile.h"
+//#include "Plotting/plottingtool.h"
+//#include "PlotGraphFromFile.h"
 
 class SemMainGUI : public QDialog , private Ui::SemMainGUI
 {
