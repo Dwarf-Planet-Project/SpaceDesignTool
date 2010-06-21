@@ -37,6 +37,8 @@
 #include "structuregui.h"
 #include "thermalgui.h"
 
+#include "Plotting/plottingtool.h"
+#include "PlotGraphFromFile.h"
 #include "Plotting/PlotView.h"
 
 SemMainGUI::SemMainGUI(ScenarioSC* SCVehicle,
@@ -815,6 +817,33 @@ void SemMainGUI::on_ThermalSubsystemGraphComboBox_2_activated(const QString&)
 void SemMainGUI::on_ThermalGraphPushButton_2_clicked()
 {
     SC.getNewSCThermal()->CreateTemperatureTimeFunction();
+
+    //plotting process starts
+
+    QString FileNameWithExtension;
+    if (PowerGraphComboBox->currentIndex()!=0)
+    {
+        FileNameWithExtension = ("SCTemperatureTimeFunction.stad");
+        QDialog plotDialog(this);
+        QVBoxLayout* layout = new QVBoxLayout(&plotDialog);
+        PlotView* plotView = new PlotView(&plotDialog);
+        layout->addWidget(plotView);
+        plotDialog.setLayout(layout);
+
+        qWarning("TODO: %s	%d",__FILE__,__LINE__);
+
+        PlotGraphFromFile* Data = new PlotGraphFromFile();
+        qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        Data->setPoints(FileNameWithExtension);
+        qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        plotView->addPlot(Data);
+        qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        FileNameWithExtension.chop(5);
+        plotView->setTitle(FileNameWithExtension);
+        plotView->setHorizontalScale(LinearPlotScale(50000, 60000));
+        plotView->setVerticalScale(LinearPlotScale(0, 60000));
+        plotDialog.exec();
+    }
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
@@ -938,73 +967,43 @@ void SemMainGUI::on_PowerGraphPushButton_clicked()
 
     //plotting process starts
 
-//    PlotGraphFromFile Data;
-//
-//    PlottingTool* PlotWidget ;
-//    PlotWidget = new PlottingTool(this);
-//    PlotWidget->show();
-//    qDebug()<<"PLOT WIDGET SHOW";
-//    PlotView* PlotGraph;
-//    PlotGraph = new PlotView(PlotWidget);
-//    PlotGraph->setMinimumSize(PlotWidget->width(),PlotWidget->height());
-//    PlotGraph->show();
-//
-//    qDebug()<<"PLOT graph SHOW";
-//
-//    //consumed power - time
-//    qDebug()<<"inside case 1";
-//    Data.setPoints("PowerConsumptionTimeFunction.stad");
-//    qDebug()<<"points are set";
-//    PlotGraph->setTitle("Consumed Power - Time Function");
-//    qDebug()<<"title set";
-//    PlotGraph->addPlot(&Data);
-//    qDebug()<<"add it to plot";
-//
-//    qDebug()<<Data.getPointCount();
-//    qDebug()<<Data.getPoint(2).x();
+    QString FileNameWithExtension;
+    switch (PowerGraphComboBox->currentIndex())
+    {
+    case 0://SelectGraph
+        break;
+    case 1://consumed power - time
+        FileNameWithExtension = ("PowerConsumptionTimeFunction.stad");
+        break;
+    case 2://generate power - time
+        FileNameWithExtension = ("GeneratedPowerTimeFunction.stad");
+        break;
+    case 3://net power - time
+        FileNameWithExtension = ("NetPowerTimeFunction.stad");
+        break;
+    }
 
+    QDialog plotDialog(this);
+    QVBoxLayout* layout = new QVBoxLayout(&plotDialog);
+    PlotView* plotView = new PlotView(&plotDialog);
+    layout->addWidget(plotView);
+    plotDialog.setLayout(layout);
 
+    qWarning("TODO: %s	%d",__FILE__,__LINE__);
 
-//    PlotGraphFromFile Data = new PlotGraphFromFile();
-//    PlotDataSource* DataSource = &Data;
-//
-//    PlottingTool* PlotWidget ;
-//    PlotWidget = new PlottingTool(this);
-//    PlotWidget->show();
-//    qDebug()<<"PLOT WIDGET SHOW";
-//    PlotView* PlotGraph;
-//    PlotGraph = new PlotView(PlotWidget);
-//    PlotGraph->setMinimumSize(PlotWidget->width(),PlotWidget->height());
-//
-//    qDebug()<<"PLOT graph SHOW";
-//
-//    switch (PowerGraphComboBox->currentIndex())
-//    {
-//    case 0://SelectGraph
-//        break;
-//    case 1://consumed power - time
-//        qDebug()<<"inside case 1";
-//        Data.setPoints("PowerConsumptionTimeFunction.stad");
-//        qDebug()<<"points are set";
-//        PlotGraph->setTitle("Consumed Power - Time Function");
-//        qDebug()<<"title set";
-//        PlotGraph->addPlot(DataSource);
-//        qDebug()<<"add it to plot";
-//        PlotGraph->show();
-//        break;
-//    case 2://generate power - time
-//        Data.setPoints("GeneratedPowerTimeFunction.stad");
-//        PlotGraph->setTitle("Generated Power - Time Function");
-//        PlotGraph->addPlot(DataSource);
-//        break;
-//    case 3://net power - time
-//        Data.setPoints("NetPowerTimeFunction.stad");
-//        PlotGraph->setTitle("Net Power - Time Function");
-//        PlotGraph->addPlot(DataSource);
-//        break;
-//    }
+    PlotGraphFromFile* Data = new PlotGraphFromFile();
+    qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    Data->setPoints(FileNameWithExtension);
+    qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    plotView->addPlot(Data);
+    qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    FileNameWithExtension.chop(5);
+    plotView->setTitle(FileNameWithExtension);
+    plotView->setHorizontalScale(LinearPlotScale(50000, 60000));
+    plotView->setVerticalScale(LinearPlotScale(0, 60000));
+    plotDialog.exec();
 
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void SemMainGUI::on_PowerDetailsButton_clicked()
@@ -1329,9 +1328,9 @@ void SemMainGUI::on_SemMainGUISavePushButton_clicked()
                 {
                     //set mission start time - end time - keplerian element - orbitting body
                     loitering->TimeLine()->setStartTime
-                            (SC.getSCMissionDetails()->getMissionStartTime());
+                            (MissionStartDateTimeEdit->dateTime());
                     loitering->TimeLine()->setEndTime
-                            (SC.getSCMissionDetails()->getMissionEndTime());
+                            (MissionEndDateTimeEdit->dateTime());
                     loitering->Environment()->CentralBody()->setName
                             (SC.getSCMissionDetails()->getPlanetProperties()->Planet.toUpper());
                     //see if the mission has keplerian elements to be filled
@@ -1346,15 +1345,15 @@ void SemMainGUI::on_SemMainGUISavePushButton_clicked()
                                     = dynamic_cast<ScenarioKeplerianElementsType*>
                                       (loitering->InitialPosition()->Abstract6DOFPosition().data());
                             keplerian->setArgumentOfPeriapsis
-                                    (SC.getSCMissionDetails()->getArgumentOfPerigee());
+                                    (ArgumentOfPerigeeLineEdit->text().toDouble());
                             keplerian->setEccentricity
-                                    (SC.getSCMissionDetails()->getEccentricity());
+                                    (EccentricityLineEdit->text().toDouble());
                             keplerian->setInclination
-                                    (SC.getSCMissionDetails()->getInclination());
+                                    (InclinationLineEdit->text().toDouble());
                             keplerian->setRAAN
-                                    (SC.getSCMissionDetails()->getRightAscensionNode());
+                                    (RAANLineEdit->text().toDouble());
                             keplerian->setSemiMajorAxis
-                                    (SC.getSCMissionDetails()->getSemiMajorAxis());
+                                    (SemiMajorAxisLineEdit->text().toDouble());
                             keplerian->setTrueAnomaly
                                     (SC.getSCMissionDetails()->getTrueAnomaly());
                             break;

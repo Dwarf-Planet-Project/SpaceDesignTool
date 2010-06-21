@@ -3177,16 +3177,16 @@
  </widget>
  <tabstops>
   <tabstop>PlanetNameComboBox</tabstop>
-  <tabstop>MissionStartTimeDateTimeEdit</tabstop>
-  <tabstop>MissionEndTimeDateTimeEdit</tabstop>
   <tabstop>SemimajorAxisLineEdit</tabstop>
   <tabstop>EccentricityLineEdit</tabstop>
   <tabstop>InclinationLineEdit</tabstop>
-  <tabstop>TrueAnomalyLineEdit</tabstop>
-  <tabstop>ArgumentOfPeriapsisLineEdit</tabstop>
   <tabstop>RAANLineEdit</tabstop>
-  <tabstop>NewPayloadRadioButton</tabstop>
+  <tabstop>ArgumentOfPeriapsisLineEdit</tabstop>
+  <tabstop>TrueAnomalyLineEdit</tabstop>
+  <tabstop>MissionEndTimeDateTimeEdit</tabstop>
   <tabstop>DatabasePayloadRadioButton</tabstop>
+  <tabstop>MissionStartTimeDateTimeEdit</tabstop>
+  <tabstop>NewPayloadRadioButton</tabstop>
   <tabstop>PayloadSetComboBox</tabstop>
   <tabstop>PayloadNameLineEdit</tabstop>
   <tabstop>PayloadWidthLineEdit</tabstop>

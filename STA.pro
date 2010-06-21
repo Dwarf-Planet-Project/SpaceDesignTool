@@ -852,7 +852,8 @@ SOURCES = $$MAIN_SOURCES \
     $$ANALYSIS_SOURCES \
     $$COVERAGE_SOURCES \
     $$CONSTELLATIONS_SOURCES \
-    sta-src/SEM/Launcher.cpp
+    sta-src/SEM/Launcher.cpp \
+    sta-src/SEM/PlotGraphFromFile.cpp
 HEADERS = $$MAIN_HEADERS \
     $$ASTROCORE_HEADERS \
     $$SEM_HEADERS \
@@ -877,7 +878,8 @@ HEADERS = $$MAIN_HEADERS \
     $$ANALYSIS_HEADERS \
     $$COVERAGE_HEADERS \
     $$CONSTELLATIONS_HEADERS \
-    sta-src/SEM/Launcher.h
+    sta-src/SEM/Launcher.h \
+    sta-src/SEM/PlotGraphFromFile.h
 FORMS = $$MAIN_FORMS \
     $$ASTROCORE_FORMS \
     $$SEM_FORMS \
