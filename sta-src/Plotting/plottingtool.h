@@ -25,6 +25,9 @@
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
  */
 
+#ifndef _PLOTTING_PLOTTINGTOOL_H_
+#define _PLOTTING_PLOTTINGTOOL_H_
+
 #include "ui_plottingtool.h"
 #include <QComboBox>
 
@@ -74,3 +77,4 @@ private:
     int m_plotType;
 };
 
+#endif // _PLOTTING_PLOTTINGTOOL_H_

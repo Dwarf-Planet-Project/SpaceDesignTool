@@ -24,6 +24,9 @@
 //------------------ Author:       Chris Laurel                   -------------------
 //-----------------------------------------------------------------------------------
 
+#ifndef _PLOTTING_PLOTVIEW_H_
+#define _PLOTTING_PLOTVIEW_H_
+
 #include <QWidget>
 #include <QVector>
 #include <Eigen/Core>
@@ -128,6 +131,8 @@ public:
     void setHorizontalScale(const PlotScale& scale);
     void setVerticalScale(const PlotScale& scale);
 
+    void autoScale();
+
 public slots:
     void setTitle(const QString& title);
 
@@ -148,3 +153,5 @@ private:
     float m_leftMargin;
     float m_rightMargin;
 };
+
+#endif // _PLOTTING_PLOTVIEW_H_

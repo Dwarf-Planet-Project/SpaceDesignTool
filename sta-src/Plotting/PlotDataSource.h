@@ -24,6 +24,9 @@
 //------------------ Author:       Chris Laurel                   -------------------
 //-----------------------------------------------------------------------------------
 
+#ifndef _PLOTTING_PLOTDATASOURCE_H_
+#define _PLOTTING_PLOTDATASOURCE_H_
+
 #include <Eigen/Core>
 #include <QObject>
 
@@ -41,3 +44,5 @@ public:
     virtual unsigned int getPointCount() const = 0;
     virtual Eigen::Vector2d getPoint(unsigned int index) const = 0;
 };
+
+#endif // _PLOTTING_PLOTDATASOURCE_H_

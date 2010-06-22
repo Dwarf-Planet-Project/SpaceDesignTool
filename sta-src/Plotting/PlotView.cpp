@@ -28,6 +28,7 @@
 #include "PlotView.h"
 #include <QPainter>
 #include <cmath>
+#include <limits>
 
 using namespace Eigen;
 using namespace std;
@@ -203,6 +204,52 @@ PlotView::setVerticalScale(const PlotScale& scale)
     m_verticalScale = scale.clone();
 }
 
+
+/** Automatically set the horizontal and vertical scales to ranges
+  * just large enough to contain all plots. The scales are *not*
+  * automatically updated if the plot data changes after autoScale()
+  * is called; to ensure that all data is displayed, autoScale()
+  * must be called again.
+  *
+  * autoScale() has no effect if there are no PlotDataSources, or if
+  * all PlotDataSources are empty.
+  *
+  * TODO: Currently, autoScale() always uses a linear scale; add option
+  * to specify whether a linear or log scale should be used.
+  */
+void
+PlotView::autoScale()
+{
+    bool empty = true;
+
+    double minX =  numeric_limits<double>::infinity();
+    double maxX = -numeric_limits<double>::infinity();
+    double minY =  numeric_limits<double>::infinity();
+    double maxY = -numeric_limits<double>::infinity();
+
+    foreach (const PlotDataSource* p, m_plots)
+    {
+        if (p->getPointCount() > 0)
+        {
+            empty = false;
+        }
+
+        for (unsigned int i = 0; i < p->getPointCount(); ++i)
+        {
+            Vector2d v = p->getPoint(i);
+            minX = min(minX, v.x());
+            maxX = max(maxX, v.x());
+            minY = min(minY, v.y());
+            maxY = max(maxY, v.y());
+        }
+    }
+
+    if (!empty)
+    {
+        setHorizontalScale(LinearPlotScale(minX, maxX));
+        setVerticalScale(LinearPlotScale(minY, maxY));
+    }
+}
 
 // Map a point from data coordinates to view coordinates
 QPointF
