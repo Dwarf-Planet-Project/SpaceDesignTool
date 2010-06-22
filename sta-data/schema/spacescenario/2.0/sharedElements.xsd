@@ -433,7 +433,7 @@
 
 
 
-	<complexType name="TelescopeType" abstract="true">
+	<complexType name="TelescopeType">
 		<sequence>
 			<element name="OpticalProperties">
 				<complexType>
@@ -447,7 +447,7 @@
 	</complexType>
 
 
-	<complexType name="RadarType" abstract="true">
+	<complexType name="RadarType">
 		<sequence>
 			<element name="RadarProperties">
 				<complexType>
@@ -468,9 +468,9 @@
 
 	<element name="Antenna" type="tns:AntennaType" abstract="true"></element>
 
-	<element name="Radar" type="tns:RadarType" abstract="true"></element>
+	<element name="Radar" type="tns:RadarType"></element>
 
-	<element name="Telescope" type="tns:TelescopeType" abstract="true"></element>
+	<element name="Telescope" type="tns:TelescopeType"></element>
 
 
 

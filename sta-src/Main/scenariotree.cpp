@@ -376,7 +376,7 @@ ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioOb
     }
 
     // Guillermo: expand items by default or not
-    //item->setExpanded(true);
+    item->setExpanded(true);
 
 
     if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject))
@@ -563,7 +563,7 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
             return false;
         }
     }
-    else if (payload)  //Modified by Ricardo to avoid dragging communication payload into SC Trajectory Plan
+    else if (payload)
     {
         //qDebug() << "Dropping payload";
         ScenarioObject* parentObject = objectForItem(parent);
@@ -1239,7 +1239,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
 void ScenarioTree::editItem(QTreeWidgetItem* item, int column)
 {
 
-    QTextStream out (stdout);
+    //QTextStream out (stdout);
 
     if (item == NULL)
     {

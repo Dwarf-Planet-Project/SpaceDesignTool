@@ -7955,6 +7955,7 @@ QDomElement CreateOpticalPayloadElement(ScenarioOpticalPayloadType* e, QDomDocum
 QDomElement CreateInitialAttitudeElement(ScenarioInitialAttitudeType* e, QDomDocument& doc);
 QDomElement CreateElementIdentifierElement(ScenarioElementIdentifierType* e, QDomDocument& doc);
 QDomElement CreateLoiteringElement(ScenarioLoiteringType* e, QDomDocument& doc);
+QDomElement CreateRadarElement(ScenarioRadarType* e, QDomDocument& doc);
 QDomElement CreateReceiverElement(ScenarioReceiver* e, QDomDocument& doc);
 QDomElement CreateSphericalCoordinatesElement(ScenarioSphericalCoordinatesType* e, QDomDocument& doc);
 QDomElement CreateTimeLineElement(ScenarioTimeLine* e, QDomDocument& doc);
@@ -7994,5 +7995,6 @@ QDomElement CreateImpHoppVbarTgElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDom
 QDomElement CreateLagrangianElement(ScenarioLagrangianType* e, QDomDocument& doc);
 QDomElement CreateImpHoppNoVbarElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc);
 QDomElement CreatePropagationElement(ScenarioPropagation* e, QDomDocument& doc);
+QDomElement CreateTelescopeElement(ScenarioTelescopeType* e, QDomDocument& doc);
 
 #endif // _STASCHEMA_H_

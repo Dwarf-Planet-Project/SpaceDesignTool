@@ -452,6 +452,10 @@ static QByteArray externalFragment(const char* name)
 static QByteArray transmitterPayloadFragment(const char* name)
 {
     ScenarioTransmitterPayloadType transmitterPayload;
+
+    // Guillermo says: addign a new for this payload
+    transmitterPayload.ElementIdentifier()->setName("transmitter");
+
     double ElInit=(90*DEG2RAD);
     transmitterPayload.Transmitter()->PointingDirection()->setElevation(ElInit);
     transmitterPayload.Transmitter()->PointingDirection()->setAzimuth(0);
@@ -483,6 +487,9 @@ static QByteArray receiverPayloadFragment(const char* name)
 {
     ScenarioReceiverPayloadType receiverPayload;
 
+    // Guillermo says: addign a new for this payload
+    receiverPayload.ElementIdentifier()->setName("receiver");
+
     double ElInit=(90*DEG2RAD);
     receiverPayload.Receiver()->PointingDirection()->setElevation(ElInit);
     receiverPayload.Receiver()->PointingDirection()->setAzimuth(0);
@@ -492,21 +499,16 @@ static QByteArray receiverPayloadFragment(const char* name)
     receiverPayload.Receiver()->EMproperties()->setPolarisation("Linear");
     receiverPayload.Receiver()->EMproperties()->setBandWidth(32000000.0);//in Hz
 
-
     receiverPayload.Receiver()->setDepointingLossRx(0);
     receiverPayload.Receiver()->setFeederLossRx(0);
 
     receiverPayload.Budget()->setFrequencyBand(14500000000.0);//It's in hertz
-
 
     receiverPayload.Receiver()->SystemTemperature()->setRxNoiseFigure(1);
     receiverPayload.Receiver()->SystemTemperature()->setThermoFeeder(290);
     receiverPayload.Receiver()->SystemTemperature()->setThermoReveicer(290);
 
     receiverPayload.Receiver()->SystemTemperature()->setChoiceTantenna("calculated");
-
-
-
 
     QDomDocument doc;
     return fragmentText(CreateReceiverPayloadElement(&receiverPayload, doc)).toUtf8();
@@ -519,6 +521,11 @@ static QByteArray opticalPayloadFragment(const char* name)
 {
     ScenarioOpticalPayloadType opticalPayload;
 
+    // Guillermo says: filling up defaults
+    opticalPayload.ElementIdentifier()->setName("telescope");
+    opticalPayload.Telescope()->OpticalProperties()->setDiameter(0.10);
+    opticalPayload.Telescope()->OpticalProperties()->setEfficiency(100.0);
+
     QDomDocument doc;
     return fragmentText(CreateOpticalPayloadElement(&opticalPayload, doc)).toUtf8();
 }
@@ -527,6 +534,15 @@ static QByteArray opticalPayloadFragment(const char* name)
 static QByteArray radarPayloadFragment(const char* name)
 {
     ScenarioRadarPayloadType radarPayload;
+
+    // Guillermo says: filling up defaults
+    radarPayload.ElementIdentifier()->setName("radar");
+    radarPayload.Radar()->RadarProperties()->setAngularBeamWidth(25.0);
+    radarPayload.Radar()->RadarProperties()->setDiameter(0.10);
+    radarPayload.Radar()->RadarProperties()->setEfficiency(100.0);
+    radarPayload.Radar()->RadarProperties()->setGainMax(30.0);
+    radarPayload.Radar()->RadarProperties()->setPolarisation("right");
+    radarPayload.Radar()->RadarProperties()->setTiltAngle(0.0);
 
     QDomDocument doc;
     return fragmentText(CreateRadarPayloadElement(&radarPayload, doc)).toUtf8();

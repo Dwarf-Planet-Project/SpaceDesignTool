@@ -13116,6 +13116,11 @@ QDomElement CreateLoiteringElement(ScenarioLoiteringType* e, QDomDocument& doc)
     return e->toDomElement(doc, "Loitering");
 }
 
+QDomElement CreateRadarElement(ScenarioRadarType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "Radar");
+}
+
 QDomElement CreateReceiverElement(ScenarioReceiver* e, QDomDocument& doc)
 {
     return e->toDomElement(doc, "Receiver");
@@ -13309,5 +13314,10 @@ QDomElement CreateImpHoppNoVbarElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDom
 QDomElement CreatePropagationElement(ScenarioPropagation* e, QDomDocument& doc)
 {
     return e->toDomElement(doc, "Propagation");
+}
+
+QDomElement CreateTelescopeElement(ScenarioTelescopeType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "Telescope");
 }
 
