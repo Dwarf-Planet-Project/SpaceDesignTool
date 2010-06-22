@@ -27,8 +27,10 @@
 #include "PlotDataSource.h"
 #include "PlotView.h"
 #include <QPainter>
+#include <cmath>
 
 using namespace Eigen;
+using namespace std;
 
 
 /** Create a new PlotView.
@@ -217,10 +219,44 @@ QList<double>
 LinearPlotScale::ticks() const
 {
     QList<double> t;
-    unsigned int tickCount = 10;
+    const double maxTicks = 10;
+    double range = m_maxValue - m_minValue;
+    double idealSpacing = range / maxTicks;
+    double exponent = floor(log10(idealSpacing));
+    double p = pow(10.0, exponent);
+    double mantissa = idealSpacing / p;
+
+    // Choose an appropriate tick spacing with round numbers
+    double tickSpacing = 1.0;
+    if (mantissa < 2.0)
+    {
+        tickSpacing = 2.0 * p;
+    }
+    else if (mantissa < 3.0)
+    {
+        tickSpacing = 3.0 * p;
+    }
+    else if (mantissa < 5.0)
+    {
+        tickSpacing = 5.0 * p;
+    }
+    else
+    {
+        tickSpacing = 10.0 * p;
+    }
+
+    double firstTick = ceil(m_minValue / tickSpacing) * tickSpacing;
+    double lastTick = floor(m_maxValue / tickSpacing) * tickSpacing;
+
+    /*
     for (unsigned int i = 0; i < tickCount; i++)
     {
         t << m_minValue + (m_maxValue - m_minValue) * double(i) / double(tickCount - 1);
+    }
+    */
+    for (double tick = firstTick; tick <= lastTick; tick += tickSpacing)
+    {
+        t << tick;
     }
 
     return t;
