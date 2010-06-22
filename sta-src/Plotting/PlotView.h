@@ -118,6 +118,26 @@ public:
         return m_title;
     }
 
+    QString leftLabel() const
+    {
+        return m_leftLabel;
+    }
+
+    QString rightLabel() const
+    {
+        return m_rightLabel;
+    }
+
+    QString topLabel() const
+    {
+        return m_topLabel;
+    }
+
+    QString bottomLabel() const
+    {
+        return m_bottomLabel;
+    }
+
     const PlotScale* horizontalScale() const
     {
         return m_horizontalScale;
@@ -131,10 +151,14 @@ public:
     void setHorizontalScale(const PlotScale& scale);
     void setVerticalScale(const PlotScale& scale);
 
-    void autoScale();
 
 public slots:
     void setTitle(const QString& title);
+    void setLeftLabel(const QString& label);
+    void setRightLabel(const QString& label);
+    void setTopLabel(const QString& label);
+    void setBottomLabel(const QString& label);
+    void autoScale();
 
 protected:
     virtual void paintEvent(QPaintEvent* event);
@@ -144,7 +168,13 @@ private:
 
 private:
     QVector<PlotDataSource*> m_plots;
+
     QString m_title;
+    QString m_leftLabel;
+    QString m_rightLabel;
+    QString m_topLabel;
+    QString m_bottomLabel;
+
     PlotScale* m_horizontalScale;
     PlotScale* m_verticalScale;
 

@@ -27,6 +27,7 @@
 #include "PlotDataSource.h"
 #include "PlotView.h"
 #include <QPainter>
+#include <QDebug>
 #include <cmath>
 #include <limits>
 
@@ -41,9 +42,9 @@ PlotView::PlotView(QWidget* parent) :
     m_horizontalScale(NULL),
     m_verticalScale(NULL),
     m_topMargin(50.0f),
-    m_bottomMargin(25.0f),
-    m_leftMargin(50.0f),
-    m_rightMargin(20.0f)
+    m_bottomMargin(50.0f),
+    m_leftMargin(80.0f),
+    m_rightMargin(30.0f)
 {
     m_horizontalScale = new LinearPlotScale(0.0, 1.0);
     m_verticalScale = new LinearPlotScale(0.0, 1.0);
@@ -105,14 +106,41 @@ PlotView::paintEvent(QPaintEvent* /* event */)
 {
     QPainter painter(this);
 
+    painter.setRenderHint(QPainter::Antialiasing);
     painter.fillRect(0, 0, width(), height(), Qt::white);
+
+    const float maxLabelWidth = 100.0f;
+    const float labelHeight = 15.0f;
+    const float labelPlotSpacing = 5.0f; // space between axis labels and plot
+
+    // Get the dimensions of the plot excluding the margins
+    float plotWidth = width() - m_rightMargin - m_leftMargin;
+    float plotHeight = height() - m_topMargin - m_bottomMargin;
 
     // Draw the title
     painter.setPen(Qt::black);
     painter.setFont(QFont("Helvetica", 14, QFont::Bold));
-    painter.drawText(QRectF(m_leftMargin, 0.0f, width() - m_rightMargin - m_leftMargin, m_topMargin),
+    painter.drawText(QRectF(m_leftMargin, 0.0f, plotWidth, m_topMargin),
                      Qt::AlignLeft | Qt::AlignVCenter,
                      m_title);
+
+    // Draw the labels on the borders of the plot
+    painter.setFont(QFont("Helvetica", 14, QFont::Normal));
+    float bottomLabelSpace = m_bottomMargin - labelPlotSpacing - labelHeight;
+    painter.drawText(QRectF(m_leftMargin, height() - bottomLabelSpace, plotWidth, bottomLabelSpace),
+                     Qt::AlignHCenter | Qt::AlignVCenter,
+                     m_bottomLabel);
+
+    QTransform saveTransform = painter.worldTransform();
+    float leftLabelSpace = 30.0f;
+    painter.translate(leftLabelSpace, height() - m_bottomMargin);
+    painter.rotate(-90.0f);
+    painter.drawText(QRectF(0.0f, 0.0f, plotHeight, leftLabelSpace),
+                     Qt::AlignVCenter | Qt::AlignHCenter,
+                     m_leftLabel);
+    painter.setWorldTransform(saveTransform);
+
+
     painter.setFont(QFont("Helvetica", 10, QFont::Normal));
 
     // Scale factors to map values in the unit interval to physical coordinates
@@ -137,13 +165,11 @@ PlotView::paintEvent(QPaintEvent* /* event */)
 
     // Draw the grid labels
     painter.setPen(Qt::black);
-    float maxLabelWidth = 100.0f;
-    float labelHeight = 30.0f;
 
     foreach (double x, xTicks)
     {
         float sx = float(m_horizontalScale->scaled(x)) * xscale + m_leftMargin;
-        painter.drawText(QRectF(sx - maxLabelWidth / 2.0f, height() - m_bottomMargin + 5, maxLabelWidth, labelHeight),
+        painter.drawText(QRectF(sx - maxLabelWidth / 2.0f, height() - m_bottomMargin + labelPlotSpacing, maxLabelWidth, labelHeight),
                          Qt::AlignHCenter | Qt::AlignTop,
                          QString("%1").arg(x));
     }
@@ -151,7 +177,7 @@ PlotView::paintEvent(QPaintEvent* /* event */)
     foreach (double y, yTicks)
     {
         float sy = (1.0f - float(m_verticalScale->scaled(y))) * yscale + m_topMargin;
-        painter.drawText(QRectF(0.0f, sy - labelHeight / 2.0f, m_leftMargin - 5.0f, labelHeight),
+        painter.drawText(QRectF(0.0f, sy - labelHeight / 2.0f, m_leftMargin - labelPlotSpacing, labelHeight),
                          Qt::AlignVCenter | Qt::AlignRight,
                          QString("%1").arg(y));
     }
@@ -182,6 +208,42 @@ void
 PlotView::setTitle(const QString& title)
 {
     m_title = title;
+}
+
+
+/** Set the label that will be displayed on the left side of the plot.
+  */
+void
+PlotView::setLeftLabel(const QString& label)
+{
+    m_leftLabel = label;
+}
+
+
+/** Set the label that will be displayed on the right side of the plot.
+  */
+void
+PlotView::setRightLabel(const QString& label)
+{
+    m_rightLabel = label;
+}
+
+
+/** Set the label that will be displayed above the plot (and beneath the title.)
+  */
+void
+PlotView::setTopLabel(const QString& label)
+{
+    m_topLabel = label;
+}
+
+
+/** Set the label that will be displayed beneat the plot.
+  */
+void
+PlotView::setBottomLabel(const QString& label)
+{
+    m_bottomLabel = label;
 }
 
 
