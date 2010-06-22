@@ -26,6 +26,7 @@
 
 #include <QWidget>
 #include <QVector>
+#include <Eigen/Core>
 
 
 class PlotDataSource;
@@ -134,8 +135,16 @@ protected:
     virtual void paintEvent(QPaintEvent* event);
 
 private:
+    QPointF toViewCoords(const Eigen::Vector2d& p);
+
+private:
     QVector<PlotDataSource*> m_plots;
     QString m_title;
     PlotScale* m_horizontalScale;
     PlotScale* m_verticalScale;
+
+    float m_topMargin;
+    float m_bottomMargin;
+    float m_leftMargin;
+    float m_rightMargin;
 };

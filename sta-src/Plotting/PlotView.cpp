@@ -36,7 +36,11 @@ using namespace Eigen;
 PlotView::PlotView(QWidget* parent) :
     QWidget(parent),
     m_horizontalScale(NULL),
-    m_verticalScale(NULL)
+    m_verticalScale(NULL),
+    m_topMargin(50.0f),
+    m_bottomMargin(25.0f),
+    m_leftMargin(50.0f),
+    m_rightMargin(20.0f)
 {
     m_horizontalScale = new LinearPlotScale(0.0, 1.0);
     m_verticalScale = new LinearPlotScale(0.0, 1.0);
@@ -100,27 +104,53 @@ PlotView::paintEvent(QPaintEvent* /* event */)
 
     painter.fillRect(0, 0, width(), height(), Qt::white);
 
-    painter.setPen(Qt::lightGray);
-    painter.drawText(100, 100, m_title);
+    // Draw the title
+    painter.setPen(Qt::black);
+    painter.setFont(QFont("Helvetica", 14, QFont::Bold));
+    painter.drawText(QRectF(m_leftMargin, 0.0f, width() - m_rightMargin - m_leftMargin, m_topMargin),
+                     Qt::AlignLeft | Qt::AlignVCenter,
+                     m_title);
+    painter.setFont(QFont("Helvetica", 10, QFont::Normal));
 
     // Scale factors to map values in the unit interval to physical coordinates
-    float xscale = width();
-    float yscale = height();
+    float xscale = width() - m_leftMargin - m_rightMargin;
+    float yscale = height() - m_topMargin - m_bottomMargin;
 
     // Draw grid
+    painter.setPen(Qt::lightGray);
     QList<double> xTicks = m_horizontalScale->ticks();
     QList<double> yTicks = m_verticalScale->ticks();
     foreach (double x, xTicks)
     {
         float sx = float(m_horizontalScale->scaled(x)) * xscale;
-        painter.drawLine(QPointF(sx, 0.0f), QPointF(sx, yscale));
+        painter.drawLine(QPointF(m_leftMargin + sx, m_topMargin), QPointF(m_leftMargin + sx, m_topMargin + yscale));
     }
 
     foreach (double y, yTicks)
     {
         float sy = float(m_verticalScale->scaled(y)) * yscale;
-        painter.drawLine(QPointF(0.0f, yscale - sy), QPointF(xscale, yscale - sy));
-        qDebug("tick %f", y);
+        painter.drawLine(QPointF(m_leftMargin, m_topMargin + yscale - sy), QPointF(m_leftMargin + xscale, m_topMargin + yscale - sy));
+    }
+
+    // Draw the grid labels
+    painter.setPen(Qt::black);
+    float maxLabelWidth = 100.0f;
+    float labelHeight = 30.0f;
+
+    foreach (double x, xTicks)
+    {
+        float sx = float(m_horizontalScale->scaled(x)) * xscale + m_leftMargin;
+        painter.drawText(QRectF(sx - maxLabelWidth / 2.0f, height() - m_bottomMargin + 5, maxLabelWidth, labelHeight),
+                         Qt::AlignHCenter | Qt::AlignTop,
+                         QString("%1").arg(x));
+    }
+
+    foreach (double y, yTicks)
+    {
+        float sy = (1.0f - float(m_verticalScale->scaled(y))) * yscale + m_topMargin;
+        painter.drawText(QRectF(0.0f, sy - labelHeight / 2.0f, m_leftMargin - 5.0f, labelHeight),
+                         Qt::AlignVCenter | Qt::AlignRight,
+                         QString("%1").arg(y));
     }
 
     // Draw plots
@@ -130,9 +160,7 @@ PlotView::paintEvent(QPaintEvent* /* event */)
         QPointF lastPoint(0.0f, 0.0f);
         for (unsigned int i = 0; i < plot->getPointCount(); ++i)
         {
-            Vector2d point = plot->getPoint(i);
-            QPointF pf(float(m_horizontalScale->scaled(point.x())) * xscale,
-                       yscale - float(m_verticalScale->scaled(point.y())) * yscale);
+            QPointF pf = toViewCoords(plot->getPoint(i));
             if (i != 0)
             {
                 painter.drawLine(lastPoint, pf);
@@ -173,6 +201,16 @@ PlotView::setVerticalScale(const PlotScale& scale)
     m_verticalScale = scale.clone();
 }
 
+
+// Map a point from data coordinates to view coordinates
+QPointF
+PlotView::toViewCoords(const Vector2d& p)
+{
+    float xscale = width() - m_leftMargin - m_rightMargin;
+    float yscale = height() - m_topMargin - m_bottomMargin;
+    return QPointF(m_leftMargin + float(m_horizontalScale->scaled(p.x())) * xscale,
+                   m_topMargin + yscale * (1.0f - float(m_verticalScale->scaled(p.y()))));
+}
 
 
 QList<double>
