@@ -30,7 +30,8 @@ ThermalGUI::ThermalGUI( SemMain * SC, QWidget * parent, Qt::WindowFlags f) : QDi
         SCVirtual = SC;
 
         // Display the temperature limits of Payloads to compare
-        ThermalGUIPayload1NameLineEdit->setText
+        if (!((SCVirtual->getNewSCThermal()->getPayloadTemperature()+0)->Name==""))
+        ThermalGUIPayload1NameLabel->setText
                 ((SCVirtual->getNewSCThermal()->getPayloadTemperature()+0)->Name);
         ThermalGUIPayload1MinTempLineEdit->setText
                 (QString::number
@@ -39,7 +40,8 @@ ThermalGUI::ThermalGUI( SemMain * SC, QWidget * parent, Qt::WindowFlags f) : QDi
                 (QString::number
                  (((SCVirtual->getNewSCThermal()->getPayloadTemperature()+0)->MaximumTemperature)));
 
-        ThermalGUIPayload2NameLineEdit->setText
+        if (!((SCVirtual->getNewSCThermal()->getPayloadTemperature()+1)->Name==""))
+        ThermalGUIPayload2NameLabel->setText
                 ((SCVirtual->getNewSCThermal()->getPayloadTemperature()+1)->Name);
         ThermalGUIPayload2MinTempLineEdit->setText
                 (QString::number
@@ -48,7 +50,8 @@ ThermalGUI::ThermalGUI( SemMain * SC, QWidget * parent, Qt::WindowFlags f) : QDi
                 (QString::number
                  (((SCVirtual->getNewSCThermal()->getPayloadTemperature()+1)->MaximumTemperature)));
 
-        ThermalGUIPayload3NameLineEdit->setText
+        if (!((SCVirtual->getNewSCThermal()->getPayloadTemperature()+2)->Name==""))
+        ThermalGUIPayload3NameLabel->setText
                 ((SCVirtual->getNewSCThermal()->getPayloadTemperature()+2)->Name);
         ThermalGUIPayload3MinTempLineEdit->setText
                 (QString::number
@@ -57,7 +60,8 @@ ThermalGUI::ThermalGUI( SemMain * SC, QWidget * parent, Qt::WindowFlags f) : QDi
                 (QString::number
                  (((SCVirtual->getNewSCThermal()->getPayloadTemperature()+2)->MaximumTemperature)));
 
-        ThermalGUIPayload4NameLineEdit->setText
+        if (!((SCVirtual->getNewSCThermal()->getPayloadTemperature()+3)->Name==""))
+        ThermalGUIPayload4NameLabel->setText
                 ((SCVirtual->getNewSCThermal()->getPayloadTemperature()+3)->Name);
         ThermalGUIPayload4MinTempLineEdit->setText
                 (QString::number
@@ -87,12 +91,19 @@ ThermalGUI::ThermalGUI( SemMain * SC, QWidget * parent, Qt::WindowFlags f) : QDi
         else
             ThermalGUIPayload4WarningLabel->setEnabled(0);
 
-        ThermalGUISCMinTemperatureLineEdit->setText
+        ThermalGUISCMinTemperatureHeaterRadiatorLineEdit->setText
                 (QString::number
                  (SCVirtual->getNewSCThermal()->getMinimumSCTempWithRadiatorOrHeater()));
-        ThermalGUISCMaxTemperatureLineEdit->setText
+        ThermalGUISCMaxTemperatureHeaterRadiatorLineEdit->setText
                 (QString::number
                  (SCVirtual->getNewSCThermal()->getMaximumSCTempWithRadiatorOrHeater()));
+
+        ThermalGUISCMinTemperatureLineEdit->setText
+                (QString::number
+                 (SCVirtual->getNewSCThermal()->getMinimumSCTemperature()));
+        ThermalGUISCMaxTemperatureLineEdit->setText
+                (QString::number
+                 (SCVirtual->getNewSCThermal()->getMaximumSCTemperature()));
 
         //setting comboBox from a QString
         int i;
@@ -301,12 +312,19 @@ void ThermalGUI::on_ThermalGUICalculatePushButton_clicked()
              (SCVirtual->getNewSCThermal()->getNeededRadiator()));
 
     //Display the final SC temperature
-    ThermalGUISCMinTemperatureLineEdit->setText
+    ThermalGUISCMinTemperatureHeaterRadiatorLineEdit->setText
             (QString::number(SCVirtual->getNewSCThermal()
                              ->getMinimumSCTempWithRadiatorOrHeater()));
-    ThermalGUISCMaxTemperatureLineEdit->setText
+    ThermalGUISCMaxTemperatureHeaterRadiatorLineEdit->setText
             (QString::number(SCVirtual->getNewSCThermal()
                              ->getMaximumSCTempWithRadiatorOrHeater()));
+
+    ThermalGUISCMinTemperatureLineEdit->setText
+            (QString::number(SCVirtual->getNewSCThermal()
+                             ->getMinimumSCTemperature()));
+    ThermalGUISCMaxTemperatureLineEdit->setText
+            (QString::number(SCVirtual->getNewSCThermal()
+                             ->getMaximumSCTemperature()));
 
     //set Alerts of Payload
     if (SCVirtual->getNewSCThermal()->IsPayloadInAlert(0))

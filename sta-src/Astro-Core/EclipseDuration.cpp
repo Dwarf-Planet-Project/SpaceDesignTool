@@ -291,6 +291,9 @@ void EclipseDuration::CreateEclipseDetailsFile()
                 numberOfStepsInState = 1;
                 break;
             }
+
+            if (EclipseStarLightStream.atEnd())
+                break;
         }
 
         while (State > 0.5) //Daylight
@@ -334,6 +337,9 @@ void EclipseDuration::CreateEclipseDetailsFile()
 //                qDebug()<<"numberOfStepsInState"<<numberOfStepsInState;
                 break;
             }
+
+            if (EclipseStarLightStream.atEnd())
+                break;
         }
     }
 

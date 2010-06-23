@@ -81,18 +81,16 @@ void TTCSubsystem::CalculateAndSetAntennaVolume()
     TTCSubsystemVolume = mypi
                          * AntennaDiameter * AntennaDiameter / 4
                          * FocalLength;
-    qDebug()<<"**       TTCSubsystemVolume "<<TTCSubsystemVolume;
+    qDebug()<<"TTCSubsystemVolume "<<TTCSubsystemVolume;
 }
 
 void TTCSubsystem::CalculateAndSetAntennaDiameter()
 {
     if ((AntennaEfficiency>0.0)&&(AntennaFrequency>0.0))
     {
-        AntennaDiameter = sqrt(AntennaGain
-                               / AntennaEfficiency
-                               * SPEED_OF_LIGHT
-                               / mypi
-                               / AntennaFrequency);
+        AntennaDiameter = sqrt(AntennaGain / AntennaEfficiency)
+                          * SPEED_OF_LIGHT
+                          /(mypi * AntennaFrequency);
 
         CalculateAndSetAntennaVolume();
     }    
@@ -143,13 +141,13 @@ void TTCSubsystem::setPercentageOfContactTimePerOrbit(double Percentage)
 
 void TTCSubsystem::CalculateAndSetContactTimePerOrbit()
 {
-    if (DownlinkRate > 0.0)
+    if (DownlinkRate != 0)
         ContactTimePerOrbit = ceil(MemorySizeForPayloads / DownlinkRate ) ;
     qDebug()<<"C DownlinkRate"<<DownlinkRate;
     if (ContactTimePerOrbit > AverageOrbitDuration)
         ContactTimePerOrbit = AverageOrbitDuration;
 
-   qDebug()<<"**              C2 DownlinkRate"<<DownlinkRate;
+   qDebug()<<"C2 DownlinkRate"<<DownlinkRate;
    qDebug()<<"C MemorySizeForPayloads"<<MemorySizeForPayloads;
    qDebug()<<"C ContactTimePerOrbit"<<ContactTimePerOrbit;
 }
@@ -171,9 +169,9 @@ void TTCSubsystem::setDownlinkRate(double Rate)
 
 void TTCSubsystem::CalculateAndSetDownLinkRate()
 {
-    if (ContactTimePerOrbit > 0.0)
+    if (ContactTimePerOrbit != 0)
         DownlinkRate = ceil(MemorySizeForPayloads / ContactTimePerOrbit) ;
-    qDebug()<<"**         D DownlinkRate"<<DownlinkRate;
+    qDebug()<<"D DownlinkRate"<<DownlinkRate;
     qDebug()<<"D MemorySizeForPayloads"<<MemorySizeForPayloads;
     qDebug()<<"D ContactTimePerOrbit"<<ContactTimePerOrbit;
 }
@@ -223,8 +221,7 @@ double TTCSubsystem::getAntennaEfficiency()
 
 void TTCSubsystem::setMemorySizeForPayloads(double MemorySize)
 {
-    //1 byte = 8 bit G = 1024*M
-    MemorySizeForPayloads = MemorySize * 8 * 1024;
+    MemorySizeForPayloads = MemorySize * 2 * 1024;
 }
 
 double TTCSubsystem::getAntennaDiameter()

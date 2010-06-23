@@ -98,11 +98,12 @@ double OBDHSubsystem::getOBDHSubsystemMass()
 
 void OBDHSubsystem::setOBDHSubsystemPower(double SCPower)
 {
-   if (MemorySizeForPayloads > 0.0)
+   if ((MemorySizeForPayloads > 0.0)
+       &&(TotalSCPower != SCPower))
        {
-       TotalSCPower = SCPower;
        OBDHSubsystemPower
                = 0.0817 * SCPower + 1.584;
+       TotalSCPower = SCPower;
        }
     qDebug()<<"OBDHSubsystemPower -*"<<OBDHSubsystemPower;
     qDebug()<<"MemorySizeForPayloads -*"<<MemorySizeForPayloads;
@@ -112,7 +113,7 @@ void OBDHSubsystem::setOBDHSubsystemPower(double SCPower)
 
 double OBDHSubsystem::getOBDHSubsystemPower()
 {
-//    qDebug()<<"OBDHSubsystemPower -"<<OBDHSubsystemPower;
+    qDebug()<<"OBDHSubsystemPower -"<<OBDHSubsystemPower;
     return OBDHSubsystemPower;
 }
 
@@ -124,7 +125,7 @@ void OBDHSubsystem::setOBDHSubsystemVolume(double Volume)
 
 double OBDHSubsystem::getOBDHSubsystemVolume()
 {
-//    qDebug()<<"OBDHSubsystemVolume -"<<OBDHSubsystemVolume;
+    qDebug()<<"OBDHSubsystemVolume -"<<OBDHSubsystemVolume;
     return OBDHSubsystemVolume;
 }
 
@@ -226,25 +227,21 @@ void OBDHSubsystem::CalculateAndSetMemorySizeForPayloads()
     }
 
     double totalDataWithNoCoding = 0.0;
+    totalDataWithNoCoding = tempPayloadData * (1 + SafetyMargin)
+                            + HousekeepingDataRateOfPayloads * (1 + SafetyMargin);
 
-    if (tempPayloadData > 0.0) // if there is payload data calculate the memory
-    {
-        totalDataWithNoCoding = tempPayloadData * (1 + SafetyMargin)
-                                + HousekeepingDataRateOfPayloads * (1 + SafetyMargin);
+    qDebug()<<"totalDataWithNoCoding"<<totalDataWithNoCoding;
 
-        qDebug()<<"totalDataWithNoCoding"<<totalDataWithNoCoding;
+    double totalDataWithCoding = 0.0;
+    totalDataWithCoding = totalDataWithNoCoding * (1 + Coding.CodingPercentage);
 
-        double totalDataWithCoding = 0.0;
-        totalDataWithCoding = totalDataWithNoCoding * (1 + Coding.CodingPercentage);
+    qDebug()<<"totalDataWithCoding"<<totalDataWithCoding;
 
-        qDebug()<<"totalDataWithCoding"<<totalDataWithCoding;
-
-        //The effect of degradation during the mission is added 2.5Gbits/yr ->2560Mbits/yr
-        // MemorySizeForPayloads in GB dividing 8 is for bytes,
-        //1024 to conversion from megabits to GB
-        MemorySizeForPayloads = ((NumberOfOrbitWithNolink + 1) * totalDataWithCoding
-                                + 2560 * MissionDuration)/(8 * 1024);
-    }
+    //The effect of degradation during the mission is added 2.5Gbits/yr ->2560Mbits/yr
+    // MemorySizeForPayloads in GB dividing 8 is for bytes,
+    //1024 to conversion from megabits to GB
+    MemorySizeForPayloads = ((NumberOfOrbitWithNolink + 1) * totalDataWithCoding
+                            + 2560 * MissionDuration)/(8 * 1024);
 
     qDebug()<<"MemorySizeForPayloads"<<MemorySizeForPayloads;
 }

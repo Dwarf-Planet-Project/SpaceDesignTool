@@ -32,7 +32,7 @@ SemMain::SemMain()
 
 
 
-    NewSCStructure.setMassEstimations("Light_Satellite");
+//    NewSCStructure.setMassEstimations("Light_Satellite");
 }
 
 //----------------- Functions ---------------------------------------//
@@ -211,19 +211,19 @@ void SemMain::PassPowerSubsystemOutputParameters()
 
 void SemMain::PassThermalSubsystemOutputParameters()
 {
-    //to Thermal Subsystem
-    NewSCPower.setThermalSubsystemPower(NewSCThermal.getThermalSubsystemPower());
-
-    //?????????????????????????????????
-//    NewSCPower.SolarArrays.CalculateSAEOLPower();
-
-    //to Structure Subsystem
-    NewSCThermal.setThermalSubsystemMass
-            (NewSCStructure.getPayloadStructure()->PayloadMass);
-    NewSCStructure.setThermalSubsystemMass
-            (NewSCThermal.getThermalSubsystemMass());
-    NewSCStructure.setThermalSubsystemVolume
-            (NewSCStructure.getThermalSubsystemVolume());
+//    //to Thermal Subsystem
+//    NewSCPower.setThermalSubsystemPower(NewSCThermal.getThermalSubsystemPower());
+//
+//    //?????????????????????????????????
+////    NewSCPower.SolarArrays.CalculateSAEOLPower();
+//
+//    //to Structure Subsystem
+//    NewSCThermal.setThermalSubsystemMass
+//            (NewSCStructure.getPayloadStructure()->PayloadMass);
+//    NewSCStructure.setThermalSubsystemMass
+//            (NewSCThermal.getThermalSubsystemMass());
+//    NewSCStructure.setThermalSubsystemVolume
+//            (NewSCStructure.getThermalSubsystemVolume());
 }
 
 void SemMain::PassStructureSubsystemOutputParameters()

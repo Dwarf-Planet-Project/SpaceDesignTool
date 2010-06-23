@@ -825,19 +825,22 @@ void PowerSubsystem::CreatePowerConsumptionFunctionOfSpacecraft()
             for(i=0;i<numberOfSteps;i++)
             {
                 EclipseStarLightStream >> startMjd;
-                EclipseStarLightStream >> eclipseCondition;
-                ConsumedPowerTimeStream << startMjd <<"\t";
-
-                tempEclipse = SCPowerDetails.SubsystemsTotalPower;
-                for(j=0;j<4;j++)//collect the data from every payload
+                if (!EclipseStarLightStream.atEnd())
                 {
-                    if (i >= (numberOfSteps - payloadNumberOfSteps[j]))
-                    {
-                       tempEclipse += Payloads[j].PowerConsumptionInEclipse;
-                    }
-                }
+                    EclipseStarLightStream >> eclipseCondition;
+                    ConsumedPowerTimeStream << startMjd <<"\t";
 
-                ConsumedPowerTimeStream << tempEclipse <<"\n";
+                    tempEclipse = SCPowerDetails.SubsystemsTotalPower;
+                    for(j=0;j<4;j++)//collect the data from every payload
+                    {
+                        if (i >= (numberOfSteps - payloadNumberOfSteps[j]))
+                        {
+                           tempEclipse += Payloads[j].PowerConsumptionInEclipse;
+                        }
+                    }
+
+                    ConsumedPowerTimeStream << tempEclipse <<"\n";
+                }
             }
         }
         else
@@ -871,6 +874,7 @@ void PowerSubsystem::CreatePowerConsumptionFunctionOfSpacecraft()
                 for(i=0;i<numberOfSteps;i++)
                 {
                     EclipseStarLightStream >> startMjd;
+                    qDebug()<<"Star light time" << startMjd;
                     EclipseStarLightStream >> eclipseCondition;
                     ConsumedPowerTimeStream << startMjd <<"\t";
 
@@ -944,16 +948,10 @@ void PowerSubsystem::CreateGeneratedPowerTimeFunctionOfSpacecraft()
         EclipseStarLightStream >> StarLightExitance;
         qDebug()<<"StarLightExitance;  "<<StarLightExitance;
 
-        double sampleTime;
+        double sampleTime = MissionStart;
 
         while(!EclipseStarLightStream.atEnd())
         {
-            EclipseStarLightStream >> sampleTimeString;
-//            sampleTime = sta::CalendarToJd
-//                         (QDateTime::fromString(sampleTimeString,Qt::ISODate));
-            sampleTime = sampleTimeString.toDouble();
-            EclipseStarLightStream >> StarLightExitance;
-
             //Calculate the short time calculations
             double powerShortTime =
                     SolarArrays.getSolarCellBOLPower()
@@ -972,6 +970,13 @@ void PowerSubsystem::CreateGeneratedPowerTimeFunctionOfSpacecraft()
             GeneratedPowerTimeStream << powerLongTime <<"\n";
 
 //            qDebug()<<"EclipseStarLightStream END"<<EclipseStarLightStream.atEnd();
+
+            EclipseStarLightStream >> sampleTimeString;
+//            sampleTime = sta::CalendarToJd
+//                         (QDateTime::fromString(sampleTimeString,Qt::ISODate));
+            sampleTime = sampleTimeString.toDouble();
+            EclipseStarLightStream >> StarLightExitance;
+//            qDebug()<<"SAMPLe"<<sampleTime;
         }
 
         GeneratedPowerTimeStream <<endl;
@@ -1018,19 +1023,25 @@ void PowerSubsystem::CreateNetPowerTimeFunctionOfSpacecraft()
     double consumedPower;
     double generatedPower;
 
-    do
+    GeneratedPowerTimeStream >> mjd;
+    GeneratedPowerTimeStream >> generatedPower;
+
+    ConsumedPowerTimeStream >> mjd;
+    ConsumedPowerTimeStream >> consumedPower;
+
+    while((!ConsumedPowerTimeStream.atEnd())
+            &&(!GeneratedPowerTimeStream.atEnd()))
     {
+        NetPowerTimeStream << mjd<<"\t";
+        NetPowerTimeStream << (generatedPower - consumedPower)<<"\n";
+
         GeneratedPowerTimeStream >> mjd;
         GeneratedPowerTimeStream >> generatedPower;
 
         ConsumedPowerTimeStream >> mjd;
         ConsumedPowerTimeStream >> consumedPower;
 
-        NetPowerTimeStream << mjd<<"\t";
-        NetPowerTimeStream << (generatedPower - consumedPower)<<"\n";
-
-    }while((!ConsumedPowerTimeStream.atEnd())
-        &&(!GeneratedPowerTimeStream.atEnd()));
+    }
 
 
         //close the functions you opened

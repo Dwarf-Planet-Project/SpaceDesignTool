@@ -147,8 +147,6 @@ void SEMWizard::showHelp()
 
 void SEMWizard::wizardIsCompleted()
 {
-    qDebug()<<"dneemememeem";
-
     //put the values of last WizardPage
     SC.getNewSCDataHandling()->setCodingPercentage
             (CodingTypeComboBox->currentText());
@@ -158,133 +156,18 @@ void SEMWizard::wizardIsCompleted()
     //make calculaions of Data handling
     SC.getNewSCDataHandling()->CalculateAndSetMemorySizeForPayloads();
 
+//    SC.getNewSCDataHandling()->setOBDHSubsystemMass
+//            (SC.getNewSCStructure()->getTotalPayloadMass());
+
     SC.PassOBDHSubsystemOutputParameters();
 
-    //make calculations of TTC
-    SC.getNewSCCommunication()->CalculateAndSetAntennaDiameter();
-    SC.getNewSCCommunication()->CalculateAndSetDownLinkRate();
-
-    SC.PassTTCSubsystemOutputParameters();
-
-    int j = 20; //maximum number of iterations
-    double range = 5.0; //iteration will stop when temperature close to desired temperature
-
-    //find the optimum thermal sizing by iterations as in thw following while loop
-    while (((SC.getNewSCThermal()->getMinimumSCTempWithRadiatorOrHeater()< (273+range))||
-                (SC.getNewSCThermal()->getMaximumSCTempWithRadiatorOrHeater()> (323+range)))&&
-                j>=0)
-    {
-        qDebug()<<"ITERATION";
-
-        // make rough calculations of power subsystem for thermal calculations
-        SC.getNewSCPower()->CalculateAndSetTotalSCPower();
-        //    SC.getNewSCPower()->CalculateAndSetMinimumPowerConsumptionInEclipse();
-        //    SC.getNewSCPower()->CalculateAndSetMaximumPowerConsumptionInDaylight();
-        //    SC.getNewSCPower()->CalculateAndSetAveragePowerConsumptionInEclipseAndDaylight();
-
-        //--make rough calculations for the volume for structure subsystem
-        SC.getNewSCPower()->SolarArrays.CalculateArea();
-
-        //    SC.getNewSCPower()->SolarArrays.CalculateSAMass();
-        //    SC.getNewSCPower()->SolarArrays.CalculatePCUMass();
-
-        SC.getNewSCPower()->Battery.CalculateAndSetBMass();
-        SC.getNewSCPower()->Battery.CalculateAndSetBVolume();
-
-        SC.PassPowerSubsystemOutputParameters();
-
-        //--make rough calculations for surfaces of thermal
-        SC.getNewSCStructure()->CalculateAndSetSCMass();
-        SC.getNewSCStructure()->CalculateAndSetSCVolume();
-        SC.getNewSCStructure()->CalculateAndSetSpacecraftDimension();
-
-        SC.PassStructureSubsystemOutputParameters();
-
-        //make calculations of Thermal Subsystem
-        SC.getNewSCThermal()->CalculateAndSetSCTemperatureRange();
-        SC.getNewSCThermal()->CalculateAndSetNeededHeater();
-        SC.getNewSCThermal()->CalculateAndSetNeededRadiator();
-
-        SC.PassThermalSubsystemOutputParameters();
-
-        j--;
-    }
-
-    //make exact power calculations
-
-    SC.getNewSCPower()->CalculateAndSetTotalSCPower();
-    //    SC.getNewSCPower()->CalculateAndSetMinimumPowerConsumptionInEclipse();
-    //    SC.getNewSCPower()->CalculateAndSetMaximumPowerConsumptionInDaylight();
-    //    SC.getNewSCPower()->CalculateAndSetAveragePowerConsumptionInEclipseAndDaylight();
-
-    SC.getNewSCPower()->SolarArrays.CalculateArea();
-    SC.getNewSCPower()->SolarArrays.CalculateSAEOLPower();
-
-    //    SC.getNewSCPower()->SolarArrays.CalculateSAMass();
-    //    SC.getNewSCPower()->SolarArrays.CalculatePCUMass();
-    //
-    //    SC.getNewSCPower()->Battery.CalculateAndSetBMass();
-    SC.getNewSCPower()->CalculateAndSetPowerSubsystemMass();
-    SC.getNewSCPower()->Battery.CalculateAndSetBVolume();
-
-    SC.PassPowerSubsystemOutputParameters();
-
-    //make exact structure calculations
-    SC.getNewSCStructure()->CalculateAndSetSCMass();
-    SC.getNewSCStructure()->CalculateAndSetSCVolume();
-    SC.getNewSCStructure()->CalculateAndSetSpacecraftDimension();
-    SC.getNewSCStructure()->CalculateAndSetMomentsOfInertia();
-    SC.getNewSCStructure()->CalculateAndSetSecondMomentsOfArea();
-    SC.getNewSCStructure()->CalculateAndSetAxialFrequency();
-    SC.getNewSCStructure()->CalculateAndSetLateralFrequency();
-
-    SC.PassStructureSubsystemOutputParameters();
-
     // ---------------------------------- VALIDATION AND VERIFICATION START
-    qDebug()<<"--------------------------VALIDATION AND VERIFICATION START";
+    qDebug()<<"VALIDATION AND VERIFICATION START";
     qDebug()<<"Payload1 datarate"<<(SC.getNewSCDataHandling()->getPayloadOBDHInfo()+0)->DataRate;
     qDebug()<<"Payload2 datarate"<<(SC.getNewSCDataHandling()->getPayloadOBDHInfo()+1)->DataRate;
     qDebug()<<"MemorySizeForPayloads"<<SC.getNewSCDataHandling()->getMemorySizeForPayloads();
     qDebug()<<"OBDHSubsystemMass"<<SC.getNewSCDataHandling()->getOBDHSubsystemMass();
-    qDebug()<<"OBDHSubsystemVolume"<<SC.getNewSCDataHandling()->getOBDHSubsystemVolume();
-    qDebug()<<"OBDHSubsystemPower"<<SC.getNewSCDataHandling()->getOBDHSubsystemPower();
-    qDebug()<<"";
-    qDebug()<<"AntennaDiameter"<<SC.getNewSCCommunication()->getAntennaDiameter();    
-    qDebug()<<"ContactTimePerOrbit"<<SC.getNewSCCommunication()->getContactTimePerOrbit();
-    qDebug()<<"DownLinkRate"<<SC.getNewSCCommunication()->getDownLinkRate();   
-    qDebug()<<"TTCSubsystemMass"<<SC.getNewSCCommunication()->getTTCSubsystemMass();
-    qDebug()<<"TTCSubsystemVolume"<<SC.getNewSCCommunication()->getTTCSubsystemVolume();
-    qDebug()<<"TTCSubsystemPower"<<SC.getNewSCCommunication()->getTTCSubsystemPower();
-    qDebug()<<"";
-    qDebug()<<"SCPower"<<SC.getNewSCPower()->getSCPower();
-    qDebug()<<"SolarArrayArea"<<SC.getNewSCPower()->SolarArrays.getArea();
-    qDebug()<<"PowersubsystemMass"<<SC.getNewSCPower()->getPowersubsystemMass();
-    qDebug()<<"PowerSubsystemVolume"<<SC.getNewSCPower()->getPowerSubsystemVolume();
-    qDebug()<<"";
-    qDebug()<<"SCMass"<<SC.getNewSCStructure()->getSCMass();
-    qDebug()<<"SCVolume"<<SC.getNewSCStructure()->getSCVolume();
-    qDebug()<<"SpacecraftDimension().x()"<<SC.getNewSCStructure()->getSpacecraftDimension().x();
-    qDebug()<<"SpacecraftDimension().y()"<<SC.getNewSCStructure()->getSpacecraftDimension().y();
-    qDebug()<<"SpacecraftDimension().z()"<<SC.getNewSCStructure()->getSpacecraftDimension().z();
-    qDebug()<<"AreaOfColdFace"<<SC.getNewSCStructure()->getSCThermalDetails()->AreaOfColdFace;
-    qDebug()<<"AreaOfHotFace"<<SC.getNewSCStructure()->getSCThermalDetails()->AreaOfHotFace;
-    qDebug()<<"TotalAreaOfColdFace"<<SC.getNewSCStructure()->getSCThermalDetails()->TotalAreaOfColdFace;
-    qDebug()<<"TotalAreaOfHotFace"<<SC.getNewSCStructure()->getSCThermalDetails()->TotalAreaOfHotFace;
-    qDebug()<<"";
-    qDebug()<<"AlbedoHeat"<<SC.getNewSCThermal()->getAlbedoHeat();
-    qDebug()<<"PlanetIRHeat"<<SC.getNewSCThermal()->getPlanetIRHeat();
-    qDebug()<<"SolarFluxHeat"<<SC.getNewSCThermal()->getSolarFluxHeat();
-    qDebug()<<"MaximumSCTemperature"<<SC.getNewSCThermal()->getMaximumSCTemperature();
-    qDebug()<<"MinimumSCTemperature"<<SC.getNewSCThermal()->getMinimumSCTemperature();
-    qDebug()<<"MaximumSCTempWithRadiatorOrHeater"<<SC.getNewSCThermal()->getMaximumSCTempWithRadiatorOrHeater();
-    qDebug()<<"MinimumSCTempWithRadiatorOrHeater"<<SC.getNewSCThermal()->getMinimumSCTempWithRadiatorOrHeater();
-    qDebug()<<"Cold-Absorptivity"<<SC.getNewSCThermal()->getColdFaceCoatingProperties().Absorptivity;
-    qDebug()<<"Cold-Emmissivity"<<SC.getNewSCThermal()->getColdFaceCoatingProperties().Emmissivity;
-    qDebug()<<"Hot-Absorptivity"<<SC.getNewSCThermal()->getHotFaceCoatingProperties().Absorptivity;
-    qDebug()<<"Hot-Emmissivity"<<SC.getNewSCThermal()->getHotFaceCoatingProperties().Emmissivity;
-    qDebug()<<"NeededHeater"<<SC.getNewSCThermal()->getNeededHeater();
-    qDebug()<<"NeededRadiator"<<SC.getNewSCThermal()->getNeededRadiator();
-    qDebug()<<"--------------------------VALIDATION AND VERIFICATION END";
+    qDebug()<<"VALIDATION AND VERIFICATION END";
     // ---------------------------------- VALIDATION AND VERIFICATION END
 
     //fill the scenario
@@ -353,7 +236,7 @@ void SEMWizard::wizardIsCompleted()
 
                     Eclipse->StarLightTimeFunction(sampleTimes,
                                                    samples,
-                                                   STA_SOLAR_SYSTEM->lookup(PlanetNameComboBox->currentText()),
+                                                   STA_SOLAR_SYSTEM->lookup("Earth"),
                                                    STA_SOLAR_SYSTEM->lookup("Sun"));
                     //******************************************************************** OZGUN/
                 }
@@ -551,63 +434,67 @@ void SEMWizard::wizardIsCompleted()
     }
     //-----------------------------------------------------------------------------
 
-//    //make calculations of communication
-//    SC.getNewSCCommunication()->CalculateAndSetAntennaDiameter();
-//    SC.getNewSCCommunication()->CalculateAndSetAntennaVolume();
-//    SC.getNewSCCommunication()->CalculateAndSetContactTimePerOrbit();
-//
-//    SC.PassTTCSubsystemOutputParameters();
-//
-//    // calculate the size of SC
-//    SC.getNewSCStructure()->CalculateAndSetSCVolume();
-//    SC.getNewSCStructure()->CalculateAndSetSpacecraftDimension();
-//
-//    //make calclations for power
-//
+    //make calculations of communication
+    SC.getNewSCCommunication()->CalculateAndSetAntennaDiameter();
+    SC.getNewSCCommunication()->CalculateAndSetAntennaVolume();
+    SC.getNewSCCommunication()->CalculateAndSetContactTimePerOrbit();
+
+    SC.PassTTCSubsystemOutputParameters();
+
+    //make calclations for power
+
+    //make calculations of power
+    SC.getNewSCPower()->CalculateAndSetTotalSCPower();
+    SC.getNewSCPower()->CalculateAndSetPowerSubsystemMass();
+    SC.getNewSCPower()->SolarArrays.CalculateSolarCellBOLPower();
+    SC.getNewSCPower()->SolarArrays.CalculateSolarCellEOLPower();
+    SC.getNewSCPower()->SolarArrays.CalculateSABOLPower();
+
+    SC.PassPowerSubsystemOutputParameters();
+
 //    //calculate SAEOLPower needed
 //    SC.getNewSCPower()->SolarArrays.CalculateSAEOLPower();
 //    SC.getNewSCPower()->SolarArrays.CalculateSolarCellEOLPower();
+
+    //calculate and visualize array of the solar array
+    SC.getNewSCPower()->SolarArrays.CalculateArea();
+      qDebug()<<"BOL"<<SC.getNewSCPower()->SolarArrays.getSolarCellBOLPower();
+    SC.getNewSCPower()->SolarArrays.CalculateSABOLPower();
+    SC.getNewSCPower()->SolarArrays.CalculateSAMass();
+    SC.getNewSCPower()->SolarArrays.CalculatePCUMass();
+
+    SC.getNewSCPower()->CalculateAndSetPowerSubsystemMass();
+    SC.getNewSCStructure()->setPowerSubsystemMass
+            (SC.getNewSCPower()->getPowersubsystemMass());
+
+    SC.getNewSCStructure()->setPowerSubsystemVolume
+            (SC.getNewSCPower()->getPowerSubsystemVolume());
+
+//    //make calculations of structure
+////    SC
+//    SC.getNewSCStructure()->CalculateAndSetSpacecraftDimension();
+
+    // calculate the size of SC
+    SC.getNewSCStructure()->CalculateAndSetSCVolume();
+    SC.getNewSCStructure()->CalculateAndSetSpacecraftDimension();
 //
-//    //calculate and visualize array of the solar array
-//    SC.getNewSCPower()->SolarArrays.CalculateArea();
-//      qDebug()<<"BOL"<<SC.getNewSCPower()->SolarArrays.getSolarCellBOLPower();
-//    SC.getNewSCPower()->SolarArrays.CalculateSABOLPower();
-//    SC.getNewSCPower()->SolarArrays.CalculateSAMass();
-//    SC.getNewSCPower()->SolarArrays.CalculatePCUMass();
-//
-//    SC.getNewSCPower()->CalculateAndSetPowerSubsystemMass();
-//    SC.getNewSCStructure()->setPowerSubsystemMass
-//            (SC.getNewSCPower()->getPowersubsystemMass());
-//
-//    SC.getNewSCStructure()->setPowerSubsystemVolume
-//            (SC.getNewSCPower()->getPowerSubsystemVolume());
-//
-////    //make calculations of structure
-//////    SC
-////    SC.getNewSCStructure()->CalculateAndSetSpacecraftDimension();
-////
-//    SC.PassStructureSubsystemOutputParameters();
-////
-////    //make calculations of thermal
-////    SC.getNewSCThermal()->CalculateAndSetSolarFluxHeat();
-////    SC.getNewSCThermal()->CalculateAndSetAlbedoHeat();
-////    SC.getNewSCThermal()->CalculateAndSetPlanetIRHeat();
-////    SC.getNewSCThermal()->CalculateAndSetSCTemperatureRange();
-////    SC.getNewSCThermal()->CalculateAndSetNeededHeater();
-////    SC.getNewSCThermal()->CalculateAndSetNeededRadiator();
-////
-////    SC.PassThermalSubsystemOutputParameters();
-////
-////    //make calculations of power
-////    SC.getNewSCPower()->CalculateAndSetTotalSCPower();
-////    SC.getNewSCPower()->CalculateAndSetPowerSubsystemMass();
-////    SC.getNewSCPower()->SolarArrays.CalculateSolarCellBOLPower();
-////    SC.getNewSCPower()->SolarArrays.CalculateSolarCellEOLPower();
-////    SC.getNewSCPower()->SolarArrays.CalculateSABOLPower();
-////
-////    SC.PassPowerSubsystemOutputParameters();
-//
-//    //open the GUI
+    SC.PassStructureSubsystemOutputParameters();
+
+//    // calculate the size of SC
+//    SC.getNewSCStructure()->CalculateAndSetSCVolume();
+//    SC.getNewSCStructure()->CalculateAndSetSpacecraftDimension();
+
+
+
+    //make calculations of thermal
+    SC.getNewSCThermal()->CalculateAndSetSolarFluxHeat();
+    SC.getNewSCThermal()->CalculateAndSetAlbedoHeat();
+    SC.getNewSCThermal()->CalculateAndSetPlanetIRHeat();
+    SC.getNewSCThermal()->CalculateAndSetSCTemperatureRange();
+    SC.getNewSCThermal()->CalculateAndSetNeededHeater();
+    SC.getNewSCThermal()->CalculateAndSetNeededRadiator();
+
+    //open the GUI
     SemMainGUI  MainGUI(&SC,Vehicle,this);
     MainGUI.exec();
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
@@ -1167,7 +1054,7 @@ void SEMWizard::on___qt__passive_wizardbutton1_clicked()
                 (AntennaGainLineEdit->text().toDouble());
         SC.getNewSCCommunication()->setAntennaFrequency
                 (TXFrequencyLineEdit->text().toDouble());
-        SC.getNewSCCommunication()->setAntennaPower
+        SC.getNewSCCommunication()->setTTCSubsystemPower
                 (TXPowerLineEdit->text().toDouble());
         SC.getNewSCCommunication()->setPercentageOfContactTimePerOrbit
                 (CommLinDurationPercentageLineEdit->text().toDouble());

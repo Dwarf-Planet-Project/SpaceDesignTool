@@ -643,19 +643,19 @@ void ThermalSubsystem::CalculateAndSetNeededHeater()
 //            ThermalControl = Active;
 //    }
 
-    ThermalSubsystemPower = NeededHeater;
+//    ThermalSubsystemPower = NeededHeater;
 }
 
 void ThermalSubsystem::setNeededHeaterToZero()
 {
     NeededHeater = 0.0;
-    ThermalSubsystemPower = NeededHeater;
+//    ThermalSubsystemPower = NeededHeater;
 }
 
 void ThermalSubsystem::setNeededHeater(double heater)
 {
     NeededHeater = heater;
-    ThermalSubsystemPower = NeededHeater;
+//    ThermalSubsystemPower = NeededHeater;
 }
 
 double ThermalSubsystem::getNeededHeater()

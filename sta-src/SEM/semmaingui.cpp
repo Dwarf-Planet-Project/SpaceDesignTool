@@ -139,7 +139,7 @@ SemMainGUI::SemMainGUI(SemMain* SCWizard,
 }
 
 SemMainGUI::~SemMainGUI()
-{ 
+{
 }
 
 void SemMainGUI::on_MainSemTabWidget_currentChanged(int Index)
@@ -840,8 +840,8 @@ void SemMainGUI::on_ThermalGraphPushButton_2_clicked()
         qWarning("TODO: %s	%d",__FILE__,__LINE__);
         FileNameWithExtension.chop(5);
         plotView->setTitle(FileNameWithExtension);
-        plotView->setHorizontalScale(LinearPlotScale(50000, 60000));
-        plotView->setVerticalScale(LinearPlotScale(0, 60000));
+        plotView->autoScale();
+        plotView->setMinimumSize(500,500);
         plotDialog.exec();
     }
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
@@ -999,8 +999,8 @@ void SemMainGUI::on_PowerGraphPushButton_clicked()
     qWarning("TODO: %s	%d",__FILE__,__LINE__);
     FileNameWithExtension.chop(5);
     plotView->setTitle(FileNameWithExtension);
-    plotView->setHorizontalScale(LinearPlotScale(50000, 60000));
-    plotView->setVerticalScale(LinearPlotScale(0, 60000));
+    plotView->autoScale();
+    plotView->setMinimumSize(500,500);
     plotDialog.exec();
 
         qWarning("TODO: %s	%d",__FILE__,__LINE__);
@@ -2051,6 +2051,10 @@ void SemMainGUI::RetrieveScenarioSC()
     SC.PassThermalSubsystemOutputParameters();
     SC.PassPowerSubsystemOutputParameters();
     SC.PassStructureSubsystemOutputParameters();
+
+//    SC.getNewSCThermal()->CalculateAndSetAlbedoHeat();
+//    SC.getNewSCThermal()->CalculateAndSetPlanetIRHeat();
+//    SC.getNewSCThermal()->CalculateAndSetSolarFluxHeat();
 
     qDebug()<<"SC MASS after retreive"<<SC.getNewSCStructure()->getSCMass();
 }
