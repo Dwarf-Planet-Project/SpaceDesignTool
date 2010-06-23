@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>693</width>
-    <height>500</height>
+    <width>731</width>
+    <height>513</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -426,23 +426,7 @@
     <string>You can create your Payload from scratch or get the help of the database.</string>
    </property>
    <layout class="QGridLayout" name="gridLayout_7">
-    <item row="0" column="1">
-     <spacer name="verticalSpacer_6">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeType">
-       <enum>QSizePolicy::Preferred</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>70</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="1" column="0">
+    <item row="0" column="0">
      <spacer name="horizontalSpacer_7">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -458,7 +442,7 @@
       </property>
      </spacer>
     </item>
-    <item row="1" column="1">
+    <item row="0" column="1">
      <layout class="QGridLayout" name="gridLayout_6">
       <item row="0" column="0">
        <widget class="QRadioButton" name="NewPayloadRadioButton">
@@ -521,7 +505,7 @@
       </item>
      </layout>
     </item>
-    <item row="1" column="2">
+    <item row="0" column="2">
      <spacer name="horizontalSpacer_9">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -537,7 +521,7 @@
       </property>
      </spacer>
     </item>
-    <item row="2" column="1">
+    <item row="1" column="1">
      <spacer name="verticalSpacer_7">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -797,7 +781,7 @@
       </layout>
      </widget>
     </item>
-    <item row="2" column="0" colspan="2">
+    <item row="2" column="0" colspan="3">
      <widget class="QGroupBox" name="groupBox_4">
       <property name="title">
        <string>Thermal Details</string>
@@ -858,7 +842,7 @@
       </layout>
      </widget>
     </item>
-    <item row="2" column="2" colspan="2">
+    <item row="2" column="3">
      <widget class="QGroupBox" name="groupBox_3">
       <property name="title">
        <string>Power Details</string>
@@ -976,23 +960,7 @@
     <string>You can create your Payload from scratch or get the help of the database.</string>
    </property>
    <layout class="QGridLayout" name="gridLayout_20">
-    <item row="0" column="1">
-     <spacer name="verticalSpacer_8">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeType">
-       <enum>QSizePolicy::Preferred</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>88</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="1" column="0">
+    <item row="0" column="0">
      <spacer name="horizontalSpacer_10">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -1008,7 +976,7 @@
       </property>
      </spacer>
     </item>
-    <item row="1" column="1">
+    <item row="0" column="1">
      <layout class="QGridLayout" name="gridLayout_8">
       <item row="0" column="0">
        <widget class="QRadioButton" name="NewPayloadRadioButton_2">
@@ -1071,7 +1039,7 @@
       </item>
      </layout>
     </item>
-    <item row="1" column="2">
+    <item row="0" column="2">
      <spacer name="horizontalSpacer_15">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -1087,7 +1055,7 @@
       </property>
      </spacer>
     </item>
-    <item row="2" column="1">
+    <item row="1" column="1">
      <spacer name="verticalSpacer_9">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -1347,7 +1315,7 @@
       </layout>
      </widget>
     </item>
-    <item row="2" column="0" colspan="2">
+    <item row="2" column="0" colspan="3">
      <widget class="QGroupBox" name="groupBox_8">
       <property name="title">
        <string>Thermal Details</string>
@@ -1408,7 +1376,7 @@
       </layout>
      </widget>
     </item>
-    <item row="2" column="2" colspan="2">
+    <item row="2" column="3">
      <widget class="QGroupBox" name="groupBox_5">
       <property name="title">
        <string>Power Details</string>
@@ -1526,23 +1494,7 @@
     <string>You can create your Payload from scratch or get the help of the database.</string>
    </property>
    <layout class="QGridLayout" name="gridLayout_21">
-    <item row="0" column="1">
-     <spacer name="verticalSpacer_10">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeType">
-       <enum>QSizePolicy::Preferred</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>60</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="1" column="0">
+    <item row="0" column="0">
      <spacer name="horizontalSpacer_16">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -1558,7 +1510,7 @@
       </property>
      </spacer>
     </item>
-    <item row="1" column="1">
+    <item row="0" column="1">
      <layout class="QGridLayout" name="gridLayout_9">
       <item row="0" column="0">
        <widget class="QRadioButton" name="NewPayloadRadioButton_3">
@@ -1621,7 +1573,7 @@
       </item>
      </layout>
     </item>
-    <item row="1" column="2">
+    <item row="0" column="2">
      <spacer name="horizontalSpacer_17">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -1637,7 +1589,7 @@
       </property>
      </spacer>
     </item>
-    <item row="2" column="1">
+    <item row="1" column="1">
      <spacer name="verticalSpacer_11">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -1897,7 +1849,7 @@
       </layout>
      </widget>
     </item>
-    <item row="2" column="0" colspan="2">
+    <item row="2" column="0" colspan="3">
      <widget class="QGroupBox" name="groupBox_9">
       <property name="title">
        <string>Thermal Details</string>
@@ -1958,7 +1910,7 @@
       </layout>
      </widget>
     </item>
-    <item row="2" column="2" colspan="2">
+    <item row="2" column="3">
      <widget class="QGroupBox" name="groupBox_10">
       <property name="title">
        <string>Power Details</string>
@@ -2076,20 +2028,7 @@
     <string>You can create your Payload from scratch or get the help of the database.</string>
    </property>
    <layout class="QGridLayout" name="gridLayout_22">
-    <item row="0" column="1">
-     <spacer name="verticalSpacer_12">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>99</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="1" column="0">
+    <item row="0" column="0">
      <spacer name="horizontalSpacer_18">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -2102,7 +2041,7 @@
       </property>
      </spacer>
     </item>
-    <item row="1" column="1">
+    <item row="0" column="1">
      <layout class="QGridLayout" name="gridLayout_10">
       <item row="0" column="0">
        <widget class="QRadioButton" name="NewPayloadRadioButton_4">
@@ -2165,7 +2104,7 @@
       </item>
      </layout>
     </item>
-    <item row="1" column="2">
+    <item row="0" column="2">
      <spacer name="horizontalSpacer_19">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -2178,7 +2117,7 @@
       </property>
      </spacer>
     </item>
-    <item row="2" column="1">
+    <item row="1" column="1">
      <spacer name="verticalSpacer_13">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -2435,7 +2374,7 @@
       </layout>
      </widget>
     </item>
-    <item row="2" column="0" colspan="2">
+    <item row="2" column="0" colspan="3">
      <widget class="QGroupBox" name="groupBox_13">
       <property name="title">
        <string>Thermal Details</string>
@@ -2496,7 +2435,7 @@
       </layout>
      </widget>
     </item>
-    <item row="2" column="2" colspan="2">
+    <item row="2" column="3">
      <widget class="QGroupBox" name="groupBox_14">
       <property name="title">
        <string>Power Details</string>
@@ -2679,6 +2618,19 @@
       </property>
      </spacer>
     </item>
+    <item row="0" column="3">
+     <spacer name="horizontalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
    </layout>
   </widget>
   <widget class="QWizardPage" name="wizardPage6">
@@ -2773,6 +2725,19 @@
        <size>
         <width>20</width>
         <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="0" column="5">
+     <spacer name="horizontalSpacer_4">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
        </size>
       </property>
      </spacer>
@@ -2995,6 +2960,19 @@
       </property>
      </widget>
     </item>
+    <item row="2" column="2">
+     <spacer name="horizontalSpacer_20">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
    </layout>
   </widget>
   <widget class="QWizardPage" name="wizardPage8">
@@ -3124,6 +3102,19 @@
       </property>
      </widget>
     </item>
+    <item row="3" column="2">
+     <spacer name="horizontalSpacer_21">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
    </layout>
   </widget>
   <widget class="QWizardPage" name="wizardPage10">
@@ -3171,6 +3162,19 @@
        </property>
       </item>
      </widget>
+    </item>
+    <item row="0" column="3">
+     <spacer name="horizontalSpacer_22">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>
