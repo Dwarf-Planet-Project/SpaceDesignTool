@@ -3,28 +3,24 @@ Authors
 
   G. Ortega         <ESA> 
   C. Laurel         <Celestia team>
-  S. Erb            <ESA>
-  A. Bavandi        <ESA>
   G. Schouten       <Delft University of Netherlands>
   T. Paulino        <ESA>
   I. Huertas        <Delft University of Netherlands>
-  N. Filipe         <ESA>
   T. Sabatini       <Politecnico di Milano>
   M. Volkaert       <Delft University of Netherlands>
-  A. Martinez       <ESA>
+  S. Peter          <University of Bremen>
   V. Zuccarelli     <Politecnico di Milano>
   B. Naessens       <Delft University of Netherlands>
+  M. Gerdts         <University of Wuerzburg>
   F. Castellini     <Politecnico di Milano>
   G. Ridolfi        <Delft University of Netherlands>
-  C. Yabar          <ESA>
   A. Manno          <University of Palermo>
   A. Riccardi       <University of Milano>
   A. Raposo         <Instituto Superior TŽcnico of Lisbon>
-  N. Filipe         <ESA>
   R. Noriega        <Technical University of Madrid>
-  C. Yabar          <ESA>
   O. Yilmaz         <University of Wuerzburg>
-  I. Huertas        <ESA>
+  C. Grohnfeldt     <University of Bremen>
+  
   
 
 STA email address:
@@ -33,12 +29,16 @@ STA email address:
 Contributors
 ------------
   A. Benoit          <ESA>
+  A. Martinez       <ESA>
   E. Mooij           <Delft University of Netherlands>
+  C. Yabar          <ESA>
   M. Lavagna         <Politecnico di Milano>
+  N. Filipe         <ESA>
   J. M. Giron        <University of Madrid>
+  A. Bavandi        <ESA>
   C. Bueskens        <University of Bremen>
+  S. Erb            <ESA>
   R. Martinez        <Technical University of Madrid>
-  M. Gerdts          <University of Wuerzburg>
   L. N. Vicente      <University of Coimbra>
   J. Fliege          <University of Southampton>
   J. J. Ruckmann     <University of Birmingham>
