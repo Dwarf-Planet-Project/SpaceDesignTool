@@ -65,15 +65,7 @@ sem::sem(SpaceScenario* SCscenario,  MainWindow* parent)
                 //add the sc to the combobox list
                 SelectSpacecraftComboBox->addItem(vehicle->ElementIdentifier()->Name());
 
-                //look at the existing payloads of the each SC-------------/*
-                foreach (QSharedPointer<ScenarioAbstractPayloadType> Payload,
-                         vehicle->SCMission()->PayloadSet()->AbstractPayload())
-                {
-                    Payload->Budget()->DataRate();
-                }
-
-                //look at the existing payloads of the each SC-------------*/
-
+                on_SelectSpacecraftComboBox_activated(SelectSpacecraftComboBox->currentText());
 
             }
         }
@@ -87,41 +79,38 @@ void sem::on_SelectSpacecraftComboBox_activated(const QString &)
 {
     SelectMissionArcComboBox->clear();
     SelectMissionArcComboBox->addItem("Select Mission Arc");
-    SelectMissionArcComboBox->setEnabled(0);
+    SelectMissionArcComboBox->setEnabled(1);
 
-    if (SelectSpacecraftComboBox->currentIndex() != 0)
+    // Process each participant
+    foreach (QSharedPointer<ScenarioParticipantType> participant, scenario->AbstractParticipant())
     {
-        // Process each participant
-        foreach (QSharedPointer<ScenarioParticipantType> participant, scenario->AbstractParticipant())
+        // For space vehicles, we need to find which one we are interested in
+        if (dynamic_cast<ScenarioSC*>(participant.data()))
         {
-            // For space vehicles, we need to find which one we are interested in
-            if (dynamic_cast<ScenarioSC*>(participant.data()))
+            ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
+
+            if (SelectSpacecraftComboBox->currentText()== vehicle->ElementIdentifier()->Name())
             {
-                ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
+                const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList
+                        = vehicle->SCMission()->TrajectoryPlan()->AbstractTrajectory();
 
-                if (SelectSpacecraftComboBox->currentText()== vehicle->ElementIdentifier()->Name())
+                // Initial state is stored in the first trajectory (for now); so,
+                // the empty trajectory plan case has to be treated specially.
+                if (!trajectoryList.isEmpty())
                 {
-                    const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList
-                            = vehicle->SCMission()->TrajectoryPlan()->AbstractTrajectory();
-
-                    // Initial state is stored in the first trajectory (for now); so,
-                    // the empty trajectory plan case has to be treated specially.
-                    if (!trajectoryList.isEmpty())
+                    // Propagate all segments of the trajectory plan.
+                    foreach (QSharedPointer<ScenarioAbstractTrajectoryType> trajectory, trajectoryList)
                     {
-                        // Propagate all segments of the trajectory plan.
-                        foreach (QSharedPointer<ScenarioAbstractTrajectoryType> trajectory, trajectoryList)
+                        if (dynamic_cast<ScenarioLoiteringType*>(trajectory.data()))
                         {
-                            if (dynamic_cast<ScenarioLoiteringType*>(trajectory.data()))
-                            {
-                                ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
-                                SelectMissionArcComboBox->addItem(loitering->ElementIdentifier()->Name());
-                            }
+                            ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
+                            SelectMissionArcComboBox->addItem(loitering->ElementIdentifier()->Name());
                         }
                     }
-                    //after all the mission arcs are included Enable the Mission arc combobox
-                    SelectMissionArcComboBox->setEnabled(1);
-                    break;
                 }
+                //after all the mission arcs are included Enable the Mission arc combobox
+                SelectMissionArcComboBox->setEnabled(1);
+                break;
             }
         }
     }

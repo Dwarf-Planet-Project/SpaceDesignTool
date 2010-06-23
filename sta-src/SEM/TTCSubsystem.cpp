@@ -104,8 +104,8 @@ double TTCSubsystem::getTTCSubsystemVolume()
 void TTCSubsystem::setAntennaPower(double Power)
 {
     AntennaPower = Power;
-    TTCSubsystemPower
-            = (AntennaPower + RXAntennaPower) * (1 + 0.2);  //20% margin
+    TTCSubsystemPower = AntennaPower;
+//            = (AntennaPower + RXAntennaPower) * (1 + 0.2);  //20% margin
 }
 
 double TTCSubsystem::getAntennaPower()
@@ -243,8 +243,8 @@ double TTCSubsystem::getRXAntennaGain()
 void TTCSubsystem::setRXAntennaPower(double Power)
 {
     RXAntennaPower = Power;
-    TTCSubsystemPower
-            = (AntennaPower + RXAntennaPower) * (1 + 0.2);  //20% margin
+//    TTCSubsystemPower
+//            = (AntennaPower + RXAntennaPower) * (1 + 0.2);  //20% margin
     qDebug()<<"RXAntennaPower"<<RXAntennaPower;
 }
 

@@ -1054,7 +1054,7 @@ void SEMWizard::on___qt__passive_wizardbutton1_clicked()
                 (AntennaGainLineEdit->text().toDouble());
         SC.getNewSCCommunication()->setAntennaFrequency
                 (TXFrequencyLineEdit->text().toDouble());
-        SC.getNewSCCommunication()->setTTCSubsystemPower
+        SC.getNewSCCommunication()->setAntennaPower
                 (TXPowerLineEdit->text().toDouble());
         SC.getNewSCCommunication()->setPercentageOfContactTimePerOrbit
                 (CommLinDurationPercentageLineEdit->text().toDouble());

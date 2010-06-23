@@ -840,6 +840,8 @@ void SemMainGUI::on_ThermalGraphPushButton_2_clicked()
         qWarning("TODO: %s	%d",__FILE__,__LINE__);
         FileNameWithExtension.chop(5);
         plotView->setTitle(FileNameWithExtension);
+        plotView->setLeftLabel("Temperature (K)");
+        plotView->setBottomLabel("Time (Mjd)");
         plotView->autoScale();
         plotView->setMinimumSize(500,500);
         plotDialog.exec();
@@ -983,25 +985,30 @@ void SemMainGUI::on_PowerGraphPushButton_clicked()
         break;
     }
 
-    QDialog plotDialog(this);
-    QVBoxLayout* layout = new QVBoxLayout(&plotDialog);
-    PlotView* plotView = new PlotView(&plotDialog);
-    layout->addWidget(plotView);
-    plotDialog.setLayout(layout);
+    if (PowerGraphComboBox->currentIndex() != 0)
+    {
+        QDialog plotDialog(this);
+        QVBoxLayout* layout = new QVBoxLayout(&plotDialog);
+        PlotView* plotView = new PlotView(&plotDialog);
+        layout->addWidget(plotView);
+        plotDialog.setLayout(layout);
 
-    qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        qWarning("TODO: %s	%d",__FILE__,__LINE__);
 
-    PlotGraphFromFile* Data = new PlotGraphFromFile();
-    qWarning("TODO: %s	%d",__FILE__,__LINE__);
-    Data->setPoints(FileNameWithExtension);
-    qWarning("TODO: %s	%d",__FILE__,__LINE__);
-    plotView->addPlot(Data);
-    qWarning("TODO: %s	%d",__FILE__,__LINE__);
-    FileNameWithExtension.chop(5);
-    plotView->setTitle(FileNameWithExtension);
-    plotView->autoScale();
-    plotView->setMinimumSize(500,500);
-    plotDialog.exec();
+        PlotGraphFromFile* Data = new PlotGraphFromFile();
+        qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        Data->setPoints(FileNameWithExtension);
+        qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        plotView->addPlot(Data);
+        qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        FileNameWithExtension.chop(5);
+        plotView->setTitle(FileNameWithExtension);
+        plotView->setLeftLabel("Power (W)");
+        plotView->setBottomLabel("Time (Mjd)");
+        plotView->autoScale();
+        plotView->setMinimumSize(500,500);
+        plotDialog.exec();
+    }
 
         qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }

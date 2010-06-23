@@ -253,28 +253,40 @@ void EclipseDuration::CreateEclipseDetailsFile()
 
     numberOfStepsInState = 1;
     EclipseStarLightStream >> missionStartMjd;
+    tempMissionEndMjd = missionStartMjd;
     EclipseStarLightStream >> State;
+    tempState = State;
 
     while (!EclipseStarLightStream.atEnd())
     {
         while (State <= 0.5 )//Penumbra + Umbra
         {
-            EclipseStarLightStream >> tempMissionEndMjd;
-            EclipseStarLightStream >> tempState;
-            numberOfStepsInState++; //increase the number of steps
-
             if (!EclipseStarLightStream.atEnd())
             {
                 missionEndMjd = tempMissionEndMjd;
                 State = tempState;
+
+                //if the state is changed or the file is ended
+                if (State > 0.5)
+                {
+                    //write the detailed report
+                    DetailedReportStream << "Eclipse" << "\t\t";
+                    DetailedReportStream << missionStartMjd << "\t";
+                    DetailedReportStream << missionEndMjd << "\t";
+                    //calculate duration from ANas module but it has
+                    //to be replied after her commit
+                    DetailedReportStream << MjdToFromEpoch(missionStartMjd,
+                                                           missionEndMjd,
+                                                           "Seconds") << "\t";
+                    DetailedReportStream << (numberOfStepsInState -1) << "\n";
+
+                    missionStartMjd = missionEndMjd;
+                    numberOfStepsInState = 1;
+                    break;
+                }
+
             }
             else
-            {
-                State = 1.0;
-            }
-
-            //if the state is changed or the file is ended
-            if (State > 0.5)
             {
                 //write the detailed report
                 DetailedReportStream << "Eclipse" << "\t\t";
@@ -292,31 +304,41 @@ void EclipseDuration::CreateEclipseDetailsFile()
                 break;
             }
 
-            if (EclipseStarLightStream.atEnd())
-                break;
+            EclipseStarLightStream >> tempMissionEndMjd;
+            EclipseStarLightStream >> tempState;
+            numberOfStepsInState++; //increase the number of steps
         }
 
         while (State > 0.5) //Daylight
         {
-            EclipseStarLightStream >> tempMissionEndMjd;
-            EclipseStarLightStream >> tempState;
-            numberOfStepsInState++; //increase the number of steps
-
             if (!EclipseStarLightStream.atEnd())
             {
                 missionEndMjd = tempMissionEndMjd;
                 State = tempState;
+
+                if (State <= 0.5)
+                {
+                    //write the detailed report
+                    DetailedReportStream << "Daylight" << "\t";
+                    DetailedReportStream << missionStartMjd << "\t";
+                    DetailedReportStream << missionEndMjd << "\t";
+                    //calculate duration from ANas module but it has
+                    //to be replied after her commit
+                    DetailedReportStream << MjdToFromEpoch(missionStartMjd,
+                                                           missionEndMjd,
+                                                           "Seconds") << "\t";
+                    DetailedReportStream << (numberOfStepsInState -1) << "\n";
+
+                    missionStartMjd = missionEndMjd;
+                    numberOfStepsInState = 1;
+
+    //                qDebug()<<"missionStartMjd"<<missionStartMjd;
+    //                qDebug()<<"missionEndMjd"<<missionEndMjd;
+    //                qDebug()<<"numberOfStepsInState"<<numberOfStepsInState;
+                    break;
+                }
             }
             else
-            {
-                State = 0.0;
-            }
-
-//            qDebug()<<"******missionStartMjd"<<missionStartMjd;
-//            qDebug()<<"missionEndMjd"<<missionEndMjd;
-//            qDebug()<<"numberOfStepsInState"<<numberOfStepsInState;
-
-            if (State <= 0.5)
             {
                 //write the detailed report
                 DetailedReportStream << "Daylight" << "\t";
@@ -338,8 +360,13 @@ void EclipseDuration::CreateEclipseDetailsFile()
                 break;
             }
 
-            if (EclipseStarLightStream.atEnd())
-                break;
+//            qDebug()<<"******missionStartMjd"<<missionStartMjd;
+//            qDebug()<<"missionEndMjd"<<missionEndMjd;
+//            qDebug()<<"numberOfStepsInState"<<numberOfStepsInState;
+
+            EclipseStarLightStream >> tempMissionEndMjd;
+            EclipseStarLightStream >> tempState;
+            numberOfStepsInState++; //increase the number of steps
         }
     }
 
