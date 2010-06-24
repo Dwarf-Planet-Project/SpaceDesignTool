@@ -161,7 +161,7 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     m_analysisMenu->addAction(m_discretizationAction);
     m_analysisMenu->addAction(m_coverageCurrentAction);
     m_analysisMenu->addAction(m_coverageHistoryAction);
-    m_analysisAction = new QAction(QIcon(":/icons/IconCONSTELLATION.png"), tr("Analysis Tools"), this);
+    m_analysisAction = new QAction(QIcon(":/icons/iconCONSTELLATION.png"), tr("Analysis Tools"), this);
     m_analysisAction->setMenu(m_analysisMenu);
     //m_analysisAction->setVisible(false); // hide button until scenario is propagated
 
