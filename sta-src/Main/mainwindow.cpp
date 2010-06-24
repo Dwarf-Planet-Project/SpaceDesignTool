@@ -1169,6 +1169,29 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
                 }
             }
         }
+	else if (dynamic_cast<ScenarioPoint*>(participant.data()))
+	{
+	    ScenarioPoint* groundElement = dynamic_cast<ScenarioPoint*>(participant.data());
+
+	    QSharedPointer<ScenarioAbstract3DOFPositionType> position = groundElement->Location()->Abstract3DOFPosition();
+	    QSharedPointer<ScenarioGroundPositionType> groundPosition = qSharedPointerDynamicCast<ScenarioGroundPositionType>(position);
+	    if (!groundPosition.isNull())
+	    {
+		StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(groundElement->Location()->CentralBody());
+		if (centralBody)
+		{
+		    GroundObject* groundObject = new GroundObject();
+
+		    groundObject->name = groundElement->Name();
+		    groundObject->centralBody = centralBody;
+		    groundObject->longitude = groundPosition->longitude();
+		    groundObject->latitude = groundPosition->latitude();
+		    groundObject->altitude = groundPosition->altitude();
+
+		    propScenario->addGroundObject(groundObject);
+		}
+	    }
+	}
     }
 
     // calculate Analysis (Claas Grohnfeldt, Steffen Peter)
@@ -2101,6 +2124,29 @@ void MainWindow::on_actionPropagateCoverage_triggered()
 		}
 	    }
 	}
+	else if (dynamic_cast<ScenarioPoint*>(participant.data()))
+	{
+	    ScenarioPoint* groundElement = dynamic_cast<ScenarioPoint*>(participant.data());
+
+	    QSharedPointer<ScenarioAbstract3DOFPositionType> position = groundElement->Location()->Abstract3DOFPosition();
+	    QSharedPointer<ScenarioGroundPositionType> groundPosition = qSharedPointerDynamicCast<ScenarioGroundPositionType>(position);
+	    if (!groundPosition.isNull())
+	    {
+		StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(groundElement->Location()->CentralBody());
+		if (centralBody)
+		{
+		    GroundObject* groundObject = new GroundObject();
+
+		    groundObject->name = groundElement->Name();
+		    groundObject->centralBody = centralBody;
+		    groundObject->longitude = groundPosition->longitude();
+		    groundObject->latitude = groundPosition->latitude();
+		    groundObject->altitude = groundPosition->altitude();
+
+		    propScenario->addGroundObject(groundObject);
+		}
+	    }
+	}
     }
 
     // calculate Analysis (Claas Grohnfeldt, Steffen Peter)
@@ -2379,6 +2425,29 @@ void MainWindow::on_actionSat_to_Sat_triggered()
 	else if (dynamic_cast<ScenarioGroundStation*>(participant.data()))
 	{
 	    ScenarioGroundStation* groundElement = dynamic_cast<ScenarioGroundStation*>(participant.data());
+
+	    QSharedPointer<ScenarioAbstract3DOFPositionType> position = groundElement->Location()->Abstract3DOFPosition();
+	    QSharedPointer<ScenarioGroundPositionType> groundPosition = qSharedPointerDynamicCast<ScenarioGroundPositionType>(position);
+	    if (!groundPosition.isNull())
+	    {
+		StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(groundElement->Location()->CentralBody());
+		if (centralBody)
+		{
+		    GroundObject* groundObject = new GroundObject();
+
+		    groundObject->name = groundElement->Name();
+		    groundObject->centralBody = centralBody;
+		    groundObject->longitude = groundPosition->longitude();
+		    groundObject->latitude = groundPosition->latitude();
+		    groundObject->altitude = groundPosition->altitude();
+
+		    propScenario->addGroundObject(groundObject);
+		}
+	    }
+	}
+	else if (dynamic_cast<ScenarioPoint*>(participant.data()))
+	{
+	    ScenarioPoint* groundElement = dynamic_cast<ScenarioPoint*>(participant.data());
 
 	    QSharedPointer<ScenarioAbstract3DOFPositionType> position = groundElement->Location()->Abstract3DOFPosition();
 	    QSharedPointer<ScenarioGroundPositionType> groundPosition = qSharedPointerDynamicCast<ScenarioGroundPositionType>(position);
@@ -2679,6 +2748,29 @@ void MainWindow::on_actionSat_to_Ground_triggered()
 	else if (dynamic_cast<ScenarioGroundStation*>(participant.data()))
 	{
 	    ScenarioGroundStation* groundElement = dynamic_cast<ScenarioGroundStation*>(participant.data());
+
+	    QSharedPointer<ScenarioAbstract3DOFPositionType> position = groundElement->Location()->Abstract3DOFPosition();
+	    QSharedPointer<ScenarioGroundPositionType> groundPosition = qSharedPointerDynamicCast<ScenarioGroundPositionType>(position);
+	    if (!groundPosition.isNull())
+	    {
+		StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(groundElement->Location()->CentralBody());
+		if (centralBody)
+		{
+		    GroundObject* groundObject = new GroundObject();
+
+		    groundObject->name = groundElement->Name();
+		    groundObject->centralBody = centralBody;
+		    groundObject->longitude = groundPosition->longitude();
+		    groundObject->latitude = groundPosition->latitude();
+		    groundObject->altitude = groundPosition->altitude();
+
+		    propScenario->addGroundObject(groundObject);
+		}
+	    }
+	}
+	else if (dynamic_cast<ScenarioPoint*>(participant.data()))
+	{
+	    ScenarioPoint* groundElement = dynamic_cast<ScenarioPoint*>(participant.data());
 
 	    QSharedPointer<ScenarioAbstract3DOFPositionType> position = groundElement->Location()->Abstract3DOFPosition();
 	    QSharedPointer<ScenarioGroundPositionType> groundPosition = qSharedPointerDynamicCast<ScenarioGroundPositionType>(position);

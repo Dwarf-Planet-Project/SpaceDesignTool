@@ -107,7 +107,7 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     m_tickIntervalAction->setToolTip(tr("Set tick interval"));
 
     // Making the icons on the visualization bar a little smaller
-    setIconSize(QSize(40, 40)); // Smaller icons are a bit better
+    setIconSize(QSize(35, 35)); // Smaller icons are a bit better
 
     m_gridAction = new QAction(QIcon(":/icons/IconGRID.png"), tr("Grid"), this);
     m_gridAction->setCheckable(true);
@@ -161,19 +161,20 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     m_analysisMenu->addAction(m_discretizationAction);
     m_analysisMenu->addAction(m_coverageCurrentAction);
     m_analysisMenu->addAction(m_coverageHistoryAction);
-    m_analysisAction = new QAction(QIcon(":/icons/iconCONSTELLATION.png"), tr("Analysis Tools"), this);
+    m_analysisAction = new QAction(QIcon(":/icons/IconCONSTELLATION.png"), tr("Analysis Tools"), this);
     m_analysisAction->setMenu(m_analysisMenu);
     //m_analysisAction->setVisible(false); // hide button until scenario is propagated
 
 
     // Add all actions and widgets to the toolbar
     addWidget(m_bodySelectCombo);
+    addSeparator();  // Guillermo says: in windows, it looks better to be separated from the combobox
     addAction(m_tickIntervalAction);
     addAction(m_gridAction);
     addAction(m_terminatorAction);
     addAction(m_enable25DViewAction);
     addAction(m_saveImageAction);
-
+    addSeparator();  // Guillermo says: in windows, it looks better to be separated from the combobox
     // Guillermo on widget patching
     addAction(m_analysisAction);
 

@@ -699,7 +699,6 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
 
     if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject) != NULL)
     {
-	//ScenarioElementIdentifierType* myIdentifier = dynamic_cast<ScenarioElementIdentifierType*>(object);
 	ScenarioElementIdentifierType* myIdentifier = dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject);
 	editItem->setFlags(editItem->flags() | (Qt::ItemIsEditable));
 	myIdentifier->Name() = editItem->text(1);
@@ -1276,17 +1275,27 @@ void ScenarioTree::editItem(QTreeWidgetItem* item, int column)
     }
 #endif
 
-    if (scenarioObject != NULL && item != NULL && column == 0)
-    {
-        editScenarioObject(scenarioObject, item);
-	//out << "Editing column 0 " << endl;
-    }
+
 
     if (scenarioObject != NULL && item != NULL && column == 1)
     {
-	//editScenarioObject(scenarioObject, item);
-	editItemInline(item, 1);
+	editItemInline(item, 1);    // Guillermo says: we allow editing in line only on the second column
 	//out << "Editing column 1 " << endl;
+    }
+    else if (scenarioObject != NULL && item != NULL && column == 0)
+    {
+	if (dynamic_cast<SpaceScenario*>(scenarioObject))
+	{
+	    item->setFlags(item->flags() & (~Qt::ItemIsEditable));   // Guillermo says: do not allow editing in line on 1st column and for the space scenario row
+	}
+	else if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject))
+	{
+	    item->setFlags(item->flags() & (~Qt::ItemIsEditable)); // Guillermo says: do not allow editing in line on 1st column and for the element identifier
+	}
+	else
+	{
+	    editScenarioObject(scenarioObject, item); // Guillermo says: allow editing the rest
+	}
     }
 
 }

@@ -204,7 +204,6 @@ static QByteArray REVFragment(const char* name, const char* vehicleType)
 
 
 
-
 static QByteArray groundStationFragment(const char* name,
 					const char* centralBody,
 					double latitude = 0.0,

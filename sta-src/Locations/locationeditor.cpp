@@ -23,6 +23,7 @@
 ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
  Modified by Guillermo on October 2009 to clean up the interface
+ Patched extensively by Guillermo on June 2010 to comply with new scenario
  */
 
 #include "locationeditor.h"
@@ -63,6 +64,16 @@ bool LocationEditorDialog::loadValues(const ScenarioLocationType* location)
     altitudeEdit->setText(QString::number(location->getGroundPosition().altitude));
 #endif
 
+
+    QSharedPointer<ScenarioAbstract3DOFPositionType> position = location->Abstract3DOFPosition();
+    QSharedPointer<ScenarioGroundPositionType> groundPosition = qSharedPointerDynamicCast<ScenarioGroundPositionType>(position);
+
+    StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(location->CentralBody());
+
+    latitudeEdit->setText(QString::number(groundPosition->latitude()));
+    longitudeEdit->setText(QString::number(groundPosition->longitude()));
+    altitudeEdit->setText(QString::number(groundPosition->altitude()));
+
     return true;
 }
 
@@ -77,6 +88,18 @@ bool LocationEditorDialog::saveValues(ScenarioLocationType* location)
     pos.altitude         = altitudeEdit->text().toDouble();
     location->setGroundPosition(pos);
 #endif
+
+
+    QSharedPointer<ScenarioAbstract3DOFPositionType> position = location->Abstract3DOFPosition();
+    QSharedPointer<ScenarioGroundPositionType> groundPosition = qSharedPointerDynamicCast<ScenarioGroundPositionType>(position);
+
+    StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(location->CentralBody());
+
+    groundPosition->setAltitude(altitudeEdit->text().toDouble());
+    groundPosition->setLatitude(latitudeEdit->text().toDouble());
+    groundPosition->setLongitude(longitudeEdit->text().toDouble());
+
+    location->setAbstract3DOFPosition(groundPosition);
 
     return true;
 }

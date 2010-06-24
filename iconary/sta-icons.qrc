@@ -91,9 +91,9 @@
         <file>Icon25D.png</file>
         <file>IconCLOCK.png</file>
         <file>IconCOMMUNICATIONS.png</file>
+        <file>IconCONSTELLATION.png</file>
         <file>IconDOWNLOAD.png</file>
         <file>IconGRID.png</file>
         <file>IconSUN.png</file>
-        <file>iconCONSTELLATION.png</file>
     </qresource>
 </RCC>
