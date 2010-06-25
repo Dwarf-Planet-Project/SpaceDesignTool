@@ -74,6 +74,56 @@ bool LocationEditorDialog::loadValues(const ScenarioLocationType* location)
     longitudeEdit->setText(QString::number(groundPosition->longitude()));
     altitudeEdit->setText(QString::number(groundPosition->altitude()));
 
+    //qDebug() << centralBody->name() << endl;
+
+    // The list of planets in teh comboBox are as follows
+    // Earth, Moon, Sun, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto
+
+    if (centralBody->name() == "Earth")
+    {
+	centralBodyComboBox->setCurrentIndex(0);
+    }
+    else if (centralBody->name() == "Moon")
+    {
+	centralBodyComboBox->setCurrentIndex(1);
+    }
+    else if (centralBody->name() == "Mercury")
+    {
+	centralBodyComboBox->setCurrentIndex(2);
+    }
+    else if (centralBody->name() == "Venus")
+    {
+	centralBodyComboBox->setCurrentIndex(3);
+    }
+    else if (centralBody->name() == "Mars")
+    {
+	centralBodyComboBox->setCurrentIndex(4);
+    }
+    else if (centralBody->name() == "Jupiter")
+    {
+	centralBodyComboBox->setCurrentIndex(5);
+    }
+    else if (centralBody->name() == "Saturn")
+    {
+	centralBodyComboBox->setCurrentIndex(6);
+    }
+    else if (centralBody->name() == "Uranus")
+    {
+	centralBodyComboBox->setCurrentIndex(7);
+    }
+    else if (centralBody->name() == "Neptune")
+    {
+	centralBodyComboBox->setCurrentIndex(8);
+    }
+    else if (centralBody->name() == "Pluto")
+    {
+	centralBodyComboBox->setCurrentIndex(9);
+    }
+    else
+    {
+    	centralBodyComboBox->setCurrentIndex(0);
+    }
+
     return true;
 }
 
@@ -98,6 +148,8 @@ bool LocationEditorDialog::saveValues(ScenarioLocationType* location)
     groundPosition->setAltitude(altitudeEdit->text().toDouble());
     groundPosition->setLatitude(latitudeEdit->text().toDouble());
     groundPosition->setLongitude(longitudeEdit->text().toDouble());
+
+    location->setCentralBody(centralBodyComboBox->currentText());
 
     location->setAbstract3DOFPosition(groundPosition);
 

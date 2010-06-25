@@ -165,15 +165,6 @@
       </item>
       <item>
        <property name="text">
-        <string>Sun</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../iconary/sta-icons.qrc">
-         <normaloff>:/icons/ComboSun.png</normaloff>:/icons/ComboSun.png</iconset>
-       </property>
-      </item>
-      <item>
-       <property name="text">
         <string>Mercury</string>
        </property>
        <property name="icon">
