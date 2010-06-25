@@ -23,6 +23,7 @@
 /*
  ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
+ Patched by Guillermo on June 2010 to include constants
  */
 
 #ifndef _ASTROCORE_STABODY_H_
@@ -38,6 +39,107 @@
 
 // Move to astro core
 typedef double JulianDate;
+
+
+	// Masses of the Solar System bodies
+
+	       const double Sun_MASS = 1.98892e30;                     // kg
+	       const double Mercury_MASS = 3.30e23;                     // kg
+	       const double Venus_MASS = 4.87e24;                     // kg
+	       const double Earth_MASS = 5.97e24;                     // kg
+	       const double Mars_MASS = 6.42e23;                     // kg
+	       const double Jupiter_MASS = 1.90e27;                     // kg
+	       const double Saturn_MASS = 5.68e26;                     // kg
+	       const double Uranus_MASS = 8.68e25;                     // kg
+	       const double Neptune_MASS = 1.02e26;                     // kg
+	       const double Pluto_MASS = 1.27e22;                     // kg
+	       const double Moon_MASS = 7.35e22;                     // kg
+	       const double Phobos_MASS = 1.08e16;                     // kg
+	       const double Deimos_MASS = 1.80e15;                     // kg
+	       const double Metis_MASS = 9.56e16;                     // kg
+	       const double Adrastea_MASS = 1.91e16;                     // kg
+	       const double Amalthea_MASS = 3.50e18;                     // kg
+	       const double Thebe_MASS = 7.77e17;                     // kg
+	       const double Io_MASS = 8.93e22;                     // kg
+	       const double Europa_MASS = 4.80e22;                     // kg
+	       const double Ganymede_MASS = 1.48e23;                     // kg
+	       const double Callisto_MASS = 1.08e23;                     // kg
+	       const double Leda_MASS = 5.68e15;                     // kg
+	       const double Himalia_MASS = 9.56e18;                     // kg
+	       const double Lysithea_MASS = 7.77e16;                     // kg
+	       const double Elara_MASS = 7.77e17;                     // kg
+	       const double Ananke_MASS = 3.82e16;                     // kg
+	       const double Carme_MASS = 9.56e16;                     // kg
+	       const double Pasiphae_MASS = 1.91e17;                     // kg
+	       const double Sinope_MASS = 7.77e16;                     // kg
+
+	// Radius of the Solar System bodies
+
+	       const double Sun_RADIUS = 695000000;                     // m
+	       const double Mercury_RADIUS = 2440000;                     // m
+	       const double Venus_RADIUS = 6052000;                     // m
+	       const double Earth_RADIUS = 6378000;                     // m
+	       const double Mars_RADIUS = 3397000;                     // m
+	       const double Jupiter_RADIUS = 71492000;                     // m
+	       const double Saturn_RADIUS = 60268000;                     // m
+	       const double Uranus_RADIUS = 25559000;                     // m
+	       const double Neptune_RADIUS = 24766000;                     // m
+	       const double Pluto_RADIUS = 1150000;                     // m
+	       const double Moon_RADIUS = 1738000;                     // m
+	       const double Phobos_RADIUS = 11000;                     // m
+	       const double Deimos_RADIUS = 6000;                     // m
+	       const double Metis_RADIUS = 20000;                     // m
+	       const double Adrastea_RADIUS = 10000;                     // m
+	       const double Amalthea_RADIUS = 94000;                     // m
+	       const double Thebe_RADIUS = 50000;                     // m
+	       const double Io_RADIUS = 1821000;                     // m
+	       const double Europa_RADIUS = 1565000;                     // m
+	       const double Ganymede_RADIUS = 2634000;                     // m
+	       const double Callisto_RADIUS = 2403000;                     // m
+	       const double Leda_RADIUS = 8000;                     // m
+	       const double Himalia_RADIUS = 93000;                     // m
+	       const double Lysithea_RADIUS = 18000;                     // m
+	       const double Elara_RADIUS = 38000;                     // m
+	       const double Ananke_RADIUS = 15000;                     // m
+	       const double Carme_RADIUS = 20000;                     // m
+	       const double Pasiphae_RADIUS = 25000;                     // m
+	       const double Sinope_RADIUS = 18000;                     // m
+
+
+
+	// Gravity parameters of the Solar System bodies (i.e. mu = GRAVITATIONAL_CONSTANT * Planet_MASS)
+
+	       const double Sun_GRAVITY_PARAMETER = 1.328182e20;                    // m^3 s^-2
+	       const double Mercury_GRAVITY_PARAMETER = 2.202512e13;                   // m^3 s^-2
+	       const double Venus_GRAVITY_PARAMETER = 3.250374e14;                    // m^3 s^-2
+	       const double Earth_GRAVITY_PARAMETER = 3.984545e14;                  // m^3 s^-2
+	       const double Mars_GRAVITY_PARAMETER = 4.284888e13;                     // m^3 s^-2
+	       const double Jupiter_GRAVITY_PARAMETER = 1.268113e17;                    // m^3 s^-2
+	       const double Saturn_GRAVITY_PARAMETER = 3.790991e16;                    // m^3 s^-2
+	       const double Uranus_GRAVITY_PARAMETER = 5.793275e15;                    // m^3 s^-2
+	       const double Neptune_GRAVITY_PARAMETER = 6.807766e15;                    // m^3 s^-2
+	       const double Pluto_GRAVITY_PARAMETER = 8.476336e11;                    // m^3 s^-2
+	       const double Moon_GRAVITY_PARAMETER = 4.905596e12;                    // m^3 s^-2
+	       const double Phobos_GRAVITY_PARAMETER = 7.208222e05;                    // m^3 s^-2
+	       const double Deimos_GRAVITY_PARAMETER = 1.201370e05;                    // m^3 s^-2
+	       const double Metis_GRAVITY_PARAMETER = 6.380612e06;                    // m^3 s^-2
+	       const double Adrastea_GRAVITY_PARAMETER = 1.274787e06;                    // m^3 s^-2
+	       const double Amalthea_GRAVITY_PARAMETER = 2.335998e08;                    // m^3 s^-2
+	       const double Thebe_GRAVITY_PARAMETER = 5.185916e07;                    // m^3 s^-2
+	       const double Io_GRAVITY_PARAMETER = 5.960132e12;                    // m^3 s^-2
+	       const double Europa_GRAVITY_PARAMETER = 3.203654e12;                    // m^3 s^-2
+	       const double Ganymede_GRAVITY_PARAMETER = 9.877934e12;                    // m^3 s^-2
+	       const double Callisto_GRAVITY_PARAMETER = 7.208222e12;                    // m^3 s^-2
+	       const double Leda_GRAVITY_PARAMETER = 3.790991e05;                    // m^3 s^-2
+	       const double Himalia_GRAVITY_PARAMETER = 6.380612e08;                    // m^3 s^-2
+	       const double Lysithea_GRAVITY_PARAMETER = 5.185916e06;                    // m^3 s^-2
+	       const double Elara_GRAVITY_PARAMETER = 5.185916e07;                    // m^3 s^-2
+	       const double Ananke_GRAVITY_PARAMETER = 2.549575e06;                    // m^3 s^-2
+	       const double Carme_GRAVITY_PARAMETER = 6.380612e06;                    // m^3 s^-2
+	       const double Pasiphae_GRAVITY_PARAMETER = 1.274787e07;                    // m^3 s^-2
+	       const double Sinope_GRAVITY_PARAMETER = 5.185916e06;                    // m^3 s^-2
+
+
 
 namespace sta
 {

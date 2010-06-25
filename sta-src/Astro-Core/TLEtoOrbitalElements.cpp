@@ -40,7 +40,7 @@
 #include <QStringRef>
 #include <QDateTime>
 
-#include "constants.h"
+#include "Astro-Core/stabody.h"
 #include "TLEtoOrbitalElements.h"
 #include "DayNumber.h"
 #include "calendarTOjulian.h"
