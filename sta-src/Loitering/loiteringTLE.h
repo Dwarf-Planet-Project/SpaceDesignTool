@@ -26,10 +26,15 @@
 #ifndef _LOITERINGTLE_H_
 #define _LOITERINGTLE_H_
 
-#include <QDialog>
-#include "Scenario/scenario.h"
 
 #include "ui_loiteringTLE.h"
+
+#include "Scenario/scenario.h"
+#include "Scenario/propagationfeedback.h"
+#include "Astro-Core/statevector.h"
+
+#include <QDialog>
+
 
 QT_BEGIN_NAMESPACE
 class QMimeData;
@@ -86,5 +91,16 @@ protected:
     void dragLeaveEvent(QDragLeaveEvent *event);
     void dropEvent(QDropEvent *event);
 };
+
+
+
+
+
+extern bool
+PropagateLoiteringTLETrajectory(ScenarioLoiteringTLEType* loiteringTLE,
+			     QList<double>& sampleTimes,
+			     QList<sta::StateVector>& samples,
+			     PropagationFeedback& propFeedback);
+
 
 #endif // _LOITERINGTLE_H_

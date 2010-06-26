@@ -38,7 +38,7 @@
 #include "thermalgui.h"
 
 #include "Plotting/plottingtool.h"
-#include "PlotGraphFromFile.h"
+#include "Plotting/PlotGraphFromFile.h"
 #include "Plotting/PlotView.h"
 
 SemMainGUI::SemMainGUI(ScenarioSC* SCVehicle,

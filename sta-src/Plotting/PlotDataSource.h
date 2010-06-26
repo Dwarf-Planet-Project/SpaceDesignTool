@@ -20,9 +20,14 @@
  ------ Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
 */
 
+/*
+------------------ Author:       Chris Laurel                   -------------------
+-----------------------------------------------------------------------------------
+Patched by Guillermo on June 2010 to allow multiple row plotting
 
-//------------------ Author:       Chris Laurel                   -------------------
-//-----------------------------------------------------------------------------------
+*/
+
+
 
 #ifndef _PLOTTING_PLOTDATASOURCE_H_
 #define _PLOTTING_PLOTDATASOURCE_H_

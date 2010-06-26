@@ -308,3 +308,287 @@ void DropArea::clear()
     emit changed();
 }
 
+
+
+
+
+/////////////////////////////////////// PropagateLoiteringTLETrajectory /////////////////////////////
+bool
+PropagateLoiteringTLETrajectory(ScenarioLoiteringTLEType* loiteringTLE,
+			     QList<double>& sampleTimes,
+			     QList<sta::StateVector>& samples,
+			     PropagationFeedback& propFeedback)
+{
+
+
+    /*
+
+    //QTextStream out (stdout);
+
+    QString loiteringLabel = loitering->ElementIdentifier()->Name();
+    //out << "PropagateLoiteringTrajectory called with ARC name: " << loiteringLabel << endl;
+
+    QString centralBodyName = loitering->Environment()->CentralBody()->Name();
+    StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+    if (!centralBody)
+    {
+	propFeedback.raiseError(QObject::tr("Unrecognized central body '%1'").arg(centralBodyName));
+	return false;
+    }
+
+    QString coordSysName = loitering->InitialPosition()->CoordinateSystem();
+    sta::CoordinateSystem coordSys(coordSysName);
+    if (coordSys.type() == sta::COORDSYS_INVALID)
+    {
+	propFeedback.raiseError(QObject::tr("Unrecognized coordinate system '%1'").arg(coordSysName));
+	return false;
+    }
+
+    // Get the initial state in two forms:
+    //   - Keplerian elements for simple two-body propagation
+    //   - A state vector for any other sort of propagation
+    ScenarioAbstract6DOFPositionType* position = loitering->InitialPosition()->Abstract6DOFPosition().data();
+    sta::StateVector initialState = AbstractPositionToStateVector(position, centralBody);
+    sta::KeplerianElements initialStateKeplerian = AbstractPositionToKeplerianElements(position, centralBody);
+
+    double mu = centralBody->mu();
+
+    // Get the timeline information
+    const ScenarioTimeLine* timeline = loitering->TimeLine().data();
+    double timelineDuration = timeline->StartTime().secsTo(timeline->EndTime());
+    double dt = loitering->PropagationPosition()->timeStep();
+
+    if (dt == 0.0)
+    {
+	propFeedback.raiseError(QObject::tr("Time step is zero!"));
+	return false;
+    }
+
+    // We don't output values at every integration step. Instead use the time step
+    // from simulation parameters. The actual output step used will not necessarily
+    // match the requested output step: the code below sets it to be an integer
+    // multiple of the integration step.
+    double requestedOutputTimeStep = timeline->StepTime();
+    double outputTimeStep;
+    unsigned int outputRate;
+    if (requestedOutputTimeStep < dt)
+    {
+	outputRate = 1;
+	outputTimeStep = dt;
+    }
+    else
+    {
+	outputRate = (unsigned int) floor(requestedOutputTimeStep / dt + 0.5);
+	outputTimeStep = outputRate * dt;
+    }
+
+    if (timelineDuration / outputTimeStep > MAX_OUTPUT_STEPS)
+    {
+	propFeedback.raiseError(QObject::tr("Number of propagation steps exceeds %1. Try increasing the simulation time step.").arg(MAX_OUTPUT_STEPS));
+	return false;
+    }
+
+#if OLDSCENARIO
+    // Create the list of perturbations that will influence the propagation
+    ScenarioSpaceVehicle* spacevehicle = dynamic_cast<ScenarioSpaceVehicle*>(this->parent()->parent());
+    ScenarioProperties* vehicleproperties = spacevehicle->properties();
+
+    QList<Perturbations*> perturbationsList = environment()->createListPerturbations(vehicleproperties);
+#endif
+    QList<Perturbations*> perturbationsList;
+
+    sta::StateVector stateVector = initialState;
+
+    // deviation, reference, and q will be used only in Encke propagation
+    sta::StateVector deviation(Vector3d::Zero(), Vector3d::Zero());
+    sta::StateVector reference = initialState;
+    double q = 0.0;
+
+    // Next lines cretaed by Guillermo for trace purposes. To delete in future
+    //double MyJulianDate = sta::CalendarToJd(timeline->StartTime());
+    //QTextStream out (stdout);
+    //out << "MyJulianDate: " << MyJulianDate << endl;
+
+    double startTime = sta::JdToMjd(sta::CalendarToJd(timeline->StartTime()));
+    //out << "MyModifiedJulianDate: " << startTime << endl;
+
+
+    sampleTimes << startTime;
+    samples << stateVector;
+
+    QFile ciccio("data/PerturbationsData.stae");
+    QTextStream cicciostream(&ciccio);
+    ciccio.open(QIODevice::WriteOnly);
+
+    unsigned int steps = 0;
+
+    QString propagator = loitering->PropagationPosition()->propagator();
+    QString integrator = loitering->PropagationPosition()->integrator();
+
+    if (propagator == "TWO BODY")
+    {
+
+	double sma            = initialStateKeplerian.SemimajorAxis;
+	double e              = initialStateKeplerian.Eccentricity;
+	double inclination    = initialStateKeplerian.Inclination*Pi()/180.0;
+	double raan           = initialStateKeplerian.AscendingNode*Pi()/180.0;
+	double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis*Pi()/180.0;
+	double trueAnomaly    = initialStateKeplerian.TrueAnomaly*Pi()/180.0;
+	double meanAnomaly    = trueAnomalyTOmeanAnomaly(trueAnomaly, e);
+
+	QTextStream out (stdout);
+	out << "sma: " << sma << endl;
+	out << "e: " << e << endl;
+	out << "inclination: " << inclination << endl;
+	out << "raan: " << raan << endl;
+	out << "argOfPeriapsis: " << argOfPeriapsis << endl;
+	out << "trueAnomaly: " << trueAnomaly << endl;
+	out << "meanAnomaly: " << meanAnomaly << endl;
+
+
+	// Next lines patched by Guillermo on April 23 2010 to speed up calculations outside the for loop
+	double argOfPeriapsisUpdated      = 0.0;
+	double meanAnomalyUpdated         = 0.0;
+	double raanUpdated                = 0.0;
+
+	double perigee = sma * (1 - e);
+	if (perigee < centralBody->meanRadius())
+	{
+	    propFeedback.raiseError(QObject::tr("The perigee distance is smaller than the main body radius."));
+	    return false;
+	}
+	else
+	{
+
+	  for (double t = dt; t < timelineDuration + dt; t += dt)
+	  {
+	    JulianDate jd = startTime + sta::secsToDays(t);
+
+	    stateVector = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
+					   dt,
+					   raanUpdated, argOfPeriapsisUpdated, meanAnomalyUpdated);
+
+	    argOfPeriapsis = argOfPeriapsisUpdated;
+	    meanAnomaly    = meanAnomalyUpdated;
+	    raan           = raanUpdated;
+
+
+	    out << "argOfPeriapsis: " << argOfPeriapsis << endl;
+	    out << "meanAnomaly: " << meanAnomaly << endl;
+	    out << "raan: " << raan << endl;
+
+
+	    // Append a trajectory sample every outputRate integration steps (and
+	    // always at the last step.)
+	    if (steps % outputRate == 0 || t >= timelineDuration)
+	    {
+		sampleTimes << jd;
+		samples << stateVector;
+	    }
+	    ++steps;
+	  }
+	}
+    }
+    else if (propagator == "COWELL")
+    {
+	for (double t = dt; t < timelineDuration + dt; t += dt)
+	{
+	    JulianDate jd = startTime + sta::secsToDays(t);
+	    stateVector = propagateCOWELL(mu, stateVector, dt, perturbationsList, jd, integrator, propFeedback);
+	    // Append a trajectory sample every outputRate integration steps (and
+	    // always at the last step.)
+	    if (steps % outputRate == 0 || t >= timelineDuration)
+	    {
+		sampleTimes << jd;
+		samples << stateVector;
+	    }
+	    ++steps;
+	}
+    }
+    else if (propagator == "ENCKE")
+    {
+	double sma            = initialStateKeplerian.SemimajorAxis;
+	double e              = initialStateKeplerian.Eccentricity;
+	double inclination    = initialStateKeplerian.Inclination;
+	double raan           = initialStateKeplerian.AscendingNode;
+	double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis;
+	double meanAnomaly    = initialStateKeplerian.MeanAnomaly;
+
+	for (double t = dt; t < timelineDuration + dt; t += dt)
+	{
+	    JulianDate jd = startTime + sta::secsToDays(t);
+	    deviation = propagateENCKE(mu, reference, dt, perturbationsList, jd, stateVector, deviation,  q, integrator, propFeedback);
+
+	    // PropagateTWObody is used to propagate the reference trajectory
+	    double argOfPeriapsisUpdated      = 0.0;
+	    double meanAnomalyUpdated         = 0.0;
+	    double raanUpdated                = 0.0;
+	    reference = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
+					 dt,
+					 raanUpdated, argOfPeriapsisUpdated, meanAnomalyUpdated);
+
+	    argOfPeriapsis = argOfPeriapsisUpdated;
+	    meanAnomaly    = meanAnomalyUpdated;
+	    raan           = raanUpdated;
+
+	    // Calculating the perturbed trajectory
+	    stateVector = reference + deviation;
+	    q = deviation.position.dot(reference.position + 0.5 * deviation.position) / pow(reference.position.norm(), 2.0);
+
+#if 0
+	    // Rectification of the reference trajectory, when the deviation is too large.
+	    if (q > 0.01)
+	    {
+	       sta::KeplerianElements keplerian = cartesianTOorbital(mu, stateVector);
+
+	       sma = keplerian.SemimajorAxis;
+	       e = keplerian.Eccentricity;
+	       inclination = keplerian.Inclination;
+	       argOfPeriapsis = keplerian.ArgumentOfPeriapsis;
+	       raan = keplerian.AscendingNode;
+	       meanAnomaly = keplerian.MeanAnomaly;
+
+	       q = 0;
+	       reference = stateVector;
+	       deviation = sta::StateVector(null, null);
+	    }
+#endif
+	    // Append a trajectory sample every outputRate integration steps (and
+	    // always at the last step.)
+	    if (steps % outputRate == 0 || t >= timelineDuration)
+	    {
+		sampleTimes << jd;
+		samples << stateVector;
+	    }
+	    ++steps;
+	}
+    }
+    else if (propagator == "GAUSS")
+    {
+	for (double t = dt; t < timelineDuration + dt; t += dt)
+	{
+	    JulianDate jd = startTime + sta::secsToDays(t);
+
+	    // Append a trajectory sample every outputRate integration steps (and
+	    // always at the last step.)
+	    if (steps % outputRate == 0 || t >= timelineDuration)
+	    {
+		sampleTimes << jd;
+		samples << stateVector;
+	    }
+	    ++steps;
+
+	    stateVector = propagateGAUSS(mu, stateVector, dt, perturbationsList, jd, integrator);
+	}
+    }
+    else
+    {
+	propFeedback.raiseError(QObject::tr("Unsupported propagator '%1'").arg(propagator));
+	return false;
+    }
+
+
+    */
+
+    return true;
+}

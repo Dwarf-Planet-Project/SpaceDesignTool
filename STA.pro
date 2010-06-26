@@ -259,7 +259,8 @@ SEM_SOURCES = sta-src/SEM/sem.cpp \
     sta-src/SEM/PayloadSubsystem.cpp \
     sta-src/SEM/OBDHSubsystem.cpp \
     sta-src/SEM/MissionDetails.cpp \
-    sta-src/SEM/datacommgui.cpp
+    sta-src/SEM/datacommgui.cpp \
+    sta-src/SEM/Launcher.cpp
 SEM_HEADERS = sta-src/SEM/sem.h \
     sta-src/SEM/TTCSubsystem.h \
     sta-src/SEM/ThermalSubsystem.h \
@@ -274,7 +275,8 @@ SEM_HEADERS = sta-src/SEM/sem.h \
     sta-src/SEM/PayloadSubsystem.h \
     sta-src/SEM/OBDHSubsystem.h \
     sta-src/SEM/MissionDetails.h \
-    sta-src/SEM/datacommgui.h
+    sta-src/SEM/datacommgui.h \
+    sta-src/SEM/Launcher.h
 SEM_FORMS = sta-src/SEM/sem.ui \
     sta-src/SEM/ThermalGUI.ui \
     sta-src/SEM/StructureGUI.ui \
@@ -328,13 +330,15 @@ PLOT_SOURCES = sta-src/Plotting/groundtrackplottool.cpp \
     sta-src/Plotting/plottingtool.cpp \
     sta-src/Plotting/PlotView.cpp \
     sta-src/Plotting/threedvisualizationtool.cpp \
-    sta-src/Plotting/visualizationtoolbar.cpp
+    sta-src/Plotting/visualizationtoolbar.cpp \
+    sta-src/Plotting/PlotGraphFromFile.cpp
 PLOT_HEADERS = sta-src/Plotting/groundtrackplottool.h \
     sta-src/Plotting/plottingtool.h \
     sta-src/Plotting/PlotDataSource.h \
     sta-src/Plotting/threedvisualizationtool.h \
     sta-src/Plotting/visualizationtoolbar.h \
-    sta-src/Plotting/PlotView.h
+    sta-src/Plotting/PlotView.h \
+    sta-src/Plotting/PlotGraphFromFile.h
 PLOT_FORMS = sta-src/Plotting/plottingtool.ui
 
 # ################ RAM ############
@@ -851,9 +855,7 @@ SOURCES = $$MAIN_SOURCES \
     $$PAYLOAD_SOURCES \
     $$ANALYSIS_SOURCES \
     $$COVERAGE_SOURCES \
-    $$CONSTELLATIONS_SOURCES \
-    sta-src/SEM/Launcher.cpp \
-    sta-src/SEM/PlotGraphFromFile.cpp
+    $$CONSTELLATIONS_SOURCES
 HEADERS = $$MAIN_HEADERS \
     $$ASTROCORE_HEADERS \
     $$SEM_HEADERS \
@@ -877,9 +879,7 @@ HEADERS = $$MAIN_HEADERS \
     $$PAYLOAD_HEADERS \
     $$ANALYSIS_HEADERS \
     $$COVERAGE_HEADERS \
-    $$CONSTELLATIONS_HEADERS \
-    sta-src/SEM/Launcher.h \
-    sta-src/SEM/PlotGraphFromFile.h
+    $$CONSTELLATIONS_HEADERS
 FORMS = $$MAIN_FORMS \
     $$ASTROCORE_FORMS \
     $$SEM_FORMS \

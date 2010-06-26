@@ -999,7 +999,7 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
                     QList<double> sampleTimes;
                     QList<sta::StateVector> samples;
 
-                    if (dynamic_cast<ScenarioLoiteringType*>(trajectory.data()))
+		    if (dynamic_cast<ScenarioLoiteringType*>(trajectory.data()))    // Loitering
                     {
 			//out << "ScenarioLoiteringType in process " << endl;
                         ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
@@ -1063,7 +1063,67 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
                                 spaceObject->addMissionArc(arc);
                             }
                         }
-                    }
+		    }	///////// End of loitering IF
+		    else if (dynamic_cast<ScenarioLoiteringTLEType*>(trajectory.data()))    //// TLEs
+		    {
+			ScenarioLoiteringTLEType* loiteringTLE = dynamic_cast<ScenarioLoiteringTLEType*>(trajectory.data());
+			PropagateLoiteringTLETrajectory(loiteringTLE, sampleTimes, samples, feedback);
+
+			/*
+
+			if (feedback.status() != PropagationFeedback::PropagationOk)
+			{
+			    // An error occurred during propagate. Clean up everything and return immediately.
+			    // The current propagation results will not be replaced.
+			    if (feedback.status() == PropagationFeedback::PropagationCanceled)
+			    {
+				QMessageBox::information(this, tr("Canceled"), tr("Propagation was canceled."));
+			    }
+			    else
+			    {
+				QMessageBox::critical(this, tr("Propagation Error"), tr("Error during propagation: %1").arg(feedback.errorString()));
+			    }
+
+			    delete propScenario;
+			    return;
+			}
+
+			QString centralBodyName = loitering->Environment()->CentralBody()->Name();
+			StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+			if (!centralBody)
+			{
+			    QMessageBox::warning(this,
+						 tr("Propagation Error"),
+						 tr("Unrecognized body '%1'").arg(centralBodyName));
+			    continue;
+			}
+
+			QString coordSysName = loitering->InitialPosition()->CoordinateSystem();
+			sta::CoordinateSystem coordSys(coordSysName);
+			if (coordSys.type() == sta::COORDSYS_INVALID)
+			{
+			    QMessageBox::warning(this,
+						 tr("Propagation Error"),
+						 tr("Unrecognized coordinate system '%1'").arg(coordSysName));
+			    continue;
+			}
+
+			if (sampleTimes.size() > 1)
+			{
+			    if (Lagrmode != 2)
+			    {
+				MissionArc* arc = new MissionArc(centralBody,
+								 coordSys,
+								 sampleTimes,
+								 samples);
+				spaceObject->addMissionArc(arc);
+			    }
+			}
+
+			*/
+
+		    }  /////////////////////////// end of the big IF for all arcs
+
 
 #if OLDSCENARIO
                     PropagateLagrangian();
