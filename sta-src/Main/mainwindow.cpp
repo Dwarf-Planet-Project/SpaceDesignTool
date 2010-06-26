@@ -26,6 +26,7 @@
   Modified by Guillermo on October 2009 to allow shorcuts on dialogues and change the "calculate" dialogue
   Patched by Guillermo April 2010 to add analyis module
   Patched by Guillermo June 2010 to add constellations module
+  Patched by Guillermo on June 2010 to all TLE propagation
 
 
  */
@@ -951,7 +952,9 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
 
     //out << "PropagatedScenario created " << endl;
 
-    extern int Lagrmode;
+    //extern int Lagrmode;
+
+    int Lagrmode = 99;	    //Guillermo says: take this thong out of here
 
     int colorIndex = 0;
 
@@ -1052,24 +1055,28 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
                             continue;
                         }
 
+			
                         if (sampleTimes.size() > 1)
                         {
-                            if (Lagrmode != 2)
+			    if (Lagrmode != 2)
                             {
                                 MissionArc* arc = new MissionArc(centralBody,
                                                                  coordSys,
                                                                  sampleTimes,
                                                                  samples);
                                 spaceObject->addMissionArc(arc);
-                            }
-                        }
+			    }
+			}
+
+
+
 		    }	///////// End of loitering IF
+
+
 		    else if (dynamic_cast<ScenarioLoiteringTLEType*>(trajectory.data()))    //// TLEs
 		    {
 			ScenarioLoiteringTLEType* loiteringTLE = dynamic_cast<ScenarioLoiteringTLEType*>(trajectory.data());
 			PropagateLoiteringTLETrajectory(loiteringTLE, sampleTimes, samples, feedback);
-
-			/*
 
 			if (feedback.status() != PropagationFeedback::PropagationOk)
 			{
@@ -1088,8 +1095,9 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
 			    return;
 			}
 
-			QString centralBodyName = loitering->Environment()->CentralBody()->Name();
+			QString centralBodyName = "Earth";
 			StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+
 			if (!centralBody)
 			{
 			    QMessageBox::warning(this,
@@ -1098,7 +1106,7 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
 			    continue;
 			}
 
-			QString coordSysName = loitering->InitialPosition()->CoordinateSystem();
+			QString coordSysName = "INERTIAL J2000";
 			sta::CoordinateSystem coordSys(coordSysName);
 			if (coordSys.type() == sta::COORDSYS_INVALID)
 			{
@@ -1120,7 +1128,6 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
 			    }
 			}
 
-			*/
 
 		    }  /////////////////////////// end of the big IF for all arcs
 

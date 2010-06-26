@@ -32,6 +32,8 @@ QT += opengl
 QT += xml \
     xmlpatterns
 
+
+
 # ## Specifiying folders on the tree #####
 WINDOWS_LIBRARIES_DIR = thirdparty/windows
 MACOSX_LIBRARIES_DIR = thirdparty/macosx
@@ -953,8 +955,10 @@ win32-g++ {
         -Bdynamic
 }
 
+
 # Application icon
 macx:ICON = iconary/STAlogo.icns
+
 macx:QMAKE_CXXFLAGS_RELEASE = -ffast-math \
     -fexpensive-optimizations \
     -O3 \
@@ -1100,10 +1104,8 @@ macx {
 # INCLUDEPATH += /usr/local/cspice/include
 # LIBS += -ljpeg -llua /usr/local/cspice/lib/cspice.a
 macx { 
-    # QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.4u.sdk
-    # CONFIG += x86 ppc
-    # Necessary with Qt 4.6
-    QMAKE_LFLAGS += -framework \
+     QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
+     QMAKE_LFLAGS += -framework \
         CoreFoundation \
         -framework \
         ApplicationServices

@@ -96,6 +96,8 @@ protected:
 
 
 
+
+
 extern bool
 PropagateLoiteringTLETrajectory(ScenarioLoiteringTLEType* loiteringTLE,
 			     QList<double>& sampleTimes,

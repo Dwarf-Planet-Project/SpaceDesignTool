@@ -353,8 +353,10 @@ static QByteArray loiteringFragment(const char* name)
     initAtt->setPsiDot(0.00000);
     loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
 
-    loitering.TimeLine()->setStartTime(QDateTime(QDate(2012, 1, 1)));
-    loitering.TimeLine()->setEndTime(QDateTime(QDate(2012, 1, 2)));
+
+    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
+    loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
+    loitering.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
@@ -388,9 +390,9 @@ static QByteArray reentryFragment(const char* name) //Modified by Dominic to all
     entry.Constraints()->setMaxHeatFlux(500.00);
     entry.Constraints()->setMaxAltitude(10000000.00);
 
-    // Patched by Guillermo to include an initial time in the future
-    entry.TimeLine()->setStartTime(QDateTime(QDate(2012, 1, 1)));
-    //entry.TimeLine()->setStepTime(5.0);
+    // Patched by Guillermo to include an initial as current epoch
+    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
+    entry.TimeLine()->setStartTime(TheCurrentDateAndTime);
     // Patched by Guillermo to include a full initial state vector
     initPos->setHeadingAngle(sta::degToRad(45.45));
     initPos->setLatitude(sta::degToRad(38.45));
@@ -408,12 +410,15 @@ static QByteArray loiteringTLEFragment(const char* name)
     ScenarioLoiteringTLEType loiteringTLE;
 
     /*** fill in defaults ***/
-    loiteringTLE.TimeLine()->setEndTime(QDateTime(QDate(2009, 10, 11), QTime(12, 0, 0)));
-    loiteringTLE.TimeLine()->setStartTime(QDateTime(QDate(2009, 10, 12), QTime(12, 0, 0)));
+    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
+    loiteringTLE.TimeLine()->setStartTime(TheCurrentDateAndTime);
+    loiteringTLE.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
     loiteringTLE.TimeLine()->setStepTime(60.0);
     loiteringTLE.setTleLine0("ISS (ZARYA)");
     loiteringTLE.setTleLine1("1 25544U 98067A   09282.91732946  .00013034  00000-0  90850-4 0  7559");
     loiteringTLE.setTleLine2("2 25544  51.6398  77.7469 0007731 180.0753 317.5762 15.74717336624025");
+
+    loiteringTLE.ElementIdentifier()->setName("ISS (ZARYA)");
 
     QDomDocument doc;
     return fragmentText(CreateLoiteringTLEElement(&loiteringTLE, doc)).toUtf8();

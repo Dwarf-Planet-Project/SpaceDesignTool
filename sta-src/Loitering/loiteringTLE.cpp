@@ -32,6 +32,9 @@
 #include "Scenario/scenario.h"
 #include "Astro-Core/date.h"
 #include "Astro-Core/stacoordsys.h"
+#include "Astro-Core/calendarTOjulian.h"
+
+#include "thirdparty/noradtle/norad.h"
 
 #include <QtGui>
 #include <iostream>
@@ -39,6 +42,11 @@
 
 #include "ui_loiteringTLE.h"
 
+
+
+// The maximum number of steps allowed for a propagation; the user should be allowed
+// to adjust this.
+static const int MAX_OUTPUT_STEPS = 1000000;
 
 QT_BEGIN_NAMESPACE
 class QMimeData;
@@ -320,275 +328,158 @@ PropagateLoiteringTLETrajectory(ScenarioLoiteringTLEType* loiteringTLE,
 			     PropagationFeedback& propFeedback)
 {
 
-
-    /*
-
     //QTextStream out (stdout);
 
-    QString loiteringLabel = loitering->ElementIdentifier()->Name();
-    //out << "PropagateLoiteringTrajectory called with ARC name: " << loiteringLabel << endl;
+    //loiteringTLE ->ElementIdentifier()
+    //loiteringTLE->tleLine0()
 
-    QString centralBodyName = loitering->Environment()->CentralBody()->Name();
-    StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
-    if (!centralBody)
+
+    //if (!timeline())
+    //	return sta::StateVector::zero();
+
+    //double timelineDuration = sta::daysToSecs(m_timeline->endTime() - m_timeline->startTime());
+    //double dt = m_timeline->timeStep();
+
+    double timelineDuration = loiteringTLE->TimeLine()->StartTime().secsTo(loiteringTLE->TimeLine()->EndTime());
+
+    if (timelineDuration < 0)
     {
-	propFeedback.raiseError(QObject::tr("Unrecognized central body '%1'").arg(centralBodyName));
-	return false;
+	propFeedback.raiseError(QObject::tr("End time before initial time"));
+	return true;
     }
 
-    QString coordSysName = loitering->InitialPosition()->CoordinateSystem();
-    sta::CoordinateSystem coordSys(coordSysName);
-    if (coordSys.type() == sta::COORDSYS_INVALID)
+    double dt = loiteringTLE->TimeLine()->StepTime();
+
+    //out << "timelineDuration: " << timelineDuration << "   dt :" << dt << endl;
+
+    tle_t tle;
+
+    int tleError = parse_elements(loiteringTLE->tleLine1().toAscii().data(), loiteringTLE->tleLine2().toAscii().data(), &tle);
+
+    //out << tle.epoch << " " << tle.omegao << " " << tle.xincl << " " << tle.xmo << " " << tle.xno << endl;
+
+    //out << "tleError: " << tleError << endl;
+
+    if (tleError != 0)
     {
-	propFeedback.raiseError(QObject::tr("Unrecognized coordinate system '%1'").arg(coordSysName));
-	return false;
+	if (tleError == 3)
+	    propFeedback.raiseError(QObject::tr("TLE is not parseable."));
+	else
+	    propFeedback.raiseError(QObject::tr("Checksum error in TLE.\n"));
+	//return initialState;
+	return true;
     }
-
-    // Get the initial state in two forms:
-    //   - Keplerian elements for simple two-body propagation
-    //   - A state vector for any other sort of propagation
-    ScenarioAbstract6DOFPositionType* position = loitering->InitialPosition()->Abstract6DOFPosition().data();
-    sta::StateVector initialState = AbstractPositionToStateVector(position, centralBody);
-    sta::KeplerianElements initialStateKeplerian = AbstractPositionToKeplerianElements(position, centralBody);
-
-    double mu = centralBody->mu();
-
-    // Get the timeline information
-    const ScenarioTimeLine* timeline = loitering->TimeLine().data();
-    double timelineDuration = timeline->StartTime().secsTo(timeline->EndTime());
-    double dt = loitering->PropagationPosition()->timeStep();
 
     if (dt == 0.0)
     {
 	propFeedback.raiseError(QObject::tr("Time step is zero!"));
-	return false;
+	//return initialState;
+	return true;
     }
 
-    // We don't output values at every integration step. Instead use the time step
-    // from simulation parameters. The actual output step used will not necessarily
-    // match the requested output step: the code below sets it to be an integer
-    // multiple of the integration step.
-    double requestedOutputTimeStep = timeline->StepTime();
-    double outputTimeStep;
-    unsigned int outputRate;
-    if (requestedOutputTimeStep < dt)
-    {
-	outputRate = 1;
-	outputTimeStep = dt;
-    }
-    else
-    {
-	outputRate = (unsigned int) floor(requestedOutputTimeStep / dt + 0.5);
-	outputTimeStep = outputRate * dt;
-    }
-
-    if (timelineDuration / outputTimeStep > MAX_OUTPUT_STEPS)
+    if (timelineDuration / dt > MAX_OUTPUT_STEPS)
     {
 	propFeedback.raiseError(QObject::tr("Number of propagation steps exceeds %1. Try increasing the simulation time step.").arg(MAX_OUTPUT_STEPS));
-	return false;
+	//return initialState;
+	return true;
     }
 
-#if OLDSCENARIO
-    // Create the list of perturbations that will influence the propagation
-    ScenarioSpaceVehicle* spacevehicle = dynamic_cast<ScenarioSpaceVehicle*>(this->parent()->parent());
-    ScenarioProperties* vehicleproperties = spacevehicle->properties();
-
-    QList<Perturbations*> perturbationsList = environment()->createListPerturbations(vehicleproperties);
-#endif
-    QList<Perturbations*> perturbationsList;
-
-    sta::StateVector stateVector = initialState;
-
-    // deviation, reference, and q will be used only in Encke propagation
-    sta::StateVector deviation(Vector3d::Zero(), Vector3d::Zero());
-    sta::StateVector reference = initialState;
-    double q = 0.0;
-
-    // Next lines cretaed by Guillermo for trace purposes. To delete in future
-    //double MyJulianDate = sta::CalendarToJd(timeline->StartTime());
-    //QTextStream out (stdout);
-    //out << "MyJulianDate: " << MyJulianDate << endl;
-
-    double startTime = sta::JdToMjd(sta::CalendarToJd(timeline->StartTime()));
-    //out << "MyModifiedJulianDate: " << startTime << endl;
-
-
-    sampleTimes << startTime;
-    samples << stateVector;
-
-    QFile ciccio("data/PerturbationsData.stae");
-    QTextStream cicciostream(&ciccio);
-    ciccio.open(QIODevice::WriteOnly);
-
-    unsigned int steps = 0;
-
-    QString propagator = loitering->PropagationPosition()->propagator();
-    QString integrator = loitering->PropagationPosition()->integrator();
-
-    if (propagator == "TWO BODY")
+    int ephemeris = TLE_EPHEMERIS_TYPE_SGP4;
+    bool isDeep = select_ephemeris(&tle) != 0;
+    if (isDeep)
     {
-
-	double sma            = initialStateKeplerian.SemimajorAxis;
-	double e              = initialStateKeplerian.Eccentricity;
-	double inclination    = initialStateKeplerian.Inclination*Pi()/180.0;
-	double raan           = initialStateKeplerian.AscendingNode*Pi()/180.0;
-	double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis*Pi()/180.0;
-	double trueAnomaly    = initialStateKeplerian.TrueAnomaly*Pi()/180.0;
-	double meanAnomaly    = trueAnomalyTOmeanAnomaly(trueAnomaly, e);
-
-	QTextStream out (stdout);
-	out << "sma: " << sma << endl;
-	out << "e: " << e << endl;
-	out << "inclination: " << inclination << endl;
-	out << "raan: " << raan << endl;
-	out << "argOfPeriapsis: " << argOfPeriapsis << endl;
-	out << "trueAnomaly: " << trueAnomaly << endl;
-	out << "meanAnomaly: " << meanAnomaly << endl;
-
-
-	// Next lines patched by Guillermo on April 23 2010 to speed up calculations outside the for loop
-	double argOfPeriapsisUpdated      = 0.0;
-	double meanAnomalyUpdated         = 0.0;
-	double raanUpdated                = 0.0;
-
-	double perigee = sma * (1 - e);
-	if (perigee < centralBody->meanRadius())
-	{
-	    propFeedback.raiseError(QObject::tr("The perigee distance is smaller than the main body radius."));
-	    return false;
-	}
-	else
-	{
-
-	  for (double t = dt; t < timelineDuration + dt; t += dt)
-	  {
-	    JulianDate jd = startTime + sta::secsToDays(t);
-
-	    stateVector = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
-					   dt,
-					   raanUpdated, argOfPeriapsisUpdated, meanAnomalyUpdated);
-
-	    argOfPeriapsis = argOfPeriapsisUpdated;
-	    meanAnomaly    = meanAnomalyUpdated;
-	    raan           = raanUpdated;
-
-
-	    out << "argOfPeriapsis: " << argOfPeriapsis << endl;
-	    out << "meanAnomaly: " << meanAnomaly << endl;
-	    out << "raan: " << raan << endl;
-
-
-	    // Append a trajectory sample every outputRate integration steps (and
-	    // always at the last step.)
-	    if (steps % outputRate == 0 || t >= timelineDuration)
-	    {
-		sampleTimes << jd;
-		samples << stateVector;
-	    }
-	    ++steps;
-	  }
-	}
-    }
-    else if (propagator == "COWELL")
-    {
-	for (double t = dt; t < timelineDuration + dt; t += dt)
-	{
-	    JulianDate jd = startTime + sta::secsToDays(t);
-	    stateVector = propagateCOWELL(mu, stateVector, dt, perturbationsList, jd, integrator, propFeedback);
-	    // Append a trajectory sample every outputRate integration steps (and
-	    // always at the last step.)
-	    if (steps % outputRate == 0 || t >= timelineDuration)
-	    {
-		sampleTimes << jd;
-		samples << stateVector;
-	    }
-	    ++steps;
-	}
-    }
-    else if (propagator == "ENCKE")
-    {
-	double sma            = initialStateKeplerian.SemimajorAxis;
-	double e              = initialStateKeplerian.Eccentricity;
-	double inclination    = initialStateKeplerian.Inclination;
-	double raan           = initialStateKeplerian.AscendingNode;
-	double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis;
-	double meanAnomaly    = initialStateKeplerian.MeanAnomaly;
-
-	for (double t = dt; t < timelineDuration + dt; t += dt)
-	{
-	    JulianDate jd = startTime + sta::secsToDays(t);
-	    deviation = propagateENCKE(mu, reference, dt, perturbationsList, jd, stateVector, deviation,  q, integrator, propFeedback);
-
-	    // PropagateTWObody is used to propagate the reference trajectory
-	    double argOfPeriapsisUpdated      = 0.0;
-	    double meanAnomalyUpdated         = 0.0;
-	    double raanUpdated                = 0.0;
-	    reference = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
-					 dt,
-					 raanUpdated, argOfPeriapsisUpdated, meanAnomalyUpdated);
-
-	    argOfPeriapsis = argOfPeriapsisUpdated;
-	    meanAnomaly    = meanAnomalyUpdated;
-	    raan           = raanUpdated;
-
-	    // Calculating the perturbed trajectory
-	    stateVector = reference + deviation;
-	    q = deviation.position.dot(reference.position + 0.5 * deviation.position) / pow(reference.position.norm(), 2.0);
-
-#if 0
-	    // Rectification of the reference trajectory, when the deviation is too large.
-	    if (q > 0.01)
-	    {
-	       sta::KeplerianElements keplerian = cartesianTOorbital(mu, stateVector);
-
-	       sma = keplerian.SemimajorAxis;
-	       e = keplerian.Eccentricity;
-	       inclination = keplerian.Inclination;
-	       argOfPeriapsis = keplerian.ArgumentOfPeriapsis;
-	       raan = keplerian.AscendingNode;
-	       meanAnomaly = keplerian.MeanAnomaly;
-
-	       q = 0;
-	       reference = stateVector;
-	       deviation = sta::StateVector(null, null);
-	    }
-#endif
-	    // Append a trajectory sample every outputRate integration steps (and
-	    // always at the last step.)
-	    if (steps % outputRate == 0 || t >= timelineDuration)
-	    {
-		sampleTimes << jd;
-		samples << stateVector;
-	    }
-	    ++steps;
-	}
-    }
-    else if (propagator == "GAUSS")
-    {
-	for (double t = dt; t < timelineDuration + dt; t += dt)
-	{
-	    JulianDate jd = startTime + sta::secsToDays(t);
-
-	    // Append a trajectory sample every outputRate integration steps (and
-	    // always at the last step.)
-	    if (steps % outputRate == 0 || t >= timelineDuration)
-	    {
-		sampleTimes << jd;
-		samples << stateVector;
-	    }
-	    ++steps;
-
-	    stateVector = propagateGAUSS(mu, stateVector, dt, perturbationsList, jd, integrator);
-	}
+	ephemeris = TLE_EPHEMERIS_TYPE_SDP4;
     }
     else
     {
-	propFeedback.raiseError(QObject::tr("Unsupported propagator '%1'").arg(propagator));
-	return false;
+	ephemeris = TLE_EPHEMERIS_TYPE_SGP4;
     }
 
+    double satelliteParams[N_SAT_PARAMS];
 
-    */
+    switch (ephemeris)
+    {
+    case TLE_EPHEMERIS_TYPE_SGP:
+       SGP_init(satelliteParams, &tle);
+       break;
+    case TLE_EPHEMERIS_TYPE_SGP4:
+       SGP4_init(satelliteParams, &tle);
+       break;
+    case TLE_EPHEMERIS_TYPE_SGP8:
+       SGP8_init(satelliteParams, &tle);
+       break;
+    case TLE_EPHEMERIS_TYPE_SDP4:
+       SDP4_init(satelliteParams, &tle);
+       break;
+    case TLE_EPHEMERIS_TYPE_SDP8:
+       SDP8_init(satelliteParams, &tle);
+       break;
+    }
+
+    // Time variable for SGP is in minutes
+    //double timeBase = (sta::MjdToJd(m_timeline->startTime()) - tle.epoch) * 1440.0;
+
+    // Obtaning the Julian date of the start epoch
+    // Defining the separator that will segment the lines of the TLEs
+    QRegExp separator("\\s+");  // the + Means one or more spaces!
+    QString Temporal = loiteringTLE->TimeLine()->StartTime().toString("yyyy MM dd hh mm ss.zzzz");
+    int TheYear           = int (Temporal.section(separator, 0, 0).toDouble());    //out << "YYYY: " << TheYear << endl;
+    int TheMonth          = int (Temporal.section(separator, 1, 1).toDouble());    //out << "MM: " << TheMonth << endl;
+    int TheDay            = int (Temporal.section(separator, 2, 2).toDouble());    //out << "dd: " << TheDay << endl;
+    int TheHour           = int (Temporal.section(separator, 3, 3).toDouble());    //out << "hh: " << TheHour << endl;
+    int TheMinute         = int (Temporal.section(separator, 4, 4).toDouble());    //out << "mm: " << TheMinute << endl;
+    double TheSecond      = int (Temporal.section(separator, 5, 5).toDouble());    //out << "ss: " << TheSecond << endl;
+
+    double startTimeJulianDate = calendarTOjulian(TheYear, TheMonth, TheDay, TheHour, TheMinute, TheSecond);
+
+    //double timeBase = (sta::MjdToJd(m_timeline->startTime()) - tle.epoch) * 1440.0;
+    double timeBase = (startTimeJulianDate - tle.epoch) * 1440.0;
+
+    //out << "startTimeJulianDate: " << startTimeJulianDate << "  timeBase: " << timeBase <<  endl;
+
+
+    sta::StateVector state;
+
+    // Loop written to ensure that we always sample right to the end of the
+    // requested span.
+    for (double t = 0.0; t < timelineDuration + dt; t += dt)
+    {
+	double tclamp = std::min(t, timelineDuration);
+
+	// Time since epoch
+	double t1 = timeBase + tclamp / 60.0;
+
+	switch (ephemeris)
+	{
+	case TLE_EPHEMERIS_TYPE_SGP:
+	   SGP(t1, &tle, satelliteParams, state.position.data(), state.velocity.data());
+	   break;
+	case TLE_EPHEMERIS_TYPE_SGP4:
+	   SGP4(t1, &tle, satelliteParams, state.position.data(), state.velocity.data());
+	   break;
+	case TLE_EPHEMERIS_TYPE_SGP8:
+	   SGP8(t1, &tle, satelliteParams, state.position.data(), state.velocity.data());
+	   break;
+	case TLE_EPHEMERIS_TYPE_SDP4:
+	   SDP4(t1, &tle, satelliteParams, state.position.data(), state.velocity.data());
+	   break;
+	case TLE_EPHEMERIS_TYPE_SDP8:
+	   SDP8(t1, &tle, satelliteParams, state.position.data(), state.velocity.data());
+	   break;
+	}
+
+	// SGP output velocities are in km/minute; convert to km/sec.
+	state.velocity /= 60.0;
+
+	//sampleTimes << m_timeline->startTime() + sta::secsToDays(tclamp);
+	sampleTimes << startTimeJulianDate + sta::secsToDays(tclamp);
+	//out << "samples size: " << samples.size() << endl;
+	samples << state;
+
+	//out << state.position(0) << " " << state.position(1) << " " << state.position(2) << endl;
+
+    }
+
 
     return true;
 }
