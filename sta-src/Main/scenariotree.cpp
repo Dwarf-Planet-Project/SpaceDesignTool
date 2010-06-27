@@ -708,7 +708,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(loitering);
-                updateTreeItems(editItem, scenarioObject);
+		//updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -727,7 +727,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             {
                 editDialog.saveValues(loiteringTLE);
                 // TODO Change the name of the participant using the TLE line 0
-                updateTreeItems(editItem, scenarioObject);
+		//updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -739,7 +739,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
         if (editDialog.exec() == QDialog::Accepted)
         {
             editDialog.saveValues(location);
-            updateTreeItems(editItem, scenarioObject);
+	    //updateTreeItems(editItem, scenarioObject);
         }
     }
     else if (dynamic_cast<ScenarioGroundStationEnvironment*>(scenarioObject) != NULL)
@@ -750,7 +750,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
         if (editDialog.exec() == QDialog::Accepted)
         {
             editDialog.saveValues(environment);
-            updateTreeItems(editItem, scenarioObject);
+	    //updateTreeItems(editItem, scenarioObject);
         }
     }
     else if (dynamic_cast<ScenarioTransmitterPayloadType*>(scenarioObject) != NULL)   // Guillermo: patching Ricardo's code
@@ -767,7 +767,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(payload);
-                updateTreeItems(editItem, scenarioObject);
+		//updateTreeItems(editItem, scenarioObject);
             }
         }
 
@@ -786,7 +786,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
 	    if (editDialog.exec() == QDialog::Accepted)
 	    {
 		editDialog.saveValues(payload);
-		updateTreeItems(editItem, scenarioObject);
+		//updateTreeItems(editItem, scenarioObject);
 	    }
 	}
 
@@ -805,7 +805,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
 	    if (editDialog.exec() == QDialog::Accepted)
 	    {
 		editDialog.saveValues(payload);
-		updateTreeItems(editItem, scenarioObject);
+		//updateTreeItems(editItem, scenarioObject);
 	    }
 	}
 
@@ -824,7 +824,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
 	    if (editDialog.exec() == QDialog::Accepted)
 	    {
 		editDialog.saveValues(payload);
-		updateTreeItems(editItem, scenarioObject);
+		//updateTreeItems(editItem, scenarioObject);
 	    }
 	}
 
@@ -844,7 +844,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(entry);
-                updateTreeItems(editItem, scenarioObject);
+		//updateTreeItems(editItem, scenarioObject);
             }
         }
 
@@ -875,7 +875,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(geometry,aerothermo);
-                updateTreeItems(editItem, scenarioObject);
+		//updateTreeItems(editItem, scenarioObject);
             }
         }
 
@@ -905,7 +905,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(aerothermo,geometry);
-                updateTreeItems(editItem, scenarioObject);
+		//updateTreeItems(editItem, scenarioObject);
             }
         }
 
@@ -927,7 +927,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(weights);
-                updateTreeItems(editItem, scenarioObject);
+		//updateTreeItems(editItem, scenarioObject);
             }
         }
 
@@ -947,7 +947,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(prop);
-                updateTreeItems(editItem, scenarioObject);
+		//updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -968,7 +968,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
                 if (editDialog.exec() == QDialog::Accepted)
                 {
                     editDialog.saveValues(initialStatePos);
-                    updateTreeItems(editItem, scenarioObject);
+		    //updateTreeItems(editItem, scenarioObject);
                 }
             }
         }
@@ -984,7 +984,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(initialStatePos);
-                updateTreeItems(editItem, scenarioObject);
+		//updateTreeItems(editItem, scenarioObject);
             }
         }
         }
@@ -997,7 +997,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
         if (editDialog.exec() == QDialog::Accepted)
         {
             editDialog.saveValues(location);
-            updateTreeItems(editItem, scenarioObject);
+	    //updateTreeItems(editItem, scenarioObject);
         }
     }
     else if (dynamic_cast<ScenarioRendezvousTrajectory*>(scenarioObject) != NULL)
@@ -1013,7 +1013,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(rendezvous);
-                updateTreeItems(editItem, scenarioObject);
+		//updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -1030,7 +1030,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(lagrangian);
-                updateTreeItems(editItem, scenarioObject);
+		//updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -1049,7 +1049,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(loitering);
-                updateTreeItems(editItem, scenarioObject);
+		//updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -1069,7 +1069,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             {
                 editDialog.saveValues(loiteringTLE);
                 // TODO Change the name of the participant using the TLE line 0
-                updateTreeItems(editItem, scenarioObject);
+		//updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -1087,7 +1087,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(externalTrajectory);
-                updateTreeItems(editItem, scenarioObject);
+		//updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -1105,7 +1105,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(physicalProperties);
-                updateTreeItems(editItem, scenarioObject);
+		//updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -1123,7 +1123,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(aerodynamicProperties);
-                updateTreeItems(editItem, scenarioObject);
+		//updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -1141,7 +1141,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(propulsionProperties);
-                updateTreeItems(editItem, scenarioObject);
+		//updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -1181,7 +1181,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(reentry);
-                updateTreeItems(editItem, scenarioObject);
+		//updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -1199,7 +1199,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
                 modelFileName.remove(0, modelFileName.lastIndexOf('/') + 1);
             
             appearance->setModel(modelFileName);
-            updateTreeItems(editItem, scenarioObject);
+	    //updateTreeItems(editItem, scenarioObject);
         }
     }
     else
