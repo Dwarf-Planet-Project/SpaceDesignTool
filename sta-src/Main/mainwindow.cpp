@@ -57,10 +57,10 @@
 
 #include "Scenario/scenarioPropagator.h"
 
-//********************************************************************** /OZGUN
+//****************** /OZGUN
 #include "Astro-Core/EclipseDuration.h"
 #include <QDebug>
-//********************************************************************** OZGUN/
+//***************** OZGUN/
 
 #include "propagatedscenario.h"
 #include "RendezVous/rendezvous.h"
@@ -123,14 +123,6 @@ QUrl STABugTracker("http://forge.osor.eu/tracker/?group_id=134");
 QUrl STAForums("http://forge.osor.eu/forum/?group_id=134");
 QUrl STADownloads("http://forge.osor.eu/frs/?group_id=134");
 QUrl STAmail("mailto:space.trajectory.analysis@gmail.com?subject=Help&body=Need help with STA...");
-
-// QUrl STAWiki("http://sta.wiki.sourceforge.net");
-// QUrl STAForums("http://sourceforge.net/apps/phpbb/sta/");  // Moving the forums to OSOR
-// QUrl STAUserManual("http://sta.wiki.sourceforge.net");  // The user's manual is disabled in this version
-// QUrl STABugTracker("http://sourceforge.net/apps/trac/sta/"); // Moving the bugtracker to OSOR
-// QUrl STADownloads("http://sourceforge.net/projects/sta"); // Moving the downloads to OSOR
-
-
 
 const QGLContext* glctx = NULL;
 QString DEFAULT_CONFIG_FILE = "STA.cfg";
@@ -312,10 +304,10 @@ MainWindow::MainWindow() :
     // Initial state has no scenario loaded, so disable the propagate, Engineer, and analise
     // scenario actions. Patched by Guillermo to make it work correctly
     actionPropagate_Scenario->setEnabled(m_scenario != NULL);
-    //actionPropagateCoverage->setEnabled(m_scenario != NULL);
-    //actionSat_to_Sat->setEnabled(m_scenario != NULL);
-    //actionSat_to_Ground->setEnabled(m_scenario != NULL);
-    //actionSystem_Engineering->setEnabled(m_scenario != NULL);
+    actionPropagateCoverage->setEnabled(m_scenario != NULL);
+    actionSat_to_Sat->setEnabled(m_scenario != NULL);
+    actionSat_to_Ground->setEnabled(m_scenario != NULL);
+    actionSystem_Engineering->setEnabled(m_scenario != NULL);
     actionAnalyse->setEnabled(m_scenario != NULL);
 
     if (m_celestiaCore) initCelestiaState();
@@ -348,6 +340,7 @@ MainWindow::MainWindow() :
     STACalculatorAct = new QAction(tr("&Calculator"), this);
     menuTools->addAction(STACalculatorAct);
     STACalculatorAct->setStatusTip(tr("Activates the STA Calculator"));
+    STACalculatorAct->setShortcut(QKeySequence(tr("Ctrl+T", "Tools|Calculator")));
     connect(STACalculatorAct, SIGNAL(triggered()), this, SLOT(ActivateSTACalc()));
     //menuBar()->addMenu(tr("&Tools"));  // Not required sice it is done on QtDesigner already
     //menuTools()->addSeparator();
@@ -410,6 +403,14 @@ void MainWindow::on_actionNewScenario_triggered()
 
     m_scenarioView->update();
     m_scenarioView->setFocus();
+
+    // Activating now the pull down menus
+    actionPropagate_Scenario->setEnabled(m_scenario != NULL);
+    actionPropagateCoverage->setEnabled(m_scenario != NULL);
+    actionSat_to_Sat->setEnabled(m_scenario != NULL);
+    actionSat_to_Ground->setEnabled(m_scenario != NULL);
+    actionSystem_Engineering->setEnabled(m_scenario != NULL);
+    actionAnalyse->setEnabled(m_scenario != NULL);
 
 }
 
@@ -1122,8 +1123,8 @@ void MainWindow::replaceCurrentScenario(SpaceScenario* scenario, QString filenam
 {
     m_scenario = scenario;
 
-    actionPropagate_Scenario->setEnabled(m_scenario != NULL);
-    actionSystem_Engineering->setEnabled(m_scenario != NULL);
+    //actionPropagate_Scenario->setEnabled(m_scenario != NULL);
+    //actionSystem_Engineering->setEnabled(m_scenario != NULL);
 
     m_scenarioFileName = filename;
     QString displayFilename = filename.section('/', -1);
