@@ -1746,7 +1746,7 @@ void MainWindow::on_actionPropagateCoverage_triggered()
 
 
     // Guillermo says; for the time being we call a estrange ANALYSIS method on the constellations module
-    Analysis* analysis = new Analysis(propScenario, true, false, false);
+    ConstellationAnalysis* analysisOfConstellations = new ConstellationAnalysis(propScenario, true, false, false);
 
     if (propScenario)
     {
@@ -1756,7 +1756,7 @@ void MainWindow::on_actionPropagateCoverage_triggered()
 	{
 	    m_groundTrackPlotTool->view()->setScenario(propScenario);
 
-	    m_groundTrackPlotTool->setAnalysis(analysis);
+	    m_groundTrackPlotTool->setAnalysis(analysisOfConstellations);
 	}
 	if (m_plottingTool)
 	{
@@ -1863,7 +1863,7 @@ void MainWindow::on_actionSat_to_Sat_triggered()
     }
 
 
-    Analysis* analysis = new Analysis(propScenario, false, true, false);
+    ConstellationAnalysis* analysisOfConstellations = new ConstellationAnalysis(propScenario, false, true, false);
 
     if (propScenario)
     {
@@ -1873,10 +1873,7 @@ void MainWindow::on_actionSat_to_Sat_triggered()
 	{
 	    m_groundTrackPlotTool->view()->setScenario(propScenario);
 
-	    // calculate Analysis Data (Claas Grohnfeldt, Steffen Peter)
-	    //out << "Calculating analysis: " << endl;
-	    // Guillermo has de-activate the pop up menu
-	    m_groundTrackPlotTool->setAnalysis(analysis);
+	    m_groundTrackPlotTool->setAnalysis(analysisOfConstellations);
 	}
 	if (m_plottingTool)
 	{
@@ -1982,7 +1979,7 @@ void MainWindow::on_actionSat_to_Ground_triggered()
 	}
     }
 
-    Analysis* analysis = new Analysis(propScenario, false, false, true);
+    ConstellationAnalysis* analysisOfConstellations = new ConstellationAnalysis(propScenario, false, false, true);
 
     if (propScenario)
     {
@@ -1992,10 +1989,7 @@ void MainWindow::on_actionSat_to_Ground_triggered()
 	{
 	    m_groundTrackPlotTool->view()->setScenario(propScenario);
 
-	    // calculate Analysis Data (Claas Grohnfeldt, Steffen Peter)
-	    //out << "Calculating analysis: " << endl;
-	    // Guillermo has de-activate the pop up menu
-	    m_groundTrackPlotTool->setAnalysis(analysis);
+	    m_groundTrackPlotTool->setAnalysis(analysisOfConstellations);
 	}
 	if (m_plottingTool)
 	{

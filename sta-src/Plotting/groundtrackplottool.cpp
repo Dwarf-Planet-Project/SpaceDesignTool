@@ -2049,14 +2049,14 @@ GroundTrackView::contextMenuEvent(QContextMenuEvent* event)
 }
 
 // Analysis (Claas Grohnfeldt, Steffen Peter)
-void GroundTrackView::setAnalysis(Analysis* analysis)
+void GroundTrackView::setAnalysis(ConstellationAnalysis* m_analysisOfConstellations)
 {
     m_showDiscretization = false;
     m_showCoverageCurrent = false;
     m_showCoverageHistory = false;
     m_showSOLink = false;
     m_showGOLink = false;
-    m_analysis = analysis;
+    m_analysis = m_analysisOfConstellations;
 }
 
 
@@ -2508,10 +2508,10 @@ GroundTrackPlotTool::~GroundTrackPlotTool()
 
 
 // Analysis (Claas Grohnfeldt, Steffen Peter)
-void GroundTrackPlotTool::setAnalysis(Analysis* analysis)
+void GroundTrackPlotTool::setAnalysis(ConstellationAnalysis* analysisOfConstellations)
 {
-    m_toolBar->enableAnalysisTools(analysis);
-    m_view->setAnalysis(analysis);
+    m_toolBar->enableAnalysisTools(analysisOfConstellations);
+    m_view->setAnalysis(analysisOfConstellations);
 }
 
 

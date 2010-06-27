@@ -418,7 +418,7 @@ static QByteArray loiteringTLEFragment(const char* name)
     loiteringTLE.setTleLine1("1 25544U 98067A   09282.91732946  .00013034  00000-0  90850-4 0  7559");
     loiteringTLE.setTleLine2("2 25544  51.6398  77.7469 0007731 180.0753 317.5762 15.74717336624025");
 
-    loiteringTLE.ElementIdentifier()->setName("ISS (ZARYA)");
+    loiteringTLE.ElementIdentifier()->setName("TLE");
 
     QDomDocument doc;
     return fragmentText(CreateLoiteringTLEElement(&loiteringTLE, doc)).toUtf8();

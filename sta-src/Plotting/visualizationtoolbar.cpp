@@ -22,7 +22,8 @@
 
 /*
 ------------------ Author: Chris Laurel  -------------------------------------------------
- ------------------ E-mail: (claurel@gmail.com) ----------------------------
+ ------------------ E-mail: (claurel@gmail.com) -----------------------------------------
+ Patched by Guillermo on June 2010 to include the constellations module
  */
 
 #include "visualizationtoolbar.h"
@@ -154,14 +155,14 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
 
     // create Analysis Menu
     //QMenu* tickMenu = new QMenu(tr("Ticks"), this);
-    //QMenu* m_analysisMenu = new QMenu(tr("Analysis Tools"), this);
+    //QMenu* m_analysisMenu = new QMenu(tr("Constellation Tools"), this);
     m_analysisMenu = new QMenu(this);
     m_analysisMenu->addAction(m_linkSOAction);
     m_analysisMenu->addAction(m_linkGOAction);
     m_analysisMenu->addAction(m_discretizationAction);
     m_analysisMenu->addAction(m_coverageCurrentAction);
     m_analysisMenu->addAction(m_coverageHistoryAction);
-    m_analysisAction = new QAction(QIcon(":/icons/IconCONSTELLATION.png"), tr("Analysis Tools"), this);
+    m_analysisAction = new QAction(QIcon(":/icons/IconCONSTELLATION.png"), tr("Constellation Tools"), this);
     m_analysisAction->setMenu(m_analysisMenu);
     //m_analysisAction->setVisible(false); // hide button until scenario is propagated
 
@@ -247,7 +248,7 @@ VisualizationToolBar::mapBodyChanged(QString bodyName)
 // Analysis (Claas Grohnfeldt, Steffen Peter)
 // Procedure to create and show the Analysis Toolbar
 void
-VisualizationToolBar::enableAnalysisTools(Analysis* analysis)
+VisualizationToolBar::enableAnalysisTools(ConstellationAnalysis* analysisOfConstellations)
 {
     // reset
     m_analysisAction->setVisible(false);
@@ -263,24 +264,24 @@ VisualizationToolBar::enableAnalysisTools(Analysis* analysis)
     m_coverageCurrentAction->setChecked(false);
     m_coverageHistoryAction->setChecked(false);
     // set
-    if (analysis != NULL)
+    if (analysisOfConstellations != NULL)
     {
-	if (!analysis->m_anaSpaceObjectList.at(0).linksamples.isEmpty()) // link SO
+	if (!analysisOfConstellations->m_anaSpaceObjectList.at(0).linksamples.isEmpty()) // link SO
 	{
 	    m_linkSOAction->setVisible(true);
 	    m_analysisAction->setVisible(true);
 	}
-	if (!analysis->m_anaSpaceObjectList.at(0).groundlinksamples.isEmpty()) // link GO
+	if (!analysisOfConstellations->m_anaSpaceObjectList.at(0).groundlinksamples.isEmpty()) // link GO
 	{
 	    m_linkGOAction->setVisible(true);
 	    m_analysisAction->setVisible(true);
 	}
-	if(!analysis->m_discreteMesh->meshAsList.isEmpty()) // discretization
+	if(!analysisOfConstellations->m_discreteMesh->meshAsList.isEmpty()) // discretization
 	{
 	    m_discretizationAction->setVisible(true);
 	    m_analysisAction->setVisible(true);
 	}
-	if(!analysis->m_anaSpaceObjectList.at(0).coveragesample.isEmpty()) // coverage
+	if(!analysisOfConstellations->m_anaSpaceObjectList.at(0).coveragesample.isEmpty()) // coverage
 	{
 	    m_coverageCurrentAction->setVisible(true);
 	    m_coverageHistoryAction->setVisible(true);

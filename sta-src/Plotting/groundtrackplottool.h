@@ -23,6 +23,7 @@
 /*
 ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
+  Patched by Guillermo on June 2010 to include the constellations module
  */
 
 #ifndef _PLOTTING_GROUNDTRACKPLOTTOOL_H_
@@ -102,7 +103,7 @@ Q_OBJECT
     double tickInterval() const { return m_tickInterval; }
 
     // Analysis (Claas Grohnfeldt, Steffen Peter)
-    void setAnalysis(Analysis* analysis);
+    void setAnalysis(ConstellationAnalysis* analysisOfConstellations);
         
  public slots:
     void setCurrentTime(double jd);
@@ -170,7 +171,7 @@ Q_OBJECT
  private:
     PropagatedScenario* m_scenario;
     // Analysis (Claas Grohnfeldt, Steffen Peter)
-    Analysis* m_analysis;
+    ConstellationAnalysis* m_analysis;
 
 
     double m_currentTime;
@@ -224,7 +225,7 @@ public:
     GroundTrackView* view() const { return m_view; }
 
     // Analysis (Claas Grohnfeldt, Steffen Peter)
-    void setAnalysis(Analysis* analysis);
+    void setAnalysis(ConstellationAnalysis* analysisOfConstellations);
     
 private:
     GroundTrackView* m_view;

@@ -355,11 +355,10 @@ ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioOb
     // and trajectories is permitted.
     item->setFlags(item->flags() & ~(Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled));
 
-    // Allow dropping into scenarios and trajectory plans (and nothing else for now)
+    // Allow dropping into scenarios, trajectory plans, and payload sets (and nothing else for now)
     if (dynamic_cast<SpaceScenario*>(scenarioObject) ||
 	dynamic_cast<ScenarioTrajectoryPlan*>(scenarioObject) ||
 	dynamic_cast<ScenarioPayloadSet*>(scenarioObject) ||  // Patched by Guillermo to allow drops into Payload plan
-	//dynamic_cast<ScenarioGroundStation*>(scenarioObject) ||
 	dynamic_cast<ScenarioREVTrajectoryPlanType*>(scenarioObject))  //Modified by Dominic and Ricardo Noriega to allow dropping of EntryArc and Payloads over SC and GS
     {
         item->setFlags(item->flags() | Qt::ItemIsDropEnabled);
@@ -378,23 +377,17 @@ ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioOb
     // Guillermo: expand items by default or not
     item->setExpanded(true);
 
-
     if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject))
     {
-	//ScenarioElementIdentifierType* myIdentifier = dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject);
 	item->setFlags(item->flags() | (Qt::ItemIsEditable));
-	//myIdentifier->Name() = item->text(1);
 	item->setText(1, dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject)->Name());
-	//updateTreeItems(item, scenarioObject);
     }
     else if (dynamic_cast<ScenarioParticipantType*>(scenarioObject))
     {
 	item->setText(1, dynamic_cast<ScenarioParticipantType*>(scenarioObject)->Name());
-	//updateTreeItems(item, scenarioObject);
     }
 
     changeLabels(item, scenarioObject);
-
 
 }   // End of addScenarioItems ////////
 
@@ -491,9 +484,6 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
         trajectory = ScenarioLoiteringTLEType::create(element);
     else if (elementName == "tns:EntryArc")
         trajectory = ScenarioEntryArcType::create(element);
-
-    //qDebug() << encodedData;
-    //qDebug() << "ELEMENT " << elementName;
 
     if (participant)
     {

@@ -165,11 +165,11 @@ class AnaSpaceObject
 };
 
 
-class Analysis
+class ConstellationAnalysis
 {
     public:
-	Analysis(PropagatedScenario* scenario, bool m_calcCoverage, bool m_calcSOLink, bool m_calcGOLink);
-        ~Analysis();
+	ConstellationAnalysis(PropagatedScenario* scenario, bool m_calcCoverage, bool m_calcSOLink, bool m_calcGOLink);
+	~ConstellationAnalysis();
 
         QList<AnaSpaceObject> m_anaSpaceObjectList;
         DiscreteMesh* m_discreteMesh;

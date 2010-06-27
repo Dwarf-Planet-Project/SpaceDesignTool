@@ -61,7 +61,7 @@ AnaSpaceObject::choose(bool c)
 }
 
 
-Analysis::Analysis(PropagatedScenario* scenario, bool m_calcCoverage, bool m_calcSOLink, bool m_calcGOLink):
+ConstellationAnalysis::ConstellationAnalysis(PropagatedScenario* scenario, bool m_calcCoverage, bool m_calcSOLink, bool m_calcGOLink):
         m_askfeature(new AnalysisPropDialog(NULL))
 {
     // analysis features dialog
@@ -698,7 +698,7 @@ Analysis::Analysis(PropagatedScenario* scenario, bool m_calcCoverage, bool m_cal
 
 
 
-Analysis::~Analysis()
+ConstellationAnalysis::~ConstellationAnalysis()
 {
 }
 bool linkSampleLessThan(const LinkSample &s1, const LinkSample &s2)

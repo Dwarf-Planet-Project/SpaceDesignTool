@@ -22,6 +22,7 @@
 /*
 ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
+  Patched by Guillermo on June 2010 to include the constellations module
  */
 
 #ifndef _PLOTTING_VISUALIZATION_TOOLBAR_H_
@@ -48,7 +49,7 @@ public:
     ~VisualizationToolBar();
 
     // Analysis (Claas Grohnfeldt, Steffen Peter)
-   void enableAnalysisTools(Analysis* analysis);
+   void enableAnalysisTools(ConstellationAnalysis* analysisOfConstellations);
    void disableAnalysisTools();
 
 private slots:
