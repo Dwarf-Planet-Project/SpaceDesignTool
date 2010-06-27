@@ -54,6 +54,9 @@
 #include "Plotting/threedvisualizationtool.h"
 #include "Astro-Core/date.h"
 
+
+#include "Scenario/scenarioPropagator.h"
+
 //********************************************************************** /OZGUN
 #include "Astro-Core/EclipseDuration.h"
 #include <QDebug>
@@ -937,10 +940,11 @@ PropagateLagrangian()
 
 
 int luna;
+
+
+///////////////////////////////////////////  Action PROPAGATE ////////////////////////////////////////
 void MainWindow::on_actionPropagate_Scenario_triggered()
 {
-
-    //QTextStream out (stdout);
 
     if (!scenario())
     {
@@ -980,292 +984,29 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
         if (dynamic_cast<ScenarioSC*>(participant.data()))
         {
             ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
-            const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList = vehicle->SCMission()->TrajectoryPlan()->AbstractTrajectory();
 
-            // Initial state is stored in the first trajectory (for now); so,
-            // the empty trajectory plan case has to be treated specially.
-            if (!trajectoryList.isEmpty())
-            {
-                SpaceObject* spaceObject = new SpaceObject();
-                spaceObject->setName(vehicle->Name());
-
-                spaceObject->setTrajectoryColor(trajectoryColor);
-#if OLDSCENARIO
-                // TODO: Visual properties not added to new space scenario schema yet -cjl
-                spaceObject->setModelFile(vehicle->appearance()->model());
-                spaceObject->setTrajectoryColor(vehicle->visualProperties().trajectoryColor);
-#endif
-
-                // Propagate all segments of the trajectory plan.
-                foreach (QSharedPointer<ScenarioAbstractTrajectoryType> trajectory, trajectoryList)
-                {
-                    QList<double> sampleTimes;
-                    QList<sta::StateVector> samples;
-
-		    if (dynamic_cast<ScenarioLoiteringType*>(trajectory.data()))    // Loitering
-                    {
-			//out << "ScenarioLoiteringType in process " << endl;
-                        ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
-                        PropagateLoiteringTrajectory(loitering, sampleTimes, samples, feedback);
-
-                        //******************************************************************** /OZGUN
-                        // Eclipse function is called and the "data/EclipseStarLight.stad" is generated
-                        EclipseDuration* Eclipse = new EclipseDuration();
-
-                        Eclipse->StarLightTimeFunction(sampleTimes,
-                                                       samples,
-                                                       STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                       STA_SOLAR_SYSTEM->lookup("Sun"));
-                        //******************************************************************** OZGUN/
-
-                        if (feedback.status() != PropagationFeedback::PropagationOk)
-                        {
-                            // An error occurred during propagate. Clean up everything and return immediately.
-                            // The current propagation results will not be replaced.
-                            if (feedback.status() == PropagationFeedback::PropagationCanceled)
-                            {
-                                QMessageBox::information(this, tr("Canceled"), tr("Propagation was canceled."));
-                            }
-                            else
-                            {
-                                QMessageBox::critical(this, tr("Propagation Error"), tr("Error during propagation: %1").arg(feedback.errorString()));
-                            }
-
-                            delete propScenario;
-                            return;
-                        }
-
-                        QString centralBodyName = loitering->Environment()->CentralBody()->Name();
-                        StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
-                        if (!centralBody)
-                        {
-                            QMessageBox::warning(this,
-                                                 tr("Propagation Error"),
-                                                 tr("Unrecognized body '%1'").arg(centralBodyName));
-                            continue;
-                        }
-
-                        QString coordSysName = loitering->InitialPosition()->CoordinateSystem();
-                        sta::CoordinateSystem coordSys(coordSysName);
-                        if (coordSys.type() == sta::COORDSYS_INVALID)
-                        {
-                            QMessageBox::warning(this,
-                                                 tr("Propagation Error"),
-                                                 tr("Unrecognized coordinate system '%1'").arg(coordSysName));
-                            continue;
-                        }
-
-			
-                        if (sampleTimes.size() > 1)
-                        {
-			    if (Lagrmode != 2)
-                            {
-                                MissionArc* arc = new MissionArc(centralBody,
-                                                                 coordSys,
-                                                                 sampleTimes,
-                                                                 samples);
-                                spaceObject->addMissionArc(arc);
-			    }
-			}
-
-
-
-		    }	///////// End of loitering IF
-
-
-		    else if (dynamic_cast<ScenarioLoiteringTLEType*>(trajectory.data()))    //// TLEs
-		    {
-			ScenarioLoiteringTLEType* loiteringTLE = dynamic_cast<ScenarioLoiteringTLEType*>(trajectory.data());
-			PropagateLoiteringTLETrajectory(loiteringTLE, sampleTimes, samples, feedback);
-
-			if (feedback.status() != PropagationFeedback::PropagationOk)
-			{
-			    // An error occurred during propagate. Clean up everything and return immediately.
-			    // The current propagation results will not be replaced.
-			    if (feedback.status() == PropagationFeedback::PropagationCanceled)
-			    {
-				QMessageBox::information(this, tr("Canceled"), tr("Propagation was canceled."));
-			    }
-			    else
-			    {
-				QMessageBox::critical(this, tr("Propagation Error"), tr("Error during propagation: %1").arg(feedback.errorString()));
-			    }
-
-			    delete propScenario;
-			    return;
-			}
-
-			QString centralBodyName = "Earth";
-			StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
-
-			if (!centralBody)
-			{
-			    QMessageBox::warning(this,
-						 tr("Propagation Error"),
-						 tr("Unrecognized body '%1'").arg(centralBodyName));
-			    continue;
-			}
-
-			QString coordSysName = "INERTIAL J2000";
-			sta::CoordinateSystem coordSys(coordSysName);
-			if (coordSys.type() == sta::COORDSYS_INVALID)
-			{
-			    QMessageBox::warning(this,
-						 tr("Propagation Error"),
-						 tr("Unrecognized coordinate system '%1'").arg(coordSysName));
-			    continue;
-			}
-
-			if (sampleTimes.size() > 1)
-			{
-			    if (Lagrmode != 2)
-			    {
-				MissionArc* arc = new MissionArc(centralBody,
-								 coordSys,
-								 sampleTimes,
-								 samples);
-				spaceObject->addMissionArc(arc);
-			    }
-			}
-
-
-		    }  /////////////////////////// end of the big IF for all arcs
-
-
-#if OLDSCENARIO
-                    PropagateLagrangian();
-#endif
-                    if (Lagrmode != 2)
-                    {
-                        propScenario->addSpaceObject(spaceObject);
-                    }
-                }
-            }
+	    scenarioPropagatorSatellite(vehicle,  trajectoryColor, feedback, propScenario);
         }
 
         else if (dynamic_cast<ScenarioREV*>(participant.data()))//Added by Dominic to allow propagation of re-entry vehicle trajectories
         {
             ScenarioREV* entryVehicle = dynamic_cast<ScenarioREV*>(participant.data());
-            const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList = entryVehicle->REVMission()->REVTrajectoryPlan()->AbstractTrajectory();
 
-            if(!trajectoryList.isEmpty())
-            {
-                SpaceObject* spaceObject = new SpaceObject();
-                spaceObject->setName(entryVehicle->Name());
-                spaceObject->setTrajectoryColor(trajectoryColor);
-                foreach (QSharedPointer<ScenarioAbstractTrajectoryType> trajectory, trajectoryList)
-                {
-                    QList<double> sampleTimes;
-                    QList<sta::StateVector> samples;
-
-                    if (dynamic_cast<ScenarioEntryArcType*>(trajectory.data()))
-                    {
-                        ScenarioEntryArcType* entry = dynamic_cast<ScenarioEntryArcType*>(trajectory.data());
-                        PropagateEntryTrajectory(entryVehicle, entry, sampleTimes, samples, feedback);
-                        if (feedback.status() != PropagationFeedback::PropagationOk)
-                        {
-                            // An error occurred during propagate. Clean up everything and return immediately.
-                            // The current propagation results will not be replaced.
-                            if (feedback.status() == PropagationFeedback::PropagationCanceled)
-                            {
-                                QMessageBox::information(this, tr("Canceled"), tr("Propagation was canceled."));
-                            }
-                            else
-                            {
-                                QMessageBox::critical(this, tr("Propagation Error"), tr("Error during propagation: %1").arg(feedback.errorString()));
-                            }
-
-                            delete propScenario;
-                            return;
-                        }
-
-                        QString centralBodyName = entry->Environment()->CentralBody()->Name();
-                        StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
-                        if (!centralBody)
-                        {
-                            QMessageBox::warning(this,
-                                                 tr("Propagation Error"),
-                                                 tr("Unrecognized body '%1'").arg(centralBodyName));
-                            continue;
-                        }
-
-                        QString coordSysName = entry->InitialPosition()->CoordinateSystem();
-                        sta::CoordinateSystem coordSys(coordSysName);
-                        if (coordSys.type() == sta::COORDSYS_INVALID)
-                        {
-                            QMessageBox::warning(this,
-                                                 tr("Propagation Error"),
-                                                 tr("Unrecognized coordinate system '%1'").arg(coordSysName));
-                            continue;
-                        }
-                        MissionArc* arc = new MissionArc(centralBody,
-                                                         coordSys,
-                                                         sampleTimes,
-                                                         samples);
-                        qDebug()<<coordSys.name()<<" coord";
-                        spaceObject->addMissionArc(arc);
-
-                    }
-                    propScenario->addSpaceObject(spaceObject);
-
-                }
-
-            }
-
+	    scenarioPropagatorReEntryVehicle(entryVehicle,  trajectoryColor, feedback, propScenario);
         }
         else if (dynamic_cast<ScenarioGroundStation*>(participant.data()))
         {
             ScenarioGroundStation* groundElement = dynamic_cast<ScenarioGroundStation*>(participant.data());
 
-            QSharedPointer<ScenarioAbstract3DOFPositionType> position = groundElement->Location()->Abstract3DOFPosition();
-            QSharedPointer<ScenarioGroundPositionType> groundPosition = qSharedPointerDynamicCast<ScenarioGroundPositionType>(position);
-            if (!groundPosition.isNull())
-            {
-                StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(groundElement->Location()->CentralBody());
-                if (centralBody)
-                {
-                    GroundObject* groundObject = new GroundObject();
-
-                    groundObject->name = groundElement->Name();
-                    groundObject->centralBody = centralBody;
-		    groundObject->longitude = groundPosition->longitude();
-                    groundObject->latitude = groundPosition->latitude();
-                    groundObject->altitude = groundPosition->altitude();
-
-                    propScenario->addGroundObject(groundObject);
-                }
-            }
+	    scenarioPropagatorGroundElement(groundElement, trajectoryColor, feedback, propScenario);
         }
 	else if (dynamic_cast<ScenarioPoint*>(participant.data()))
 	{
-	    ScenarioPoint* groundElement = dynamic_cast<ScenarioPoint*>(participant.data());
+	    ScenarioPoint* point = dynamic_cast<ScenarioPoint*>(participant.data());
 
-	    QSharedPointer<ScenarioAbstract3DOFPositionType> position = groundElement->Location()->Abstract3DOFPosition();
-	    QSharedPointer<ScenarioGroundPositionType> groundPosition = qSharedPointerDynamicCast<ScenarioGroundPositionType>(position);
-	    if (!groundPosition.isNull())
-	    {
-		StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(groundElement->Location()->CentralBody());
-		if (centralBody)
-		{
-		    GroundObject* groundObject = new GroundObject();
-
-		    groundObject->name = groundElement->Name();
-		    groundObject->centralBody = centralBody;
-		    groundObject->longitude = groundPosition->longitude();
-		    groundObject->latitude = groundPosition->latitude();
-		    groundObject->altitude = groundPosition->altitude();
-
-		    propScenario->addGroundObject(groundObject);
-		}
-	    }
+	    scenarioPropagatorPoint(point, trajectoryColor, feedback, propScenario);
 	}
     }
-
-    // calculate Analysis (Claas Grohnfeldt, Steffen Peter)
-    //QTextStream out (stdout);
-    //out << "Creating analysis: " << endl;
-    // Guillermo has de-activate the pop up menu
-    //Analysis* analysis = new Analysis(propScenario);
 
     if (propScenario)
     {
@@ -1274,11 +1015,6 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
         if (m_groundTrackPlotTool)
 	{
             m_groundTrackPlotTool->view()->setScenario(propScenario);
-
-	    // calculate Analysis Data (Claas Grohnfeldt, Steffen Peter)
-	    //out << "Calculating analysis: " << endl;
-            // Guillermo has de-activate the pop up menu
-            //m_groundTrackPlotTool->setAnalysis(analysis);
 	}
         if (m_plottingTool)
         {
@@ -1293,7 +1029,6 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
             {
 
                 // Ephemeris files are required for creating trajectories for the 3D view (at least for now.)
-
                 if (!spaceObject->generateEphemerisFiles())
                 {
                     QMessageBox::information(this, tr("Warning"), tr("Error occurred while writing ephemeris files."));
@@ -1317,12 +1052,11 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
 
 	//Activate now the modules that are allowed to be used after propagation
 	actionAnalyse->setEnabled(m_propagatedScenario);
-
     }
-}
+}   ////////////////////////// End of action PROPAGATE /////////////////////////////
 
 
-//added function to open the SEM vehicle dialog
+///////////////////////////////////////////  Action ACTIVATE SEM  ////////////////////////////////////////
 void MainWindow::on_actionSystem_Engineering_triggered()
 {
     if (!scenario())
@@ -1335,34 +1069,21 @@ void MainWindow::on_actionSystem_Engineering_triggered()
     SEMWidget->show(); // Creating the window modeless. This requires the declaration of the variable on the *.h file
     SEMWidget->raise(); // Required to keep the modeless window alive
     SEMWidget->activateWindow(); // Required to keep the modeless window alive
+}   ///////////////////////////////////////////  End of Action ACTIVATE SEM ////////////////////////////////////////
 
 
-}
 
-
+///////////////////////////////////////////  Action ANALYZE ////////////////////////////////////////
 void MainWindow::on_actionAnalyse_triggered()
 {
     if (!scenario())
     return;
 
-    // Guillermo says: we do not call plotting any more from the main window. We do it now from the analysis module
- /*
-    if (m_plottingTool == NULL)
-    {
-        m_plottingTool = new PlottingTool(this);
-        m_plottingTool->setScenario(this->m_propagatedScenario);
-    }
-    m_plottingTool->resize(650, 500);
-    m_plottingTool->show();
-*/
-
-    //analysis* AnalysisWidget = new analysis(this);  // Creating the widget as a tool
     analysis* AnalysisWidget = new analysis(m_scenario,m_propagatedScenario,this);  // Creating the widget as a tool
     AnalysisWidget->show(); // Creating the window modeless. This requires the declaration of the variable on the *.h file
     AnalysisWidget->raise(); // Required to keep the modeless window alive
     AnalysisWidget->activateWindow(); // Required to keep the modeless window alive
-
-}
+}	///////////////////////////////////////////  End of Action ANALYZE ////////////////////////////////////////
 
 
 
@@ -1946,22 +1667,23 @@ void ContextMenu(float x, float y, Selection sel)
 
 // Constellation (Claas Grohnfeldt, Steffen Peter)
 // Call constellation Wizard
+///////////////////////////////////////////  Action CREATE CONSTELLATION ////////////////////////////////////////
 void MainWindow::on_actionCreateConstellation_triggered()
 {
     ConstellationWizardDialog* constellationwizard = new ConstellationWizardDialog(this);
     constellationwizard->exec();
     constellationwizard->setFocus();
-}
+}   ///////////////////////////////////////////  End of Action CREATE CONSTELLATION ////////////////////////////////////////
 
 
 
 
 
-///////// Activating the function were propagation is performed using the CONSTELLATIONS module ///////////////
+///////////////////////////////////////////  Action PROPAGATE WITH COVERAGE ////////////////////////////////////////
 void MainWindow::on_actionPropagateCoverage_triggered()
 {
 
-    //QTextStream out (stdout);
+    /*
 
     if (!scenario())
     {
@@ -1999,6 +1721,7 @@ void MainWindow::on_actionPropagateCoverage_triggered()
 	if (dynamic_cast<ScenarioSC*>(participant.data()))
 	{
 	    ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
+
 	    const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList = vehicle->SCMission()->TrajectoryPlan()->AbstractTrajectory();
 
 	    // Initial state is stored in the first trajectory (for now); so,
@@ -2096,6 +1819,8 @@ void MainWindow::on_actionPropagateCoverage_triggered()
 		    }
 		}
 	    }
+
+
 	}
 
 	else if (dynamic_cast<ScenarioREV*>(participant.data()))//Added by Dominic to allow propagation of re-entry vehicle trajectories
@@ -2216,10 +1941,72 @@ void MainWindow::on_actionPropagateCoverage_triggered()
 	}
     }
 
-    // calculate Analysis (Claas Grohnfeldt, Steffen Peter)
-    //QTextStream out (stdout);
-    //out << "Creating analysis: " << endl;
-    // Guillermo has de-activate the pop up menu
+    */
+
+    if (!scenario())
+    {
+	return;
+    }
+
+    PropagationFeedback feedback;
+    PropagatedScenario* propScenario = new PropagatedScenario();
+
+    //out << "PropagatedScenario created " << endl;
+
+    //extern int Lagrmode;
+
+    int Lagrmode = 99;	    //Guillermo says: take this thong out of here
+
+    int colorIndex = 0;
+
+    // Process each participant
+    foreach (QSharedPointer<ScenarioParticipantType> participant, scenario()->AbstractParticipant())
+    {
+	// Hack to set different visual properties for each participant, so
+	// that they can be distinguished in the 3D and ground track views.
+	// The user should have control over this.
+	QColor trajectoryColor;
+	switch (colorIndex % 6)
+	{
+	case 0: trajectoryColor = Qt::yellow; break;
+	case 1: trajectoryColor = Qt::cyan; break;
+	case 2: trajectoryColor = Qt::green; break;
+	case 3: trajectoryColor = Qt::magenta; break;
+	case 4: trajectoryColor = QColor(128, 255, 64); break;
+	default: trajectoryColor = Qt::red; break;
+	}
+	++colorIndex;
+
+	// For space vehicles, we need to propagate trajectories
+	if (dynamic_cast<ScenarioSC*>(participant.data()))
+	{
+	    ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
+
+	    scenarioPropagatorSatellite(vehicle,  trajectoryColor, feedback, propScenario);
+	}
+
+	else if (dynamic_cast<ScenarioREV*>(participant.data()))//Added by Dominic to allow propagation of re-entry vehicle trajectories
+	{
+	    ScenarioREV* entryVehicle = dynamic_cast<ScenarioREV*>(participant.data());
+
+	    scenarioPropagatorReEntryVehicle(entryVehicle,  trajectoryColor, feedback, propScenario);
+	}
+	else if (dynamic_cast<ScenarioGroundStation*>(participant.data()))
+	{
+	    ScenarioGroundStation* groundElement = dynamic_cast<ScenarioGroundStation*>(participant.data());
+
+	    scenarioPropagatorGroundElement(groundElement, trajectoryColor, feedback, propScenario);
+	}
+	else if (dynamic_cast<ScenarioPoint*>(participant.data()))
+	{
+	    ScenarioPoint* point = dynamic_cast<ScenarioPoint*>(participant.data());
+
+	    scenarioPropagatorPoint(point, trajectoryColor, feedback, propScenario);
+	}
+    }
+
+
+    // Guillermo says; for the time being we call a estrange ANALYSIS method on the constellations module
     Analysis* analysis = new Analysis(propScenario, true, false, false);
 
     if (propScenario)

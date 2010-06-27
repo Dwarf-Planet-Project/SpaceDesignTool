@@ -382,11 +382,13 @@ PAYLOAD_FORMS = sta-src/Payloads/transmitterPayloadDialog.ui \
 # ########################## Scenario  #################################
 SCENARIO_SOURCES = sta-src/Scenario/staschema.cpp \
     sta-src/Scenario/stascenarioutil.cpp \
-    sta-src/Scenario/scenario.cpp
+    sta-src/Scenario/scenario.cpp \
+    sta-src/Scenario/scenarioPropagator.cpp
 SCENARIO_HEADERS = sta-src/Scenario/staschema.h \
     sta-src/Scenario/stascenarioutil.h \
     sta-src/Scenario/propagationfeedback.h \
-    sta-src/Scenario/scenario.h
+    sta-src/Scenario/scenario.h \
+    sta-src/Scenario/scenarioPropagator.h
 
 # ############# Constellations Module ##############
 CONSTELLATIONS_SOURCES = sta-src/Constellations/cwizard.cpp \
