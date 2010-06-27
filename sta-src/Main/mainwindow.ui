@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>419</width>
-    <height>322</height>
+    <width>648</width>
+    <height>465</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>419</width>
+     <width>648</width>
      <height>22</height>
     </rect>
    </property>
@@ -312,6 +312,9 @@
    <property name="text">
     <string>Analysis</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
+   </property>
   </action>
   <action name="actionActivateSTACalculator">
    <property name="text">
@@ -330,10 +333,16 @@
    <property name="text">
     <string>Constellation</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
   </action>
   <action name="actionPropagateCoverage">
    <property name="text">
     <string>Coverage</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
    </property>
   </action>
   <action name="actionSat_to_Sat">
