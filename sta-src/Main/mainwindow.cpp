@@ -415,6 +415,7 @@ void MainWindow::on_actionNewScenario_triggered()
 }
 
 
+//////////////////////////////////////////////////  Action to open an existing scenario ///////////////////////////////////
 void MainWindow::on_actionOpenScenario_triggered()
 {
     // Start the open file dialog in the same directory as last time
@@ -500,6 +501,7 @@ void MainWindow::on_actionOpenScenario_triggered()
 
             QTreeWidgetItem* rootItem = new QTreeWidgetItem(m_scenarioView->m_scenarioTree);
             rootItem->setExpanded(true);
+	    rootItem->setText(0, "Space scenario");
             rootItem->setText(1, scenario->Name());
             rootItem->setFlags(rootItem->flags() & ~Qt::ItemIsDragEnabled);
 
@@ -516,6 +518,14 @@ void MainWindow::on_actionOpenScenario_triggered()
     }
 
     settings.endGroup();
+
+    // Activating now the pull down menus
+    actionPropagate_Scenario->setEnabled(m_scenario != NULL);
+    actionPropagateCoverage->setEnabled(m_scenario != NULL);
+    actionSat_to_Sat->setEnabled(m_scenario != NULL);
+    actionSat_to_Ground->setEnabled(m_scenario != NULL);
+    actionSystem_Engineering->setEnabled(m_scenario != NULL);
+    actionAnalyse->setEnabled(m_scenario != NULL);
 }
 
 
