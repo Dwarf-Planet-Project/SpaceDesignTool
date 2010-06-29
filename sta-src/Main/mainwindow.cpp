@@ -1075,6 +1075,14 @@ void MainWindow::on_actionSystem_Engineering_triggered()
     SEMWidget->show(); // Creating the window modeless. This requires the declaration of the variable on the *.h file
     SEMWidget->raise(); // Required to keep the modeless window alive
     SEMWidget->activateWindow(); // Required to keep the modeless window alive
+
+    // Activating now the pull down menus
+    actionPropagate_Scenario->setEnabled(m_scenario != NULL);
+    actionPropagateCoverage->setEnabled(m_scenario != NULL);
+    actionSat_to_Sat->setEnabled(m_scenario != NULL);
+    actionSat_to_Ground->setEnabled(m_scenario != NULL);
+    actionSystem_Engineering->setEnabled(m_scenario != NULL);
+    actionAnalyse->setEnabled(m_scenario != NULL);
 }   ///////////////////////////////////////////  End of Action ACTIVATE SEM ////////////////////////////////////////
 
 
@@ -1679,6 +1687,14 @@ void MainWindow::on_actionCreateConstellation_triggered()
     ConstellationWizardDialog* constellationwizard = new ConstellationWizardDialog(this);
     constellationwizard->exec();
     constellationwizard->setFocus();
+
+    // Activating now the pull down menus
+    actionPropagate_Scenario->setEnabled(m_scenario != NULL);
+    actionPropagateCoverage->setEnabled(m_scenario != NULL);
+    actionSat_to_Sat->setEnabled(m_scenario != NULL);
+    actionSat_to_Ground->setEnabled(m_scenario != NULL);
+    actionSystem_Engineering->setEnabled(m_scenario != NULL);
+    actionAnalyse->setEnabled(m_scenario != NULL);
 }   ///////////////////////////////////////////  End of Action CREATE CONSTELLATION ////////////////////////////////////////
 
 

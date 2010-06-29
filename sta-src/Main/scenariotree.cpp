@@ -375,7 +375,7 @@ ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioOb
     }
 
     // Guillermo: expand items by default or not
-    //item->setExpanded(true);
+    item->setExpanded(true);
 
     if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject))
     {
@@ -514,7 +514,7 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
 
         return true;
     }
-    else if (trajectory && elementName != "tns:EntryArc") //Modified by Dominic to avoid dragging entry trajectory into SC Trajectory Plan
+    else if (trajectory && elementName != "tns:EntryArc")
     {
 	//qDebug() << "Dropping trajectory";
         ScenarioObject* parentObject = objectForItem(parent);
@@ -524,7 +524,15 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
             trajectoryPlan->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
             QTreeWidgetItem* trajectoryItem = new QTreeWidgetItem(parent);
 	    // Guillermo says: now placing nice icons beside the labels
-	    parent->setIcon(0, QIcon(":/icons/mission-arcs-loitering.png"));
+	    int numberofChildren = parent->childCount();
+	    if (elementName == "tns:Loitering")
+	    {
+		parent->child(numberofChildren-1)->setIcon(0, QIcon(":/icons/mission-arcs-loitering.png"));
+	    }
+	    else
+	    {
+		parent->child(numberofChildren-1)->setIcon(0, QIcon(":/icons/mission-arcs-loiteringTLE.png"));
+	    }
             addScenarioItems(trajectoryItem, trajectory);	    	    
             return true;
         }
@@ -543,7 +551,8 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
             trajectoryPlan->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
             QTreeWidgetItem* trajectoryItem = new QTreeWidgetItem(parent);
 	    // Guillermo says: now placing nice icons beside the labels
-	    parent->setIcon(0, QIcon(":/icons/mission-arcs-reentry.png"));
+	    int numberofChildren = parent->childCount();
+	    parent->child(numberofChildren-1)->setIcon(0, QIcon(":/icons/mission-arcs-reentry.png"));
 	    // Adding the item to the scenario
             addScenarioItems(trajectoryItem, trajectory);
             return true;
@@ -563,7 +572,8 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
             scPayload->AbstractPayload().append(QSharedPointer<ScenarioAbstractPayloadType>(payload));
             QTreeWidgetItem* payloadItem = new QTreeWidgetItem(parent);
 	    // Guillermo says: now placing nice icons beside the labels
-	    parent->setIcon(0, QIcon(":/icons/Payload.png"));
+	    int numberofChildren = parent->childCount();
+	    parent->child(numberofChildren-1)->setIcon(0, QIcon(":/icons/Payload.png"));
 	    addScenarioItems(payloadItem, payload);
             return true;
         }

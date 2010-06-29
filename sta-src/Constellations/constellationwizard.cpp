@@ -231,13 +231,16 @@ void ConstellationWizardDialog::accept()
 
         // Create the trajectory arc
         ScenarioLoiteringType* loitering = new ScenarioLoiteringType();
-        loitering->Environment()->CentralBody()->setName("EARTH");
+	loitering->Environment()->CentralBody()->setName("Earth");
         loitering->InitialPosition()->setCoordinateSystem("INERTIAL J2000");
         loitering->PropagationPosition()->setTimeStep(60.0);
         loitering->PropagationPosition()->setPropagator("TWO BODY");
 
-        loitering->TimeLine()->setStartTime(QDateTime(QDate(2012, 1, 1)));
-        loitering->TimeLine()->setEndTime(QDateTime(QDate(2012, 1, 2)));
+	QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
+	loitering->TimeLine()->setStartTime(TheCurrentDateAndTime);
+	loitering->TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
+	//loitering->TimeLine()->setStartTime(QDateTime(QDate(2012, 1, 1)));
+	//loitering->TimeLine()->setEndTime(QDateTime(QDate(2012, 1, 2)));
         loitering->TimeLine()->setStepTime(60.0);
 
         loitering->InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(elements));
@@ -247,6 +250,9 @@ void ConstellationWizardDialog::accept()
 
         // Add it to the scenario
         scenario->AbstractParticipant().append(QSharedPointer<ScenarioParticipantType>(sc));
+
+	// TODO add an icon to the mission arc
+	//participantItem->setIcon(0, QIcon(":/icons/ParticipantSATELLITE.png"));
     }
 
     mainwindow->setScenario(scenario);
