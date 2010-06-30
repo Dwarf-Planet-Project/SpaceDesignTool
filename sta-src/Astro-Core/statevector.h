@@ -101,7 +101,15 @@ struct DelaunayElements
     double G;
     double H;
 };
-
+struct EquinoctialElements
+{
+    double SemimajorAxis;
+    double esin;
+    double ecos;
+    double tancos;
+    double tansin;
+    double MeanLon;
+};
 
  struct TwoLineElements  ////////////////////////////////// TLE structure ///////////////////////////////////
  {

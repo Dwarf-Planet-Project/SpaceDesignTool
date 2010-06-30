@@ -240,8 +240,24 @@ sta::DelaunayElements cartesianTOdelaunay(double mu, sta::StateVector cartesianS
     CalcDelaunayElements.l=KeplerianElemList.MeanAnomaly;
     CalcDelaunayElements.g=KeplerianElemList.ArgumentOfPeriapsis;
     CalcDelaunayElements.h=KeplerianElemList.AscendingNode;
-    CalcDelaunayElements.L=sqrt(mu*KeplerianElemList.SemimajorAxis);
-    CalcDelaunayElements.G=OrbitalMomentum.norm();
-    CalcDelaunayElements.H=sqrt(mu*KeplerianElemList.SemimajorAxis*(1-(KeplerianElemList.Eccentricity*KeplerianElemList.Eccentricity)))*cos(KeplerianElemList.Inclination);
-return CalcDelaunayElements;
+    CalcDelaunayElements.L=sqrt(mu*(KeplerianElemList.SemimajorAxis));
+    CalcDelaunayElements.G=sqrt(mu*(KeplerianElemList.SemimajorAxis)*(1-(KeplerianElemList.Eccentricity*KeplerianElemList.Eccentricity)));
+    CalcDelaunayElements.H=sqrt(mu*(KeplerianElemList.SemimajorAxis)*(1-(KeplerianElemList.Eccentricity*KeplerianElemList.Eccentricity)))*cos((KeplerianElemList.Inclination));
+//CalcDelaunayElements.H=cartesianStateVector.position.x()*cartesianStateVector.velocity.y()-cartesianStateVector.position.y()*cartesianStateVector.velocity.x();
+    return CalcDelaunayElements;
+}
+sta::EquinoctialElements cartesianTOequinoctial(double mu,sta::StateVector cartesianStateVector)
+{
+    EquinoctialElements CalcEquinoctialElements;
+    KeplerianElements KeplerianElemList=cartesianTOorbital(mu,cartesianStateVector);
+    Eigen::Vector3d OrbitalMomentum;
+    OrbitalMomentum = cartesianStateVector.position.cross(cartesianStateVector.velocity);
+
+    CalcEquinoctialElements.SemimajorAxis=KeplerianElemList.SemimajorAxis;
+    CalcEquinoctialElements.ecos=KeplerianElemList.Eccentricity*cos(KeplerianElemList.ArgumentOfPeriapsis+KeplerianElemList.AscendingNode);
+    CalcEquinoctialElements.esin=KeplerianElemList.Eccentricity*sin(KeplerianElemList.ArgumentOfPeriapsis+KeplerianElemList.AscendingNode);
+    CalcEquinoctialElements.tansin=tan(KeplerianElemList.Inclination/2)*sin(KeplerianElemList.AscendingNode);
+    CalcEquinoctialElements.tancos=tan(KeplerianElemList.Inclination/2)*cos(KeplerianElemList.AscendingNode);;
+    CalcEquinoctialElements.MeanLon=KeplerianElemList.AscendingNode+KeplerianElemList.ArgumentOfPeriapsis+KeplerianElemList.MeanAnomaly;
+return CalcEquinoctialElements;
 }

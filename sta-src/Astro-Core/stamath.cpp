@@ -51,3 +51,36 @@ double modulo2Pi (double x)
 	return(y);
 
 }
+double sta::ConvertUnits(QString OutputUnits, double Parameter)
+{
+    double Output=Parameter;
+    if(OutputUnits=="Deg")
+    {
+        Output=sta::radToDeg(Parameter);
+    }
+    if(OutputUnits=="Rad")
+    {
+        Output=Parameter;
+    }
+    if(OutputUnits=="m")
+    {
+        Output=Parameter*1000;
+    }
+    if(OutputUnits=="AU")
+    {
+        Output=Parameter*6.68458134*pow(10,-9);
+    }
+    if(OutputUnits=="NM")
+    {
+        Output=Parameter*0.5399568;
+    }
+    if(OutputUnits=="Km/s")
+    {
+        Output=Parameter;
+    }
+    if(OutputUnits=="m/s")
+    {
+        Output=Parameter*1000;
+    }
+    return Output;
+}

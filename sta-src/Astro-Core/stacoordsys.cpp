@@ -64,7 +64,7 @@ p. 114, equation 3.222-1:
 e0 = 23 26' 21".448 - 46".8150 T - 0".00059 T^2 + 0".001813 T^3
 */
 static const Quaterniond Equator_to_Ecliptic =
-    Quaterniond(AngleAxis<double>(degToRad(23.439291111), Vector3d::UnitX()));
+    Quaterniond(AngleAxis<double>(degToRad(-23.439291111), Vector3d::UnitX())); //patched by Ana (June 2010)
 static const Matrix3d Equator_to_Ecliptic_mat = Equator_to_Ecliptic.toRotationMatrix();
 static const Matrix3d Ecliptic_to_Equator_mat = Equator_to_Ecliptic.conjugate().toRotationMatrix();
 
@@ -204,7 +204,7 @@ static StateVector bodyFixedToEmeJ2000(const StateVector& state,
         w = rotation->angularVelocity(mjd);
     }
 
-    return StateVector(r * state.position, r * state.velocity + w.cross(state.position));
+    return StateVector(r * state.position, r * state.velocity + w.cross(r*state.position));
 }
 
 
@@ -221,7 +221,7 @@ static StateVector emeJ2000ToBodyFixed(const StateVector& state,
         w = -rotation->angularVelocity(mjd);
     }
 
-    return StateVector(r * state.position, r * state.velocity + w.cross(state.position));
+    return StateVector(r * state.position, r * state.velocity + w.cross(r*state.position));
 }
 
 
@@ -299,5 +299,162 @@ CoordinateSystem::convert(const StateVector& state,
         fromCenter->stateVector(mjd, STA_SOLAR_SYSTEM->ssb(), COORDSYS_EME_J2000);
     emeState = emeState - toCenter->stateVector(mjd, STA_SOLAR_SYSTEM->ssb(), COORDSYS_EME_J2000);
     return toSys.fromEmeJ2000(emeState, toCenter, mjd);
+}
+// ACT AVT
+
+Matrix3d CoordinateSystem::rotToEmeJ2000()
+{
+    Q_ASSERT(isInertial());
+
+
+    Matrix3d rotation;
+    switch (m_type)
+    {
+    case COORDSYS_EME_J2000:
+        rotation = Matrix3d::Identity();
+        break;
+    case COORDSYS_EME_B1950:
+        rotation = B1950_to_J2000_mat;
+        break;
+    case COORDSYS_ECLIPTIC_J2000:
+        rotation = Ecliptic_to_Equator_mat;
+        break;
+
+    case COORDSYS_BODYFIXED:
+    case COORDSYS_ROT:
+    case COORDSYS_ROT_NORM:
+    default:
+        rotation = Matrix3d::Identity();
+        break;
+    }
+
+    return rotation;
+}
+
+Matrix3d CoordinateSystem::rotFromEmeJ2000()
+{
+    Q_ASSERT(isInertial());
+
+    Matrix3d rotation;
+    switch (m_type)
+    {
+    case COORDSYS_EME_J2000:
+        rotation = Matrix3d::Identity();
+        break;
+    case COORDSYS_EME_B1950:
+        rotation = J2000_to_B1950_mat;
+        break;
+    case COORDSYS_ECLIPTIC_J2000:
+        rotation = Equator_to_Ecliptic_mat;
+        break;
+
+    case COORDSYS_BODYFIXED:
+    case COORDSYS_ROT:
+    case COORDSYS_ROT_NORM:
+    default:
+        rotation = Matrix3d::Identity();
+        break;
+    }
+    return rotation;
+
+}
+
+
+
+static Matrix3d rotBodyFixedToEmeJ2000(const StaBody* center, double mjd)
+{
+    const RotationState* rotation = center->rotationState();
+    Matrix3d r = Matrix3d::Identity();
+    Vector3d w = Vector3d::Zero();
+    if (rotation)
+    {
+        r = rotation->orientation(mjd).toRotationMatrix();
+        w = rotation->angularVelocity(mjd);
+    }
+
+    return r;
+}
+
+
+static Matrix3d rotEmeJ2000ToBodyFixed(const StaBody* center, double mjd)
+{
+    const RotationState* rotation = center->rotationState();
+    Matrix3d r = Matrix3d::Identity();
+    Vector3d w = Vector3d::Zero();
+    if (rotation)
+    {
+        r = rotation->orientation(mjd).conjugate().toRotationMatrix();
+        w = -rotation->angularVelocity(mjd);
+    }
+
+    return r;
+}
+
+static Vector3d omegaBodyFixedToEmeJ2000(const StaBody* center, double mjd)
+{
+    const RotationState* rotation = center->rotationState();
+    Matrix3d r = Matrix3d::Identity();
+    Vector3d w = Vector3d::Zero();
+    if (rotation)
+    {
+        r = rotation->orientation(mjd).toRotationMatrix();
+        w = rotation->angularVelocity(mjd);
+    }
+
+    return w;
+}
+
+
+static Vector3d omegaEmeJ2000ToBodyFixed(const StaBody* center, double mjd)
+{
+    const RotationState* rotation = center->rotationState();
+    Matrix3d r = Matrix3d::Identity();
+    Vector3d w = Vector3d::Zero();
+    if (rotation)
+    {
+        r = rotation->orientation(mjd).conjugate().toRotationMatrix();
+        w = -rotation->angularVelocity(mjd);
+    }
+
+    return w;
+}
+
+
+Matrix3d CoordinateSystem::rotToEmeJ2000(const StaBody* center, double mjd)
+{
+    Q_ASSERT(isInertial() || m_type == COORDSYS_BODYFIXED);
+    if (m_type == COORDSYS_BODYFIXED)
+        return rotBodyFixedToEmeJ2000(center, mjd);
+    else
+        return rotToEmeJ2000();
+
+}
+
+Matrix3d CoordinateSystem::rotFromEmeJ2000(const StaBody* center, double mjd)
+{
+    Q_ASSERT(isInertial() || m_type == COORDSYS_BODYFIXED);
+    if (m_type == COORDSYS_BODYFIXED)
+        return rotEmeJ2000ToBodyFixed(center, mjd);
+    else
+        return rotFromEmeJ2000();
+}
+
+Vector3d CoordinateSystem::omegaToEmeJ2000(const StaBody* center, double mjd)
+{
+    Q_ASSERT(isInertial() || m_type == COORDSYS_BODYFIXED);
+    if (m_type == COORDSYS_BODYFIXED)
+        return omegaBodyFixedToEmeJ2000(center, mjd);
+    else
+        return Vector3d::Zero();
+
+}
+
+Vector3d CoordinateSystem::omegaFromEmeJ2000(const StaBody* center, double mjd)
+{
+    Q_ASSERT(isInertial() || m_type == COORDSYS_BODYFIXED);
+    if (m_type == COORDSYS_BODYFIXED)
+        return omegaEmeJ2000ToBodyFixed(center, mjd);
+    else
+        return Vector3d::Zero();
 }
 

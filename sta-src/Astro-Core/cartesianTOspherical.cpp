@@ -41,7 +41,8 @@ void cartesianTOspherical(double x,double y,double z,double xd,double yd,double 
     double pi = 3.141592653589;
     r = sqrt(x*x + y*y + z*z); //radial distance
     delta = asin(z / r); //latitude
-    tau = acos(x / r / cos(delta)); //longitude
+    tau = acos(x /( r * cos(delta))); //longitude
+
     V = sqrt(xd*xd + yd*yd + zd*zd); //modulus of velocity
 
     gamma = pi/2 - acos((x*xd + y*yd + z*zd)/(r*V)); //flight path angle

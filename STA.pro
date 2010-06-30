@@ -361,8 +361,10 @@ RAM_FORMS = sta-src/RAM/parametrizedgeometry.ui \
     sta-src/RAM/aerodynamicmethods.ui
 
 # ################ Analysis ############
-ANALYSIS_SOURCES = sta-src/Analysis/analysis.cpp
-ANALYSIS_HEADERS = sta-src/Analysis/analysis.h
+ANALYSIS_SOURCES = sta-src/Analysis/analysis.cpp \
+                   sta-src/Analysis/AnalysisPlot.cpp
+ANALYSIS_HEADERS = sta-src/Analysis/analysis.h\
+                    sta-src/Analysis/AnalysisPlot.h
 ANALYSIS_FORMS = sta-src/Analysis/analysis.ui
 
 # ################ Payloads ############
@@ -860,6 +862,7 @@ SOURCES = $$MAIN_SOURCES \
     $$ANALYSIS_SOURCES \
     $$COVERAGE_SOURCES \
     $$CONSTELLATIONS_SOURCES
+
 HEADERS = $$MAIN_HEADERS \
     $$ASTROCORE_HEADERS \
     $$SEM_HEADERS \
@@ -884,6 +887,7 @@ HEADERS = $$MAIN_HEADERS \
     $$ANALYSIS_HEADERS \
     $$COVERAGE_HEADERS \
     $$CONSTELLATIONS_HEADERS
+
 FORMS = $$MAIN_FORMS \
     $$ASTROCORE_FORMS \
     $$SEM_FORMS \

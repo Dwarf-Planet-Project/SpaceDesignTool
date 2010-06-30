@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>analysisDialogClass</class>
  <widget class="QDialog" name="analysisDialogClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>741</width>
+    <height>553</height>
+   </rect>
+  </property>
   <property name="minimumSize">
    <size>
     <width>741</width>
@@ -18,7 +26,7 @@
    <string>Analysis</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../iconary/sta-icons.qrc">
+   <iconset>
     <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
@@ -186,6 +194,11 @@
                </item>
                <item>
                 <property name="text">
+                 <string>Time from epoch</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
                  <string>State Vector</string>
                 </property>
                 <item>
@@ -280,7 +293,7 @@
                 </item>
                 <item>
                  <property name="text">
-                  <string>g</string>
+                  <string>G</string>
                  </property>
                 </item>
                 <item>
@@ -321,6 +334,41 @@
                 <item>
                  <property name="text">
                   <string>Velocity Modulus</string>
+                 </property>
+                </item>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Equinoctial Elements</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Semimajor Axis</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>e*sin(omegaBar)</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>e*cos(omegaBar)</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>tan(i/2)*sin(raan)</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>tan(i/2)*cos(raan)</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Mean Longitude</string>
                  </property>
                 </item>
                </item>
@@ -1250,6 +1298,46 @@
              </item>
              <item>
               <property name="text">
+               <string>Time from epoch</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>State Vector</string>
+              </property>
+              <item>
+               <property name="text">
+                <string>x position</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>y position</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>z position</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>x velocity</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>y velocity</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>z velocity</string>
+               </property>
+              </item>
+             </item>
+             <item>
+              <property name="text">
                <string>Keplerian Elements</string>
               </property>
               <item>
@@ -1452,7 +1540,7 @@
               </item>
               <item>
                <property name="text">
-                <string>Perigee Planetocentric Altitude </string>
+                <string>Perigee Planetocentric Altitude</string>
                </property>
               </item>
               <item>
@@ -2357,6 +2445,46 @@
              </item>
              <item>
               <property name="text">
+               <string>Time from epoch</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>State Vector</string>
+              </property>
+              <item>
+               <property name="text">
+                <string>x position</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>y position</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>z position</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>x velocity</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>y velocity</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>z velocity</string>
+               </property>
+              </item>
+             </item>
+             <item>
+              <property name="text">
                <string>Keplerian Elements</string>
               </property>
               <item>
@@ -2556,7 +2684,7 @@
               </item>
               <item>
                <property name="text">
-                <string>Perigee Planetocentric Altitude </string>
+                <string>Perigee Planetocentric Altitude</string>
                </property>
               </item>
               <item>
@@ -3449,6 +3577,46 @@
              </item>
              <item>
               <property name="text">
+               <string>Time from epoch</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>State Vector</string>
+              </property>
+              <item>
+               <property name="text">
+                <string>x position</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>y position</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>z position</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>x velocity</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>y velocity</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>z velocity</string>
+               </property>
+              </item>
+             </item>
+             <item>
+              <property name="text">
                <string>Keplerian Elements</string>
               </property>
               <item>
@@ -3648,7 +3816,7 @@
               </item>
               <item>
                <property name="text">
-                <string>Perigee Planetocentric Altitude </string>
+                <string>Perigee Planetocentric Altitude</string>
                </property>
               </item>
               <item>
@@ -4640,17 +4808,6 @@
     </item>
    </layout>
   </widget>
-  <zorder>buttonBox</zorder>
-  <zorder>TreeWidgetMissionArc</zorder>
-  <zorder>GeneratePushButton</zorder>
-  <zorder>TotalHelpPushButton</zorder>
-  <zorder>stackedWidget</zorder>
-  <zorder>layoutWidget</zorder>
-  <zorder>groupBox</zorder>
-  <zorder>layoutWidget</zorder>
-  <zorder>layoutWidget</zorder>
-  <zorder>groupBoxTimeSpecifications</zorder>
-  <zorder>groupBoxTimeSpecifications</zorder>
  </widget>
  <tabstops>
   <tabstop>ComboBoxAnalysisFormat</tabstop>
@@ -4669,9 +4826,7 @@
   <tabstop>treeWidgetYaxis</tabstop>
   <tabstop>treeWidgetZaxis</tabstop>
  </tabstops>
- <resources>
-  <include location="../../iconary/sta-icons.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

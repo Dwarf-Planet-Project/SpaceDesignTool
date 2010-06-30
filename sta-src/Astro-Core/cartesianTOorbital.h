@@ -79,3 +79,4 @@ void cartesianTOorbital(double mu, double x, double y, double z, double xd, doub
  */
 sta::KeplerianElements cartesianTOorbital(double mu,  sta::StateVector cartesianStateVector);
 sta::DelaunayElements cartesianTOdelaunay(double mu, sta::StateVector cartesianStateVector);
+sta::EquinoctialElements cartesianTOequinoctial(double mu,sta::StateVector cartesianStateVector);

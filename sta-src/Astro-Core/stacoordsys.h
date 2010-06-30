@@ -34,6 +34,17 @@
 #include <QHash>
 #include <cmath>
 
+#include <Eigen/Array>
+#include <Eigen/LU>
+#include <Eigen/Cholesky>
+#include <Eigen/QR>
+#include <Eigen/SVD>
+#include <Eigen/Geometry>
+#include <Eigen/LeastSquares>
+#include <Eigen/Sparse>
+
+// import most common Eigen types
+USING_PART_OF_NAMESPACE_EIGEN
 
 class StaBody;
 
@@ -95,6 +106,14 @@ namespace sta
                                    const CoordinateSystem& fromSys,
                                    const StaBody* toCenter,
                                    const CoordinateSystem& toSys);
+        Matrix3d rotToEmeJ2000();
+                Matrix3d rotFromEmeJ2000();
+
+                Matrix3d rotToEmeJ2000(const StaBody* center, double mjd);
+                Matrix3d rotFromEmeJ2000(const StaBody* center, double mjd);
+
+                Vector3d omegaToEmeJ2000(const StaBody* center, double mjd);
+                Vector3d omegaFromEmeJ2000(const StaBody* center, double mjd);
 
     private:
         CoordinateSystemType m_type;

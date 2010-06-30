@@ -28,6 +28,7 @@
 
 #ifndef _ASTROCORE_STAMATH_H_
 #define _ASTROCORE_STAMATH_H_
+#include <QString>
 
 
 namespace sta
@@ -54,9 +55,10 @@ namespace sta
     {
         return radToDeg(rad) * 3600.0;
     }
+double ConvertUnits(QString OutputUnits, double Parameter);
 }
 
-
+//double ConvertUnits(QString OutputUnits, double Parameter);
 
 
 

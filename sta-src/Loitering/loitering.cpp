@@ -898,7 +898,8 @@ PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
     QTextStream cicciostream(&ciccio);
     ciccio.open(QIODevice::WriteOnly);
 
-    unsigned int steps = 0;
+    //unsigned int steps = 0;
+    unsigned int steps = 1; // patched by Ana on 18th June 2010
 
     QString propagator = loitering->PropagationPosition()->propagator();
     QString integrator = loitering->PropagationPosition()->integrator();

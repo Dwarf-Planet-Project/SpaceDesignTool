@@ -34,6 +34,7 @@
 #include<qtextstream.h>
 #include"Astro-Core/stacoordsys.h"
 #include "Astro-Core/stabody.h"
+#include"Astro-Core/stamath.h"
 #include<QDesktopServices>
 #include<QUrl>
 #include"Astro-Core/calendarTOjulian.h"
@@ -42,6 +43,8 @@
 #include"Astro-Core/date.h"
 #include <Coverage/commanalysis.h>
 #include <Coverage/coverageanalysis.h>
+#include "AnalysisPlot.h"
+#include "Plotting/PlotView.h"
 using namespace std;
 //using namespace sta;
 
@@ -59,6 +62,8 @@ analysis::analysis(SpaceScenario*scenario, PropagatedScenario*propagatedScenario
     connect(AddParameterPushButton, SIGNAL(clicked()), this, SLOT(addParameter()));
     connect(RemoveParameterPushButton, SIGNAL(clicked()), this, SLOT(removeParameter()));
     connect(ComboBoxAnalysisFormat, SIGNAL(activated(int)), this, SLOT(enableReportOption(int)));
+
+    PlotComboBox();
 
 }
 
@@ -127,7 +132,8 @@ void analysis::readScenario()
         {
             QTreeWidgetItem * spacecraftItem =new QTreeWidgetItem(TreeWidgetMissionArc);
 
-            spacecraftItem->setText(0,"SpaceCraft");
+            //spacecraftItem->setText(0,"SpaceCraft");
+            spacecraftItem->setText(0,participant.data()->Name());
             QTreeWidgetItem*trajectoryPlan=new QTreeWidgetItem(spacecraftItem);
             trajectoryPlan->setText(0,"TrajectoryPlan");
 
@@ -145,7 +151,11 @@ void analysis::readScenario()
                 if (dynamic_cast<ScenarioLoiteringType*>(trajectory.data()))
                 {
                     QTreeWidgetItem * loiterItem = new QTreeWidgetItem(trajectoryPlan);
-                    loiterItem->setText(0,"Loitering");
+                    //loiterItem->setText(0,"Loitering");
+                    ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
+                    loiterItem->setText(0,loitering->ElementIdentifier()->Name());
+
+
                     QTreeWidgetItem * parentType= new QTreeWidgetItem(loiterItem);
                     parentType->setText(0,"space");
                     parentType->setHidden(true);
@@ -240,7 +250,8 @@ void analysis::readScenario()
         if(dynamic_cast<ScenarioREV*>(participant.data())!=NULL) //Re-entry vehicle
         {
             QTreeWidgetItem * REVitem =new QTreeWidgetItem(TreeWidgetMissionArc);
-            REVitem->setText(0,"ReentryVehicle");
+            //REVitem->setText(0,"ReentryVehicle");
+            REVitem->setText(0,participant.data()->Name());
 
             QTreeWidgetItem*trajectoryPlan=new QTreeWidgetItem(REVitem);
             trajectoryPlan->setText(0,"TrajectoryPlan");
@@ -260,7 +271,10 @@ void analysis::readScenario()
                 if (dynamic_cast<ScenarioEntryArcType*>(trajectory.data())) //re-entry mission arc
                 {
                     QTreeWidgetItem * REVmissionItem = new QTreeWidgetItem(trajectoryPlan);
-                    REVmissionItem->setText(0,"REV mission arc");
+                    //REVmissionItem->setText(0,"REV mission arc");
+                    ScenarioEntryArcType*Reentry=dynamic_cast<ScenarioEntryArcType*>(trajectory.data());
+                    REVmissionItem->setText(0,Reentry->ElementIdentifier()->Name());
+
                     QTreeWidgetItem * REVparentType= new QTreeWidgetItem(REVmissionItem);
                     REVparentType->setText(0,"space");
                     REVparentType->setHidden(true);
@@ -292,7 +306,8 @@ void analysis::readScenario()
         if(dynamic_cast<ScenarioGroundStation*>(participant.data())) //Ground Station
         {
             QTreeWidgetItem * GSitem =new QTreeWidgetItem(TreeWidgetMissionArc);
-            GSitem->setText(0,"GroundStation");
+            //GSitem->setText(0,"GroundStation");
+            GSitem->setText(0,participant.data()->Name());
             QTreeWidgetItem*PayloadSet=new QTreeWidgetItem(GSitem);
             PayloadSet->setText(0,"PayloadSet");
 
@@ -651,7 +666,7 @@ void analysis::on_AddDefaultPushButton_clicked()
                 {
                     if (dynamic_cast<ScenarioEntryArcType*>(trajectory.data()))
                     {
-                        //////qDebug()<<"loitering";
+
                         ScenarioEntryArcType* entry = dynamic_cast<ScenarioEntryArcType*>(trajectory.data());
                         QDateTime StartTimeDate=entry->TimeLine()->StartTime();
 
@@ -768,13 +783,18 @@ void analysis::ReadTime(int column, double *MJD) //reads the time in the treeWid
             int iMonth=Month.toInt();
             int iYear=Year.toInt();
 
-            int iHour=Hour.toInt();
-            int iMinute=Minute.toInt();
-            int iSecond=Second.toInt();
+            double iHour1=Hour.toDouble();
+            double iMinute1=Minute.toDouble();
+            double iSecond1=Second.toDouble();
 
+            int iHour=(int)iHour1;
+            int iMinute=(int)iMinute1;
+            int iSecond=(int)iSecond1;
             //convert to MJD
             JD=calendarTOjulian(iYear,iMonth,iDay,iHour,iMinute,iSecond);
+
             MJD[i]=sta::JdToMjd(JD);
+
             //MJD[i]=JD-2400000.5;
 
         }
@@ -920,18 +940,36 @@ void analysis::on_DeleteTimePushButton_clicked()
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }*/
-int analysis::InputsControl()
+int analysis::InputsControl(QList<QTreeWidget*>tree)
 {
     int CovCommCount=0;
-    //QList<QTreeWidgetItem*>ShowInReport=treeWidgetShowInReport->topLevelItem();
+    if(tree[0]==treeWidgetShowInReport)
+    {
     for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++)
     {
         QTreeWidgetItem*ShowInReport=treeWidgetShowInReport->topLevelItem(i);
         QString ToReport=ShowInReport->text(0);
         if((ToReport=="Azimuth")||(ToReport=="Elevation")||(ToReport=="Range")||(ToReport=="Equivalent Isotropical Radiated Power")||(ToReport=="Received Frequency")||(ToReport=="Doppler Shift")||(ToReport=="Received Power")||(ToReport=="Flux Density")||(ToReport=="Overlap Bandwidth Factor")||(ToReport=="Free Space Loss")||(ToReport=="Oxygen Loss")||(ToReport=="Water Vapour Loss")||(ToReport=="Rain Loss")||(ToReport=="Atmospheric Loss")||(ToReport=="Propagation Loss")||(ToReport=="G/T")||(ToReport=="C/No")||(ToReport=="C/N")||(ToReport=="Eb/No")||(ToReport=="BER"))
         {
-            ////qDebug()<<"Cov parameters counting in Inputs Control";
+
             CovCommCount++;
+        }
+    }
+}
+    else
+    {
+        for (int j=0;j<tree.size();j++)
+        {
+            for(int i=0;i<tree[j]->selectedItems().size();i++)
+            {
+            QTreeWidgetItem*Show=tree[j]->selectedItems().at(i);
+            QString ToShow=Show->text(0);
+            if((ToShow=="Azimuth")||(ToShow=="Elevation")||(ToShow=="Range")||(ToShow=="Equivalent Isotropical Radiated Power")||(ToShow=="Received Frequency")||(ToShow=="Doppler Shift")||(ToShow=="Received Power")||(ToShow=="Flux Density")||(ToShow=="Overlap Bandwidth Factor")||(ToShow=="Free Space Loss")||(ToShow=="Oxygen Loss")||(ToShow=="Water Vapour Loss")||(ToShow=="Rain Loss")||(ToShow=="Atmospheric Loss")||(ToShow=="Propagation Loss")||(ToShow=="G/T")||(ToShow=="C/No")||(ToShow=="C/N")||(ToShow=="Eb/No")||(ToShow=="BER"))
+            {
+
+                CovCommCount++;
+            }
+        }
         }
     }
     QList<QTreeWidgetItem*>Selected=TreeWidgetMissionArc->selectedItems();
@@ -949,7 +987,7 @@ int analysis::InputsControl()
 
         if(Selected.size()<3)
         {
-            ////qDebug()<<"select one Tx, one Rx and at least one MArc";
+
             return 3;
         }
         else
@@ -962,13 +1000,13 @@ int analysis::InputsControl()
                     if(Selected.at(j)->child(3)->text(0)=="loiter")
                     {
                         MissionIndexParent.append(Selected.at(j)->child(1)->text(0).toInt());
-                        ////qDebug()<<"mission arc index being added"<<Selected.at(j)->child(1)->text(0).toInt();
+
                     }
                 }
 
                 if(childnumber==4)//Tx and Rx
                 {
-                    ////qDebug()<<"there are Rx and Tx selected"<<Selected.at(j)->child(3)->text(0);
+
                     if((Selected.at(j)->child(3)->text(0)=="Tx"))
                     {
                         TxCount++;
@@ -977,18 +1015,18 @@ int analysis::InputsControl()
                     {
                         RxCount++;
                     }
-                    ////qDebug()<<Selected.at(j)->child(3)->text(0);"child 3";
+                    //
                     if((Selected.at(j)->child(0)->text(0)=="1"))
                     {
                         spaceObjCount++;
                         SpaceIndex.append(Selected.at(j)->child(1)->text(0).toInt());
-                        ////qDebug()<<spaceObjCount<<"number of parents of Tx/Rx that are space objects";
+
                     }
                     if((Selected.at(j)->child(0)->text(0)=="0"))
                     {
-                        ////qDebug()<<"there are ground objects too";
+
                         groundObjCount++;
-                        ////qDebug()<<groundObjCount<<"number of parents of Tx/Rx that are ground objects";
+
                     }
                 }
 
@@ -1068,9 +1106,27 @@ void analysis::Warnings(int i)
 void analysis::on_GeneratePushButton_clicked()
 {
 
+    QString AnalysisFormat=ComboBoxAnalysisFormat->currentText();
+
     QList<QTreeWidgetItem *> selected=TreeWidgetMissionArc->selectedItems();
-    QList<QTreeWidgetItem *> selectedTimeStep=treeWidgetTimeSpecifications->selectedItems();
-    int numberOfParameters=treeWidgetShowInReport->topLevelItemCount();
+    QList<QTreeWidgetItem *> selectedTimes=treeWidgetTimeSpecifications->selectedItems();
+    QList<QTreeWidget*>tree;
+    int numberOfParameters=0;
+    if(AnalysisFormat=="Report")
+    {
+        numberOfParameters=treeWidgetShowInReport->topLevelItemCount();
+        tree.append(treeWidgetShowInReport);
+    }
+    if(AnalysisFormat=="2D")
+    {
+        numberOfParameters=treeWidgetXaxis->selectedItems().size()+treeWidgetYaxis->selectedItems().size();
+        tree.append(treeWidgetXaxis);
+        tree.append(treeWidgetYaxis);
+    }
+    if(AnalysisFormat=="3D")
+    {
+       numberOfParameters=treeWidgetXaxis->selectedItems().size()+treeWidgetYaxis->selectedItems().size()+treeWidgetZaxis->selectedItems().size();
+    }
     if(numberOfParameters==0)
     {
         QMessageBox parametersWarning;
@@ -1078,7 +1134,6 @@ void analysis::on_GeneratePushButton_clicked()
         parametersWarning.exec();
         return;
     }
-
     else
     {
         if(selected.size()==0)
@@ -1088,10 +1143,9 @@ void analysis::on_GeneratePushButton_clicked()
             MissionWarning.exec();
             return;
         }
-
         else
         {
-            if (selectedTimeStep.size()==0)
+            if (selectedTimes.size()==0)
             {
                 QMessageBox tswarning;
                 tswarning.setText("Please select one or more time intervals");
@@ -1099,1628 +1153,3527 @@ void analysis::on_GeneratePushButton_clicked()
             }
             else
             {
-                int Control=InputsControl(); //checks if the selected parameters are valid according to the inputs n other module functions
+                int Control=InputsControl(tree); //checks if the selected parameters are valid according to the inputs n other module functions
                 if(Control!=0)
                 {
                     Warnings(Control);
                 }
                 else
                 {
-
-                    QList<int>SObjectsIndex;
-                    QList<int>GObjectsIndex;
-                    QList<int>MObjectsIndex;
-                    QList<int>MParentIndex;
-
-                    int TxParentIndex;
-                    bool RxParentType;
-                    int TxArrayIndex;
-                    int RxArrayIndex;
-                    bool TxParentType; //inputCoverage
-                    int RxParentIndex; //input Coverage
-                    int indSC; //inputCoverage
-                    int indGS; //input Coverage
-                    ScenarioReceiverPayloadType*Receiver;
-                    ScenarioTransmitterPayloadType*Transmitter;
-                    ScenarioGroundStationEnvironment*Environment;
-                    bool ReadCoverage=false;
-                    bool ReadCommunication1=false;
-                    bool ReadCommunication2=false;
-                    bool ReadCommunication3=false;
-
-                    for (int t=0;t<selected.size();t++) // write the QLists with Parents and Mission indexes
-
+                    if (AnalysisFormat=="Report")
                     {
-                        int childnum=selected.at(t)->childCount();
-                        if (selected.at(t)->child(childnum-1)->text(0)=="ground")
-                        {
-                            GObjectsIndex.append(selected.at(t)->child(childnum-2)->text(0).toInt());
-                        }
-                        if (selected.at(t)->child(childnum-1)->text(0)=="space")
-                        {
-                            SObjectsIndex.append(selected.at(t)->child(childnum-2)->text(0).toInt());
-                        }
-                        if (selected.at(t)->child(childnum-1)->text(0)=="MArc")
-                        {
-                            MObjectsIndex.append(selected.at(t)->child(childnum-3)->text(0).toInt());
-                            MParentIndex.append(selected.at(t)->child(childnum-4)->text(0).toInt());
-                        }
 
-                        if(selected.at(t)->child(childnum-1)->text(0)=="Tx")
-                        {
-
-                            TxParentIndex=selected.at(t)->child(1)->text(0).toInt();
-
-                            TxArrayIndex=selected.at(t)->child(2)->text(0).toInt();
-
-                            int TxParentTy=selected.at(t)->child(0)->text(0).toInt();
-
-
-
-                            if(TxParentTy==0)
-                            {
-                                indGS=TxParentIndex;
-                                Transmitter=TxGS.at(TxArrayIndex);
-                                Environment=GSEnvironment.at(indGS);
-                                TxParentType=false;
-                            }
-                            if(TxParentTy==1)
-                            {
-                                indSC=TxParentIndex;
-                                Transmitter=TxSC.at(TxArrayIndex);
-                                TxParentType=true;
-
-                            }
-                        }
-
-                        if(selected.at(t)->child(childnum-1)->text(0)=="Rx")
-                        {
-                            RxParentIndex=selected.at(t)->child(childnum-3)->text(0).toInt();
-                            RxArrayIndex=selected.at(t)->child(childnum-2)->text(0).toInt();
-                            int RxParentTy=(selected.at(t)->child(0)->text(0)).toInt();
-                            if(RxParentTy==0)
-                            {
-
-                                indGS=RxParentIndex;
-                                Receiver=RxGS.at(RxArrayIndex);
-                                Environment=GSEnvironment.at(indGS);
-                                RxParentType=false;
-
-                            }
-                            //indGS=0;
-                            if(RxParentTy==1)
-                            {
-
-                                indSC=RxParentIndex;
-                                Receiver=RxSC.at(RxArrayIndex);
-                                RxParentType=true;
-                            }
-                        }
-
+                        WriteReport(selected,selectedTimes);
                     }
-
-                    for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++) //sets true some bool
-
+                    if(AnalysisFormat=="2D")
                     {
-                        QTreeWidgetItem*parameter=treeWidgetShowInReport->topLevelItem(i);
-                        QString name=parameter->text(0);
 
-                        if(name=="Azimuth"||name=="Elevation"||name=="Range")
+                        QList<AnalysisData> DataStructure=WriteDataStructure(selected,selectedTimes);
+                        if(DataStructure.size()==2)
                         {
-                            ReadCoverage=true;
-                        }
-                        if((name=="Equivalent Isotropical Radiated Power")||(name=="Received Frequency")||(name=="Doppler Shift")||(name=="Received Power")||(name=="Flux Density")||(name=="Overlap Bandwidth Factor"))
+
+                        int numberOfLines=0;
+                        int numberOfParameters=1; //one parameter per axis
+
+                        for(int i=0;i<DataStructure[0].Data[0].size();i++)
                         {
-                            ReadCommunication1=true;
+                            numberOfLines++;
                         }
-                        if((name=="Free Space Loss")||(name=="Oxygen Loss")||(name=="Water Vapour Loss")||(name=="Rain Loss")||(name=="Atmospheric Loss")||(name=="Propagation Loss"))
-                        {
-                            ReadCommunication2=true;
-                        }
-                        if((name=="G/T")||(name=="C/No")||(name=="C/N")||(name=="Eb/No")||(name=="BER"))
-                            ReadCommunication3=true;
+                        QDialog plotDialog(this);
+                        QVBoxLayout* layout = new QVBoxLayout(&plotDialog);
+                        PlotView* plotView = new PlotView(&plotDialog);
+                        layout->addWidget(plotView);
+                        plotDialog.setLayout(layout);
+
+                        AnalysisPlot::AnalysisPlot* Data = new AnalysisPlot();
+                        Data->setPoints(DataStructure,numberOfLines,numberOfParameters);
+
+                        plotView->addPlot(Data);
+
+                        plotView->setLeftLabel(DataStructure[1].ParameterTitles[0]);
+                        plotView->setBottomLabel(DataStructure[0].ParameterTitles[0]);
+                        plotView->autoScale();
+                        plotView->setMinimumSize(500,500);
+                        plotDialog.exec();
                     }
-
-                    QFile file("analysisReport.txt");
-                    file.open(QIODevice::WriteOnly);
-                    QTextStream stream(&file);
-                    stream.setRealNumberPrecision(16);
-
-                    //######time of generation of report#####
-                    QDateTime ReportDateTime=QDateTime::currentDateTime();
-
-                    stream<<"Report generated on"<<"\t"<<ReportDateTime.date().day()<<"/"<<ReportDateTime.date().month()<<"/"<<ReportDateTime.date().year()<<" "<<"at"<<" "<<ReportDateTime.time().hour()<<":"<<ReportDateTime.time().minute()<<":"<<ReportDateTime.time().second()<<"\r\n";
-
-
-                    for(int z=0;z<MParentIndex.size();z++)
-                    {
-                        SpaceObject*spaceObj=m_propagatedScenario->spaceObjects().at(MParentIndex.at(z));
-
-                        //for(int y=0;y<MObjectsIndex.size();y++)
+                        else
                         {
-                            int indMissionArc=MObjectsIndex.at(z);
-                            MissionArc*arc=spaceObj->mission().at(MObjectsIndex.at(z));
-
-                            QList<QTreeWidgetItem *> selectedTimes=treeWidgetTimeSpecifications->selectedItems();
-                            double StartTime[selectedTimes.size()];
-                            double StopTime[selectedTimes.size()];
-                            int countStart[selectedTimes.size()];
-                            int countStop[selectedTimes.size()];
-
-                            //double* StartTime=(double*) calloc(selectedTimes.size(),sizeof(double));
-                            ReadTime(0,StartTime);//in MJD
-
-                            //double* StopTime=(double*) calloc(selectedTimes.size(),sizeof(double));
-                            ReadTime(1,StopTime); //in MJD
-
-                            double StartEpoch=arc->trajectorySampleTime(0);
-                            int totalTime=(arc->trajectorySampleCount())-1;
-                            double StopEpoch=arc->trajectorySampleTime(totalTime);
-
-                            for (int j=0;j<selectedTimes.size();j++) // Control loop to determine if the start times are valid
-
-                            {
-
-                                if ((StartTime[j]<StartEpoch)||(StartTime[j]>=StopEpoch))
-                                {
-                                    QMessageBox InvalidStartWarning;
-                                    InvalidStartWarning.setText("Invalid Start Time");
-                                    InvalidStartWarning.exec();
-                                    return;
-                                }
-                                else // >=
-                                {
-                                    int i=0;
-                                    while(( (arc->trajectorySampleTime(i))/*+MJDoffset*/)<StartTime[j])
-                                    {
-
-                                        //////qDebug()<<"startTime"<<StartTime[j];
-                                        i=i+1;
-                                    }
-                                    countStart[j]=i;
-                                }
-                            }
-
-                            for (int j=0;j<selectedTimes.size();j++) //Control loop to determine if the stop times are valid
-
-                            {
-                                if ((StopTime[j]>StopEpoch)||(StopTime[j]<=StartEpoch))
-                                {
-                                    QMessageBox InvalidStartWarning;
-                                    InvalidStartWarning.setText("Invalid Stop Time");
-                                    InvalidStartWarning.exec();
-                                    return;
-                                }
-                                else
-                                {
-                                    int i=0;
-                                    while(((arc->trajectorySampleTime(i))/*+MJDoffset*/)<StopTime[j])
-                                    {
-                                        i=i+1;
-                                    }
-                                    countStop[j]=i;
-                                }
-                            }
-
-                            int inumber=0;
-
-                            int CovIndex[3]; //line of Coverage Report for each parameter
-                            CovIndex[0]=CovIndex[1]=CovIndex[2]=1; //0-Azimuth, 1-Elevation, 2-Range
-                            int Comm1Index[6]; //line of Comminucation Report 1 for each parameter
-                            Comm1Index[0]=Comm1Index[1]=Comm1Index[2]=Comm1Index[3]=Comm1Index[4]=Comm1Index[5]=1;
-                            int Comm2Index[6];
-                            Comm2Index[0]=Comm2Index[1]=Comm2Index[2]=Comm2Index[3]=Comm2Index[4]=Comm2Index[5]=1;
-                            int Comm3Index[5];
-                            Comm3Index[0]=Comm3Index[1]=Comm3Index[2]=Comm3Index[3]=Comm3Index[4]=1;
-                            QString CoverageLine; //each line of the cov report
-                            QStringList LineOfCoverageReport; //list of all the lines
-                            QString Communication1Line;
-                            QString Communication2Line;
-                            QString Communication3Line;
-                            QStringList LineOfComm1Report;
-                            QStringList LineOfComm2Report;
-                            QStringList LineOfComm3Report;
-                            if(ReadCoverage==true)
-                            {
-                                CoverageAnalysis covAna=CoverageAnalysis(m_propagatedScenario, indSC, indGS, indMissionArc);
-                                covAna.reportAER();
-
-                                QFile Coverage("reportCov1.txt");
-
-                                if(Coverage.open(QIODevice::ReadOnly ))
-                                {
-                                    QTextStream text(&Coverage);
-                                    while(!text.atEnd())
-                                    {
-                                        CoverageLine=text.readLine();
-                                        LineOfCoverageReport.append(CoverageLine);
-                                    }
-                                    Coverage.close();
-                                }
-                            }
-                            if(ReadCommunication1==true)
-                            {
-                                CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
-                                commAnalysis.CommReports();
-
-                                QFile Communication1("reportComm1.txt");
-
-                                if(Communication1.open(QIODevice::ReadOnly ))
-                                {
-                                    QTextStream Comm1(&Communication1);
-                                    while(!Comm1.atEnd())
-                                    {
-                                        Communication1Line=Comm1.readLine();
-                                        LineOfComm1Report.append(Communication1Line);
-                                    }
-                                    Communication1.close();
-                                }
-                            }
-                            if(ReadCommunication2==true)
-                            {
-                                CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
-                                commAnalysis.CommReports();
-                                QFile Communication2("reportComm2.txt");
-
-                                if(Communication2.open(QIODevice::ReadOnly ))
-                                {
-                                    QTextStream Comm2(&Communication2);
-                                    while(!Comm2.atEnd())
-                                    {
-                                        Communication2Line=Comm2.readLine();
-                                        LineOfComm2Report.append(Communication2Line);
-                                    }
-                                    Communication2.close();
-                                }
-                            }
-                            if(ReadCommunication3==true)
-                            {
-                                CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
-                                commAnalysis.CommReports();
-                                QFile Communication3("reportComm3.txt");
-
-                                if(Communication3.open(QIODevice::ReadOnly ))
-                                {
-                                    QTextStream Comm3(&Communication3);
-                                    while(!Comm3.atEnd())
-                                    {
-                                        Communication3Line=Comm3.readLine();
-                                        LineOfComm3Report.append(Communication3Line);
-                                    }
-                                    Communication3.close();
-                                }
-                            }
-                            for (int k=0;k<selectedTimes.size();k++)
-                            {
-
-                                QList<QTreeWidgetItem*>SelTime=treeWidgetTimeSpecifications->selectedItems();
-                                QString Start=SelTime[k]->text(0);
-                                QString Stop=SelTime[k]->text(1);
-
-                                stream<<"#######Beginning of time"<<" "<<(k+1)<<"######"<<"\r\n"<<"######"<<"Start Time"<<" "<<Start<<"\t"<<"Stop Time"<<" "<<Stop<<"######"<<"\r\n"<<"MJD"<<"\r\t";
-
-                                //printing the labels of the displayed parameters
-                                for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++)
-                                {
-                                    QTreeWidgetItem*parameter=treeWidgetShowInReport->topLevelItem(i);
-                                    QString name=parameter->text(0);
-                                    //QString parent=parameter->parent()->text(0);
-                                    stream<<"\t"<<name<<"\t";
-                                    if(i==((treeWidgetShowInReport->topLevelItemCount())-1))
-                                    {
-                                        stream<<"\r\n";
-                                    }
-
-
-                                }
-
-                                inumber=countStop[k]-countStart[k];
-
-                                double MJDdate[inumber];
-                                double JulianDate[inumber];
-                                QDateTime GregorianLCL[inumber];
-                                double CurrentJulianDate=sta::DateTimeTOjulian(QDateTime::currentDateTime());
-                                double JulianLCL[inumber];
-                                QDateTime TimeDateVector[inumber];
-                                double DayOfYear[inumber];
-                                double ElapsedTime[inumber];
-
-                                for(int j=countStart[k];j<=countStop[k];j++)
-                                {
-                                    int index=j-countStart[k];
-                                    MJDdate[index]=arc->trajectorySampleTime(j);
-//qDebug()<<index<<"time step";
-                                    stream<<MJDdate[index]<<"\t";
-
-                                    for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++)
-                                    {
-                                        QTreeWidgetItem*parameter=treeWidgetShowInReport->topLevelItem(i);
-                                        QString name=parameter->text(0);
-
-                                        if((name=="x position")||(name=="y position")||(name=="z position")||(name=="x velocity")||(name=="y velocity")||(name=="z velocity"))
-                                        {
-
-                                            QWidget*Box=treeWidgetShowInReport->itemWidget(parameter,1);
-                                            QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
-                                            QString Coordinate=ComboBox->currentText();
-
-                                            QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,2);
-                                            QComboBox*ComboBoxUnit=dynamic_cast <QComboBox*>(Box1);
-                                            QString Units=ComboBoxUnit->currentText();
-
-                                            sta::StateVector Vector[inumber];
-
-                                            Vector[index]=arc->trajectorySample(j);
-
-                                            if(name=="x position")
-
-                                            {
-                                                if(Coordinate=="Fixed")
-                                                {
-
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem Fixed("PLANETO FIXED");
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 Fixed);
-                                                    stream<<"\t"<<ModifVector[index].position.x()<<"\t";
-
-
-                                                }
-                                                if(Coordinate=="Ecliptic J2000")
-                                                {
-
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem Ecliptic("ECLIPTIC");
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 Ecliptic);
-                                                    stream<<"\t"<<ModifVector[index].position.x()<<"\t";
-
-                                                }
-                                                if(Coordinate=="EME J2000")
-                                                {
-
-
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000);
-
-                                                    stream<<"\t"<<ModifVector[index].position.x()<<"\t";
-
-
-                                                }
-                                                if(Coordinate=="EME B1950")
-                                                {
-
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem B1950("INERTIAL B1950");
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 B1950);
-                                                    stream<<"\t"<<ModifVector[index].position.x()<<"\t";
-
-                                                }
-                                            }
-
-                                            if(name=="y position")
-                                            {
-                                                if(Coordinate=="Fixed")
-                                                {
-
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem Fixed("PLANETO FIXED");
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 Fixed);
-                                                    stream<<"\t"<<ModifVector[index].position.y()<<"\t";
-
-                                                }
-                                                if(Coordinate=="Ecliptic J2000")
-                                                {
-
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem Ecliptic("ECLIPTIC");
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 Ecliptic);
-                                                    stream<<"\t"<<ModifVector[index].position.y()<<"\t";
-
-                                                }
-                                                if(Coordinate=="EME J2000")
-                                                {
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000);
-                                                    stream<<"\t"<<ModifVector[index].position.y()<<"\t";
-
-                                                }
-                                                if(Coordinate=="EME B1950")
-                                                {
-
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem B1950("INERTIAL B1950");
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 B1950);
-                                                    stream<<"\t"<<ModifVector[index].position.y()<<"\t";
-
-                                                }
-                                            }
-
-                                            if(name=="z position")
-                                            {
-
-                                                if(Coordinate=="Fixed")
-                                                {
-
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem Fixed("PLANETO FIXED");
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 Fixed);
-
-                                                    stream<<"\t"<<ModifVector[index].position.z()<<"\t";
-
-                                                }
-                                                if(Coordinate=="Ecliptic J2000")
-                                                {
-
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem Ecliptic("ECLIPTIC");
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 Ecliptic);
-                                                    stream<<"\t"<<ModifVector[index].position.z()<<"\t";
-
-                                                }
-                                                if(Coordinate=="EME J2000")
-                                                {
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000);
-                                                    stream<<"\t"<<ModifVector[index].position.z()<<"\t";
-
-                                                }
-                                                if(Coordinate=="EME B1950")
-                                                {
-
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem B1950("INERTIAL B1950");
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 B1950);
-                                                    stream<<"\t"<<ModifVector[index].position.z()<<"\t";
-
-                                                }
-
-                                            }
-
-                                            if(name=="x velocity")
-                                            {
-                                                if(Coordinate=="Fixed")
-                                                {
-
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem Fixed("PLANETO FIXED");
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 Fixed);
-                                                    stream<<"\t"<<ModifVector[index].velocity.x()<<"\t";
-
-
-
-                                                }
-                                                if(Coordinate=="Ecliptic J2000")
-                                                {
-
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem Ecliptic("ECLIPTIC");
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 Ecliptic);
-                                                    stream<<"\t"<<ModifVector[index].velocity.x()<<"\t";
-
-
-
-                                                }
-                                                if(Coordinate=="EME J2000")
-                                                {
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000);
-                                                    stream<<"\t"<<ModifVector[index].velocity.x()<<"\t";
-
-                                                }
-                                                if(Coordinate=="EME B1950")
-                                                {
-
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem B1950("INERTIAL B1950");
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 B1950);
-                                                    stream<<"\t"<<ModifVector[index].velocity.x()<<"\t";
-
-
-
-                                                }
-                                            }
-                                            if(name=="y velocity")
-                                            {
-                                                if(Coordinate=="Fixed")
-                                                {
-
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem Fixed("PLANETO FIXED");
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 Fixed);
-                                                    stream<<"\t"<<ModifVector[index].velocity.y()<<"\t";
-
-
-
-                                                }
-                                                if(Coordinate=="Ecliptic J2000")
-                                                {
-
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem Ecliptic("ECLIPTIC");
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 Ecliptic);
-                                                    stream<<"\t"<<ModifVector[index].velocity.y()<<"\t";
-
-
-
-                                                }
-                                                if(Coordinate=="EME J2000")
-                                                {
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000);
-                                                    stream<<"\t"<<ModifVector[index].velocity.y()<<"\t";
-
-                                                }
-                                                if(Coordinate=="EME B1950")
-                                                {
-
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem B1950("INERTIAL B1950");
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 B1950);
-                                                    stream<<"\t"<<ModifVector[index].velocity.z()<<"\t";
-
-
-
-                                                }
-                                            }
-                                            if(name=="z velocity")
-                                            {
-                                                if(Coordinate=="Fixed")
-                                                {
-
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem Fixed("PLANETO FIXED");
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 Fixed);
-                                                    stream<<"\t"<<ModifVector[index].velocity.z()<<"\t";
-
-                                                }
-                                                if(Coordinate=="Ecliptic J2000")
-                                                {
-
-                                                    sta::StateVector ModifVector[inumber];
-                                                    sta::CoordinateSystem Ecliptic("ECLIPTIC");
-                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                 MJDdate[index],
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 EME2000,
-                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                 Ecliptic);
-                                                    stream<<"\t"<<ModifVector[index].velocity.z()<<"\t";
-                                                }
-                                                    if(Coordinate=="EME J2000")
-                                                    {
-                                                        sta::StateVector ModifVector[inumber];
-                                                        sta::CoordinateSystem EME2000("INERTIAL J2000");
-
-                                                        ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                     MJDdate[index],
-                                                                                                     STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                     EME2000,
-                                                                                                     STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                     EME2000);
-                                                        stream<<"\t"<<ModifVector[index].velocity.z()<<"\t";
-
-                                                    }
-                                                    if(Coordinate=="EME B1950")
-                                                    {
-
-                                                        sta::StateVector ModifVector[inumber];
-                                                        sta::CoordinateSystem B1950("INERTIAL B1950");
-                                                        sta::CoordinateSystem EME2000("INERTIAL J2000");
-                                                        ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                     MJDdate[index],
-                                                                                                     STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                     EME2000,
-                                                                                                     STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                     B1950);
-                                                        stream<<"\t"<<ModifVector[index].velocity.z()<<"\t";
-
-
-
-                                                    }
-
-                                            }
-                                        }
-                                        if(name=="Time")
-                                        {
-                                            QWidget*Box=treeWidgetShowInReport->itemWidget(parameter,1);
-                                            QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
-                                            QString TimeCoordinate=ComboBox->currentText();
-
-                                            //Options of Time
-                                            if(TimeCoordinate=="MJD")
-                                            {
-                                                stream<<MJDdate[index]<<"\t";
-
-                                            }
-
-                                            if(TimeCoordinate=="Julian Date")
-                                            {
-                                                JulianDate[index]=sta::MjdToJd(MJDdate[index]);
-                                                stream<<JulianDate[index]<<"\t";
-                                            }
-                                            if(TimeCoordinate=="Julian LCL")
-                                            {
-                                                JulianDate[index]=sta::MjdToJd(MJDdate[index]); //for each time step
-                                                double ABSdifference=fabs(JulianDate[0]-CurrentJulianDate); //the different between both times is the same for every time step, so we do this for the first time step
-                                                if(JulianDate[0]<CurrentJulianDate)
-                                                {
-                                                    JulianLCL[index]=JulianDate[index]+ABSdifference;
-                                                }
-                                                else
-                                                {
-                                                    JulianLCL[index]=JulianDate[index]-ABSdifference;
-                                                }
-                                                stream<<JulianLCL[index]<<"\t";
-                                            }
-                                            if(TimeCoordinate=="Gregorian UTC")
-                                            {
-                                                JulianDate[index]=sta::MjdToJd(MJDdate[index])+0.00001;
-                                                TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
-                                                stream<<TimeDateVector[index].date().day()<<"/"<<TimeDateVector[index].date().month()<<"/"<<TimeDateVector[index].date().year()<<" "<<TimeDateVector[index].time().hour()<<":"<<TimeDateVector[index].time().minute()<<":"<<TimeDateVector[index].time().second();
-
-                                            }
-                                            if(TimeCoordinate=="Gregorian LCL")
-                                            {
-                                                JulianDate[index]=sta::MjdToJd(MJDdate[index]);
-                                                double ABSdifference=fabs(JulianDate[0]-CurrentJulianDate);
-                                                if(JulianDate[0]<CurrentJulianDate)
-                                                {
-                                                    JulianLCL[index]=JulianDate[index]+ABSdifference;
-                                                    GregorianLCL[index]=sta::JdToCalendar(JulianLCL[index]);
-                                                }
-                                                else
-                                                {
-                                                    JulianLCL[index]=JulianDate[index]-ABSdifference;
-                                                    GregorianLCL[index]=sta::JdToCalendar(JulianLCL[index]);
-                                                }
-                                                stream<<GregorianLCL[index].date().day()<<"/"<<GregorianLCL[index].date().month()<<"/"<<GregorianLCL[index].date().year()<<" "<<GregorianLCL[index].time().hour()<<":"<<GregorianLCL[index].time().minute()<<":"<<GregorianLCL[index].time().second();
-
-                                            }
-
-                                            if(TimeCoordinate=="Time from epoch")
-                                            {
-                                            }
-                                            if(TimeCoordinate=="YYDDD")
-                                            {
-                                                JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
-                                                TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
-                                                int Year=TimeDateVector[index].date().year();
-                                                QDateTime FirstDayCurrentYear(QDate(Year,1,1),QTime(0,0,0));
-                                                double StartYearTime=sta::JdToMjd(sta::CalendarToJd(FirstDayCurrentYear));
-                                                QString YearPreLastDigit=QString::number(Year).at(2);
-                                                QString YearLastDigit=QString::number(Year).at(3);
-
-                                                DayOfYear[index]=sta::MjdToFromEpoch(StartYearTime,MJDdate[index],"Days");
-                                                stream<<"YY:"<<YearPreLastDigit<<YearLastDigit<<" "<<"DDD:"<<DayOfYear[index]<<"\t";
-                                            }
-
-                                            if(TimeCoordinate=="Mission Elapsed Time")
-                                            {
-                                                QWidget*Box=treeWidgetShowInReport->itemWidget(parameter,2);
-                                                QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
-                                                QString TimeUnits=ComboBox->currentText();
-
-                                                double ElapsedTime=MjdToFromEpoch(StartEpoch,MJDdate[index],TimeUnits);
-
-                                                if(TimeUnits=="Seconds")
-                                                {
-                                                    stream<<"Seconds from Epoch"<<" "<<ElapsedTime;
-                                                }
-                                                if(TimeUnits=="Minutes")
-                                                {
-                                                    stream<<"Minutes from Epoch"<<" "<<ElapsedTime;
-                                                }
-                                                if(TimeUnits=="Hours")
-                                                {
-                                                    stream<<"Hours from Epoch"<<" "<<ElapsedTime;
-                                                }
-                                                if(TimeUnits=="Days")
-                                                {
-                                                    stream<<"Days from Epoch"<<" "<<ElapsedTime;
-                                                }
-                                            }
-                                            if(TimeCoordinate=="GMT")
-                                            {
-
-                                            }
-                                        }
-                                        if(name=="Azimuth")
-                                        {
-
-                                            if(CovIndex[0]<LineOfCoverageReport.size())
-                                            {
-                                                QString Line=LineOfCoverageReport.at(CovIndex[0]);
-
-                                                double TimeCovReport=(Line.section("\t",0,0)).toDouble();
-                                                double Azimuth=(Line.section("\t",3,3)).toDouble();
-
-                                                if(abs(MJDdate[index]-TimeCovReport)<10e-6)
-                                                {
-                                                    stream<<Azimuth<<"\t";
-                                                    CovIndex[0]++;
-                                                }
-
-                                                else
-                                                {
-                                                    stream<<"No visibility";
-                                                }
-
-                                            }
-                                            else
-                                            {
-                                                stream<<"No visibility";
-                                            }
-                                        }
-                                        if(name=="Elevation")
-                                        {
-
-                                            if(CovIndex[1]<LineOfCoverageReport.length())
-                                            {
-                                                QString Line=LineOfCoverageReport.at(CovIndex[1]);
-
-                                                double TimeCovReport=(Line.section("\t",0,0)).toDouble();
-                                                double Elevation=(Line.section("\t",2,2)).toDouble();
-
-                                                if(abs(MJDdate[index]-TimeCovReport)<10e-6)
-                                                {
-                                                    stream<<Elevation<<"\t";
-                                                    CovIndex[1]++;
-                                                }
-
-                                                else
-                                                {
-                                                    stream<<"No visibility";
-                                                }
-
-                                            }
-                                            else
-                                            {
-                                                stream<<"No visibility";
-                                            }
-                                        }
-                                        if(name=="Range")
-                                        {
-                                            if(CovIndex[2]<LineOfCoverageReport.length())
-                                            {
-                                                QString Line=LineOfCoverageReport.at(CovIndex[2]);
-
-                                                double TimeCovReport=(Line.section("\t",0,0)).toDouble();
-                                                double Range=(Line.section("\t",1,1)).toDouble();
-
-                                                if(abs(MJDdate[index]-TimeCovReport)<10e-6)
-                                                {
-                                                    stream<<Range<<"\t";
-                                                    CovIndex[2]++;
-                                                }
-
-                                                else
-                                                {
-                                                    stream<<"No visibility";
-                                                }
-
-                                                //qDebug()<<"CovIndex"<<CovIndex[2];
-
-                                            }
-                                            else
-                                            {
-                                                stream<<"No visibility";
-                                            }
-                                        }
-                                        if(name=="Equivalent Isotropical Radiated Power")
-                                        {
-
-                                            if(Comm1Index[0]<LineOfComm1Report.length())
-                                            {
-                                                QString Line=LineOfComm1Report.at(Comm1Index[0]);
-
-                                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
-                                                double EIRP=(Line.section("\t",1,1)).toDouble();
-
-                                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
-                                                {
-                                                    stream<<EIRP<<"\t";
-                                                    Comm1Index[0]++;
-                                                }
-
-                                                else
-                                                {
-                                                    stream<<"No visibility";
-                                                }
-
-                                            }
-                                            else
-                                            {
-                                                stream<<"No visibility";
-                                            }
-                                        }
-                                        if(name=="Received Frequency")
-                                        {
-
-                                            if(Comm1Index[1]<LineOfComm1Report.length())
-                                            {
-                                                QString Line=LineOfComm1Report.at(Comm1Index[1]);
-
-                                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
-                                                double RcvFreq=(Line.section("\t",2,2)).toDouble();
-
-                                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
-                                                {
-                                                    stream<<RcvFreq<<"\t";
-                                                    Comm1Index[1]++;
-                                                }
-
-                                                else
-                                                {
-                                                    stream<<"No visibility";
-                                                }
-
-                                            }
-                                            else
-                                            {
-                                                stream<<"No visibility";
-                                            }
-                                        }
-                                        if(name=="Doppler Shift")
-                                        {
-
-                                            if(Comm1Index[2]<LineOfComm1Report.length())
-                                            {
-                                                QString Line=LineOfComm1Report.at(Comm1Index[2]);
-
-                                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
-                                                double RcvFreq=(Line.section("\t",3,3)).toDouble();
-
-                                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
-                                                {
-                                                    stream<<RcvFreq<<"\t";
-                                                    Comm1Index[2]++;
-                                                }
-
-                                                else
-                                                {
-                                                    stream<<"No visibility";
-                                                }
-
-                                            }
-                                            else
-                                            {
-                                                stream<<"No visibility";
-                                            }
-                                        }
-                                        if(name=="Received Power")
-                                        {
-
-                                            if(Comm1Index[3]<LineOfComm1Report.length())
-                                            {
-                                                QString Line=LineOfComm1Report.at(Comm1Index[3]);
-
-                                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
-                                                double RcvFreq=(Line.section("\t",4,4)).toDouble();
-
-                                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
-                                                {
-                                                    stream<<RcvFreq<<"\t";
-                                                    Comm1Index[3]++;
-                                                }
-
-                                                else
-                                                {
-                                                    stream<<"No visibility";
-                                                }
-
-                                            }
-                                            else
-                                            {
-                                                stream<<"No visibility";
-                                            }
-                                        }
-                                        if(name=="Flux Density")
-                                        {
-
-                                            if(Comm1Index[4]<LineOfComm1Report.length())
-                                            {
-                                                QString Line=LineOfComm1Report.at(Comm1Index[4]);
-
-                                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
-                                                double FluxDensity=(Line.section("\t",5,5)).toDouble();
-                                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
-                                                {
-                                                    stream<<FluxDensity<<"\t";
-                                                    Comm1Index[4]++;
-                                                }
-
-                                                else
-                                                {
-                                                    stream<<"No visibility";
-                                                }
-
-                                            }
-                                            else
-                                            {
-                                                stream<<"No visibility";
-                                            }
-                                        }
-                                        if(name=="Overlap Bandwidth Factor")
-                                        {
-
-                                            if(Comm1Index[5]<LineOfComm1Report.length())
-                                            {
-                                                QString Line=LineOfComm1Report.at(Comm1Index[5]);
-                                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
-                                                double OvBWF=(Line.section("\t",6,6)).toDouble();
-
-                                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
-                                                {
-                                                    stream<<OvBWF<<"\t";
-                                                    Comm1Index[5]++;
-                                                }
-
-                                                else
-                                                {
-                                                    stream<<"No visibility"<<"\t";
-                                                }
-                                            }
-                                            else
-                                            {
-                                                stream<<"No visibility"<<"\t";
-                                            }
-                                        }
-                                        if(name=="Free Space Loss")
-                                        {
-
-                                            if(Comm2Index[0]<LineOfComm2Report.length())
-                                            {
-                                                QString Line=LineOfComm2Report.at(Comm2Index[0]);
-
-                                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
-
-                                                double FSL=(Line.section("\t",1,1)).toDouble();
-
-
-                                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
-                                                {
-                                                    stream<<FSL<<"\t";
-                                                    Comm2Index[0]++;
-                                                }
-
-                                                else
-                                                {
-                                                    stream<<"No visibility"<<"\t";
-                                                }
-
-                                            }
-                                            else
-                                            {
-                                                stream<<"No visibility"<<"\t";
-                                            }
-                                        }
-                                        if(name=="Oxygen Loss")
-                                        {
-                                            if(Comm2Index[1]<LineOfComm2Report.length())
-                                            {
-                                                QString Line=LineOfComm2Report.at(Comm2Index[1]);
-                                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
-                                                double OxLoss=(Line.section("\t",2,2)).toDouble();
-
-                                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
-                                                {
-                                                    stream<<OxLoss<<"\t";
-                                                    Comm2Index[1]++;
-                                                }
-
-                                                else
-                                                {
-                                                    stream<<"No visibility"<<"\t";
-                                                }
-                                            }
-                                            else
-                                            {
-                                                stream<<"No visibility"<<"\t";
-                                            }
-                                        }
-                                        if(name=="Water Vapour Loss")
-                                        {
-                                            if(Comm2Index[2]<LineOfComm2Report.length())
-                                            {
-                                                QString Line=LineOfComm2Report.at(Comm2Index[2]);
-                                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
-                                                double WVLoss=(Line.section("\t",3,3)).toDouble();
-
-                                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
-                                                {
-                                                    stream<<WVLoss<<"\t";
-                                                    Comm2Index[2]++;
-                                                }
-
-                                                else
-                                                {
-                                                    stream<<"No visibility"<<"\t";
-                                                }
-                                            }
-                                            else
-                                            {
-                                                stream<<"No visibility"<<"\t";
-                                            }
-                                        }
-                                        if(name=="Rain Loss")
-                                        {
-                                            if(Comm2Index[3]<LineOfComm2Report.length())
-                                            {
-                                                QString Line=LineOfComm2Report.at(Comm2Index[3]);
-                                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
-                                                double RainLoss=(Line.section("\t",4,4)).toDouble();
-
-                                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
-                                                {
-                                                    stream<<RainLoss<<"\t";
-                                                    Comm2Index[3]++;
-                                                }
-
-                                                else
-                                                {
-                                                    stream<<"No visibility"<<"\t";
-                                                }
-                                            }
-                                            else
-                                            {
-                                                stream<<"No visibility"<<"\t";
-                                            }
-                                        }
-                                        if(name=="Atmospheric Loss")
-                                        {
-                                            if(Comm2Index[4]<LineOfComm2Report.length())
-                                            {
-                                                QString Line=LineOfComm2Report.at(Comm2Index[4]);
-                                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
-                                                double AtmLoss=(Line.section("\t",5,5)).toDouble();
-
-                                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
-                                                {
-                                                    stream<<AtmLoss<<"\t";
-                                                    Comm2Index[4]++;
-                                                }
-
-                                                else
-                                                {
-                                                    stream<<"No visibility"<<"\t";
-                                                }
-                                            }
-                                            else
-                                            {
-                                                stream<<"No visibility"<<"\t";
-                                            }
-                                        }
-                                        if(name=="Propagation Loss")
-                                        {
-                                            if(Comm2Index[5]<LineOfComm2Report.length())
-                                            {
-                                                QString Line=LineOfComm2Report.at(Comm2Index[5]);
-                                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
-                                                double PropLoss=(Line.section("\t",6,6)).toDouble();
-
-                                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
-                                                {
-                                                    stream<<PropLoss<<"\t";
-                                                    Comm2Index[5]++;
-                                                }
-
-                                                else
-                                                {
-                                                    stream<<"No visibility"<<"\t";
-                                                }
-                                            }
-                                            else
-                                            {
-                                                stream<<"No visibility"<<"\t";
-                                            }
-                                        }
-                                        if (name=="G/T")
-                                        {
-                                            if(Comm3Index[0]<LineOfComm3Report.length())
-                                            {
-                                                QString Line=LineOfComm3Report.at(Comm3Index[0]);
-                                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
-                                                double GT=(Line.section("\t",1,1)).toDouble();
-
-                                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
-                                                {
-                                                    stream<<GT<<"\t";
-                                                    Comm3Index[0]++;
-                                                }
-
-                                                else
-                                                {
-                                                    stream<<"No visibility"<<"\t";
-                                                }
-                                            }
-                                            else
-                                            {
-                                                stream<<"No visibility"<<"\t";
-                                            }
-                                        }
-                                        if(name=="C/No")
-                                        {
-                                            if(Comm3Index[1]<LineOfComm3Report.length())
-                                            {
-                                                QString Line=LineOfComm3Report.at(Comm3Index[1]);
-                                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
-                                                double CNo=(Line.section("\t",2,2)).toDouble();
-
-                                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
-                                                {
-                                                    stream<<CNo<<"\t";
-                                                    Comm3Index[1]++;
-                                                }
-
-                                                else
-                                                {
-                                                    stream<<"No visibility"<<"\t";
-                                                }
-                                            }
-                                            else
-                                            {
-                                                stream<<"No visibility"<<"\t";
-                                            }
-                                        }
-                                        if(name=="C/N")
-                                        {
-                                            if(Comm3Index[2]<LineOfComm3Report.length())
-                                            {
-                                                QString Line=LineOfComm3Report.at(Comm3Index[2]);
-                                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
-                                                double CN=(Line.section("\t",3,3)).toDouble();
-
-                                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
-                                                {
-                                                    stream<<CN<<"\t";
-                                                    Comm3Index[2]++;
-                                                }
-
-                                                else
-                                                {
-                                                    stream<<"No visibility"<<"\t";
-                                                }
-                                            }
-                                            else
-                                            {
-                                                stream<<"No visibility"<<"\t";
-                                            }
-                                        }
-                                        if(name=="Eb/No")
-                                        {
-                                            if(Comm3Index[3]<LineOfComm3Report.length())
-                                            {
-                                                QString Line=LineOfComm3Report.at(Comm3Index[3]);
-                                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
-                                                double EbNo=(Line.section("\t",4,4)).toDouble();
-
-                                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
-                                                {
-                                                    stream<<EbNo<<"\t";
-                                                    Comm3Index[3]++;
-                                                }
-
-                                                else
-                                                {
-                                                    stream<<"No visibility"<<"\t";
-                                                }
-                                            }
-                                            else
-                                            {
-                                                stream<<"No visibility"<<"\t";
-                                            }
-                                        }
-                                        if(name=="BER")
-                                        {
-                                            if(Comm3Index[4]<LineOfComm3Report.length())
-                                            {
-                                                QString Line=LineOfComm3Report.at(Comm3Index[4]);
-                                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
-                                                double BER=(Line.section("\t",5,5)).toDouble();
-
-                                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
-                                                {
-                                                    stream<<BER<<"\t";
-                                                    Comm3Index[4]++;
-                                                }
-
-                                                else
-                                                {
-                                                    stream<<"No visibility"<<"\t";
-                                                }
-                                            }
-                                            else
-                                            {
-                                                stream<<"No visibility"<<"\t";
-                                            }
-                                        }
-                                        if(name=="Eccentricity")
-                                        {
-                                            QWidget*Box=treeWidgetShowInReport->itemWidget(parameter,1);
-                                            QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
-                                            QString ToCoord=ComboBox->currentText();
-
-                                          sta::StateVector Vector[inumber];
-                                          Vector[index]=arc->trajectorySample(j);
-                                          double Eccentricity=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"Eccentricity",
-                                                                                                   MJDdate[index],
-                                                                                                   "EME J2000",
-                                                                                                   ToCoord);
-                                            stream<<Eccentricity<<"\t";
-                                        }
-                                        if((name=="Inclination")||
-                                           (name=="RAAN")||
-                                           (name=="Argument of Periapsis")||
-                                           (name=="True Anomaly")||
-                                           (name=="Semimajor Axis"))
-                                        {
-                                            QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,1);
-                                            QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
-                                            QString ToCoord=ComboBox1->currentText();
-                                            QWidget*Box2=treeWidgetShowInReport->itemWidget(parameter,1);
-                                            QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
-                                            QString ToUnit=ComboBox2->currentText();
-
-                                            sta::StateVector Vector[inumber];
-                                            Vector[index]=arc->trajectorySample(j);
-
-                                           if(name=="Inclination")
-                                            {
-                                               double Inclination=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                                                                        MJDdate[index],
-                                                                                                        "EME J2000",
-                                                                                                        ToCoord);
-                                           stream<<Inclination<<"\t";
-                                           }
-                                           if(name=="RAAN")
-                                           {
-                                               double Ascending=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                                                                        MJDdate[index],
-                                                                                                        "EME J2000",
-                                                                                                        ToCoord);
-                                           stream<<Ascending<<"\t";
-                                           }
-                                           if(name=="True Anomaly")
-                                           {
-                                               double TrueAnom=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                                                                        MJDdate[index],
-                                                                                                        "EME J2000",
-                                                                                                        ToCoord);
-                                           stream<<TrueAnom<<"\t";
-                                           }
-                                           if(name=="Argument of Periapsis")
-                                           {
-                                               double Periapsis=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                                                                        MJDdate[index],
-                                                                                                        "EME J2000",
-                                                                                                        ToCoord);
-                                           stream<<Periapsis<<"\t";
-                                           }
-                                           if(name=="Semimajor Axis")
-                                           {
-                                               double SemAxis=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                                                                        MJDdate[index],
-                                                                                                        "EME J2000",
-                                                                                                        ToCoord);
-                                           stream<<SemAxis<<"\t";
-                                           }
-
-                                       }
-                                        if((name=="l")||(name=="g")||(name=="h")||(name=="L")||(name=="G")||(name=="H"))
-                                        {
-                                            QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,1);
-                                            QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
-                                            QString ToCoord=ComboBox1->currentText();
-                                            sta::StateVector Vector[inumber];
-                                            Vector[index]=arc->trajectorySample(j);
-
-                                        if(name=="l")
-                                        {
-                                            double Delaunay_l=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                                                   MJDdate[index],
-                                                                                   "EME J2000",
-                                                                                   ToCoord);
-                                            stream<<Delaunay_l<<"\t";
-                                        }
-                                        if((name=="l")||(name=="g")||(name=="h")||(name=="L")||(name=="G")||(name=="H"))
-                                                                                {
-                                                                                    QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,1);
-                                                                                    QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
-                                                                                    QString ToCoord=ComboBox1->currentText();
-                                                                                    sta::StateVector Vector[inumber];
-                                                                                    Vector[index]=arc->trajectorySample(j);
-
-                                                                                if(name=="l")
-                                                                                {
-                                                                                    double Delaunay_l=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                                                                                           MJDdate[index],
-                                                                                                                           "EME J2000",
-                                                                                                                           ToCoord);
-                                                                                    stream<<Delaunay_l<<"\t";
-                                                                                }
-                                                                                if(name=="g")
-                                                                                {
-                                                                                    double Delaunay_g=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                                                                                           MJDdate[index],
-                                                                                                                           "EME J2000",
-                                                                                                                           ToCoord);
-                                                                                    stream<<Delaunay_g<<"\t";
-                                                                                }
-                                                                                if(name=="h")
-                                                                                {
-                                                                                    double Delaunay_h=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                                                                                           MJDdate[index],
-                                                                                                                           "EME J2000",
-                                                                                                                           ToCoord);
-                                                                                    stream<<Delaunay_h<<"\t";
-                                                                                }
-                                                                                if(name=="L")
-                                                                                {
-                                                                                    double Delaunay_L=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                                                                                           MJDdate[index],
-                                                                                                                           "EME J2000",
-                                                                                                                           ToCoord);
-                                                                                    stream<<Delaunay_L<<"\t";
-                                                                                }
-                                                                                if(name=="G")
-                                                                                {
-                                                                                    double Delaunay_G=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                                                                                           MJDdate[index],
-                                                                                                                           "EME J2000",
-                                                                                                                           ToCoord);
-                                                                                    stream<<Delaunay_G<<"\t";
-                                                                                }
-                                                                                if(name=="H")
-                                                                                {
-                                                                                    double Delaunay_H=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                                                                                           MJDdate[index],
-                                                                                                                           "EME J2000",
-                                                                                                                           ToCoord);
-                                                                                    stream<<Delaunay_H<<"\t";
-                                                                                }
-                                                                            }
-                                                                                if((name=="Latitude")||(name=="Longitude")||(name=="Radial Distance")||(name=="Flight Path Angle")||(name=="Heading Angle")||(name=="Velocity Modulus"))
-                                                                                {
-                                                                                    QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,1);
-                                                                                    QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
-                                                                                    QString ToCoord=ComboBox1->currentText();
-                                                                                    sta::StateVector Vector[inumber];
-                                                                                    sta::StateVector ModifVector[inumber];
-                                                                                    Vector[index]=arc->trajectorySample(j);
-                                                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                                                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                                                 MJDdate[index],
-                                                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                                                 EME2000,
-                                                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                                                 analysis::CoordSys(ToCoord));
-                                                                                    double SphericalElements[6]; // tau, delta, r, V, gamma, chi
-                                                                                    cartesianTOspherical(ModifVector[index].position.x(),ModifVector[index].position.y(),ModifVector[index].position.z(),
-                                                                                                         ModifVector[index].velocity.x(),ModifVector[index].velocity.y(),ModifVector[index].velocity.z(),
-                                                                                                         SphericalElements[0],SphericalElements[1],SphericalElements[2],SphericalElements[3],SphericalElements[4],
-                                                                                                         SphericalElements[5]);
-                                                                                    if(name=="Latitude")
-                                                                                    {
-                                                                                        stream<<SphericalElements[1]<<"\t";
-                                                                                    }
-                                                                                    if(name=="Longitude")
-                                                                                    {
-                                                                                        stream<<SphericalElements[0]<<"\t";
-                                                                                    }
-                                                                                    if(name=="Radial Distance")
-                                                                                    {
-                                                                                        stream<<SphericalElements[2]<<"\t";
-                                                                                    }
-                                                                                    if(name=="Flight Path Angle")
-                                                                                    {
-                                                                                        stream<<SphericalElements[4]<<"\t";
-                                                                                    }
-                                                                                    if(name=="Heading Angle")
-                                                                                    {
-                                                                                        stream<<SphericalElements[5]<<"\t";
-                                                                                    }
-                                                                                    if(name=="Velocity Modulus")
-                                                                                    {
-                                                                                        stream<<SphericalElements[3]<<"\t";
-                                                                                    }
-                                                                                }
-
-
-                                    }
-                                        if((name=="Latitude")||(name=="Longitude")||(name=="Radial Distance")||(name=="Flight Path Angle")||(name=="Heading Angle")||(name=="Velocity Modulus"))
-                                        {
-                                            QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,1);
-                                            QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
-                                            QString ToCoord=ComboBox1->currentText();
-                                            sta::StateVector Vector[inumber];
-                                            sta::StateVector ModifVector[inumber];
-                                            Vector[index]=arc->trajectorySample(j);
-                                            sta::CoordinateSystem EME2000("INERTIAL J2000");
-                                            ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                         MJDdate[index],
-                                                                                         STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                         EME2000,
-                                                                                         STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                         analysis::CoordSys(ToCoord));
-                                            double SphericalElements[6]; // tau, delta, r, V, gamma, chi
-                                            cartesianTOspherical(ModifVector[index].position.x(),ModifVector[index].position.y(),ModifVector[index].position.z(),
-                                                                 ModifVector[index].velocity.x(),ModifVector[index].velocity.y(),ModifVector[index].velocity.z(),
-                                                                 SphericalElements[0],SphericalElements[1],SphericalElements[2],SphericalElements[3],SphericalElements[4],
-                                                                 SphericalElements[5]);
-                                            if(name=="Latitude")
-                                            {
-                                                stream<<SphericalElements[1]<<"\t";
-                                            }
-                                            if(name=="Longitude")
-                                            {
-                                                stream<<SphericalElements[0]<<"\t";
-                                            }
-                                            if(name=="Radial Distance")
-                                            {
-                                                stream<<SphericalElements[2]<<"\t";
-                                            }
-                                            if(name=="Flight Path Angle")
-                                            {
-                                                stream<<SphericalElements[4]<<"\t";
-                                            }
-                                            if(name=="Heading Angle")
-                                            {
-                                                stream<<SphericalElements[5]<<"\t";
-                                            }
-                                            if(name=="Velocity Modulus")
-                                            {
-                                                stream<<SphericalElements[3]<<"\t";
-                                            }
-                                        }
-                                    }
-                                    stream<<"\r\n";
-                                }
-                            }
-
-                            stream<<"\r\n";
+                            QMessageBox PlotWarning;
+                            PlotWarning.setText("Please select ONE parameter in the x and y axes");
+                            PlotWarning.exec();
                         }
-                    }
-
-                    file.close();
-
-                    QDesktopServices::openUrl(QUrl(tr("file:///analysisReport.txt")));
+}
                 }
             }
         }
     }
 }
 
+void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetItem *> selectedTimes)
+{
+QList<int>SObjectsIndex;
+QList<int>GObjectsIndex;
+QList<int>MObjectsIndex;
+QList<int>MParentIndex;
+
+int TxParentIndex;
+bool RxParentType;
+int TxArrayIndex;
+int RxArrayIndex;
+bool TxParentType; //inputCoverage
+int RxParentIndex; //input Coverage
+int indSC; //inputCoverage
+int indGS; //input Coverage
+ScenarioReceiverPayloadType*Receiver;
+ScenarioTransmitterPayloadType*Transmitter;
+ScenarioGroundStationEnvironment*Environment;
+bool ReadCoverage=false;
+bool ReadCommunication1=false;
+bool ReadCommunication2=false;
+bool ReadCommunication3=false;
+
+for (int t=0;t<selected.size();t++) // write the QLists with Parents and Mission indexes
+
+{
+    int childnum=selected.at(t)->childCount();
+    if (selected.at(t)->child(childnum-1)->text(0)=="ground")
+    {
+        GObjectsIndex.append(selected.at(t)->child(childnum-2)->text(0).toInt());
+    }
+    if (selected.at(t)->child(childnum-1)->text(0)=="space")
+    {
+        SObjectsIndex.append(selected.at(t)->child(childnum-2)->text(0).toInt());
+    }
+    if (selected.at(t)->child(childnum-1)->text(0)=="MArc")
+    {
+        MObjectsIndex.append(selected.at(t)->child(childnum-3)->text(0).toInt());
+        MParentIndex.append(selected.at(t)->child(childnum-4)->text(0).toInt());
+    }
+
+    if(selected.at(t)->child(childnum-1)->text(0)=="Tx")
+    {
+
+        TxParentIndex=selected.at(t)->child(1)->text(0).toInt();
+
+        TxArrayIndex=selected.at(t)->child(2)->text(0).toInt();
+
+        int TxParentTy=selected.at(t)->child(0)->text(0).toInt();
+
+
+
+        if(TxParentTy==0)
+        {
+            indGS=TxParentIndex;
+            Transmitter=TxGS.at(TxArrayIndex);
+            Environment=GSEnvironment.at(indGS);
+            TxParentType=false;
+        }
+        if(TxParentTy==1)
+        {
+            indSC=TxParentIndex;
+            Transmitter=TxSC.at(TxArrayIndex);
+            TxParentType=true;
+
+        }
+    }
+
+    if(selected.at(t)->child(childnum-1)->text(0)=="Rx")
+    {
+        RxParentIndex=selected.at(t)->child(childnum-3)->text(0).toInt();
+        RxArrayIndex=selected.at(t)->child(childnum-2)->text(0).toInt();
+        int RxParentTy=(selected.at(t)->child(0)->text(0)).toInt();
+        if(RxParentTy==0)
+        {
+
+            indGS=RxParentIndex;
+            Receiver=RxGS.at(RxArrayIndex);
+            Environment=GSEnvironment.at(indGS);
+            RxParentType=false;
+
+        }
+        //indGS=0;
+        if(RxParentTy==1)
+        {
+
+            indSC=RxParentIndex;
+            Receiver=RxSC.at(RxArrayIndex);
+            RxParentType=true;
+        }
+    }
+
+}
+
+for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++) //sets true some bool
+
+{
+    QTreeWidgetItem*parameter=treeWidgetShowInReport->topLevelItem(i);
+    QString name=parameter->text(0);
+
+    if(name=="Azimuth"||name=="Elevation"||name=="Range")
+    {
+        ReadCoverage=true;
+    }
+    if((name=="Equivalent Isotropical Radiated Power")||(name=="Received Frequency")||(name=="Doppler Shift")||(name=="Received Power")||(name=="Flux Density")||(name=="Overlap Bandwidth Factor"))
+    {
+        ReadCommunication1=true;
+    }
+    if((name=="Free Space Loss")||(name=="Oxygen Loss")||(name=="Water Vapour Loss")||(name=="Rain Loss")||(name=="Atmospheric Loss")||(name=="Propagation Loss"))
+    {
+        ReadCommunication2=true;
+    }
+    if((name=="G/T")||(name=="C/No")||(name=="C/N")||(name=="Eb/No")||(name=="BER"))
+        ReadCommunication3=true;
+}
+
+QFile file("analysisReport.txt");
+file.open(QIODevice::WriteOnly);
+QTextStream stream(&file);
+stream.setRealNumberPrecision(16);
+
+//######time of generation of report#####
+QDateTime ReportDateTime=QDateTime::currentDateTime();
+
+stream<<"Report generated on"<<"\t"<<ReportDateTime.date().day()<<"/"<<ReportDateTime.date().month()<<"/"<<ReportDateTime.date().year()<<" "<<"at"<<" "<<ReportDateTime.time().hour()<<":"<<ReportDateTime.time().minute()<<":"<<ReportDateTime.time().second()<<"\r\n";
+
+
+for(int z=0;z<MParentIndex.size();z++)
+{
+
+    SpaceObject*spaceObj=m_propagatedScenario->spaceObjects().at(MParentIndex.at(z));
+
+    {
+        int indMissionArc=MObjectsIndex.at(z);
+        MissionArc*arc=spaceObj->mission().at(MObjectsIndex.at(z));
+
+        stream<<"Satellite:"<<MParentIndex.at(z)+1<<"\t"<<"Mission Arc:"<<indMissionArc+1<<"\r\n";
+
+        double StartTime[selectedTimes.size()];
+        double StopTime[selectedTimes.size()];
+        int countStart[selectedTimes.size()];
+        int countStop[selectedTimes.size()];
+
+        ReadTime(0,StartTime);//in MJD
+        ReadTime(1,StopTime); //in MJD
+
+        double StartEpoch=arc->trajectorySampleTime(0);
+        int totalTime=(arc->trajectorySampleCount())-1; //position of the last sample time
+        double StopEpoch=arc->trajectorySampleTime(totalTime);
+
+        int CovIndex[3]; //line of Coverage Report for each parameter
+        CovIndex[0]=CovIndex[1]=CovIndex[2]=1; //0-Azimuth, 1-Elevation, 2-Range
+        int Comm1Index[6]; //line of Comminucation Report 1 for each parameter
+        Comm1Index[0]=Comm1Index[1]=Comm1Index[2]=Comm1Index[3]=Comm1Index[4]=Comm1Index[5]=1;
+        int Comm2Index[6];
+        Comm2Index[0]=Comm2Index[1]=Comm2Index[2]=Comm2Index[3]=Comm2Index[4]=Comm2Index[5]=1;
+        int Comm3Index[5];
+        Comm3Index[0]=Comm3Index[1]=Comm3Index[2]=Comm3Index[3]=Comm3Index[4]=1;
+        QString CoverageLine; //each line of the cov report
+        QStringList LineOfCoverageReport; //list of all the lines
+        QString Communication1Line;
+        QString Communication2Line;
+        QString Communication3Line;
+        QStringList LineOfComm1Report;
+        QStringList LineOfComm2Report;
+        QStringList LineOfComm3Report;
+        if(ReadCoverage==true)
+        {
+            CoverageAnalysis covAna=CoverageAnalysis(m_propagatedScenario, indSC, indGS, indMissionArc);
+            covAna.reportAER();
+
+            QFile Coverage("reportCov1.txt");
+
+            if(Coverage.open(QIODevice::ReadOnly ))
+            {
+                QTextStream text(&Coverage);
+                while(!text.atEnd())
+                {
+                    CoverageLine=text.readLine();
+                    LineOfCoverageReport.append(CoverageLine);
+                }
+                Coverage.close();
+            }
+        }
+        if(ReadCommunication1==true)
+        {
+            CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
+            commAnalysis.CommReports();
+
+            QFile Communication1("reportComm1.txt");
+
+            if(Communication1.open(QIODevice::ReadOnly ))
+            {
+                QTextStream Comm1(&Communication1);
+                while(!Comm1.atEnd())
+                {
+                    Communication1Line=Comm1.readLine();
+                    LineOfComm1Report.append(Communication1Line);
+                }
+                Communication1.close();
+            }
+        }
+        if(ReadCommunication2==true)
+        {
+            CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
+            commAnalysis.CommReports();
+            QFile Communication2("reportComm2.txt");
+
+            if(Communication2.open(QIODevice::ReadOnly ))
+            {
+                QTextStream Comm2(&Communication2);
+                while(!Comm2.atEnd())
+                {
+                    Communication2Line=Comm2.readLine();
+                    LineOfComm2Report.append(Communication2Line);
+                }
+                Communication2.close();
+            }
+        }
+        if(ReadCommunication3==true)
+        {
+            CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
+            commAnalysis.CommReports();
+            QFile Communication3("reportComm3.txt");
+
+            if(Communication3.open(QIODevice::ReadOnly ))
+            {
+                QTextStream Comm3(&Communication3);
+                while(!Comm3.atEnd())
+                {
+                    Communication3Line=Comm3.readLine();
+                    LineOfComm3Report.append(Communication3Line);
+                }
+                Communication3.close();
+            }
+        }
+        for (int k=0;k<selectedTimes.size();k++)
+        {
+
+            int ControlStart=0;
+            int ControlStop=0;
+            if ((StopTime[k]>(StopEpoch+2*pow(10,-5)))||(StopTime[k]<=(StartEpoch-2*pow(10,-5))))
+            {
+                ControlStart++;
+            }
+            if ((StopTime[k]>(StopEpoch+2*pow(10,-5)))||(StopTime[k]<=(StartEpoch-2*pow(10,-5))))
+            {
+                ControlStop++;
+            }
+
+            if((ControlStop==0)&&(ControlStop==0))
+
+            {
+
+                int i=0;
+                while(( (arc->trajectorySampleTime(i)))<(StartTime[k]))
+                {
+
+                    i=i+1;
+                }
+                countStart[k]=i;
+                int m=0;
+                while(((arc->trajectorySampleTime(m)))<(StopTime[k]-pow(10,-5)))
+                {
+                    m=m+1;
+                }
+                countStop[k]=m;
+                int inumber=countStop[k]-countStart[k]+1;
+            QList<QTreeWidgetItem*>SelTime=treeWidgetTimeSpecifications->selectedItems();
+            QString Start=SelTime[k]->text(0);
+            QString Stop=SelTime[k]->text(1);
+
+
+            //stream<<"Satellite:"<<MParentIndex.at(z)+1<<"\t"<<"Mission Arc:"<<indMissionArc+1<<"\r\n";
+            stream<<"#######Beginning of time"<<" "<<(k+1)<<"######"<<"\r\n"<<"######"<<"Start Time"<<" "<<Start<<"\t"<<"Stop Time"<<" "<<Stop<<"######"<<"\r\n";
+
+            //printing the labels of the displayed parameters
+            for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++)
+            {
+                QTreeWidgetItem*parameter=treeWidgetShowInReport->topLevelItem(i);
+                QString name=parameter->text(0);
+
+                stream<<"\t"<<name<<"\t";
+                if(i==((treeWidgetShowInReport->topLevelItemCount())-1))
+                {
+                    stream<<"\r\n";
+                }
+
+
+            }
+
+            double MJDdate[inumber];
+            double JulianDate[inumber];
+            QDateTime GregorianLCL[inumber];
+            double CurrentJulianDate=sta::DateTimeTOjulian(QDateTime::currentDateTime());
+            double JulianLCL[inumber];
+            QDateTime TimeDateVector[inumber];
+            double DayOfYear[inumber];
+
+
+            for(int j=countStart[k];j<=countStop[k];j++)
+            {
+                int index=j-countStart[k];
+
+                MJDdate[index]=arc->trajectorySampleTime(j);
+
+               //stream<<MJDdate[index]<<"\t"; //prints MJD by default
+
+                for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++)
+                {
+
+                    QTreeWidgetItem*parameter=treeWidgetShowInReport->topLevelItem(i);
+                    QString name=parameter->text(0);
+
+                    if((name=="x position")||(name=="y position")||(name=="z position")||(name=="x velocity")||(name=="y velocity")||(name=="z velocity"))
+                    {
+
+                        QWidget*Box=treeWidgetShowInReport->itemWidget(parameter,1);
+                        QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
+                        QString Coordinate=ComboBox->currentText();
+
+                        QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,2);
+                        QComboBox*ComboBoxUnit=dynamic_cast <QComboBox*>(Box1);
+                        QString Units=ComboBoxUnit->currentText();
+
+                        sta::StateVector Vector[inumber];
+
+                        Vector[index]=arc->trajectorySample(j);
+
+                        if(name=="x position")
+
+                        {
+                            if(Coordinate=="Fixed")
+                            {
+
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem Fixed("PLANETO FIXED");
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             Fixed);
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x())<<"\t";
+
+
+                            }
+                            if(Coordinate=="Ecliptic J2000")
+                            {
+
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem Ecliptic("ECLIPTIC");
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             Ecliptic);
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x())<<"\t";
+
+                            }
+                            if(Coordinate=="EME J2000")
+                            {
+
+
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000);
+
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x())<<"\t";
+
+
+                            }
+                            if(Coordinate=="EME B1950")
+                            {
+
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem B1950("INERTIAL B1950");
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             B1950);
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x())<<"\t";
+
+                            }
+                        }
+
+                        if(name=="y position")
+                        {
+                            if(Coordinate=="Fixed")
+                            {
+
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem Fixed("PLANETO FIXED");
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             Fixed);
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y())<<"\t";
+
+                            }
+                            if(Coordinate=="Ecliptic J2000")
+                            {
+
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem Ecliptic("ECLIPTIC");
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             Ecliptic);
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y())<<"\t";
+
+                            }
+                            if(Coordinate=="EME J2000")
+                            {
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000);
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y())<<"\t";
+
+                            }
+                            if(Coordinate=="EME B1950")
+                            {
+
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem B1950("INERTIAL B1950");
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             B1950);
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y())<<"\t";
+
+                            }
+                        }
+
+                        if(name=="z position")
+                        {
+
+                            if(Coordinate=="Fixed")
+                            {
+
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem Fixed("PLANETO FIXED");
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             Fixed);
+
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z())<<"\t";
+
+                            }
+                            if(Coordinate=="Ecliptic J2000")
+                            {
+
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem Ecliptic("ECLIPTIC");
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             Ecliptic);
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z())<<"\t";
+
+                            }
+                            if(Coordinate=="EME J2000")
+                            {
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000);
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z())<<"\t";
+
+                            }
+                            if(Coordinate=="EME B1950")
+                            {
+
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem B1950("INERTIAL B1950");
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             B1950);
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z())<<"\t";
+
+                            }
+
+                        }
+
+                        if(name=="x velocity")
+                        {
+                            if(Coordinate=="Fixed")
+                            {
+
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem Fixed("PLANETO FIXED");
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             Fixed);
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x())<<"\t";
+
+
+
+                            }
+                            if(Coordinate=="Ecliptic J2000")
+                            {
+
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem Ecliptic("ECLIPTIC");
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             Ecliptic);
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x())<<"\t";
+
+
+
+                            }
+                            if(Coordinate=="EME J2000")
+                            {
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000);
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x())<<"\t";
+
+                            }
+                            if(Coordinate=="EME B1950")
+                            {
+
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem B1950("INERTIAL B1950");
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             B1950);
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x())<<"\t";
+
+
+
+                            }
+                        }
+                        if(name=="y velocity")
+                        {
+                            if(Coordinate=="Fixed")
+                            {
+
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem Fixed("PLANETO FIXED");
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             Fixed);
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y())<<"\t";
+
+
+
+                            }
+                            if(Coordinate=="Ecliptic J2000")
+                            {
+
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem Ecliptic("ECLIPTIC");
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             Ecliptic);
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y())<<"\t";
+
+
+
+                            }
+                            if(Coordinate=="EME J2000")
+                            {
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000);
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y())<<"\t";
+
+                            }
+                            if(Coordinate=="EME B1950")
+                            {
+
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem B1950("INERTIAL B1950");
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             B1950);
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y())<<"\t";
+
+
+
+                            }
+                        }
+                        if(name=="z velocity")
+                        {
+                            if(Coordinate=="Fixed")
+                            {
+
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem Fixed("PLANETO FIXED");
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             Fixed);
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z())<<"\t";
+
+                            }
+                            if(Coordinate=="Ecliptic J2000")
+                            {
+
+                                sta::StateVector ModifVector[inumber];
+                                sta::CoordinateSystem Ecliptic("ECLIPTIC");
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             EME2000,
+                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                             Ecliptic);
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z())<<"\t";
+                            }
+                                if(Coordinate=="EME J2000")
+                                {
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000);
+                                    stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z())<<"\t";
+
+                                }
+                                if(Coordinate=="EME B1950")
+                                {
+
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem B1950("INERTIAL B1950");
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 B1950);
+                                    stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z())<<"\t";
+
+
+
+                                }
+
+                        }
+                    }
+                    if(name=="Time")
+                    {
+
+                        QWidget*Box=treeWidgetShowInReport->itemWidget(parameter,1);
+                        QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
+                        QString TimeCoordinate=ComboBox->currentText();
+
+                        //Options of Time
+                        if(TimeCoordinate=="MJD")
+                        {
+                            stream<<MJDdate[index]<<"\t";
+                        }
+                        if(TimeCoordinate=="Julian Date")
+                        {
+                            JulianDate[index]=sta::MjdToJd(MJDdate[index]);
+                            stream<<JulianDate[index]<<"\t";
+                        }
+                        if(TimeCoordinate=="Julian UTC")
+                        {
+                            //format:DayOfYear/YY UTCTime
+                            JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
+                            TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
+                            int Year=TimeDateVector[index].date().year();
+
+                            QString YearPreLastDigit=QString::number(Year).at(2);
+                            QString YearLastDigit=QString::number(Year).at(3);
+                            int DayOfYear=sta::calendarToDayOfYear(TimeDateVector[index]);
+                            stream<<DayOfYear<<"/"<<YearPreLastDigit<<YearLastDigit<<" "<<TimeDateVector[index].time().hour()<<":"<<TimeDateVector[index].time().minute()<<":"<<TimeDateVector[index].time().second()<<"\t";
+                        }
+                        if(TimeCoordinate=="Gregorian LCL")
+                        {
+                            QDateTime CurrentDate=QDateTime::currentDateTime();
+                            QDateTime CurrentUTC=CurrentDate.toUTC();
+                            double DisplayDate[inumber];
+                            QDateTime DisplayDateCalendar[inumber];
+                            double CurrentDateInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentDate));
+                            double CurrentUtcInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentUTC));
+
+                            if(CurrentUtcInMJD-CurrentDateInMJD<0)
+
+                            {
+                                DisplayDate[index]=MJDdate[index]+(CurrentDateInMJD-CurrentUtcInMJD)+0.00001;
+                            }
+                            else
+                            {
+                                DisplayDate[index]=MJDdate[index]-(CurrentUtcInMJD-CurrentDateInMJD)+0.00001;
+                            }
+                            DisplayDateCalendar[index]=sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]));
+
+
+                            stream<<DisplayDateCalendar[index].date().day()<<"/"<<DisplayDateCalendar[index].date().month()<<"/"<<DisplayDateCalendar[index].date().year()<<" "<<DisplayDateCalendar[index].time().hour()<<":"<<DisplayDateCalendar[index].time().minute()<<":"<<DisplayDateCalendar[index].time().second();
+                        }
+                        if(TimeCoordinate=="Gregorian UTC")
+                        {
+
+                            JulianDate[index]=sta::MjdToJd(MJDdate[index])+0.00001;
+                            TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
+                            stream<<TimeDateVector[index].date().day()<<"/"<<TimeDateVector[index].date().month()<<"/"<<TimeDateVector[index].date().year()<<" "<<TimeDateVector[index].time().hour()<<":"<<TimeDateVector[index].time().minute()<<":"<<TimeDateVector[index].time().second();
+
+                        }
+                        if(TimeCoordinate=="Julian LCL")
+                        {
+                            QDateTime CurrentDate=QDateTime::currentDateTime();
+                            QDateTime CurrentUTC=CurrentDate.toUTC();
+                            double DisplayDate[inumber];
+                            QDateTime DisplayDateCalendar[inumber];
+                            double CurrentDateInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentDate));
+                            double CurrentUtcInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentUTC));
+
+                            if(CurrentUtcInMJD-CurrentDateInMJD<0)
+
+                            {
+                                DisplayDate[index]=MJDdate[index]+(CurrentDateInMJD-CurrentUtcInMJD)+0.00001;
+                            }
+                            else
+                            {
+                                DisplayDate[index]=MJDdate[index]-(CurrentUtcInMJD-CurrentDateInMJD)+0.00001;
+                            }
+                            DisplayDateCalendar[index]=sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]));
+
+                            double DayOfYear=sta::calendarToDayOfYear(DisplayDateCalendar[index]);
+
+                            int Year=(sta::JdToCalendar(sta::MjdToJd(MJDdate[index]))).date().year();
+                            QString YearPreLastDigit=QString::number(Year).at(2);
+                            QString YearLastDigit=QString::number(Year).at(3);
+                            stream<<DayOfYear<<"/"<<YearPreLastDigit<<YearLastDigit<<" "<<DisplayDateCalendar[index].time().hour()<<":"<<DisplayDateCalendar[index].time().minute()<<":"<<DisplayDateCalendar[index].time().second();
+
+                        }
+
+                        if(TimeCoordinate=="Mission Elapsed Time")
+                        {
+
+                        }
+                        if(TimeCoordinate=="YYDDD")
+                        {
+                            JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
+                            TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
+                            int Year=TimeDateVector[index].date().year();
+                            QDateTime FirstDayCurrentYear(QDate(Year,1,1),QTime(0,0,0));
+                            double StartYearTime=sta::JdToMjd(sta::CalendarToJd(FirstDayCurrentYear));
+                            QString YearPreLastDigit=QString::number(Year).at(2);
+                            QString YearLastDigit=QString::number(Year).at(3);
+
+                            DayOfYear[index]=sta::MjdToFromEpoch(StartYearTime,MJDdate[index],"Days")+1;
+                            stream<<YearPreLastDigit<<YearLastDigit<<DayOfYear[index]<<"\t";
+                        }
+
+                        if(TimeCoordinate=="Time from epoch")
+                        {
+                            QWidget*Box=treeWidgetShowInReport->itemWidget(parameter,2);
+                            QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
+                            QString TimeUnits=ComboBox->currentText();
+
+                            double ElapsedTime=MjdToFromEpoch(StartEpoch,MJDdate[index],TimeUnits);
+
+                            if(TimeUnits=="Seconds")
+                            {
+                                stream<<ElapsedTime;
+                            }
+                            if(TimeUnits=="Minutes")
+                            {
+                                stream<<ElapsedTime;
+                            }
+                            if(TimeUnits=="Hours")
+                            {
+                                stream<<ElapsedTime;
+                            }
+                            if(TimeUnits=="Days")
+                            {
+                                stream<<ElapsedTime;
+                            }
+                        }
+                        if(TimeCoordinate=="GMT")
+                        {
+
+                        }
+                    }
+                    if(name=="Azimuth")
+                    {
+
+                        if(CovIndex[0]<LineOfCoverageReport.size())
+                        {
+                            QString Line=LineOfCoverageReport.at(CovIndex[0]);
+
+                            double TimeCovReport=(Line.section("\t",0,0)).toDouble();
+                            double Azimuth=(Line.section("\t",3,3)).toDouble();
+
+                            if(abs(MJDdate[index]-TimeCovReport)<10e-6)
+                            {
+                                stream<<Azimuth<<"\t";
+                                CovIndex[0]++;
+                            }
+
+                            else
+                            {
+                                stream<<"No visibility";
+                            }
+
+                        }
+                        else
+                        {
+                            stream<<"No visibility";
+                        }
+                    }
+                    if(name=="Elevation")
+                    {
+
+                        if(CovIndex[1]<LineOfCoverageReport.length())
+                        {
+                            QString Line=LineOfCoverageReport.at(CovIndex[1]);
+
+                            double TimeCovReport=(Line.section("\t",0,0)).toDouble();
+                            double Elevation=(Line.section("\t",2,2)).toDouble();
+
+                            if(abs(MJDdate[index]-TimeCovReport)<10e-6)
+                            {
+                                stream<<Elevation<<"\t";
+                                CovIndex[1]++;
+                            }
+
+                            else
+                            {
+                                stream<<"No visibility";
+                            }
+
+                        }
+                        else
+                        {
+                            stream<<"No visibility";
+                        }
+                    }
+                    if(name=="Range")
+                    {
+                        if(CovIndex[2]<LineOfCoverageReport.length())
+                        {
+                            QString Line=LineOfCoverageReport.at(CovIndex[2]);
+
+                            double TimeCovReport=(Line.section("\t",0,0)).toDouble();
+                            double Range=(Line.section("\t",1,1)).toDouble();
+
+                            if(abs(MJDdate[index]-TimeCovReport)<10e-6)
+                            {
+                                stream<<Range<<"\t";
+                                CovIndex[2]++;
+                            }
+
+                            else
+                            {
+                                stream<<"No visibility";
+                            }
+
+
+
+                        }
+                        else
+                        {
+                            stream<<"No visibility";
+                        }
+                    }
+                    if(name=="Equivalent Isotropical Radiated Power")
+                    {
+
+                        if(Comm1Index[0]<LineOfComm1Report.length())
+                        {
+                            QString Line=LineOfComm1Report.at(Comm1Index[0]);
+
+                            double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                            double EIRP=(Line.section("\t",1,1)).toDouble();
+
+                            if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                            {
+                                stream<<EIRP<<"\t";
+                                Comm1Index[0]++;
+                            }
+
+                            else
+                            {
+                                stream<<"No visibility";
+                            }
+
+                        }
+                        else
+                        {
+                            stream<<"No visibility";
+                        }
+                    }
+                    if(name=="Received Frequency")
+                    {
+
+                        if(Comm1Index[1]<LineOfComm1Report.length())
+                        {
+                            QString Line=LineOfComm1Report.at(Comm1Index[1]);
+
+                            double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                            double RcvFreq=(Line.section("\t",2,2)).toDouble();
+
+                            if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                            {
+                                stream<<RcvFreq<<"\t";
+                                Comm1Index[1]++;
+                            }
+
+                            else
+                            {
+                                stream<<"No visibility";
+                            }
+
+                        }
+                        else
+                        {
+                            stream<<"No visibility";
+                        }
+                    }
+                    if(name=="Doppler Shift")
+                    {
+
+                        if(Comm1Index[2]<LineOfComm1Report.length())
+                        {
+                            QString Line=LineOfComm1Report.at(Comm1Index[2]);
+
+                            double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                            double RcvFreq=(Line.section("\t",3,3)).toDouble();
+
+                            if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                            {
+                                stream<<RcvFreq<<"\t";
+                                Comm1Index[2]++;
+                            }
+
+                            else
+                            {
+                                stream<<"No visibility";
+                            }
+
+                        }
+                        else
+                        {
+                            stream<<"No visibility";
+                        }
+                    }
+                    if(name=="Received Power")
+                    {
+
+                        if(Comm1Index[3]<LineOfComm1Report.length())
+                        {
+                            QString Line=LineOfComm1Report.at(Comm1Index[3]);
+
+                            double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                            double RcvFreq=(Line.section("\t",4,4)).toDouble();
+
+                            if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                            {
+                                stream<<RcvFreq<<"\t";
+                                Comm1Index[3]++;
+                            }
+
+                            else
+                            {
+                                stream<<"No visibility";
+                            }
+
+                        }
+                        else
+                        {
+                            stream<<"No visibility";
+                        }
+                    }
+                    if(name=="Flux Density")
+                    {
+
+                        if(Comm1Index[4]<LineOfComm1Report.length())
+                        {
+                            QString Line=LineOfComm1Report.at(Comm1Index[4]);
+
+                            double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                            double FluxDensity=(Line.section("\t",5,5)).toDouble();
+                            if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                            {
+                                stream<<FluxDensity<<"\t";
+                                Comm1Index[4]++;
+                            }
+
+                            else
+                            {
+                                stream<<"No visibility";
+                            }
+
+                        }
+                        else
+                        {
+                            stream<<"No visibility";
+                        }
+                    }
+                    if(name=="Overlap Bandwidth Factor")
+                    {
+
+                        if(Comm1Index[5]<LineOfComm1Report.length())
+                        {
+                            QString Line=LineOfComm1Report.at(Comm1Index[5]);
+                            double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                            double OvBWF=(Line.section("\t",6,6)).toDouble();
+
+                            if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                            {
+                                stream<<OvBWF<<"\t";
+                                Comm1Index[5]++;
+                            }
+
+                            else
+                            {
+                                stream<<"No visibility"<<"\t";
+                            }
+                        }
+                        else
+                        {
+                            stream<<"No visibility"<<"\t";
+                        }
+                    }
+                    if(name=="Free Space Loss")
+                    {
+
+                        if(Comm2Index[0]<LineOfComm2Report.length())
+                        {
+                            QString Line=LineOfComm2Report.at(Comm2Index[0]);
+
+                            double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+
+                            double FSL=(Line.section("\t",1,1)).toDouble();
+
+
+                            if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                            {
+                                stream<<FSL<<"\t";
+                                Comm2Index[0]++;
+                            }
+
+                            else
+                            {
+                                stream<<"No visibility"<<"\t";
+                            }
+
+                        }
+                        else
+                        {
+                            stream<<"No visibility"<<"\t";
+                        }
+                    }
+                    if(name=="Oxygen Loss")
+                    {
+                        if(Comm2Index[1]<LineOfComm2Report.length())
+                        {
+                            QString Line=LineOfComm2Report.at(Comm2Index[1]);
+                            double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                            double OxLoss=(Line.section("\t",2,2)).toDouble();
+
+                            if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                            {
+                                stream<<OxLoss<<"\t";
+                                Comm2Index[1]++;
+                            }
+
+                            else
+                            {
+                                stream<<"No visibility"<<"\t";
+                            }
+                        }
+                        else
+                        {
+                            stream<<"No visibility"<<"\t";
+                        }
+                    }
+                    if(name=="Water Vapour Loss")
+                    {
+                        if(Comm2Index[2]<LineOfComm2Report.length())
+                        {
+                            QString Line=LineOfComm2Report.at(Comm2Index[2]);
+                            double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                            double WVLoss=(Line.section("\t",3,3)).toDouble();
+
+                            if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                            {
+                                stream<<WVLoss<<"\t";
+                                Comm2Index[2]++;
+                            }
+
+                            else
+                            {
+                                stream<<"No visibility"<<"\t";
+                            }
+                        }
+                        else
+                        {
+                            stream<<"No visibility"<<"\t";
+                        }
+                    }
+                    if(name=="Rain Loss")
+                    {
+                        if(Comm2Index[3]<LineOfComm2Report.length())
+                        {
+                            QString Line=LineOfComm2Report.at(Comm2Index[3]);
+                            double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                            double RainLoss=(Line.section("\t",4,4)).toDouble();
+
+                            if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                            {
+                                stream<<RainLoss<<"\t";
+                                Comm2Index[3]++;
+                            }
+
+                            else
+                            {
+                                stream<<"No visibility"<<"\t";
+                            }
+                        }
+                        else
+                        {
+                            stream<<"No visibility"<<"\t";
+                        }
+                    }
+                    if(name=="Atmospheric Loss")
+                    {
+                        if(Comm2Index[4]<LineOfComm2Report.length())
+                        {
+                            QString Line=LineOfComm2Report.at(Comm2Index[4]);
+                            double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                            double AtmLoss=(Line.section("\t",5,5)).toDouble();
+
+                            if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                            {
+                                stream<<AtmLoss<<"\t";
+                                Comm2Index[4]++;
+                            }
+
+                            else
+                            {
+                                stream<<"No visibility"<<"\t";
+                            }
+                        }
+                        else
+                        {
+                            stream<<"No visibility"<<"\t";
+                        }
+                    }
+                    if(name=="Propagation Loss")
+                    {
+                        if(Comm2Index[5]<LineOfComm2Report.length())
+                        {
+                            QString Line=LineOfComm2Report.at(Comm2Index[5]);
+                            double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                            double PropLoss=(Line.section("\t",6,6)).toDouble();
+
+                            if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                            {
+                                stream<<PropLoss<<"\t";
+                                Comm2Index[5]++;
+                            }
+
+                            else
+                            {
+                                stream<<"No visibility"<<"\t";
+                            }
+                        }
+                        else
+                        {
+                            stream<<"No visibility"<<"\t";
+                        }
+                    }
+                    if (name=="G/T")
+                    {
+                        if(Comm3Index[0]<LineOfComm3Report.length())
+                        {
+                            QString Line=LineOfComm3Report.at(Comm3Index[0]);
+                            double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                            double GT=(Line.section("\t",1,1)).toDouble();
+
+                            if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                            {
+                                stream<<GT<<"\t";
+                                Comm3Index[0]++;
+                            }
+
+                            else
+                            {
+                                stream<<"No visibility"<<"\t";
+                            }
+                        }
+                        else
+                        {
+                            stream<<"No visibility"<<"\t";
+                        }
+                    }
+                    if(name=="C/No")
+                    {
+                        if(Comm3Index[1]<LineOfComm3Report.length())
+                        {
+                            QString Line=LineOfComm3Report.at(Comm3Index[1]);
+                            double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                            double CNo=(Line.section("\t",2,2)).toDouble();
+
+                            if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                            {
+                                stream<<CNo<<"\t";
+                                Comm3Index[1]++;
+                            }
+
+                            else
+                            {
+                                stream<<"No visibility"<<"\t";
+                            }
+                        }
+                        else
+                        {
+                            stream<<"No visibility"<<"\t";
+                        }
+                    }
+                    if(name=="C/N")
+                    {
+                        if(Comm3Index[2]<LineOfComm3Report.length())
+                        {
+                            QString Line=LineOfComm3Report.at(Comm3Index[2]);
+                            double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                            double CN=(Line.section("\t",3,3)).toDouble();
+
+                            if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                            {
+                                stream<<CN<<"\t";
+                                Comm3Index[2]++;
+                            }
+
+                            else
+                            {
+                                stream<<"No visibility"<<"\t";
+                            }
+                        }
+                        else
+                        {
+                            stream<<"No visibility"<<"\t";
+                        }
+                    }
+                    if(name=="Eb/No")
+                    {
+                        if(Comm3Index[3]<LineOfComm3Report.length())
+                        {
+                            QString Line=LineOfComm3Report.at(Comm3Index[3]);
+                            double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                            double EbNo=(Line.section("\t",4,4)).toDouble();
+
+                            if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                            {
+                                stream<<EbNo<<"\t";
+                                Comm3Index[3]++;
+                            }
+
+                            else
+                            {
+                                stream<<"No visibility"<<"\t";
+                            }
+                        }
+                        else
+                        {
+                            stream<<"No visibility"<<"\t";
+                        }
+                    }
+                    if(name=="BER")
+                    {
+                        if(Comm3Index[4]<LineOfComm3Report.length())
+                        {
+                            QString Line=LineOfComm3Report.at(Comm3Index[4]);
+                            double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                            double BER=(Line.section("\t",5,5)).toDouble();
+
+                            if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                            {
+                                stream<<BER<<"\t";
+                                Comm3Index[4]++;
+                            }
+
+                            else
+                            {
+                                stream<<"No visibility"<<"\t";
+                            }
+                        }
+                        else
+                        {
+                            stream<<"No visibility"<<"\t";
+                        }
+                    }
+                    if(name=="Eccentricity")
+                    {
+                        QWidget*Box=treeWidgetShowInReport->itemWidget(parameter,1);
+                        QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
+                        QString ToCoord=ComboBox->currentText();
+
+                      sta::StateVector Vector[inumber];
+                      Vector[index]=arc->trajectorySample(j);
+                      double Eccentricity=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"Eccentricity",
+                                                                               MJDdate[index],
+                                                                               "EME J2000",
+                                                                               ToCoord);
+                        stream<<Eccentricity<<"\t";
+                    }
+                    if((name=="Inclination")||
+                       (name=="RAAN")||
+                       (name=="Argument of Periapsis")||
+                       (name=="True Anomaly")||
+                       (name=="Semimajor Axis"))
+                    {
+                        QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,1);
+                        QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
+                        QString ToCoord=ComboBox1->currentText();
+                        QWidget*Box2=treeWidgetShowInReport->itemWidget(parameter,2);
+                        QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
+                        QString ToUnit=ComboBox2->currentText();
+
+                        sta::StateVector Vector[inumber];
+                        Vector[index]=arc->trajectorySample(j);
+
+                       if(name=="Inclination")
+                        {
+                           double Inclination=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                    MJDdate[index],
+                                                                                    "EME J2000",
+                                                                                    ToCoord);
+                           stream<<sta::ConvertUnits(ToUnit,Inclination)<<"\t";
+                       }
+                       if(name=="RAAN")
+                       {
+                           double Ascending=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                    MJDdate[index],
+                                                                                    "EME J2000",
+                                                                                    ToCoord);
+                           stream<<sta::ConvertUnits(ToUnit,Ascending)<<"\t";
+                       }
+                       if(name=="True Anomaly")
+                       {
+                           double TrueAnom=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                    MJDdate[index],
+                                                                                    "EME J2000",
+                                                                                    ToCoord);
+                           stream<<sta::ConvertUnits(ToUnit,TrueAnom)<<"\t";
+                       }
+                       if(name=="Argument of Periapsis")
+                       {
+                           double Periapsis=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                    MJDdate[index],
+                                                                                    "EME J2000",
+                                                                                    ToCoord);
+                           stream<<sta::ConvertUnits(ToUnit,Periapsis)<<"\t";
+                       }
+                       if(name=="Semimajor Axis")
+                       {
+                           double SemAxis=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                    MJDdate[index],
+                                                                                    "EME J2000",
+                                                                                    ToCoord);
+                           stream<<sta::ConvertUnits(ToUnit,SemAxis)<<"\t";
+                       }
+
+                   }
+                    if((name=="l")||(name=="g")||(name=="h")||(name=="L")||(name=="G")||(name=="H"))
+                    {
+                        QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,1);
+                        QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
+                        QString ToCoord=ComboBox1->currentText();
+                        sta::StateVector Vector[inumber];
+                        Vector[index]=arc->trajectorySample(j);
+
+                    /*if(name=="l")
+                    {
+                        double Delaunay_l=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                               MJDdate[index],
+                                                               "EME J2000",
+                                                               ToCoord);
+                      //  stream<<Delaunay_l<<"\t";
+                    }*/
+                    //if((name=="l")||(name=="g")||(name=="h")||(name=="L")||(name=="G")||(name=="H"))
+                                                            {
+                                                               // QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,1);
+                                                                //QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
+                                                                //QString ToCoord=ComboBox1->currentText();
+                                                                //sta::StateVector Vector[inumber];
+                                                                //Vector[index]=arc->trajectorySample(j);
+
+                                                            if(name=="l")
+                                                            {
+                                                                double Delaunay_l=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                                       MJDdate[index],
+                                                                                                       "EME J2000",
+                                                                                                       ToCoord);
+                                                                stream<<Delaunay_l<<"\t";
+                                                            }
+                                                            if(name=="g")
+                                                            {
+                                                                double Delaunay_g=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                                       MJDdate[index],
+                                                                                                       "EME J2000",
+                                                                                                       ToCoord);
+                                                                stream<<Delaunay_g<<"\t";
+                                                            }
+                                                            if(name=="h")
+                                                            {
+                                                                double Delaunay_h=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                                       MJDdate[index],
+                                                                                                       "EME J2000",
+                                                                                                       ToCoord);
+                                                                stream<<Delaunay_h<<"\t";
+                                                            }
+                                                            if(name=="L")
+                                                            {
+                                                                double Delaunay_L=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                                       MJDdate[index],
+                                                                                                       "EME J2000",
+                                                                                                       ToCoord);
+                                                                stream<<Delaunay_L<<"\t";
+                                                            }
+                                                            if(name=="G")
+                                                            {
+                                                                double Delaunay_G=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                                       MJDdate[index],
+                                                                                                       "EME J2000",
+                                                                                                       ToCoord);
+                                                                stream<<Delaunay_G<<"\t";
+                                                            }
+                                                            if(name=="H")
+                                                            {
+                                                                double Delaunay_H=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                                       MJDdate[index],
+                                                                                                       "EME J2000",
+                                                                                                       ToCoord);
+                                                                stream<<Delaunay_H<<"\t";
+                                                            }
+                                                        }
+                                                            if((name=="Latitude")||(name=="Longitude")||(name=="Radial Distance")||(name=="Flight Path Angle")||(name=="Heading Angle")||(name=="Velocity Modulus"))
+                                                            {
+                                                                QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,1);
+                                                                QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
+                                                                QString ToCoord=ComboBox1->currentText();
+                                                                QWidget*Box2=treeWidgetShowInReport->itemWidget(parameter,2);
+                                                                QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
+                                                                QString Units=ComboBox2->currentText();
+
+                                                                sta::StateVector Vector[inumber];
+                                                                sta::StateVector ModifVector[inumber];
+                                                                Vector[index]=arc->trajectorySample(j);
+                                                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                                             MJDdate[index],
+                                                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                                             EME2000,
+                                                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                                             analysis::CoordSys(ToCoord));
+                                                                double SphericalElements[6]; // tau, delta, r, V, gamma, chi
+                                                                cartesianTOspherical(ModifVector[index].position.x(),ModifVector[index].position.y(),ModifVector[index].position.z(),
+                                                                                     ModifVector[index].velocity.x(),ModifVector[index].velocity.y(),ModifVector[index].velocity.z(),
+                                                                                     SphericalElements[0],SphericalElements[1],SphericalElements[2],SphericalElements[3],SphericalElements[4],
+                                                                                     SphericalElements[5]);
+                                                                if(name=="Latitude")
+                                                                {
+                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[1])<<"\t";
+                                                                }
+                                                                if(name=="Longitude")
+                                                                {
+                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[0])<<"\t";
+                                                                }
+                                                                if(name=="Radial Distance")
+                                                                {
+                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[2])<<"\t";
+                                                                }
+                                                                if(name=="Flight Path Angle")
+                                                                {
+                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[4])<<"\t";
+                                                                }
+                                                                if(name=="Heading Angle")
+                                                                {
+                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[5])<<"\t";
+                                                                }
+                                                                if(name=="Velocity Modulus")
+                                                                {
+
+                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[3])<<"\t";
+                                                                }
+                                                            }
+
+
+                }
+                    if((name=="Latitude")||(name=="Longitude")||(name=="Radial Distance")||(name=="Flight Path Angle")||(name=="Heading Angle")||(name=="Velocity Modulus"))
+                    {
+                        QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,1);
+                        QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
+                        QString ToCoord=ComboBox1->currentText();
+                        QWidget*Box2=treeWidgetShowInReport->itemWidget(parameter,2);
+                        QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
+                        QString Units=ComboBox2->currentText();
+
+                        sta::StateVector Vector[inumber];
+                        sta::StateVector ModifVector[inumber];
+                        Vector[index]=arc->trajectorySample(j);
+                        sta::CoordinateSystem EME2000("INERTIAL J2000");
+                        ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                     MJDdate[index],
+                                                                     STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                     EME2000,
+                                                                     STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                     analysis::CoordSys(ToCoord));
+                        double SphericalElements[6]; // tau, delta, r, V, gamma, chi
+
+                        cartesianTOspherical(ModifVector[index].position.x(),ModifVector[index].position.y(),ModifVector[index].position.z(),
+                                             ModifVector[index].velocity.x(),ModifVector[index].velocity.y(),ModifVector[index].velocity.z(),
+                                             SphericalElements[0],SphericalElements[1],SphericalElements[2],SphericalElements[3],SphericalElements[4],
+                                             SphericalElements[5]);
+
+                        if(name=="Latitude")
+                        {
+                            stream<<sta::ConvertUnits(Units,SphericalElements[1])<<"\t";
+                        }
+                        if(name=="Longitude")
+                        {
+                            stream<<sta::ConvertUnits(Units,SphericalElements[0])<<"\t";
+                        }
+                        if(name=="Radial Distance")
+                        {
+                            stream<<sta::ConvertUnits(Units,SphericalElements[2])<<"\t";
+                        }
+                        if(name=="Flight Path Angle")
+                        {
+                            stream<<sta::ConvertUnits(Units,SphericalElements[4])<<"\t";
+                        }
+                        if(name=="Heading Angle")
+                        {
+                            stream<<sta::ConvertUnits(Units,SphericalElements[5])<<"\t";
+                        }
+                        if(name=="Velocity Modulus")
+                        {
+                            stream<<sta::ConvertUnits(Units,SphericalElements[3])<<"\t";
+                        }
+                    }
+                    if((name=="e*sin(omegaBar)")||(name=="e*cos(omegaBar)")||(name=="tan(i/2)*sin(raan)")||(name=="tan(i/2)*cos(raan)")||(name=="Mean Longitude"))
+                    {
+                        QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,1);
+                        QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
+                        QString ToCoord=ComboBox1->currentText();
+                        QWidget*Box2=treeWidgetShowInReport->itemWidget(parameter,2);
+                        QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
+                        QString Units=ComboBox2->currentText();
+
+                        sta::StateVector Vector[inumber];
+                        Vector[index]=arc->trajectorySample(j);
+                        if(name=="e*sin(omegaBar)")
+                        {
+                            double esin=calcEquinoctialElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"e*sin(omegaBar)",
+                                                                MJDdate[index],
+                                                                "EME J2000",
+                                                                ToCoord);
+                            stream<<sta::ConvertUnits(Units,esin)<<"\t";
+                                }
+                        if(name=="e*cos(omegaBar)")
+                        {
+                            double ecos=calcEquinoctialElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"e*cos(omegaBar)",
+                                                                MJDdate[index],
+                                                                "EME J2000",
+                                                                ToCoord);
+                            stream<<sta::ConvertUnits(Units,ecos)<<"\t";
+                        }
+                        if(name=="tan(i/2)*sin(raan)")
+                        {
+                            double etansin=calcEquinoctialElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"tan(i/2)*sin(raan)",
+                                                                   MJDdate[index],
+                                                                   "EME J2000",
+                                                                   ToCoord);
+                            stream<<sta::ConvertUnits(Units,etansin)<<"\t";
+                        }
+                        if(name=="tan(i/2)*cos(raan)")
+                        {
+                            double etancos=calcEquinoctialElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"tan(i/2)*cos(raan)",
+                                                                   MJDdate[index],
+                                                                   "EME J2000",
+                                                                   ToCoord);
+                            stream<<sta::ConvertUnits(Units,etancos)<<"\t";
+                        }
+                        if(name=="Mean Longitude")
+                        {
+                            double MeanLon=calcEquinoctialElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"Mean Longitude",
+                                                                   MJDdate[index],
+                                                                   "EME J2000",
+                                                                   ToCoord);
+                            stream<<sta::ConvertUnits(Units,MeanLon)<<"\t";
+                        }
+                    }
+                }
+                stream<<"\r\n";
+            }
+        }
+            else
+            {
+                stream<<"#######Beginning of time"<<" "<<(k+1)<<"######"<<"\r\n";
+                stream<<"No data available for the chosen time interval, please check the options of the propagation"<<"\r\n";
+            }
+        } //
+
+        stream<<"\r\n";
+    }
+    }
+
+
+file.close();
+
+QDesktopServices::openUrl(QUrl(tr("file:///analysisReport.txt")));
+}
+
+QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetItem*>selected,QList<QTreeWidgetItem*>selectedTimes)
+{
+    QList<AnalysisData>DataStructure;
+    //QList<QString>Titles;
+    //QList<double>LineData;
+    //QList<QList<double> >DisplayData;
+    //AnalysisData ToStruct;
+
+    QList<int>SObjectsIndex;
+    QList<int>GObjectsIndex;
+    QList<int>MObjectsIndex;
+    QList<int>MParentIndex;
+
+    int TxParentIndex;
+    bool RxParentType;
+    int TxArrayIndex;
+    int RxArrayIndex;
+    bool TxParentType; //inputCoverage
+    int RxParentIndex; //input Coverage
+    int indSC; //inputCoverage
+    int indGS; //input Coverage
+    ScenarioReceiverPayloadType*Receiver;
+    ScenarioTransmitterPayloadType*Transmitter;
+    ScenarioGroundStationEnvironment*Environment;
+    bool ReadCoverage=false;
+    bool ReadCommunication1=false;
+    bool ReadCommunication2=false;
+    bool ReadCommunication3=false;
+
+    for (int t=0;t<selected.size();t++) // write the QLists with Parents and Mission indexes
+
+    {
+        int childnum=selected.at(t)->childCount();
+        if (selected.at(t)->child(childnum-1)->text(0)=="ground")
+        {
+            GObjectsIndex.append(selected.at(t)->child(childnum-2)->text(0).toInt());
+        }
+        if (selected.at(t)->child(childnum-1)->text(0)=="space")
+        {
+            SObjectsIndex.append(selected.at(t)->child(childnum-2)->text(0).toInt());
+        }
+        if (selected.at(t)->child(childnum-1)->text(0)=="MArc")
+        {
+            MObjectsIndex.append(selected.at(t)->child(childnum-3)->text(0).toInt());
+            MParentIndex.append(selected.at(t)->child(childnum-4)->text(0).toInt());
+        }
+
+        if(selected.at(t)->child(childnum-1)->text(0)=="Tx")
+        {
+
+            TxParentIndex=selected.at(t)->child(1)->text(0).toInt();
+
+            TxArrayIndex=selected.at(t)->child(2)->text(0).toInt();
+
+            int TxParentTy=selected.at(t)->child(0)->text(0).toInt();
+
+
+
+            if(TxParentTy==0)
+            {
+                indGS=TxParentIndex;
+                Transmitter=TxGS.at(TxArrayIndex);
+                Environment=GSEnvironment.at(indGS);
+                TxParentType=false;
+            }
+            if(TxParentTy==1)
+            {
+                indSC=TxParentIndex;
+                Transmitter=TxSC.at(TxArrayIndex);
+                TxParentType=true;
+
+            }
+        }
+
+        if(selected.at(t)->child(childnum-1)->text(0)=="Rx")
+        {
+            RxParentIndex=selected.at(t)->child(childnum-3)->text(0).toInt();
+            RxArrayIndex=selected.at(t)->child(childnum-2)->text(0).toInt();
+            int RxParentTy=(selected.at(t)->child(0)->text(0)).toInt();
+            if(RxParentTy==0)
+            {
+
+                indGS=RxParentIndex;
+                Receiver=RxGS.at(RxArrayIndex);
+                Environment=GSEnvironment.at(indGS);
+                RxParentType=false;
+
+            }
+            //indGS=0;
+            if(RxParentTy==1)
+            {
+
+                indSC=RxParentIndex;
+                Receiver=RxSC.at(RxArrayIndex);
+                RxParentType=true;
+            }
+        }
+
+    }
+
+    QList<QTreeWidget*>Tree;
+
+    Tree.append(treeWidgetXaxis);
+    Tree.append(treeWidgetYaxis);
+   // Tree.append(treeWidgetZaxis);
+
+    for(int a=0;a<Tree.size();a++)
+    {
+         QList<double>LineData;
+         AnalysisData ToStruct;
+         QList<QList<double> >DisplayData;
+         QList<QString>Titles;
+        // checks parameters to be plotted and the module where they come from, for the time being, only for Coverage and Communication data
+
+            QList<QTreeWidgetItem*>PlotParameters=Tree.at(a)->selectedItems();
+            for(int i=0;i<PlotParameters.size();i++) //sets true some bool
+
+            {
+                QTreeWidgetItem*parameter=PlotParameters.at(i);
+                QString name=parameter->text(0);
+
+                if(name=="Azimuth"||name=="Elevation"||name=="Range")
+                {
+
+                    ReadCoverage=true;
+                }
+                if((name=="Equivalent Isotropical Radiated Power")||(name=="Received Frequency")||(name=="Doppler Shift")||(name=="Received Power")||(name=="Flux Density")||(name=="Overlap Bandwidth Factor"))
+                {
+                    ReadCommunication1=true;
+                }
+                if((name=="Free Space Loss")||(name=="Oxygen Loss")||(name=="Water Vapour Loss")||(name=="Rain Loss")||(name=="Atmospheric Loss")||(name=="Propagation Loss"))
+                {
+                    ReadCommunication2=true;
+                }
+                if((name=="G/T")||(name=="C/No")||(name=="C/N")||(name=="Eb/No")||(name=="BER"))
+                {
+                    ReadCommunication3=true;
+                }
+            }
+
+        for(int z=0;z<MParentIndex.size();z++) //for each mission arc
+    {
+
+        SpaceObject*spaceObj=m_propagatedScenario->spaceObjects().at(MParentIndex.at(z));
+
+        {
+            int indMissionArc=MObjectsIndex.at(z);
+            MissionArc*arc=spaceObj->mission().at(MObjectsIndex.at(z));
+
+            double StartTime[selectedTimes.size()]; // time specifications, for each line in the time tree
+            double StopTime[selectedTimes.size()];
+            int countStart[selectedTimes.size()]; // time step index from where the data is being collected
+            int countStop[selectedTimes.size()];
+
+            ReadTime(0,StartTime);//in MJD, reads the time in the treeWidgetTimeSpecifications
+            ReadTime(1,StopTime); //in MJD
+
+            double StartEpoch=arc->trajectorySampleTime(0); //beginning of mission
+            int totalTime=(arc->trajectorySampleCount())-1; //position of the last sample time
+            double StopEpoch=arc->trajectorySampleTime(totalTime); //end of mission
+
+            int CovIndex[3]; //line of Coverage Report for each parameter
+            CovIndex[0]=CovIndex[1]=CovIndex[2]=1; //0-Azimuth, 1-Elevation, 2-Range
+            int Comm1Index[6]; //line of Comminucation Report 1 for each parameter
+            Comm1Index[0]=Comm1Index[1]=Comm1Index[2]=Comm1Index[3]=Comm1Index[4]=Comm1Index[5]=1;
+            int Comm2Index[6];
+            Comm2Index[0]=Comm2Index[1]=Comm2Index[2]=Comm2Index[3]=Comm2Index[4]=Comm2Index[5]=1;
+            int Comm3Index[5];
+            Comm3Index[0]=Comm3Index[1]=Comm3Index[2]=Comm3Index[3]=Comm3Index[4]=1;
+            QString CoverageLine; //each line of the cov report
+            QStringList LineOfCoverageReport; //list of all the lines
+            QString Communication1Line;
+            QString Communication2Line;
+            QString Communication3Line;
+            QStringList LineOfComm1Report;
+            QStringList LineOfComm2Report;
+            QStringList LineOfComm3Report;
+            if(ReadCoverage==true)
+            {
+                CoverageAnalysis covAna=CoverageAnalysis(m_propagatedScenario, indSC, indGS, indMissionArc);
+                covAna.reportAER();
+
+                QFile Coverage("reportCov1.txt");
+
+                if(Coverage.open(QIODevice::ReadOnly ))
+                {
+                    QTextStream text(&Coverage);
+                    while(!text.atEnd())
+                    {
+                        CoverageLine=text.readLine();
+                        LineOfCoverageReport.append(CoverageLine);
+                    }
+                    Coverage.close();
+                }
+            }
+            if(ReadCommunication1==true)
+            {
+                CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
+                commAnalysis.CommReports();
+
+                QFile Communication1("reportComm1.txt");
+
+                if(Communication1.open(QIODevice::ReadOnly ))
+                {
+                    QTextStream Comm1(&Communication1);
+                    while(!Comm1.atEnd())
+                    {
+                        Communication1Line=Comm1.readLine();
+                        LineOfComm1Report.append(Communication1Line);
+                    }
+                    Communication1.close();
+                }
+            }
+            if(ReadCommunication2==true)
+            {
+                CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
+                commAnalysis.CommReports();
+                QFile Communication2("reportComm2.txt");
+
+                if(Communication2.open(QIODevice::ReadOnly ))
+                {
+                    QTextStream Comm2(&Communication2);
+                    while(!Comm2.atEnd())
+                    {
+                        Communication2Line=Comm2.readLine();
+                        LineOfComm2Report.append(Communication2Line);
+                    }
+                    Communication2.close();
+                }
+            }
+            if(ReadCommunication3==true)
+            {
+                CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
+                commAnalysis.CommReports();
+                QFile Communication3("reportComm3.txt");
+
+                if(Communication3.open(QIODevice::ReadOnly ))
+                {
+                    QTextStream Comm3(&Communication3);
+                    while(!Comm3.atEnd())
+                    {
+                        Communication3Line=Comm3.readLine();
+                        LineOfComm3Report.append(Communication3Line);
+                    }
+                    Communication3.close();
+                }
+            }
+
+            for (int k=0;k<selectedTimes.size();k++)
+            {
+                int ControlStart=0;
+                int ControlStop=0;
+                if ((StopTime[k]>(StopEpoch+2*pow(10,-5)))||(StopTime[k]<=(StartEpoch-2*pow(10,-5))))
+                {
+                    ControlStart++;
+                }
+                if ((StopTime[k]>(StopEpoch+2*pow(10,-5)))||(StopTime[k]<=(StartEpoch-2*pow(10,-5))))
+                {
+                    ControlStop++;
+                }
+
+                if((ControlStop==0)&&(ControlStop==0)) // there is enought data to continue calculations
+
+                {
+
+                    int i=0;
+                    while(( (arc->trajectorySampleTime(i)))<(StartTime[k]))
+                    {
+
+                        i=i+1;
+                    }
+                    countStart[k]=i;
+                    int m=0;
+                    while(((arc->trajectorySampleTime(m)))<(StopTime[k]-pow(10,-5)))
+                    {
+                        m=m+1;
+                    }
+                    countStop[k]=m;
+                    int inumber=countStop[k]-countStart[k]+1;
+
+                QString Start=selectedTimes[k]->text(0);
+                QString Stop=selectedTimes[k]->text(1);
+
+                // WRITE stream<<"Satellite:"<<MParentIndex.at(z)+1<<"\t"<<"Mission Arc:"<<indMissionArc+1<<"\r\n";
+                //WRITE stream<<"#######Beginning of time"<<" "<<(k+1)<<"######"<<"\r\n"<<"######"<<"Start Time"<<" "<<Start<<"\t"<<"Stop Time"<<" "<<Stop<<"######"<<"\r\n"<<"MJD"<<"\r\t";
+
+                    QList<QTreeWidgetItem*>SelParameters=Tree.at(a)->selectedItems();
+                    for(int i=0;i<SelParameters.size();i++)
+                    {
+                        QString name=SelParameters.at(i)->text(0);
+
+                        Titles.append(name);  //labels of the displayed parameters
+
+                    }
+                    ToStruct.ParameterTitles=Titles;
+
+                double MJDdate[inumber];
+                double JulianDate[inumber];
+                QDateTime TimeDateVector[inumber];
+                double DayOfYear[inumber];
+
+                for(int j=countStart[k];j<=countStop[k];j++)
+                {
+
+                    int index=j-countStart[k];
+
+                    MJDdate[index]=arc->trajectorySampleTime(j);
+
+                   //WRITE stream<<MJDdate[index]<<"\t"; //prints MJD by default
+
+                    for(int i=0;i<SelParameters.size();i++)
+                    {
+//qDebug()<<"selected size"<<SelParameters.size();
+                        QTreeWidgetItem*parameter=SelParameters.at(i);
+                        QString name=parameter->text(0);
+                        //qDebug()<<"name"<<name;
+
+                        if((name=="x position")||(name=="y position")||(name=="z position")||(name=="x velocity")||(name=="y velocity")||(name=="z velocity"))
+                        {
+
+                            QWidget*Box=Tree.at(a)->itemWidget(parameter,1);
+                            QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
+                            QString Coordinate=ComboBox->currentText();
+
+                            QWidget*Box1=Tree.at(a)->itemWidget(parameter,2);
+                            QComboBox*ComboBoxUnit=dynamic_cast <QComboBox*>(Box1);
+                            QString Units=ComboBoxUnit->currentText();
+
+                            sta::StateVector Vector[inumber];
+
+                            Vector[index]=arc->trajectorySample(j);
+
+                            if(name=="x position")
+
+                            {
+
+                                if(Coordinate=="Fixed")
+                                {
+
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem Fixed("PLANETO FIXED");
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 Fixed);
+                                   // stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x())<<"\t";
+                                    //LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.x()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.x()));
+
+                                }
+                                if(Coordinate=="Ecliptic J2000")
+                                {
+
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem Ecliptic("ECLIPTIC");
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 Ecliptic);
+                                    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x())<<"\t";
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.x()));
+                                }
+                                if(Coordinate=="EME J2000")
+                                {
+
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000);
+
+                                    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x())<<"\t";
+                                    //DataStructure[a].Data[index].append(sta::ConvertUnits(Units,ModifVector[index].position.x()));
+
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.x()));
+
+                                }
+                                if(Coordinate=="EME B1950")
+                                {
+
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem B1950("INERTIAL B1950");
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 B1950);
+                                    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x())<<"\t";
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.x()));
+                                }
+                            }
+
+                            if(name=="y position")
+                            {
+                                if(Coordinate=="Fixed")
+                                {
+
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem Fixed("PLANETO FIXED");
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 Fixed);
+                                    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y())<<"\t";
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.y()));
+                                }
+                                if(Coordinate=="Ecliptic J2000")
+                                {
+
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem Ecliptic("ECLIPTIC");
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 Ecliptic);
+                                    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y())<<"\t";
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.y()));
+                                }
+                                if(Coordinate=="EME J2000")
+                                {
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000);
+                                    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y())<<"\t";
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.y()));
+                                }
+                                if(Coordinate=="EME B1950")
+                                {
+
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem B1950("INERTIAL B1950");
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 B1950);
+                                    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y())<<"\t";
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.y()));
+                                }
+                            }
+
+                            if(name=="z position")
+                            {
+
+                                if(Coordinate=="Fixed")
+                                {
+
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem Fixed("PLANETO FIXED");
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 Fixed);
+
+                                    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z())<<"\t";
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.z()));
+                                }
+                                if(Coordinate=="Ecliptic J2000")
+                                {
+
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem Ecliptic("ECLIPTIC");
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 Ecliptic);
+                                    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z())<<"\t";
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.z()));
+                                }
+                                if(Coordinate=="EME J2000")
+                                {
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000);
+                                    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z())<<"\t";
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.z()));
+                                }
+                                if(Coordinate=="EME B1950")
+                                {
+
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem B1950("INERTIAL B1950");
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 B1950);
+                                    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z())<<"\t";
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.z()));
+                                }
+
+                            }
+
+                            if(name=="x velocity")
+                            {
+                                if(Coordinate=="Fixed")
+                                {
+
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem Fixed("PLANETO FIXED");
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 Fixed);
+                                    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x())<<"\t";
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.x()));
+                                }
+                                if(Coordinate=="Ecliptic J2000")
+                                {
+
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem Ecliptic("ECLIPTIC");
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 Ecliptic);
+                                    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x())<<"\t";
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.x()));
+                                }
+                                if(Coordinate=="EME J2000")
+                                {
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000);
+                                    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x())<<"\t";
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.x()));
+                                }
+                                if(Coordinate=="EME B1950")
+                                {
+
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem B1950("INERTIAL B1950");
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 B1950);
+                                    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x())<<"\t";
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.x()));
+                                }
+                            }
+                            if(name=="y velocity")
+                            {
+                                if(Coordinate=="Fixed")
+                                {
+
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem Fixed("PLANETO FIXED");
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 Fixed);
+                                    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y())<<"\t";
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.y()));
+                                }
+                                if(Coordinate=="Ecliptic J2000")
+                                {
+
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem Ecliptic("ECLIPTIC");
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 Ecliptic);
+                                    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y())<<"\t";
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.y()));
+                                }
+                                if(Coordinate=="EME J2000")
+                                {
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000);
+                                    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y())<<"\t";
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.y()));
+                                }
+                                if(Coordinate=="EME B1950")
+                                {
+
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem B1950("INERTIAL B1950");
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 B1950);
+                                    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y())<<"\t";
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.y()));
+                                }
+                            }
+                            if(name=="z velocity")
+                            {
+                                if(Coordinate=="Fixed")
+                                {
+
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem Fixed("PLANETO FIXED");
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 Fixed);
+                                    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z())<<"\t";
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.z()));
+                                }
+                                if(Coordinate=="Ecliptic J2000")
+                                {
+
+                                    sta::StateVector ModifVector[inumber];
+                                    sta::CoordinateSystem Ecliptic("ECLIPTIC");
+                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                 MJDdate[index],
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 EME2000,
+                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                 Ecliptic);
+                                    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z())<<"\t";
+                                LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.z()));
+                                }
+                                    if(Coordinate=="EME J2000")
+                                    {
+                                        sta::StateVector ModifVector[inumber];
+                                        sta::CoordinateSystem EME2000("INERTIAL J2000");
+
+                                        ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                     MJDdate[index],
+                                                                                     STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                     EME2000,
+                                                                                     STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                     EME2000);
+                                        //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z())<<"\t";
+                                        LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.z()));
+                                    }
+                                    if(Coordinate=="EME B1950")
+                                    {
+
+                                        sta::StateVector ModifVector[inumber];
+                                        sta::CoordinateSystem B1950("INERTIAL B1950");
+                                        sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                        ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                     MJDdate[index],
+                                                                                     STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                     EME2000,
+                                                                                     STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                     B1950);
+                                        //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z())<<"\t";
+                                        LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.z()));
+                                    }
+                            }
+                        }
+                        if(name=="Time")
+                        {
+
+                            QWidget*Box=Tree.at(a)->itemWidget(parameter,1);
+                            QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
+                            QString TimeCoordinate=ComboBox->currentText();
+
+                            //Options of Time
+                            if(TimeCoordinate=="MJD")
+                            {
+                                LineData.append(MJDdate[index]);
+                            }
+                            if(TimeCoordinate=="Julian Date")
+                            {
+                                JulianDate[index]=sta::MjdToJd(MJDdate[index]);
+                                LineData.append(JulianDate[index]);
+                            }
+                            if(TimeCoordinate=="Julian UTC") //not available to plot
+                            {
+                                //format:DayOfYear/YY UTCTime
+                                JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
+                                TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
+                                int Year=TimeDateVector[index].date().year();
+
+                                QString YearPreLastDigit=QString::number(Year).at(2);
+                                QString YearLastDigit=QString::number(Year).at(3);
+                                int DayOfYear=sta::calendarToDayOfYear(TimeDateVector[index]);
+                                //stream<<DayOfYear<<"/"<<YearPreLastDigit<<YearLastDigit<<" "<<TimeDateVector[index].time().hour()<<":"<<TimeDateVector[index].time().minute()<<":"<<TimeDateVector[index].time().second()<<"\t";
+                            }
+                            if(TimeCoordinate=="Gregorian LCL")  //not available to plot
+                            {
+                                QDateTime CurrentDate=QDateTime::currentDateTime();
+                                QDateTime CurrentUTC=CurrentDate.toUTC();
+                                double DisplayDate[inumber];
+                                QDateTime DisplayDateCalendar[inumber];
+                                double CurrentDateInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentDate));
+                                double CurrentUtcInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentUTC));
+
+                                if(CurrentUtcInMJD-CurrentDateInMJD<0)
+
+                                {
+                                    DisplayDate[index]=MJDdate[index]+(CurrentDateInMJD-CurrentUtcInMJD)+0.00001;
+                                }
+                                else
+                                {
+                                    DisplayDate[index]=MJDdate[index]-(CurrentUtcInMJD-CurrentDateInMJD)+0.00001;
+                                }
+                                DisplayDateCalendar[index]=sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]));
+
+
+                                //stream<<DisplayDateCalendar[index].date().day()<<"/"<<DisplayDateCalendar[index].date().month()<<"/"<<DisplayDateCalendar[index].date().year()<<" "<<DisplayDateCalendar[index].time().hour()<<":"<<DisplayDateCalendar[index].time().minute()<<":"<<DisplayDateCalendar[index].time().second();
+                            }
+                            if(TimeCoordinate=="Gregorian UTC") // not available to plot
+                            {
+                                ////qDebug()<<index<<"time step";
+                                JulianDate[index]=sta::MjdToJd(MJDdate[index])+0.00001;
+                                TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
+                               //stream<<TimeDateVector[index].date().day()<<"/"<<TimeDateVector[index].date().month()<<"/"<<TimeDateVector[index].date().year()<<" "<<TimeDateVector[index].time().hour()<<":"<<TimeDateVector[index].time().minute()<<":"<<TimeDateVector[index].time().second();
+
+                            }
+                            if(TimeCoordinate=="Julian LCL") // not available to plot
+                            {
+                                QDateTime CurrentDate=QDateTime::currentDateTime();
+                                QDateTime CurrentUTC=CurrentDate.toUTC();
+                                double DisplayDate[inumber];
+                                QDateTime DisplayDateCalendar[inumber];
+                                double CurrentDateInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentDate));
+                                double CurrentUtcInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentUTC));
+
+                                if(CurrentUtcInMJD-CurrentDateInMJD<0)
+
+                                {
+                                    DisplayDate[index]=MJDdate[index]+(CurrentDateInMJD-CurrentUtcInMJD)+0.00001;
+                                }
+                                else
+                                {
+                                    DisplayDate[index]=MJDdate[index]-(CurrentUtcInMJD-CurrentDateInMJD)+0.00001;
+                                }
+                                DisplayDateCalendar[index]=sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]));
+
+                                double DayOfYear=sta::calendarToDayOfYear(DisplayDateCalendar[index]);
+
+                                int Year=(sta::JdToCalendar(sta::MjdToJd(MJDdate[index]))).date().year();
+                                QString YearPreLastDigit=QString::number(Year).at(2);
+                                QString YearLastDigit=QString::number(Year).at(3);
+                                //stream<<DayOfYear<<"/"<<YearPreLastDigit<<YearLastDigit<<" "<<DisplayDateCalendar[index].time().hour()<<":"<<DisplayDateCalendar[index].time().minute()<<":"<<DisplayDateCalendar[index].time().second();
+
+                            }
+
+                            if(TimeCoordinate=="Mission Elapsed Time")
+                            {
+
+                            }
+                            if(TimeCoordinate=="YYDDD")
+                            {
+                                JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
+                                TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
+                                int Year=TimeDateVector[index].date().year();
+                                QDateTime FirstDayCurrentYear(QDate(Year,1,1),QTime(0,0,0));
+                                double StartYearTime=sta::JdToMjd(sta::CalendarToJd(FirstDayCurrentYear));
+                                QString YearPreLastDigit=QString::number(Year).at(2);
+                                QString YearLastDigit=QString::number(Year).at(3);
+
+                                DayOfYear[index]=sta::MjdToFromEpoch(StartYearTime,MJDdate[index],"Days")+1;
+
+                            }
+
+                            if(TimeCoordinate=="Time from epoch")
+                            {
+                                QWidget*Box=Tree.at(a)->itemWidget(parameter,2);
+                                QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
+                                QString TimeUnits=ComboBox->currentText();
+
+                                double ElapsedTime=MjdToFromEpoch(StartEpoch,MJDdate[index],TimeUnits);
+
+                                if(TimeUnits=="Seconds")
+                                {
+                                    LineData.append(ElapsedTime);
+                                }
+                                if(TimeUnits=="Minutes")
+                                {
+                                    LineData.append(ElapsedTime);
+                                }
+                                if(TimeUnits=="Hours")
+                                {
+                                    LineData.append(ElapsedTime);
+                                }
+                                if(TimeUnits=="Days")
+                                {
+                                    LineData.append(ElapsedTime);
+                                }
+                            }
+                            if(TimeCoordinate=="GMT")
+                            {
+
+                            }
+                        }
+                        if(name=="Azimuth")
+                        {
+
+                            if(CovIndex[0]<LineOfCoverageReport.size())
+                            {
+                                QString Line=LineOfCoverageReport.at(CovIndex[0]);
+
+                                double TimeCovReport=(Line.section("\t",0,0)).toDouble();
+                                double Azimuth=(Line.section("\t",3,3)).toDouble();
+
+                                if(abs(MJDdate[index]-TimeCovReport)<10e-6)
+                                {
+
+                                    LineData.append(Azimuth);
+
+                                    CovIndex[0]++;
+                                }
+
+                                else
+                                {
+                                    //stream<<"No visibility";
+                                    LineData.append(-1);
+                                }
+
+                            }
+                            else
+                            {
+                                //stream<<"No visibility";
+                                LineData.append(-1);
+                            }
+                        }
+                        if(name=="Elevation")
+                        {
+
+                            if(CovIndex[1]<LineOfCoverageReport.length())
+                            {
+                                QString Line=LineOfCoverageReport.at(CovIndex[1]);
+
+                                double TimeCovReport=(Line.section("\t",0,0)).toDouble();
+                                double Elevation=(Line.section("\t",2,2)).toDouble();
+
+                                if(abs(MJDdate[index]-TimeCovReport)<10e-6)
+                                {
+                                    //stream<<Elevation<<"\t";
+                                    LineData.append(Elevation);
+                                    CovIndex[1]++;
+                                }
+
+                                else
+                                {
+                                    //<<"No visibility";
+                                    LineData.append(-1);
+                                }
+
+                            }
+                            else
+                            {
+                                //stream<<"No visibility";
+                                LineData.append(-1);
+                            }
+                        }
+                        if(name=="Range")
+                        {
+                            if(CovIndex[2]<LineOfCoverageReport.length())
+                            {
+                                QString Line=LineOfCoverageReport.at(CovIndex[2]);
+
+                                double TimeCovReport=(Line.section("\t",0,0)).toDouble();
+                                double Range=(Line.section("\t",1,1)).toDouble();
+
+                                if(abs(MJDdate[index]-TimeCovReport)<10e-6)
+                                {
+                                    //stream<<Range<<"\t";
+                                    LineData.append(Range);
+                                    CovIndex[2]++;
+                                }
+
+                                else
+                                {
+                                    //stream<<"No visibility";
+                                    LineData.append(-1);
+                                }
+
+                                //qDebug()<<"CovIndex"<<CovIndex[2];
+
+                            }
+                            else
+                            {
+                               // stream<<"No visibility";
+                                LineData.append(-1);
+                            }
+                        }
+                        if(name=="Equivalent Isotropical Radiated Power")
+                        {
+
+                            if(Comm1Index[0]<LineOfComm1Report.length())
+                            {
+                                QString Line=LineOfComm1Report.at(Comm1Index[0]);
+
+                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                double EIRP=(Line.section("\t",1,1)).toDouble();
+
+                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                {
+                                    //stream<<EIRP<<"\t";
+                                    LineData.append(EIRP);
+                                    Comm1Index[0]++;
+                                }
+
+                                else
+                                {
+                                    //stream<<"No visibility";
+                                    LineData.append(-1);
+                                }
+
+                            }
+                            else
+                            {
+                                //stream<<"No visibility";
+                                LineData.append(-1);
+                            }
+                        }
+                        if(name=="Received Frequency")
+                        {
+
+                            if(Comm1Index[1]<LineOfComm1Report.length())
+                            {
+                                QString Line=LineOfComm1Report.at(Comm1Index[1]);
+
+                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                double RcvFreq=(Line.section("\t",2,2)).toDouble();
+
+                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                {
+                                    //stream<<RcvFreq<<"\t";
+                                    LineData.append(RcvFreq);
+                                    Comm1Index[1]++;
+                                }
+
+                                else
+                                {
+                                    //stream<<"No visibility";
+                                    LineData.append(-1);
+                                }
+
+                            }
+                            else
+                            {
+                                //stream<<"No visibility";
+                                LineData.append(-1);
+                            }
+
+                        }
+                        if(name=="Doppler Shift")
+                        {
+
+                            if(Comm1Index[2]<LineOfComm1Report.length())
+                            {
+                                QString Line=LineOfComm1Report.at(Comm1Index[2]);
+
+                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                double Doppler=(Line.section("\t",3,3)).toDouble();
+
+                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                {
+                                    //stream<<RcvFreq<<"\t";
+                                    LineData.append(Doppler);
+                                    Comm1Index[2]++;
+                                }
+
+                                else
+                                {
+                                    //stream<<"No visibility";
+                                    LineData.append(-1);
+                                }
+
+                            }
+                            else
+                            {
+                                //stream<<"No visibility";
+                                LineData.append(-1);
+                            }
+                        }
+                        if(name=="Received Power")
+                        {
+
+                            if(Comm1Index[3]<LineOfComm1Report.length())
+                            {
+                                QString Line=LineOfComm1Report.at(Comm1Index[3]);
+
+                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                double RcvPower=(Line.section("\t",4,4)).toDouble();
+
+                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                {
+                                    //stream<<RcvpOWER<<"\t";
+                                    LineData.append(RcvPower);
+                                    Comm1Index[3]++;
+                                }
+
+                                else
+                                {
+                                    //stream<<"No visibility";
+                                    LineData.append(-1);
+                                }
+
+                            }
+                            else
+                            {
+                                //stream<<"No visibility";
+                                LineData.append(-1);
+                            }
+                        }
+                        if(name=="Flux Density")
+                        {
+
+                            if(Comm1Index[4]<LineOfComm1Report.length())
+                            {
+                                QString Line=LineOfComm1Report.at(Comm1Index[4]);
+
+                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                double FluxDensity=(Line.section("\t",5,5)).toDouble();
+                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                {
+                                    //stream<<FluxDensity<<"\t";
+                                    LineData.append(FluxDensity);
+                                    Comm1Index[4]++;
+                                }
+
+                                else
+                                {
+                                    //stream<<"No visibility";
+                                    LineData.append(-1);
+                                }
+
+                            }
+                            else
+                            {
+                                //stream<<"No visibility";
+                                LineData.append(-1);
+                            }
+                        }
+                        if(name=="Overlap Bandwidth Factor")
+                        {
+
+                            if(Comm1Index[5]<LineOfComm1Report.length())
+                            {
+                                QString Line=LineOfComm1Report.at(Comm1Index[5]);
+                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                double OvBWF=(Line.section("\t",6,6)).toDouble();
+
+                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                {
+                                    //stream<<OvBWF<<"\t";
+                                    LineData.append(OvBWF);
+                                    Comm1Index[5]++;
+                                }
+
+                                else
+                                {
+                                   // stream<<"No visibility"<<"\t";
+                                    LineData.append(-1);
+                                }
+                            }
+                            else
+                            {
+                                //stream<<"No visibility"<<"\t";
+                                LineData.append(-1);
+                            }
+                        }
+                        if(name=="Free Space Loss")
+                        {
+
+                            if(Comm2Index[0]<LineOfComm2Report.length())
+                            {
+                                QString Line=LineOfComm2Report.at(Comm2Index[0]);
+
+                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+
+                                double FSL=(Line.section("\t",1,1)).toDouble();
+
+
+                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                {
+                                    //stream<<FSL<<"\t";
+                                    LineData.append(FSL);
+                                    Comm2Index[0]++;
+                                }
+
+                                else
+                                {
+                                   // stream<<"No visibility"<<"\t";
+                                    LineData.append(-1);
+                                }
+
+                            }
+                            else
+                            {
+                                //stream<<"No visibility"<<"\t";
+                                LineData.append(-1);
+                            }
+                        }
+                        if(name=="Oxygen Loss")
+                        {
+                            if(Comm2Index[1]<LineOfComm2Report.length())
+                            {
+                                QString Line=LineOfComm2Report.at(Comm2Index[1]);
+                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                double OxLoss=(Line.section("\t",2,2)).toDouble();
+
+                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                {
+                                    //stream<<OxLoss<<"\t";
+                                    LineData.append(OxLoss);
+                                    Comm2Index[1]++;
+                                }
+
+                                else
+                                {
+                                    //stream<<"No visibility"<<"\t";
+                                    LineData.append(-1);
+                                }
+                            }
+                            else
+                            {
+                                //stream<<"No visibility"<<"\t";
+                                LineData.append(-1);
+                            }
+                        }
+                        if(name=="Water Vapour Loss")
+                        {
+                            if(Comm2Index[2]<LineOfComm2Report.length())
+                            {
+                                QString Line=LineOfComm2Report.at(Comm2Index[2]);
+                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                double WVLoss=(Line.section("\t",3,3)).toDouble();
+
+                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                {
+                                    //stream<<WVLoss<<"\t";
+                                    LineData.append(WVLoss);
+                                    Comm2Index[2]++;
+                                }
+
+                                else
+                                {
+                                    //stream<<"No visibility"<<"\t";
+                                    LineData.append(-1);
+                                }
+                            }
+                            else
+                            {
+                               // stream<<"No visibility"<<"\t";
+                                LineData.append(-1);
+                            }
+                        }
+                        if(name=="Rain Loss")
+                        {
+                            if(Comm2Index[3]<LineOfComm2Report.length())
+                            {
+                                QString Line=LineOfComm2Report.at(Comm2Index[3]);
+                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                double RainLoss=(Line.section("\t",4,4)).toDouble();
+
+                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                {
+                                    //stream<<RainLoss<<"\t";
+                                    LineData.append(RainLoss);
+                                    Comm2Index[3]++;
+                                }
+
+                                else
+                                {
+                                    //stream<<"No visibility"<<"\t";
+                                    LineData.append(-1);
+                                }
+                            }
+                            else
+                            {
+                                //stream<<"No visibility"<<"\t";
+                                LineData.append(-1);
+                            }
+                        }
+                        if(name=="Atmospheric Loss")
+                        {
+                            if(Comm2Index[4]<LineOfComm2Report.length())
+                            {
+                                QString Line=LineOfComm2Report.at(Comm2Index[4]);
+                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                double AtmLoss=(Line.section("\t",5,5)).toDouble();
+
+                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                {
+                                    //stream<<AtmLoss<<"\t";
+                                    LineData.append(AtmLoss);
+                                    Comm2Index[4]++;
+                                }
+
+                                else
+                                {
+                                    //stream<<"No visibility"<<"\t";
+                                    LineData.append(-1);
+                                }
+                            }
+                            else
+                            {
+                                //stream<<"No visibility"<<"\t";
+                                LineData.append(-1);
+                            }
+                        }
+                        if(name=="Propagation Loss")
+                        {
+                            if(Comm2Index[5]<LineOfComm2Report.length())
+                            {
+                                QString Line=LineOfComm2Report.at(Comm2Index[5]);
+                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                double PropLoss=(Line.section("\t",6,6)).toDouble();
+
+                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                {
+                                   // stream<<PropLoss<<"\t";
+                                    LineData.append(PropLoss);
+                                    Comm2Index[5]++;
+                                }
+
+                                else
+                                {
+                                    //stream<<"No visibility"<<"\t";
+                                    LineData.append(-1);
+                                }
+                            }
+                            else
+                            {
+                                //stream<<"No visibility"<<"\t";
+                                LineData.append(-1);
+                            }
+                        }
+                        if (name=="G/T")
+                        {
+                            if(Comm3Index[0]<LineOfComm3Report.length())
+                            {
+                                QString Line=LineOfComm3Report.at(Comm3Index[0]);
+                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                double GT=(Line.section("\t",1,1)).toDouble();
+
+                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                {
+                                   //stream<<GT<<"\t";
+                                    LineData.append(GT);
+                                    Comm3Index[0]++;
+                                }
+
+                                else
+                                {
+                                    //stream<<"No visibility"<<"\t";
+                                    LineData.append(-1);
+                                }
+                            }
+                            else
+                            {
+                                //stream<<"No visibility"<<"\t";
+                                LineData.append(-1);
+                            }
+                        }
+                        if(name=="C/No")
+                        {
+                            if(Comm3Index[1]<LineOfComm3Report.length())
+                            {
+                                QString Line=LineOfComm3Report.at(Comm3Index[1]);
+                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                double CNo=(Line.section("\t",2,2)).toDouble();
+
+                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                {
+                                   // stream<<CNo<<"\t";
+                                    LineData.append(CNo);
+                                    Comm3Index[1]++;
+                                }
+
+                                else
+                                {
+                                    //stream<<"No visibility"<<"\t";
+                                    LineData.append(-1);
+                                }
+                            }
+                            else
+                            {
+                               // stream<<"No visibility"<<"\t";
+                                LineData.append(-1);
+                            }
+                        }
+                        if(name=="C/N")
+                        {
+                            if(Comm3Index[2]<LineOfComm3Report.length())
+                            {
+                                QString Line=LineOfComm3Report.at(Comm3Index[2]);
+                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                double CN=(Line.section("\t",3,3)).toDouble();
+
+                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                {
+                                    //stream<<CN<<"\t";
+                                    LineData.append(CN);
+                                    Comm3Index[2]++;
+                                }
+
+                                else
+                                {
+                                   // stream<<"No visibility"<<"\t";
+                                    LineData.append(-1);
+                                }
+                            }
+                            else
+                            {
+                                //stream<<"No visibility"<<"\t";
+                                LineData.append(-1);
+                            }
+                        }
+                        if(name=="Eb/No")
+                        {
+                            if(Comm3Index[3]<LineOfComm3Report.length())
+                            {
+                                QString Line=LineOfComm3Report.at(Comm3Index[3]);
+                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                double EbNo=(Line.section("\t",4,4)).toDouble();
+
+                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                {
+                                    //stream<<EbNo<<"\t";
+                                    LineData.append(EbNo);
+                                    Comm3Index[3]++;
+                                }
+
+                                else
+                                {
+                                    //stream<<"No visibility"<<"\t";
+                                    LineData.append(-1);
+                                }
+                            }
+                            else
+                            {
+                               //stream<<"No visibility"<<"\t";
+                                LineData.append(-1);
+                            }
+                        }
+                        if(name=="BER")
+                        {
+                            if(Comm3Index[4]<LineOfComm3Report.length())
+                            {
+                                QString Line=LineOfComm3Report.at(Comm3Index[4]);
+                                double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                double BER=(Line.section("\t",5,5)).toDouble();
+
+                                if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                {
+                                   // stream<<BER<<"\t";
+                                    LineData.append(BER);
+                                    Comm3Index[4]++;
+                                }
+
+                                else
+                                {
+                                    //stream<<"No visibility"<<"\t";
+                                    LineData.append(-1);
+                                }
+                            }
+                            else
+                            {
+                                //stream<<"No visibility"<<"\t";
+                                LineData.append(-1);
+                            }
+                        }
+                        if(name=="Eccentricity")
+                        {
+                            QWidget*Box=Tree.at(a)->itemWidget(parameter,1);
+                            QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
+                            QString ToCoord=ComboBox->currentText();
+
+                          sta::StateVector Vector[inumber];
+                          Vector[index]=arc->trajectorySample(j);
+                          double Eccentricity=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"Eccentricity",
+                                                                                   MJDdate[index],
+                                                                                   "EME J2000",
+                                                                                   ToCoord);
+                           //stream<<Eccentricity<<"\t";
+                            LineData.append(Eccentricity);
+                        }
+                        if((name=="Inclination")||
+                           (name=="RAAN")||
+                           (name=="Argument of Periapsis")||
+                           (name=="True Anomaly")||
+                           (name=="Semimajor Axis"))
+                        {
+                            QWidget*Box1=Tree.at(a)->itemWidget(parameter,1);
+                            QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
+                            QString ToCoord=ComboBox1->currentText();
+                            QWidget*Box2=Tree.at(a)->itemWidget(parameter,2);
+                            QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
+                            QString ToUnit=ComboBox2->currentText();
+                            //qDebug()<<ToUnit;
+                            sta::StateVector Vector[inumber];
+                            Vector[index]=arc->trajectorySample(j);
+
+                           if(name=="Inclination")
+                            {
+                               double Inclination=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                        MJDdate[index],
+                                                                                        "EME J2000",
+                                                                                        ToCoord);
+                               //stream<<sta::ConvertUnits(ToUnit,Inclination)<<"\t";
+                               LineData.append(sta::ConvertUnits(ToUnit,Inclination));
+                           }
+                           if(name=="RAAN")
+                           {
+                               double Ascending=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                        MJDdate[index],
+                                                                                        "EME J2000",
+                                                                                        ToCoord);
+                               //stream<<sta::ConvertUnits(ToUnit,Ascending)<<"\t";
+                               LineData.append(sta::ConvertUnits(ToUnit,Ascending));
+                           }
+                           if(name=="True Anomaly")
+                           {
+                               double TrueAnom=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                        MJDdate[index],
+                                                                                        "EME J2000",
+                                                                                        ToCoord);
+                               //stream<<sta::ConvertUnits(ToUnit,TrueAnom)<<"\t";
+                               LineData.append(sta::ConvertUnits(ToUnit,TrueAnom));
+                           }
+                           if(name=="Argument of Periapsis")
+                           {
+                               double Periapsis=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                        MJDdate[index],
+                                                                                        "EME J2000",
+                                                                                        ToCoord);
+                              //stream<<sta::ConvertUnits(ToUnit,Periapsis)<<"\t";
+                               LineData.append(sta::ConvertUnits(ToUnit,Periapsis));
+                           }
+                           if(name=="Semimajor Axis")
+                           {
+                               double SemAxis=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                        MJDdate[index],
+                                                                                        "EME J2000",
+                                                                                        ToCoord);
+                               //stream<<sta::ConvertUnits(ToUnit,SemAxis)<<"\t";
+                               LineData.append(sta::ConvertUnits(ToUnit,SemAxis));
+                           }
+
+                       }
+                        if((name=="l")||(name=="g")||(name=="h")||(name=="L")||(name=="G")||(name=="H"))
+                        {
+                            QWidget*Box1=Tree.at(a)->itemWidget(parameter,1);
+                            QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
+                            QString ToCoord=ComboBox1->currentText();
+                            sta::StateVector Vector[inumber];
+                            Vector[index]=arc->trajectorySample(j);
+
+                                                                if(name=="l")
+                                                                {
+                                                                    double Delaunay_l=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                                           MJDdate[index],
+                                                                                                           "EME J2000",
+                                                                                                           ToCoord);
+                                                                    //stream<<Delaunay_l<<"\t";
+                                                                    LineData.append(Delaunay_l);
+                                                                }
+                                                                if(name=="g")
+                                                                {
+                                                                    double Delaunay_g=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                                           MJDdate[index],
+                                                                                                           "EME J2000",
+                                                                                                           ToCoord);
+                                                                    //stream<<Delaunay_g<<"\t";
+                                                                    LineData.append(Delaunay_g);
+                                                                }
+                                                                if(name=="h")
+                                                                {
+                                                                    double Delaunay_h=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                                           MJDdate[index],
+                                                                                                           "EME J2000",
+                                                                                                           ToCoord);
+                                                                    //stream<<Delaunay_h<<"\t";
+                                                                    LineData.append(Delaunay_h);
+                                                                }
+                                                                if(name=="L")
+                                                                {
+                                                                    double Delaunay_L=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                                           MJDdate[index],
+                                                                                                           "EME J2000",
+                                                                                                           ToCoord);
+                                                                    //stream<<Delaunay_L<<"\t";
+                                                                    LineData.append(Delaunay_L);
+                                                                }
+                                                                if(name=="G")
+                                                                {
+                                                                    double Delaunay_G=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                                           MJDdate[index],
+                                                                                                           "EME J2000",
+                                                                                                           ToCoord);
+                                                                    //stream<<Delaunay_G<<"\t";
+                                                                    LineData.append(Delaunay_G);
+                                                                }
+                                                                if(name=="H")
+                                                                {
+                                                                    double Delaunay_H=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                                                                                                           MJDdate[index],
+                                                                                                           "EME J2000",
+                                                                                                           ToCoord);
+                                                                   // stream<<Delaunay_H<<"\t";
+                                                                    LineData.append(Delaunay_H);
+                                                                }
+                                                            }
+                                                                if((name=="Latitude")||(name=="Longitude")||(name=="Radial Distance")||(name=="Flight Path Angle")||(name=="Heading Angle")||(name=="Velocity Modulus"))
+                                                                {
+                                                                    QWidget*Box1=Tree.at(a)->itemWidget(parameter,1);
+                                                                    QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
+                                                                    QString ToCoord=ComboBox1->currentText();
+                                                                    QWidget*Box2=Tree.at(a)->itemWidget(parameter,2);
+                                                                    QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
+                                                                    QString Units=ComboBox2->currentText();
+
+                                                                    sta::StateVector Vector[inumber];
+                                                                    sta::StateVector ModifVector[inumber];
+                                                                    Vector[index]=arc->trajectorySample(j);
+                                                                    sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                                                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                                                                 MJDdate[index],
+                                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                                                 EME2000,
+                                                                                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                                                 analysis::CoordSys(ToCoord));
+                                                                    double SphericalElements[6]; // tau, delta, r, V, gamma, chi
+                                                                    cartesianTOspherical(ModifVector[index].position.x(),ModifVector[index].position.y(),ModifVector[index].position.z(),
+                                                                                         ModifVector[index].velocity.x(),ModifVector[index].velocity.y(),ModifVector[index].velocity.z(),
+                                                                                         SphericalElements[0],SphericalElements[1],SphericalElements[2],SphericalElements[3],SphericalElements[4],
+                                                                                         SphericalElements[5]);
+                                                                    if(name=="Latitude")
+                                                                    {
+                                                                        //stream<<sta::ConvertUnits(Units,SphericalElements[1])<<"\t";
+                                                                        LineData.append(sta::ConvertUnits(Units,SphericalElements[1]));
+                                                                    }
+                                                                    if(name=="Longitude")
+                                                                    {
+                                                                        //stream<<sta::ConvertUnits(Units,SphericalElements[0])<<"\t";
+                                                                        LineData.append(sta::ConvertUnits(Units,SphericalElements[0]));
+                                                                    }
+                                                                    if(name=="Radial Distance")
+                                                                    {
+                                                                        //stream<<sta::ConvertUnits(Units,SphericalElements[2])<<"\t";
+                                                                        LineData.append(sta::ConvertUnits(Units,SphericalElements[2]));
+                                                                    }
+                                                                    if(name=="Flight Path Angle")
+                                                                    {
+                                                                        //stream<<sta::ConvertUnits(Units,SphericalElements[4])<<"\t";
+                                                                        LineData.append(sta::ConvertUnits(Units,SphericalElements[4]));
+                                                                    }
+                                                                    if(name=="Heading Angle")
+                                                                    {
+                                                                       //stream<<sta::ConvertUnits(Units,SphericalElements[5])<<"\t";
+                                                                        LineData.append(sta::ConvertUnits(Units,SphericalElements[5]));
+                                                                    }
+                                                                    if(name=="Velocity Modulus")
+                                                                    {
+                                                                        //stream<<sta::ConvertUnits(Units,SphericalElements[3])<<"\t";
+                                                                        LineData.append(sta::ConvertUnits(Units,SphericalElements[3]));
+                                                                    }
+                                                                }
+
+                        if((name=="Latitude")||(name=="Longitude")||(name=="Radial Distance")||(name=="Flight Path Angle")||(name=="Heading Angle")||(name=="Velocity Modulus"))
+                        {
+                            QWidget*Box1=Tree.at(a)->itemWidget(parameter,1);
+                            QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
+                            QString ToCoord=ComboBox1->currentText();
+                            QWidget*Box2=Tree.at(a)->itemWidget(parameter,2);
+                            QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
+                            QString Units=ComboBox2->currentText();
+
+                            sta::StateVector Vector[inumber];
+                            sta::StateVector ModifVector[inumber];
+                            Vector[index]=arc->trajectorySample(j);
+                            sta::CoordinateSystem EME2000("INERTIAL J2000");
+                            ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                         MJDdate[index],
+                                                                         STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                         EME2000,
+                                                                         STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                         analysis::CoordSys(ToCoord));
+                            double SphericalElements[6]; // tau, delta, r, V, gamma, chi
+
+                            cartesianTOspherical(ModifVector[index].position.x(),ModifVector[index].position.y(),ModifVector[index].position.z(),
+                                                 ModifVector[index].velocity.x(),ModifVector[index].velocity.y(),ModifVector[index].velocity.z(),
+                                                 SphericalElements[0],SphericalElements[1],SphericalElements[2],SphericalElements[3],SphericalElements[4],
+                                                 SphericalElements[5]);
+
+                            if(name=="Latitude")
+                            {
+                                //stream<<sta::ConvertUnits(Units,SphericalElements[1])<<"\t";
+                                LineData.append(sta::ConvertUnits(Units,SphericalElements[1]));
+                            }
+                            if(name=="Longitude")
+                            {
+                                //stream<<sta::ConvertUnits(Units,SphericalElements[0])<<"\t";
+                                LineData.append(sta::ConvertUnits(Units,SphericalElements[0]));
+                            }
+                            if(name=="Radial Distance")
+                            {
+                                //stream<<sta::ConvertUnits(Units,SphericalElements[2])<<"\t";
+                                LineData.append(sta::ConvertUnits(Units,SphericalElements[2]));
+                            }
+                            if(name=="Flight Path Angle")
+                            {
+                               // stream<<sta::ConvertUnits(Units,SphericalElements[4])<<"\t";
+                                LineData.append(sta::ConvertUnits(Units,SphericalElements[4]));
+                            }
+                            if(name=="Heading Angle")
+                            {
+                                //stream<<sta::ConvertUnits(Units,SphericalElements[5])<<"\t";
+                                LineData.append(sta::ConvertUnits(Units,SphericalElements[5]));
+                            }
+                            if(name=="Velocity Modulus")
+                            {
+                                //stream<<sta::ConvertUnits(Units,SphericalElements[3])<<"\t";
+                                LineData.append(sta::ConvertUnits(Units,SphericalElements[3]));
+                            }
+                        }
+                        if((name=="e*sin(omegaBar)")||(name=="e*cos(omegaBar)")||(name=="tan(i/2)*sin(raan)")||(name=="tan(i/2)*cos(raan)")||(name=="Mean Longitude"))
+                        {
+                            QWidget*Box1=Tree.at(a)->itemWidget(parameter,1);
+                            QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
+                            QString ToCoord=ComboBox1->currentText();
+                            QWidget*Box2=Tree.at(a)->itemWidget(parameter,2);
+                            QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
+                            QString Units=ComboBox2->currentText();
+
+                            sta::StateVector Vector[inumber];
+                            Vector[index]=arc->trajectorySample(j);
+                            if(name=="e*sin(omegaBar)")
+                            {
+                                double esin=calcEquinoctialElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"e*sin(omegaBar)",
+                                                                    MJDdate[index],
+                                                                    "EME J2000",
+                                                                    ToCoord);
+                                //stream<<sta::ConvertUnits(Units,esin)<<"\t";
+                                LineData.append(sta::ConvertUnits(Units,esin));
+                                    }
+                            if(name=="e*cos(omegaBar)")
+                            {
+                                double ecos=calcEquinoctialElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"e*cos(omegaBar)",
+                                                                    MJDdate[index],
+                                                                    "EME J2000",
+                                                                    ToCoord);
+                                //stream<<sta::ConvertUnits(Units,ecos)<<"\t";
+                                LineData.append(sta::ConvertUnits(Units,ecos));
+                            }
+                            if(name=="tan(i/2)*sin(raan)")
+                            {
+                                double etansin=calcEquinoctialElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"tan(i/2)*sin(raan)",
+                                                                       MJDdate[index],
+                                                                       "EME J2000",
+                                                                       ToCoord);
+                                //stream<<sta::ConvertUnits(Units,etansin)<<"\t";
+                                LineData.append(sta::ConvertUnits(Units,etansin));
+                            }
+                            if(name=="tan(i/2)*cos(raan)")
+                            {
+                                double etancos=calcEquinoctialElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"tan(i/2)*cos(raan)",
+                                                                       MJDdate[index],
+                                                                       "EME J2000",
+                                                                       ToCoord);
+                                //stream<<sta::ConvertUnits(Units,etancos)<<"\t";
+                                LineData.append(sta::ConvertUnits(Units,etancos));
+                            }
+                            if(name=="Mean Longitude")
+                            {
+                                double MeanLon=calcEquinoctialElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"Mean Longitude",
+                                                                       MJDdate[index],
+                                                                       "EME J2000",
+                                                                       ToCoord);
+                               // stream<<sta::ConvertUnits(Units,MeanLon)<<"\t";
+                                LineData.append(sta::ConvertUnits(Units,MeanLon));
+                            }
+                        }
+                    }
+                    //stream<<"\r\n";
+
+                }
+            }
+
+                else  // the time interval is not included in the propagation time
+                {
+                    //WRITE stream<<"#######Beginning of time"<<" "<<(k+1)<<"######"<<"\r\n";
+
+                    //WRITE stream<<"No data available for the chosen time interval, please check the options of the propagation"<<"\r\n";
+                }
+
+             //
+
+            //WRITE stream<<"\r\n";
+            DisplayData.append(LineData);
+
+        }
+
+        }
+        }
+        ToStruct.Data=DisplayData; // AnalysisData structure is now complete, with the data of one axis
+DataStructure.append(ToStruct); // appending to the list containig all the axes
+
+}
+return DataStructure;
+}
 
 /*void analysis::on_TotalHelpPushButton_clicked()
 {
@@ -2756,6 +4709,11 @@ sta::CoordinateSystem analysis::CoordSys(QString Coordinate)
         sta::CoordinateSystem Coord("ECLIPTIC");
         return Coord;
     }
+    if(Coordinate==" ")
+    {
+        sta::CoordinateSystem Coord("INVALID");
+        return Coord;
+    }
 }
 double analysis::calcKeplerianElements(sta::StateVector Vector,StaBody*Body,QString OrbElement,
                                                        double mjd,
@@ -2769,7 +4727,11 @@ double analysis::calcKeplerianElements(sta::StateVector Vector,StaBody*Body,QStr
                                                            analysis::CoordSys(FromCoordinate),
                                                            STA_SOLAR_SYSTEM->lookup("Earth"),
                                                            analysis::CoordSys(ToCoordinate));
-    double mu = Body->mu();
+    //double mu = Earth_GRAVITY_PARAMETER;
+
+    double mu=Body->mu();
+
+
     sta::KeplerianElements KepElemList=cartesianTOorbital(mu, ModifVector);
 
     double Element=0;
@@ -2813,6 +4775,7 @@ double analysis::calcDelaunayElements(sta::StateVector Vector,StaBody*Body,QStri
                                                            STA_SOLAR_SYSTEM->lookup("Earth"),
                                                            analysis::CoordSys(ToCoordinate));
     double mu = Body->mu();
+    //qDebug()<<mu-1000000<<"mu del";
     sta::DelaunayElements DelaunayElem=cartesianTOdelaunay(mu, ModifVector);
 
     double Element=0;
@@ -2830,7 +4793,7 @@ double analysis::calcDelaunayElements(sta::StateVector Vector,StaBody*Body,QStri
     }
     if(OrbElement=="L")
     {
-        Element=DelaunayElem.L;
+        Element=(DelaunayElem.L);
     }
     if(OrbElement=="G")
     {
@@ -2839,6 +4802,49 @@ double analysis::calcDelaunayElements(sta::StateVector Vector,StaBody*Body,QStri
     if(OrbElement=="H")
     {
         Element=DelaunayElem.H;
+    }
+
+    return Element;
+}
+
+double analysis::calcEquinoctialElements(sta::StateVector Vector,StaBody*Body,QString OrbElement,
+                                         double mjd,
+                                         QString FromCoordinate,
+                                         QString ToCoordinate)
+{
+    sta::StateVector ModifVector=CoordinateSystem::convert(Vector,
+                                                           mjd,
+                                                           STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                           analysis::CoordSys(FromCoordinate),
+                                                           STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                           analysis::CoordSys(ToCoordinate));
+    double mu = Body->mu();
+    sta::EquinoctialElements EquinoctialElem=cartesianTOequinoctial(mu, ModifVector);
+
+    double Element=0;
+    if(OrbElement=="Semimajor Axis")
+    {
+        Element=EquinoctialElem.SemimajorAxis;
+    }
+    if(OrbElement=="e*cos(omegaBar)")
+    {
+        Element=EquinoctialElem.ecos;
+    }
+    if(OrbElement=="e*sin(omegaBar)")
+    {
+        Element=EquinoctialElem.esin;
+    }
+    if(OrbElement=="Mean Longitude")
+    {
+        Element=EquinoctialElem.MeanLon;
+    }
+    if(OrbElement=="tan(i/2)*sin(raan)")
+    {
+        Element=EquinoctialElem.tansin;
+    }
+    if(OrbElement=="tan(i/2)*cos(raan)")
+    {
+        Element=EquinoctialElem.tancos;
     }
 
     return Element;
@@ -2933,8 +4939,10 @@ void analysis::enableReportOption(int i)
    }
     else
     {
+        //connect(TimeBox,SIGNAL(activated(int)),this,SLOT(SetTimeUnits()));
         stackedWidget->setCurrentWidget(pagePlotAxesSettings);
 
+        //PlotComboBox();
         if(i == 1) //2D plot
         {
             treeWidgetXaxis->show();
@@ -2980,14 +4988,14 @@ QComboBox*analysis::TimeFramesBox()
     TimeBox->addItem(tr("Gregorian LCL"));
     TimeBox->addItem(tr("YYDDD"));
     TimeBox->addItem(tr("Julian Date"));
+    TimeBox->addItem(tr("Julian UTC"));
     TimeBox->addItem(tr("Julian LCL"));
     TimeBox->addItem(tr("Mission Elapsed Time"));
     TimeBox->addItem(tr("GMT"));
     TimeBox->addItem(tr("MJD"));
-    TimeBox->addItem(tr("Time from epoch"));
+
     return TimeBox;
 }
-
 QComboBox*analysis::TimeUnitsBox()
 {
 
@@ -3016,6 +5024,12 @@ QComboBox*analysis::DistanceUnitsBox()
     DistanceBox->addItem(tr("NM"),3);
     return DistanceBox;
 }
+QComboBox*analysis::NoUnitsBox()
+{
+    QComboBox*NoUnits=new QComboBox();
+    NoUnits->addItem(tr(" "));
+    return NoUnits;
+}
 
 QComboBox*analysis::VelocityUnitsBox()
 {
@@ -3029,7 +5043,7 @@ void analysis::ComboBoxOptions()
     treeWidgetShowInReport->setColumnWidth(0,138);
     treeWidgetShowInReport->setColumnWidth(1,120);
     treeWidgetShowInReport->setColumnWidth(2,50);
-    //qDebug()<<treeWidgetShowInReport->topLevelItemCount();
+
     for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++)
     {
         QTreeWidgetItem*item=treeWidgetShowInReport->topLevelItem(i);
@@ -3053,20 +5067,41 @@ void analysis::ComboBoxOptions()
             (name=="Apogee Planetocentric Radius")||
             (name=="Perigee Planetocentric Radius")||
             (name=="Range")||
+            (name=="Velocity Modulus")||
             (name=="Semimajor Axis"))
         {
             treeWidgetShowInReport->setItemWidget(item,1,CoordinateBox());
             treeWidgetShowInReport->setItemWidget(item,2,DistanceUnitsBox());
         }
+        if(name=="Time")
+        {
+            treeWidgetShowInReport->setItemWidget(item,1,TimeFramesBox());
+            treeWidgetShowInReport->setItemWidget(item,2,NoUnitsBox());
+        }
+        if(name=="Time from epoch")
+        {
+            treeWidgetShowInReport->setItemWidget(item,1,NoUnitsBox());
+            treeWidgetShowInReport->setItemWidget(item,2,TimeUnitsBox());
+        }
+
         if((name=="Eccentricity")||
                    (name=="L")||
                    (name=="G")||
+                   (name=="l")||
+                   (name=="g")||
+                   (name=="h")||
                    (name=="H"))
 
                 {
                     treeWidgetShowInReport->setItemWidget(item,1,CoordinateBox());
+                    treeWidgetShowInReport->setItemWidget(item,2,NoUnitsBox());
 
                 }
+        if((name=="e*sin(omegaBar)")||(name=="e*cos(omegaBar)")||(name=="tan(i/2)*sin(raan)")||(name=="tan(i/2)*cos(raan)"))
+        {
+            treeWidgetShowInReport->setItemWidget(item,1,CoordinateBox());
+            treeWidgetShowInReport->setItemWidget(item,2,NoUnitsBox());
+        }
 
         if((name=="x velocity")||
            (name=="y velocity")||
@@ -3076,7 +5111,7 @@ void analysis::ComboBoxOptions()
             treeWidgetShowInReport->setItemWidget(item,2,VelocityUnitsBox());
         }
         if((name=="Access Time")||
-           (name=="Time")||
+
            (name=="Time crossing the J2000 epoch")||
            (name=="Time crossing the Mean Ecliptic Plane of Date")||
            (name=="Time crossing the True Ecliptic Plane of Date")||
@@ -3101,6 +5136,7 @@ void analysis::ComboBoxOptions()
            (name=="RAAN")||
            (name=="Argument of Periapsis")||
            (name=="True Anomaly")||
+           (name=="Mean Longitude")||
            (name=="Apogee Planetocentric Altitude")||
            (name=="Perigee Planetocentric Altitude")||
            (name=="Longitude when passing Ascending Node")||
@@ -3122,4 +5158,275 @@ void analysis::ComboBoxOptions()
             treeWidgetShowInReport->setItemWidget(item,2,AngleUnitsBox());
         }
     }
+
+}
+
+void analysis::PlotComboBox()
+{
+
+    {
+
+QList<QTreeWidget*>Tree;
+Tree.append(treeWidgetXaxis);
+Tree.append(treeWidgetYaxis);
+Tree.append(treeWidgetZaxis);
+for(int a=0;a<Tree.size();a++)
+{
+
+    for(int j=0;j<Tree.at(a)->topLevelItemCount();j++)
+    {
+
+        QTreeWidgetItem*topItem=Tree.at(a)->topLevelItem(j);
+        if(topItem->childCount()==0)
+        {
+
+        }
+        else
+        {
+
+            for(int k=0;k<topItem->childCount();k++)
+            {
+
+            if(topItem->child(k)->childCount()==0)
+                {
+                QTreeWidgetItem*item=topItem->child(k);
+                QString name=item->text(0);
+                //qDebug()<<"name of first children"<<name;
+                if ((name=="x position") ||
+                    (name=="y position")||
+                    (name=="z position") ||
+                    (name=="Sun")||
+                    (name=="Mercury")||
+                    (name=="Venus")||
+                    (name=="Earth")||
+                    (name=="Moon")||
+                    (name=="Mars")||
+                    (name=="Jupiter")||
+                    (name=="Saturn")||
+                    (name=="Uranus")||
+                    (name=="Neptune")||
+                    (name=="Pluto") ||
+                    (name=="Radius")||
+                    (name=="Radial Distance")||
+                    (name=="Apogee Planetocentric Radius")||
+                    (name=="Perigee Planetocentric Radius")||
+                    (name=="Range")||
+                    (name=="Velocity Modulus")||
+                    (name=="Semimajor Axis"))
+                {
+                    Tree.at(a)->setItemWidget(item,1,CoordinateBox());
+                    Tree.at(a)->setItemWidget(item,2,DistanceUnitsBox());
+                }
+                if(name=="Time")
+                {
+                    Tree.at(a)->setItemWidget(item,1,TimeFramesBox());
+                    Tree.at(a)->setItemWidget(item,2,NoUnitsBox());
+
+
+                }
+                if(name=="Time from epoch")
+                {
+                    Tree.at(a)->setItemWidget(item,1,NoUnitsBox());
+                    Tree.at(a)->setItemWidget(item,2,TimeUnitsBox());
+                }
+
+                if((name=="Eccentricity")||
+                           (name=="L")||
+                           (name=="G")||
+                           (name=="l")||
+                           (name=="g")||
+                           (name=="h")||
+                           (name=="H"))
+
+                        {
+                            Tree.at(a)->setItemWidget(item,1,CoordinateBox());
+                            Tree.at(a)->setItemWidget(item,2,NoUnitsBox());
+
+                        }
+                if((name=="e*sin(omegaBar)")||(name=="e*cos(omegaBar)")||(name=="tan(i/2)*sin(raan)")||(name=="tan(i/2)*cos(raan)"))
+                {
+                    Tree.at(a)->setItemWidget(item,1,CoordinateBox());
+                    Tree.at(a)->setItemWidget(item,2,NoUnitsBox());
+                }
+
+                if((name=="x velocity")||
+                   (name=="y velocity")||
+                   (name=="z velocity"))
+                {
+                    Tree.at(a)->setItemWidget(item,1,CoordinateBox());
+                    Tree.at(a)->setItemWidget(item,2,VelocityUnitsBox());
+                }
+                if((name=="Access Time")||
+
+                   (name=="Time crossing the J2000 epoch")||
+                   (name=="Time crossing the Mean Ecliptic Plane of Date")||
+                   (name=="Time crossing the True Ecliptic Plane of Date")||
+                   (name=="Local Time of Ascending Node")||
+                   (name=="Local Time of Descending Node")||
+                   (name=="Time of Ascending Node")||
+                   (name=="Time of Descending Node")||
+                   (name=="Time of Apogee")||
+                   (name=="Time of Perigee")||
+                   (name=="Time of Minimum Latitude")||
+                   (name=="Time of Maximum Altitude")||
+                   (name=="Time of Maximum Sun Elevation")||
+                   (name=="Time of Apparent Noon")||
+                   (name=="Time of Apparent Midnight")||
+                   (name=="Time of Apparent Dawn")||
+                   (name=="Time of Apparent Dusk"))
+                {
+                    Tree.at(a)->setItemWidget(item,1,TimeFramesBox());
+                    Tree.at(a)->setItemWidget(item,2,TimeUnitsBox());
+                }
+                if((name=="Inclination")||
+                   (name=="RAAN")||
+                   (name=="Argument of Periapsis")||
+                   (name=="True Anomaly")||
+                   (name=="Mean Longitude")||
+                   (name=="Apogee Planetocentric Altitude")||
+                   (name=="Perigee Planetocentric Altitude")||
+                   (name=="Longitude when passing Ascending Node")||
+                   (name=="Longitude when passing Descending Node")||
+                   (name=="Maximum Geodetic Latitude")||
+                   (name=="Minimum Geodetic Latitude")||
+                   (name=="Heading Angle")||
+                   (name=="Altitude")||
+                   (name=="Latitude")||
+                   (name=="Longitude")||
+                   (name=="Azimuth")||
+                   (name=="Elevation")||
+                   (name=="Flight Path Angle")||
+                   (name=="l")||(name=="g")||(name=="h")
+
+                   )
+                {
+                    Tree.at(a)->setItemWidget(item,1,CoordinateBox());
+                    Tree.at(a)->setItemWidget(item,2,AngleUnitsBox());
+                }
+            }
+            else
+            {
+
+                for (int l=0;l<topItem->child(k)->childCount();l++)
+                {
+                    QTreeWidgetItem*item=topItem->child(k)->child(l);
+                    QString name=item->text(0);
+                    if ((name=="x position") ||
+                        (name=="y position")||
+                        (name=="z position") ||
+                        (name=="Sun")||
+                        (name=="Mercury")||
+                        (name=="Venus")||
+                        (name=="Earth")||
+                        (name=="Moon")||
+                        (name=="Mars")||
+                        (name=="Jupiter")||
+                        (name=="Saturn")||
+                        (name=="Uranus")||
+                        (name=="Neptune")||
+                        (name=="Pluto") ||
+                        (name=="Radius")||
+                        (name=="Radial Distance")||
+                        (name=="Apogee Planetocentric Radius")||
+                        (name=="Perigee Planetocentric Radius")||
+                        (name=="Range")||
+                        (name=="Velocity Modulus")||
+                        (name=="Semimajor Axis"))
+                    {
+                        Tree.at(a)->setItemWidget(item,1,CoordinateBox());
+                        Tree.at(a)->setItemWidget(item,2,DistanceUnitsBox());
+                    }
+                    if(name=="Time")
+                    {
+                        Tree.at(a)->setItemWidget(item,1,CoordinateBox());
+                        Tree.at(a)->setItemWidget(item,2,NoUnitsBox());
+                    }
+                    if(name=="Time from epoch")
+                    {
+                        Tree.at(a)->setItemWidget(item,2,TimeUnitsBox());
+                    }
+
+                    if((name=="Eccentricity")||
+                               (name=="L")||
+                               (name=="G")||
+                               (name=="l")||
+                               (name=="g")||
+                               (name=="h")||
+                               (name=="H"))
+
+                            {
+                                Tree.at(a)->setItemWidget(item,1,CoordinateBox());
+                                Tree.at(a)->setItemWidget(item,2,NoUnitsBox());
+
+                            }
+                    if((name=="e*sin(omegaBar)")||(name=="e*cos(omegaBar)")||(name=="tan(i/2)*sin(raan)")||(name=="tan(i/2)*cos(raan)"))
+                    {
+                        Tree.at(a)->setItemWidget(item,1,CoordinateBox());
+                        Tree.at(a)->setItemWidget(item,2,NoUnitsBox());
+                    }
+
+                    if((name=="x velocity")||
+                       (name=="y velocity")||
+                       (name=="z velocity"))
+                    {
+                        Tree.at(a)->setItemWidget(item,1,CoordinateBox());
+                        Tree.at(a)->setItemWidget(item,2,VelocityUnitsBox());
+                    }
+                    if((name=="Access Time")||
+
+                       (name=="Time crossing the J2000 epoch")||
+                       (name=="Time crossing the Mean Ecliptic Plane of Date")||
+                       (name=="Time crossing the True Ecliptic Plane of Date")||
+                       (name=="Local Time of Ascending Node")||
+                       (name=="Local Time of Descending Node")||
+                       (name=="Time of Ascending Node")||
+                       (name=="Time of Descending Node")||
+                       (name=="Time of Apogee")||
+                       (name=="Time of Perigee")||
+                       (name=="Time of Minimum Latitude")||
+                       (name=="Time of Maximum Altitude")||
+                       (name=="Time of Maximum Sun Elevation")||
+                       (name=="Time of Apparent Noon")||
+                       (name=="Time of Apparent Midnight")||
+                       (name=="Time of Apparent Dawn")||
+                       (name=="Time of Apparent Dusk"))
+                    {
+                        Tree.at(a)->setItemWidget(item,1,TimeFramesBox());
+                        Tree.at(a)->setItemWidget(item,2,TimeUnitsBox());
+                    }
+                    if((name=="Inclination")||
+                       (name=="RAAN")||
+                       (name=="Argument of Periapsis")||
+                       (name=="True Anomaly")||
+                       (name=="Mean Longitude")||
+                       (name=="Apogee Planetocentric Altitude")||
+                       (name=="Perigee Planetocentric Altitude")||
+                       (name=="Longitude when passing Ascending Node")||
+                       (name=="Longitude when passing Descending Node")||
+                       (name=="Maximum Geodetic Latitude")||
+                       (name=="Minimum Geodetic Latitude")||
+                       (name=="Heading Angle")||
+                       (name=="Altitude")||
+                       (name=="Latitude")||
+                       (name=="Longitude")||
+                       (name=="Azimuth")||
+                       (name=="Elevation")||
+                       (name=="Flight Path Angle")||
+                       (name=="l")||(name=="g")||(name=="h")
+
+                       )
+                    {
+                        Tree.at(a)->setItemWidget(item,1,CoordinateBox());
+                        Tree.at(a)->setItemWidget(item,2,AngleUnitsBox());
+                    }
+                }
+            }
+
+        }
+    }
+
+    }
+
+}
+}
 }

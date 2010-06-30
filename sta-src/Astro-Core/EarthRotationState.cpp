@@ -61,5 +61,7 @@ EarthRotationState::angularVelocity(double /* tjd */) const
     // TODO: only an approximation
     //       No nutation or precession
     //       Also, no accurate time derivative of Greenwich hour angle
-    return Vector3d::UnitZ() * (1.0 / MEAN_SIDEREAL_DAY_LENGTH);
+    //return Vector3d::UnitZ() * (1.0 / MEAN_SIDEREAL_DAY_LENGTH);
+    return Vector3d::UnitZ() * 7.2921159e-5;
+
 }

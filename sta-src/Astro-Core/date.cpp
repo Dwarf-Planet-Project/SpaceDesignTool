@@ -178,25 +178,53 @@ double sta::calendarToDayOfYear(QDateTime DateTime)
     {
         MonthsLength[1]=29;
     }
-//qDebug()<<"month"<<DateTime.date().month();
-    if(DateTime.date().month()!=0)
+
+    if(DateTime.date().month()!=1)
     {
       for(int i=0;i<DateTime.date().month();i++)
       {
         DaysInMonths=DaysInMonths+MonthsLength[i];
-        //qDebug()<<"number of days of int months"<<DaysInMonths;
+
       }
     }
- //qDebug()<<"number of days of int months-after the loop"<<DaysInMonths;
-    if(DateTime.date().day()!=1)
-    {
-    Days=DateTime.date().day()-1;
-    }
-//qDebug()<<"number of days in the month"<<Days;
+
+
+    Days=DateTime.date().day();
+
+
     DayOfYear=DaysInMonths+Days;
-    //qDebug()<<"days of year"<<DayOfYear;
+
     return DayOfYear;
 }
+/*double sta::MissionElapsedTime(QDateTime Date)
+{
+    int DaysInMonths=0;
+    int Days=0;
+    int DayOfYear=0;
+    int MonthsLength[12];
+    MonthsLength[0]=MonthsLength[2]=MonthsLength[4]=MonthsLength[6]=MonthsLength[7]=MonthsLength[9]=MonthsLength[11];
+    MonthsLength[3]=MonthsLength[5]=MonthsLength[8]=MonthsLength[10]=30;
+    MonthsLength[1]=28;
+
+    JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
+    TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
+    int Year=TimeDateVector[index].date().year();
+
+
+    if(sta::CheckIfLeapYear(DateTime.date().year()))
+    {
+        MonthsLength[1]=29;
+    }
+
+    if(DateTime.date().month()!=1)
+    {
+      for(int i=0;i<DateTime.date().month();i++)
+      {
+        DaysInMonths=DaysInMonths+MonthsLength[i];
+
+      }
+    }
+}*/
 
 double sta::MjdToFromEpoch(double StartEpoch, double mjd, QString Units)
 {

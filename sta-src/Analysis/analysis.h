@@ -38,8 +38,21 @@ public:
         void readScenario();
 int ObjectsIndex(QStringList AllObjects, int Index, QString ObjectType);
 QString CovCommCalc();
-int InputsControl();
+int InputsControl(QList<QTreeWidget*>tree);
 void Warnings(int i);
+
+struct AnalysisData
+{
+QString GenerationTime;
+QList<double>MissionSat; //mission arc, satellite numbers
+QList<QString>ParameterTitles;
+QList<QList<double> >Data; // QList of lines, each line a QList of data
+
+};
+
+QList<AnalysisData> WriteDataStructure(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetItem *> selectedTimes);
+void WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetItem *> selectedTimes);
+
 
 protected slots:
 	// Classical action written by Guillermo
@@ -53,6 +66,7 @@ protected slots:
 
 
 	// Actions written by Ana
+
         //void on_groupBoxAnalysisFormat_toggled(bool);
         //void on_ComboBoxAnalysisFormat_activated(const QString&);
 	void on_groupBoxParameters_toggled(bool);
@@ -74,6 +88,9 @@ protected slots:
 	void addParameter(); //clicked
 	void removeParameter();//clicked
 	void enableReportOption(int i);
+        //void SetTimeUnits(int i);
+        //void PlotComboBox(QList<QTreeWidgetItem*>List, int i);
+       // void InsertingComboBox(int);
        // void AddDefaultTime();
 
 private:
@@ -81,14 +98,16 @@ private:
         PropagatedScenario*m_propagatedScenario;
         //PropagatedScenario*m_propagatedScenario;
         bool CheckIfMissionArc();
-        void InsertingComboBox();
+        void InsertComboBox();
         void ComboBoxOptions();
+        void PlotComboBox();
         QComboBox * TimeFramesBox();
         QComboBox * TimeUnitsBox();
         QComboBox * AngleUnitsBox();
         QComboBox * DistanceUnitsBox();
         QComboBox * CoordinateBox();
         QComboBox * VelocityUnitsBox();
+        QComboBox * NoUnitsBox();
         QList<MissionArc*> m_missionArcs;
         QList<SpaceObject*> m_spaceObjectList;
         //double* ReadTime(int column);
@@ -108,7 +127,14 @@ private:
                                                                        double mjd,
                                                                        QString FromCoordinate,
                                                                        QString ToCoordinate);
+        double calcEquinoctialElements(sta::StateVector Vector,StaBody*Body,QString OrbElement,
+                                                 double mjd,
+                                                 QString FromCoordinate,
+                                                 QString ToCoordinate);
 
-};
+
+
+
+    };
 #endif //analysis_H
 
