@@ -15,6 +15,8 @@
 #include <iostream>
 #include <string>
 
+#ifdef CELX
+
 #ifndef LUA_VER
 #define LUA_VER 0x050000
 #endif
@@ -27,6 +29,12 @@ extern "C" {
 #include "lualib.h"
 }
 #endif
+
+#else
+
+class lua_State;
+
+#endif // CELX
 
 #include <celutil/timer.h>
 #include <celengine/observer.h>
