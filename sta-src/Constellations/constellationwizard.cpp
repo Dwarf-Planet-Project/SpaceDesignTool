@@ -216,7 +216,6 @@ void ConstellationWizardDialog::accept()
     for (int i = 0; i < n; i++)
     {
         ScenarioSC* sc = new ScenarioSC();
-	//sc->setName("Satellite");
 	sc->setName(satellitekeplerian[i].name);
 	sc->ElementIdentifier()->setName(satellitekeplerian[i].name);
 
@@ -229,24 +228,40 @@ void ConstellationWizardDialog::accept()
         elements->setArgumentOfPeriapsis(satellitekeplerian[i].param[4]);
         elements->setTrueAnomaly(satellitekeplerian[i].param[5]);
 
+	// Create the initial attitude (Euler elements)
+	ScenarioEulerBIType*  initAtt = new ScenarioEulerBIType();
+	//QSharedPointer<ScenarioEulerBIType> initAtt(new ScenarioEulerBIType());
+	initAtt->setPhi(0.00000);
+	initAtt->setTheta(0.00000);
+	initAtt->setPsi(0.00000);
+	initAtt->setPhiDot(0.00000);
+	initAtt->setThetaDot(0.00000);
+	initAtt->setPsiDot(0.00000);
+
         // Create the trajectory arc
         ScenarioLoiteringType* loitering = new ScenarioLoiteringType();
+	loitering->ElementIdentifier()->setName("loitering");
 	loitering->Environment()->CentralBody()->setName("Earth");
         loitering->InitialPosition()->setCoordinateSystem("INERTIAL J2000");
         loitering->PropagationPosition()->setTimeStep(60.0);
         loitering->PropagationPosition()->setPropagator("TWO BODY");
+	loitering->PropagationPosition()->setIntegrator("RK4");
+	loitering->InitialAttitude()->setCoordinateSystem("EULER 123");
+	loitering->PropagationAttitude()->setIntegrator("");	// Not defined in STA yet
+	loitering->PropagationAttitude()->setTimeStep(60.0);
 
+	// Time-line
 	QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
 	loitering->TimeLine()->setStartTime(TheCurrentDateAndTime);
 	loitering->TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
-	//loitering->TimeLine()->setStartTime(QDateTime(QDate(2012, 1, 1)));
-	//loitering->TimeLine()->setEndTime(QDateTime(QDate(2012, 1, 2)));
         loitering->TimeLine()->setStepTime(60.0);
 
         loitering->InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(elements));
+	//loitering->InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+	loitering->InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioAbstract6DOFAttitudeType>(initAtt));
 
         // Create the spacecraft
-        sc->SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(loitering));
+	sc->SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(loitering));
 
         // Add it to the scenario
         scenario->AbstractParticipant().append(QSharedPointer<ScenarioParticipantType>(sc));
