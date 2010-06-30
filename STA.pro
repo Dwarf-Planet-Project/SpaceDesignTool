@@ -530,9 +530,6 @@ ENGINE_SOURCES = $$CEL/celengine/asterism.cpp \
     $$CEL/celengine/rotationmanager.cpp \
     $$CEL/celengine/samporbit.cpp \
     $$CEL/celengine/samporient.cpp \
-    $$CEL/celengine/scriptobject.cpp \
-    $$CEL/celengine/scriptorbit.cpp \
-    $$CEL/celengine/scriptrotation.cpp \
     $$CEL/celengine/selection.cpp \
     $$CEL/celengine/shadermanager.cpp \
     $$CEL/celengine/simulation.cpp \
@@ -660,24 +657,16 @@ CELESTIA_SPICE_HEADERS = $$CEL/celengine/spiceinterface.h \
     $$CEL/celengine/spicerotation.h
 
 # ############## Celestia App sources ##################
-CELESTIA_APP_SOURCES = $$CEL/celestia/celestiacore.cpp \
+CELESTIA_APP_SOURCES = \
+    $$CEL/celestia/celestiacore.cpp \
+    $$CEL/celestia/celx.cpp \
     $$CEL/celestia/configfile.cpp \
     $$CEL/celestia/destination.cpp \
     $$CEL/celestia/eclipsefinder.cpp \
     $$CEL/celestia/favorites.cpp \
     $$CEL/celestia/imagecapture.cpp \
     $$CEL/celestia/scriptmenu.cpp \
-    $$CEL/celestia/url.cpp \
-    $$CEL/celestia/celx.cpp \
-    $$CEL/celestia/celx_celestia.cpp \
-    $$CEL/celestia/celx_frame.cpp \
-    $$CEL/celestia/celx_gl.cpp \
-    $$CEL/celestia/celx_object.cpp \
-    $$CEL/celestia/celx_observer.cpp \
-    $$CEL/celestia/celx_phase.cpp \
-    $$CEL/celestia/celx_position.cpp \
-    $$CEL/celestia/celx_rotation.cpp \
-    $$CEL/celestia/celx_vector.cpp
+    $$CEL/celestia/url.cpp
 CELESTIA_APP_HEADERS = $$CEL/celestia/celestiacore.h \
     $$CEL/celestia/configfile.h \
     $$CEL/celestia/destination.h \
@@ -927,14 +916,12 @@ win32 {
     INCLUDEPATH += $$WINDOWS_LIBRARIES_DIR/inc/libintl \
         $$WINDOWS_LIBRARIES_DIR/inc/libz \
         $$WINDOWS_LIBRARIES_DIR/inc/libpng \
-        $$WINDOWS_LIBRARIES_DIR/inc/libjpeg \
-        $$WINDOWS_LIBRARIES_DIR/inc/lua-5.1
+        $$WINDOWS_LIBRARIES_DIR/inc/libjpeg
     LIBS += -L$$WINDOWS_LIBRARIES_DIR/lib \
         -lzlib \
         -llibpng \
         -llibjpeg2 \
-        -lintl \
-        -llua5.1
+        -lintl
     RC_FILE = sta-src/sta.rc
     DEFINES += _CRT_SECURE_NO_WARNINGS
     
@@ -975,15 +962,6 @@ linux-g++ {
     INCLUDEPATH += /usr/include
     LIBS += -ljpeg
     LIBS += -lpng
-    exists( /usr/include/lua5.1/lua.h ) { 
-        message( " - Configuring LUA for Debian-type installation..." )
-        INCLUDEPATH += /usr/include/lua5.1
-        LIBS += -llua5.1
-    }
-    exists( /usr/include/lua.h ) { 
-        message( " - Configuring LUA for RPM-type installation..." )
-        LIBS += -llua
-    }
 }
 
 # ################## Package files ###################
@@ -1103,8 +1081,6 @@ macx {
     MACOSXIconFiles_FILES = $$join(FILES, " $$MACOSXIconFiles_SOURCE/", $$MACOSXIconFiles_SOURCE/)
 }
 
-# INCLUDEPATH += /usr/local/cspice/include
-# LIBS += -ljpeg -llua /usr/local/cspice/lib/cspice.a
 macx { 
      QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
      QMAKE_LFLAGS += -framework \
@@ -1119,10 +1095,9 @@ macx {
     PRECOMPILED_HEADER += thirdparty/macosx/Util.h
     FRAMEWORKPATH = thirdparty/macosx/Frameworks
     LIBS -= -ljpeg
-    LIBS += -llua
     LIBS += -L$$FRAMEWORKPATH
     DEFINES += PNG_SUPPORT
-    FRAMEWORKS.files = $$FRAMEWORKPATH/liblua.dylib \
+    FRAMEWORKS.files = \
         $$FRAMEWORKPATH/libpng.dylib
     FRAMEWORKS.path = Contents/Frameworks
     QMAKE_BUNDLE_DATA += FRAMEWORKS
@@ -1193,5 +1168,3 @@ macx {
         ATMOSPHERES \
         BODIES
 }
-DEFINES += CELX \
-    LUA_VER=0x050100
