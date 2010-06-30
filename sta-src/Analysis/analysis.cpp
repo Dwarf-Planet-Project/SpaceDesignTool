@@ -45,7 +45,7 @@
 #include <Coverage/coverageanalysis.h>
 #include "AnalysisPlot.h"
 #include "Plotting/PlotView.h"
-using namespace std;
+//using namespace std;
 //using namespace sta;
 
 
