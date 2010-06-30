@@ -50,7 +50,6 @@ enum FatalErrors
 
 class CelxLua;
 
-#ifdef CELX
 class CelxValue
 {
 public:
@@ -84,12 +83,11 @@ private:
         const char* value_cstring;
     };
 };
-#endif // CELX
+
 
 class CelxLua
 {
 public:
-#ifdef CELX
     CelxLua(lua_State* l);
     ~CelxLua();
     
@@ -138,7 +136,7 @@ public:
                         bool defaultValue = false);
     
     LuaState* getLuaStateObject();
-#endif
+
     
     // String to flag mappings
     typedef std::map<std::string, uint32> FlagMap;
@@ -167,10 +165,9 @@ public:
     static const char* ClassNames[];
     
 private:
-#ifdef CELX
     lua_State* m_lua;
-#endif
 };
+
 
 
 #endif // _CELX_INTERNAL_H_

@@ -27,7 +27,9 @@
 #include "favorites.h"
 #include "destination.h"
 #include "moviecapture.h"
+#ifdef CELX
 #include "celx.h"
+#endif
 class Url;
 
 // class CelestiaWatcher;
@@ -462,10 +464,12 @@ class CelestiaCore // : public Watchable<CelestiaCore>
     Selection lastSelection;
     string selectionNames;
 
+#ifdef CELX
     friend View* getViewByObserver(CelestiaCore*, Observer*);
     friend void getObservers(CelestiaCore*, std::vector<Observer*>&);
     friend TextureFont* getFont(CelestiaCore*);
     friend TextureFont* getTitleFont(CelestiaCore*);
+#endif
 };
 
 #endif // _CELESTIACORE_H_

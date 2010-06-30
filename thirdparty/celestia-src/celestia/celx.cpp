@@ -289,8 +289,6 @@ void CelxLua::initMaps()
 }
 
 
-#ifdef CELX
-
 static void getField(lua_State* l, int index, const char* key)
 {
     // When we move to Lua 5.1, this will be replaced by:
@@ -1243,7 +1241,6 @@ LuaState* getLuaStateObject(lua_State* l)
     return luastate_ptr;
 }
 
-#endif // CELX
 
 // Map the observer to its View. Return NULL if no view exists
 // for this observer (anymore).
@@ -1263,8 +1260,6 @@ void getObservers(CelestiaCore* appCore, vector<Observer*>& observerList)
             observerList.push_back((*i)->observer);
 }
 
-
-#ifdef CELX
 
 // ==================== Helpers ====================
 
@@ -4368,5 +4363,3 @@ LuaState* CelxLua::getLuaStateObject()
     lua_settop(m_lua, stackSize);
     return luastate_ptr;
 }
-
-#endif // CELX
