@@ -272,6 +272,11 @@ static void openLuaLibrary(lua_State* l,
 #endif
 
 
+void InitializeScriptParserTables()
+{
+    CelxLua::initMaps();
+}
+
 void CelxLua::initMaps()
 {
     if (!mapsInitialized)

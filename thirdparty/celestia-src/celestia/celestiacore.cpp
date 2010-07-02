@@ -2216,6 +2216,8 @@ void CelestiaCore::setAltAzimuthMode(bool enable)
 
 void CelestiaCore::start(double t)
 {
+    InitializeScriptParserTables();
+
     if (config->initScriptFile != "")
     {
         // using the KdeAlerter in runScript would create an infinite loop,

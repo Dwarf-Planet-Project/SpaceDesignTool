@@ -105,4 +105,6 @@ private:
 View* getViewByObserver(CelestiaCore*, Observer*);
 void getObservers(CelestiaCore*, std::vector<Observer*>&);
 
+void InitializeScriptParserTables();
+
 #endif // _CELESTIA_CELX_H_
