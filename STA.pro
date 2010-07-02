@@ -1170,3 +1170,18 @@ macx {
         ATMOSPHERES \
         BODIES
 }
+
+## MAC OS X specifics to load inside the bundle the Qt frameworks to avoid separated installatio
+## and make STA a droppable and callable application mac like
+macx {
+	isEmpty(QT_FRAMEWORK_DIR): QT_FRAMEWORK_DIR = /Library/Frameworks
+	private_frameworks.files += $${QT_FRAMEWORK_DIR}/QtCore.framework
+	private_frameworks.files += $${QT_FRAMEWORK_DIR}/QtGui.framework
+	private_frameworks.files += $${QT_FRAMEWORK_DIR}/QtXml.framework
+	private_frameworks.files += $${QT_FRAMEWORK_DIR}/QtWebKit.framework
+	private_frameworks.path = Contents/Frameworks
+	QMAKE_BUNDLE_DATA +=  private_frameworks
+
+	QMAKE_INFO_PLIST= ./sta-data/macosx/Info.plist
+}
+
