@@ -115,6 +115,11 @@ QString convertToString(int n)
     return QString::number(n);
 }
 
+QString convertToString(bool b)
+{
+    return b ? QString("true") : QString("false");
+}
+
 QString convertToString(const QDateTime& d)
 {
     return d.toString(Qt::ISODate);

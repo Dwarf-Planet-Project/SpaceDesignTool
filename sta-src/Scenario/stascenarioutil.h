@@ -43,6 +43,7 @@ extern QList<int> parseIntList(const QString& e);
 extern QString convertToString(const QString& e);
 extern QString convertToString(double d);
 extern QString convertToString(int n);
+extern QString convertToString(bool b);
 extern QString convertToString(const QDateTime& d);
 extern QString convertToString(const QList<double>& l);
 extern QString convertToString(const QList<int>& l);
