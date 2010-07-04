@@ -36,8 +36,6 @@
     <addaction name="actionSaveScenarioAs"/>
     <addaction name="actionExport"/>
     <addaction name="separator"/>
-    <addaction name="actionOpenScript"/>
-    <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
