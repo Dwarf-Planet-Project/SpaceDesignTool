@@ -190,6 +190,7 @@ InitSolarSystemBodyDictionary(QHash<StaBodyId, StaBody*>& dict, QHash<QString, S
     AddSolarSystemBody(dict, nameIndex, STA_EARTH_BARYCENTER,        "Earth Barycenter",        0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
     // Bodies
+    //                                   Body name              mu Km^3 s^-2        Radius Km                       ?????        ??????       Peiod (d)
     AddSolarSystemBody(dict, nameIndex, STA_EARTH,     "Earth",  398600.415,     Vector2d(6378.14, 6356.75),        29.784678,  149597870.7,  365.256,    7.155);
     AddSolarSystemBody(dict, nameIndex, STA_MERCURY,   "Mercury",     22032,     Vector2d(2439.7, 2439.7),          47.87,      57909100.0,     87.968,   3.38);
     AddSolarSystemBody(dict, nameIndex, STA_VENUS,     "Venus",      324859,     Vector2d(6051.8, 6051.8),          35.02,      108208930.0,    224.701,  3.86);

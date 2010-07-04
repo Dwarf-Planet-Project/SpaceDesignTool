@@ -35,6 +35,7 @@ Created October 2009
 #include "STAcalculator.h"
 #include "Astro-Core/calendarTOjulian.h"
 #include "Astro-Core/date.h"
+#include "Astro-Core/stabody.h"
 
 STAcalculator::STAcalculator ( QWidget * parent, Qt::WindowFlags f) : QDialog(parent, f)
 {
@@ -42,6 +43,20 @@ STAcalculator::STAcalculator ( QWidget * parent, Qt::WindowFlags f) : QDialog(pa
 	// Setting up the currect date into the calendar widget
 	QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime();
 	dateTimeEdit->setDateTime(TheCurrentDateAndTime);
+	// Setting Earth as favourite plannet
+	int itemNumber = 0;
+	QString centralBodyName = comboBoxPlanets->itemText(itemNumber);
+	const StaBody* body = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+	double r = body->meanRadius();
+	double p = body->orbitalPeriod();
+	double i = body->inclination();
+	double d = body->distance();
+	double mu = body->mu();
+	AverageRadiusEdit->setText(QString::number(r, 'f', 4));
+	PeriodEdit->setText(QString::number(p, 'f', 4));
+	InclinationEdit->setText(QString::number(i, 'f', 4));
+	DistanceSunEdit->setText(QString::number(d, 'f', 4));
+	gravityConstantEdit->setText(QString::number(mu, 'f', 4));
 }
 
 
@@ -50,12 +65,15 @@ STAcalculator::~STAcalculator()
 {
 }
 
-
+/*
+  // No help for the time being
 void STAcalculator::on_buttonBox_helpRequested()
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
+*/
 
+/*
 void STAcalculator::on_buttonBox_clicked(QAbstractButton*)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
@@ -65,12 +83,28 @@ void STAcalculator::on_tabWidget_currentChanged(int)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
+*/
+
 
 void STAcalculator::on_comboBoxPlanets_activated(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    int itemNumber = comboBoxPlanets->currentIndex();
+    QString centralBodyName = comboBoxPlanets->itemText(itemNumber);
+    const StaBody* body = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+    double r = body->meanRadius();
+    double p = body->orbitalPeriod();
+    double i = body->inclination();
+    double d = body->distance();
+    double mu = body->mu();
+    AverageRadiusEdit->setText(QString::number(r, 'f', 4));
+    PeriodEdit->setText(QString::number(p, 'f', 4));
+    InclinationEdit->setText(QString::number(i, 'f', 4));
+    DistanceSunEdit->setText(QString::number(d, 'f', 4));
+    gravityConstantEdit->setText(QString::number(mu, 'f', 4));
 }
 
+
+/*
 void STAcalculator::on_AverageRadiusEdit_textChanged(const QString&)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
@@ -96,110 +130,9 @@ void STAcalculator::on_groupBox_toggled(bool)
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void STAcalculator::on_semimajorAxisEdit_textChanged(const QString&)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
+*/
 
-void STAcalculator::on_eccentricityEdit_textChanged(const QString&)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
 
-void STAcalculator::on_inclinationEdit_textChanged(const QString&)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void STAcalculator::on_raanEdit_textChanged(const QString&)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void STAcalculator::on_argOfPeriapsisEdit_textChanged(const QString&)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void STAcalculator::on_trueAnomalyEdit_textChanged(const QString&)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void STAcalculator::on_comboBoxSemiMajor_activated(const QString&)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void STAcalculator::on_comboBoxTrueAnomaly_activated(const QString&)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void STAcalculator::on_groupBox_2_toggled(bool)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void STAcalculator::on_comboBoxX_activated(const QString&)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void STAcalculator::on_positionXEdit_textChanged(const QString&)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void STAcalculator::on_comboBoxY_activated(const QString&)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void STAcalculator::on_positionYEdit_textChanged(const QString&)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void STAcalculator::on_positionZEdit_textChanged(const QString&)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void STAcalculator::on_velocityXEdit_textChanged(const QString&)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void STAcalculator::on_velocityYEdit_textChanged(const QString&)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void STAcalculator::on_velocityZEdit_textChanged(const QString&)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void STAcalculator::on_comboBoxZ_activated(const QString&)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void STAcalculator::on_comboBoxVx_activated(const QString&)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void STAcalculator::on_comboBoxVy_activated(const QString&)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void STAcalculator::on_comboBoxVz_activated(const QString&)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
 
 void STAcalculator::on_dateTimeEdit_dateTimeChanged(const QDateTime&)
 {
@@ -242,11 +175,11 @@ void STAcalculator::on_JDUTCEdit_textChanged(const QString&)
     double Epoch, EpochTDB, ModifiedEpoch, FractionOfADay;
 
     Epoch = JDUTCEdit->text().toDouble();
-    EpochTDB = Epoch + 0.00076604;
 
     QDateTime myDateAndTime = sta::JdToCalendar(Epoch);
     dateTimeEdit->setDateTime(myDateAndTime);
 
+    /*
     FractionOfADay = sta::secsToDays(Epoch);
     DayFractionEdit->setText(QString::number(FractionOfADay, 'f', 8));
 
@@ -257,26 +190,51 @@ void STAcalculator::on_JDUTCEdit_textChanged(const QString&)
 
     ModifiedEpoch = sta::JdToMjd (EpochTDB);
     MJDTDBEdit->setText(QString::number(ModifiedEpoch, 'f', 8));
+    */
 
 }
 
 void STAcalculator::on_MJDUTCEdit_textChanged(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    double Epoch, JulianDateUTC;
+
+    Epoch = MJDUTCEdit->text().toDouble();
+    JulianDateUTC = sta::MjdToJd(Epoch);
+
+    QDateTime myDateAndTime = sta::JdToCalendar(JulianDateUTC);
+    dateTimeEdit->setDateTime(myDateAndTime);
 }
 
-void STAcalculator::on_JDTDBEdit_textChanged(const QString&)
+void STAcalculator::on_JDTDBEdit_textEdited(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    double Epoch, JulianDateUTC;
+
+    Epoch = JDTDBEdit->text().toDouble();
+
+    JulianDateUTC = Epoch - 0.00076604;
+
+    QDateTime myDateAndTime = sta::JdToCalendar(JulianDateUTC);
+    dateTimeEdit->setDateTime(myDateAndTime);
+
+    JDTDBEdit->setText(QString::number(Epoch, 'f', 8));
+
+
 }
 
-void STAcalculator::on_MJDTDBEdit_textChanged(const QString&)
+void STAcalculator::on_MJDTDBEdit_textEdited(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    double Epoch = MJDTDBEdit->text().toDouble();
+    double JulianDateUTC = sta::MjdToJd(Epoch);
+
+    QDateTime myDateAndTime = sta::JdToCalendar(JulianDateUTC - 0.00076604);
+    dateTimeEdit->setDateTime(myDateAndTime);
+
+    MJDTDBEdit->setText(QString::number(Epoch, 'f', 8));
 }
 
 void STAcalculator::on_DayFractionEdit_textChanged(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+	//qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    // Do nothing
 }
 
