@@ -20,6 +20,10 @@ Authors
   R. Noriega        <Technical University of Madrid>
   O. Yilmaz         <University of Wuerzburg>
   C. Grohnfeldt     <University of Bremen>
+  E. S. Ceriani     <Engenio>
+  M. Di Perna       <Engenio>
+  M. Massari        <Dinamica>
+  R. Armellin       <Dinamica>
   
   
 
@@ -29,15 +33,15 @@ STA email address:
 Contributors
 ------------
   A. Benoit          <ESA>
-  A. Martinez       <ESA>
+  A. Martinez        <ESA>
   E. Mooij           <Delft University of Netherlands>
-  C. Yabar          <ESA>
+  C. Yabar           <ESA>
   M. Lavagna         <Politecnico di Milano>
-  N. Filipe         <ESA>
+  N. Filipe          <ESA>
   J. M. Giron        <University of Madrid>
-  A. Bavandi        <ESA>
+  A. Bavandi         <ESA>
   C. Bueskens        <University of Bremen>
-  S. Erb            <ESA>
+  S. Erb             <ESA>
   R. Martinez        <Technical University of Madrid>
   L. N. Vicente      <University of Coimbra>
   J. Fliege          <University of Southampton>
