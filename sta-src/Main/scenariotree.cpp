@@ -105,33 +105,60 @@ void changeLabels(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
 {
     // Guillermo says: renaming the labels of the first colum to make it compatible with the participants view
     if ((scenarioObject->elementName()) == "SC")
+    {
 	item->setText(0, "Satellite");
+	item->setIcon(0, QIcon(":/icons/ParticipantSATELLITE.png"));
+    }
     else if ((scenarioObject->elementName()) == "LV")
+    {
 	item->setText(0, "Launcher");
+	item->setIcon(0, QIcon(":/icons/ParticipantROCKET.png"));
+    }
     else if ((scenarioObject->elementName()) == "GroundStation")
+    {
 	item->setText(0, "Ground Station");
+	item->setIcon(0, QIcon(":/icons/ParticipantSTATION.png"));
+    }
     else if ((scenarioObject->elementName()) == "Point")
+    {
 	item->setText(0, "Point");
+	item->setIcon(0, QIcon(":/icons/ParticipantPOINT.png"));
+    }
     else if ((scenarioObject->elementName()) == "REV")
+    {
 	item->setText(0, "Re-entry vehicle");
+	item->setIcon(0, QIcon(":/icons/ParticipantENTRYVEHICLE.png"));
+    }
     else if ((scenarioObject->elementName()) == "Transmitter")
 	item->setText(0, "Transmitter");
     else if ((scenarioObject->elementName()) == "TransmitterPayload")
 	item->setText(0, "Transmitter");
     else if ((scenarioObject->elementName()) == "TransmitterPayloadType")
+    {
 	item->setText(0, "Transmitter");
+	item->setIcon(0, QIcon(":/icons/Payload.png"));
+    }
     else if ((scenarioObject->elementName()) == "ReceiverPayload")
 	item->setText(0, "Receiver");
     else if ((scenarioObject->elementName()) == "ReceiverPayloadType")
+    {
 	item->setText(0, "Receiver");
+	item->setIcon(0, QIcon(":/icons/Payload.png"));
+    }
     else if ((scenarioObject->elementName()) == "OpticalPayload")
 	item->setText(0, "Telescope");
     else if ((scenarioObject->elementName()) == "OpticalPayloadType")
+    {
 	item->setText(0, "Telescope");
+	item->setIcon(0, QIcon(":/icons/Payload.png"));
+    }
     else if ((scenarioObject->elementName()) == "RadarPayload")
 	item->setText(0, "Radar");
     else if ((scenarioObject->elementName()) == "RadarPayloadType")
+    {
 	item->setText(0, "Radar");
+	item->setIcon(0, QIcon(":/icons/Payload.png"));
+    }
     else if ((scenarioObject->elementName()) == "RadarProperties")
 	item->setText(0, "Radar properties");
     else if ((scenarioObject->elementName()) == "RadarType")
@@ -139,11 +166,17 @@ void changeLabels(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
     else if ((scenarioObject->elementName()) == "Loitering")
 	item->setText(0, "Loitering");
     else if ((scenarioObject->elementName()) == "LoiteringType")
+    {
 	item->setText(0, "Loitering");
+	item->setIcon(0, QIcon(":/icons/mission-arcs-loitering.png"));
+    }
     else if ((scenarioObject->elementName()) == "Lagrangian")
 	item->setText(0, "Lagrangian");
     else if ((scenarioObject->elementName()) == "LagrangianType")
+    {
 	item->setText(0, "Lagrangian");
+	item->setIcon(0, QIcon(":/icons/mission-arcs-loitering.png"));
+    }
     else if ((scenarioObject->elementName()) == "Rendezvous")
 	item->setText(0, "Rendezvous");
     else if ((scenarioObject->elementName()) == "FlyBy")
@@ -151,7 +184,10 @@ void changeLabels(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
     else if ((scenarioObject->elementName()) == "LoiteringTLE")
 	item->setText(0, "TLE");
     else if ((scenarioObject->elementName()) == "LoiteringTLEType")
+    {
 	item->setText(0, "TLE");
+	item->setIcon(0, QIcon(":/icons/mission-arcs-loiteringTLE.png"));
+    }
     else if ((scenarioObject->elementName()) == "EntryArc")
 	item->setText(0, "Entry");
     else if ((scenarioObject->elementName()) == "ElementIdentifierType")
@@ -312,8 +348,11 @@ void changeLabels(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
 	item->setText(0, "Propagation of attitude");
     else if ((scenarioObject->elementName()) == "SystemTemperature")
 	item->setText(0, "Temperature");
-    else if ((scenarioObject->elementName()) == "EntryArcType") //Next lines added by Dominic to remove empty lines in scenario tree
+    else if ((scenarioObject->elementName()) == "EntryArcType")  //Next lines added by Dominic to remove empty lines in scenario tree
+    {
         item->setText(0, "Re-entry Arc");
+	item->setIcon(0, QIcon(":/icons/mission-arcs-reentry.png"));
+    }
     else if ((scenarioObject->elementName()) == "EnvironmentType")
         item->setText(0, "Environment");
     else if ((scenarioObject->elementName()) == "CentralBodyType")
@@ -375,7 +414,7 @@ ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioOb
     }
 
     // Guillermo: expand items by default or not
-    item->setExpanded(true);
+    //item->setExpanded(true);
 
     if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject))
     {
@@ -493,17 +532,6 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
         {
             scenario->AbstractParticipant().append(QSharedPointer<ScenarioParticipantType>(participant));
             QTreeWidgetItem* participantItem = new QTreeWidgetItem(parent);
-	    // Guillermo says: now placing nice icons beside the labels
-	    if (participant->elementName() == "GroundStation")
-		participantItem->setIcon(0, QIcon(":/icons/ParticipantSTATION.png"));
-	    else if (participant->elementName() == "Point")
-		participantItem->setIcon(0, QIcon(":/icons/ParticipantPOINT.png"));
-	    else if (participant->elementName() == "SC")
-		participantItem->setIcon(0, QIcon(":/icons/ParticipantSATELLITE.png"));
-	    else if (participant->elementName() == "LV")
-		participantItem->setIcon(0, QIcon(":/icons/ParticipantROCKET.png"));
-	    else if (participant->elementName() == "REV")
-		participantItem->setIcon(0, QIcon(":/icons/ParticipantENTRYVEHICLE.png"));
 	    // Guillermo says: finally adding the item
 	    addScenarioItems(participantItem, participant);
         }
@@ -516,24 +544,13 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
     }
     else if (trajectory && elementName != "tns:EntryArc")
     {
-	//qDebug() << "Dropping trajectory";
         ScenarioObject* parentObject = objectForItem(parent);
         ScenarioTrajectoryPlan* trajectoryPlan = dynamic_cast<ScenarioTrajectoryPlan*>(parentObject);
         if (trajectoryPlan)
         {
             trajectoryPlan->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
             QTreeWidgetItem* trajectoryItem = new QTreeWidgetItem(parent);
-	    // Guillermo says: now placing nice icons beside the labels
-	    int numberofChildren = parent->childCount();
-	    if (elementName == "tns:Loitering")
-	    {
-		parent->child(numberofChildren-1)->setIcon(0, QIcon(":/icons/mission-arcs-loitering.png"));
-	    }
-	    else
-	    {
-		parent->child(numberofChildren-1)->setIcon(0, QIcon(":/icons/mission-arcs-loiteringTLE.png"));
-	    }
-            addScenarioItems(trajectoryItem, trajectory);	    	    
+	    addScenarioItems(trajectoryItem, trajectory);
             return true;
         }
         else
@@ -543,16 +560,12 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
     }
     else if (trajectory && elementName=="tns:EntryArc") // Added by Dominic to drop entry trajectory
     {
-	//qDebug() << "Dropping entry trajectory";
-        ScenarioObject* parentObject = objectForItem(parent);
+	ScenarioObject* parentObject = objectForItem(parent);
         ScenarioREVTrajectoryPlanType* trajectoryPlan = dynamic_cast<ScenarioREVTrajectoryPlanType*>(parentObject);
         if (trajectoryPlan)
         {
             trajectoryPlan->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
             QTreeWidgetItem* trajectoryItem = new QTreeWidgetItem(parent);
-	    // Guillermo says: now placing nice icons beside the labels
-	    int numberofChildren = parent->childCount();
-	    parent->child(numberofChildren-1)->setIcon(0, QIcon(":/icons/mission-arcs-reentry.png"));
 	    // Adding the item to the scenario
             addScenarioItems(trajectoryItem, trajectory);
             return true;
@@ -564,16 +577,12 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
     }
     else if (payload)
     {
-        //qDebug() << "Dropping payload";
         ScenarioObject* parentObject = objectForItem(parent);
 	ScenarioPayloadSet* scPayload = dynamic_cast<ScenarioPayloadSet*>(parentObject);
 	if (scPayload) //if the draggable element is over the payload of the spacecraft, the payload could be attached
         {
             scPayload->AbstractPayload().append(QSharedPointer<ScenarioAbstractPayloadType>(payload));
             QTreeWidgetItem* payloadItem = new QTreeWidgetItem(parent);
-	    // Guillermo says: now placing nice icons beside the labels
-	    int numberofChildren = parent->childCount();
-	    parent->child(numberofChildren-1)->setIcon(0, QIcon(":/icons/Payload.png"));
 	    addScenarioItems(payloadItem, payload);
             return true;
         }

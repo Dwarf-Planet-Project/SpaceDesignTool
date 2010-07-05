@@ -210,12 +210,11 @@ void ConstellationWizardDialog::accept()
     // Create a new scenario
     SpaceScenario* scenario = new SpaceScenario();
     scenario->setName(constTypeComboBox->currentText());
-    //scenario->setName("Constellation");
 
     // create new Participants, Properties and trajectories
     for (int i = 0; i < n; i++)
     {
-        ScenarioSC* sc = new ScenarioSC();
+	ScenarioSC* sc = new ScenarioSC();
 	sc->setName(satellitekeplerian[i].name);
 	sc->ElementIdentifier()->setName(satellitekeplerian[i].name);
 
@@ -265,9 +264,6 @@ void ConstellationWizardDialog::accept()
 
         // Add it to the scenario
         scenario->AbstractParticipant().append(QSharedPointer<ScenarioParticipantType>(sc));
-
-	// TODO add an icon to the mission arc
-	//participantItem->setIcon(0, QIcon(":/icons/ParticipantSATELLITE.png"));
     }
 
     mainwindow->setScenario(scenario);
