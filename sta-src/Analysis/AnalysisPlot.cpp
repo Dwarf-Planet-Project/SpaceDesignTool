@@ -48,7 +48,8 @@ void AnalysisPlot::setPoints(QList<analysis::AnalysisData>DataStructure, int ind
     // DataStructure[0] x-axis data
     // DataStructure[1] y-axis data
     //for the time being, only one parameter per axis
-
+if(DataStructure.size()==2)
+    {
        m_points2d.clear();
 
         Vector2d p;
@@ -62,5 +63,5 @@ void AnalysisPlot::setPoints(QList<analysis::AnalysisData>DataStructure, int ind
             m_points2d << p;
         }
     }
-
+    }
 }

@@ -1168,7 +1168,9 @@ void analysis::on_GeneratePushButton_clicked()
                     if(AnalysisFormat=="2D")
                     {
 
+
                         QList<AnalysisData> DataStructure=WriteDataStructure(selected,selectedTimes);
+
                         if(DataStructure.size()==2)
                         {
 
@@ -1179,6 +1181,7 @@ void analysis::on_GeneratePushButton_clicked()
                         {
                             numberOfLines++;
                         }
+
                         QDialog plotDialog(this);
                         QVBoxLayout* layout = new QVBoxLayout(&plotDialog);
                         PlotView* plotView = new PlotView(&plotDialog);
@@ -1198,8 +1201,9 @@ void analysis::on_GeneratePushButton_clicked()
                     }
                         else
                         {
+
                             QMessageBox PlotWarning;
-                            PlotWarning.setText("Please select ONE parameter in the x and y axes");
+                            PlotWarning.setText("Invalid selection of parameters to be plotted");
                             PlotWarning.exec();
                         }
 }
@@ -3218,10 +3222,9 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 
                     for(int i=0;i<SelParameters.size();i++)
                     {
-//qDebug()<<"selected size"<<SelParameters.size();
+
                         QTreeWidgetItem*parameter=SelParameters.at(i);
                         QString name=parameter->text(0);
-                        //qDebug()<<"name"<<name;
 
                         if((name=="x position")||(name=="y position")||(name=="z position")||(name=="x velocity")||(name=="y velocity")||(name=="z velocity"))
                         {
@@ -3824,6 +3827,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                 LineData.append(-1);
                             }
                         }
+
                         if(name=="Range")
                         {
                             if(CovIndex[2]<LineOfCoverageReport.length())
@@ -4532,7 +4536,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                     }
                                                                 }
 
-                        if((name=="Latitude")||(name=="Longitude")||(name=="Radial Distance")||(name=="Flight Path Angle")||(name=="Heading Angle")||(name=="Velocity Modulus"))
+                        if((name=="Latitude")||(name=="Longitude")||(name=="Radial Distance")||(name=="Flight Path Angle")||(name=="Heading Angle")||(name=="Velocity Modulus")||(name=="Altitude"))
                         {
                             QWidget*Box1=Tree.at(a)->itemWidget(parameter,1);
                             QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
@@ -4572,6 +4576,12 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                             {
                                 //stream<<sta::ConvertUnits(Units,SphericalElements[2])<<"\t";
                                 LineData.append(sta::ConvertUnits(Units,SphericalElements[2]));
+                            }
+                            if (name=="Altitude")
+                            {
+                                double radius=STA_SOLAR_SYSTEM->lookup("Earth")->meanRadius();
+                                double altitude=sta::ConvertUnits(Units,SphericalElements[2])-radius;
+                                LineData.append(altitude);
                             }
                             if(name=="Flight Path Angle")
                             {
@@ -4650,6 +4660,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                     //stream<<"\r\n";
 
                 }
+
             }
 
                 else  // the time interval is not included in the propagation time
@@ -4662,16 +4673,30 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
              //
 
             //WRITE stream<<"\r\n";
-            DisplayData.append(LineData);
+                if(LineData.isEmpty())
+                {
+
+                }
+                else
+                {
+                DisplayData.append(LineData);
+            }
 
         }
 
         }
         }
         ToStruct.Data=DisplayData; // AnalysisData structure is now complete, with the data of one axis
-DataStructure.append(ToStruct); // appending to the list containig all the axes
+        if(DisplayData.isEmpty())
+        {
 
-}
+        }
+        else
+        {
+            DataStructure.append(ToStruct); // appending to the list containig all the axes
+        }
+
+    }
 return DataStructure;
 }
 

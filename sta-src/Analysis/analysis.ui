@@ -26,7 +26,7 @@
    <string>Analysis</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../../iconary/sta-icons.qrc">
     <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
@@ -184,7 +184,7 @@
                </item>
                <item>
                 <property name="text">
-                 <string>Radius</string>
+                 <string>Radial Distance</string>
                 </property>
                </item>
                <item>
@@ -1288,7 +1288,7 @@
              </item>
              <item>
               <property name="text">
-               <string>Radius</string>
+               <string>Radial Distance</string>
               </property>
              </item>
              <item>
@@ -2435,7 +2435,7 @@
              </item>
              <item>
               <property name="text">
-               <string>Radius</string>
+               <string>Radial Distance</string>
               </property>
              </item>
              <item>
@@ -3567,7 +3567,7 @@
              </item>
              <item>
               <property name="text">
-               <string>Radius</string>
+               <string>Radial Distance</string>
               </property>
              </item>
              <item>
@@ -4826,7 +4826,9 @@
   <tabstop>treeWidgetYaxis</tabstop>
   <tabstop>treeWidgetZaxis</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../iconary/sta-icons.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
