@@ -62,12 +62,15 @@ PlotView::~PlotView()
 /** Add a plot to the view.
   */
 void
-PlotView::addPlot(PlotDataSource* plotData)
+PlotView::addPlot(PlotDataSource* plotData, const PlotStyle& plotStyle)
 {
     Q_ASSERT(plotData != NULL);
     if (plotData != NULL)
     {
-        m_plots.append(plotData);
+        Plot* plot = new Plot;
+        plot->data = plotData;
+        plot->style = plotStyle;
+        m_plots.append(plot);
     }
 }
 
@@ -81,8 +84,13 @@ PlotView::removePlot(PlotDataSource* plotData)
     Q_ASSERT(plotData != NULL);
     if (plotData != NULL)
     {
-        int index = m_plots.indexOf(plotData);
-        if (index >= 0)
+        int index = 0;
+        while (index < m_plots.size() && m_plots[index]->data != plotData)
+        {
+            index++;
+        }
+
+        if (index < m_plots.size())
         {
             m_plots.remove(index);
         }
@@ -95,6 +103,11 @@ PlotView::removePlot(PlotDataSource* plotData)
 void
 PlotView::removeAllPlots()
 {
+    foreach (Plot* p, m_plots)
+    {
+        delete p;
+    }
+
     m_plots.clear();
 }
 
@@ -183,16 +196,24 @@ PlotView::paintEvent(QPaintEvent* /* event */)
     }
 
     // Draw plots
-    foreach (PlotDataSource* plot, m_plots)
+    foreach (Plot* plot, m_plots)
     {
-        painter.setPen(QPen(Qt::red, 2.0f));
+        //painter.setPen(plot->style.strokeStyle());
+        painter.setPen(Qt::red);
         QPointF lastPoint(0.0f, 0.0f);
-        for (unsigned int i = 0; i < plot->getPointCount(); ++i)
+        for (unsigned int i = 0; i < plot->data->getPointCount(); ++i)
         {
-            QPointF pf = toViewCoords(plot->getPoint(i));
-            if (i != 0)
+            QPointF pf = toViewCoords(plot->data->getPoint(i));
+            if (plot->style.type() == PlotStyle::LinePlot)
             {
-                painter.drawLine(lastPoint, pf);
+                if (i != 0)
+                {
+                    painter.drawLine(lastPoint, pf);
+                }
+            }
+            else
+            {
+                painter.drawRect(QRectF(pf.x() - 3.0f, pf.y() - 3.0f, 6.0f, 6.0f));
             }
             lastPoint = pf;
         }
@@ -289,16 +310,16 @@ PlotView::autoScale()
     double minY =  numeric_limits<double>::infinity();
     double maxY = -numeric_limits<double>::infinity();
 
-    foreach (const PlotDataSource* p, m_plots)
+    foreach (const Plot* p, m_plots)
     {
-        if (p->getPointCount() > 0)
+        if (p->data->getPointCount() > 0)
         {
             empty = false;
         }
 
-        for (unsigned int i = 0; i < p->getPointCount(); ++i)
+        for (unsigned int i = 0; i < p->data->getPointCount(); ++i)
         {
-            Vector2d v = p->getPoint(i);
+            Vector2d v = p->data->getPoint(i);
             minX = min(minX, v.x());
             maxX = max(maxX, v.x());
             minY = min(minY, v.y());
@@ -372,3 +393,30 @@ LinearPlotScale::ticks() const
 }
 
 
+PlotStyle::PlotStyle(PlotType type) :
+    m_type(type),
+    m_strokeStyle(QPen(Qt::red))
+{
+}
+
+
+PlotStyle::PlotStyle(PlotType type, const QPen strokeStyle) :
+    m_type(type),
+    m_strokeStyle(strokeStyle)
+{
+}
+
+
+PlotStyle::PlotStyle(const PlotStyle& other) :
+    m_type(other.m_type),
+    m_strokeStyle(other.m_strokeStyle)
+{
+}
+
+
+PlotStyle& PlotStyle::operator=(const PlotStyle& other)
+{
+    m_type = other.m_type;
+    m_strokeStyle = other.m_strokeStyle;
+    return *this;
+}

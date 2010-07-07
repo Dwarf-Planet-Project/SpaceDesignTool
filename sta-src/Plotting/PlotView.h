@@ -32,6 +32,7 @@ Patched by Guillermo on June 2010 to allow multiple row plotting
 
 #include <QWidget>
 #include <QVector>
+#include <QPen>
 #include <Eigen/Core>
 
 
@@ -102,6 +103,37 @@ private:
 };
 
 
+class PlotStyle
+{
+public:
+    enum PlotType
+    {
+        LinePlot,
+        ScatterPlot,
+    };
+
+    PlotStyle(PlotType type);
+    PlotStyle(PlotType type, const QPen strokeStyle);
+    PlotStyle(const PlotStyle& other);
+
+    PlotStyle& operator=(const PlotStyle& other);
+
+    PlotType type() const
+    {
+        return m_type;
+    }
+
+    QPen strokeStyle() const
+    {
+        return m_strokeStyle;
+    }
+
+private:
+    PlotType m_type;
+    QPen m_strokeStyle;
+};
+
+
 /** PlotView is a widget for displaying one or more plots. The data
   * for each of the plots is provided by a PlotDataSource object.
   */
@@ -112,7 +144,7 @@ public:
     PlotView(QWidget* parent);
     ~PlotView();
 
-    void addPlot(PlotDataSource* plotData);
+    void addPlot(PlotDataSource* plotData, const PlotStyle& plotStyle = PlotStyle(PlotStyle::LinePlot));
     void removePlot(PlotDataSource* plotData);
     void removeAllPlots();
 
@@ -170,7 +202,17 @@ private:
     QPointF toViewCoords(const Eigen::Vector2d& p);
 
 private:
-    QVector<PlotDataSource*> m_plots;
+    struct Plot
+    {
+        Plot() : data(NULL), style(PlotStyle::LinePlot) {}
+        Plot(const Plot& other) : data(other.data), style(other.style) {}
+        Plot& operator=(const Plot& other) { data = other.data; style = other.style; return *this; }
+
+        PlotDataSource* data;
+        PlotStyle style;
+    };
+
+    QVector<Plot*> m_plots;
 
     QString m_title;
     QString m_leftLabel;
