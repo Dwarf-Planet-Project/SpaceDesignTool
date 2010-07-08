@@ -52,7 +52,7 @@ QList<QList<double> >Data; // QList of lines, each line a QList of data
 
 QList<AnalysisData> WriteDataStructure(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetItem *> selectedTimes);
 void WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetItem *> selectedTimes);
-
+void DisableUnavailableOptions();
 
 protected slots:
 	// Classical action written by Guillermo
