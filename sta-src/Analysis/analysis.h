@@ -40,7 +40,6 @@ int ObjectsIndex(QStringList AllObjects, int Index, QString ObjectType);
 QString CovCommCalc();
 int InputsControl(QList<QTreeWidget*>tree);
 void Warnings(int i);
-void DisableUnavailableOptions();
 
 struct AnalysisData
 {
@@ -57,6 +56,7 @@ void WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetItem *> sele
 
 protected slots:
 	// Classical action written by Guillermo
+	/*
 	void on_buttonBox_helpRequested();
 	void on_buttonBox_clicked(QAbstractButton*);
 	void on_buttonBox_destroyed(QObject*);
@@ -64,6 +64,7 @@ protected slots:
 	void on_buttonBox_customContextMenuRequested(const QPoint&);
 	void on_buttonBox_accepted();
 	void on_buttonBox_rejected();
+	*/
 
 
 	// Actions written by Ana
@@ -73,7 +74,7 @@ protected slots:
 	void on_groupBoxParameters_toggled(bool);
 	void on_groupBoxTimeSpecifications_toggled(bool);
 	void on_AddDefaultPushButton_clicked();
-	void on_AddNewPushButton_clicked();
+	//void on_AddNewPushButton_clicked();
         void on_EditTimePushButton_clicked();
 	void on_DeleteTimePushButton_clicked();
 	//void on_groupBoxReport_toggled(bool);

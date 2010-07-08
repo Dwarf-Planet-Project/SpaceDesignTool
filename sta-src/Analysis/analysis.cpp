@@ -51,19 +51,37 @@
 
 analysis::analysis(SpaceScenario*scenario, PropagatedScenario*propagatedScenario,QWidget * parent, Qt::WindowFlags f) : QDialog(parent,f)
 {
-
     setupUi(this);
     m_scenario=new SpaceScenario(*scenario);
     m_propagatedScenario=new PropagatedScenario(*propagatedScenario);
 
     readScenario();
-    DisableUnavailableOptions();
+
     connect(treeWidgetReportOptions, SIGNAL(itemDoubleClicked(QTreeWidgetItem*)), this, SLOT(addParameter(QTreeWidgetItem*)));
     connect(AddParameterPushButton, SIGNAL(clicked()), this, SLOT(addParameter()));
     connect(RemoveParameterPushButton, SIGNAL(clicked()), this, SLOT(removeParameter()));
     connect(ComboBoxAnalysisFormat, SIGNAL(activated(int)), this, SLOT(enableReportOption(int)));
 
-    PlotComboBox();
+    PlotComboBox();   
+
+    // Patched by Guillermo to make the columns fixed in width
+    treeWidgetTimeSpecifications->setColumnWidth(0, 180);
+    treeWidgetTimeSpecifications->setColumnWidth(1, 180);
+    treeWidgetTimeSpecifications->setColumnWidth(2, 30);
+
+    treeWidgetShowInReport->setColumnWidth(0, 180);
+    treeWidgetShowInReport->setColumnWidth(1, 180);
+    treeWidgetShowInReport->setColumnWidth(2, 20);
+
+    treeWidgetXaxis->setColumnWidth(0, 180);
+    treeWidgetXaxis->setColumnWidth(1, 160);
+    treeWidgetXaxis->setColumnWidth(2, 20);
+    treeWidgetYaxis->setColumnWidth(0, 180);
+    treeWidgetYaxis->setColumnWidth(1, 160);
+    treeWidgetYaxis->setColumnWidth(2, 20);
+    treeWidgetZaxis->setColumnWidth(0, 180);
+    treeWidgetZaxis->setColumnWidth(1, 160);
+    treeWidgetZaxis->setColumnWidth(2, 20);
 
 }
 
@@ -399,6 +417,9 @@ int analysis::ObjectsIndex(QStringList AllObjects, int Index, QString ObjectType
     }
 }
 
+
+/*
+
 void analysis::on_buttonBox_helpRequested()
 {
     qWarning("TODO: %s	%d",__FILE__,__LINE__);
@@ -434,6 +455,8 @@ void analysis::on_buttonBox_rejected()
     qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
+*/
+
 /*
 
 void Analysis::on_groupBoxAnalysisFormat_toggled(bool)
@@ -451,15 +474,20 @@ if((ComboBoxAnalysisFormat->currentText()=="3D plot")||(ComboBoxAnalysisFormat->
 
 }*/
 
+
 void analysis::on_groupBoxParameters_toggled(bool)
 {
     qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
+
+
 void analysis::on_groupBoxTimeSpecifications_toggled(bool)
 {
     qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
+
+
 
 bool analysis::CheckIfMissionArc()
 {
@@ -742,6 +770,7 @@ void analysis::on_AddDefaultPushButton_clicked()
 }
 
 
+/*
 void analysis::on_AddNewPushButton_clicked()
 {
     //if (CheckIfMissionArc())
@@ -752,6 +781,7 @@ void analysis::on_AddNewPushButton_clicked()
 
 
 }
+*/
 
 void analysis::ReadTime(int column, double *MJD) //reads the time in the treeWidgetTimeSpecifications
 {
@@ -940,6 +970,8 @@ void analysis::on_DeleteTimePushButton_clicked()
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }*/
+
+
 int analysis::InputsControl(QList<QTreeWidget*>tree)
 {
     int CovCommCount=0;
@@ -1070,6 +1102,8 @@ int analysis::InputsControl(QList<QTreeWidget*>tree)
     }
 
 }
+
+
 void analysis::Warnings(int i)
 {
     if(i==1)
@@ -4995,6 +5029,8 @@ void analysis::enableReportOption(int i)
 	}
     }
 }
+
+
 QComboBox* analysis::CoordinateBox()
 {
     QComboBox*CoordinateBox2=new QComboBox();
@@ -5004,8 +5040,14 @@ QComboBox* analysis::CoordinateBox()
     CoordinateBox2->addItem(tr("Ecliptic J2000"),3);
     CoordinateBox2->addItem(tr("Rotating"),4);
     CoordinateBox2->addItem(tr("Rotating Normalized"),5);
+
+    // resizeColumnToContents
+    CoordinateBox2->adjustSize();
+
     return CoordinateBox2;
 }
+
+
 QComboBox*analysis::TimeFramesBox()
 {
     QComboBox*TimeBox=new QComboBox();
@@ -5018,6 +5060,8 @@ QComboBox*analysis::TimeFramesBox()
     TimeBox->addItem(tr("Mission Elapsed Time"));
     TimeBox->addItem(tr("GMT"));
     TimeBox->addItem(tr("MJD"));
+
+    TimeBox->adjustSize();
 
     return TimeBox;
 }
@@ -5073,7 +5117,6 @@ void analysis::ComboBoxOptions()
     {
         QTreeWidgetItem*item=treeWidgetShowInReport->topLevelItem(i);
         QString name=item->text(0);
-        //distance
         if ((name=="x position") ||
             (name=="y position")||
             (name=="z position") ||
@@ -5090,9 +5133,6 @@ void analysis::ComboBoxOptions()
             (name=="Pluto") ||
             (name=="Radius")||
             (name=="Radial Distance")||
-            (name=="Altitude")||
-            (name=="Apogee Planetocentric Altitude")||
-            (name=="Perigee Planetocentric Altitude")||
             (name=="Apogee Planetocentric Radius")||
             (name=="Perigee Planetocentric Radius")||
             (name=="Range")||
@@ -5102,7 +5142,6 @@ void analysis::ComboBoxOptions()
             treeWidgetShowInReport->setItemWidget(item,1,CoordinateBox());
             treeWidgetShowInReport->setItemWidget(item,2,DistanceUnitsBox());
         }
-        
         if(name=="Time")
         {
             treeWidgetShowInReport->setItemWidget(item,1,TimeFramesBox());
@@ -5167,12 +5206,14 @@ void analysis::ComboBoxOptions()
            (name=="Argument of Periapsis")||
            (name=="True Anomaly")||
            (name=="Mean Longitude")||
-
+           (name=="Apogee Planetocentric Altitude")||
+           (name=="Perigee Planetocentric Altitude")||
            (name=="Longitude when passing Ascending Node")||
            (name=="Longitude when passing Descending Node")||
            (name=="Maximum Geodetic Latitude")||
            (name=="Minimum Geodetic Latitude")||
            (name=="Heading Angle")||
+           (name=="Altitude")||
            (name=="Latitude")||
            (name=="Longitude")||
            (name=="Azimuth")||
@@ -5236,7 +5277,6 @@ for(int a=0;a<Tree.size();a++)
                     (name=="Pluto") ||
                     (name=="Radius")||
                     (name=="Radial Distance")||
-                    (name=="Altitude")||
                     (name=="Apogee Planetocentric Radius")||
                     (name=="Perigee Planetocentric Radius")||
                     (name=="Range")||
@@ -5319,7 +5359,7 @@ for(int a=0;a<Tree.size();a++)
                    (name=="Maximum Geodetic Latitude")||
                    (name=="Minimum Geodetic Latitude")||
                    (name=="Heading Angle")||
-
+                   (name=="Altitude")||
                    (name=="Latitude")||
                    (name=="Longitude")||
                    (name=="Azimuth")||
@@ -5356,9 +5396,6 @@ for(int a=0;a<Tree.size();a++)
                         (name=="Pluto") ||
                         (name=="Radius")||
                         (name=="Radial Distance")||
-                        (name=="Altitude")||
-                        (name=="Apogee Planetocentric Altitude")||
-                        (name=="Perigee Planetocentric Altitude")||
                         (name=="Apogee Planetocentric Radius")||
                         (name=="Perigee Planetocentric Radius")||
                         (name=="Range")||
@@ -5431,13 +5468,14 @@ for(int a=0;a<Tree.size();a++)
                        (name=="Argument of Periapsis")||
                        (name=="True Anomaly")||
                        (name=="Mean Longitude")||
-
+                       (name=="Apogee Planetocentric Altitude")||
+                       (name=="Perigee Planetocentric Altitude")||
                        (name=="Longitude when passing Ascending Node")||
                        (name=="Longitude when passing Descending Node")||
                        (name=="Maximum Geodetic Latitude")||
                        (name=="Minimum Geodetic Latitude")||
                        (name=="Heading Angle")||
-
+                       (name=="Altitude")||
                        (name=="Latitude")||
                        (name=="Longitude")||
                        (name=="Azimuth")||
@@ -5461,69 +5499,3 @@ for(int a=0;a<Tree.size();a++)
 }
 }
 }
-
-void analysis::DisableUnavailableOptions()
-{
-    QList<QTreeWidget*>Tree;
-    Tree.append(treeWidgetReportOptions);
-    Tree.append(treeWidgetXaxis);
-    Tree.append(treeWidgetYaxis);
-    Tree.append(treeWidgetZaxis);
-    for(int a=0;a<Tree.size();a++)
-    {
-
-        for(int j=0;j<Tree.at(a)->topLevelItemCount();j++)
-        {
-
-            QTreeWidgetItem*topItem=Tree.at(a)->topLevelItem(j);
-            if(topItem->childCount()==0)
-            {
-
-            }
-            else
-            {
-                for(int k=0;k<topItem->childCount();k++)
-                {
-                    if(topItem->text(0)=="Systems Engineering Data"||topItem->text(0)=="Aerodynamics"||topItem->text(0)=="Re-entry")
-                    {
-                        topItem->setDisabled(true);
-                        topItem->child(k)->setDisabled(true);
-                    }
-
-                    for (int l=0;l<topItem->child(k)->childCount();l++)
-                    {
-                        QTreeWidgetItem*item=topItem->child(k)->child(l);
-                        QString name=item->text(0);
-                        if(topItem->child(k)->text(0)=="Apparent Position Vector between the participant and")
-                        {
-                            Tree.at(a)->setItemWidget(item,1,CoordinateBox());
-                            Tree.at(a)->setItemWidget(item,2,DistanceUnitsBox());
-                            topItem->child(k)->setDisabled(true);
-                            item->setDisabled(true);
-                        }
-
-                        if((name=="Access Time")||
-                           (topItem->child(k)->text(0)=="Pass Times")||(topItem->child(k)->text(0)=="Ecliptic Crossing Times")||(topItem->child(k)->text(0)=="Covariance"))
-
-                           {
-                            Tree.at(a)->setItemWidget(item,1,TimeFramesBox());
-                            Tree.at(a)->setItemWidget(item,2,TimeUnitsBox());
-                            topItem->child(k)->setDisabled(true);
-                            item->setDisabled(true);
-                        }
-                        if(topItem->child(k)->text(0)=="Pass Data")
-                        {
-                            topItem->child(k)->setDisabled(true);
-                            item->setDisabled(true);
-                        }
-                    }
-
-
-            }
-        }
-
-        }
-
-    }
-    }
-
