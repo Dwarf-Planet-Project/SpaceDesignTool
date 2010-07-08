@@ -26,7 +26,7 @@
    <string>Analysis</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../iconary/sta-icons.qrc">
+   <iconset>
     <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
@@ -815,7 +815,7 @@
               </item>
               <item>
                <property name="text">
-                <string>Systems Enginnering Data</string>
+                <string>Systems Engineering Data</string>
                </property>
                <item>
                 <property name="text">
@@ -1920,7 +1920,7 @@
             </item>
             <item>
              <property name="text">
-              <string>Systems Enginnering Data</string>
+              <string>Systems Engineering Data</string>
              </property>
              <item>
               <property name="text">
@@ -3052,7 +3052,7 @@
             </item>
             <item>
              <property name="text">
-              <string>Systems Enginnering Data</string>
+              <string>Systems Engineering Data</string>
              </property>
              <item>
               <property name="text">
@@ -4184,7 +4184,7 @@
             </item>
             <item>
              <property name="text">
-              <string>Systems Enginnering Data</string>
+              <string>Systems Engineering Data</string>
              </property>
              <item>
               <property name="text">
@@ -4826,9 +4826,7 @@
   <tabstop>treeWidgetYaxis</tabstop>
   <tabstop>treeWidgetZaxis</tabstop>
  </tabstops>
- <resources>
-  <include location="../../iconary/sta-icons.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

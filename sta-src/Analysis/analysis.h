@@ -40,6 +40,7 @@ int ObjectsIndex(QStringList AllObjects, int Index, QString ObjectType);
 QString CovCommCalc();
 int InputsControl(QList<QTreeWidget*>tree);
 void Warnings(int i);
+void DisableUnavailableOptions();
 
 struct AnalysisData
 {
