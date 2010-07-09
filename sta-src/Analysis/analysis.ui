@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>888</width>
-    <height>685</height>
+    <width>777</width>
+    <height>607</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,15 +18,15 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>888</width>
-    <height>685</height>
+    <width>777</width>
+    <height>607</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>Analysis</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../../iconary/sta-icons.qrc">
     <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -132,6 +132,12 @@
            <layout class="QHBoxLayout" name="horizontalLayout_11">
             <item>
              <widget class="QTreeWidget" name="TreeWidgetMissionArc">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>150</height>
+               </size>
+              </property>
               <property name="alternatingRowColors">
                <bool>true</bool>
               </property>
@@ -171,6 +177,12 @@
              <widget class="QTreeWidget" name="treeWidgetTimeSpecifications">
               <property name="enabled">
                <bool>true</bool>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>350</width>
+                <height>0</height>
+               </size>
               </property>
               <property name="verticalScrollBarPolicy">
                <enum>Qt::ScrollBarAsNeeded</enum>
@@ -309,7 +321,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="pageReport">
         <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -325,6 +337,12 @@
                <layout class="QHBoxLayout" name="horizontalLayout_5">
                 <item>
                  <widget class="QTreeWidget" name="treeWidgetReportOptions">
+                  <property name="minimumSize">
+                   <size>
+                    <width>300</width>
+                    <height>250</height>
+                   </size>
+                  </property>
                   <property name="alternatingRowColors">
                    <bool>true</bool>
                   </property>
@@ -332,7 +350,7 @@
                    <enum>QAbstractItemView::MultiSelection</enum>
                   </property>
                   <property name="uniformRowHeights">
-                   <bool>false</bool>
+                   <bool>true</bool>
                   </property>
                   <property name="animated">
                    <bool>true</bool>
@@ -353,7 +371,7 @@
                     <string>Analysis</string>
                    </property>
                    <property name="icon">
-                    <iconset>
+                    <iconset resource="../../iconary/sta-icons.qrc">
                      <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
                    </property>
                    <item>
@@ -1044,7 +1062,7 @@
                   </item>
                   <item>
                    <property name="text">
-                    <string>SEM data</string>
+                    <string>SEM Data</string>
                    </property>
                    <item>
                     <property name="text">
@@ -1383,11 +1401,17 @@
               </item>
               <item>
                <widget class="QTreeWidget" name="treeWidgetShowInReport">
+                <property name="minimumSize">
+                 <size>
+                  <width>300</width>
+                  <height>250</height>
+                 </size>
+                </property>
                 <property name="alternatingRowColors">
                  <bool>true</bool>
                 </property>
                 <property name="uniformRowHeights">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
                 <property name="animated">
                  <bool>true</bool>
@@ -1456,7 +1480,7 @@
                  <bool>true</bool>
                 </property>
                 <property name="uniformRowHeights">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
                 <property name="animated">
                  <bool>true</bool>
@@ -1511,7 +1535,7 @@
                   <string>Analysis</string>
                  </property>
                  <property name="icon">
-                  <iconset>
+                  <iconset resource="../../iconary/sta-icons.qrc">
                    <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
                  </property>
                  <item>
@@ -2224,7 +2248,7 @@
                 </item>
                 <item>
                  <property name="text">
-                  <string>SEM data</string>
+                  <string>SEM Data</string>
                  </property>
                  <item>
                   <property name="text">
@@ -2646,7 +2670,7 @@
                  <bool>true</bool>
                 </property>
                 <property name="uniformRowHeights">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
                 <property name="animated">
                  <bool>true</bool>
@@ -2695,7 +2719,7 @@
                   <string>Analysis</string>
                  </property>
                  <property name="icon">
-                  <iconset>
+                  <iconset resource="../../iconary/sta-icons.qrc">
                    <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
                  </property>
                  <item>
@@ -2779,7 +2803,7 @@
                   </item>
                   <item>
                    <property name="text">
-                    <string>Inclination</string>
+                    <string>Iinclination</string>
                    </property>
                   </item>
                   <item>
@@ -3393,7 +3417,7 @@
                 </item>
                 <item>
                  <property name="text">
-                  <string>SEM data</string>
+                  <string>SEM Data</string>
                  </property>
                  <item>
                   <property name="text">
@@ -3815,7 +3839,7 @@
                  <bool>true</bool>
                 </property>
                 <property name="uniformRowHeights">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
                 <property name="animated">
                  <bool>true</bool>
@@ -3858,7 +3882,7 @@
                   <string>Analysis</string>
                  </property>
                  <property name="icon">
-                  <iconset>
+                  <iconset resource="../../iconary/sta-icons.qrc">
                    <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
                  </property>
                  <item>
@@ -4556,7 +4580,7 @@
                 </item>
                 <item>
                  <property name="text">
-                  <string>SEM data</string>
+                  <string>SEM Data</string>
                  </property>
                  <item>
                   <property name="text">
@@ -5038,7 +5062,9 @@
   <tabstop>treeWidgetYaxis</tabstop>
   <tabstop>treeWidgetZaxis</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../iconary/sta-icons.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>pushButton</sender>

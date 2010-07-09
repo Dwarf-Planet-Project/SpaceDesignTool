@@ -5096,7 +5096,7 @@ QComboBox* analysis::CoordinateBox()
     CoordinateBox2->addItem(tr("Rotating Norm."),5);
 
     // Guillermo says: smaller font is better for the row
-    QFont font("Helvetica", 10); CoordinateBox2->setFont(font);
+    //QFont font("Helvetica", 10); CoordinateBox2->setFont(font);
     CoordinateBox2->setMaximumHeight(22);
 
     return CoordinateBox2;
@@ -5117,7 +5117,7 @@ QComboBox*analysis::TimeFramesBox()
     TimeBox->addItem(tr("MJD"));
 
     // Guillermo says: smaller font is better for the row
-    QFont font("Helvetica", 10); TimeBox->setFont(font);
+    //QFont font("Helvetica", 10); TimeBox->setFont(font);
     TimeBox->setMaximumHeight(22);
 
     return TimeBox;
@@ -5132,7 +5132,7 @@ QComboBox*analysis::TimeUnitsBox()
     TimeBox->addItem(tr("Days"),3);
 
     // Guillermo says: smaller font is better for the row
-    QFont font("Helvetica", 10);     TimeBox->setFont(font);
+    //QFont font("Helvetica", 10);     TimeBox->setFont(font);
     TimeBox->setMaximumHeight(22);
 
     return TimeBox;
@@ -5145,7 +5145,7 @@ QComboBox*analysis::AngleUnitsBox()
     AngleBox->addItem(tr("deg"),1);
 
     // Guillermo says: smaller font is better for the row
-    QFont font("Helvetica", 10);     AngleBox->setFont(font);
+    //QFont font("Helvetica", 10);     AngleBox->setFont(font);
     AngleBox->setMaximumHeight(22);
 
     return AngleBox;
@@ -5160,7 +5160,7 @@ QComboBox* analysis::DistanceUnitsBox()
     DistanceBox->addItem(tr("nm"),3);
 
     // Guillermo says: smaller font is better for the row
-    QFont font("Helvetica", 10);     DistanceBox->setFont(font);
+    //QFont font("Helvetica", 10);     DistanceBox->setFont(font);
     DistanceBox->setMaximumHeight(22);
 
     return DistanceBox;
@@ -5171,7 +5171,7 @@ QComboBox* analysis::NoUnitsBox()
     NoUnits->addItem(tr("-"));
 
     // Guillermo says: smaller font is better for the row
-    QFont font("Helvetica", 10);     NoUnits->setFont(font);
+    //QFont font("Helvetica", 10);     NoUnits->setFont(font);
     NoUnits->setMaximumHeight(22);
 
     return NoUnits;
@@ -5184,7 +5184,7 @@ QComboBox*analysis::VelocityUnitsBox()
     VelocityBox->addItem(tr("m/s"),0);
 
     // Guillermo says: smaller font is better for the row
-    QFont font("Helvetica", 10);     VelocityBox->setFont(font);
+    //QFont font("Helvetica", 10);     VelocityBox->setFont(font);
     VelocityBox->setMaximumHeight(22);
 
     return VelocityBox;
