@@ -529,7 +529,7 @@ void MainWindow::on_actionOpenScenario_triggered()
     //actionAnalyse->setEnabled(m_scenario = NULL);
     actionAnalyse->setDisabled(m_scenario != NULL);  // Do not enable analysis here. Do it after propagation
 
-
+}
 
 // Add required namespace attributes for the
 static void addScenarioNamespaceAttributes(QDomElement& rootElement)
