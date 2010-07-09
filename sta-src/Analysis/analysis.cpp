@@ -38,20 +38,20 @@
 #include <Coverage/coverageanalysis.h>
 #include "AnalysisPlot.h"
 #include "Plotting/PlotView.h"
+#include "Help/HelpBrowser.h"
 
-#include<QDesktopServices>
-#include<QUrl>
+#include <QDesktopServices>
+#include <QUrl>
 #include <QDebug>
 #include <QComboBox>
 #include <QMessageBox>
 #include <QInputDialog>
-#include<QtCore/QFile>
-#include<qtextstream.h>
+#include <QtCore/QFile>
+#include <qtextstream.h>
 
 class ScenarioTree;
 
-//using namespace std;
-//using namespace sta;
+class HelpBrowser;
 
 
 
@@ -67,6 +67,9 @@ analysis::analysis(SpaceScenario*scenario, PropagatedScenario*propagatedScenario
     connect(AddParameterPushButton, SIGNAL(clicked()), this, SLOT(addParameter()));
     connect(RemoveParameterPushButton, SIGNAL(clicked()), this, SLOT(removeParameter()));
     connect(ComboBoxAnalysisFormat, SIGNAL(activated(int)), this, SLOT(enableReportOption(int)));
+    // Guillermo activating the HELP
+    // TotalHelpPushButton->setDisabled(false);  // Not yet
+    connect(TotalHelpPushButton, SIGNAL(clicked()), this, SLOT(raiseHelp()));
 
     PlotComboBox();   
 
@@ -88,23 +91,6 @@ analysis::analysis(SpaceScenario*scenario, PropagatedScenario*propagatedScenario
     treeWidgetZaxis->setColumnWidth(0, 160);
     treeWidgetZaxis->setColumnWidth(1, 100);
     treeWidgetZaxis->setColumnWidth(2, 35);
-
-
-    /*
-    treeWidgetTimeSpecifications->header()->setStretchLastSection(false);
-    treeWidgetTimeSpecifications->header()->setResizeMode(0,QHeaderView::Stretch);
-    treeWidgetTimeSpecifications->header()->setResizeMode(1,QHeaderView::Stretch);
-    treeWidgetTimeSpecifications->header()->setResizeMode(2,QHeaderView::Custom);
-
-    treeWidgetTimeSpecifications->resizeColumnToContents(0); treeWidgetTimeSpecifications->resizeColumnToContents(1); // treeWidgetTimeSpecifications->resizeColumnToContents(2);
-    treeWidgetShowInReport->resizeColumnToContents(0); treeWidgetShowInReport->resizeColumnToContents(1); treeWidgetShowInReport->resizeColumnToContents(2);
-    treeWidgetXaxis->resizeColumnToContents(0); treeWidgetXaxis->resizeColumnToContents(1); treeWidgetXaxis->resizeColumnToContents(2);
-    treeWidgetYaxis->resizeColumnToContents(0); treeWidgetYaxis->resizeColumnToContents(1); treeWidgetYaxis->resizeColumnToContents(2);
-    treeWidgetZaxis->resizeColumnToContents(0); treeWidgetZaxis->resizeColumnToContents(1); treeWidgetZaxis->resizeColumnToContents(2);
-    */
-
-
-
 
 }
 
@@ -153,6 +139,25 @@ analysis::~analysis()
     delete m_scenario;
     delete m_propagatedScenario;
 }
+
+
+
+//Guillermo
+void analysis::raiseHelp()
+{
+    QString ResourcesPath = QDir::currentPath ();
+    QString HelpBrowserPath = ResourcesPath + "/help";
+    QString page = "index.html";    // Guillermo says: Ana please change this into the ANALYSIS web page
+    HelpBrowser *browser = new HelpBrowser(HelpBrowserPath, page, this, Qt::Tool);
+    browser->resize(800, 600);
+    browser->setWindowModality(Qt::NonModal);
+    browser->activateWindow(); // Required to keep the modeless window alive
+    browser->show();
+    browser->raise();
+}
+
+
+
 
 void analysis::readScenario()
 {

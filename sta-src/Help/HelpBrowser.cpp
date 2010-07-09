@@ -36,8 +36,8 @@
 
 
 HelpBrowser::HelpBrowser(const QString &path, const QString &page,
-			 QWidget *parent)
-    : QWidget(parent)
+			 QWidget *parent, Qt::WindowFlags f)
+    : QWidget(parent, f)
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setAttribute(Qt::WA_GroupLeader);
@@ -76,15 +76,15 @@ void HelpBrowser::showPage(const QString &page)
 {
 
     QTextStream out (stdout);
-    //QString path = QApplication::applicationDirPath() + "/sta-data/help";
 
     QString ResourcesPath = QDir::currentPath ();
     QString HelpBrowserPath = ResourcesPath + "/help";
 
-    out << "HelpBrowserPath: " << HelpBrowserPath << endl;
-
     HelpBrowser *browser = new HelpBrowser(HelpBrowserPath, page);
+    browser->setWindowModality(Qt::NonModal);
     browser->resize(800, 600);
     browser->show();
+    browser->raise(); // Required to keep the modeless window alive
+    browser->activateWindow(); // Required to keep the modeless window alive
 }
 

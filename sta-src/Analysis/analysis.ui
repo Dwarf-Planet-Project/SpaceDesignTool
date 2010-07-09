@@ -5048,6 +5048,9 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>ComboBoxAnalysisFormat</tabstop>
+  <tabstop>GeneratePushButton</tabstop>
+  <tabstop>pushButton</tabstop>
   <tabstop>TotalHelpPushButton</tabstop>
   <tabstop>TreeWidgetMissionArc</tabstop>
   <tabstop>treeWidgetTimeSpecifications</tabstop>
@@ -5058,9 +5061,9 @@
   <tabstop>AddParameterPushButton</tabstop>
   <tabstop>RemoveParameterPushButton</tabstop>
   <tabstop>treeWidgetShowInReport</tabstop>
-  <tabstop>treeWidgetXaxis</tabstop>
-  <tabstop>treeWidgetYaxis</tabstop>
   <tabstop>treeWidgetZaxis</tabstop>
+  <tabstop>treeWidgetYaxis</tabstop>
+  <tabstop>treeWidgetXaxis</tabstop>
  </tabstops>
  <resources>
   <include location="../../iconary/sta-icons.qrc"/>
@@ -5073,8 +5076,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>708</x>
-     <y>723</y>
+     <x>664</x>
+     <y>593</y>
     </hint>
     <hint type="destinationlabel">
      <x>594</x>

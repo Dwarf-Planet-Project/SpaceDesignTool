@@ -37,7 +37,7 @@ class HelpBrowser : public QWidget
     Q_OBJECT
 
 public:
-    HelpBrowser(const QString &path, const QString &page, QWidget *parent = 0);
+    HelpBrowser(const QString &path, const QString &page, QWidget *parent = 0, Qt::WindowFlags f = 0);
 
     static void showPage(const QString &page);
 

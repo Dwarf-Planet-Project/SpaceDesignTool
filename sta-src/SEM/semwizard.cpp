@@ -32,9 +32,20 @@
 #include "Scenario/propagationfeedback.h"
 #include "Astro-Core/EclipseDuration.h"
 
-#include "QDebug"
 #include <QList>
 #include <QSharedPointer>
+#include <QtCore/QFile>
+#include <qtextstream.h>
+#include <QDesktopServices>
+#include <QUrl>
+#include <QDebug>
+#include <QComboBox>
+#include <QMessageBox>
+#include <QInputDialog>
+#include <QDir>
+
+class HelpBrowser;
+
 
 SEMWizard::SEMWizard(ScenarioSC* SCVehicle,QString MissionArc, QWidget * parent, Qt::WindowFlags f)
     : QWizard(parent,f)
@@ -142,7 +153,16 @@ SEMWizard::~SEMWizard()
 
 void SEMWizard::showHelp()
 {
-    HelpBrowser::showPage("index.html");
+    //HelpBrowser::showPage("index.html");
+    QString ResourcesPath = QDir::currentPath();
+    QString HelpBrowserPath = ResourcesPath + "/help";
+    QString page = "index.html";    // Guillermo says: Ana please change this into the ANALYSIS web page
+    HelpBrowser *browser = new HelpBrowser(HelpBrowserPath, page, this, Qt::Tool);
+    browser->resize(800, 600);
+    browser->setWindowModality(Qt::NonModal);
+    browser->activateWindow(); // Required to keep the modeless window alive
+    browser->show();
+    browser->raise();
 }
 
 void SEMWizard::wizardIsCompleted()

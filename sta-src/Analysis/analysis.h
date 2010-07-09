@@ -62,20 +62,6 @@ void WriteReport(QList<QTreeWidgetItem*> selected,QList<QTreeWidgetItem *> selec
 void DisableUnavailableOptions();
 
 protected slots:
-	// Classical action written by Guillermo
-	/*
-	void on_buttonBox_helpRequested();
-	void on_buttonBox_clicked(QAbstractButton*);
-	void on_buttonBox_destroyed(QObject*);
-	void on_buttonBox_destroyed();
-	void on_buttonBox_customContextMenuRequested(const QPoint&);
-	void on_buttonBox_accepted();
-	void on_buttonBox_rejected();
-	*/
-
-
-	// Actions written by Ana
-
         //void on_groupBoxAnalysisFormat_toggled(bool);
         //void on_ComboBoxAnalysisFormat_activated(const QString&);
 	void on_groupBoxParameters_toggled(bool);
@@ -91,6 +77,8 @@ protected slots:
 	void on_GeneratePushButton_clicked();
         //void on_TotalHelpPushButton_clicked();  // Guillermo says: Why is this required? Can you used my action?
 	// void on_ClosePushButton_clicked();   // Guillermo says: not needed any more
+	//Guillermo
+	void raiseHelp();
 
     public slots:  // Added by Ana
 	void addParameter(QTreeWidgetItem* item); // clicked
@@ -101,6 +89,8 @@ protected slots:
         //void PlotComboBox(QList<QTreeWidgetItem*>List, int i);
        // void InsertingComboBox(int);
        // void AddDefaultTime();
+
+
 
 private:
         SpaceScenario* m_scenario;

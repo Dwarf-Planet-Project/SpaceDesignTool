@@ -729,7 +729,21 @@ void MainWindow::on_actionSTA_Wiki_triggered()
 				 "installed in your\n"
 				 "sta-data resources folder"));
     */
-    HelpBrowser::showPage("index.html");
+
+    //HelpBrowser::showPage("index.html");
+
+
+    QString ResourcesPath = QDir::currentPath ();
+    QString HelpBrowserPath = ResourcesPath + "/help";
+    QString page = "index.html";
+
+    HelpBrowser *browser = new HelpBrowser(HelpBrowserPath, page, this, Qt::Tool);
+    browser->resize(800, 600);
+    browser->setWindowModality(Qt::NonModal);
+    browser->show();
+    browser->raise(); // Required to keep the modeless window alive
+    browser->activateWindow(); // Required to keep the modeless window alive 
+
 }
 
 
@@ -1084,7 +1098,7 @@ void MainWindow::on_actionSystem_Engineering_triggered()
     actionSat_to_Sat->setEnabled(m_scenario != NULL);
     actionSat_to_Ground->setEnabled(m_scenario != NULL);
     actionSystem_Engineering->setEnabled(m_scenario != NULL);
-    actionAnalyse->setEnabled(m_scenario != NULL);
+    //actionAnalyse->setEnabled(m_scenario != NULL);
 }   ///////////////////////////////////////////  End of Action ACTIVATE SEM ////////////////////////////////////////
 
 
@@ -1095,10 +1109,10 @@ void MainWindow::on_actionAnalyse_triggered()
     if (!scenario())
     return;
 
-    analysis* AnalysisWidget = new analysis(m_scenario,m_propagatedScenario,this);  // Creating the widget as a tool
-    AnalysisWidget->show(); // Creating the window modeless. This requires the declaration of the variable on the *.h file
-    AnalysisWidget->raise(); // Required to keep the modeless window alive
-    AnalysisWidget->activateWindow(); // Required to keep the modeless window alive
+    analysis* AnalysisWidget = new analysis(m_scenario,m_propagatedScenario, this, Qt::Window);
+    AnalysisWidget->show();
+    //AnalysisWidget->raise(); // Required to keep the modeless window alive
+    //AnalysisWidget->activateWindow(); // Required to keep the modeless window alive
 }	///////////////////////////////////////////  End of Action ANALYZE ////////////////////////////////////////
 
 
