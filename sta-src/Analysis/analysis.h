@@ -25,9 +25,13 @@
 #define analysis_H
 
 #include "ui_analysis.h"
-#include <QDialog>
+
 #include "Scenario/staschema.h"
-#include"Main/propagatedscenario.h"
+#include "Main/propagatedscenario.h"
+
+#include <QFont>
+#include <QDialog>
+
 
 class analysis : public QDialog , private Ui::analysisDialogClass
 {
@@ -134,9 +138,8 @@ private:
                                                  QString FromCoordinate,
                                                  QString ToCoordinate);
 
-
-
-
     };
+
+
 #endif //analysis_H
 

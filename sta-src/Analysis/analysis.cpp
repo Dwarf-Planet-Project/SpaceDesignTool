@@ -23,30 +23,36 @@
 #include "analysis.h"
 #include "math.h"
 #include "Scenario/scenario.h"
-#include"Main/propagatedscenario.h"
-#include <QDebug>
-#include <QComboBox>
-#include <QMessageBox>
-#include <QInputDialog>
-#include"Astro-Core/statevector.h"
-#include"Astro-Core/date.h"
-#include<QtCore/QFile>
-#include<qtextstream.h>
-#include"Astro-Core/stacoordsys.h"
+#include "Main/propagatedscenario.h"
+#include "Main/scenariotree.h"
+#include "Astro-Core/statevector.h"
+#include "Astro-Core/date.h"
+#include "Astro-Core/stacoordsys.h"
 #include "Astro-Core/stabody.h"
-#include"Astro-Core/stamath.h"
-#include<QDesktopServices>
-#include<QUrl>
-#include"Astro-Core/calendarTOjulian.h"
-#include"Astro-Core/cartesianTOorbital.h"
-#include"Astro-Core/cartesianTOspherical.h"
-#include"Astro-Core/date.h"
+#include "Astro-Core/stamath.h"
+#include "Astro-Core/calendarTOjulian.h"
+#include "Astro-Core/cartesianTOorbital.h"
+#include "Astro-Core/cartesianTOspherical.h"
+#include "Astro-Core/date.h"
 #include <Coverage/commanalysis.h>
 #include <Coverage/coverageanalysis.h>
 #include "AnalysisPlot.h"
 #include "Plotting/PlotView.h"
+
+#include<QDesktopServices>
+#include<QUrl>
+#include <QDebug>
+#include <QComboBox>
+#include <QMessageBox>
+#include <QInputDialog>
+#include<QtCore/QFile>
+#include<qtextstream.h>
+
+class ScenarioTree;
+
 //using namespace std;
 //using namespace sta;
+
 
 
 analysis::analysis(SpaceScenario*scenario, PropagatedScenario*propagatedScenario,QWidget * parent, Qt::WindowFlags f) : QDialog(parent,f)
@@ -65,23 +71,40 @@ analysis::analysis(SpaceScenario*scenario, PropagatedScenario*propagatedScenario
     PlotComboBox();   
 
     // Patched by Guillermo to make the columns fixed in width
-    treeWidgetTimeSpecifications->setColumnWidth(0, 180);
-    treeWidgetTimeSpecifications->setColumnWidth(1, 180);
-    treeWidgetTimeSpecifications->setColumnWidth(2, 30);
+    treeWidgetTimeSpecifications->setColumnWidth(0, 155);
+    treeWidgetTimeSpecifications->setColumnWidth(1, 155);
+    treeWidgetTimeSpecifications->setColumnWidth(2, 35);
 
-    treeWidgetShowInReport->setColumnWidth(0, 180);
-    treeWidgetShowInReport->setColumnWidth(1, 180);
-    treeWidgetShowInReport->setColumnWidth(2, 20);
+    treeWidgetShowInReport->setColumnWidth(0, 160);
+    treeWidgetShowInReport->setColumnWidth(1, 100);
+    treeWidgetShowInReport->setColumnWidth(2, 35);
 
-    treeWidgetXaxis->setColumnWidth(0, 180);
-    treeWidgetXaxis->setColumnWidth(1, 160);
-    treeWidgetXaxis->setColumnWidth(2, 20);
-    treeWidgetYaxis->setColumnWidth(0, 180);
-    treeWidgetYaxis->setColumnWidth(1, 160);
-    treeWidgetYaxis->setColumnWidth(2, 20);
-    treeWidgetZaxis->setColumnWidth(0, 180);
-    treeWidgetZaxis->setColumnWidth(1, 160);
-    treeWidgetZaxis->setColumnWidth(2, 20);
+    treeWidgetXaxis->setColumnWidth(0, 160);
+    treeWidgetXaxis->setColumnWidth(1, 100);
+    treeWidgetXaxis->setColumnWidth(2, 35);
+    treeWidgetYaxis->setColumnWidth(0, 160);
+    treeWidgetYaxis->setColumnWidth(1, 100);
+    treeWidgetYaxis->setColumnWidth(2, 35);
+    treeWidgetZaxis->setColumnWidth(0, 160);
+    treeWidgetZaxis->setColumnWidth(1, 100);
+    treeWidgetZaxis->setColumnWidth(2, 35);
+
+
+    /*
+    treeWidgetTimeSpecifications->header()->setStretchLastSection(false);
+    treeWidgetTimeSpecifications->header()->setResizeMode(0,QHeaderView::Stretch);
+    treeWidgetTimeSpecifications->header()->setResizeMode(1,QHeaderView::Stretch);
+    treeWidgetTimeSpecifications->header()->setResizeMode(2,QHeaderView::Custom);
+
+    treeWidgetTimeSpecifications->resizeColumnToContents(0); treeWidgetTimeSpecifications->resizeColumnToContents(1); // treeWidgetTimeSpecifications->resizeColumnToContents(2);
+    treeWidgetShowInReport->resizeColumnToContents(0); treeWidgetShowInReport->resizeColumnToContents(1); treeWidgetShowInReport->resizeColumnToContents(2);
+    treeWidgetXaxis->resizeColumnToContents(0); treeWidgetXaxis->resizeColumnToContents(1); treeWidgetXaxis->resizeColumnToContents(2);
+    treeWidgetYaxis->resizeColumnToContents(0); treeWidgetYaxis->resizeColumnToContents(1); treeWidgetYaxis->resizeColumnToContents(2);
+    treeWidgetZaxis->resizeColumnToContents(0); treeWidgetZaxis->resizeColumnToContents(1); treeWidgetZaxis->resizeColumnToContents(2);
+    */
+
+
+
 
 }
 
@@ -146,17 +169,21 @@ void analysis::readScenario()
     {
         int GroundStation=0; //identify the type of Object
         int SpaceCraft=1; //identify the type of Object
+
         if ((dynamic_cast<ScenarioSC*>(participant.data())!=NULL)) //SC participant
         {
             QTreeWidgetItem * spacecraftItem =new QTreeWidgetItem(TreeWidgetMissionArc);
 
             //spacecraftItem->setText(0,"SpaceCraft");
             spacecraftItem->setText(0,participant.data()->Name());
+	    // Guillermo
+	    spacecraftItem->setIcon(0, QIcon(":/icons/ParticipantSATELLITE.png"));
+
             QTreeWidgetItem*trajectoryPlan=new QTreeWidgetItem(spacecraftItem);
-            trajectoryPlan->setText(0,"TrajectoryPlan");
+	    trajectoryPlan->setText(0,"Trajectory Plan");
 
             QTreeWidgetItem*PayloadSet=new QTreeWidgetItem(spacecraftItem);
-            PayloadSet->setText(0,"PayloadSet");
+	    PayloadSet->setText(0,"Payload Set");
 
             ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
 
@@ -172,7 +199,8 @@ void analysis::readScenario()
                     //loiterItem->setText(0,"Loitering");
                     ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
                     loiterItem->setText(0,loitering->ElementIdentifier()->Name());
-
+		    // Guillermo
+		    loiterItem->setIcon(0, QIcon(":/icons/mission-arcs-loitering.png"));
 
                     QTreeWidgetItem * parentType= new QTreeWidgetItem(loiterItem);
                     parentType->setText(0,"space");
@@ -207,6 +235,8 @@ void analysis::readScenario()
                 {
                     QTreeWidgetItem * payloadItem = new QTreeWidgetItem(PayloadSet);
                     payloadItem->setText(0,"Transmitter");
+		    // Guillermo
+		    payloadItem->setIcon(0, QIcon(":/icons/Payload.png"));
 
                     QTreeWidgetItem * parentType=new QTreeWidgetItem(payloadItem);
                     parentType->setText(0,QString::number(SpaceCraft));
@@ -232,6 +262,9 @@ void analysis::readScenario()
                 {
                     QTreeWidgetItem * payloadItem = new QTreeWidgetItem(PayloadSet); //Receiver
                     payloadItem->setText(0,"Receiver");
+		    // Guillermo
+		    payloadItem->setIcon(0, QIcon(":/icons/Payload.png"));
+
                     QTreeWidgetItem * parentType=new QTreeWidgetItem(payloadItem);
                     parentType->setText(0,QString::number(SpaceCraft));
                     parentType->setHidden(true);
@@ -270,12 +303,15 @@ void analysis::readScenario()
             QTreeWidgetItem * REVitem =new QTreeWidgetItem(TreeWidgetMissionArc);
             //REVitem->setText(0,"ReentryVehicle");
             REVitem->setText(0,participant.data()->Name());
+	    // Guillermo
+	    REVitem->setIcon(0, QIcon(":/icons/ParticipantENTRYVEHICLE.png"));
+
 
             QTreeWidgetItem*trajectoryPlan=new QTreeWidgetItem(REVitem);
-            trajectoryPlan->setText(0,"TrajectoryPlan");
+	    trajectoryPlan->setText(0,"Trajectory Plan");
 
             QTreeWidgetItem*PayloadSet=new QTreeWidgetItem(REVitem);
-            PayloadSet->setText(0,"PayloadSet");
+	    PayloadSet->setText(0,"Payload Set");
 
             ScenarioREV* vehicle = dynamic_cast<ScenarioREV*>(participant.data());
 
@@ -292,6 +328,9 @@ void analysis::readScenario()
                     //REVmissionItem->setText(0,"REV mission arc");
                     ScenarioEntryArcType*Reentry=dynamic_cast<ScenarioEntryArcType*>(trajectory.data());
                     REVmissionItem->setText(0,Reentry->ElementIdentifier()->Name());
+		    // Guillermo
+		    REVmissionItem->setIcon(0, QIcon(":/icons/mission-arcs-reentry.png"));
+
 
                     QTreeWidgetItem * REVparentType= new QTreeWidgetItem(REVmissionItem);
                     REVparentType->setText(0,"space");
@@ -326,8 +365,13 @@ void analysis::readScenario()
             QTreeWidgetItem * GSitem =new QTreeWidgetItem(TreeWidgetMissionArc);
             //GSitem->setText(0,"GroundStation");
             GSitem->setText(0,participant.data()->Name());
+	    // Guillermo
+	    GSitem->setIcon(0, QIcon(":/icons/ParticipantSTATION.png"));
+
+
             QTreeWidgetItem*PayloadSet=new QTreeWidgetItem(GSitem);
-            PayloadSet->setText(0,"PayloadSet");
+	    PayloadSet->setText(0,"Payload Set");
+
 
 
             ScenarioGroundStation* station = dynamic_cast<ScenarioGroundStation*>(participant.data());
@@ -344,6 +388,9 @@ void analysis::readScenario()
                 {
                     QTreeWidgetItem * payloadItem = new QTreeWidgetItem(PayloadSet);
                     payloadItem->setText(0,"Transmitter");
+		    // Guillermo
+		    payloadItem->setIcon(0, QIcon(":/icons/Payload.png"));
+
                     QTreeWidgetItem * parentType=new QTreeWidgetItem(payloadItem);
                     parentType->setText(0,QString::number(GroundStation));
                     parentType->setHidden(true);
@@ -365,6 +412,9 @@ void analysis::readScenario()
                 {
                     QTreeWidgetItem * payloadItem = new QTreeWidgetItem(PayloadSet); //Receiver
                     payloadItem->setText(0,"Receiver");
+		    // Guillermo
+		    payloadItem->setIcon(0, QIcon(":/icons/Payload.png"));
+
                     QTreeWidgetItem * parentType=new QTreeWidgetItem(payloadItem);
                     parentType->setText(0,QString::number(GroundStation));
                     parentType->setHidden(true);
@@ -5039,10 +5089,11 @@ QComboBox* analysis::CoordinateBox()
     CoordinateBox2->addItem(tr("Fixed"),2);
     CoordinateBox2->addItem(tr("Ecliptic J2000"),3);
     CoordinateBox2->addItem(tr("Rotating"),4);
-    CoordinateBox2->addItem(tr("Rotating Normalized"),5);
+    CoordinateBox2->addItem(tr("Rotating Norm."),5);
 
-    // resizeColumnToContents
-    CoordinateBox2->adjustSize();
+    // Guillermo says: smaller font is better for the row
+    QFont font("Helvetica", 10); CoordinateBox2->setFont(font);
+    CoordinateBox2->setMaximumHeight(22);
 
     return CoordinateBox2;
 }
@@ -5057,11 +5108,13 @@ QComboBox*analysis::TimeFramesBox()
     TimeBox->addItem(tr("Julian Date"));
     TimeBox->addItem(tr("Julian UTC"));
     TimeBox->addItem(tr("Julian LCL"));
-    TimeBox->addItem(tr("Mission Elapsed Time"));
+    TimeBox->addItem(tr("Mission Elapsed"));
     TimeBox->addItem(tr("GMT"));
     TimeBox->addItem(tr("MJD"));
 
-    TimeBox->adjustSize();
+    // Guillermo says: smaller font is better for the row
+    QFont font("Helvetica", 10); TimeBox->setFont(font);
+    TimeBox->setMaximumHeight(22);
 
     return TimeBox;
 }
@@ -5073,45 +5126,72 @@ QComboBox*analysis::TimeUnitsBox()
     TimeBox->addItem(tr("Minutes"),1);
     TimeBox->addItem(tr("Hours"),2);
     TimeBox->addItem(tr("Days"),3);
+
+    // Guillermo says: smaller font is better for the row
+    QFont font("Helvetica", 10);     TimeBox->setFont(font);
+    TimeBox->setMaximumHeight(22);
+
     return TimeBox;
 }
 
 QComboBox*analysis::AngleUnitsBox()
 {
     QComboBox*AngleBox=new QComboBox();
-    AngleBox->addItem(tr("Rad"),0);
-    AngleBox->addItem(tr("Deg"),1);
+    AngleBox->addItem(tr("rad"),0);
+    AngleBox->addItem(tr("deg"),1);
+
+    // Guillermo says: smaller font is better for the row
+    QFont font("Helvetica", 10);     AngleBox->setFont(font);
+    AngleBox->setMaximumHeight(22);
+
     return AngleBox;
 }
 
-QComboBox*analysis::DistanceUnitsBox()
+QComboBox* analysis::DistanceUnitsBox()
 {
     QComboBox*DistanceBox=new QComboBox();
-    DistanceBox->addItem(tr("Km"),0);
+    DistanceBox->addItem(tr("km"),0);
     DistanceBox->addItem(tr("m"),1);
     DistanceBox->addItem(tr("AU"),2);
-    DistanceBox->addItem(tr("NM"),3);
+    DistanceBox->addItem(tr("nm"),3);
+
+    // Guillermo says: smaller font is better for the row
+    QFont font("Helvetica", 10);     DistanceBox->setFont(font);
+    DistanceBox->setMaximumHeight(22);
+
     return DistanceBox;
 }
-QComboBox*analysis::NoUnitsBox()
+QComboBox* analysis::NoUnitsBox()
 {
-    QComboBox*NoUnits=new QComboBox();
-    NoUnits->addItem(tr(" "));
+    QComboBox* NoUnits=new QComboBox();
+    NoUnits->addItem(tr("-"));
+
+    // Guillermo says: smaller font is better for the row
+    QFont font("Helvetica", 10);     NoUnits->setFont(font);
+    NoUnits->setMaximumHeight(22);
+
     return NoUnits;
 }
 
 QComboBox*analysis::VelocityUnitsBox()
 {
     QComboBox*VelocityBox=new QComboBox();
-    VelocityBox->addItem(tr("Km/s"),0);
+    VelocityBox->addItem(tr("km/s"),0);
     VelocityBox->addItem(tr("m/s"),0);
+
+    // Guillermo says: smaller font is better for the row
+    QFont font("Helvetica", 10);     VelocityBox->setFont(font);
+    VelocityBox->setMaximumHeight(22);
+
     return VelocityBox;
 }
+
+
 void analysis::ComboBoxOptions()
 {
-    treeWidgetShowInReport->setColumnWidth(0,138);
-    treeWidgetShowInReport->setColumnWidth(1,120);
-    treeWidgetShowInReport->setColumnWidth(2,50);
+    //treeWidgetShowInReport->setColumnWidth(0,138);
+    //treeWidgetShowInReport->setColumnWidth(1,120);
+    //treeWidgetShowInReport->setColumnWidth(2,50);
 
     for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++)
     {
@@ -5528,7 +5608,7 @@ void analysis::DisableUnavailableOptions()
             {
                 for(int k=0;k<topItem->childCount();k++)
                 {
-                    if(topItem->text(0)=="Systems Engineering Data"||topItem->text(0)=="Aerodynamics"||topItem->text(0)=="Re-entry")
+		    if(topItem->text(0)=="SEM data"||topItem->text(0)=="Aerodynamics"||topItem->text(0)=="Re-entry")
                     {
                         topItem->setDisabled(true);
                         topItem->child(k)->setDisabled(true);
