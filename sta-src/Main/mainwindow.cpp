@@ -410,7 +410,8 @@ void MainWindow::on_actionNewScenario_triggered()
     actionSat_to_Sat->setEnabled(m_scenario != NULL);
     actionSat_to_Ground->setEnabled(m_scenario != NULL);
     actionSystem_Engineering->setEnabled(m_scenario != NULL);
-    actionAnalyse->setEnabled(m_scenario != NULL);
+    //actionAnalyse->setEnabled(m_scenario != NULL);
+    actionAnalyse->setDisabled(m_scenario != NULL);  // Do not enable analysis here. Do it after propagation
 
 }
 
@@ -525,8 +526,9 @@ void MainWindow::on_actionOpenScenario_triggered()
     actionSat_to_Sat->setEnabled(m_scenario != NULL);
     actionSat_to_Ground->setEnabled(m_scenario != NULL);
     actionSystem_Engineering->setEnabled(m_scenario != NULL);
-    actionAnalyse->setEnabled(m_scenario != NULL);
-}
+    //actionAnalyse->setEnabled(m_scenario = NULL);
+    actionAnalyse->setDisabled(m_scenario != NULL);  // Do not enable analysis here. Do it after propagation
+
 
 
 // Add required namespace attributes for the
