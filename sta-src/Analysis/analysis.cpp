@@ -2817,7 +2817,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                 stream<<Delaunay_H<<"\t";
                                                             }
                                                         }
-                                                            if((name=="Latitude")||(name=="Longitude")||(name=="Radial Distance")||(name=="Flight Path Angle")||(name=="Heading Angle")||(name=="Velocity Modulus"))
+                                                            if((name=="Latitude")||(name=="Longitude")||(name=="Radial Distance")||(name=="Flight Path Angle")||(name=="Heading Angle")||(name=="Velocity Modulus")||(name=="Altitude"))
                                                             {
                                                                 QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,1);
                                                                 QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
@@ -2852,6 +2852,10 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                 if(name=="Radial Distance")
                                                                 {
                                                                     stream<<sta::ConvertUnits(Units,SphericalElements[2])<<"\t";
+                                                                }
+                                                                if(name=="Altitude")
+                                                                {
+                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[2]-STA_SOLAR_SYSTEM->lookup("Earth")->meanRadius())<<"\t";
                                                                 }
                                                                 if(name=="Flight Path Angle")
                                                                 {
@@ -4664,7 +4668,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                             if (name=="Altitude")
                             {
                                 double radius=STA_SOLAR_SYSTEM->lookup("Earth")->meanRadius();
-                                double altitude=sta::ConvertUnits(Units,SphericalElements[2])-radius;
+                                double altitude=sta::ConvertUnits(Units,SphericalElements[2]-radius);
                                 LineData.append(altitude);
                             }
                             if(name=="Flight Path Angle")
@@ -4984,7 +4988,7 @@ void analysis::addParameter(QTreeWidgetItem* item)
     {
         QTreeWidgetItem*added=new QTreeWidgetItem(treeWidgetShowInReport);
         added->setText(0,text);
-        ComboBoxOptions();
+        ComboBoxOptions(added);
     }
 
 }
@@ -5187,15 +5191,13 @@ QComboBox*analysis::VelocityUnitsBox()
 }
 
 
-void analysis::ComboBoxOptions()
+void analysis::ComboBoxOptions(QTreeWidgetItem*item)
 {
     //treeWidgetShowInReport->setColumnWidth(0,138);
     //treeWidgetShowInReport->setColumnWidth(1,120);
     //treeWidgetShowInReport->setColumnWidth(2,50);
-
-    for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++)
     {
-        QTreeWidgetItem*item=treeWidgetShowInReport->topLevelItem(i);
+
         QString name=item->text(0);
         if ((name=="x position") ||
             (name=="y position")||
@@ -5608,7 +5610,7 @@ void analysis::DisableUnavailableOptions()
             {
                 for(int k=0;k<topItem->childCount();k++)
                 {
-		    if(topItem->text(0)=="SEM data"||topItem->text(0)=="Aerodynamics"||topItem->text(0)=="Re-entry")
+                    if(topItem->text(0)=="SEM data"||topItem->text(0)=="Aerodynamics"||topItem->text(0)=="Re-entry")
                     {
                         topItem->setDisabled(true);
                         topItem->child(k)->setDisabled(true);

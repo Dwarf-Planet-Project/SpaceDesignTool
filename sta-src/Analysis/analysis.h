@@ -31,6 +31,9 @@
 
 #include <QFont>
 #include <QDialog>
+#include<QComboBox>
+#include <QTreeWidgetItem>
+
 
 
 class analysis : public QDialog , private Ui::analysisDialogClass
@@ -54,8 +57,8 @@ QList<QList<double> >Data; // QList of lines, each line a QList of data
 
 };
 
-QList<AnalysisData> WriteDataStructure(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetItem *> selectedTimes);
-void WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetItem *> selectedTimes);
+QList<AnalysisData> WriteDataStructure(QList<QTreeWidgetItem*> selected,QList<QTreeWidgetItem *> selectedTimes);
+void WriteReport(QList<QTreeWidgetItem*> selected,QList<QTreeWidgetItem *> selectedTimes);
 void DisableUnavailableOptions();
 
 protected slots:
@@ -105,7 +108,7 @@ private:
         //PropagatedScenario*m_propagatedScenario;
         bool CheckIfMissionArc();
         void InsertComboBox();
-        void ComboBoxOptions();
+        void ComboBoxOptions(QTreeWidgetItem*);
         void PlotComboBox();
         QComboBox * TimeFramesBox();
         QComboBox * TimeUnitsBox();

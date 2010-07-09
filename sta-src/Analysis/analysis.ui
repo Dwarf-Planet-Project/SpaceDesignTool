@@ -26,7 +26,7 @@
    <string>Analysis</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../iconary/sta-icons.qrc">
+   <iconset>
     <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -309,7 +309,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="pageReport">
         <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -353,7 +353,7 @@
                     <string>Analysis</string>
                    </property>
                    <property name="icon">
-                    <iconset resource="../../iconary/sta-icons.qrc">
+                    <iconset>
                      <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
                    </property>
                    <item>
@@ -1044,7 +1044,7 @@
                   </item>
                   <item>
                    <property name="text">
-                    <string>SEM Data</string>
+                    <string>SEM data</string>
                    </property>
                    <item>
                     <property name="text">
@@ -1511,7 +1511,7 @@
                   <string>Analysis</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../../iconary/sta-icons.qrc">
+                  <iconset>
                    <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
                  </property>
                  <item>
@@ -2224,7 +2224,7 @@
                 </item>
                 <item>
                  <property name="text">
-                  <string>SEM Data</string>
+                  <string>SEM data</string>
                  </property>
                  <item>
                   <property name="text">
@@ -2695,7 +2695,7 @@
                   <string>Analysis</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../../iconary/sta-icons.qrc">
+                  <iconset>
                    <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
                  </property>
                  <item>
@@ -2779,7 +2779,7 @@
                   </item>
                   <item>
                    <property name="text">
-                    <string>Iinclination</string>
+                    <string>Inclination</string>
                    </property>
                   </item>
                   <item>
@@ -3393,7 +3393,7 @@
                 </item>
                 <item>
                  <property name="text">
-                  <string>SEM Data</string>
+                  <string>SEM data</string>
                  </property>
                  <item>
                   <property name="text">
@@ -3858,7 +3858,7 @@
                   <string>Analysis</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../../iconary/sta-icons.qrc">
+                  <iconset>
                    <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
                  </property>
                  <item>
@@ -4556,7 +4556,7 @@
                 </item>
                 <item>
                  <property name="text">
-                  <string>SEM Data</string>
+                  <string>SEM data</string>
                  </property>
                  <item>
                   <property name="text">
@@ -5038,9 +5038,7 @@
   <tabstop>treeWidgetYaxis</tabstop>
   <tabstop>treeWidgetZaxis</tabstop>
  </tabstops>
- <resources>
-  <include location="../../iconary/sta-icons.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>pushButton</sender>
