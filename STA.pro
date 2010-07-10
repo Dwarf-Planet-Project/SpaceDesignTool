@@ -132,7 +132,7 @@ ASTROCORE_SOURCES = sta-src/Astro-Core/calendarTOjulian.cpp \
     sta-src/Astro-Core/cartesianTOrotating.cpp \
     sta-src/Astro-Core/threebodyParametersComputation.cpp \
     sta-src/Astro-Core/ascendingNode.cpp \
-    sta-src/Astro-Core/propagateTHREEbody.cpp \
+#    sta-src/Astro-Core/propagateTHREEbody.cpp \
     sta-src/Astro-Core/rotatingTOcartesian.cpp \
     sta-src/Astro-Core/Interpolators.cpp \
     sta-src/Astro-Core/trueAnomalyTOmeanAnomaly.cpp \
@@ -182,7 +182,7 @@ ASTROCORE_HEADERS = sta-src/Astro-Core/calendarTOjulian.h \
     sta-src/Astro-Core/cartesianTOrotating.h \
     sta-src/Astro-Core/threebodyParametersComputation.h \
     sta-src/Astro-Core/ascendingNode.h \
-    sta-src/Astro-Core/propagateTHREEbody.h \
+#    sta-src/Astro-Core/propagateTHREEbody.h \
     sta-src/Astro-Core/rotatingTOcartesian.h \
     sta-src/Astro-Core/Interpolators.h \
     sta-src/Astro-Core/trueAnomalyTOmeanAnomaly.h \
@@ -236,9 +236,9 @@ LOCATIONS_FORMS = sta-src/Locations/locationeditor.ui \
     sta-src/Locations/environmentDialog.ui
 
 # ############# Rendezvous Module ##############
-RENDEZVOUS_SOURCES = sta-src/RendezVous/rendezvous.cpp
-RENDEZVOUS_HEADERS = sta-src/RendezVous/rendezvous.h
-RENDEZVOUS_FORMS = sta-src/RendezVous/rendezvous.ui
+#RENDEZVOUS_SOURCES = sta-src/RendezVous/rendezvous.cpp
+#RENDEZVOUS_HEADERS = sta-src/RendezVous/rendezvous.h
+#RENDEZVOUS_FORMS = sta-src/RendezVous/rendezvous.ui
 
 # ############# Coverage Module ##############
 COVERAGE_SOURCES = sta-src/Coverage/commanalysis.cpp \
@@ -288,44 +288,44 @@ SEM_FORMS = sta-src/SEM/sem.ui \
     sta-src/SEM/DataCommGUI.ui
 
 # ############# 3-Body Module ##############
-LAGRANGIAN_SOURCES = sta-src/Lagrangian/trajectoryprinting.cpp \
-    sta-src/Lagrangian/halorbitcomputation.cpp \
-    sta-src/Lagrangian/lagrangian.cpp \
-    sta-src/Lagrangian/InizializeOptimizer.cpp \
-    sta-src/Lagrangian/EvaluateModel.cpp \
-    sta-src/Lagrangian/EarthMoonTransfer.cpp \
-    sta-src/Lagrangian/lagrangianAdvanced.cpp
-LAGRANGIAN_HEADERS = sta-src/Lagrangian/halorbitcomputation.h \
-    sta-src/Lagrangian/trajectoryprinting.h \
-    sta-src/Lagrangian/lagrangian.h \
-    sta-src/Lagrangian/EarthMoonTransfer.h \
-    sta-src/Lagrangian/lagrangianAdvanced.h
-LAGRANGIAN_FORMS = sta-src/Lagrangian/lagrangian.ui \
-    sta-src/Lagrangian/lagrangianAdvanced.ui
+#LAGRANGIAN_SOURCES = sta-src/Lagrangian/trajectoryprinting.cpp \
+#    sta-src/Lagrangian/halorbitcomputation.cpp \
+#    sta-src/Lagrangian/lagrangian.cpp \
+#    sta-src/Lagrangian/InizializeOptimizer.cpp \
+#    sta-src/Lagrangian/EvaluateModel.cpp \
+#    sta-src/Lagrangian/EarthMoonTransfer.cpp \
+#    sta-src/Lagrangian/lagrangianAdvanced.cpp
+#LAGRANGIAN_HEADERS = sta-src/Lagrangian/halorbitcomputation.h \
+#    sta-src/Lagrangian/trajectoryprinting.h \
+#    sta-src/Lagrangian/lagrangian.h \
+#    sta-src/Lagrangian/EarthMoonTransfer.h \
+#    sta-src/Lagrangian/lagrangianAdvanced.h
+#LAGRANGIAN_FORMS = sta-src/Lagrangian/lagrangian.ui \
+#    sta-src/Lagrangian/lagrangianAdvanced.ui
 
 # ############# Optimization ##############
-OPTIMIZATION_SOURCES = sta-src/Optimization/pso1D.cpp \
-    sta-src/Optimization/nsga2.cpp \
-    sta-src/Optimization/dgmopso.cpp \
-    sta-src/Optimization/RunOptimizer.cpp \
-    sta-src/Optimization/arrays.cpp
-OPTIMIZATION_HEADERS = sta-src/Optimization/GlobalOptimizers.h \
-    sta-src/Optimization/arrays.h \
-    sta-src/Optimization/random.h \
-    sta-src/Optimization/input.h \
-    sta-src/Optimization/realinit.h \
-    sta-src/Optimization/init.h \
-    sta-src/Optimization/decode.h \
-    sta-src/Optimization/ranking.h \
-    sta-src/Optimization/rancon.h \
-    sta-src/Optimization/dfit.h \
-    sta-src/Optimization/select.h \
-    sta-src/Optimization/crossover.h \
-    sta-src/Optimization/uniformxr.h \
-    sta-src/Optimization/realcross2.h \
-    sta-src/Optimization/mut.h \
-    sta-src/Optimization/realmut1.h \
-    sta-src/Optimization/keepaliven.h
+#OPTIMIZATION_SOURCES = sta-src/Optimization/pso1D.cpp \
+#    sta-src/Optimization/nsga2.cpp \
+#    sta-src/Optimization/dgmopso.cpp \
+#    sta-src/Optimization/RunOptimizer.cpp \
+#    sta-src/Optimization/arrays.cpp
+#OPTIMIZATION_HEADERS = sta-src/Optimization/GlobalOptimizers.h \
+#    sta-src/Optimization/arrays.h \
+#    sta-src/Optimization/random.h \
+#    sta-src/Optimization/input.h \
+#    sta-src/Optimization/realinit.h \
+#    sta-src/Optimization/init.h \
+#    sta-src/Optimization/decode.h \
+#    sta-src/Optimization/ranking.h \
+#    sta-src/Optimization/rancon.h \
+#    sta-src/Optimization/dfit.h \
+#    sta-src/Optimization/select.h \
+#    sta-src/Optimization/crossover.h \
+#    sta-src/Optimization/uniformxr.h \
+#    sta-src/Optimization/realcross2.h \
+#    sta-src/Optimization/mut.h \
+#    sta-src/Optimization/realmut1.h \
+#    sta-src/Optimization/keepaliven.h
 
 # ############# Plotting Module ##############
 PLOT_SOURCES = sta-src/Plotting/groundtrackplottool.cpp \
@@ -836,10 +836,10 @@ SOURCES = $$MAIN_SOURCES \
     $$LOCATIONS_SOURCES \
     $$LOITERING_SOURCES \
     $$EXTERNAL_SOURCES \
-    $$RENDEZVOUS_SOURCES \
+#    $$RENDEZVOUS_SOURCES \
     $$RAM_SOURCES \
-    $$LAGRANGIAN_SOURCES \
-    $$OPTIMIZATION_SOURCES \
+#    $$LAGRANGIAN_SOURCES \
+#    $$OPTIMIZATION_SOURCES \
     $$CALCULATOR_SOURCES \
     $$CELESTIA_SOURCES \
     $$GLEW_SOURCES \
@@ -861,9 +861,9 @@ HEADERS = $$MAIN_HEADERS \
     $$LOITERING_HEADERS \
     $$EXTERNAL_HEADERS \
     $$RAM_HEADERS \
-    $$RENDEZVOUS_HEADERS \
-    $$LAGRANGIAN_HEADERS \
-    $$OPTIMIZATION_HEADER \
+#    $$RENDEZVOUS_HEADERS \
+#    $$LAGRANGIAN_HEADERS \
+#    $$OPTIMIZATION_HEADER \
     $$CALCULATOR_HEADERS \
     $$CELESTIA_HEADERS \
     $$GLEW_HEADERS \
@@ -885,8 +885,8 @@ FORMS = $$MAIN_FORMS \
     $$CALCULATOR_FORMS \
     $$LOITERING_FORMS \
     $$EXTERNAL_FORMS \
-    $$RENDEZVOUS_FORMS \
-    $$LAGRANGIAN_FORMS \
+#    $$RENDEZVOUS_FORMS \
+#    $$LAGRANGIAN_FORMS \
     $$CELESTIA_FORMS \
     $$GLEW_FORMS \
     $$CURVEPLOT_FORMS \
@@ -909,6 +909,7 @@ INCLUDEPATH += thirdparty/glew/include
 INCLUDEPATH += thirdparty/curveplot/include
 INCLUDEPATH += thirdparty/qwtplot3d/include
 INCLUDEPATH += thirdparty/noradtle
+
 win32 { 
     # SPICE support
     # SOURCES += $$SPICE_SOURCES
@@ -1171,8 +1172,8 @@ macx {
         BODIES
 }
 
-## MAC OS X specifics to load inside the bundle the Qt frameworks to avoid separated installatio
-## and make STA a droppable and callable application mac like
+## MAC OS X specifics to load inside the bundle the Qt frameworks to avoid separated installation
+## and make STA a droppable and callable application, MAC alike
 macx {
 	isEmpty(QT_FRAMEWORK_DIR): QT_FRAMEWORK_DIR = /Library/Frameworks
 	private_frameworks.files += $${QT_FRAMEWORK_DIR}/QtCore.framework
