@@ -5615,7 +5615,7 @@ void analysis::DisableUnavailableOptions()
             {
                 for(int k=0;k<topItem->childCount();k++)
                 {
-                    if(topItem->text(0)=="SEM data"||topItem->text(0)=="Aerodynamics"||topItem->text(0)=="Re-entry")
+                    if(topItem->text(0)=="SEM Data"||topItem->text(0)=="Aerodynamics"||topItem->text(0)=="Re-entry")
                     {
                         topItem->setDisabled(true);
                         topItem->child(k)->setDisabled(true);
