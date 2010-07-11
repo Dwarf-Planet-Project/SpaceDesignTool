@@ -72,7 +72,8 @@ class MainWindow : public QMainWindow, private Ui_MainWindow
     Q_OBJECT
     
 public:
-    MainWindow();
+    //MainWindow();
+    MainWindow(QWidget *parent = 0);
     ~MainWindow();
     
     SpaceScenario* scenario() const;
@@ -128,6 +129,8 @@ public slots:
     
     void refreshCentralWidget(int tabIndex);
     void toggleGroundTrackView();
+
+    void openFileFromAEvent(const QString& fileName);	//Guillermo
 	
 // Next clases added by Guillermo to handle the ABOUT menu
 public:
@@ -185,6 +188,7 @@ private:
     QAction* m_dockGroundTrackAction;
 
     QXmlSchema* m_spaceScenarioSchema;
+
 };
 
 #endif // _MAIN_MAINWINDOW_H_

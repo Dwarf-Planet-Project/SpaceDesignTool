@@ -25,21 +25,25 @@
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeIconFile</key>
+			<string>STAscenarioICON.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>STA scenario file</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>stas</string>
 			</array>
-			<key>CFBundleTypeIconFile</key>
-			<string>icon</string>
-			<key>CFBundleTypeName</key>
-			<string>STA scenario file</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>stas</string>
 			</array>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
+			<key>NSDocumentClass</key>
+			<string>Document</string>
 		</dict>
 	</array>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2005-2010, STA Steering Board</string>
 </dict>
 </plist>
