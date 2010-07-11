@@ -1,9 +1,9 @@
 <tns:SpaceScenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tns="http://www.example.org/scenario" xsi:schemaLocation="http://www.example.org/scenario scenario.xsd">
- <tns:Name>Galileo Constellation</tns:Name>
+ <tns:Name>Walker Constellation</tns:Name>
  <tns:SC>
-  <tns:Name>Galileo 1-1</tns:Name>
+  <tns:Name>Satellite 1-1</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 1-1</tns:Name>
+   <tns:Name>Satellite 1-1</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -11,12 +11,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -24,16 +24,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>173</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>107</tns:atmosphericDrag>
-      <tns:solarPressure>221</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -47,16 +47,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -205,9 +213,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 1-2</tns:Name>
+  <tns:Name>Satellite 1-2</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 1-2</tns:Name>
+   <tns:Name>Satellite 1-2</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -215,12 +223,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -228,16 +236,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>173</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>114</tns:atmosphericDrag>
-      <tns:solarPressure>221</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -251,16 +259,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -409,9 +425,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 1-3</tns:Name>
+  <tns:Name>Satellite 1-3</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 1-3</tns:Name>
+   <tns:Name>Satellite 1-3</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -419,12 +435,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -432,16 +448,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>173</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>29</tns:atmosphericDrag>
-      <tns:solarPressure>185</tns:solarPressure>
+      <tns:atmosphericDrag>true</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -455,16 +471,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -613,9 +637,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 1-4</tns:Name>
+  <tns:Name>Satellite 1-4</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 1-4</tns:Name>
+   <tns:Name>Satellite 1-4</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -623,12 +647,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -636,16 +660,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>109</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>174</tns:atmosphericDrag>
-      <tns:solarPressure>56</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -659,16 +683,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -817,9 +849,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 1-5</tns:Name>
+  <tns:Name>Satellite 1-5</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 1-5</tns:Name>
+   <tns:Name>Satellite 1-5</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -827,12 +859,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -840,16 +872,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>173</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>107</tns:atmosphericDrag>
-      <tns:solarPressure>221</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -863,16 +895,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -1021,9 +1061,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 1-6</tns:Name>
+  <tns:Name>Satellite 1-6</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 1-6</tns:Name>
+   <tns:Name>Satellite 1-6</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -1031,12 +1071,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -1044,16 +1084,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>173</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>112</tns:atmosphericDrag>
-      <tns:solarPressure>221</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -1067,16 +1107,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -1225,9 +1273,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 1-7</tns:Name>
+  <tns:Name>Satellite 1-7</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 1-7</tns:Name>
+   <tns:Name>Satellite 1-7</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -1235,12 +1283,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -1248,16 +1296,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>111</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>173</tns:atmosphericDrag>
-      <tns:solarPressure>56</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -1271,16 +1319,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -1429,9 +1485,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 1-8</tns:Name>
+  <tns:Name>Satellite 1-8</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 1-8</tns:Name>
+   <tns:Name>Satellite 1-8</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -1439,12 +1495,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -1452,16 +1508,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>118</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>173</tns:atmosphericDrag>
-      <tns:solarPressure>56</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -1475,16 +1531,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -1633,9 +1697,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 1-9</tns:Name>
+  <tns:Name>Satellite 1-9</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 1-9</tns:Name>
+   <tns:Name>Satellite 1-9</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -1643,12 +1707,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -1656,16 +1720,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>113</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>174</tns:atmosphericDrag>
-      <tns:solarPressure>56</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -1679,16 +1743,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -1837,9 +1909,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 2-1</tns:Name>
+  <tns:Name>Satellite 2-1</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 2-1</tns:Name>
+   <tns:Name>Satellite 2-1</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -1847,12 +1919,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -1860,16 +1932,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>0</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>0</tns:atmosphericDrag>
-      <tns:solarPressure>0</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -1883,16 +1955,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -2041,9 +2121,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 2-2</tns:Name>
+  <tns:Name>Satellite 2-2</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 2-2</tns:Name>
+   <tns:Name>Satellite 2-2</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -2051,12 +2131,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -2064,16 +2144,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>0</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>0</tns:atmosphericDrag>
-      <tns:solarPressure>0</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -2087,16 +2167,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -2245,9 +2333,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 2-3</tns:Name>
+  <tns:Name>Satellite 2-3</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 2-3</tns:Name>
+   <tns:Name>Satellite 2-3</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -2255,12 +2343,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -2268,16 +2356,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>0</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>164</tns:atmosphericDrag>
-      <tns:solarPressure>203</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -2291,16 +2379,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -2449,9 +2545,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 2-4</tns:Name>
+  <tns:Name>Satellite 2-4</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 2-4</tns:Name>
+   <tns:Name>Satellite 2-4</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -2459,12 +2555,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -2472,16 +2568,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>0</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>0</tns:atmosphericDrag>
-      <tns:solarPressure>0</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -2495,16 +2591,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -2653,9 +2757,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 2-5</tns:Name>
+  <tns:Name>Satellite 2-5</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 2-5</tns:Name>
+   <tns:Name>Satellite 2-5</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -2663,12 +2767,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -2676,16 +2780,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>0</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>111</tns:atmosphericDrag>
-      <tns:solarPressure>108</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -2699,16 +2803,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -2857,9 +2969,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 2-6</tns:Name>
+  <tns:Name>Satellite 2-6</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 2-6</tns:Name>
+   <tns:Name>Satellite 2-6</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -2867,12 +2979,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -2880,16 +2992,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>0</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>0</tns:atmosphericDrag>
-      <tns:solarPressure>0</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -2903,16 +3015,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -3061,9 +3181,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 2-7</tns:Name>
+  <tns:Name>Satellite 2-7</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 2-7</tns:Name>
+   <tns:Name>Satellite 2-7</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -3071,12 +3191,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -3084,16 +3204,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>80</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>0</tns:atmosphericDrag>
-      <tns:solarPressure>0</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -3107,16 +3227,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -3265,9 +3393,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 2-8</tns:Name>
+  <tns:Name>Satellite 2-8</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 2-8</tns:Name>
+   <tns:Name>Satellite 2-8</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -3275,12 +3403,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -3288,16 +3416,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>100</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>0</tns:atmosphericDrag>
-      <tns:solarPressure>4</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -3311,16 +3439,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -3469,9 +3605,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 2-9</tns:Name>
+  <tns:Name>Satellite 2-9</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 2-9</tns:Name>
+   <tns:Name>Satellite 2-9</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -3479,12 +3615,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -3492,16 +3628,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>173</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>111</tns:atmosphericDrag>
-      <tns:solarPressure>221</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -3515,16 +3651,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -3673,9 +3817,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 3-1</tns:Name>
+  <tns:Name>Satellite 3-1</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 3-1</tns:Name>
+   <tns:Name>Satellite 3-1</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -3683,12 +3827,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -3696,16 +3840,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>111</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>173</tns:atmosphericDrag>
-      <tns:solarPressure>56</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -3719,16 +3863,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -3877,9 +4029,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 3-2</tns:Name>
+  <tns:Name>Satellite 3-2</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 3-2</tns:Name>
+   <tns:Name>Satellite 3-2</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -3887,12 +4039,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -3900,16 +4052,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>173</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>29</tns:atmosphericDrag>
-      <tns:solarPressure>185</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -3923,16 +4075,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -4081,9 +4241,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 3-3</tns:Name>
+  <tns:Name>Satellite 3-3</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 3-3</tns:Name>
+   <tns:Name>Satellite 3-3</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -4091,12 +4251,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -4104,16 +4264,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>111</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>173</tns:atmosphericDrag>
-      <tns:solarPressure>56</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -4127,16 +4287,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -4285,9 +4453,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 3-4</tns:Name>
+  <tns:Name>Satellite 3-4</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 3-4</tns:Name>
+   <tns:Name>Satellite 3-4</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -4295,12 +4463,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -4308,16 +4476,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>175</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>111</tns:atmosphericDrag>
-      <tns:solarPressure>221</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -4331,16 +4499,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -4489,9 +4665,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 3-5</tns:Name>
+  <tns:Name>Satellite 3-5</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 3-5</tns:Name>
+   <tns:Name>Satellite 3-5</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -4499,12 +4675,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -4512,16 +4688,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>173</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>25</tns:atmosphericDrag>
-      <tns:solarPressure>185</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -4535,16 +4711,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -4693,9 +4877,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 3-6</tns:Name>
+  <tns:Name>Satellite 3-6</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 3-6</tns:Name>
+   <tns:Name>Satellite 3-6</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -4703,12 +4887,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -4716,16 +4900,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>172</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>111</tns:atmosphericDrag>
-      <tns:solarPressure>221</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -4739,16 +4923,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -4897,9 +5089,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 3-7</tns:Name>
+  <tns:Name>Satellite 3-7</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 3-7</tns:Name>
+   <tns:Name>Satellite 3-7</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -4907,12 +5099,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -4920,16 +5112,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>173</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>112</tns:atmosphericDrag>
-      <tns:solarPressure>184</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -4943,16 +5135,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -5101,9 +5301,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 3-8</tns:Name>
+  <tns:Name>Satellite 3-8</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 3-8</tns:Name>
+   <tns:Name>Satellite 3-8</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -5111,12 +5311,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -5124,16 +5324,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>5</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>0</tns:atmosphericDrag>
-      <tns:solarPressure>0</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -5147,16 +5347,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
@@ -5305,9 +5513,9 @@
   </tns:OutputFiles>
  </tns:SC>
  <tns:SC>
-  <tns:Name>Galileo 3-9</tns:Name>
+  <tns:Name>Satellite 3-9</tns:Name>
   <tns:ElementIdentifier>
-   <tns:Name>Galileo 3-9</tns:Name>
+   <tns:Name>Satellite 3-9</tns:Name>
    <tns:Order>0</tns:Order>
   </tns:ElementIdentifier>
   <tns:SCProgram/>
@@ -5315,12 +5523,12 @@
    <tns:TrajectoryPlan>
     <tns:Loitering>
      <tns:ElementIdentifier>
-      <tns:Name></tns:Name>
+      <tns:Name>loitering</tns:Name>
       <tns:Order>0</tns:Order>
      </tns:ElementIdentifier>
      <tns:Environment>
       <tns:CentralBody>
-       <tns:Name>EARTH</tns:Name>
+       <tns:Name>Earth</tns:Name>
        <tns:GravityModel>
         <tns:modelName></tns:modelName>
         <tns:numberOfZonals>0</tns:numberOfZonals>
@@ -5328,16 +5536,16 @@
        </tns:GravityModel>
        <tns:AtmosphereModel></tns:AtmosphereModel>
        <tns:MagneticModel></tns:MagneticModel>
-       <tns:Ellipticity>188</tns:Ellipticity>
+       <tns:Ellipticity>false</tns:Ellipticity>
       </tns:CentralBody>
       <tns:perturbingBody></tns:perturbingBody>
-      <tns:atmosphericDrag>115</tns:atmosphericDrag>
-      <tns:solarPressure>0</tns:solarPressure>
+      <tns:atmosphericDrag>false</tns:atmosphericDrag>
+      <tns:solarPressure>false</tns:solarPressure>
      </tns:Environment>
      <tns:TimeLine>
-      <tns:StartTime>2012-01-01T00:00:00</tns:StartTime>
+      <tns:StartTime>2010-07-11T02:46:41</tns:StartTime>
       <tns:StepTime>60</tns:StepTime>
-      <tns:EndTime>2012-01-02T00:00:00</tns:EndTime>
+      <tns:EndTime>2010-07-12T02:46:41</tns:EndTime>
      </tns:TimeLine>
      <tns:InitialPosition>
       <tns:CoordinateSystem>INERTIAL J2000</tns:CoordinateSystem>
@@ -5351,16 +5559,24 @@
       </tns:KeplerianElements>
      </tns:InitialPosition>
      <tns:InitialAttitude>
-      <tns:CoordinateSystem></tns:CoordinateSystem>
+      <tns:CoordinateSystem>EULER 123</tns:CoordinateSystem>
+      <tns:EulerBI>
+       <tns:phi>0</tns:phi>
+       <tns:theta>0</tns:theta>
+       <tns:psi>0</tns:psi>
+       <tns:phiDot>0</tns:phiDot>
+       <tns:thetaDot>0</tns:thetaDot>
+       <tns:psiDot>0</tns:psiDot>
+      </tns:EulerBI>
      </tns:InitialAttitude>
      <tns:PropagationPosition>
       <tns:propagator>TWO BODY</tns:propagator>
-      <tns:integrator></tns:integrator>
+      <tns:integrator>RK4</tns:integrator>
       <tns:timeStep>60</tns:timeStep>
      </tns:PropagationPosition>
      <tns:PropagationAttitude>
       <tns:integrator></tns:integrator>
-      <tns:timeStep>0</tns:timeStep>
+      <tns:timeStep>60</tns:timeStep>
      </tns:PropagationAttitude>
     </tns:Loitering>
    </tns:TrajectoryPlan>
