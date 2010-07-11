@@ -20,7 +20,8 @@
  */
 /*
 
- ------------------ Author: Ricardo  -------------------------------------------------
+ ------------------ Author: Ricardo Noriega de Soto  -------------------------------------------------
+ ------------------ Email: ricardonor@gmail.com   -------------------------------------------------
   Patched by Guillermo June 2010 to add constellations module
 
  */

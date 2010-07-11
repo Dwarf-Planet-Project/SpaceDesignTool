@@ -53,7 +53,7 @@ void CoverageAnalysis::reportAER(){
                     elevationAngle=elevationAngle*RAD2DEG;
                     double range=m_propagatedScenario->groundObjects().at(m_indexGS)->getRange(m_propagatedScenario->spaceObjects().at(m_indexSC), mjd);
                     double azimuth=m_propagatedScenario->groundObjects().at(m_indexGS)->azimuthAngle(m_propagatedScenario->spaceObjects().at(m_indexSC), mjd);
-                    if(elevationAngle>=5.0)
+                    if(elevationAngle>=0.0)
                         streamReportCov1<<mjd<<"\t"<<range<<"\t"<<elevationAngle<<"\t"<<azimuth<<endl;
                }
         reportCov1.close();
