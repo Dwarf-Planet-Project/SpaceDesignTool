@@ -18,6 +18,7 @@
 /*
  ------ Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
  ------------------ Author: Ana Raposo and Guillermo Ortega  ------------------------------
+ Patched extensively by Guillermo in July 2010 to add more features like icons, help, etc.
 */
 
 #include "analysis.h"
@@ -5102,7 +5103,7 @@ QComboBox* analysis::CoordinateBox()
 
     // Guillermo says: smaller font is better for the row
     //QFont font("Helvetica", 10); CoordinateBox2->setFont(font);
-    CoordinateBox2->setMaximumHeight(22);
+    CoordinateBox2->setMaximumHeight(13);
 
     return CoordinateBox2;
 }
