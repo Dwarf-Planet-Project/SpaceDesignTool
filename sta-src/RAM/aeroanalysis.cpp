@@ -197,7 +197,7 @@ void AeroAnalysis::GenerateDatabase(int ForceCoord,int MomentCoord)
 
 QList<QString> AeroAnalysis::writeAeroDatabase(int ForceCoord, int MomentCoord)
 {
-    qDebug()<<"writing aero database";
+    //qDebug()<<"writing aero database";
     int coef;
     QList<QString> fileList;
     QString vehicleName=((Vehicle->Filename).c_str());

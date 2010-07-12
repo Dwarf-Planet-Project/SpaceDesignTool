@@ -58,7 +58,7 @@ double ReEntryDialog::getLocalRadius(ScenarioEnvironmentType* environment, doubl
     const StaBody* body = STA_SOLAR_SYSTEM->lookup(centralBodyName);
     if (!body)
     {
-        qDebug() << "Bad central body '" << centralBodyName << "' in entry trajectory.";
+        //qDebug() << "Bad central body '" << centralBodyName << "' in entry trajectory.";
         return 0;
     }
     double f, rs;
@@ -436,7 +436,7 @@ bool ReEntryDialog::loadValues(ScenarioEnvironmentType* environment)
         const StaBody* body = STA_SOLAR_SYSTEM->lookup(centralBodyName);
         if (!body)
         {
-            qDebug() << "Bad central body '" << centralBodyName << "' in loitering trajectory.";
+            //qDebug() << "Bad central body '" << centralBodyName << "' in loitering trajectory.";
             return false;
         }
         // Set the central body combo box

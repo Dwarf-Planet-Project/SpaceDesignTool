@@ -1016,7 +1016,7 @@ void FusiformPartAnalysis::DetermineSplitPoint(bool ConcavityIgnore)
     //qDebug()<<MeanxLow<<" x low point";
     double SplitPoint=xMinMean+C5*(MeanxLow-xMinMean);
     SplitIndex=BestLineIndexApproximation(SplitPoint);
-    qDebug()<<SplitPoint<<"split point"<<SplitIndex<<" split index";
+    //qDebug()<<SplitPoint<<"split point"<<SplitIndex<<" split index";
     if(SplitIndex!=-1 && ConcavityIgnore==0)
     {
         int ConcContour=CheckConcavities(SplitIndex);

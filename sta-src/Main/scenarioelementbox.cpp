@@ -331,7 +331,7 @@ static QByteArray loiteringFragment(const char* name)
     ScenarioLoiteringType loitering;
 
     /*** fill in defaults ***/
-    loitering.Environment()->CentralBody()->setName("EARTH");
+    loitering.Environment()->CentralBody()->setName("Earth");
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
     loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
 
@@ -376,7 +376,7 @@ static QByteArray reentryFragment(const char* name) //Modified by Dominic to all
     ScenarioEntryArcType entry;
 
     // fill in defaults
-    entry.Environment()->CentralBody()->setName("EARTH");
+    entry.Environment()->CentralBody()->setName("Earth");
     entry.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
 
     QSharedPointer<ScenarioSphericalCoordinatesType> initPos(new ScenarioSphericalCoordinatesType());
