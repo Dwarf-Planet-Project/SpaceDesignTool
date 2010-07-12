@@ -11,7 +11,6 @@
 						<element ref="tns:SCProgram"></element>
 						<element ref="tns:SCMission"></element>
 						<element name="System" type="tns:SCSystemType"></element>
-						<element ref="tns:Optimization"></element>
 						<element ref="tns:OutputFiles"></element>
 					</sequence>
 					<attribute name="name" type="string"></attribute>

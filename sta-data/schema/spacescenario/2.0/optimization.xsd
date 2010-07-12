@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/scenario"
+	xmlns:tns="http://www.example.org/scenario" elementFormDefault="qualified">
+	
+<include schemaLocation="sharedElements.xsd" />
+
+	<!-- OPTIMIZATION VARIABLES -->
+	<complexType name="OptVarDouble">
+		<sequence>
+			<element name="min" type="double" minOccurs="0"></element>
+			<element name="value" type="double"></element>
+			<element name="max" type="double" minOccurs="0"></element>
+		</sequence>
+		<attribute name="fromFirstGuess" type="boolean"></attribute>
+		<!--
+			0 if the user defines the box constraints for the variable, 1 if the
+			first guess module defines the box constraints for the variable
+		-->
+	</complexType>
+
+	<complexType name="OptVarInt">
+		<sequence>
+			<element name="list" type="tns:ListOfInt" minOccurs="0"></element>
+			<element name="value" type="int"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="OptVarBool">
+		<sequence>
+			<element name="list" type="tns:ListOfInt" minOccurs="0"></element>
+			<element name="value" type="boolean"></element>
+		</sequence>
+		<!-- 0 not optimization variable, 1 optimization variable -->
+	</complexType>
+
+	<complexType name="OptVarString">
+		<sequence>
+			<element name="list" type="tns:ListOfString" minOccurs="0"></element>
+			<element name="value" type="string"></element>
+		</sequence>
+	</complexType>
+
+	<!-- OPTIMIZATION SETTINGS -->
+	
+	<element name="MDOarchitecture" type="tns:MDOarchitectureType" abstract="true"></element>
+	
+	<complexType name="MDOarchitectureType" abstract="true">
+	<sequence></sequence>
+	</complexType>
+	
+	<!-- Black Box Optimization -->
+	<element name="BBO" substitutionGroup="tns:MDOarchitecture">
+		<complexType>
+			<complexContent>
+				<extension base="tns:MDOarchitectureType">
+					<sequence>
+						<element ref="tns:OptProblem"></element>
+						<element ref="tns:MOAlgorithm"></element>
+  						<element ref="tns:SOAlgorithm"></element>
+						<element name="NestedTrajectoryOptimization">
+							<complexType>
+								<sequence>
+									<element ref="tns:OptProblem"></element>
+									<element ref="tns:SOAlgorithm"></element>								
+								</sequence>
+							</complexType>
+						</element>
+						<element name="LocalRefinement">
+							<complexType>
+								<sequence>
+									<element name="SolutionRefined">
+										<complexType>
+											<sequence>
+												<element name="optVar" type="tns:ListOfDouble"></element>
+												<element name="objectives" type="tns:ListOfDouble"></element>
+												<element name="constraints" type="tns:ListOfDouble"></element>
+											</sequence>
+										</complexType>
+									</element>
+									<element ref="tns:SOAlgorithm"></element>						
+								</sequence>
+							</complexType>
+						</element>
+						<element name="nRunsGlobalAlgorithm" type="int" minOccurs="0"></element>
+						<element name="seedGlobalAlgorithm" type="int" minOccurs="0"></element>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	
+	<element name="OptProblem">
+		<complexType>
+			<sequence>
+				<element name="name" type="string"></element>
+				<element name="nVariables" type="int"></element>
+				<element name="nObjectives" type="int"></element>
+				<element name="nConstraints" type="int"></element>
+				<element name="Constraint" minOccurs="0" maxOccurs="unbounded">
+					<complexType>
+						<sequence>
+							<element name="name" type="string"></element>
+							<element name="LB" type="double"></element>							
+							<element name="UB" type="double"></element>
+						</sequence>
+					</complexType>				
+				</element>
+			</sequence>
+		</complexType>
+	</element>
+	
+	<element name="MOAlgorithm" type="tns:MOAlgorithmType" abstract="true"></element>
+	<element name="SOAlgorithm" type="tns:SOAlgorithmType" abstract="true"></element>
+	
+	<complexType name="MOAlgorithmType" abstract="true">
+		<sequence>
+			<element name="printlevel" type="int"></element>
+		</sequence>
+	</complexType>
+	
+	<complexType name="SOAlgorithmType" abstract="true">
+		<sequence>
+			<element name="printlevel" type="int"></element>
+		</sequence>
+	</complexType>
+
+	<element name="DGMOPSO" substitutionGroup="tns:MOAlgorithm">
+		<complexType>
+			<complexContent>
+				<extension base="tns:MOAlgorithmType">
+					<sequence>
+						<element name="maxIter" type="int"></element>
+						<element name="swarmsize" type="int"></element>		
+						<element name="archivesize" type="int"></element>
+						<element name="gridbisect_out" type="int"></element>				
+						<element name="gridbisect_in" type="int"></element>
+						<element name="eps" type="double"></element>
+						<element name="inertiainit" type="double"></element>
+						<element name="inertialfinal" type="double"></element>
+						<element name="selfconfinit" type="double"></element>						
+						<element name="selfconffinal" type="double"></element>
+						<element name="swarmconfinit" type="double"></element>						
+						<element name="swarmconffinal" type="double"></element>
+						<element name="mutprobinit" type="double"></element>						
+						<element name="mutprobfinal" type="double"></element>
+						<element name="mutdistrinit" type="double"></element>						
+						<element name="mutdistrfinal" type="double"></element>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="NSGA2" substitutionGroup="tns:MOAlgorithm">
+		<complexType>
+			<complexContent>
+				<extension base="tns:MOAlgorithmType">
+					<sequence>
+						<element name="maxIter" type="int"></element>
+						<element name="archivesize" type="int"></element>
+						<element name="pcross" type="double"></element>
+						<element name="m_dcross" type="double"></element>
+						<element name="pmut" type="double"></element>
+						<element name="dmut" type="double"></element>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>	
+	</element>
+	<element name="MOACOr" substitutionGroup="tns:MOAlgorithm">
+		<complexType>
+			<complexContent>
+				<extension base="tns:MOAlgorithmType">
+					<sequence>
+						<element name="maxIter" type="int"></element>
+						<element name="archivesize" type="int"></element>
+						<element name="rho" type="double"></element>
+						<element name="q" type="double"></element>					
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>	
+	</element>	
+	<element name="HybridGO" substitutionGroup="tns:MOAlgorithm">
+		<complexType>
+			<complexContent>
+				<extension base="tns:MOAlgorithmType">
+					<sequence>
+						<element name="listMOAlgorithms" type="tns:ListOfString"></element>
+						<element name="h1h2" type="tns:ListOfDouble"></element>
+						<element name="maxIter" type="int"></element>
+						<element name="nSubIter" type="int"></element>
+						<element name="archivesize" type="int"></element>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>	
+	</element>
+	<element name="WORHP" substitutionGroup="tns:SOAlgorithm">
+		<complexType>
+			<complexContent>
+				<extension base="tns:SOAlgorithmType">
+					<sequence>
+						<element name="paramFile" type="string"></element>
+						<element name="firstguess" type="tns:ListOfDouble"></element>
+						<element name="lambda" type="tns:ListOfDouble"></element>
+						<element name="mu" type="tns:ListOfDouble"></element>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>	
+	</element>
+	<element name="PSO" substitutionGroup="tns:SOAlgorithm">
+		<complexType>
+			<complexContent>
+				<extension base="tns:SOAlgorithmType">
+					<sequence>
+						<element name="maxIter" type="int"></element>
+						<element name="swarmsize" type="int"></element>
+						<element name="inertiainit" type="double"></element>
+						<element name="inertiafinal" type="double"></element>
+						<element name="selfconf" type="double"></element>
+						<element name="swarmconf" type="double"></element>
+						<element name="mutprob" type="double"></element>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>	
+	</element>
+
+</schema>
+
