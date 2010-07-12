@@ -185,7 +185,7 @@ void analysis::readScenario()
 	    // Guillermo
 	    spacecraftItem->setIcon(0, QIcon(":/icons/ParticipantSATELLITE.png"));
 
-            QTreeWidgetItem*trajectoryPlan=new QTreeWidgetItem(spacecraftItem);
+            QTreeWidgetItem* trajectoryPlan=new QTreeWidgetItem(spacecraftItem);
 	    trajectoryPlan->setText(0,"Trajectory Plan");
 
             QTreeWidgetItem*PayloadSet=new QTreeWidgetItem(spacecraftItem);
@@ -201,20 +201,20 @@ void analysis::readScenario()
             {
                 if (dynamic_cast<ScenarioLoiteringType*>(trajectory.data()))
                 {
-                    QTreeWidgetItem * loiterItem = new QTreeWidgetItem(trajectoryPlan);
+                    QTreeWidgetItem* loiterItem = new QTreeWidgetItem(trajectoryPlan);
                     //loiterItem->setText(0,"Loitering");
                     ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
                     loiterItem->setText(0,loitering->ElementIdentifier()->Name());
 		    // Guillermo
 		    loiterItem->setIcon(0, QIcon(":/icons/mission-arcs-loitering.png"));
 
-                    QTreeWidgetItem * parentType= new QTreeWidgetItem(loiterItem);
+                    QTreeWidgetItem* parentType= new QTreeWidgetItem(loiterItem);
                     parentType->setText(0,"space");
                     parentType->setHidden(true);
-                    QTreeWidgetItem * parentInd= new QTreeWidgetItem(loiterItem);
+                    QTreeWidgetItem* parentInd= new QTreeWidgetItem(loiterItem);
                     parentInd->setText(0,QString::number(SpaceObjectInd));
                     parentInd->setHidden(true);
-                    QTreeWidgetItem * mindex = new QTreeWidgetItem(loiterItem);
+                    QTreeWidgetItem* mindex = new QTreeWidgetItem(loiterItem);
                     mindex->setText(0,QString::number(MissionInd));
                     mindex->setHidden(true);
                     QTreeWidgetItem * mlabel= new QTreeWidgetItem(loiterItem);
@@ -332,7 +332,7 @@ void analysis::readScenario()
                 {
                     QTreeWidgetItem * REVmissionItem = new QTreeWidgetItem(trajectoryPlan);
                     //REVmissionItem->setText(0,"REV mission arc");
-                    ScenarioEntryArcType*Reentry=dynamic_cast<ScenarioEntryArcType*>(trajectory.data());
+                    ScenarioEntryArcType* Reentry=dynamic_cast<ScenarioEntryArcType*>(trajectory.data());
                     REVmissionItem->setText(0,Reentry->ElementIdentifier()->Name());
 		    // Guillermo
 		    REVmissionItem->setIcon(0, QIcon(":/icons/mission-arcs-reentry.png"));
@@ -5103,7 +5103,7 @@ QComboBox* analysis::CoordinateBox()
 
     // Guillermo says: smaller font is better for the row
     //QFont font("Helvetica", 10); CoordinateBox2->setFont(font);
-    CoordinateBox2->setMaximumHeight(13);
+    CoordinateBox2->setMaximumHeight(22);
 
     return CoordinateBox2;
 }

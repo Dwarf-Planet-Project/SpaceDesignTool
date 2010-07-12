@@ -399,6 +399,8 @@ static QByteArray reentryFragment(const char* name) //Modified by Dominic to all
     initPos->setLatitude(sta::degToRad(38.45));
     initPos->setLongitude(sta::degToRad(350.32));
 
+    entry.ElementIdentifier()->setName("entry arc");
+
     QDomDocument doc;
     return fragmentText(CreateEntryArcElement(&entry, doc)).toUtf8();
 }
