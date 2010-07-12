@@ -3,7 +3,6 @@
 	xmlns:tns="http://www.example.org/scenario" elementFormDefault="qualified">
 	
 	<include schemaLocation="sharedElements.xsd" />
-	<include schemaLocation="optimization.xsd" />
 	<include schemaLocation="scenarioLO.xsd" />
 	<include schemaLocation="scenarioLV.xsd" />
 	<include schemaLocation="scenarioREV.xsd" />

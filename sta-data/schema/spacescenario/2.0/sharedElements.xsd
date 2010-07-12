@@ -83,6 +83,43 @@
 		<list itemType="string"></list>
 	</simpleType>
 
+
+	<!-- OPTIMIZATION VARIABLES -->
+	<complexType name="OptVarDouble">
+		<sequence>
+			<element name="min" type="double" minOccurs="0"></element>
+			<element name="value" type="double"></element>
+			<element name="max" type="double" minOccurs="0"></element>
+		</sequence>
+		<attribute name="fromFirstGuess" type="boolean"></attribute>
+		<!--
+			0 if the user defines the box constraints for the variable, 1 if the
+			first guess module defines the box constraints for the variable
+		-->
+	</complexType>
+
+	<complexType name="OptVarInt">
+		<sequence>
+			<element name="list" type="tns:ListOfInt" minOccurs="0"></element>
+			<element name="value" type="int"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="OptVarBool">
+		<sequence>
+			<element name="value" type="boolean"></element>
+		</sequence>
+		<attribute name="optimized" type="boolean"></attribute>
+		<!-- 0 not optimization variable, 1 optimization variable -->
+	</complexType>
+
+	<complexType name="OptVarString">
+		<sequence>
+			<element name="list" type="tns:ListOfString" minOccurs="0"></element>
+			<element name="value" type="string"></element>
+		</sequence>
+	</complexType>
+
 	<!-- COMMON ELEMENTS -->
 
 	<element name="TimeLine">
@@ -343,6 +380,24 @@
 		</complexType>
 	</element>
 
+	<!-- OPTIMIZATION SETTINGS -->
+	<element name="Optimization">
+		<complexType>
+			<sequence>
+				<element name="nVariables" type="int"></element>
+				<element name="variables" type="tns:ListOfString"></element>
+				<element name="variablesMatrix" type="tns:ListOfDouble"></element>
+				<element name="nObjectives" type="int"></element>
+				<element name="objectives" type="tns:ListOfString"></element>
+				<element name="objectivesMatrix" type="tns:ListOfDouble"></element>
+				<element name="nConstraints" type="int"></element>
+				<element name="constraints" type="tns:ListOfString"></element>
+				<element name="constraintsMatrix" type="tns:ListOfDouble"></element>
+				<element name="algorithm" type="string"></element>
+				<element name="algorithmParameters" type="tns:ListOfDouble"></element>
+			</sequence>
+		</complexType>
+	</element>
 
 	<!-- OOUTPUTFILES LIST -->
 	<element name="OutputFiles">
@@ -555,11 +610,5 @@
 	</complexType>
 
 
-	<complexType name="ControlFileType">
-		<sequence>
-			<element name="FileLocation" type="string"></element>
-			<element name="ControlName" type="string"></element>
-		</sequence>
-	</complexType>
 
 </schema>

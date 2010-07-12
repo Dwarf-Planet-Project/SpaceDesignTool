@@ -11,7 +11,7 @@
 						<element name="REVProgram" type="tns:REVProgramType"></element>
 						<element name="REVMission" type="tns:REVMissionType"></element>
 						<element name="REVSystem" type="tns:REVSystemType"></element>
-						<element ref="tns:MDOarchitecture"></element>
+						<element ref="tns:Optimization"></element>
 						<element ref="tns:OutputFiles"></element>
 					</sequence>
 					<attribute name="appearance" type="string"></attribute>

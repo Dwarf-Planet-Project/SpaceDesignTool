@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/scenario"
 	xmlns:tns="http://www.example.org/scenario" elementFormDefault="qualified">
-	<include schemaLocation="sharedElements.xsd" />
-	<include schemaLocation="optimization.xsd" />
+
 	<element name="LV" substitutionGroup="tns:AbstractParticipant">
 		<complexType>
 			<complexContent>
@@ -11,11 +10,9 @@
 						<element name="Program" type="tns:LVProgramType"></element>
 						<element name="Mission" type="tns:LVMissionType"></element>
 						<element name="System" type="tns:LVSystemType"></element>
-						<element ref="tns:MDOarchitecture"></element>
+						<element ref="tns:Optimization"></element>
 						<element ref="tns:OutputFiles"></element>
 					    <element name="Appearance" type="string"></element>
-					    <element name="MODE" type="int" minOccurs="0"></element>
-					    <element name="PRINT" type="int" minOccurs="0"></element>
                     </sequence>
 				</extension>
 			</complexContent>
@@ -75,7 +72,6 @@
 		  <element name="length" type="double"></element>
 		  <element name="diameter" type="double"></element>
 		  <element name="volume" type="double"></element>
-		  <element name="surface" type="double"></element>
 		  <element name="baseLongPosition" type="double"></element>
 		  <element name="noseShape" type="string"></element>
 		  <element name="noseLength" type="double"></element>
@@ -95,9 +91,6 @@
 		  <element name="cl" type="tns:AeroCoefFileType"></element>
 		  <element name="cd" type="tns:AeroCoefFileType"></element>
 		  <element name="cm" type="tns:AeroCoefFileType"></element>
-		  <element name="datcomExecutionFailureCstrViolation" type="double"></element>
-		  <element name="coreGeometryRadii" type="tns:ListOfDouble"></element>
-		  <element name="coreGeometryDistances" type="tns:ListOfDouble"></element>
         </sequence>
 	</complexType>
 
@@ -107,14 +100,10 @@
 				<element name="tanksType" type="tns:OptVarInt"></element>
 				<element name="dryMass" type="double"></element>
 				<element name="dryCoGLongPosition" type="double"></element>
-				<element name="oxCoGLongPosition" type="double" minOccurs="0"></element>
-				<element name="fuelCoGLongPosition" type="double" minOccurs="0"></element>
-				<element name="grainCoGLongPosition" type="double" minOccurs="0"></element>
 				<element name="wetMass" type="double" minOccurs="0"></element>
 				<element name="mainStructMass" type="double"></element>
 				<element name="oxTankMass" type="double" minOccurs="0"></element>
 				<element name="fuelTankMass" type="double" minOccurs="0"></element>
-				<element name="thrustFrameMass" type="double" minOccurs="0"></element>
 				<element name="tpsMass" type="double"></element>
 				<element name="avionicsMass" type="double"></element>
 				<element name="epsMass" type="double"></element>
@@ -182,13 +171,11 @@
 
 	<complexType name="LVTrajectoryType">
 			<sequence>
-			    <element name="ControlProfiles" type="tns:LVControlProfilesFiles" minOccurs="0"></element>
 			    <element name="TakeOff" type="tns:LVTakeOffType"></element>
 			    <element name="Ignitions" type="tns:LVIgnitionsType"></element>
 			    <element name="AtmosphericFlight" type="tns:LVAtmosphericFlightType"></element>
 			    <element name="ExoatmosphericFlight" type="tns:LVExoatmosphericFlightType"></element>
 			    <element name="TrajectoryConstraints" type="tns:LVTrajectoryConstraintsType"></element>
-			    <element name="neglectIspAltitudeEffects" type="boolean" minOccurs="0"></element>
 			</sequence>
 	</complexType>
 
@@ -206,7 +193,6 @@
 
 		  <complexType name="LVPayloadType">
 			  <sequence>
-				<element name="scaleFactor" type="tns:OptVarDouble" minOccurs="0"></element>
 				<element name="mass" type="double"></element>
 				<element name="length" type="double"></element>
 				<element name="diameter" type="double"></element>
@@ -251,7 +237,6 @@
 			  <element name="ComponentWeights" type="tns:LVComponentWeightsType"></element>
 			  <element name="ComponentCosts" type="tns:LVComponentCostsType"></element>
 			  <element name="ComponentReliability" type="tns:LVComponentReliabilityType"></element>
-			  <element name="jettisonTime" type="double"></element>
 			</sequence>
 		</complexType>
 
@@ -262,8 +247,6 @@
 			  <element name="ComponentWeights" type="tns:LVComponentWeightsType"></element>
 			  <element name="ComponentCosts" type="tns:LVComponentCostsType"></element>
 			  <element name="ComponentReliability" type="tns:LVComponentReliabilityType"></element>
-			  <element name="ignitionTime" type="double"></element>
-			  <element name="jettisonTime" type="double"></element>
 			</sequence>
 			<attribute name="stageNumber" type="int"></attribute>
 		</complexType>
@@ -275,8 +258,6 @@
 			  <element name="ComponentWeights" type="tns:LVComponentWeightsType"></element>
 			  <element name="ComponentCosts" type="tns:LVComponentCostsType"></element>
 			  <element name="ComponentReliability" type="tns:LVComponentReliabilityType"></element>
-			  <element name="ignitionTime" type="double"></element>
-			  <element name="jettisonTime" type="double"></element>
 			</sequence>
 			<attribute name="stageNumber" type="int"></attribute>
 		</complexType>
@@ -288,15 +269,12 @@
 			  <element name="ComponentWeights" type="tns:LVComponentWeightsType"></element>
 			  <element name="ComponentCosts" type="tns:LVComponentCostsType"></element>
 			  <element name="ComponentReliability" type="tns:LVComponentReliabilityType"></element>
-			  <element name="ignitionTime" type="double"></element>
-			  <element name="jettisonTime" type="double"></element>
 			</sequence>
 			<attribute name="boostersSetNumber" type="int"></attribute>
 		</complexType>
 
 		<complexType name="LVSystemConstraintsType">
 				<sequence>
-					<element name="thrustToWeightCstrVio" type="double"></element>				
 				</sequence>
 		</complexType>
 		
@@ -326,7 +304,7 @@
 							<element name="spFillingFactorCstrViolation" type="double"></element>
 							<element name="thrustRangeCstrViolation" type="double"></element>
 							<element name="maxNenginesCstrViolation" type="double"></element>
-							<element name="ceaExecutionFailureCstrViolation" type="double"></element>
+							<element name="ceaExecutionFailureViolation" type="double"></element>
 						</sequence>
 				</complexType>
 
@@ -546,7 +524,6 @@
 							<element name="secondBoostersSetIgnitionDelayOption" type="tns:OptVarBool"></element>
 							<element name="secondBoostersSetIgnitionDelayTime" type="tns:OptVarDouble"></element>
 						  	<element name="nThrustControlNodes" type="tns:ListOfInt"></element>
-						  	<element name="minThrottleValues" type="tns:ListOfDouble" minOccurs="0"></element>
 						</sequence>
 				</complexType>
 				
@@ -555,8 +532,8 @@
 							<element name="optimizedPitchValues" type="tns:ListOfDouble"></element>
 							<element name="optimizedYawValues" type="tns:ListOfDouble"></element>
 							<element name="optimizedThrustValues" type="tns:ListOfDouble"></element>
-			  				<element name="nPitchControlNodes" type="tns:ListOfInt"></element>
-							<element name="nYawControlNodes" type="tns:ListOfInt"></element>
+			  				<element name="nPitchControlNodes" type="int"></element>
+							<element name="nYawControlNodes" type="int"></element>
 						</sequence>
 				</complexType>
 				
@@ -580,22 +557,7 @@
 							<element name="heatFluxCstrViolation" type="double"></element>
 							<element name="dynPressCstrViolation" type="double"></element>
 							<element name="controllabilityCstrViolation" type="double"></element>
-							<element name="nozzleOperationsCstrViolation" type="tns:ListOfDouble"></element>
-							<element name="prohibitedHeadingLowerBound" type="tns:ListOfDouble" minOccurs="0"></element>
-							<element name="prohibitedHeadingUpperBound" type="tns:ListOfDouble" minOccurs="0"></element>
-							<element name="headingCstrViolation" type="tns:ListOfDouble"></element>
-							<element name="integrationError" type="double"></element>
 						</sequence>
 				</complexType>
-
-	<complexType name="LVControlProfilesFiles">
-			<sequence>
-			  	<element name="pitch" type="tns:ControlFileType"></element>
-			  	<element name="yaw" type="tns:ControlFileType"></element>
-			  	<element name="stagesThrust" type="tns:ControlFileType"></element>
-			  	<element name="boosters1Thrust" type="tns:ControlFileType"></element>
-			  	<element name="boosters2Thrust" type="tns:ControlFileType"></element>
-			</sequence>
-	</complexType>
 
 </schema>
