@@ -40,7 +40,7 @@
 #include "Loitering/loitering.h"
 #include "Loitering/loiteringTLE.h"
 #include "External/external.h"
-#include "Lagrangian/lagrangian.h"
+//#include "Lagrangian/lagrangian.h"
 #include "Entry/reentry.h"
 #include "physicalproperties.h"
 #include "aerodynamicproperties.h"
