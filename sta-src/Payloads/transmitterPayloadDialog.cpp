@@ -116,8 +116,9 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* transm
     bandWidth=bandWidth/1000000;//from Hz to MHz
     BandWidthLineEdit->setText(QString::number(bandWidth));
 
-
-    DataRateLineEdit->setText(QString::number(transmitterPayload->Transmitter()->Modulation()->DataRate()));
+    double dataRate=transmitterPayload->Transmitter()->Modulation()->DataRate();
+    dataRate=dataRate/1000000;//from bps to Mbps
+    DataRateLineEdit->setText(QString::number(dataRate));
     //For the Modulation combo box
     QString modType;
 
@@ -139,8 +140,7 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* transm
         i=5;
    else if (modType=="OQPSK")
         i=6;
-   else if (modType=="MSK")
-        i=7;
+
 
 
     TypeModComboBox->setCurrentIndex(i);
@@ -174,8 +174,6 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* transm
         transmitterPayload->Transmitter()->EMproperties()->setBeamType("Omni-directional");
         AntennaSizeGroupBox->setDisabled(true);
     }
-
-    qDebug()<<"The gain and the beam is:"<<transmitterPayload->Transmitter()->EMproperties()->BeamType()<<transmitterPayload->Transmitter()->EMproperties()->GainMax();
 
     return true;
 }
@@ -218,7 +216,11 @@ bool transmitterPayloadDialog::saveValues(ScenarioTransmitterPayloadType* transm
     transmitterPayload->Transmitter()->setFedderLossTx(TxFeederLossLineEdit->text().toDouble());
     transmitterPayload->Transmitter()->setDepointingLossTx(TxDepointingLossLineEdit->text().toDouble());
 
-    transmitterPayload->Transmitter()->Modulation()->setDataRate(DataRateLineEdit->text().toDouble());
+    double dataRate=DataRateLineEdit->text().toDouble();
+    dataRate=dataRate*1000000;
+    transmitterPayload->Transmitter()->Modulation()->setDataRate(dataRate);
+
+
     transmitterPayload->Transmitter()->Modulation()->setModulationType(TypeModComboBox->currentText());
 
 
@@ -272,7 +274,6 @@ void transmitterPayloadDialog::antennaCalculations(ScenarioTransmitterPayloadTyp
 
     if(GainMaxRadioButton->isChecked()==true)
     {
-        qDebug()<<"This means that GainRadioButton is checked";
         //Since we have the Gain max
         gainMaxDb=transmitterPayload->Transmitter()->EMproperties()->GainMax();
         gainMax=pow(10, gainMaxDb/10);
@@ -283,13 +284,11 @@ void transmitterPayloadDialog::antennaCalculations(ScenarioTransmitterPayloadTyp
         //Put the values in the GUI
         DiameterLineEdit->setText(QString::number(diameter));
         BeamLineEdit->setText(QString::number(beamwidth));
-        qDebug()<<"The value of the diameter is: "<<diameter;
-        qDebug()<<"The value of the beam is: "<<beamwidth;
 
     }
     if(DiameterRadioButton->isChecked()==true)
     {
-        qDebug()<<"This means that DiameterRadioButton is checked";
+
         diameter=transmitterPayload->Transmitter()->EMproperties()->Diameter();
 
 
@@ -300,15 +299,14 @@ void transmitterPayloadDialog::antennaCalculations(ScenarioTransmitterPayloadTyp
         //Put the values in the GUI
         BeamLineEdit->setText(QString::number(beamwidth));
         GainLineEdit->setText(QString::number(gainMaxDb));
-        qDebug()<<"The value of the gainMax in dB is: "<<gainMaxDb;
-        qDebug()<<"The value of the beam is: "<<beamwidth;
+
     }
     if(BeamWidthRadioButton->isChecked()==true)
     {
-        qDebug()<<"This means that BeamRadioButton is checked";
+
         beamwidth=transmitterPayload->Transmitter()->EMproperties()->AngularBeamWidth();
 
-        gainMax=(efficiency/100)*48360/pow(beamwidth,2);
+        gainMax=(efficiency/100)*33201/pow(beamwidth,2);
         gainMaxDb=10*log10(gainMax); //in dB
         diameter=(lightSpeed/(Pi*frequency))*sqrt(gainMax/(efficiency/100));
 
@@ -317,13 +315,8 @@ void transmitterPayloadDialog::antennaCalculations(ScenarioTransmitterPayloadTyp
         //Put the values in the GUI
         DiameterLineEdit->setText(QString::number(diameter));
         GainLineEdit->setText(QString::number(gainMaxDb));
-        qDebug()<<"The value of the gainMax in dB is: "<<gainMaxDb;
-        qDebug()<<"The value of the diameter is: "<<diameter;
-
 
     }
-
-
 
 }
 
@@ -331,74 +324,70 @@ void transmitterPayloadDialog::antennaCalculations(ScenarioTransmitterPayloadTyp
 
 void transmitterPayloadDialog::on_buttonBox_helpRequested()
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_buttonBox_clicked(QAbstractButton*)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 
-        /*CommAnalysis commanalysis;
-        commanalysis.FreeSpaceLoss(FrequencyLineEdit->text().toDouble());
-        commanalysis.OxygenSpecificAttenuation(FrequencyLineEdit->text().toDouble());
-        commanalysis.WaterVapourSpecificAttenuation(FrequencyLineEdit->text().toDouble(), 40, 77.322);//Como saco la latitud y longitud?? Tiene que ser una ground station...como leo the parent object???*/
-        //commanalysis.getRange();
+
 }
 
 void transmitterPayloadDialog::on_tabWidget_currentChanged(int)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_MassLineEdit_textChanged(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_LengthLineEdit_textChanged(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_WidthLineEdit_textChanged(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_HightLineEdit_textChanged(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_VertAngleLineEdit_textChanged(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_HorAngleLineEdit_textChanged(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_ConeAngleLineEdit_textChanged(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_ElLineEdit_textChanged(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_AzLineEdit_textChanged(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_ConeShapeComboBox_activated(const QString&)
 {
 
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 
        if(ConeShapeComboBox->currentText()=="Circular")
             stackedWidget->setCurrentIndex(0);
@@ -409,7 +398,7 @@ void transmitterPayloadDialog::on_ConeShapeComboBox_activated(const QString&)
 
 void transmitterPayloadDialog::on_PolarisationGroupBox_toggled(bool)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_PolarisationComboBox_activated(const QString&)
@@ -422,99 +411,98 @@ void transmitterPayloadDialog::on_PolarisationComboBox_activated(const QString&)
         if(PolarisationComboBox->currentText()=="Linear"){
             TiltLineEdit->setText(QString::number(0));
             TiltLineEdit->setEnabled(true);}
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_TiltLineEdit_textChanged(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_ModulationGroupBox_toggled(bool)
 {
-       qWarning("TODO: %s	%d",__FILE__,__LINE__);
+       //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_TypeModComboBox_activated(const QString&)
 {
-        qDebug()<<TypeModComboBox->currentText()<<"   Modulacion actual";
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_DataRateLineEdit_textChanged(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_EquipmentGroupBox_toggled(bool)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_PowerLineEdit_textChanged(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_TxFeederLossLineEdit_textChanged(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_TxDepointingLossLineEdit_textChanged(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_AntennaSizeGroupBox_toggled(bool)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_GainMaxRadioButton_toggled(bool)
 {
-       qWarning("TODO: %s	%d",__FILE__,__LINE__);
+       //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 
 }
 
 void transmitterPayloadDialog::on_DiameterRadioButton_toggled(bool)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_BeamWidthRadioButton_toggled(bool)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_GainLineEdit_textChanged(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_DiameterLineEdit_textChanged(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_BeamLineEdit_textChanged(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_groupBox_toggled(bool)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_EfficiencyLineEdit_textChanged(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_FrequencyLineEdit_textChanged(const QString&)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_TypeBeamComboBox_activated(const QString&)
@@ -529,8 +517,7 @@ void transmitterPayloadDialog::on_TypeBeamComboBox_activated(const QString&)
 
         }
 
-
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 

@@ -29,6 +29,7 @@
   Modified by Guillermo April 2010 to include coverage
   Modified by Guillermo May 2010 to change the big integers of Ricardo into floats
   Modified by Guillermo to add labels to identify the scenario elements
+  Modified by Guillermo July 2010 to adjust Earth labels to the XML schema
  */
 
 #include "scenarioelementbox.h"
@@ -478,7 +479,7 @@ static QByteArray transmitterPayloadFragment(const char* name)
     transmitterPayload.Transmitter()->setDepointingLossTx(0);
     transmitterPayload.Transmitter()->setFedderLossTx(0);
 
-    transmitterPayload.Transmitter()->Modulation()->setDataRate(16);
+    transmitterPayload.Transmitter()->Modulation()->setDataRate(16000000);//It's in Mbps
     transmitterPayload.Transmitter()->Modulation()->setModulationType("BPSK");
 
     QDomDocument doc;
