@@ -36,7 +36,7 @@
 #include "initialstateeditor.h"
 #include "initialstateThreebodyEditor.h"
 #include "Locations/locationeditor.h"
-#include "RendezVous/rendezvous.h"
+//#include "RendezVous/rendezvous.h"
 #include "Loitering/loitering.h"
 #include "Loitering/loiteringTLE.h"
 #include "External/external.h"

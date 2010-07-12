@@ -63,7 +63,7 @@
 //***************** OZGUN/
 
 #include "propagatedscenario.h"
-#include "RendezVous/rendezvous.h"
+//#include "RendezVous/rendezvous.h"
 #include "Entry/reentry.h"
 #include "Loitering/loitering.h"
 #include "Loitering/loiteringTLE.h"
