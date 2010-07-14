@@ -64,8 +64,8 @@ void DisableUnavailableOptions();
 protected slots:
         //void on_groupBoxAnalysisFormat_toggled(bool);
         //void on_ComboBoxAnalysisFormat_activated(const QString&);
-	void on_groupBoxParameters_toggled(bool);
-	void on_groupBoxTimeSpecifications_toggled(bool);
+        //void on_groupBoxParameters_toggled(bool);
+        //void on_groupBoxTimeSpecifications_toggled(bool);
 	void on_AddDefaultPushButton_clicked();
 	//void on_AddNewPushButton_clicked();
         void on_EditTimePushButton_clicked();

@@ -64,10 +64,11 @@ analysis::analysis(SpaceScenario*scenario, PropagatedScenario*propagatedScenario
 
     readScenario();
     DisableUnavailableOptions();
-    connect(treeWidgetReportOptions, SIGNAL(itemDoubleClicked(QTreeWidgetItem*)), this, SLOT(addParameter(QTreeWidgetItem*)));
+    //connect(treeWidgetReportOptions, SIGNAL(activated(int)), this, SLOT(addParameter(QTreeWidgetItem*)));
     connect(AddParameterPushButton, SIGNAL(clicked()), this, SLOT(addParameter()));
     connect(RemoveParameterPushButton, SIGNAL(clicked()), this, SLOT(removeParameter()));
     connect(ComboBoxAnalysisFormat, SIGNAL(activated(int)), this, SLOT(enableReportOption(int)));
+
     // Guillermo activating the HELP
     // TotalHelpPushButton->setDisabled(false);  // Not yet
     connect(TotalHelpPushButton, SIGNAL(clicked()), this, SLOT(raiseHelp()));
@@ -530,19 +531,19 @@ if((ComboBoxAnalysisFormat->currentText()=="3D plot")||(ComboBoxAnalysisFormat->
 
 }*/
 
-
+/*
 void analysis::on_groupBoxParameters_toggled(bool)
 {
-    qWarning("TODO: %s	%d",__FILE__,__LINE__);
+
 }
 
 
 
 void analysis::on_groupBoxTimeSpecifications_toggled(bool)
 {
-    qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
 
+}
+*/
 
 
 bool analysis::CheckIfMissionArc()
