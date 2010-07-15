@@ -54,11 +54,15 @@ double modulo2Pi (double x)
 double sta::ConvertUnits(QString OutputUnits, double Parameter)
 {
     double Output=Parameter;
-    if(OutputUnits=="Deg")
+    if(OutputUnits=="deg")
     {
         Output=sta::radToDeg(Parameter);
     }
-    if(OutputUnits=="Rad")
+    if(OutputUnits=="rad")
+    {
+        Output=Parameter;
+    }
+    if(OutputUnits=="km")
     {
         Output=Parameter;
     }
@@ -70,11 +74,11 @@ double sta::ConvertUnits(QString OutputUnits, double Parameter)
     {
         Output=Parameter*6.68458134*pow(10,-9);
     }
-    if(OutputUnits=="NM")
+    if(OutputUnits=="nm")
     {
         Output=Parameter*0.5399568;
     }
-    if(OutputUnits=="Km/s")
+    if(OutputUnits=="km/s")
     {
         Output=Parameter;
     }

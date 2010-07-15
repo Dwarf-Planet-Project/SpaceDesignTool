@@ -1255,6 +1255,7 @@ void analysis::on_GeneratePushButton_clicked()
                     {
 
                         WriteReport(selected,selectedTimes);
+
                     }
                     if(AnalysisFormat=="2D")
                     {
@@ -1306,6 +1307,7 @@ void analysis::on_GeneratePushButton_clicked()
 
 void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetItem *> selectedTimes)
 {
+
 QList<int>SObjectsIndex;
 QList<int>GObjectsIndex;
 QList<int>MObjectsIndex;
