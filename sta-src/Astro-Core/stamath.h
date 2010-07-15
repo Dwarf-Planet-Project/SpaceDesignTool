@@ -55,7 +55,7 @@ namespace sta
     {
         return radToDeg(rad) * 3600.0;
     }
-double ConvertUnits(QString OutputUnits, double Parameter);
+double ConvertUnits(QString OutputUnits, double Parameter, QString FromUnit);
 }
 
 //double ConvertUnits(QString OutputUnits, double Parameter);

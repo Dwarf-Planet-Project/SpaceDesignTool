@@ -51,38 +51,47 @@ double modulo2Pi (double x)
 	return(y);
 
 }
-double sta::ConvertUnits(QString OutputUnits, double Parameter)
+double sta::ConvertUnits(QString OutputUnits, double Parameter, QString FromUnit)
 {
+
     double Output=Parameter;
-    if(OutputUnits=="deg")
+    if(OutputUnits==FromUnit)
+    {
+        Output=Parameter;
+    }
+    if((OutputUnits=="deg")&&(FromUnit=="rad"))
     {
         Output=sta::radToDeg(Parameter);
     }
-    if(OutputUnits=="rad")
+    if((OutputUnits=="rad")&&(FromUnit=="deg"))
+    {
+        Output=sta::degToRad(Parameter);
+    }
+    /*if(OutputUnits=="rad")
     {
         Output=Parameter;
     }
     if(OutputUnits=="km")
     {
         Output=Parameter;
-    }
-    if(OutputUnits=="m")
+    }*/
+    if((OutputUnits=="m")&&(FromUnit=="km"))
     {
         Output=Parameter*1000;
     }
-    if(OutputUnits=="AU")
+    if((OutputUnits=="AU")&&(FromUnit=="km"))
     {
         Output=Parameter*6.68458134*pow(10,-9);
     }
-    if(OutputUnits=="nm")
+    if((OutputUnits=="nm")&&(FromUnit=="km"))
     {
         Output=Parameter*0.5399568;
     }
-    if(OutputUnits=="km/s")
+    /*if(OutputUnits=="km/s")
     {
         Output=Parameter;
-    }
-    if(OutputUnits=="m/s")
+    }*/
+    if((OutputUnits=="m/s")&&(FromUnit=="km/s"))
     {
         Output=Parameter*1000;
     }

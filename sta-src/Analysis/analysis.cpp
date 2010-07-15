@@ -1653,7 +1653,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              EME2000,
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              Fixed);
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x(),"km")<<"\t";
 
 
                             }
@@ -1669,7 +1669,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              EME2000,
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              Ecliptic);
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x(),"km")<<"\t";
 
                             }
                             if(Coordinate=="EME J2000")
@@ -1686,7 +1686,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              EME2000);
 
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x(),"km")<<"\t";
 
 
                             }
@@ -1702,7 +1702,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              EME2000,
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              B1950);
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x(),"km")<<"\t";
 
                             }
                         }
@@ -1721,7 +1721,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              EME2000,
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              Fixed);
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y(),"km")<<"\t";
 
                             }
                             if(Coordinate=="Ecliptic J2000")
@@ -1736,7 +1736,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              EME2000,
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              Ecliptic);
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y(),"km")<<"\t";
 
                             }
                             if(Coordinate=="EME J2000")
@@ -1750,7 +1750,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              EME2000,
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              EME2000);
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y(),"km")<<"\t";
 
                             }
                             if(Coordinate=="EME B1950")
@@ -1765,7 +1765,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              EME2000,
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              B1950);
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y(),"km")<<"\t";
 
                             }
                         }
@@ -1786,7 +1786,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              Fixed);
 
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z(),"km")<<"\t";
 
                             }
                             if(Coordinate=="Ecliptic J2000")
@@ -1801,7 +1801,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              EME2000,
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              Ecliptic);
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z(),"km")<<"\t";
 
                             }
                             if(Coordinate=="EME J2000")
@@ -1815,7 +1815,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              EME2000,
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              EME2000);
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z(),"km")<<"\t";
 
                             }
                             if(Coordinate=="EME B1950")
@@ -1830,7 +1830,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              EME2000,
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              B1950);
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z(),"km")<<"\t";
 
                             }
 
@@ -1850,7 +1850,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              EME2000,
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              Fixed);
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x(),"km/s")<<"\t";
 
 
 
@@ -1867,7 +1867,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              EME2000,
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              Ecliptic);
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x(),"km/s")<<"\t";
 
 
 
@@ -1883,7 +1883,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              EME2000,
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              EME2000);
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x(),"km/s")<<"\t";
 
                             }
                             if(Coordinate=="EME B1950")
@@ -1898,7 +1898,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              EME2000,
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              B1950);
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x(),"km/s")<<"\t";
 
 
 
@@ -1918,7 +1918,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              EME2000,
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              Fixed);
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y(),"km/s")<<"\t";
 
 
 
@@ -1935,7 +1935,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              EME2000,
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              Ecliptic);
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y(),"km/s")<<"\t";
 
 
 
@@ -1951,7 +1951,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              EME2000,
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              EME2000);
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y(),"km/s")<<"\t";
 
                             }
                             if(Coordinate=="EME B1950")
@@ -1966,7 +1966,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              EME2000,
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              B1950);
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y(),"km/s")<<"\t";
 
 
 
@@ -1986,7 +1986,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              EME2000,
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              Fixed);
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z(),"km/s")<<"\t";
 
                             }
                             if(Coordinate=="Ecliptic J2000")
@@ -2001,7 +2001,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                              EME2000,
                                                                              STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                              Ecliptic);
-                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z())<<"\t";
+                                stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z(),"km/s")<<"\t";
                             }
                                 if(Coordinate=="EME J2000")
                                 {
@@ -2014,7 +2014,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                                  EME2000,
                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                  EME2000);
-                                    stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z())<<"\t";
+                                    stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z(),"km/s")<<"\t";
 
                                 }
                                 if(Coordinate=="EME B1950")
@@ -2029,7 +2029,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                                  EME2000,
                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                  B1950);
-                                    stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z())<<"\t";
+                                    stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z(),"km/s")<<"\t";
 
 
 
@@ -2174,86 +2174,97 @@ for(int z=0;z<MParentIndex.size();z++)
 
                         }
                     }
-                    if(name=="Azimuth")
+                    if((name=="Azimuth")||(name=="Elevation")||(name=="Range"))
                     {
 
-                        if(CovIndex[0]<LineOfCoverageReport.size())
+                        QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,1);
+                        QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
+                        QString ToCoord=ComboBox1->currentText();
+                        QWidget*Box2=treeWidgetShowInReport->itemWidget(parameter,2);
+                        QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
+                        QString ToUnit=ComboBox2->currentText();
+                        if(name=="Azimuth")
                         {
-                            QString Line=LineOfCoverageReport.at(CovIndex[0]);
 
-                            double TimeCovReport=(Line.section("\t",0,0)).toDouble();
-                            double Azimuth=(Line.section("\t",3,3)).toDouble();
-
-                            if(abs(MJDdate[index]-TimeCovReport)<10e-6)
+                            if(CovIndex[0]<LineOfCoverageReport.size())
                             {
-                                stream<<Azimuth<<"\t";
-                                CovIndex[0]++;
-                            }
+                                QString Line=LineOfCoverageReport.at(CovIndex[0]);
 
+                                double TimeCovReport=(Line.section("\t",0,0)).toDouble();
+                                double Azimuth=(Line.section("\t",3,3)).toDouble();
+
+                                if(abs(MJDdate[index]-TimeCovReport)<10e-6)
+                                {
+
+                                    stream<<sta::ConvertUnits(ToUnit,Azimuth,"deg")<<"\t";
+                                    CovIndex[0]++;
+                                }
+
+                                else
+                                {
+                                    stream<<"No visibility";
+                                }
+
+                            }
                             else
                             {
                                 stream<<"No visibility";
                             }
-
                         }
-                        else
+                        if(name=="Elevation")
                         {
-                            stream<<"No visibility";
-                        }
-                    }
-                    if(name=="Elevation")
-                    {
 
-                        if(CovIndex[1]<LineOfCoverageReport.length())
-                        {
-                            QString Line=LineOfCoverageReport.at(CovIndex[1]);
-
-                            double TimeCovReport=(Line.section("\t",0,0)).toDouble();
-                            double Elevation=(Line.section("\t",2,2)).toDouble();
-
-                            if(abs(MJDdate[index]-TimeCovReport)<10e-6)
+                            if(CovIndex[1]<LineOfCoverageReport.length())
                             {
-                                stream<<Elevation<<"\t";
-                                CovIndex[1]++;
-                            }
+                                QString Line=LineOfCoverageReport.at(CovIndex[1]);
 
+                                double TimeCovReport=(Line.section("\t",0,0)).toDouble();
+                                double Elevation=(Line.section("\t",2,2)).toDouble();
+
+                                if(abs(MJDdate[index]-TimeCovReport)<10e-6)
+                                {
+                                    stream<<sta::ConvertUnits(ToUnit,Elevation,"deg")<<"\t";
+                                    CovIndex[1]++;
+                                }
+
+                                else
+                                {
+                                    stream<<"No visibility";
+                                }
+
+                            }
                             else
                             {
                                 stream<<"No visibility";
                             }
-
                         }
-                        else
+                        if(name=="Range")
                         {
-                            stream<<"No visibility";
-                        }
-                    }
-                    if(name=="Range")
-                    {
-                        if(CovIndex[2]<LineOfCoverageReport.length())
-                        {
-                            QString Line=LineOfCoverageReport.at(CovIndex[2]);
-
-                            double TimeCovReport=(Line.section("\t",0,0)).toDouble();
-                            double Range=(Line.section("\t",1,1)).toDouble();
-
-                            if(abs(MJDdate[index]-TimeCovReport)<10e-6)
+                            if(CovIndex[2]<LineOfCoverageReport.length())
                             {
-                                stream<<Range<<"\t";
-                                CovIndex[2]++;
-                            }
+                                QString Line=LineOfCoverageReport.at(CovIndex[2]);
 
+                                double TimeCovReport=(Line.section("\t",0,0)).toDouble();
+                                double Range=(Line.section("\t",1,1)).toDouble();
+
+                                if(abs(MJDdate[index]-TimeCovReport)<10e-6)
+                                {
+                                    stream<<sta::ConvertUnits(ToUnit,Range,"km")<<"\t";
+                                    CovIndex[2]++;
+                                }
+
+                                else
+                                {
+                                    stream<<"No visibility";
+                                }
+
+
+
+                            }
                             else
                             {
                                 stream<<"No visibility";
                             }
-
-
-
-                        }
-                        else
-                        {
-                            stream<<"No visibility";
                         }
                     }
                     if(name=="Equivalent Isotropical Radiated Power")
@@ -2720,7 +2731,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                                     MJDdate[index],
                                                                                     "EME J2000",
                                                                                     ToCoord);
-                           stream<<sta::ConvertUnits(ToUnit,Inclination)<<"\t";
+                           stream<<sta::ConvertUnits(ToUnit,Inclination,"rad")<<"\t";
                        }
                        if(name=="RAAN")
                        {
@@ -2728,7 +2739,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                                     MJDdate[index],
                                                                                     "EME J2000",
                                                                                     ToCoord);
-                           stream<<sta::ConvertUnits(ToUnit,Ascending)<<"\t";
+                           stream<<sta::ConvertUnits(ToUnit,Ascending,"rad")<<"\t";
                        }
                        if(name=="True Anomaly")
                        {
@@ -2736,7 +2747,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                                     MJDdate[index],
                                                                                     "EME J2000",
                                                                                     ToCoord);
-                           stream<<sta::ConvertUnits(ToUnit,TrueAnom)<<"\t";
+                           stream<<sta::ConvertUnits(ToUnit,TrueAnom,"rad")<<"\t";
                        }
                        if(name=="Argument of Periapsis")
                        {
@@ -2744,7 +2755,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                                     MJDdate[index],
                                                                                     "EME J2000",
                                                                                     ToCoord);
-                           stream<<sta::ConvertUnits(ToUnit,Periapsis)<<"\t";
+                           stream<<sta::ConvertUnits(ToUnit,Periapsis,"rad")<<"\t";
                        }
                        if(name=="Semimajor Axis")
                        {
@@ -2752,7 +2763,7 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                                     MJDdate[index],
                                                                                     "EME J2000",
                                                                                     ToCoord);
-                           stream<<sta::ConvertUnits(ToUnit,SemAxis)<<"\t";
+                           stream<<sta::ConvertUnits(ToUnit,SemAxis,"km")<<"\t";
                        }
 
                    }
@@ -2855,32 +2866,32 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                                      SphericalElements[5]);
                                                                 if(name=="Latitude")
                                                                 {
-                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[1])<<"\t";
+                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[1],"rad")<<"\t";
                                                                 }
                                                                 if(name=="Longitude")
                                                                 {
-                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[0])<<"\t";
+                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[0],"rad")<<"\t";
                                                                 }
                                                                 if(name=="Radial Distance")
                                                                 {
-                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[2])<<"\t";
+                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[2],"km")<<"\t";
                                                                 }
                                                                 if(name=="Altitude")
                                                                 {
-                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[2]-STA_SOLAR_SYSTEM->lookup("Earth")->meanRadius())<<"\t";
+                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[2]-STA_SOLAR_SYSTEM->lookup("Earth")->meanRadius(),"km")<<"\t";
                                                                 }
                                                                 if(name=="Flight Path Angle")
                                                                 {
-                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[4])<<"\t";
+                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[4],"rad")<<"\t";
                                                                 }
                                                                 if(name=="Heading Angle")
                                                                 {
-                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[5])<<"\t";
+                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[5],"rad")<<"\t";
                                                                 }
                                                                 if(name=="Velocity Modulus")
                                                                 {
 
-                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[3])<<"\t";
+                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[3],"km/s")<<"\t";
                                                                 }
                                                             }
 
@@ -2914,27 +2925,27 @@ for(int z=0;z<MParentIndex.size();z++)
 
                         if(name=="Latitude")
                         {
-                            stream<<sta::ConvertUnits(Units,SphericalElements[1])<<"\t";
+                            stream<<sta::ConvertUnits(Units,SphericalElements[1],"rad")<<"\t";
                         }
                         if(name=="Longitude")
                         {
-                            stream<<sta::ConvertUnits(Units,SphericalElements[0])<<"\t";
+                            stream<<sta::ConvertUnits(Units,SphericalElements[0],"rad")<<"\t";
                         }
                         if(name=="Radial Distance")
                         {
-                            stream<<sta::ConvertUnits(Units,SphericalElements[2])<<"\t";
+                            stream<<sta::ConvertUnits(Units,SphericalElements[2],"km")<<"\t";
                         }
                         if(name=="Flight Path Angle")
                         {
-                            stream<<sta::ConvertUnits(Units,SphericalElements[4])<<"\t";
+                            stream<<sta::ConvertUnits(Units,SphericalElements[4],"rad")<<"\t";
                         }
                         if(name=="Heading Angle")
                         {
-                            stream<<sta::ConvertUnits(Units,SphericalElements[5])<<"\t";
+                            stream<<sta::ConvertUnits(Units,SphericalElements[5],"rad")<<"\t";
                         }
                         if(name=="Velocity Modulus")
                         {
-                            stream<<sta::ConvertUnits(Units,SphericalElements[3])<<"\t";
+                            stream<<sta::ConvertUnits(Units,SphericalElements[3],"km/s")<<"\t";
                         }
                     }
                     if((name=="e*sin(omegaBar)")||(name=="e*cos(omegaBar)")||(name=="tan(i/2)*sin(raan)")||(name=="tan(i/2)*cos(raan)")||(name=="Mean Longitude"))
@@ -2954,7 +2965,8 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                 MJDdate[index],
                                                                 "EME J2000",
                                                                 ToCoord);
-                            stream<<sta::ConvertUnits(Units,esin)<<"\t";
+                            //stream<<sta::ConvertUnits(Units,esin)<<"\t";
+                            stream<<esin<<"\t";
                                 }
                         if(name=="e*cos(omegaBar)")
                         {
@@ -2962,7 +2974,8 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                 MJDdate[index],
                                                                 "EME J2000",
                                                                 ToCoord);
-                            stream<<sta::ConvertUnits(Units,ecos)<<"\t";
+                           // stream<<sta::ConvertUnits(Units,ecos)<<"\t";
+                            stream<<ecos<<"\t";
                         }
                         if(name=="tan(i/2)*sin(raan)")
                         {
@@ -2970,7 +2983,8 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                    MJDdate[index],
                                                                    "EME J2000",
                                                                    ToCoord);
-                            stream<<sta::ConvertUnits(Units,etansin)<<"\t";
+                           // stream<<sta::ConvertUnits(Units,etansin)<<"\t";
+                            stream<<etansin<<"\t";
                         }
                         if(name=="tan(i/2)*cos(raan)")
                         {
@@ -2978,7 +2992,8 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                    MJDdate[index],
                                                                    "EME J2000",
                                                                    ToCoord);
-                            stream<<sta::ConvertUnits(Units,etancos)<<"\t";
+                            //stream<<sta::ConvertUnits(Units,etancos)<<"\t";
+                            stream<<etancos<<"\t";
                         }
                         if(name=="Mean Longitude")
                         {
@@ -2986,7 +3001,8 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                    MJDdate[index],
                                                                    "EME J2000",
                                                                    ToCoord);
-                            stream<<sta::ConvertUnits(Units,MeanLon)<<"\t";
+                            //stream<<sta::ConvertUnits(Units,MeanLon)<<"\t";
+                            stream<<MeanLon<<"\t";
                         }
                     }
                 }
@@ -3363,7 +3379,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  Fixed);
                                    // stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x())<<"\t";
                                     //LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.x()));
-                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.x()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.x(),"km"));
 
                                 }
                                 if(Coordinate=="Ecliptic J2000")
@@ -3379,7 +3395,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                  Ecliptic);
                                     //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x())<<"\t";
-                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.x()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.x(),"km"));
                                 }
                                 if(Coordinate=="EME J2000")
                                 {
@@ -3397,7 +3413,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                     //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x())<<"\t";
                                     //DataStructure[a].Data[index].append(sta::ConvertUnits(Units,ModifVector[index].position.x()));
 
-                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.x()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.x(),"km"));
 
                                 }
                                 if(Coordinate=="EME B1950")
@@ -3413,7 +3429,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                  B1950);
                                     //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x())<<"\t";
-                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.x()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.x(),"km"));
                                 }
                             }
 
@@ -3432,7 +3448,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                  Fixed);
                                     //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y())<<"\t";
-                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.y()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.y(),"km"));
                                 }
                                 if(Coordinate=="Ecliptic J2000")
                                 {
@@ -3447,7 +3463,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                  Ecliptic);
                                     //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y())<<"\t";
-                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.y()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.y(),"km"));
                                 }
                                 if(Coordinate=="EME J2000")
                                 {
@@ -3461,7 +3477,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                  EME2000);
                                     //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y())<<"\t";
-                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.y()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.y(),"km"));
                                 }
                                 if(Coordinate=="EME B1950")
                                 {
@@ -3476,7 +3492,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                  B1950);
                                     //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y())<<"\t";
-                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.y()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.y(),"km"));
                                 }
                             }
 
@@ -3497,7 +3513,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  Fixed);
 
                                     //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z())<<"\t";
-                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.z()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.z(),"km"));
                                 }
                                 if(Coordinate=="Ecliptic J2000")
                                 {
@@ -3512,7 +3528,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                  Ecliptic);
                                     //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z())<<"\t";
-                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.z()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.z(),"km"));
                                 }
                                 if(Coordinate=="EME J2000")
                                 {
@@ -3526,7 +3542,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                  EME2000);
                                     //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z())<<"\t";
-                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.z()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.z(),"km"));
                                 }
                                 if(Coordinate=="EME B1950")
                                 {
@@ -3541,7 +3557,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                  B1950);
                                     //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z())<<"\t";
-                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.z()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.z(),"km"));
                                 }
 
                             }
@@ -3561,7 +3577,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                  Fixed);
                                     //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x())<<"\t";
-                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.x()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.x(),"km/s"));
                                 }
                                 if(Coordinate=="Ecliptic J2000")
                                 {
@@ -3576,7 +3592,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                  Ecliptic);
                                     //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x())<<"\t";
-                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.x()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.x(),"km/s"));
                                 }
                                 if(Coordinate=="EME J2000")
                                 {
@@ -3590,7 +3606,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                  EME2000);
                                     //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x())<<"\t";
-                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.x()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.x(),"km/s"));
                                 }
                                 if(Coordinate=="EME B1950")
                                 {
@@ -3605,7 +3621,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                  B1950);
                                     //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x())<<"\t";
-                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.x()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.x(),"km/s"));
                                 }
                             }
                             if(name=="y velocity")
@@ -3623,7 +3639,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                  Fixed);
                                     //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y())<<"\t";
-                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.y()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.y(),"km/s"));
                                 }
                                 if(Coordinate=="Ecliptic J2000")
                                 {
@@ -3638,7 +3654,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                  Ecliptic);
                                     //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y())<<"\t";
-                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.y()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.y(),"km/s"));
                                 }
                                 if(Coordinate=="EME J2000")
                                 {
@@ -3652,7 +3668,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                  EME2000);
                                     //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y())<<"\t";
-                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.y()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.y(),"km/s"));
                                 }
                                 if(Coordinate=="EME B1950")
                                 {
@@ -3667,7 +3683,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                  B1950);
                                     //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y())<<"\t";
-                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.y()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.y(),"km/s"));
                                 }
                             }
                             if(name=="z velocity")
@@ -3685,7 +3701,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                  Fixed);
                                     //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z())<<"\t";
-                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.z()));
+                                    LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.z(),"km/s"));
                                 }
                                 if(Coordinate=="Ecliptic J2000")
                                 {
@@ -3700,7 +3716,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                  Ecliptic);
                                     //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z())<<"\t";
-                                LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.z()));
+                                LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.z(),"km/s"));
                                 }
                                     if(Coordinate=="EME J2000")
                                     {
@@ -3714,7 +3730,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                      STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                      EME2000);
                                         //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z())<<"\t";
-                                        LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.z()));
+                                        LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.z(),"km/s"));
                                     }
                                     if(Coordinate=="EME B1950")
                                     {
@@ -3729,7 +3745,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                      STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                                      B1950);
                                         //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z())<<"\t";
-                                        LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.z()));
+                                        LineData.append(sta::ConvertUnits(Units,ModifVector[index].velocity.z(),"km/s"));
                                     }
                             }
                         }
@@ -3870,97 +3886,108 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 
                             }
                         }
-                        if(name=="Azimuth")
+                        if((name=="Azimuth")||(name=="Elevation")||(name=="Range"))
                         {
 
-                            if(CovIndex[0]<LineOfCoverageReport.size())
+                            QWidget*Box1=Tree.at(a)->itemWidget(parameter,1);
+                            QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
+                            QString ToCoord=ComboBox1->currentText();
+                            QWidget*Box2=Tree.at(a)->itemWidget(parameter,2);
+                            QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
+                            QString ToUnit=ComboBox2->currentText();
+                            if(name=="Azimuth")
                             {
-                                QString Line=LineOfCoverageReport.at(CovIndex[0]);
 
-                                double TimeCovReport=(Line.section("\t",0,0)).toDouble();
-                                double Azimuth=(Line.section("\t",3,3)).toDouble();
-
-                                if(abs(MJDdate[index]-TimeCovReport)<10e-6)
+                                if(CovIndex[0]<LineOfCoverageReport.size())
                                 {
+                                    QString Line=LineOfCoverageReport.at(CovIndex[0]);
 
-                                    LineData.append(Azimuth);
+                                    double TimeCovReport=(Line.section("\t",0,0)).toDouble();
+                                    double Azimuth=(Line.section("\t",3,3)).toDouble();
 
-                                    CovIndex[0]++;
+                                    if(abs(MJDdate[index]-TimeCovReport)<10e-6)
+                                    {
+
+                                        LineData.append(sta::ConvertUnits(ToUnit,Azimuth,"deg"));
+
+                                        CovIndex[0]++;
+                                    }
+
+                                    else
+                                    {
+                                        //stream<<"No visibility";
+                                        LineData.append(-1);
+                                    }
+
                                 }
-
                                 else
                                 {
                                     //stream<<"No visibility";
                                     LineData.append(-1);
                                 }
-
                             }
-                            else
+                            if(name=="Elevation")
                             {
-                                //stream<<"No visibility";
-                                LineData.append(-1);
-                            }
-                        }
-                        if(name=="Elevation")
-                        {
 
-                            if(CovIndex[1]<LineOfCoverageReport.length())
-                            {
-                                QString Line=LineOfCoverageReport.at(CovIndex[1]);
-
-                                double TimeCovReport=(Line.section("\t",0,0)).toDouble();
-                                double Elevation=(Line.section("\t",2,2)).toDouble();
-
-                                if(abs(MJDdate[index]-TimeCovReport)<10e-6)
+                                if(CovIndex[1]<LineOfCoverageReport.length())
                                 {
-                                    //stream<<Elevation<<"\t";
-                                    LineData.append(Elevation);
-                                    CovIndex[1]++;
+                                    QString Line=LineOfCoverageReport.at(CovIndex[1]);
+
+                                    double TimeCovReport=(Line.section("\t",0,0)).toDouble();
+                                    double Elevation=(Line.section("\t",2,2)).toDouble();
+
+                                    if(abs(MJDdate[index]-TimeCovReport)<10e-6)
+                                    {
+                                        //stream<<Elevation<<"\t";
+                                        LineData.append(sta::ConvertUnits(ToUnit,Elevation,"deg"));
+                                        CovIndex[1]++;
+                                    }
+
+                                    else
+                                    {
+                                        //<<"No visibility";
+                                        LineData.append(-1);
+                                    }
+
                                 }
-
-                                else
-                                {
-                                    //<<"No visibility";
-                                    LineData.append(-1);
-                                }
-
-                            }
-                            else
-                            {
-                                //stream<<"No visibility";
-                                LineData.append(-1);
-                            }
-                        }
-
-                        if(name=="Range")
-                        {
-                            if(CovIndex[2]<LineOfCoverageReport.length())
-                            {
-                                QString Line=LineOfCoverageReport.at(CovIndex[2]);
-
-                                double TimeCovReport=(Line.section("\t",0,0)).toDouble();
-                                double Range=(Line.section("\t",1,1)).toDouble();
-
-                                if(abs(MJDdate[index]-TimeCovReport)<10e-6)
-                                {
-                                    //stream<<Range<<"\t";
-                                    LineData.append(Range);
-                                    CovIndex[2]++;
-                                }
-
                                 else
                                 {
                                     //stream<<"No visibility";
                                     LineData.append(-1);
                                 }
-
-                                //qDebug()<<"CovIndex"<<CovIndex[2];
-
                             }
-                            else
+
+                            if(name=="Range")
                             {
-                               // stream<<"No visibility";
-                                LineData.append(-1);
+                                if(CovIndex[2]<LineOfCoverageReport.length())
+                                {
+                                    QString Line=LineOfCoverageReport.at(CovIndex[2]);
+
+                                    double TimeCovReport=(Line.section("\t",0,0)).toDouble();
+                                    double Range=(Line.section("\t",1,1)).toDouble();
+
+                                    if(abs(MJDdate[index]-TimeCovReport)<10e-6)
+                                    {
+                                        //stream<<Range<<"\t";
+
+                                        LineData.append(sta::ConvertUnits(ToUnit,Range,"km"));
+                                        CovIndex[2]++;
+                                    }
+
+                                    else
+                                    {
+                                        //stream<<"No visibility";
+                                        LineData.append(-1);
+                                    }
+
+                                    //qDebug()<<"CovIndex"<<CovIndex[2];
+
+                                }
+                                else
+                                {
+                                    // stream<<"No visibility";
+                                    LineData.append(-1);
+                                }
                             }
                         }
                         if(name=="Equivalent Isotropical Radiated Power")
@@ -4481,7 +4508,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                         "EME J2000",
                                                                                         ToCoord);
                                //stream<<sta::ConvertUnits(ToUnit,Inclination)<<"\t";
-                               LineData.append(sta::ConvertUnits(ToUnit,Inclination));
+                               LineData.append(sta::ConvertUnits(ToUnit,Inclination,"rad"));
                            }
                            if(name=="RAAN")
                            {
@@ -4490,7 +4517,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                         "EME J2000",
                                                                                         ToCoord);
                                //stream<<sta::ConvertUnits(ToUnit,Ascending)<<"\t";
-                               LineData.append(sta::ConvertUnits(ToUnit,Ascending));
+                               LineData.append(sta::ConvertUnits(ToUnit,Ascending,"rad"));
                            }
                            if(name=="True Anomaly")
                            {
@@ -4499,7 +4526,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                         "EME J2000",
                                                                                         ToCoord);
                                //stream<<sta::ConvertUnits(ToUnit,TrueAnom)<<"\t";
-                               LineData.append(sta::ConvertUnits(ToUnit,TrueAnom));
+                               LineData.append(sta::ConvertUnits(ToUnit,TrueAnom,"rad"));
                            }
                            if(name=="Argument of Periapsis")
                            {
@@ -4508,7 +4535,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                         "EME J2000",
                                                                                         ToCoord);
                               //stream<<sta::ConvertUnits(ToUnit,Periapsis)<<"\t";
-                               LineData.append(sta::ConvertUnits(ToUnit,Periapsis));
+                               LineData.append(sta::ConvertUnits(ToUnit,Periapsis,"rad"));
                            }
                            if(name=="Semimajor Axis")
                            {
@@ -4517,7 +4544,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                         "EME J2000",
                                                                                         ToCoord);
                                //stream<<sta::ConvertUnits(ToUnit,SemAxis)<<"\t";
-                               LineData.append(sta::ConvertUnits(ToUnit,SemAxis));
+                               LineData.append(sta::ConvertUnits(ToUnit,SemAxis,"km"));
                            }
 
                        }
@@ -4611,32 +4638,32 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                     if(name=="Latitude")
                                                                     {
                                                                         //stream<<sta::ConvertUnits(Units,SphericalElements[1])<<"\t";
-                                                                        LineData.append(sta::ConvertUnits(Units,SphericalElements[1]));
+                                                                        LineData.append(sta::ConvertUnits(Units,SphericalElements[1],"rad"));
                                                                     }
                                                                     if(name=="Longitude")
                                                                     {
                                                                         //stream<<sta::ConvertUnits(Units,SphericalElements[0])<<"\t";
-                                                                        LineData.append(sta::ConvertUnits(Units,SphericalElements[0]));
+                                                                        LineData.append(sta::ConvertUnits(Units,SphericalElements[0],"rad"));
                                                                     }
                                                                     if(name=="Radial Distance")
                                                                     {
                                                                         //stream<<sta::ConvertUnits(Units,SphericalElements[2])<<"\t";
-                                                                        LineData.append(sta::ConvertUnits(Units,SphericalElements[2]));
+                                                                        LineData.append(sta::ConvertUnits(Units,SphericalElements[2],"km"));
                                                                     }
                                                                     if(name=="Flight Path Angle")
                                                                     {
                                                                         //stream<<sta::ConvertUnits(Units,SphericalElements[4])<<"\t";
-                                                                        LineData.append(sta::ConvertUnits(Units,SphericalElements[4]));
+                                                                        LineData.append(sta::ConvertUnits(Units,SphericalElements[4],"rad"));
                                                                     }
                                                                     if(name=="Heading Angle")
                                                                     {
                                                                        //stream<<sta::ConvertUnits(Units,SphericalElements[5])<<"\t";
-                                                                        LineData.append(sta::ConvertUnits(Units,SphericalElements[5]));
+                                                                        LineData.append(sta::ConvertUnits(Units,SphericalElements[5],"rad"));
                                                                     }
                                                                     if(name=="Velocity Modulus")
                                                                     {
                                                                         //stream<<sta::ConvertUnits(Units,SphericalElements[3])<<"\t";
-                                                                        LineData.append(sta::ConvertUnits(Units,SphericalElements[3]));
+                                                                        LineData.append(sta::ConvertUnits(Units,SphericalElements[3],"km/s"));
                                                                     }
                                                                 }
 
@@ -4669,38 +4696,38 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                             if(name=="Latitude")
                             {
                                 //stream<<sta::ConvertUnits(Units,SphericalElements[1])<<"\t";
-                                LineData.append(sta::ConvertUnits(Units,SphericalElements[1]));
+                                LineData.append(sta::ConvertUnits(Units,SphericalElements[1],"rad"));
                             }
                             if(name=="Longitude")
                             {
                                 //stream<<sta::ConvertUnits(Units,SphericalElements[0])<<"\t";
-                                LineData.append(sta::ConvertUnits(Units,SphericalElements[0]));
+                                LineData.append(sta::ConvertUnits(Units,SphericalElements[0],"rad"));
                             }
                             if(name=="Radial Distance")
                             {
                                 //stream<<sta::ConvertUnits(Units,SphericalElements[2])<<"\t";
-                                LineData.append(sta::ConvertUnits(Units,SphericalElements[2]));
+                                LineData.append(sta::ConvertUnits(Units,SphericalElements[2],"km"));
                             }
                             if (name=="Altitude")
                             {
                                 double radius=STA_SOLAR_SYSTEM->lookup("Earth")->meanRadius();
-                                double altitude=sta::ConvertUnits(Units,SphericalElements[2]-radius);
+                                double altitude=sta::ConvertUnits(Units,SphericalElements[2]-radius,"km");
                                 LineData.append(altitude);
                             }
                             if(name=="Flight Path Angle")
                             {
                                // stream<<sta::ConvertUnits(Units,SphericalElements[4])<<"\t";
-                                LineData.append(sta::ConvertUnits(Units,SphericalElements[4]));
+                                LineData.append(sta::ConvertUnits(Units,SphericalElements[4],"rad"));
                             }
                             if(name=="Heading Angle")
                             {
                                 //stream<<sta::ConvertUnits(Units,SphericalElements[5])<<"\t";
-                                LineData.append(sta::ConvertUnits(Units,SphericalElements[5]));
+                                LineData.append(sta::ConvertUnits(Units,SphericalElements[5],"rad"));
                             }
                             if(name=="Velocity Modulus")
                             {
                                 //stream<<sta::ConvertUnits(Units,SphericalElements[3])<<"\t";
-                                LineData.append(sta::ConvertUnits(Units,SphericalElements[3]));
+                                LineData.append(sta::ConvertUnits(Units,SphericalElements[3],"km/s"));
                             }
                         }
                         if((name=="e*sin(omegaBar)")||(name=="e*cos(omegaBar)")||(name=="tan(i/2)*sin(raan)")||(name=="tan(i/2)*cos(raan)")||(name=="Mean Longitude"))
@@ -4720,8 +4747,9 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                     MJDdate[index],
                                                                     "EME J2000",
                                                                     ToCoord);
-                                //stream<<sta::ConvertUnits(Units,esin)<<"\t";
-                                LineData.append(sta::ConvertUnits(Units,esin));
+
+                                //LineData.append(sta::ConvertUnits(Units,esin));
+                                LineData.append(esin);
                                     }
                             if(name=="e*cos(omegaBar)")
                             {
@@ -4729,8 +4757,9 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                     MJDdate[index],
                                                                     "EME J2000",
                                                                     ToCoord);
-                                //stream<<sta::ConvertUnits(Units,ecos)<<"\t";
-                                LineData.append(sta::ConvertUnits(Units,ecos));
+
+                               // LineData.append(sta::ConvertUnits(Units,ecos));
+                                LineData.append(ecos);
                             }
                             if(name=="tan(i/2)*sin(raan)")
                             {
@@ -4738,8 +4767,9 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                        MJDdate[index],
                                                                        "EME J2000",
                                                                        ToCoord);
-                                //stream<<sta::ConvertUnits(Units,etansin)<<"\t";
-                                LineData.append(sta::ConvertUnits(Units,etansin));
+
+                               // LineData.append(sta::ConvertUnits(Units,etansin));
+                                LineData.append(etansin);
                             }
                             if(name=="tan(i/2)*cos(raan)")
                             {
@@ -4747,8 +4777,9 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                        MJDdate[index],
                                                                        "EME J2000",
                                                                        ToCoord);
-                                //stream<<sta::ConvertUnits(Units,etancos)<<"\t";
-                                LineData.append(sta::ConvertUnits(Units,etancos));
+
+                                //LineData.append(sta::ConvertUnits(Units,etancos));
+                                LineData.append(etancos);
                             }
                             if(name=="Mean Longitude")
                             {
@@ -4756,8 +4787,9 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                        MJDdate[index],
                                                                        "EME J2000",
                                                                        ToCoord);
-                               // stream<<sta::ConvertUnits(Units,MeanLon)<<"\t";
-                                LineData.append(sta::ConvertUnits(Units,MeanLon));
+
+                               // LineData.append(sta::ConvertUnits(Units,MeanLon,"rad"));
+                                LineData.append(MeanLon);
                             }
                         }
                     }
