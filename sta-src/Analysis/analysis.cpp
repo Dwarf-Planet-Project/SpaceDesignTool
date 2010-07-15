@@ -1422,7 +1422,10 @@ for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++) //sets true some 
         ReadCommunication3=true;
 }
 
-QFile file("analysisReport.txt");
+// Patched by Guillermo to allow read of files in MAc and Linux
+QString ResourcesPath = QDir::currentPath ();
+QString analysisFile = ResourcesPath + "/" + "analysisReport.txt";
+QFile file(analysisFile);
 file.open(QIODevice::WriteOnly);
 QTextStream stream(&file);
 stream.setRealNumberPrecision(16);
@@ -3004,7 +3007,11 @@ for(int z=0;z<MParentIndex.size();z++)
 
 file.close();
 
-QDesktopServices::openUrl(QUrl(tr("file:///analysisReport.txt")));
+// Patched by Guillermo to allow read of files in MAc and Linux
+QString ResourcesPathOutput = QDir::currentPath ();
+QString analysisFileOutput = "file:///" + ResourcesPathOutput + "/" + "analysisReport.txt";
+
+QDesktopServices::openUrl(QUrl(analysisFileOutput));
 }
 
 QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetItem*>selected,QList<QTreeWidgetItem*>selectedTimes)
