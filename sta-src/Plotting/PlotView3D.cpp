@@ -41,8 +41,9 @@ using namespace std;
   */
 PlotView3D::PlotView3D(QWidget* parent) :
     QWidget(parent),
-    m_horizontalScale(NULL),
-    m_verticalScale(NULL),
+    m_xScale(NULL),
+    m_yScale(NULL),
+    m_zScale(NULL),
     m_topMargin(50.0f),
     m_bottomMargin(50.0f),
     m_leftMargin(80.0f),
@@ -59,15 +60,15 @@ PlotView3D::PlotView3D(QWidget* parent) :
         m_plot->coordinates()->axes[i].setMinors(4);
 
         m_plot->coordinates()->axes[i].setLabelFont("Helvetica", 14);
-        //m_plot->coordinates()->axes[i].setAutoScale(false);
     }
 
     m_plot->coordinates()->setGridLines(true, true, FLOOR);
     m_plot->coordinates()->setGridLinesColor(RGBA(0.7, 0.7, 0.7, 1.0));
     m_plot->setTitleFont("Helvetica", 18);
 
-    m_horizontalScale = new LinearPlotScale(0.0, 1.0);
-    m_verticalScale = new LinearPlotScale(0.0, 1.0);
+    m_xScale = new LinearPlotScale(0.0, 1.0);
+    m_yScale = new LinearPlotScale(0.0, 1.0);
+    m_zScale = new LinearPlotScale(0.0, 1.0);
 
     m_plot->setMeshColor(RGBA(0.0, 0.0, 1.0, 1.0));
 
@@ -82,8 +83,9 @@ PlotView3D::PlotView3D(QWidget* parent) :
 PlotView3D::~PlotView3D()
 {
     removeAllPlots();
-    delete m_horizontalScale;
-    delete m_verticalScale;
+    delete m_xScale;
+    delete m_yScale;
+    delete m_zScale;
 }
 
 
@@ -153,60 +155,81 @@ PlotView3D::setTitle(const QString& title)
 }
 
 
-/** Set the label that will be displayed on the left side of the plot.
+/** Set the label that will be displayed on the x-axis of the plot.
   */
 void
-PlotView3D::setLeftLabel(const QString& label)
+PlotView3D::setXLabel(const QString& label)
 {
-    m_leftLabel = label;
+    m_xLabel = label;
+    m_plot->coordinates()->axes[X1].setLabelString(label);
+    m_plot->coordinates()->axes[X2].setLabelString(label);
+    m_plot->coordinates()->axes[X3].setLabelString(label);
+    m_plot->coordinates()->axes[X4].setLabelString(label);
+    m_plot->updateGL();
 }
 
 
-/** Set the label that will be displayed on the right side of the plot.
+/** Set the label that will be displayed on the y-axis of the plot.
   */
 void
-PlotView3D::setRightLabel(const QString& label)
+PlotView3D::setYLabel(const QString& label)
 {
-    m_rightLabel = label;
+    m_yLabel = label;
+    m_plot->coordinates()->axes[Y1].setLabelString(label);
+    m_plot->coordinates()->axes[Y2].setLabelString(label);
+    m_plot->coordinates()->axes[Y3].setLabelString(label);
+    m_plot->coordinates()->axes[Y4].setLabelString(label);
+    m_plot->updateGL();
 }
 
 
-/** Set the label that will be displayed above the plot (and beneath the title.)
+/** Set the label that will be displayed on the z-axis of the plot.
   */
 void
-PlotView3D::setTopLabel(const QString& label)
+PlotView3D::setZLabel(const QString& label)
 {
-    m_topLabel = label;
+    m_zLabel = label;
+    m_plot->coordinates()->axes[Z1].setLabelString(label);
+    m_plot->coordinates()->axes[Z2].setLabelString(label);
+    m_plot->coordinates()->axes[Z3].setLabelString(label);
+    m_plot->coordinates()->axes[Z4].setLabelString(label);
+    m_plot->updateGL();
 }
 
 
-/** Set the label that will be displayed beneat the plot.
+
+/** Set the x-axis scale for this plot view.
   */
 void
-PlotView3D::setBottomLabel(const QString& label)
+PlotView3D::setXScale(const PlotScale& scale)
 {
-    m_bottomLabel = label;
+    delete m_xScale;
+    m_xScale = scale.clone();
+    updatePlotData();
 }
 
 
-/** Set the horizontal scale for this plot view.
+/** Set the y-axis scale for this plot view.
   */
 void
-PlotView3D::setHorizontalScale(const PlotScale& scale)
+PlotView3D::setYScale(const PlotScale& scale)
 {
-    delete m_horizontalScale;
-    m_horizontalScale = scale.clone();
+    delete m_yScale;
+    m_yScale = scale.clone();
+    updatePlotData();
 }
 
 
-/** Set the vertical scale for this plot view.
+/** Set the z-axis scale for this plot view.
   */
 void
-PlotView3D::setVerticalScale(const PlotScale& scale)
+PlotView3D::setZScale(const PlotScale& scale)
 {
-    delete m_verticalScale;
-    m_verticalScale = scale.clone();
+    delete m_zScale;
+    m_zScale = scale.clone();
+    updatePlotData();
 }
+
 
 
 /** Automatically set the horizontal and vertical scales to ranges
@@ -247,13 +270,16 @@ PlotView3D::autoScale()
             maxX = max(maxX, v.x());
             minY = min(minY, v.y());
             maxY = max(maxY, v.y());
+            minZ = min(minZ, v.z());
+            maxZ = max(maxZ, v.z());
         }
     }
 
     if (!empty)
     {
-        setHorizontalScale(LinearPlotScale(minX, maxX));
-        setVerticalScale(LinearPlotScale(minY, maxY));
+        setXScale(LinearPlotScale(minX, maxX));
+        setYScale(LinearPlotScale(minY, maxY));
+        setZScale(LinearPlotScale(minZ, maxZ));
     }
 }
 
@@ -268,8 +294,14 @@ PlotView3D::updatePlotData()
         for (unsigned int i = 0; i < plot->data->getPointCount(); ++i)
         {
             Vector3d p = plot->data->getPoint(i);
+            p = Vector3d(m_xScale->scaled(p.x()), m_yScale->scaled(p.y()), m_zScale->scaled(p.z()));
             triples << Triple(p.x(), p.y(), p.z());
         }
+
+        QColor color = plot->style.strokeStyle().color();
+        float width = plot->style.strokeStyle().widthF();
+        m_plot->setMeshColor(RGBA(color.redF(), color.greenF(), color.blueF(), 1.0f));
+        m_plot->setMeshLineWidth(width);
     }
 
     // No data in the graph. It's likely that a bad time range was provided.
@@ -286,24 +318,32 @@ PlotView3D::updatePlotData()
     m_plot->loadFromData(const_cast<Triple**>(data), 2, triples.size(), false, false);
     m_plot->updateData();
 
-#if 0
     // Set the scale on all the axes
+    double minX = m_xScale->unscaled(0.0);
+    double maxX = m_xScale->unscaled(1.0);
+    double minY = m_yScale->unscaled(0.0);
+    double maxY = m_yScale->unscaled(1.0);
+    double minZ = m_zScale->unscaled(0.0);
+    double maxZ = m_zScale->unscaled(1.0);
 
-    m_plot->coordinates()->axes[X1].setLimits(axisMin.x(), axisMax.x());
-    m_plot->coordinates()->axes[X2].setLimits(axisMin.x(), axisMax.x());
-    m_plot->coordinates()->axes[X3].setLimits(axisMin.x(), axisMax.x());
-    m_plot->coordinates()->axes[X4].setLimits(axisMin.x(), axisMax.x());
+    m_plot->coordinates()->axes[X1].setLimits(minX, maxX);
+    m_plot->coordinates()->axes[X2].setLimits(minX, maxX);
+    m_plot->coordinates()->axes[X3].setLimits(minX, maxX);
+    m_plot->coordinates()->axes[X4].setLimits(minX, maxX);
 
-    m_plot->coordinates()->axes[Y1].setLimits(axisMin.y(), axisMax.y());
-    m_plot->coordinates()->axes[Y2].setLimits(axisMin.y(), axisMax.y());
-    m_plot->coordinates()->axes[Y3].setLimits(axisMin.y(), axisMax.y());
-    m_plot->coordinates()->axes[Y4].setLimits(axisMin.y(), axisMax.y());
+    m_plot->coordinates()->axes[Y1].setLimits(minY, maxY);
+    m_plot->coordinates()->axes[Y2].setLimits(minY, maxY);
+    m_plot->coordinates()->axes[Y3].setLimits(minY, maxY);
+    m_plot->coordinates()->axes[Y4].setLimits(minY, maxY);
 
-    m_plot->coordinates()->axes[Z1].setLimits(axisMin.z(), axisMax.z());
-    m_plot->coordinates()->axes[Z2].setLimits(axisMin.z(), axisMax.z());
-    m_plot->coordinates()->axes[Z3].setLimits(axisMin.z(), axisMax.z());
-    m_plot->coordinates()->axes[Z4].setLimits(axisMin.z(), axisMax.z());
-#endif
+    m_plot->coordinates()->axes[Z1].setLimits(minZ, maxZ);
+    m_plot->coordinates()->axes[Z2].setLimits(minZ, maxZ);
+    m_plot->coordinates()->axes[Z3].setLimits(minZ, maxZ);
+    m_plot->coordinates()->axes[Z4].setLimits(minZ, maxZ);
+
+    setXLabel(m_xLabel);
+    setYLabel(m_yLabel);
+    setZLabel(m_zLabel);
 
     m_plot->updateGL();
 }

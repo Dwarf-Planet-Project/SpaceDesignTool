@@ -45,6 +45,11 @@ public:
       */
     virtual double scaled(double x) const = 0;
 
+    /** unscaled() is the inverse of the scaled() method. It maps values
+      * in [0, 1] to the range of the scale.
+      */
+    virtual double unscaled(double x) const = 0;
+
     virtual PlotScale* clone() const = 0;
 
     /** Get a list of tick positions for this scale. This method will
@@ -70,6 +75,11 @@ public:
     virtual double scaled(double x) const
     {
         return (x - m_minValue) / (m_maxValue - m_minValue);
+    }
+
+    virtual double unscaled(double x) const
+    {
+        return x * (m_maxValue - m_minValue) + m_minValue;
     }
 
     virtual PlotScale* clone() const

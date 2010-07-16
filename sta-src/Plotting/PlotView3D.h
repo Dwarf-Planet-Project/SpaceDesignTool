@@ -63,46 +63,45 @@ public:
         return m_title;
     }
 
-    QString leftLabel() const
+    QString xLabel() const
     {
-        return m_leftLabel;
+        return m_xLabel;
     }
 
-    QString rightLabel() const
+    QString yLabel() const
     {
-        return m_rightLabel;
+        return m_yLabel;
     }
 
-    QString topLabel() const
+    QString zLabel() const
     {
-        return m_topLabel;
+        return m_zLabel;
     }
 
-    QString bottomLabel() const
+    const PlotScale* xScale() const
     {
-        return m_bottomLabel;
+        return m_xScale;
     }
 
-    const PlotScale* horizontalScale() const
+    const PlotScale* yScale() const
     {
-        return m_horizontalScale;
+        return m_yScale;
     }
 
-    const PlotScale* verticalScale() const
+    const PlotScale* zScale() const
     {
-        return m_verticalScale;
+        return m_zScale;
     }
 
-    void setHorizontalScale(const PlotScale& scale);
-    void setVerticalScale(const PlotScale& scale);
-
+    void setXScale(const PlotScale& scale);
+    void setYScale(const PlotScale& scale);
+    void setZScale(const PlotScale& scale);
 
 public slots:
     void setTitle(const QString& title);
-    void setLeftLabel(const QString& label);
-    void setRightLabel(const QString& label);
-    void setTopLabel(const QString& label);
-    void setBottomLabel(const QString& label);
+    void setXLabel(const QString& label);
+    void setYLabel(const QString& label);
+    void setZLabel(const QString& label);
     void autoScale();
 
 private:
@@ -124,13 +123,13 @@ private:
     QVector<Plot*> m_plots;
 
     QString m_title;
-    QString m_leftLabel;
-    QString m_rightLabel;
-    QString m_topLabel;
-    QString m_bottomLabel;
+    QString m_xLabel;
+    QString m_yLabel;
+    QString m_zLabel;
 
-    PlotScale* m_horizontalScale;
-    PlotScale* m_verticalScale;
+    PlotScale* m_xScale;
+    PlotScale* m_yScale;
+    PlotScale* m_zScale;
 
     float m_topMargin;
     float m_bottomMargin;
