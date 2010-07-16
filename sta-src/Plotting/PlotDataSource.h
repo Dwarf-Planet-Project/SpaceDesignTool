@@ -50,4 +50,12 @@ public:
     virtual Eigen::Vector2d getPoint(unsigned int index) const = 0;
 };
 
+
+class PlotDataSource3D : public QObject
+{
+    virtual ~PlotDataSource3D() {};
+    virtual unsigned int getPointCount3D() const = 0;
+    virtual Eigen::Vector3d getPoint3D(unsigned int index) const = 0;
+};
+
 #endif // _PLOTTING_PLOTDATASOURCE_H_
