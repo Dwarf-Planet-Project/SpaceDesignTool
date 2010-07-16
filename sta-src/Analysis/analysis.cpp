@@ -21,7 +21,7 @@
  Patched extensively by Guillermo in July 2010 to add more features like icons, help, etc.
 */
 
-#include "analysis.h"
+#include "Analysis/analysis.h"
 #include "math.h"
 #include "Scenario/scenario.h"
 #include "Main/propagatedscenario.h"
@@ -37,10 +37,9 @@
 #include "Astro-Core/date.h"
 #include <Coverage/commanalysis.h>
 #include <Coverage/coverageanalysis.h>
-#include "AnalysisPlot.h"
+#include "Analysis/AnalysisPlot.h"
 #include "Plotting/PlotView.h"
 #include "Help/HelpBrowser.h"
-
 #include <QDesktopServices>
 #include <QUrl>
 #include <QDebug>
@@ -162,7 +161,14 @@ void analysis::raiseHelp()
 
 
 void analysis::readScenario()
+
 {
+    /*
+      builds a copy of the scenario tree from the STA main window in the GUI of Analysis Module
+      -each participant has the following information:
+      -each mission arc has the following information:
+      -
+       */
     int SpaceObjectInd=0;
     int GroundObjectInd=0;
     int ObjectIndex=0;
@@ -459,6 +465,12 @@ void analysis::readScenario()
 
 int analysis::ObjectsIndex(QStringList AllObjects, int Index, QString ObjectType)
 {
+    /*
+      Inputs: AllObjects-QStringList of the type of objects in the scenario (ground or space), in the same order they appear
+              Index-number of order of each participant within the grounp type (number of order of the space object within all the space objects or number of order of the ground object within all the ground objects)
+              ObjectType- "space" or "ground"
+      Outputs: the number of order of the object within all the objects in the scenario, for example, the second ground station could be the third object in the scenario
+      */
     int j=-1;
     for (int i=0;i<AllObjects.size();i++)
     {
@@ -518,16 +530,11 @@ void analysis::on_buttonBox_rejected()
 
 void Analysis::on_groupBoxAnalysisFormat_toggled(bool)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+
 }
 */
 /*void analysis::on_ComboBoxAnalysisFormat_activated(const QString&)
 {
-if(ComboBoxAnalysisFormat->currentText()=="Report")
-stackedWidget->setCurrentWidget(pageReport);
-
-if((ComboBoxAnalysisFormat->currentText()=="3D plot")||(ComboBoxAnalysisFormat->currentText()=="2D plot")||(ComboBoxAnalysisFormat->currentText()=="2.5D plot"))
-    stackedWidget->setCurrentWidget(pagePlotAxesSettings);
 
 }*/
 
@@ -536,8 +543,6 @@ void analysis::on_groupBoxParameters_toggled(bool)
 {
 
 }
-
-
 
 void analysis::on_groupBoxTimeSpecifications_toggled(bool)
 {
@@ -548,7 +553,9 @@ void analysis::on_groupBoxTimeSpecifications_toggled(bool)
 
 bool analysis::CheckIfMissionArc()
 {
-
+/*
+  returns true if the all selected items in the scenario tree are mission arcs and returns false otherwise
+  */
     int isMissionArc=0;
 
     QList<QTreeWidgetItem *> selectedMissionArcs=TreeWidgetMissionArc->selectedItems();
@@ -584,6 +591,10 @@ bool analysis::CheckIfMissionArc()
 
 void analysis::on_AddDefaultPushButton_clicked()
 {
+    /*
+      adds the start and end epochs af the selected mission arcs;
+      the start and end epochs are the times defined in the mission arc properties and correspond to the entire propagation time;
+      */
     int NumberOfObjects=TreeWidgetMissionArc->topLevelItemCount();
 
 
@@ -827,22 +838,12 @@ void analysis::on_AddDefaultPushButton_clicked()
 }
 
 
-/*
-void analysis::on_AddNewPushButton_clicked()
-{
-    //if (CheckIfMissionArc())
-
-    //treeItem->setText(2," ");
-
-    //else
-
-
-}
-*/
-
 void analysis::ReadTime(int column, double *MJD) //reads the time in the treeWidgetTimeSpecifications
 {
-
+/*
+  Inputs: column-column number in the treeWidgetTimeSpecifications (start or end epochs);
+          *MJD-pointer to the variable that will save the time in Modified Julian Date
+  */
     QList<QTreeWidgetItem*>selectedTimes=treeWidgetTimeSpecifications->selectedItems();
 
     if (selectedTimes.size() >0)
@@ -890,6 +891,31 @@ void analysis::ReadTime(int column, double *MJD) //reads the time in the treeWid
     {
         //      return 0;  ;
     }
+}
+QString analysis::ReadParameter(QTreeWidgetItem*Item)
+{
+    /*
+
+      */
+    QTreeWidgetItem*parameter=Item;
+    QString name=parameter->text(0);
+    return name;
+}
+
+QString analysis::ReadUnits(QTreeWidget*Tree,QTreeWidgetItem*Item)
+{
+    QWidget*Box=Tree->itemWidget(Item,2);
+    QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
+    QString Unit=ComboBox->currentText();
+    return Unit;
+}
+
+QString analysis::ReadCoordinateSys(QTreeWidget*Tree,QTreeWidgetItem*Item)
+{
+    QWidget*Box=Tree->itemWidget(Item,1);
+    QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
+    QString Coordinate=ComboBox->currentText();
+    return Coordinate;
 }
 
 void analysis::on_EditTimePushButton_clicked() //adds new time intervals to the tree
@@ -1261,7 +1287,7 @@ void analysis::on_GeneratePushButton_clicked()
                     {
 
 
-                        QList<AnalysisData> DataStructure=WriteDataStructure(selected,selectedTimes);
+                        QList<analysis::AnalysisData> DataStructure=WriteDataStructure(selected,selectedTimes);
 
                         if(DataStructure.size()==2)
                         {
@@ -1495,6 +1521,7 @@ for(int z=0;z<MParentIndex.size();z++)
         }
         if(ReadCommunication1==true)
         {
+
             CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
             commAnalysis.CommReports();
 
@@ -1588,10 +1615,9 @@ for(int z=0;z<MParentIndex.size();z++)
             //printing the labels of the displayed parameters
             for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++)
             {
-                QTreeWidgetItem*parameter=treeWidgetShowInReport->topLevelItem(i);
-                QString name=parameter->text(0);
-
-                stream<<"\t"<<name<<"\t";
+                QString name=analysis::ReadParameter(treeWidgetShowInReport->topLevelItem(i));
+                QString Unit=analysis::ReadUnits(treeWidgetShowInReport,treeWidgetShowInReport->topLevelItem(i));
+                stream<<"\t"<<name<<"("<<Unit<<")"<<"\t";
                 if(i==((treeWidgetShowInReport->topLevelItemCount())-1))
                 {
                     stream<<"\r\n";
@@ -1626,13 +1652,8 @@ for(int z=0;z<MParentIndex.size();z++)
                     if((name=="x position")||(name=="y position")||(name=="z position")||(name=="x velocity")||(name=="y velocity")||(name=="z velocity"))
                     {
 
-                        QWidget*Box=treeWidgetShowInReport->itemWidget(parameter,1);
-                        QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
-                        QString Coordinate=ComboBox->currentText();
-
-                        QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,2);
-                        QComboBox*ComboBoxUnit=dynamic_cast <QComboBox*>(Box1);
-                        QString Units=ComboBoxUnit->currentText();
+                        QString Coordinate=analysis::ReadCoordinateSys(treeWidgetShowInReport,parameter);
+                        QString Units=analysis::ReadUnits(treeWidgetShowInReport,parameter);
 
                         sta::StateVector Vector[inumber];
 
@@ -2040,9 +2061,7 @@ for(int z=0;z<MParentIndex.size();z++)
                     if(name=="Time")
                     {
 
-                        QWidget*Box=treeWidgetShowInReport->itemWidget(parameter,1);
-                        QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
-                        QString TimeCoordinate=ComboBox->currentText();
+                        QString TimeCoordinate=analysis::ReadCoordinateSys(treeWidgetShowInReport,parameter);
 
                         //Options of Time
                         if(TimeCoordinate=="MJD")
@@ -2697,9 +2716,7 @@ for(int z=0;z<MParentIndex.size();z++)
                     }
                     if(name=="Eccentricity")
                     {
-                        QWidget*Box=treeWidgetShowInReport->itemWidget(parameter,1);
-                        QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
-                        QString ToCoord=ComboBox->currentText();
+                        QString ToCoord=analysis::ReadCoordinateSys(treeWidgetShowInReport,parameter);
 
                       sta::StateVector Vector[inumber];
                       Vector[index]=arc->trajectorySample(j);
@@ -2715,12 +2732,8 @@ for(int z=0;z<MParentIndex.size();z++)
                        (name=="True Anomaly")||
                        (name=="Semimajor Axis"))
                     {
-                        QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,1);
-                        QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
-                        QString ToCoord=ComboBox1->currentText();
-                        QWidget*Box2=treeWidgetShowInReport->itemWidget(parameter,2);
-                        QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
-                        QString ToUnit=ComboBox2->currentText();
+                        QString ToCoord=analysis::ReadCoordinateSys(treeWidgetShowInReport,parameter);
+                        QString ToUnit=analysis::ReadUnits(treeWidgetShowInReport,parameter);
 
                         sta::StateVector Vector[inumber];
                         Vector[index]=arc->trajectorySample(j);
@@ -2769,27 +2782,9 @@ for(int z=0;z<MParentIndex.size();z++)
                    }
                     if((name=="l")||(name=="g")||(name=="h")||(name=="L")||(name=="G")||(name=="H"))
                     {
-                        QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,1);
-                        QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
-                        QString ToCoord=ComboBox1->currentText();
+                        QString ToCoord=analysis::ReadCoordinateSys(treeWidgetShowInReport,parameter);
                         sta::StateVector Vector[inumber];
                         Vector[index]=arc->trajectorySample(j);
-
-                    /*if(name=="l")
-                    {
-                        double Delaunay_l=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                               MJDdate[index],
-                                                               "EME J2000",
-                                                               ToCoord);
-                      //  stream<<Delaunay_l<<"\t";
-                    }*/
-                    //if((name=="l")||(name=="g")||(name=="h")||(name=="L")||(name=="G")||(name=="H"))
-                                                            {
-                                                               // QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,1);
-                                                                //QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
-                                                                //QString ToCoord=ComboBox1->currentText();
-                                                                //sta::StateVector Vector[inumber];
-                                                                //Vector[index]=arc->trajectorySample(j);
 
                                                             if(name=="l")
                                                             {
@@ -2840,71 +2835,10 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                 stream<<Delaunay_H<<"\t";
                                                             }
                                                         }
-                                                            if((name=="Latitude")||(name=="Longitude")||(name=="Radial Distance")||(name=="Flight Path Angle")||(name=="Heading Angle")||(name=="Velocity Modulus")||(name=="Altitude"))
-                                                            {
-                                                                QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,1);
-                                                                QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
-                                                                QString ToCoord=ComboBox1->currentText();
-                                                                QWidget*Box2=treeWidgetShowInReport->itemWidget(parameter,2);
-                                                                QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
-                                                                QString Units=ComboBox2->currentText();
-
-                                                                sta::StateVector Vector[inumber];
-                                                                sta::StateVector ModifVector[inumber];
-                                                                Vector[index]=arc->trajectorySample(j);
-                                                                sta::CoordinateSystem EME2000("INERTIAL J2000");
-                                                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                                                                                             MJDdate[index],
-                                                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                             EME2000,
-                                                                                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                             analysis::CoordSys(ToCoord));
-                                                                double SphericalElements[6]; // tau, delta, r, V, gamma, chi
-                                                                cartesianTOspherical(ModifVector[index].position.x(),ModifVector[index].position.y(),ModifVector[index].position.z(),
-                                                                                     ModifVector[index].velocity.x(),ModifVector[index].velocity.y(),ModifVector[index].velocity.z(),
-                                                                                     SphericalElements[0],SphericalElements[1],SphericalElements[2],SphericalElements[3],SphericalElements[4],
-                                                                                     SphericalElements[5]);
-                                                                if(name=="Latitude")
-                                                                {
-                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[1],"rad")<<"\t";
-                                                                }
-                                                                if(name=="Longitude")
-                                                                {
-                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[0],"rad")<<"\t";
-                                                                }
-                                                                if(name=="Radial Distance")
-                                                                {
-                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[2],"km")<<"\t";
-                                                                }
-                                                                if(name=="Altitude")
-                                                                {
-                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[2]-STA_SOLAR_SYSTEM->lookup("Earth")->meanRadius(),"km")<<"\t";
-                                                                }
-                                                                if(name=="Flight Path Angle")
-                                                                {
-                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[4],"rad")<<"\t";
-                                                                }
-                                                                if(name=="Heading Angle")
-                                                                {
-                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[5],"rad")<<"\t";
-                                                                }
-                                                                if(name=="Velocity Modulus")
-                                                                {
-
-                                                                    stream<<sta::ConvertUnits(Units,SphericalElements[3],"km/s")<<"\t";
-                                                                }
-                                                            }
-
-
-                }
-                    if((name=="Latitude")||(name=="Longitude")||(name=="Radial Distance")||(name=="Flight Path Angle")||(name=="Heading Angle")||(name=="Velocity Modulus"))
+                    if((name=="Latitude")||(name=="Longitude")||(name=="Radial Distance")||(name=="Flight Path Angle")||(name=="Heading Angle")||(name=="Velocity Modulus")||(name=="Altitude"))
                     {
-                        QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,1);
-                        QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
-                        QString ToCoord=ComboBox1->currentText();
-                        QWidget*Box2=treeWidgetShowInReport->itemWidget(parameter,2);
-                        QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
-                        QString Units=ComboBox2->currentText();
+                        QString ToCoord=analysis::ReadCoordinateSys(treeWidgetShowInReport,parameter);
+                        QString Units=analysis::ReadUnits(treeWidgetShowInReport,parameter);
 
                         sta::StateVector Vector[inumber];
                         sta::StateVector ModifVector[inumber];
@@ -2917,12 +2851,10 @@ for(int z=0;z<MParentIndex.size();z++)
                                                                      STA_SOLAR_SYSTEM->lookup("Earth"),
                                                                      analysis::CoordSys(ToCoord));
                         double SphericalElements[6]; // tau, delta, r, V, gamma, chi
-
                         cartesianTOspherical(ModifVector[index].position.x(),ModifVector[index].position.y(),ModifVector[index].position.z(),
                                              ModifVector[index].velocity.x(),ModifVector[index].velocity.y(),ModifVector[index].velocity.z(),
                                              SphericalElements[0],SphericalElements[1],SphericalElements[2],SphericalElements[3],SphericalElements[4],
                                              SphericalElements[5]);
-
                         if(name=="Latitude")
                         {
                             stream<<sta::ConvertUnits(Units,SphericalElements[1],"rad")<<"\t";
@@ -2935,6 +2867,10 @@ for(int z=0;z<MParentIndex.size();z++)
                         {
                             stream<<sta::ConvertUnits(Units,SphericalElements[2],"km")<<"\t";
                         }
+                        if(name=="Altitude")
+                        {
+                            stream<<sta::ConvertUnits(Units,SphericalElements[2]-STA_SOLAR_SYSTEM->lookup("Earth")->meanRadius(),"km")<<"\t";
+                        }
                         if(name=="Flight Path Angle")
                         {
                             stream<<sta::ConvertUnits(Units,SphericalElements[4],"rad")<<"\t";
@@ -2945,17 +2881,15 @@ for(int z=0;z<MParentIndex.size();z++)
                         }
                         if(name=="Velocity Modulus")
                         {
+
                             stream<<sta::ConvertUnits(Units,SphericalElements[3],"km/s")<<"\t";
                         }
                     }
+
                     if((name=="e*sin(omegaBar)")||(name=="e*cos(omegaBar)")||(name=="tan(i/2)*sin(raan)")||(name=="tan(i/2)*cos(raan)")||(name=="Mean Longitude"))
                     {
-                        QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,1);
-                        QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
-                        QString ToCoord=ComboBox1->currentText();
-                        QWidget*Box2=treeWidgetShowInReport->itemWidget(parameter,2);
-                        QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
-                        QString Units=ComboBox2->currentText();
+                        QString ToCoord=analysis::ReadCoordinateSys(treeWidgetShowInReport,parameter);
+                        QString Units=analysis::ReadCoordinateSys(treeWidgetShowInReport,parameter);
 
                         sta::StateVector Vector[inumber];
                         Vector[index]=arc->trajectorySample(j);
@@ -5244,7 +5178,6 @@ void analysis::ComboBoxOptions(QTreeWidgetItem*item)
     //treeWidgetShowInReport->setColumnWidth(0,138);
     //treeWidgetShowInReport->setColumnWidth(1,120);
     //treeWidgetShowInReport->setColumnWidth(2,50);
-    {
 
         QString name=item->text(0);
         if ((name=="x position") ||
@@ -5358,7 +5291,14 @@ void analysis::ComboBoxOptions(QTreeWidgetItem*item)
             treeWidgetShowInReport->setItemWidget(item,1,CoordinateBox());
             treeWidgetShowInReport->setItemWidget(item,2,AngleUnitsBox());
         }
-    }
+        if((name=="Equivalent Isotropical Radiated Power")||(name=="Received Frequency")||(name=="Doppler Shift")||(name=="Received Power")||(name=="Flux Density")||(name=="Overlap Bandwidth Factor")||
+        (name=="Free Space Loss")||(name=="Oxygen Loss")||(name=="Water Vapour Loss")||(name=="Rain Loss")||(name=="Atmospheric Loss")||(name=="Propagation Loss")||
+        (name=="G/T")||(name=="C/No")||(name=="C/N")||(name=="Eb/No")||(name=="BER"))
+        {
+            treeWidgetShowInReport->setItemWidget(item,1,NoUnitsBox());
+            treeWidgetShowInReport->setItemWidget(item,2,NoUnitsBox());
+
+        }
 
 }
 
@@ -5667,7 +5607,12 @@ void analysis::DisableUnavailableOptions()
                     for (int l=0;l<topItem->child(k)->childCount();l++)
                     {
                         QTreeWidgetItem*item=topItem->child(k)->child(l);
-                        QString name=item->text(0);
+                       // QString name=item->text(0);
+
+                        if(topItem->child(k)->text(0)=="Access Time")
+                        {
+                            topItem->child(k)->setDisabled(true);
+                        }
                         if(topItem->child(k)->text(0)=="Apparent Position Vector between the participant and")
                         {
                             Tree.at(a)->setItemWidget(item,1,CoordinateBox());
@@ -5676,7 +5621,7 @@ void analysis::DisableUnavailableOptions()
                             item->setDisabled(true);
                         }
 
-                        if((name=="Access Time")||
+                        if(
                            (topItem->child(k)->text(0)=="Pass Times")||(topItem->child(k)->text(0)=="Ecliptic Crossing Times")||(topItem->child(k)->text(0)=="Covariance"))
 
                            {

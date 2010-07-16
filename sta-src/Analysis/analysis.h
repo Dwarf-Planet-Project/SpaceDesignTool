@@ -25,15 +25,12 @@
 #define analysis_H
 
 #include "ui_analysis.h"
-
 #include "Scenario/staschema.h"
 #include "Main/propagatedscenario.h"
-
 #include <QFont>
 #include <QDialog>
 #include<QComboBox>
 #include <QTreeWidgetItem>
-
 
 
 class analysis : public QDialog , private Ui::analysisDialogClass
@@ -60,6 +57,9 @@ QList<QList<double> >Data; // QList of lines, each line a QList of data
 QList<AnalysisData> WriteDataStructure(QList<QTreeWidgetItem*> selected,QList<QTreeWidgetItem *> selectedTimes);
 void WriteReport(QList<QTreeWidgetItem*> selected,QList<QTreeWidgetItem *> selectedTimes);
 void DisableUnavailableOptions();
+QString ReadParameter(QTreeWidgetItem*Item);
+QString ReadUnits(QTreeWidget*Tree,QTreeWidgetItem*Item);
+QString ReadCoordinateSys(QTreeWidget*Tree,QTreeWidgetItem*Item);
 
 protected slots:
         //void on_groupBoxAnalysisFormat_toggled(bool);
