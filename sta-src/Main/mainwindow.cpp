@@ -50,7 +50,7 @@
 #include "Scenario/scenario.h"
 #include "Scenario/propagationfeedback.h"
 #include "Plotting/groundtrackplottool.h"
-#include "Plotting/plottingtool.h"
+//#include "Plotting/plottingtool.h"
 #include "Plotting/threedvisualizationtool.h"
 #include "Astro-Core/date.h"
 
@@ -200,7 +200,6 @@ MainWindow::MainWindow(QWidget *parent)	:
 	m_timelineWidget(NULL),
 	m_orbitPropagationDialog(NULL),
 	m_groundTrackPlotTool(NULL),
-	m_plottingTool(NULL),
 	m_scenarioElementBox(NULL),
 	m_viewPanel(NULL),
 
@@ -975,7 +974,6 @@ int luna;
 ///////////////////////////////////////////  Action PROPAGATE ////////////////////////////////////////
 void MainWindow::on_actionPropagate_Scenario_triggered()
 {
-
     if (!scenario())
     {
         return;
@@ -1039,12 +1037,8 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
         // Update all of the propagated scenario views:
         //   Timeline, ground track, 3D view
         if (m_groundTrackPlotTool)
-	{
-            m_groundTrackPlotTool->view()->setScenario(propScenario);
-	}
-        if (m_plottingTool)
         {
-            m_plottingTool->setScenario(propScenario);
+            m_groundTrackPlotTool->view()->setScenario(propScenario);
         }
 
         configureTimeline(propScenario);
@@ -1053,7 +1047,6 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
         {
             foreach (SpaceObject* spaceObject, propScenario->spaceObjects())
             {
-
                 // Ephemeris files are required for creating trajectories for the 3D view (at least for now.)
                 if (!spaceObject->generateEphemerisFiles())
                 {
@@ -1076,8 +1069,8 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
         delete m_propagatedScenario;
         m_propagatedScenario = propScenario;
 
-	//Activate now the modules that are allowed to be used after propagation
-	actionAnalyse->setEnabled(m_propagatedScenario);
+        //Activate now the modules that are allowed to be used after propagation
+        actionAnalyse->setEnabled(m_propagatedScenario);
     }
 }   ////////////////////////// End of action PROPAGATE /////////////////////////////
 
@@ -1675,8 +1668,6 @@ void MainWindow::clearViews()
         m_groundTrackPlotTool->view()->setScenario(NULL);
     if (m_timelineWidget)
         m_timelineWidget->timelineView()->clearMission();
-    if (m_plottingTool)
-        m_plottingTool->setScenario(NULL);
 
     m_scenarioView->update();  // Lined added by Guillermo as suggested by Chris to update the view of STA
     m_scenarioView->m_scenarioTree->update();
@@ -1799,10 +1790,6 @@ void MainWindow::on_actionPropagateCoverage_triggered()
 
 	    m_groundTrackPlotTool->setAnalysis(analysisOfConstellations);
 	}
-	if (m_plottingTool)
-	{
-	    m_plottingTool->setScenario(propScenario);
-	}
 
 	configureTimeline(propScenario);
 	setTime(sta::MjdToJd(propScenario->startTime()));
@@ -1916,10 +1903,6 @@ void MainWindow::on_actionSat_to_Sat_triggered()
 
 	    m_groundTrackPlotTool->setAnalysis(analysisOfConstellations);
 	}
-	if (m_plottingTool)
-	{
-	    m_plottingTool->setScenario(propScenario);
-	}
 
 	configureTimeline(propScenario);
 	setTime(sta::MjdToJd(propScenario->startTime()));
@@ -2027,10 +2010,6 @@ void MainWindow::on_actionSat_to_Ground_triggered()
 	    m_groundTrackPlotTool->view()->setScenario(propScenario);
 
 	    m_groundTrackPlotTool->setAnalysis(analysisOfConstellations);
-	}
-	if (m_plottingTool)
-	{
-	    m_plottingTool->setScenario(propScenario);
 	}
 
 	configureTimeline(propScenario);

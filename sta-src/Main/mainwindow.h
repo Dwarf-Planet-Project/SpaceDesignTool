@@ -43,7 +43,6 @@ class QTabWidget;
 
 class OrbitPropagationDialog;
 class GroundTrackPlotTool;
-class PlottingTool;
 class ScenarioView;
 class SpaceScenario;
 class ScenarioElementBox;
@@ -162,7 +161,6 @@ private:
     TimelineWidget* m_timelineWidget;
     OrbitPropagationDialog* m_orbitPropagationDialog;
     GroundTrackPlotTool* m_groundTrackPlotTool;
-    PlottingTool* m_plottingTool;
     STAcalculator* STAcalculatorWidget;
     ScenarioElementBox* m_scenarioElementBox;
     QTabWidget* m_viewPanel;
