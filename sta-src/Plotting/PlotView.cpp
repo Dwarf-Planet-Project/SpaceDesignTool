@@ -198,8 +198,7 @@ PlotView::paintEvent(QPaintEvent* /* event */)
     // Draw plots
     foreach (Plot* plot, m_plots)
     {
-        //painter.setPen(plot->style.strokeStyle());
-        painter.setPen(Qt::red);
+        painter.setPen(plot->style.strokeStyle());
         QPointF lastPoint(0.0f, 0.0f);
         for (unsigned int i = 0; i < plot->data->getPointCount(); ++i)
         {
