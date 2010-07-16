@@ -53,9 +53,11 @@ public:
 
 class PlotDataSource3D : public QObject
 {
+    Q_OBJECT
+public:
     virtual ~PlotDataSource3D() {};
-    virtual unsigned int getPointCount3D() const = 0;
-    virtual Eigen::Vector3d getPoint3D(unsigned int index) const = 0;
+    virtual unsigned int getPointCount() const = 0;
+    virtual Eigen::Vector3d getPoint(unsigned int index) const = 0;
 };
 
 #endif // _PLOTTING_PLOTDATASOURCE_H_

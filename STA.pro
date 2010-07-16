@@ -331,16 +331,22 @@ SEM_FORMS = sta-src/SEM/sem.ui \
 # ############# Plotting Module ##############
 PLOT_SOURCES = sta-src/Plotting/groundtrackplottool.cpp \
     sta-src/Plotting/plottingtool.cpp \
+    sta-src/Plotting/PlotScale.cpp \
+    sta-src/Plotting/PlotStyle.cpp \
     sta-src/Plotting/PlotView.cpp \
+    sta-src/Plotting/PlotView3D.cpp \
     sta-src/Plotting/threedvisualizationtool.cpp \
     sta-src/Plotting/visualizationtoolbar.cpp \
     sta-src/Plotting/PlotGraphFromFile.cpp
 PLOT_HEADERS = sta-src/Plotting/groundtrackplottool.h \
     sta-src/Plotting/plottingtool.h \
     sta-src/Plotting/PlotDataSource.h \
+    sta-src/Plotting/PlotScale.h \
+    sta-src/Plotting/PlotStyle.h \
     sta-src/Plotting/threedvisualizationtool.h \
     sta-src/Plotting/visualizationtoolbar.h \
     sta-src/Plotting/PlotView.h \
+    sta-src/Plotting/PlotView3D.h \
     sta-src/Plotting/PlotGraphFromFile.h
 PLOT_FORMS = sta-src/Plotting/plottingtool.ui
 
