@@ -966,6 +966,7 @@ macx:QMAKE_CXXFLAGS_RELEASE = -ffast-math \
     -Bdynamic
 linux-g++ { 
     message("Warning: compiling a linux version")
+    QT += dbus
     QMAKE_CXXFLAGS_RELEASE = -ffast-math \
         -fexpensive-optimizations \
         -O3 \
