@@ -83,17 +83,17 @@ private:
 
 
 
-//#if !defined(QT_NO_DBUS) && defined(Q_OS_UNIX)
+#if !defined(QT_NO_DBUS) && defined(Q_OS_UNIX)
 //#include <QtDBus>
 
 class SpreadSheetAdaptor : public QDBusAbstractAdaptor
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "com.trolltech.DBus.SpreadSheetDemo")
+    Q_CLASSINFO("D-Bus Interface", "org.stasb.sta.AnalysisTable")
 
 public:
     SpreadSheetAdaptor(QTableWidget *table) : QDBusAbstractAdaptor(table), table(table)
-    { QDBusConnection::sessionBus().registerObject("/SpreadSheetDemo", table); }
+    { QDBusConnection::sessionBus().registerObject("/AnalysisTable", table); }
 
 public slots:
     QString computeFormula(const QString &formula)
@@ -103,7 +103,7 @@ private:
 };
 
 
-//#endif // QT_NO_DBUS
+#endif // QT_NO_DBUS
 
 
 
@@ -132,12 +132,11 @@ public slots:
     void actionMultiply();
     void actionDivide();
 
-    void setupContents(QString analysisFileOutput, QString &windowTilte);
+    void setupContents(QString analysisFileOutput);
 
 
 protected:
     void setupContextMenu();
-    void setupContents();
 
     void setupMenuBar();
     void createActions();

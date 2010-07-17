@@ -55,12 +55,16 @@ SpreadSheetDelegate::SpreadSheetDelegate(QObject *parent)
 QWidget *SpreadSheetDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem&,
 					   const QModelIndex &index) const
 {
+
+    /*
     if(index.column() == 1){
 	QDateTimeEdit *editor = new QDateTimeEdit(parent);
 	editor->setDisplayFormat("dd/M/yyyy");
 	editor->setCalendarPopup(true);
 	return editor;
     }
+    */
+
     QLineEdit *editor = new QLineEdit(parent);
     //create a completer with the strings in the column as model.
     QStringList allStrings;
@@ -240,18 +244,21 @@ SpreadSheet::SpreadSheet(int rows, int cols, QWidget *parent)
     formulaInput = new QLineEdit();
 
     cellLabel = new QLabel(toolBar);
-    cellLabel->setMinimumSize(80, 0);
+    cellLabel->setMinimumSize(120, 0);
 
     toolBar->addWidget(cellLabel);
     toolBar->addWidget(formulaInput);
 
     table = new QTableWidget(rows, cols, this);
-    for (int c = 0; c < cols; ++c) {
+    for (int c = 0; c < cols; ++c)
+    {
 	QString character(QChar('A' + c));
 	table->setHorizontalHeaderItem(c, new QTableWidgetItem(character));
     }
     table->setItemPrototype(table->item(rows - 1, cols - 1));
     table->setItemDelegate(new SpreadSheetDelegate());
+
+
 #if !defined(QT_NO_DBUS) && defined(Q_OS_UNIX)
     new SpreadSheetAdaptor(table);
 #endif
@@ -260,7 +267,7 @@ SpreadSheet::SpreadSheet(int rows, int cols, QWidget *parent)
     updateColor(0);
     setupMenuBar();
     setupContextMenu();
-    setupContents();
+    //setupContents();
     setCentralWidget(table);
 
     statusBar();
@@ -275,7 +282,7 @@ SpreadSheet::SpreadSheet(int rows, int cols, QWidget *parent)
     connect(formulaInput, SIGNAL(returnPressed()), this, SLOT(returnPressed()));
     connect(table, SIGNAL(itemChanged(QTableWidgetItem*)),
 	    this, SLOT(updateLineEdit(QTableWidgetItem*)));
-    setWindowTitle(tr("Spreadsheet"));
+    //setWindowTitle(tr("Spreadsheet"));
 }
 
 void SpreadSheet::createActions()
@@ -647,7 +654,7 @@ void SpreadSheet::setupContextMenu()
 
 
 
-void SpreadSheet::setupContents(QString analysisFileOutput, QString &windowTilte)
+void SpreadSheet::setupContents(QString analysisFileOutput)
 {
     // Defining the separator that will segment the lines of the TLEs
     QRegExp spaceSeparator("\\s+");  // the + Means one or more spaces!
@@ -661,12 +668,6 @@ void SpreadSheet::setupContents(QString analysisFileOutput, QString &windowTilte
     QString myFileLine;
     myFileLine.clear();
 
-    // Getting the title:
-    //stream >> streadReadFromFile;
-    //qDebug() << streadReadFromFile << endl;
-    //windowTilte = streadReadFromFile;
-    //table->setItem(0, 0, new SpreadSheetItem(streadReadFromFile));
-
     // 1st row: title of report
     myFileLine = stream.readLine();
     // 2nd row: satellites and arcs
@@ -678,11 +679,16 @@ void SpreadSheet::setupContents(QString analysisFileOutput, QString &windowTilte
     // 5th line the rows
     myFileLine = stream.readLine();
     QStringList myRowOfVariables = myFileLine.split(tabSeparator);
-    //table->setItem(lineCounter, 0, new SpreadSheetItem(myFileLine.section(separator, 1, 1)));
-    //table->setItem(lineCounter, 1, new SpreadSheetItem(myFileLine.section(separator, 2, 2)));
+    QColor titleBackground(Qt::yellow);
+    QFont titleFont = table->font();
+    titleFont.setBold(true);
     for (int i = 0; i < myRowOfVariables.size(); i++ )
     {
 	table->setItem(lineCounter, i, new SpreadSheetItem(myRowOfVariables.at(i)));
+	table->item(lineCounter, i)->setBackgroundColor(titleBackground);
+	table->item(lineCounter, i)->setToolTip("This column shows the variables with the units");
+	table->item(lineCounter, i)->setFont(titleFont);
+	table->item(lineCounter, i)->setTextAlignment(Qt::AlignHCenter);
     }
     lineCounter = lineCounter + 1;
 
@@ -693,6 +699,7 @@ void SpreadSheet::setupContents(QString analysisFileOutput, QString &windowTilte
 	for (int i = 0; i < myRowOfVariables.size(); i++ )
 	{
 	    table->setItem(lineCounter, i, new SpreadSheetItem(myRowOfVariables.at(i)));
+	    table->setColumnWidth(i, 180);
 	}
 	lineCounter = lineCounter + 1;
 
@@ -702,125 +709,13 @@ void SpreadSheet::setupContents(QString analysisFileOutput, QString &windowTilte
 }
 
 
-
-void SpreadSheet::setupContents()
-{
-    /*
-    QColor titleBackground(Qt::lightGray);
-    QFont titleFont = table->font();
-    titleFont.setBold(true);
-
-    // column 0
-    table->setItem(0, 0, new SpreadSheetItem("Item"));
-    table->item(0, 0)->setBackgroundColor(titleBackground);
-    table->item(0, 0)->setToolTip("This column shows the purchased item/service");
-    table->item(0, 0)->setFont(titleFont);
-    table->setItem(1, 0, new SpreadSheetItem("AirportBus"));
-    table->setItem(2, 0, new SpreadSheetItem("Flight (Munich)"));
-    table->setItem(3, 0, new SpreadSheetItem("Lunch"));
-    table->setItem(4, 0, new SpreadSheetItem("Flight (LA)"));
-    table->setItem(5, 0, new SpreadSheetItem("Taxi"));
-    table->setItem(6, 0, new SpreadSheetItem("Dinner"));
-    table->setItem(7, 0, new SpreadSheetItem("Hotel"));
-    table->setItem(8, 0, new SpreadSheetItem("Flight (Oslo)"));
-    table->setItem(9, 0, new SpreadSheetItem("Total:"));
-    table->item(9, 0)->setFont(titleFont);
-    table->item(9,0)->setBackgroundColor(Qt::lightGray);
-    // column 1
-    table->setItem(0, 1, new SpreadSheetItem("Date"));
-    table->item(0, 1)->setBackgroundColor(titleBackground);
-    table->item(0, 1)->setToolTip("This column shows the purchase date, double click to change");
-    table->item(0, 1)->setFont(titleFont);
-    table->setItem(1, 1, new SpreadSheetItem("15/6/2006"));
-    table->setItem(2, 1, new SpreadSheetItem("15/6/2006"));
-    table->setItem(3, 1, new SpreadSheetItem("15/6/2006"));
-    table->setItem(4, 1, new SpreadSheetItem("21/5/2006"));
-    table->setItem(5, 1, new SpreadSheetItem("16/6/2006"));
-    table->setItem(6, 1, new SpreadSheetItem("16/6/2006"));
-    table->setItem(7, 1, new SpreadSheetItem("16/6/2006"));
-    table->setItem(8, 1, new SpreadSheetItem("18/6/2006"));
-    table->setItem(9, 1, new SpreadSheetItem());
-    table->item(9,1)->setBackgroundColor(Qt::lightGray);
-    // column 2
-    table->setItem(0, 2, new SpreadSheetItem("Price"));
-    table->item(0, 2)->setBackgroundColor(titleBackground);
-    table->item(0, 2)->setToolTip("This column shows the price of the purchase");
-    table->item(0, 2)->setFont(titleFont);
-    table->setItem(1, 2, new SpreadSheetItem("150"));
-    table->setItem(2, 2, new SpreadSheetItem("2350"));
-    table->setItem(3, 2, new SpreadSheetItem("-14"));
-    table->setItem(4, 2, new SpreadSheetItem("980"));
-    table->setItem(5, 2, new SpreadSheetItem("5"));
-    table->setItem(6, 2, new SpreadSheetItem("120"));
-    table->setItem(7, 2, new SpreadSheetItem("300"));
-    table->setItem(8, 2, new SpreadSheetItem("1240"));
-    table->setItem(9, 2, new SpreadSheetItem());
-    table->item(9,2)->setBackgroundColor(Qt::lightGray);
-    // column 3
-    table->setItem(0, 3, new SpreadSheetItem("Currency"));
-    table->item(0, 3)->setBackgroundColor(titleBackground);
-    table->item(0, 3)->setToolTip("This column shows the currency");
-    table->item(0, 3)->setFont(titleFont);
-    table->setItem(1, 3, new SpreadSheetItem("NOK"));
-    table->setItem(2, 3, new SpreadSheetItem("NOK"));
-    table->setItem(3, 3, new SpreadSheetItem("EUR"));
-    table->setItem(4, 3, new SpreadSheetItem("EUR"));
-    table->setItem(5, 3, new SpreadSheetItem("USD"));
-    table->setItem(6, 3, new SpreadSheetItem("USD"));
-    table->setItem(7, 3, new SpreadSheetItem("USD"));
-    table->setItem(8, 3, new SpreadSheetItem("USD"));
-    table->setItem(9, 3, new SpreadSheetItem());
-    table->item(9,3)->setBackgroundColor(Qt::lightGray);
-    // column 4
-    table->setItem(0, 4, new SpreadSheetItem("Ex.Rate"));
-    table->item(0, 4)->setBackgroundColor(titleBackground);
-    table->item(0, 4)->setToolTip("This column shows the exchange rate to NOK");
-    table->item(0, 4)->setFont(titleFont);
-    table->setItem(1, 4, new SpreadSheetItem("1"));
-    table->setItem(2, 4, new SpreadSheetItem("1"));
-    table->setItem(3, 4, new SpreadSheetItem("8"));
-    table->setItem(4, 4, new SpreadSheetItem("8"));
-    table->setItem(5, 4, new SpreadSheetItem("7"));
-    table->setItem(6, 4, new SpreadSheetItem("7"));
-    table->setItem(7, 4, new SpreadSheetItem("7"));
-    table->setItem(8, 4, new SpreadSheetItem("7"));
-    table->setItem(9, 4, new SpreadSheetItem());
-    table->item(9,4)->setBackgroundColor(Qt::lightGray);
-    // column 5
-    table->setItem(0, 5, new SpreadSheetItem("NOK"));
-    table->item(0, 5)->setBackgroundColor(titleBackground);
-    table->item(0, 5)->setToolTip("This column shows the expenses in NOK");
-    table->item(0, 5)->setFont(titleFont);
-    table->setItem(1, 5, new SpreadSheetItem("* C2 E2"));
-    table->setItem(2, 5, new SpreadSheetItem("* C3 E3"));
-    table->setItem(3, 5, new SpreadSheetItem("* C4 E4"));
-    table->setItem(4, 5, new SpreadSheetItem("* C5 E5"));
-    table->setItem(5, 5, new SpreadSheetItem("* C6 E6"));
-    table->setItem(6, 5, new SpreadSheetItem("* C7 E7"));
-    table->setItem(7, 5, new SpreadSheetItem("* C8 E8"));
-    table->setItem(8, 5, new SpreadSheetItem("* C9 E9"));
-    table->setItem(9, 5, new SpreadSheetItem("sum F2 F9"));
-    table->item(9,5)->setBackgroundColor(Qt::lightGray);
-    */
-
-}
-
 const char *htmlText =
 	"<HTML>"
-	"<p><b>This demo shows use of <c>QTableWidget</c> with custom handling for"
-	" individual cells.</b></p>"
-	"<p>Using a customized table item we make it possible to have dynamic"
-	" output in different cells. The content that is implemented for this"
-	" particular demo is:"
-	"<ul>"
-	"<li>Adding two cells.</li>"
-	"<li>Subtracting one cell from another.</li>"
-	"<li>Multiplying two cells.</li>"
-	"<li>Dividing one cell with another.</li>"
-	"<li>Summing the contents of an arbitrary number of cells.</li>"
+	"<p><b>Table showing analysis output"
+	" .</b></p>"
 	"</HTML>";
 
 void SpreadSheet::showAbout()
 {
-    QMessageBox::about(this, "About Spreadsheet", htmlText);
+    QMessageBox::about(this, "About ANALYSIS table", htmlText);
 }

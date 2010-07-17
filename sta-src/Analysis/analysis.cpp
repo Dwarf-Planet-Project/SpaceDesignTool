@@ -2976,16 +2976,16 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
     QString analysisFileOutputURL = "file:///" + analysisFileOutput;
 
     SpreadSheet* resultsSheet = new SpreadSheet(numberOfRows + 5, numberOfColumns);
-    QString myWindowTitle;
-    resultsSheet->setupContents(analysisFileOutput, myWindowTitle);
+    resultsSheet->setupContents(analysisFileOutput);
     resultsSheet->setWindowIcon(QPixmap(":/icons/CoordinateSystemBody.png"));
-    resultsSheet->setWindowTitle(myWindowTitle);
+    resultsSheet->setWindowTitle("Analsyis");
     resultsSheet->resize(640, 420);
     resultsSheet->setWindowModality(Qt::NonModal);
     resultsSheet->activateWindow();
     resultsSheet->show();
     resultsSheet->raise();
 
+    // Guillermo says: next line to used any more since we have now a spreadsheet table
     //QDesktopServices::openUrl(QUrl(analysisFileOutputURL));
 
 }
@@ -5114,15 +5114,16 @@ QComboBox* analysis::CoordinateBox()
 QComboBox*analysis::TimeFramesBox()
 {
     QComboBox*TimeBox=new QComboBox();
-    TimeBox->addItem(tr("Gregorian UTC"));
-    TimeBox->addItem(tr("Gregorian LCL"));
-    TimeBox->addItem(tr("YYDDD"));
+    TimeBox->addItem(tr("MJD"));
     TimeBox->addItem(tr("Julian Date"));
     TimeBox->addItem(tr("Julian UTC"));
     TimeBox->addItem(tr("Julian LCL"));
+    TimeBox->addItem(tr("Gregorian UTC"));
+    TimeBox->addItem(tr("Gregorian LCL"));
+    TimeBox->addItem(tr("YYDDD"));
     TimeBox->addItem(tr("Mission Elapsed"));
     TimeBox->addItem(tr("GMT"));
-    TimeBox->addItem(tr("MJD"));
+
 
     // Guillermo says: smaller font is better for the row
     //QFont font("Helvetica", 10); TimeBox->setFont(font);
@@ -5149,8 +5150,9 @@ QComboBox*analysis::TimeUnitsBox()
 QComboBox*analysis::AngleUnitsBox()
 {
     QComboBox*AngleBox=new QComboBox();
-    AngleBox->addItem(tr("rad"),0);
     AngleBox->addItem(tr("deg"),1);
+    AngleBox->addItem(tr("rad"),0);
+
 
     // Guillermo says: smaller font is better for the row
     //QFont font("Helvetica", 10);     AngleBox->setFont(font);
