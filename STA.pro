@@ -29,6 +29,7 @@ CONFIG += warn_off
 TEMPLATE = app
 TARGET = STA
 QT += opengl
+QT += dbus
 QT += xml \
     xmlpatterns
 
@@ -369,9 +370,11 @@ RAM_FORMS = sta-src/RAM/parametrizedgeometry.ui \
 
 # ################ Analysis ############
 ANALYSIS_SOURCES = sta-src/Analysis/analysis.cpp \
-                   sta-src/Analysis/AnalysisPlot.cpp
+		   sta-src/Analysis/AnalysisPlot.cpp \
+		   sta-src/Analysis/analysisTable.cpp
 ANALYSIS_HEADERS = sta-src/Analysis/analysis.h\
-                    sta-src/Analysis/AnalysisPlot.h
+		    sta-src/Analysis/AnalysisPlot.h \
+		   sta-src/Analysis/analysisTable.h
 ANALYSIS_FORMS = sta-src/Analysis/analysis.ui
 
 # ################ Payloads ############
