@@ -31,7 +31,7 @@
 
 
 #include <QtGui>
-#include <QtDBus>
+//#include <QtDBus>
 
 static QString encode_pos(int row, int col);
 
@@ -84,7 +84,7 @@ private:
 
 
 #if !defined(QT_NO_DBUS) && defined(Q_OS_UNIX)
-//#include <QtDBus>
+#include <QtDBus>
 
 class SpreadSheetAdaptor : public QDBusAbstractAdaptor
 {
@@ -101,7 +101,6 @@ public slots:
 private:
     QTableWidget *table;
 };
-
 
 #endif // QT_NO_DBUS
 

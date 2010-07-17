@@ -29,7 +29,6 @@ CONFIG += warn_off
 TEMPLATE = app
 TARGET = STA
 QT += opengl
-QT += dbus
 QT += xml \
     xmlpatterns
 
@@ -1095,6 +1094,8 @@ macx {
 }
 
 macx { 
+
+     QT += dbus
      QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
      QMAKE_LFLAGS += -framework \
         CoreFoundation \
