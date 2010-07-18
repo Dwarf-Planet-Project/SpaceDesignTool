@@ -71,7 +71,6 @@ class MainWindow : public QMainWindow, private Ui_MainWindow
     Q_OBJECT
     
 public:
-    //MainWindow();
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
     

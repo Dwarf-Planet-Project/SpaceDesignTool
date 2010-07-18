@@ -30,7 +30,6 @@
     </property>
     <addaction name="actionNewScenario"/>
     <addaction name="actionOpenScenario"/>
-    <addaction name="actionRecent_Scenarios"/>
     <addaction name="separator"/>
     <addaction name="actionSaveScenario"/>
     <addaction name="actionSaveScenarioAs"/>
