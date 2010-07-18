@@ -909,18 +909,39 @@ QString analysis::ReadParameter(QTreeWidgetItem*Item)
 
 QString analysis::ReadUnits(QTreeWidget*Tree,QTreeWidgetItem*Item)
 {
+    if(Item->childCount()==0)
+    {
     QWidget*Box=Tree->itemWidget(Item,2);
     QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
     QString Unit=ComboBox->currentText();
+    if(Item->text(0)=="Time")
+    {
+        QWidget*Box=Tree->itemWidget(Item,1);
+        QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
+        QString TimeType=ComboBox->currentText();
+        return TimeType;
+    }
     return Unit;
+}
+    else
+    {
+        return " ";
+    }
 }
 
 QString analysis::ReadCoordinateSys(QTreeWidget*Tree,QTreeWidgetItem*Item)
 {
+    if(Item->childCount()==0)
+    {
     QWidget*Box=Tree->itemWidget(Item,1);
     QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
     QString Coordinate=ComboBox->currentText();
     return Coordinate;
+}
+    else
+    {
+        return " ";
+    }
 }
 
 void analysis::on_EditTimePushButton_clicked() //adds new time intervals to the tree
@@ -1244,6 +1265,7 @@ void analysis::on_GeneratePushButton_clicked()
         numberOfParameters=treeWidgetXaxis->selectedItems().size()+treeWidgetYaxis->selectedItems().size();
         tree.append(treeWidgetXaxis);
         tree.append(treeWidgetYaxis);
+
     }
     if(AnalysisFormat=="3D")
     {
@@ -3279,9 +3301,13 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 			QList<QTreeWidgetItem*>SelParameters=Tree.at(a)->selectedItems();
 			for(int i=0;i<SelParameters.size();i++)
 			{
-			    QString name=SelParameters.at(i)->text(0);
+                            //QString name=SelParameters.at(i)->text(0);
+                            QString name=analysis::ReadParameter(SelParameters.at(i));
+                            QString Unit=analysis::ReadUnits(Tree.at(a),SelParameters.at(i));
 
-			    Titles.append(name);  //labels of the displayed parameters
+                            QString TitleParameter=((name.append("(")).append(Unit)).append(")");
+
+                            Titles.append(TitleParameter);  //labels of the displayed parameters
 
 			}
 			ToStruct.ParameterTitles=Titles;
@@ -3303,19 +3329,15 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 			    for(int i=0;i<SelParameters.size();i++)
 			    {
 
-				QTreeWidgetItem*parameter=SelParameters.at(i);
-				QString name=parameter->text(0);
+                                QTreeWidgetItem*parameter=SelParameters.at(i);
+                                //QString name=parameter->text(0);
+                                QString name=analysis::ReadParameter(SelParameters.at(i));
 
 				if((name=="x position")||(name=="y position")||(name=="z position")||(name=="x velocity")||(name=="y velocity")||(name=="z velocity"))
 				{
 
-				    QWidget*Box=Tree.at(a)->itemWidget(parameter,1);
-				    QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
-				    QString Coordinate=ComboBox->currentText();
-
-				    QWidget*Box1=Tree.at(a)->itemWidget(parameter,2);
-				    QComboBox*ComboBoxUnit=dynamic_cast <QComboBox*>(Box1);
-				    QString Units=ComboBoxUnit->currentText();
+                                    QString Coordinate=analysis::ReadCoordinateSys(Tree.at(a),SelParameters.at(i));
+                                    QString Units=analysis::ReadUnits(Tree.at(a),SelParameters.at(i));
 
 				    sta::StateVector Vector[inumber];
 
@@ -3712,9 +3734,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 				if(name=="Time")
 				{
 
-				    QWidget*Box=Tree.at(a)->itemWidget(parameter,1);
-				    QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
-				    QString TimeCoordinate=ComboBox->currentText();
+                                    QString TimeCoordinate=analysis::ReadUnits(Tree.at(a),SelParameters.at(i));
 
 				    //Options of Time
 				    if(TimeCoordinate=="MJD")
@@ -3848,13 +3868,9 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 				}
 				if((name=="Azimuth")||(name=="Elevation")||(name=="Range"))
 				{
+                                    QString ToCoord=analysis::ReadCoordinateSys(Tree.at(a),SelParameters.at(i));
 
-				    QWidget*Box1=Tree.at(a)->itemWidget(parameter,1);
-				    QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
-				    QString ToCoord=ComboBox1->currentText();
-				    QWidget*Box2=Tree.at(a)->itemWidget(parameter,2);
-				    QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
-				    QString ToUnit=ComboBox2->currentText();
+                                    QString ToUnit=analysis::ReadUnits(Tree.at(a),SelParameters.at(i));
 				    if(name=="Azimuth")
 				    {
 
@@ -4431,10 +4447,8 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 				    }
 				}
 				if(name=="Eccentricity")
-				{
-				    QWidget*Box=Tree.at(a)->itemWidget(parameter,1);
-				    QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
-				    QString ToCoord=ComboBox->currentText();
+                                {
+                                    QString ToCoord=analysis::ReadCoordinateSys(Tree.at(a),SelParameters.at(i));
 
 				    sta::StateVector Vector[inumber];
 				    Vector[index]=arc->trajectorySample(j);
@@ -4450,14 +4464,10 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 				   (name=="Argument of Periapsis")||
 				   (name=="True Anomaly")||
 				   (name=="Semimajor Axis"))
-				{
-				    QWidget*Box1=Tree.at(a)->itemWidget(parameter,1);
-				    QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
-				    QString ToCoord=ComboBox1->currentText();
-				    QWidget*Box2=Tree.at(a)->itemWidget(parameter,2);
-				    QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
-				    QString ToUnit=ComboBox2->currentText();
-				    //qDebug()<<ToUnit;
+                                {
+                                    QString ToCoord=analysis::ReadCoordinateSys(Tree.at(a),SelParameters.at(i));
+                                    QString ToUnit=analysis::ReadUnits(Tree.at(a),SelParameters.at(i));
+
 				    sta::StateVector Vector[inumber];
 				    Vector[index]=arc->trajectorySample(j);
 
@@ -4510,9 +4520,8 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 				}
 				if((name=="l")||(name=="g")||(name=="h")||(name=="L")||(name=="G")||(name=="H"))
 				{
-				    QWidget*Box1=Tree.at(a)->itemWidget(parameter,1);
-				    QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
-				    QString ToCoord=ComboBox1->currentText();
+
+                                    QString ToCoord=analysis::ReadCoordinateSys(Tree.at(a),SelParameters.at(i));
 				    sta::StateVector Vector[inumber];
 				    Vector[index]=arc->trajectorySample(j);
 
@@ -4570,71 +4579,11 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 					// stream<<Delaunay_H<<"\t";
 					LineData.append(Delaunay_H);
 				    }
-				}
-				if((name=="Latitude")||(name=="Longitude")||(name=="Radial Distance")||(name=="Flight Path Angle")||(name=="Heading Angle")||(name=="Velocity Modulus"))
-				{
-				    QWidget*Box1=Tree.at(a)->itemWidget(parameter,1);
-				    QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
-				    QString ToCoord=ComboBox1->currentText();
-				    QWidget*Box2=Tree.at(a)->itemWidget(parameter,2);
-				    QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
-				    QString Units=ComboBox2->currentText();
-
-				    sta::StateVector Vector[inumber];
-				    sta::StateVector ModifVector[inumber];
-				    Vector[index]=arc->trajectorySample(j);
-				    sta::CoordinateSystem EME2000("INERTIAL J2000");
-				    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-										 MJDdate[index],
-										 STA_SOLAR_SYSTEM->lookup("Earth"),
-										 EME2000,
-										 STA_SOLAR_SYSTEM->lookup("Earth"),
-										 analysis::CoordSys(ToCoord));
-				    double SphericalElements[6]; // tau, delta, r, V, gamma, chi
-				    cartesianTOspherical(ModifVector[index].position.x(),ModifVector[index].position.y(),ModifVector[index].position.z(),
-							 ModifVector[index].velocity.x(),ModifVector[index].velocity.y(),ModifVector[index].velocity.z(),
-							 SphericalElements[0],SphericalElements[1],SphericalElements[2],SphericalElements[3],SphericalElements[4],
-							 SphericalElements[5]);
-				    if(name=="Latitude")
-				    {
-					//stream<<sta::ConvertUnits(Units,SphericalElements[1])<<"\t";
-					LineData.append(sta::ConvertUnits(Units,SphericalElements[1],"rad"));
-				    }
-				    if(name=="Longitude")
-				    {
-					//stream<<sta::ConvertUnits(Units,SphericalElements[0])<<"\t";
-					LineData.append(sta::ConvertUnits(Units,SphericalElements[0],"rad"));
-				    }
-				    if(name=="Radial Distance")
-				    {
-					//stream<<sta::ConvertUnits(Units,SphericalElements[2])<<"\t";
-					LineData.append(sta::ConvertUnits(Units,SphericalElements[2],"km"));
-				    }
-				    if(name=="Flight Path Angle")
-				    {
-					//stream<<sta::ConvertUnits(Units,SphericalElements[4])<<"\t";
-					LineData.append(sta::ConvertUnits(Units,SphericalElements[4],"rad"));
-				    }
-				    if(name=="Heading Angle")
-				    {
-					//stream<<sta::ConvertUnits(Units,SphericalElements[5])<<"\t";
-					LineData.append(sta::ConvertUnits(Units,SphericalElements[5],"rad"));
-				    }
-				    if(name=="Velocity Modulus")
-				    {
-					//stream<<sta::ConvertUnits(Units,SphericalElements[3])<<"\t";
-					LineData.append(sta::ConvertUnits(Units,SphericalElements[3],"km/s"));
-				    }
-				}
-
+                                }
 				if((name=="Latitude")||(name=="Longitude")||(name=="Radial Distance")||(name=="Flight Path Angle")||(name=="Heading Angle")||(name=="Velocity Modulus")||(name=="Altitude"))
-				{
-				    QWidget*Box1=Tree.at(a)->itemWidget(parameter,1);
-				    QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
-				    QString ToCoord=ComboBox1->currentText();
-				    QWidget*Box2=Tree.at(a)->itemWidget(parameter,2);
-				    QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
-				    QString Units=ComboBox2->currentText();
+                                {
+                                    QString ToCoord=analysis::ReadCoordinateSys(Tree.at(a),SelParameters.at(i));
+                                    QString Units=analysis::ReadUnits(Tree.at(a),SelParameters.at(i));
 
 				    sta::StateVector Vector[inumber];
 				    sta::StateVector ModifVector[inumber];
@@ -4691,13 +4640,9 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 				    }
 				}
 				if((name=="e*sin(omegaBar)")||(name=="e*cos(omegaBar)")||(name=="tan(i/2)*sin(raan)")||(name=="tan(i/2)*cos(raan)")||(name=="Mean Longitude"))
-				{
-				    QWidget*Box1=Tree.at(a)->itemWidget(parameter,1);
-				    QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
-				    QString ToCoord=ComboBox1->currentText();
-				    QWidget*Box2=Tree.at(a)->itemWidget(parameter,2);
-				    QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
-				    QString Units=ComboBox2->currentText();
+                                {
+                                    QString ToCoord=analysis::ReadCoordinateSys(Tree.at(a),SelParameters.at(i));
+                                    QString Units=analysis::ReadUnits(Tree.at(a),SelParameters.at(i));
 
 				    sta::StateVector Vector[inumber];
 				    Vector[index]=arc->trajectorySample(j);
