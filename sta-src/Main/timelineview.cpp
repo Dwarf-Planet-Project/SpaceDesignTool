@@ -22,6 +22,7 @@
 /*
 ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
+ Patched by Guillermo July 2010 to tune up the sizes of the bars, time-now, etc in Windows and MAC
  */
 
 #include "timelineview.h"
@@ -37,9 +38,9 @@
 #include <iostream>
 
 
-static const float TimeHeaderHeight = 30.0f;
+static const float TimeHeaderHeight = 40.0f;
 static const float MissionSegmentBarThickness = 15.0f;    // pixels
-static const float MissionSegmentBarSpacing = 15.0f;  // pixels
+static const float MissionSegmentBarSpacing = 8.0f;  // pixels
 
 
 TimelineView::TimelineView(QWidget* parent) :
@@ -95,8 +96,8 @@ TimelineView::paintEvent(QPaintEvent* /* event */)
     int viewWidth = viewport()->size().width();
     int viewHeight = viewport()->size().height();
     
-    QFont font("Helvetica", 9);
-    painter.setFont(font);
+    //QFont font("Helvetica", 9);
+    //painter.setFont(font);
         
     painter.fillRect(0, 0, viewWidth, viewHeight, QBrush(Qt::white));
     
@@ -157,7 +158,7 @@ TimelineView::paintEvent(QPaintEvent* /* event */)
         painter.fillRect(QRectF(x, 0.0f, blockWidth, viewHeight), shade ? lightGrayBrush : darkGrayBrush);
         shade = !shade;
     }
-        
+
     // Draw the mission duration bars for each participant
     foreach (MissionSegment segment, mission)
     {
@@ -178,8 +179,30 @@ TimelineView::paintEvent(QPaintEvent* /* event */)
     // Draw a line indicating the current time
     {
         float x = (float) (viewWidth * (m_currentTime - viewStartTime) / m_visibleSpan);
-        painter.setPen(Qt::red);
-        painter.drawLine(QPointF(x, 0), QPointF(x, viewHeight));
+	//painter.setPen(Qt::red);
+	QPen guillermosPen(Qt::red, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+	painter.setPen(guillermosPen);
+	painter.drawLine(QPointF(x, 0), QPointF(x, viewHeight));
+    }
+
+
+    // Draw the starting epoch
+    {
+	painter.setPen(Qt::black);
+	double decimalTime = t0 - std::floor(t0);
+	decimalTime += 0.01 / 86400.0; // Adjust for rounding errors
+	int hour = (int) (std::floor(decimalTime * 24) + 12) % 24;
+	int minute = (int) std::floor(decimalTime * 1440) % 60;
+	int second = (int) std::floor(decimalTime * 86400) % 60;
+	QDate date = QDate::fromJulianDay(sta::MjdToJd(t0));
+	QTime time (hour, minute, second);
+	QDateTime dateTime(date, time);
+	//float x = (float) (viewWidth * (t0 - viewStartTime) / m_visibleSpan);
+	float x = 45;
+	//float x = (float) (viewWidth * (m_currentTime - viewStartTime) / m_visibleSpan);
+	painter.drawText(QRectF(x - 30.0f, 0.0f, 60.0f, TimeHeaderHeight),
+			 Qt::AlignHCenter | Qt::AlignTop,
+			 dateTime.toString("\ndd MMM"));
     }
 
     // Draw the time labels
@@ -197,12 +220,13 @@ TimelineView::paintEvent(QPaintEvent* /* event */)
         {
             // Show the date and time of day
             QDate date = QDate::fromJulianDay(sta::MjdToJd(t) + 1 + 0.01);
-            QDateTime dateTime(date, QTime(hour, minute, second));
+	    QTime time (hour, minute, second);
+	    QDateTime dateTime(date, time);
             
             float x = (float) (viewWidth * (t - viewStartTime) / m_visibleSpan);
             painter.drawText(QRectF(x - 30.0f, 0.0f, 60.0f, TimeHeaderHeight),
                              Qt::AlignHCenter | Qt::AlignTop,
-                             dateTime.toString("hh:mm\ndd MMM yyyy"));
+			     dateTime.toString("hh:mm\ndd MMM"));
         }
         else
         {
@@ -211,9 +235,10 @@ TimelineView::paintEvent(QPaintEvent* /* event */)
             float x = (float) (viewWidth * (t - viewStartTime) / m_visibleSpan);
             painter.drawText(QRectF(x - 20.0f, 0.0f, 40.0f, TimeHeaderHeight),
                              Qt::AlignHCenter | Qt::AlignTop,
-                             tm.toString("hh:mm"));
+			     tm.toString("hh:mm"));
         }
     }
+
 
 }
 
