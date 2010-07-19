@@ -170,9 +170,6 @@ void analysis::readScenario()
 {
     /*
       builds a copy of the scenario tree from the STA main window in the GUI of Analysis Module
-      -each participant has the following information:
-      -each mission arc has the following information:
-      -
        */
     int SpaceObjectInd=0;
     int GroundObjectInd=0;
@@ -900,7 +897,8 @@ void analysis::ReadTime(int column, double *MJD) //reads the time in the treeWid
 QString analysis::ReadParameter(QTreeWidgetItem*Item)
 {
     /*
-
+reads the name of the parameter that will be displayed in the output of the Analysis Module
+Inputs: item of the tree that is being considered (report or plot options)
       */
     QTreeWidgetItem*parameter=Item;
     QString name=parameter->text(0);
@@ -909,6 +907,10 @@ QString analysis::ReadParameter(QTreeWidgetItem*Item)
 
 QString analysis::ReadUnits(QTreeWidget*Tree,QTreeWidgetItem*Item)
 {
+    /*
+      reads the units the user selected as output units
+      Inputs: Tree- widget from where data shall be read, Item- line of the widget that is being considered
+      */
     if(Item->childCount()==0)
     {
     QWidget*Box=Tree->itemWidget(Item,2);
@@ -931,6 +933,10 @@ QString analysis::ReadUnits(QTreeWidget*Tree,QTreeWidgetItem*Item)
 
 QString analysis::ReadCoordinateSys(QTreeWidget*Tree,QTreeWidgetItem*Item)
 {
+    /*
+      reads the coordinate system the user selected as output coordinate system
+      Inputs: Tree- widget from where data shall be read, Item- line of the widget that is being considered
+      */
     if(Item->childCount()==0)
     {
     QWidget*Box=Tree->itemWidget(Item,1);
@@ -946,6 +952,9 @@ QString analysis::ReadCoordinateSys(QTreeWidget*Tree,QTreeWidgetItem*Item)
 
 void analysis::on_EditTimePushButton_clicked() //adds new time intervals to the tree
 {
+    /*
+      a new time interval, user-specified, can be inserted in the list of Time Intervals
+      */
     bool ok;
     int check=0;
     //QList<QTreeWidgetItem *> selectedTimes=treeWidgetTimeSpecifications->selectedItems();
@@ -1054,6 +1063,9 @@ return;
 
 void analysis::on_DeleteTimePushButton_clicked()
 {
+    /*
+      the selected time interval, in the Time Intervals area can be deleted
+      */
     QList<QTreeWidgetItem *> selectedTimes=treeWidgetTimeSpecifications->selectedItems();
     for (int i=0;i<selectedTimes.size();i++)
     {
@@ -1083,6 +1095,19 @@ void analysis::on_DeleteTimePushButton_clicked()
 
 int analysis::InputsControl(QList<QTreeWidget*>tree)
 {
+    /*
+      Inputs: tree- list of all the treewidgets that are involved in the analysis
+
+      the function checks if the parameters selected by the user correspond to any parameter from the Coverage Module;
+ if yes, it is necessary to verify if the user has selected the right options to perform a coverage analysis
+
+ Types of output:
+ return 0-ok
+ return 1-invalid number of Tx and Rx
+ return 2-invalid Tx and Rx location
+ return 3-not enought number of parameters selected
+ return 4-not only loiterings belonging to the space object with the payload
+      */
     int CovCommCount=0;
     if(tree[0]==treeWidgetShowInReport)
     {
@@ -1129,7 +1154,7 @@ int analysis::InputsControl(QList<QTreeWidget*>tree)
         if(Selected.size()<3)
         {
 
-            return 3;
+            return 3; //not enough number of parameters selected
         }
         else
         {
@@ -1195,7 +1220,7 @@ int analysis::InputsControl(QList<QTreeWidget*>tree)
             }
             if (loiterCountCheck!=0)
             {
-                return 4; //Choose only loiterings belonging to the space object with the payload
+                return 4; //invalid loitering selection: not only loiterings belonging to the space object with the payload
             }
             ////qDebug()<<loiterCountCheck<<"loiter count";
             if((RxCount==1)&&(TxCount==1)&&(spaceObjCount==1)&&(groundObjCount==1)&&(loiterCountCheck==0))
@@ -1215,6 +1240,9 @@ int analysis::InputsControl(QList<QTreeWidget*>tree)
 
 void analysis::Warnings(int i)
 {
+    /*
+      Displays warning messages according to the result of the InputsControl function
+      */
     if(i==1)
     {
         QMessageBox CovCommWarning;
@@ -1248,7 +1276,14 @@ void analysis::Warnings(int i)
 
 void analysis::on_GeneratePushButton_clicked()
 {
-
+/*
+  when the "generate" button is pressed, the plot or report are displayed,
+some warning messages can de displayed if:
+- there are no parameters selected to analyse
+- there are no selected mission arcs
+-there are no time intervals selected
+-the selected parameters, in the plotting option, are not correct (number or type of parameters selected)
+  */
     QString AnalysisFormat=ComboBoxAnalysisFormat->currentText();
 
     QList<QTreeWidgetItem *> selected=TreeWidgetMissionArc->selectedItems();
@@ -1360,7 +1395,10 @@ void analysis::on_GeneratePushButton_clicked()
 
 void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetItem *> selectedTimes)
 {
-
+/*
+  generates and displays the report with the user-specified data
+  Inputs: selected- list of the selected lines in the scenario tree of the AM GUI, selectedTimes- list of the selected time intervals
+  */
     int numberOfRows = 0; // Guillermo says: keep the number of rows of the report
     int numberOfColumns = 0; // Guillermo says: keep the number of columns of the report
 
@@ -3014,6 +3052,10 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
 QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetItem*>selected,QList<QTreeWidgetItem*>selectedTimes)
 {
+    /*
+      generates the data structure to send the information to the plotting module
+      Inputs: selected- list of the selected lines in the scenario tree of the AM GUI, selectedTimes- list of the selected time intervals
+      */
     QList<AnalysisData>DataStructure;
     //QList<QString>Titles;
     //QList<double>LineData;
@@ -4753,8 +4795,9 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 }*/
 sta::CoordinateSystem analysis::CoordSys(QString Coordinate)
 {
-
-
+/*
+  returns the name of the output coordinate system that shall be sent to the function that performs the transformation
+*/
     if(Coordinate=="EME J2000")
     {
         sta::CoordinateSystem Coord("INERTIAL J2000");
@@ -4786,7 +4829,11 @@ double analysis::calcKeplerianElements(sta::StateVector Vector,StaBody*Body,QStr
 				       QString FromCoordinate,
 				       QString ToCoordinate)
 {
-
+/*
+  Calculates the keplerian elements of a certain orbit
+  Inputs:Vector-statevector for each time step,Body-pointer to the central Body (for the time being, only Earth is available),OrbElement- name of the element the user wishes to analyse ,mjd-time in Modified Julian Date,FromCoordinate- coordinate system of the data before transformation, ToCoordinate- coordinate system that shall appear as output)
+  Outputs: parameter to be displayed/analysed
+  */
     sta::StateVector ModifVector=CoordinateSystem::convert(Vector,
                                                            mjd,
                                                            STA_SOLAR_SYSTEM->lookup("Earth"),
@@ -4833,7 +4880,11 @@ double analysis::calcDelaunayElements(sta::StateVector Vector,StaBody*Body,QStri
 				      QString FromCoordinate,
 				      QString ToCoordinate)
 {
-
+/*
+Calculates the Delaunay Elements of a certain orbit
+  Inputs:Vector-statevector for each time step,Body-pointer to the central Body (for the time being, only Earth is available),OrbElement- name of the element the user wishes to analyse ,mjd-time in Modified Julian Date,FromCoordinate- coordinate system of the data before transformation, ToCoordinate- coordinate system that shall appear as output)
+  Outputs: parameter to be displayed/analysed
+  */
     sta::StateVector ModifVector=CoordinateSystem::convert(Vector,
                                                            mjd,
                                                            STA_SOLAR_SYSTEM->lookup("Earth"),
@@ -4878,6 +4929,11 @@ double analysis::calcEquinoctialElements(sta::StateVector Vector,StaBody*Body,QS
                                          QString FromCoordinate,
                                          QString ToCoordinate)
 {
+    /*
+Calculates the Equinoctial Elements of a certain orbit
+  Inputs:Vector-statevector for each time step,Body-pointer to the central Body (for the time being, only Earth is available),OrbElement- name of the element the user wishes to analyse ,mjd-time in Modified Julian Date,FromCoordinate- coordinate system of the data before transformation, ToCoordinate- coordinate system that shall appear as output)
+  Outputs: parameter to be displayed/analysed
+      */
     sta::StateVector ModifVector=CoordinateSystem::convert(Vector,
                                                            mjd,
                                                            STA_SOLAR_SYSTEM->lookup("Earth"),
@@ -4919,6 +4975,9 @@ double analysis::calcEquinoctialElements(sta::StateVector Vector,StaBody*Body,QS
 void analysis::addParameter()
 
 {
+    /*
+      Selects the items in the list of the parameters that can be sent to the list of the report options/parameters
+      */
     QList<QTreeWidgetItem *> selectedParameters=treeWidgetReportOptions->selectedItems();
     int numberOfchildren = selectedParameters[0]->childCount();
     if (numberOfchildren == 0)
@@ -4935,6 +4994,10 @@ void analysis::addParameter()
 
 void analysis::addParameter(QTreeWidgetItem* item)
 {
+    /*
+      allows the user to add the parameters he/she wants to see in the report
+      Inputs: item- selected items that are to be sent to the report options list
+      */
     QString text = item->text(0);
     if(treeWidgetShowInReport->findItems(text,Qt::MatchExactly).isEmpty())
 
@@ -4948,6 +5011,9 @@ void analysis::addParameter(QTreeWidgetItem* item)
 
 void analysis::removeParameter()
 {
+    /*
+      deletes the selected parameters from the report options list
+      */
     QList<QTreeWidgetItem *> ChosenParameters = treeWidgetShowInReport->selectedItems();
     for (int i = 0; i < ChosenParameters.size(); i++)
     {
@@ -4957,6 +5023,14 @@ void analysis::removeParameter()
 
 void analysis::enableReportOption(int i)
 {
+    /*
+      changes the layout of the GUI according to the selected analysis format
+      Inputs: i=0  report
+          i=1, 2D
+          i=2, 2.5D
+          i=3, 3D
+          i=4, histogram
+      */
     QList<QTreeWidgetItem*>MissionArcs=TreeWidgetMissionArc->selectedItems();
     for (int k=0;k<MissionArcs.size();k++)
     {
@@ -5040,6 +5114,9 @@ void analysis::enableReportOption(int i)
 
 QComboBox* analysis::CoordinateBox()
 {
+    /*
+      returns a combobox with all the coordinate systems available
+      */
     QComboBox*CoordinateBox2=new QComboBox();
     CoordinateBox2->addItem(tr("EME J2000"),0);
     CoordinateBox2->addItem(tr("EME B1950"),1);
@@ -5058,6 +5135,9 @@ QComboBox* analysis::CoordinateBox()
 
 QComboBox*analysis::TimeFramesBox()
 {
+    /*
+      Description: returns a combobox with all the time frames available
+      */
     QComboBox*TimeBox=new QComboBox();
     TimeBox->addItem(tr("MJD"));
     TimeBox->addItem(tr("Julian Date"));
@@ -5078,7 +5158,9 @@ QComboBox*analysis::TimeFramesBox()
 }
 QComboBox*analysis::TimeUnitsBox()
 {
-
+/*
+  Description: returns a combobox with all the time units available
+  */
     QComboBox*TimeBox=new QComboBox();
     TimeBox->addItem(tr("Seconds"),0);
     TimeBox->addItem(tr("Minutes"),1);
@@ -5094,6 +5176,9 @@ QComboBox*analysis::TimeUnitsBox()
 
 QComboBox*analysis::AngleUnitsBox()
 {
+    /*
+      Description: returns a combobox with all the angle units available
+      */
     QComboBox*AngleBox=new QComboBox();
     AngleBox->addItem(tr("deg"),1);
     AngleBox->addItem(tr("rad"),0);
@@ -5108,6 +5193,9 @@ QComboBox*analysis::AngleUnitsBox()
 
 QComboBox* analysis::DistanceUnitsBox()
 {
+    /*
+      Description: returns a combobox with all the distance units available
+      */
     QComboBox*DistanceBox=new QComboBox();
     DistanceBox->addItem(tr("km"),0);
     DistanceBox->addItem(tr("m"),1);
@@ -5122,6 +5210,9 @@ QComboBox* analysis::DistanceUnitsBox()
 }
 QComboBox* analysis::NoUnitsBox()
 {
+    /*
+    Description: returns a combobox with no text, for parameters with no units
+        */
     QComboBox* NoUnits=new QComboBox();
     NoUnits->addItem(tr("-"));
 
@@ -5134,6 +5225,9 @@ QComboBox* analysis::NoUnitsBox()
 
 QComboBox*analysis::VelocityUnitsBox()
 {
+    /*
+      Description: returns a combobox with all the velocity units available
+      */
     QComboBox*VelocityBox=new QComboBox();
     VelocityBox->addItem(tr("km/s"),0);
     VelocityBox->addItem(tr("m/s"),0);
@@ -5148,6 +5242,9 @@ QComboBox*analysis::VelocityUnitsBox()
 
 void analysis::ComboBoxOptions(QTreeWidgetItem*item)
 {
+    /*Description: selects the comboboxes that should be available next to each parameter, according to its type
+      item- line of the tree that contains the report options
+      */
     //treeWidgetShowInReport->setColumnWidth(0,138);
     //treeWidgetShowInReport->setColumnWidth(1,120);
     //treeWidgetShowInReport->setColumnWidth(2,50);

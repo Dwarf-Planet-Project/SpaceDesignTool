@@ -232,6 +232,11 @@ sta::KeplerianElements cartesianTOorbital(double mu, sta::StateVector cartesianS
 }
 sta::DelaunayElements cartesianTOdelaunay(double mu, sta::StateVector cartesianStateVector)
 {
+    /*
+      function that calculates the Delaunay Elements- returns a structure with the 6 elements
+      mu- gravitational parameter
+      cartesian state vector- state vector for a specified time step
+      */
     DelaunayElements CalcDelaunayElements;
     KeplerianElements KeplerianElemList=cartesianTOorbital(mu,cartesianStateVector);
     Eigen::Vector3d OrbitalMomentum;
@@ -248,6 +253,11 @@ sta::DelaunayElements cartesianTOdelaunay(double mu, sta::StateVector cartesianS
 }
 sta::EquinoctialElements cartesianTOequinoctial(double mu,sta::StateVector cartesianStateVector)
 {
+    /*
+      function that calculates the Equinoctial Elements- returns a structure with the 6 elements
+      mu- gravitational parameter
+      cartesian state vector- state vector for a specified time step
+      */
     EquinoctialElements CalcEquinoctialElements;
     KeplerianElements KeplerianElemList=cartesianTOorbital(mu,cartesianStateVector);
     Eigen::Vector3d OrbitalMomentum;

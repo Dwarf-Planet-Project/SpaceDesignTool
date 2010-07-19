@@ -140,6 +140,9 @@ double sta::JdToMjd(double jd)
 
 bool sta::CheckIfLeapYear(int year)
 {
+    /*
+      checks if the year in the input is a leap year, and returns true, if yes, and false if not
+      */
     if((year%4==0)&&(year%100!=0))
     {
         return (true);
@@ -156,6 +159,9 @@ bool sta::CheckIfLeapYear(int year)
 }
 double sta::DateTimeTOjulian(QDateTime DateTime)
 {
+    /*
+      Transforms a date and time in the QdateTime format into Julian Date format; returns the date in JD
+      */
     int Year=DateTime.date().year();
     int Month=DateTime.date().month();
     int Day=DateTime.date().day();
@@ -167,6 +173,9 @@ double sta::DateTimeTOjulian(QDateTime DateTime)
 }
 double sta::calendarToDayOfYear(QDateTime DateTime)
 {
+    /*
+      transforms a date and time in QDateTime format into day of the year
+      */
     int DaysInMonths=0;
     int Days=0;
     int DayOfYear=0;
@@ -228,6 +237,10 @@ double sta::calendarToDayOfYear(QDateTime DateTime)
 
 double sta::MjdToFromEpoch(double StartEpoch, double mjd, QString Units)
 {
+    /*
+Description: transforms a certain time into the elapsed time from the beginning of the start epoch; the elapsed time can be calculated in terms of hours, minutes, seconds, or days, according to the Units input.
+Inputs: StartEpoch- beginning of propagation, mjd- considered time, Units- units in which the elapsed time shall be calculated
+      */
     double ElapsedTime=mjd-StartEpoch;
 
     if(Units=="Seconds")

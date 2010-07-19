@@ -53,7 +53,12 @@ double modulo2Pi (double x)
 }
 double sta::ConvertUnits(QString OutputUnits, double Parameter, QString FromUnit)
 {
-
+/*
+Description: converts the units of the specified parameter to the user-specified units
+Inputs: Parameter- data to be analysed,
+OutputUnits- units selected by the user,
+FromUnit- units in which the parameter is initially calculated by the AM, before the final conversion to the output units
+  */
     double Output=Parameter;
     if(OutputUnits==FromUnit)
     {
