@@ -25,6 +25,7 @@
 #include <QObject>
 #include "Eigen/Core"
 #include "Plotting/PlotDataSource.h"
+#include "Plotting/PlotView3D.h"
 #include <QString>
 #include "Analysis/analysis.h"
 
@@ -47,6 +48,26 @@ public:
 
 protected:
     QList<Eigen::Vector2d> m_points2d;
+
+
+};
+
+class Analysis3D: public PlotDataSource3D
+{
+Q_OBJECT
+
+public:
+
+    Analysis3D();
+    virtual ~Analysis3D() {};
+
+    virtual unsigned int getPointCount() const;
+
+    virtual Vector3d getPoint(unsigned int index) const;
+
+    void setPoints(QList<analysis::AnalysisData>,int lines,int columns);
+
+protected:
     QList<Eigen::Vector3d> m_points3d;
 
 };

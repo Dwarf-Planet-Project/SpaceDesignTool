@@ -32,7 +32,6 @@ AnalysisPlot::AnalysisPlot()
 {
 }
 
-
 unsigned int AnalysisPlot::getPointCount() const
 {
     return m_points2d.size();
@@ -47,6 +46,7 @@ void AnalysisPlot::setPoints(QList<analysis::AnalysisData>DataStructure, int ind
 {
     // DataStructure[0] x-axis data
     // DataStructure[1] y-axis data
+
     //for the time being, only one parameter per axis
 if(DataStructure.size()==2)
     {
@@ -65,3 +65,39 @@ if(DataStructure.size()==2)
     }
     }
 }
+
+Analysis3D::Analysis3D()
+{
+}
+
+unsigned int Analysis3D::getPointCount() const
+{
+    return m_points3d.size();
+}
+
+Eigen::Vector3d Analysis3D::getPoint(unsigned int index) const
+{
+    return m_points3d[index];
+}
+
+void Analysis3D::setPoints(QList<analysis::AnalysisData>DataStructure,int index,int parameters)
+{
+    if(DataStructure.size()==3)
+        {
+           m_points3d.clear();
+
+            Vector3d p;
+            for (int j=0;j<parameters;j++)
+            {
+            for(int i=0;i<index;i++)
+            {
+            p.x()=DataStructure[0].Data.at(j).at(i);
+            p.y()=DataStructure[1].Data.at(j).at(i);
+            p.z()=DataStructure[2].Data.at(j).at(i);
+
+                m_points3d << p;
+            }
+        }
+        }
+}
+

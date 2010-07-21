@@ -39,6 +39,7 @@
 #include <Coverage/coverageanalysis.h>
 #include "Analysis/AnalysisPlot.h"
 #include "Plotting/PlotView.h"
+#include "Plotting/PlotView3D.h"
 #include "Help/HelpBrowser.h"
 #include "Analysis/analysisTable.h"
 
@@ -1339,21 +1340,23 @@ some warning messages can de displayed if:
                 }
                 else
                 {
+                    QList<analysis::AnalysisData> DataStructure;
                     if (AnalysisFormat=="Report")
                     {
 
                         WriteReport(selected,selectedTimes);
 
                     }
+                    if((AnalysisFormat=="2D")||(AnalysisFormat=="3D"))
+                    {
+                        DataStructure=WriteDataStructure(selected,selectedTimes);
+                    }
+
                     if(AnalysisFormat=="2D")
                     {
 
-
-                        QList<analysis::AnalysisData> DataStructure=WriteDataStructure(selected,selectedTimes);
-
                         if(DataStructure.size()==2)
                         {
-
 			    int numberOfLines=0;
 			    int numberOfParameters=1; //one parameter per axis
 
@@ -1369,7 +1372,7 @@ some warning messages can de displayed if:
 			    plotDialog.setLayout(layout);
 
 			    AnalysisPlot::AnalysisPlot* Data = new AnalysisPlot();
-			    Data->setPoints(DataStructure,numberOfLines,numberOfParameters);
+                            Data->setPoints(DataStructure,numberOfLines,numberOfParameters);
 
 			    plotView->addPlot(Data);
 
@@ -1381,12 +1384,63 @@ some warning messages can de displayed if:
 			}
                         else
                         {
-
                             QMessageBox PlotWarning;
                             PlotWarning.setText("Invalid selection of parameters to be plotted");
                             PlotWarning.exec();
                         }
 		    }
+                    if(AnalysisFormat=="3D")
+                    {
+                        int numberOfLines=0;
+                        int numberOfParameters=1; //one parameter per axis
+
+                        for(int i=0;i<DataStructure[0].Data[0].size();i++)
+                        {
+                            numberOfLines++;
+                        }
+
+                        if(DataStructure.size()==3)
+                       {
+
+                            QDialog plotDialog(this);
+                                QVBoxLayout* layout = new QVBoxLayout(&plotDialog);
+
+                                PlotView3D* plotView = new PlotView3D(&plotDialog);
+                                layout->addWidget(plotView);
+
+                                QDialogButtonBox* buttonBox =
+                                    new QDialogButtonBox(QDialogButtonBox::Ok, Qt::Horizontal, &plotDialog);
+                                layout->addWidget(buttonBox);
+                                connect(buttonBox, SIGNAL(accepted()), &plotDialog, SLOT(accept()));
+
+                                plotDialog.setLayout(layout);
+
+                              Analysis3D::Analysis3D* Data = new Analysis3D();
+
+                              Data->setPoints(DataStructure,numberOfLines,numberOfParameters);
+
+                                plotView->addPlot(Data, PlotStyle(PlotStyle::LinePlot, QPen(Qt::green)));
+
+                                //plotView->setTitle("Title");
+                               // qDebug()<<"x"<<DataStructure[0].ParameterTitles[0];
+                                //qDebug()<<"y"<<DataStructure[1].ParameterTitles[0];
+                                //qDebug()<<"z"<<DataStructure[2].ParameterTitles[0];
+
+                                plotView->setXLabel(DataStructure[0].ParameterTitles[0]);
+                                plotView->setYLabel(DataStructure[1].ParameterTitles[0]);
+                                plotView->setZLabel(DataStructure[2].ParameterTitles[0]);
+
+                                plotView->autoScale();
+                                plotView->setMinimumSize(500, 500);
+                                plotDialog.exec();
+                        }
+                        else
+                        {
+                            QMessageBox PlotWarning;
+                            PlotWarning.setText("Invalid selection of parameters to be plotted");
+                            PlotWarning.exec();
+                        }
+                    }
                 }
             }
         }
@@ -3158,7 +3212,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 
     Tree.append(treeWidgetXaxis);
     Tree.append(treeWidgetYaxis);
-    // Tree.append(treeWidgetZaxis);
+    Tree.append(treeWidgetZaxis);
 
     for(int a=0;a<Tree.size();a++)
     {
