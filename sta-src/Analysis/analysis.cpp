@@ -914,18 +914,18 @@ QString analysis::ReadUnits(QTreeWidget*Tree,QTreeWidgetItem*Item)
       */
     if(Item->childCount()==0)
     {
-    QWidget*Box=Tree->itemWidget(Item,2);
-    QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
-    QString Unit=ComboBox->currentText();
-    if(Item->text(0)=="Time")
-    {
-        QWidget*Box=Tree->itemWidget(Item,1);
-        QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
-        QString TimeType=ComboBox->currentText();
-        return TimeType;
+	QWidget*Box=Tree->itemWidget(Item,2);
+	QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
+	QString Unit=ComboBox->currentText();
+	if(Item->text(0)=="Time")
+	{
+	    QWidget*Box=Tree->itemWidget(Item,1);
+	    QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
+	    QString TimeType=ComboBox->currentText();
+	    return TimeType;
+	}
+	return Unit;
     }
-    return Unit;
-}
     else
     {
         return " ";
@@ -940,11 +940,11 @@ QString analysis::ReadCoordinateSys(QTreeWidget*Tree,QTreeWidgetItem*Item)
       */
     if(Item->childCount()==0)
     {
-    QWidget*Box=Tree->itemWidget(Item,1);
-    QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
-    QString Coordinate=ComboBox->currentText();
-    return Coordinate;
-}
+	QWidget*Box=Tree->itemWidget(Item,1);
+	QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
+	QString Coordinate=ComboBox->currentText();
+	return Coordinate;
+    }
     else
     {
         return " ";
@@ -1277,7 +1277,7 @@ void analysis::Warnings(int i)
 
 void analysis::on_GeneratePushButton_clicked()
 {
-/*
+    /*
   when the "generate" button is pressed, the plot or report are displayed,
 some warning messages can de displayed if:
 - there are no parameters selected to analyse
@@ -1402,38 +1402,51 @@ some warning messages can de displayed if:
                         }
 
                         if(DataStructure.size()==3)
-                       {
-QString PlotTitle;
-                            QDialog plotDialog(this);
-                                QVBoxLayout* layout = new QVBoxLayout(&plotDialog);
+			{
 
-                                PlotView3D* plotView = new PlotView3D(&plotDialog);
-                                layout->addWidget(plotView);
+			    // Patched by Guillermo to create a Non-Modal window each time the user wishes to create a 3D plot
+			    QWidget *window3D = new QWidget(this, Qt::Tool);
 
-                                QDialogButtonBox* buttonBox =
-                                    new QDialogButtonBox(QDialogButtonBox::Ok, Qt::Horizontal, &plotDialog);
-                                layout->addWidget(buttonBox);
-                                connect(buttonBox, SIGNAL(accepted()), &plotDialog, SLOT(accept()));
+			    QVBoxLayout* layout = new QVBoxLayout(window3D);
 
-                                plotDialog.setLayout(layout);
+			    PlotView3D* plotView = new PlotView3D(window3D);
+			    layout->addWidget(plotView);  
 
-                              Analysis3D::Analysis3D* Data = new Analysis3D();
+			    Analysis3D::Analysis3D *Data = new Analysis3D();
+			    Data->setPoints(DataStructure,numberOfLines,numberOfParameters);
 
-                              Data->setPoints(DataStructure,numberOfLines,numberOfParameters);
+			    plotView->addPlot(Data, PlotStyle(PlotStyle::LinePlot, QPen(Qt::red, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin)));
 
-                                plotView->addPlot(Data, PlotStyle(PlotStyle::LinePlot, QPen(Qt::green)));
+			    QString PlotTitle = "";
+			    PlotTitle = PlotTitle + DataStructure[2].ParameterTitles[0];
+			    PlotTitle = PlotTitle + " = f(";
+			    PlotTitle = PlotTitle + DataStructure[0].ParameterTitles[0];
+			    PlotTitle = PlotTitle + ", ";
+			    PlotTitle = PlotTitle + DataStructure[1].ParameterTitles[0];
+			    PlotTitle = PlotTitle + ")";
 
-                                //plotView->setTitle("Title");
-                               (((((PlotTitle.append(DataStructure[0].ParameterTitles[0])).append(" ")).append("vs")).append(" ")).append(DataStructure[1].ParameterTitles[0]));
-                               ((PlotTitle.append(" ")).append("vs")).append(DataStructure[2].ParameterTitles[0]);
-                               plotView->setTitle(PlotTitle);
-                               plotView->setXLabel(DataStructure[0].ParameterTitles[0]);
-                               plotView->setYLabel(DataStructure[1].ParameterTitles[0]);
-                               plotView->setZLabel(DataStructure[2].ParameterTitles[0]);
+			    plotView->setTitle(PlotTitle);
+			    plotView->setXLabel(DataStructure[0].ParameterTitles[0]);
+			    plotView->setYLabel(DataStructure[1].ParameterTitles[0]);
+			    plotView->setZLabel(DataStructure[2].ParameterTitles[0]);
+			    plotView->autoScale();
+			    plotView->setMinimumSize(500, 500);
 
-                                plotView->autoScale();
-                                plotView->setMinimumSize(500, 500);
-                                plotDialog.exec();
+			    QHBoxLayout *buttonLayout = new QHBoxLayout;
+			    QPushButton *closeButton = new QPushButton(tr("Close"));
+			    closeButton->setShortcut(tr("Esc"));
+			    closeButton->setAutoDefault(true);
+			    buttonLayout->addStretch();
+			    buttonLayout->addWidget(closeButton);
+			    layout->addLayout(buttonLayout);
+			    connect(closeButton, SIGNAL(clicked()), window3D, SLOT(close()));
+
+			    window3D->setLayout(layout);
+			    window3D->setWindowModality(Qt::NonModal);			    
+			    window3D->show();
+			    window3D->raise(); // Required to keep the modeless window alive
+			    window3D->activateWindow(); // Required to keep the modeless window alive
+
                         }
                         else
                         {
@@ -1448,9 +1461,10 @@ QString PlotTitle;
     }
 }
 
+
 void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetItem *> selectedTimes)
 {
-/*
+    /*
   generates and displays the report with the user-specified data
   Inputs: selected- list of the selected lines in the scenario tree of the AM GUI, selectedTimes- list of the selected time intervals
   */
@@ -4855,7 +4869,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 }*/
 sta::CoordinateSystem analysis::CoordSys(QString Coordinate)
 {
-/*
+    /*
   returns the name of the output coordinate system that shall be sent to the function that performs the transformation
 */
     if(Coordinate=="EME J2000")
@@ -4889,7 +4903,7 @@ double analysis::calcKeplerianElements(sta::StateVector Vector,StaBody*Body,QStr
 				       QString FromCoordinate,
 				       QString ToCoordinate)
 {
-/*
+    /*
   Calculates the keplerian elements of a certain orbit
   Inputs:Vector-statevector for each time step,Body-pointer to the central Body (for the time being, only Earth is available),OrbElement- name of the element the user wishes to analyse ,mjd-time in Modified Julian Date,FromCoordinate- coordinate system of the data before transformation, ToCoordinate- coordinate system that shall appear as output)
   Outputs: parameter to be displayed/analysed
@@ -4940,7 +4954,7 @@ double analysis::calcDelaunayElements(sta::StateVector Vector,StaBody*Body,QStri
 				      QString FromCoordinate,
 				      QString ToCoordinate)
 {
-/*
+    /*
 Calculates the Delaunay Elements of a certain orbit
   Inputs:Vector-statevector for each time step,Body-pointer to the central Body (for the time being, only Earth is available),OrbElement- name of the element the user wishes to analyse ,mjd-time in Modified Julian Date,FromCoordinate- coordinate system of the data before transformation, ToCoordinate- coordinate system that shall appear as output)
   Outputs: parameter to be displayed/analysed
@@ -5218,7 +5232,7 @@ QComboBox*analysis::TimeFramesBox()
 }
 QComboBox*analysis::TimeUnitsBox()
 {
-/*
+    /*
   Description: returns a combobox with all the time units available
   */
     QComboBox*TimeBox=new QComboBox();

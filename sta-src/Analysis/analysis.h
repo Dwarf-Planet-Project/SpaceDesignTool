@@ -35,103 +35,103 @@
 
 class analysis : public QDialog , private Ui::analysisDialogClass
 {
-Q_OBJECT
+    Q_OBJECT
 public:
-        analysis(SpaceScenario * scenario, PropagatedScenario*propagatedScenario,QWidget * parent = 0, Qt::WindowFlags f = 0 );
-	~analysis();
-        void readScenario();
-int ObjectsIndex(QStringList AllObjects, int Index, QString ObjectType);
-QString CovCommCalc();
-int InputsControl(QList<QTreeWidget*>tree);
-void Warnings(int i);
+    analysis(SpaceScenario * scenario, PropagatedScenario*propagatedScenario,QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    ~analysis();
+    void readScenario();
+    int ObjectsIndex(QStringList AllObjects, int Index, QString ObjectType);
+    QString CovCommCalc();
+    int InputsControl(QList<QTreeWidget*>tree);
+    void Warnings(int i);
 
-struct AnalysisData
-{
-QString GenerationTime;
-QList<double>MissionSat; //mission arc, satellite numbers
-QList<QString>ParameterTitles;
-QList<QList<double> >Data; // QList of lines, each line a QList of data
+    struct AnalysisData
+    {
+	QString GenerationTime;
+	QList<double>MissionSat; //mission arc, satellite numbers
+	QList<QString>ParameterTitles;
+	QList<QList<double> >Data; // QList of lines, each line a QList of data
 
-};
+    };
 
-QList<AnalysisData> WriteDataStructure(QList<QTreeWidgetItem*> selected,QList<QTreeWidgetItem *> selectedTimes);
-void WriteReport(QList<QTreeWidgetItem*> selected,QList<QTreeWidgetItem *> selectedTimes);
-void DisableUnavailableOptions();
-QString ReadParameter(QTreeWidgetItem*Item);
-QString ReadUnits(QTreeWidget*Tree,QTreeWidgetItem*Item);
-QString ReadCoordinateSys(QTreeWidget*Tree,QTreeWidgetItem*Item);
+    QList<AnalysisData> WriteDataStructure(QList<QTreeWidgetItem*> selected,QList<QTreeWidgetItem *> selectedTimes);
+    void WriteReport(QList<QTreeWidgetItem*> selected,QList<QTreeWidgetItem *> selectedTimes);
+    void DisableUnavailableOptions();
+    QString ReadParameter(QTreeWidgetItem*Item);
+    QString ReadUnits(QTreeWidget*Tree,QTreeWidgetItem*Item);
+    QString ReadCoordinateSys(QTreeWidget*Tree,QTreeWidgetItem*Item);
 
 protected slots:
-        //void on_groupBoxAnalysisFormat_toggled(bool);
-        //void on_ComboBoxAnalysisFormat_activated(const QString&);
-        //void on_groupBoxParameters_toggled(bool);
-        //void on_groupBoxTimeSpecifications_toggled(bool);
-	void on_AddDefaultPushButton_clicked();
-	//void on_AddNewPushButton_clicked();
-        void on_EditTimePushButton_clicked();
-	void on_DeleteTimePushButton_clicked();
-	//void on_groupBoxReport_toggled(bool);
-	//void on_AddParameterPushButton_clicked();
-	//void on_RemoveParameterPushButton_clicked();
-        //void on_groupBoxPlotAxesSettings_toggled(bool);
-	void on_GeneratePushButton_clicked();
-        //void on_TotalHelpPushButton_clicked();  // Guillermo says: Why is this required? Can you used my action?
-	// void on_ClosePushButton_clicked();   // Guillermo says: not needed any more
-	//Guillermo
-	void raiseHelp();
+    //void on_groupBoxAnalysisFormat_toggled(bool);
+    //void on_ComboBoxAnalysisFormat_activated(const QString&);
+    //void on_groupBoxParameters_toggled(bool);
+    //void on_groupBoxTimeSpecifications_toggled(bool);
+    void on_AddDefaultPushButton_clicked();
+    //void on_AddNewPushButton_clicked();
+    void on_EditTimePushButton_clicked();
+    void on_DeleteTimePushButton_clicked();
+    //void on_groupBoxReport_toggled(bool);
+    //void on_AddParameterPushButton_clicked();
+    //void on_RemoveParameterPushButton_clicked();
+    //void on_groupBoxPlotAxesSettings_toggled(bool);
+    void on_GeneratePushButton_clicked();
+    //void on_TotalHelpPushButton_clicked();  // Guillermo says: Why is this required? Can you used my action?
+    // void on_ClosePushButton_clicked();   // Guillermo says: not needed any more
+    //Guillermo
+    void raiseHelp();
 
-    public slots:  // Added by Ana
-	void addParameter(QTreeWidgetItem* item); // clicked
-	void addParameter(); //clicked
-	void removeParameter();//clicked
-	void enableReportOption(int i);
-        //void SetTimeUnits(int i);
-        //void PlotComboBox(QList<QTreeWidgetItem*>List, int i);
-       // void InsertingComboBox(int);
-       // void AddDefaultTime();
+public slots:  // Added by Ana
+    void addParameter(QTreeWidgetItem* item); // clicked
+    void addParameter(); //clicked
+    void removeParameter();//clicked
+    void enableReportOption(int i);
+    //void SetTimeUnits(int i);
+    //void PlotComboBox(QList<QTreeWidgetItem*>List, int i);
+    // void InsertingComboBox(int);
+    // void AddDefaultTime();
 
 
 
 private:
-        SpaceScenario* m_scenario;
-        PropagatedScenario*m_propagatedScenario;
-        //PropagatedScenario*m_propagatedScenario;
-        bool CheckIfMissionArc();
-        void InsertComboBox();
-        void ComboBoxOptions(QTreeWidgetItem*);
-        void PlotComboBox();
-        QComboBox * TimeFramesBox();
-        QComboBox * TimeUnitsBox();
-        QComboBox * AngleUnitsBox();
-        QComboBox * DistanceUnitsBox();
-        QComboBox * CoordinateBox();
-        QComboBox * VelocityUnitsBox();
-        QComboBox * NoUnitsBox();
-        QList<MissionArc*> m_missionArcs;
-        QList<SpaceObject*> m_spaceObjectList;
-        //double* ReadTime(int column);
-        void ReadTime(int column, double *MJD);
-        double ReadStopTime();
-        QList<ScenarioTransmitterPayloadType*>TxSC;
-        QList<ScenarioTransmitterPayloadType*>TxGS;
-        QList<ScenarioReceiverPayloadType*>RxSC;
-        QList<ScenarioReceiverPayloadType*>RxGS;
-        QList<ScenarioGroundStationEnvironment*>GSEnvironment;
-        double calcKeplerianElements(sta::StateVector Vector,StaBody*Body,QString OrbElement,
-                                                               double mjd,
-                                                               QString FromCoordinate,
-                                                               QString ToCoordinate);
-        sta::CoordinateSystem CoordSys(QString Coordinate);
-        double calcDelaunayElements(sta::StateVector Vector,StaBody*Body,QString OrbElement,
-                                                                       double mjd,
-                                                                       QString FromCoordinate,
-                                                                       QString ToCoordinate);
-        double calcEquinoctialElements(sta::StateVector Vector,StaBody*Body,QString OrbElement,
-                                                 double mjd,
-                                                 QString FromCoordinate,
-                                                 QString ToCoordinate);
+    SpaceScenario* m_scenario;
+    PropagatedScenario*m_propagatedScenario;
+    //PropagatedScenario*m_propagatedScenario;
+    bool CheckIfMissionArc();
+    void InsertComboBox();
+    void ComboBoxOptions(QTreeWidgetItem*);
+    void PlotComboBox();
+    QComboBox * TimeFramesBox();
+    QComboBox * TimeUnitsBox();
+    QComboBox * AngleUnitsBox();
+    QComboBox * DistanceUnitsBox();
+    QComboBox * CoordinateBox();
+    QComboBox * VelocityUnitsBox();
+    QComboBox * NoUnitsBox();
+    QList<MissionArc*> m_missionArcs;
+    QList<SpaceObject*> m_spaceObjectList;
+    //double* ReadTime(int column);
+    void ReadTime(int column, double *MJD);
+    double ReadStopTime();
+    QList<ScenarioTransmitterPayloadType*>TxSC;
+    QList<ScenarioTransmitterPayloadType*>TxGS;
+    QList<ScenarioReceiverPayloadType*>RxSC;
+    QList<ScenarioReceiverPayloadType*>RxGS;
+    QList<ScenarioGroundStationEnvironment*>GSEnvironment;
+    double calcKeplerianElements(sta::StateVector Vector,StaBody*Body,QString OrbElement,
+				 double mjd,
+				 QString FromCoordinate,
+				 QString ToCoordinate);
+    sta::CoordinateSystem CoordSys(QString Coordinate);
+    double calcDelaunayElements(sta::StateVector Vector,StaBody*Body,QString OrbElement,
+				double mjd,
+				QString FromCoordinate,
+				QString ToCoordinate);
+    double calcEquinoctialElements(sta::StateVector Vector,StaBody*Body,QString OrbElement,
+				   double mjd,
+				   QString FromCoordinate,
+				   QString ToCoordinate);
 
-    };
+};
 
 
 #endif //analysis_H
