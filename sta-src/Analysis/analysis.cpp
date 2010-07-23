@@ -1375,7 +1375,9 @@ some warning messages can de displayed if:
                             Data->setPoints(DataStructure,numberOfLines,numberOfParameters);
 
 			    plotView->addPlot(Data);
-
+                            QString PlotTitle;
+                            ((((PlotTitle.append(DataStructure[0].ParameterTitles[0])).append(" ")).append("vs")).append(" ")).append(DataStructure[1].ParameterTitles[0]);
+                            plotView->setTitle(PlotTitle);
 			    plotView->setLeftLabel(DataStructure[1].ParameterTitles[0]);
 			    plotView->setBottomLabel(DataStructure[0].ParameterTitles[0]);
 			    plotView->autoScale();
@@ -1401,7 +1403,7 @@ some warning messages can de displayed if:
 
                         if(DataStructure.size()==3)
                        {
-
+QString PlotTitle;
                             QDialog plotDialog(this);
                                 QVBoxLayout* layout = new QVBoxLayout(&plotDialog);
 
@@ -1422,13 +1424,12 @@ some warning messages can de displayed if:
                                 plotView->addPlot(Data, PlotStyle(PlotStyle::LinePlot, QPen(Qt::green)));
 
                                 //plotView->setTitle("Title");
-                               // qDebug()<<"x"<<DataStructure[0].ParameterTitles[0];
-                                //qDebug()<<"y"<<DataStructure[1].ParameterTitles[0];
-                                //qDebug()<<"z"<<DataStructure[2].ParameterTitles[0];
-
-                                plotView->setXLabel(DataStructure[0].ParameterTitles[0]);
-                                plotView->setYLabel(DataStructure[1].ParameterTitles[0]);
-                                plotView->setZLabel(DataStructure[2].ParameterTitles[0]);
+                               (((((PlotTitle.append(DataStructure[0].ParameterTitles[0])).append(" ")).append("vs")).append(" ")).append(DataStructure[1].ParameterTitles[0]));
+                               ((PlotTitle.append(" ")).append("vs")).append(DataStructure[2].ParameterTitles[0]);
+                               plotView->setTitle(PlotTitle);
+                               plotView->setXLabel(DataStructure[0].ParameterTitles[0]);
+                               plotView->setYLabel(DataStructure[1].ParameterTitles[0]);
+                               plotView->setZLabel(DataStructure[2].ParameterTitles[0]);
 
                                 plotView->autoScale();
                                 plotView->setMinimumSize(500, 500);
@@ -2320,14 +2321,9 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 				}
 			    }
 			    if((name=="Azimuth")||(name=="Elevation")||(name=="Range"))
-			    {
-
-				QWidget*Box1=treeWidgetShowInReport->itemWidget(parameter,1);
-				QComboBox*ComboBox1=dynamic_cast <QComboBox*>(Box1);
-				QString ToCoord=ComboBox1->currentText();
-				QWidget*Box2=treeWidgetShowInReport->itemWidget(parameter,2);
-				QComboBox*ComboBox2=dynamic_cast <QComboBox*>(Box2);
-				QString ToUnit=ComboBox2->currentText();
+                            {
+                                QString ToCoord=analysis::ReadCoordinateSys(treeWidgetShowInReport,parameter);
+                                QString ToUnit=analysis::ReadUnits(treeWidgetShowInReport,parameter);
 				if(name=="Azimuth")
 				{
 
@@ -3220,6 +3216,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 	AnalysisData ToStruct;
 	QList<QList<double> >DisplayData;
 	QList<QString>Titles;
+        QString PlotTitle;
         // checks parameters to be plotted and the module where they come from, for the time being, only for Coverage and Communication data
 
 	QList<QTreeWidgetItem*>PlotParameters=Tree.at(a)->selectedItems();
@@ -3406,7 +3403,16 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                             Titles.append(TitleParameter);  //labels of the displayed parameters
 
 			}
+                        for(int j=0; j<Titles.size();j++)
+                        {
+                            PlotTitle.append(Titles[j]);
+                            if(j!=Titles.size()-1)
+                            {
+                                PlotTitle.append("versus");
+                            }
+                        }
 			ToStruct.ParameterTitles=Titles;
+
 
 			double MJDdate[inumber];
 			double JulianDate[inumber];
