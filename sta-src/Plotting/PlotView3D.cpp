@@ -40,14 +40,18 @@ using namespace std;
 /** Create a new PlotView.
   */
 PlotView3D::PlotView3D(QWidget* parent) :
-    QWidget(parent),
-    m_xScale(NULL),
-    m_yScale(NULL),
-    m_zScale(NULL),
-    m_topMargin(50.0f),
-    m_bottomMargin(50.0f),
-    m_leftMargin(80.0f),
-    m_rightMargin(30.0f)
+	QWidget(parent),
+	m_xScale(NULL),
+	m_yScale(NULL),
+	m_zScale(NULL),
+	//m_topMargin(50.0f),
+	//m_bottomMargin(50.0f),
+	//m_leftMargin(80.0f),
+	//m_rightMargin(30.0f)
+	m_topMargin(100.0f),
+	m_bottomMargin(100.0f),
+	m_leftMargin(100.0f),
+	m_rightMargin(100.0f)
 {
     m_plot = new SurfacePlot();
     m_plot->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
@@ -62,6 +66,9 @@ PlotView3D::PlotView3D(QWidget* parent) :
         m_plot->coordinates()->axes[i].setLabelFont("Helvetica", 14);
     }
 
+    // Guillermo
+    m_plot->coordinates()->setAxesColor(Qwt3D::RGBA(0.0, 0.0, 1.0, 1.0));  // Red-Green-Blue-Alpha. It is blue
+
     m_plot->coordinates()->setGridLines(true, true, FLOOR);
     m_plot->coordinates()->setGridLinesColor(RGBA(0.7, 0.7, 0.7, 1.0));
     m_plot->setTitleFont("Helvetica", 16);
@@ -70,7 +77,18 @@ PlotView3D::PlotView3D(QWidget* parent) :
     m_yScale = new LinearPlotScale(0.0, 1.0);
     m_zScale = new LinearPlotScale(0.0, 1.0);
 
+    m_plot->coordinates()->adjustLabels(20);
+    m_plot->coordinates()->adjustNumbers(10);
+
     m_plot->setMeshColor(RGBA(0.0, 0.0, 1.0, 1.0));
+
+    m_plot->coordinates()->setLineSmooth(true);
+
+    m_plot->coordinates()->setNumberColor(Qwt3D::RGBA(0.0, 0.0, 1.0, 1.0));  // Red-Green-Blue-Alpha. It is blue
+
+    m_plot->setRotation(15.0,0.0,-35.0);	// Putting in sidewise to be able to see all axis from the beginning
+    m_plot->setCursor(Qt::OpenHandCursor);
+    m_plot->setScale(0.8, 0.8, 0.8);
 
     m_plot->updateData();
     m_plot->updateGL();
@@ -92,7 +110,7 @@ PlotView3D::~PlotView3D()
 /** Add a plot to the view.
   */
 void
-PlotView3D::addPlot(PlotDataSource3D* plotData, const PlotStyle& plotStyle)
+	PlotView3D::addPlot(PlotDataSource3D* plotData, const PlotStyle& plotStyle)
 {
     Q_ASSERT(plotData != NULL);
     if (plotData != NULL)
@@ -111,7 +129,7 @@ PlotView3D::addPlot(PlotDataSource3D* plotData, const PlotStyle& plotStyle)
   * effect if the plot isn't part of the view.
   */
 void
-PlotView3D::removePlot(PlotDataSource3D* plotData)
+	PlotView3D::removePlot(PlotDataSource3D* plotData)
 {
     Q_ASSERT(plotData != NULL);
     if (plotData != NULL)
@@ -134,7 +152,7 @@ PlotView3D::removePlot(PlotDataSource3D* plotData)
 /** Remove all plots from the view.
   */
 void
-PlotView3D::removeAllPlots()
+	PlotView3D::removeAllPlots()
 {
     foreach (Plot* p, m_plots)
     {
@@ -149,7 +167,7 @@ PlotView3D::removeAllPlots()
 /** Set the title string for the plot.
   */
 void
-PlotView3D::setTitle(const QString& title)
+	PlotView3D::setTitle(const QString& title)
 {
     m_plot->setTitle(title);
 }
@@ -158,7 +176,7 @@ PlotView3D::setTitle(const QString& title)
 /** Set the label that will be displayed on the x-axis of the plot.
   */
 void
-PlotView3D::setXLabel(const QString& label)
+	PlotView3D::setXLabel(const QString& label)
 {
     m_xLabel = label;
     m_plot->coordinates()->axes[X1].setLabelString(label);
@@ -172,7 +190,7 @@ PlotView3D::setXLabel(const QString& label)
 /** Set the label that will be displayed on the y-axis of the plot.
   */
 void
-PlotView3D::setYLabel(const QString& label)
+	PlotView3D::setYLabel(const QString& label)
 {
     m_yLabel = label;
     m_plot->coordinates()->axes[Y1].setLabelString(label);
@@ -186,7 +204,7 @@ PlotView3D::setYLabel(const QString& label)
 /** Set the label that will be displayed on the z-axis of the plot.
   */
 void
-PlotView3D::setZLabel(const QString& label)
+	PlotView3D::setZLabel(const QString& label)
 {
     m_zLabel = label;
     m_plot->coordinates()->axes[Z1].setLabelString(label);
@@ -201,7 +219,7 @@ PlotView3D::setZLabel(const QString& label)
 /** Set the x-axis scale for this plot view.
   */
 void
-PlotView3D::setXScale(const PlotScale& scale)
+	PlotView3D::setXScale(const PlotScale& scale)
 {
     delete m_xScale;
     m_xScale = scale.clone();
@@ -212,7 +230,7 @@ PlotView3D::setXScale(const PlotScale& scale)
 /** Set the y-axis scale for this plot view.
   */
 void
-PlotView3D::setYScale(const PlotScale& scale)
+	PlotView3D::setYScale(const PlotScale& scale)
 {
     delete m_yScale;
     m_yScale = scale.clone();
@@ -223,7 +241,7 @@ PlotView3D::setYScale(const PlotScale& scale)
 /** Set the z-axis scale for this plot view.
   */
 void
-PlotView3D::setZScale(const PlotScale& scale)
+	PlotView3D::setZScale(const PlotScale& scale)
 {
     delete m_zScale;
     m_zScale = scale.clone();
@@ -245,7 +263,7 @@ PlotView3D::setZScale(const PlotScale& scale)
   * to specify whether a linear or log scale should be used.
   */
 void
-PlotView3D::autoScale()
+	PlotView3D::autoScale()
 {
     bool empty = true;
 
@@ -285,7 +303,7 @@ PlotView3D::autoScale()
 
 
 void
-PlotView3D::updatePlotData()
+	PlotView3D::updatePlotData()
 {
     QVector<Triple> triples;
 

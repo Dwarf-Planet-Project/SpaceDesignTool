@@ -1546,6 +1546,11 @@
                  </property>
                  <item>
                   <property name="text">
+                   <string>Time</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
                    <string>Altitude</string>
                   </property>
                  </item>
@@ -1566,12 +1571,7 @@
                  </item>
                  <item>
                   <property name="text">
-                   <string>Time</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Time from epoch</string>
+                   <string>Epoch</string>
                   </property>
                  </item>
                  <item>
@@ -2665,6 +2665,11 @@
                  </property>
                  <item>
                   <property name="text">
+                   <string>Time</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
                    <string>Altitude</string>
                   </property>
                  </item>
@@ -2685,12 +2690,7 @@
                  </item>
                  <item>
                   <property name="text">
-                   <string>Time</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Time from epoch</string>
+                   <string>Epoch</string>
                   </property>
                  </item>
                  <item>
@@ -3828,6 +3828,11 @@
                  </property>
                  <item>
                   <property name="text">
+                   <string>Time</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
                    <string>Altitude</string>
                   </property>
                  </item>
@@ -3848,12 +3853,7 @@
                  </item>
                  <item>
                   <property name="text">
-                   <string>Time</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Time from epoch</string>
+                   <string>Epoch</string>
                   </property>
                  </item>
                  <item>
