@@ -86,6 +86,7 @@ PlotView3D::PlotView3D(QWidget* parent) :
     m_plot->coordinates()->setLineSmooth(true);
 
     m_plot->coordinates()->setNumberColor(Qwt3D::RGBA(0.0, 0.0, 1.0, 1.0));  // Red-Green-Blue-Alpha. It is blue
+    m_plot->coordinates()->setLabelFont("Helvetica", 10);
 
     m_plot->setRotation(15.0,0.0,-35.0);	// Putting in sidewise to be able to see all axis from the beginning
     m_plot->setCursor(Qt::OpenHandCursor);

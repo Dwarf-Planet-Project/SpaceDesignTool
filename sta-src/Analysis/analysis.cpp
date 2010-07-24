@@ -1365,9 +1365,7 @@ some warning messages can de displayed if:
 				numberOfLines++;
 			    }
 
-
-
-                            // Patched by Guillermo to create a Non-Modal window each time the user wishes to create a 3D plot
+                            // Patched by Guillermo to create a Non-Modal window each time the user wishes to create a 2D plot
                             QWidget *window2D = new QWidget(this, Qt::Tool);
 
                             QVBoxLayout* layout = new QVBoxLayout(window2D);
@@ -1430,7 +1428,7 @@ some warning messages can de displayed if:
 			{
 
 			    // Patched by Guillermo to create a Non-Modal window each time the user wishes to create a 3D plot
-			    QWidget *window3D = new QWidget(this, Qt::Tool);
+                            QWidget *window3D = new QWidget(this, Qt::Tool);
 
 			    QVBoxLayout* layout = new QVBoxLayout(window3D);
 
@@ -1444,7 +1442,7 @@ some warning messages can de displayed if:
 
 			    QString PlotTitle = "";
 			    PlotTitle = PlotTitle + DataStructure[2].ParameterTitles[0];
-			    PlotTitle = PlotTitle + " = f(";
+                            PlotTitle = PlotTitle + " = f (";
 			    PlotTitle = PlotTitle + DataStructure[0].ParameterTitles[0];
 			    PlotTitle = PlotTitle + ", ";
 			    PlotTitle = PlotTitle + DataStructure[1].ParameterTitles[0];
@@ -1471,8 +1469,8 @@ some warning messages can de displayed if:
                             window3D->setWindowTitle("STA analysis 3D plot");
                             window3D->setWindowIcon(QIcon(":/icons/CoordinateSystemBody.png"));
 			    window3D->show();
-			    window3D->raise(); // Required to keep the modeless window alive
-			    window3D->activateWindow(); // Required to keep the modeless window alive
+                            window3D->raise(); // Required to keep the modeless window alive
+                            window3D->activateWindow(); // Required to keep the modeless window alive
 
                         }
                         else
