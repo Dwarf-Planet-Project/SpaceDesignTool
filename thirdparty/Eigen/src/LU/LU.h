@@ -63,10 +63,10 @@ template<typename MatrixType> class LU
 
     typedef typename MatrixType::Scalar Scalar;
     typedef typename NumTraits<typename MatrixType::Scalar>::Real RealScalar;
-    typedef Matrix<int, 1, MatrixType::ColsAtCompileTime> IntRowVectorType;
-    typedef Matrix<int, MatrixType::RowsAtCompileTime, 1> IntColVectorType;
-    typedef Matrix<Scalar, 1, MatrixType::ColsAtCompileTime> RowVectorType;
-    typedef Matrix<Scalar, MatrixType::RowsAtCompileTime, 1> ColVectorType;
+    typedef Matrix<int, 1, MatrixType::ColsAtCompileTime, MatrixType::Options, 1, MatrixType::MaxColsAtCompileTime> IntRowVectorType;
+    typedef Matrix<int, MatrixType::RowsAtCompileTime, 1, MatrixType::Options, MatrixType::MaxRowsAtCompileTime, 1> IntColVectorType;
+    typedef Matrix<Scalar, 1, MatrixType::ColsAtCompileTime, MatrixType::Options, 1, MatrixType::MaxColsAtCompileTime> RowVectorType;
+    typedef Matrix<Scalar, MatrixType::RowsAtCompileTime, 1, MatrixType::Options, MatrixType::MaxRowsAtCompileTime, 1> ColVectorType;
 
     enum { MaxSmallDimAtCompileTime = EIGEN_SIZE_MIN(
              MatrixType::MaxColsAtCompileTime,
@@ -515,9 +515,10 @@ bool LU<MatrixType>::solve(
         if(!ei_isMuchSmallerThan(c.coeff(row,col), biggest_in_c, m_precision))
           return false;
   }
-  m_lu.corner(TopLeft, m_rank, m_rank)
-      .template marked<UpperTriangular>()
-      .solveTriangularInPlace(c.corner(TopLeft, m_rank, c.cols()));
+  if(m_rank>0)
+    m_lu.corner(TopLeft, m_rank, m_rank)
+        .template marked<UpperTriangular>()
+        .solveTriangularInPlace(c.corner(TopLeft, m_rank, c.cols()));
 
   // Step 4
   result->resize(m_lu.cols(), b.cols());

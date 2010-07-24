@@ -94,10 +94,16 @@ class ei_compute_matrix_flags
 {
     enum {
       row_major_bit = Options&RowMajor ? RowMajorBit : 0,
-      inner_max_size = row_major_bit ? MaxCols : MaxRows,
+      inner_max_size = int(MaxRows==1) ? int(MaxCols)
+                     : int(MaxCols==1) ? int(MaxRows)
+                     : int(row_major_bit) ? int(MaxCols) : int(MaxRows),
       is_big = inner_max_size == Dynamic,
-      is_packet_size_multiple = (Cols*Rows) % ei_packet_traits<Scalar>::size == 0,
-      aligned_bit = ((Options&AutoAlign) && (is_big || is_packet_size_multiple)) ? AlignedBit : 0,
+      storage_has_fixed_size = MaxRows != Dynamic && MaxCols != Dynamic,
+      storage_has_aligned_fixed_size = storage_has_fixed_size
+                     && ( (MaxCols*MaxRows) % ei_packet_traits<Scalar>::size == 0 ),
+      aligned_bit = (    (Options&AutoAlign)
+                      && (is_big || storage_has_aligned_fixed_size)
+                    ) ? AlignedBit : 0,
       packet_access_bit = ei_packet_traits<Scalar>::size > 1 && aligned_bit ? PacketAccessBit : 0
     };
 
