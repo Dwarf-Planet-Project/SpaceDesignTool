@@ -22,6 +22,7 @@
 
 //------------------ Author:       Chris Laurel                   -------------------
 //-----------------------------------------------------------------------------------
+// Modified by Guillermo July 2010 to fine tune colors, fonts, etc.
 
 
 #include "PlotDataSource.h"
@@ -63,7 +64,7 @@ PlotView3D::PlotView3D(QWidget* parent) :
         m_plot->coordinates()->axes[i].setMajors(7);
         m_plot->coordinates()->axes[i].setMinors(4);
 
-        m_plot->coordinates()->axes[i].setLabelFont("Helvetica", 14);
+        m_plot->coordinates()->axes[i].setLabelFont("Helvetica", 10);
     }
 
     // Guillermo
@@ -71,7 +72,7 @@ PlotView3D::PlotView3D(QWidget* parent) :
 
     m_plot->coordinates()->setGridLines(true, true, FLOOR);
     m_plot->coordinates()->setGridLinesColor(RGBA(0.7, 0.7, 0.7, 1.0));
-    m_plot->setTitleFont("Helvetica", 16);
+    m_plot->setTitleFont("Helvetica", 10);
 
     m_xScale = new LinearPlotScale(0.0, 1.0);
     m_yScale = new LinearPlotScale(0.0, 1.0);

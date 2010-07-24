@@ -43,8 +43,8 @@ void Axis::init()
 	drawTics_ = false;
 	autoscale_ = true;
 	markerLabel_.clear();
-	numberfont_ = QFont("Courier",12);
-	setLabelFont(QFont("Courier",14));
+        numberfont_ = QFont("Courier",12);
+        setLabelFont(QFont("Courier",14));
 
   numbercolor_ = RGBA(0,0,0,0);
 

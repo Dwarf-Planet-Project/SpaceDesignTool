@@ -132,20 +132,21 @@ PlotView::paintEvent(QPaintEvent* /* event */)
 
     // Draw the title
     painter.setPen(Qt::black);
-    painter.setFont(QFont("Helvetica", 14, QFont::Bold));
-    painter.drawText(QRectF(m_leftMargin, 0.0f, plotWidth, m_topMargin),
-                     Qt::AlignLeft | Qt::AlignVCenter,
-                     m_title);
+    //painter.setFont(QFont("Helvetica", 10, QFont::Bold));
+    painter.setFont(QFont("Helvetica", 10));
+    painter.drawText(QRectF(m_leftMargin, 0.0f, plotWidth, m_topMargin),Qt::AlignHCenter | Qt::AlignVCenter, m_title);
 
     // Draw the labels on the borders of the plot
-    painter.setFont(QFont("Helvetica", 14, QFont::Normal));
+    //painter.setPen(Qt::blue);
+    //painter.setFont(QFont("Helvetica", 14, QFont::Normal));
+    painter.setFont(QFont("Helvetica", 10));
     float bottomLabelSpace = m_bottomMargin - labelPlotSpacing - labelHeight;
     painter.drawText(QRectF(m_leftMargin, height() - bottomLabelSpace, plotWidth, bottomLabelSpace),
                      Qt::AlignHCenter | Qt::AlignVCenter,
                      m_bottomLabel);
 
     QTransform saveTransform = painter.worldTransform();
-    float leftLabelSpace = 30.0f;
+    float leftLabelSpace = 10.0f;
     painter.translate(leftLabelSpace, height() - m_bottomMargin);
     painter.rotate(-90.0f);
     painter.drawText(QRectF(0.0f, 0.0f, plotHeight, leftLabelSpace),
@@ -177,7 +178,7 @@ PlotView::paintEvent(QPaintEvent* /* event */)
     }
 
     // Draw the grid labels
-    painter.setPen(Qt::black);
+    painter.setPen(Qt::blue);
 
     foreach (double x, xTicks)
     {

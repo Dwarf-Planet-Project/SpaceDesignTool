@@ -1365,24 +1365,49 @@ some warning messages can de displayed if:
 				numberOfLines++;
 			    }
 
-			    QDialog plotDialog(this);
-			    QVBoxLayout* layout = new QVBoxLayout(&plotDialog);
-			    PlotView* plotView = new PlotView(&plotDialog);
-			    layout->addWidget(plotView);
-			    plotDialog.setLayout(layout);
 
-			    AnalysisPlot::AnalysisPlot* Data = new AnalysisPlot();
+
+                            // Patched by Guillermo to create a Non-Modal window each time the user wishes to create a 3D plot
+                            QWidget *window2D = new QWidget(this, Qt::Tool);
+
+                            QVBoxLayout* layout = new QVBoxLayout(window2D);
+
+                            PlotView* plotView = new PlotView(window2D);
+                            layout->addWidget(plotView);
+
+                            AnalysisPlot::AnalysisPlot* Data = new AnalysisPlot();
                             Data->setPoints(DataStructure,numberOfLines,numberOfParameters);
+                            plotView->addPlot(Data);
 
-			    plotView->addPlot(Data);
-                            QString PlotTitle;
-                            ((((PlotTitle.append(DataStructure[0].ParameterTitles[0])).append(" ")).append("vs")).append(" ")).append(DataStructure[1].ParameterTitles[0]);
+                            QString PlotTitle = "";
+                            PlotTitle = PlotTitle + DataStructure[1].ParameterTitles[0];
+                            PlotTitle = PlotTitle + " = f (";
+                            PlotTitle = PlotTitle + DataStructure[0].ParameterTitles[0];
+                            PlotTitle = PlotTitle + ")";
+
                             plotView->setTitle(PlotTitle);
-			    plotView->setLeftLabel(DataStructure[1].ParameterTitles[0]);
-			    plotView->setBottomLabel(DataStructure[0].ParameterTitles[0]);
-			    plotView->autoScale();
-			    plotView->setMinimumSize(500,500);
-			    plotDialog.exec();
+                            plotView->setLeftLabel(DataStructure[1].ParameterTitles[0]);
+                            plotView->setBottomLabel(DataStructure[0].ParameterTitles[0]);
+                            plotView->autoScale();
+                            plotView->setMinimumSize(600, 400); // Rectangle
+
+                            QHBoxLayout *buttonLayout = new QHBoxLayout;
+                            QPushButton *closeButton = new QPushButton(tr("Close"));
+                            closeButton->setShortcut(tr("Esc"));
+                            closeButton->setAutoDefault(true);
+                            buttonLayout->addStretch();
+                            buttonLayout->addWidget(closeButton);
+                            layout->addLayout(buttonLayout);
+                            connect(closeButton, SIGNAL(clicked()), window2D, SLOT(close()));
+
+                            window2D->setLayout(layout);
+                            window2D->setWindowModality(Qt::NonModal);
+                            window2D->setWindowTitle("STA analysis 2D plot");
+                            window2D->setWindowIcon(QIcon(":/icons/CoordinateSystemBody.png"));
+                            window2D->show();
+                            window2D->raise(); // Required to keep the modeless window alive
+                            window2D->activateWindow(); // Required to keep the modeless window alive
+
 			}
                         else
                         {
@@ -1442,7 +1467,9 @@ some warning messages can de displayed if:
 			    connect(closeButton, SIGNAL(clicked()), window3D, SLOT(close()));
 
 			    window3D->setLayout(layout);
-			    window3D->setWindowModality(Qt::NonModal);			    
+                            window3D->setWindowModality(Qt::NonModal);
+                            window3D->setWindowTitle("STA analysis 3D plot");
+                            window3D->setWindowIcon(QIcon(":/icons/CoordinateSystemBody.png"));
 			    window3D->show();
 			    window3D->raise(); // Required to keep the modeless window alive
 			    window3D->activateWindow(); // Required to keep the modeless window alive
