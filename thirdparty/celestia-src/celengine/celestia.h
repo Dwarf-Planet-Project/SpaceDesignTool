@@ -31,7 +31,7 @@
 
 #ifndef _WIN32
 #ifndef TARGET_OS_MAC
-#include <config.h>
+//#include <config.h>
 #endif /* TARGET_OS_MAC */
 #endif /* _WIN32 */
 

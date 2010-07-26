@@ -187,10 +187,19 @@ GroundTrackView::GroundTrackView(QWidget* parent) :
     setBody(STA_SOLAR_SYSTEM->lookup(STA_EARTH));
 
     QGLFormat glformat;
+    //QVBoxLayout wformat;
+    //glformat.setSampleBuffers(true);
+    //glformat.setSamples(4);
+    //glformat.setDepth(false);
     glformat.setSampleBuffers(true);
-    glformat.setSamples(4);
-    glformat.setDepth(false);
-    setViewport(new QGLWidget(glformat, this));
+    glformat.setSamples(16);
+    glformat.setDepth(true);
+    glformat.setDirectRendering(true);
+    glformat.setDoubleBuffer(true);
+    glformat.setAlpha(true);
+    glformat.setDepthBufferSize(16);
+    glformat.setOverlay(true);
+    //setViewport(new QGLWidget(glformat, this));
 
     constrainCenter();
 
@@ -206,6 +215,7 @@ GroundTrackView::GroundTrackView(QWidget* parent) :
     //slider->setAutoFillBackground(true);
     QPalette palette;
     palette.setColor(m_maxHeightSlider->backgroundRole(), Qt::white);
+    //palette.setColor(m_maxHeightSlider->backgroundRole(), Qt::black);
     m_maxHeightSlider->setPalette(palette);
 
     m_maxHeightSlider->hide();
