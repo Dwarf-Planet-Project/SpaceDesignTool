@@ -171,7 +171,7 @@ double sta::DateTimeTOjulian(QDateTime DateTime)
     double JulianDate=calendarTOjulian(Year,Month,Day,Hour,Minute,Second);
     return JulianDate;
 }
-double sta::calendarToDayOfYear(QDateTime DateTime)
+QString sta::calendarToDayOfYear(QDateTime DateTime)
 {
     /*
       transforms a date and time in QDateTime format into day of the year
@@ -180,7 +180,7 @@ double sta::calendarToDayOfYear(QDateTime DateTime)
     int Days=0;
     int DayOfYear=0;
     int MonthsLength[12];
-    MonthsLength[0]=MonthsLength[2]=MonthsLength[4]=MonthsLength[6]=MonthsLength[7]=MonthsLength[9]=MonthsLength[11];
+    MonthsLength[0]=MonthsLength[2]=MonthsLength[4]=MonthsLength[6]=MonthsLength[7]=MonthsLength[9]=MonthsLength[11]=31;
     MonthsLength[3]=MonthsLength[5]=MonthsLength[8]=MonthsLength[10]=30;
     MonthsLength[1]=28;
     if(sta::CheckIfLeapYear(DateTime.date().year()))
@@ -188,22 +188,30 @@ double sta::calendarToDayOfYear(QDateTime DateTime)
         MonthsLength[1]=29;
     }
 
-    if(DateTime.date().month()!=1)
+    //if(DateTime.date().month()!=1)
     {
-      for(int i=0;i<DateTime.date().month();i++)
+      for(int i=0;i<DateTime.date().month()-1;i++)
       {
         DaysInMonths=DaysInMonths+MonthsLength[i];
 
       }
     }
 
-
     Days=DateTime.date().day();
-
 
     DayOfYear=DaysInMonths+Days;
 
-    return DayOfYear;
+    QString DayInYear;
+    DayInYear.sprintf("%1d",DayOfYear);
+
+    QString DDD;
+    for(int i=0;i<(3-DayInYear.size());i++)
+    {
+        DDD.append("0");
+    }
+    DDD.append(DayInYear);
+
+    return DDD;
 }
 /*double sta::MissionElapsedTime(QDateTime Date)
 {
@@ -271,4 +279,52 @@ Inputs: StartEpoch- beginning of propagation, mjd- considered time, Units- units
         double ElapsedTimeDays=ElapsedTime/DayMJD;
   return(ElapsedTimeDays);
     }
+}
+
+QList<QString> sta::TimeLayout(int day, int month)
+{
+    QString Day;
+    Day.sprintf("%1d",day);
+
+    QString ToDay;
+    for(int i=0;i<(2-Day.size());i++)
+    {
+        ToDay.append("0");
+    }
+    ToDay.append(Day);
+
+    QString Month;
+    Month.sprintf("%1d",month);
+
+    QString ToMonth;
+    for(int i=0;i<(2-Month.size());i++)
+    {
+        ToMonth.append("0");
+    }
+    ToMonth.append(Month);
+
+    QList<QString>Date;
+
+    Date.append(ToDay);
+    Date.append(ToMonth);
+
+    return Date;
+}
+QList<double> sta::DayOfYearToDDD(double DayOfYear)
+{
+    double fractpartDay;
+    double intpartDay;
+    fractpartDay = modf (DayOfYear , &intpartDay);
+    int IntDay=(int) intpartDay;
+
+    QList<double> DDD;
+    QString Day;
+    Day.sprintf("%1d",IntDay);
+
+    for(int i=0;i<(3-Day.size());i++)
+    {
+        DDD.append(0);
+    }
+    DDD.append(DayOfYear);
+    return DDD;
 }

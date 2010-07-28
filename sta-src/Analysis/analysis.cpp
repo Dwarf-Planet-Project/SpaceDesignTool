@@ -1647,8 +1647,8 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 	    int totalTime=(arc->trajectorySampleCount())-1; //position of the last sample time
 	    double StopEpoch=arc->trajectorySampleTime(totalTime);
 
-	    int CovIndex[3]; //line of Coverage Report for each parameter
-	    CovIndex[0]=CovIndex[1]=CovIndex[2]=1; //0-Azimuth, 1-Elevation, 2-Range
+            int CovIndex[4]; //line of Coverage Report for each parameter
+            CovIndex[0]=CovIndex[1]=CovIndex[2]=CovIndex[3]=1; //0-Azimuth, 1-Elevation, 2-Range, 3-Access Time
 	    int Comm1Index[6]; //line of Comminucation Report 1 for each parameter
 	    Comm1Index[0]=Comm1Index[1]=Comm1Index[2]=Comm1Index[3]=Comm1Index[4]=Comm1Index[5]=1;
 	    int Comm2Index[6];
@@ -1806,6 +1806,8 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			int index=j-countStart[k];
 
 			MJDdate[index]=arc->trajectorySampleTime(j);
+                        int AccessNumber=0;
+                        int AccessStep=0;
 
 			//stream<<MJDdate[index]<<"\t"; //prints MJD by default
 
@@ -2245,12 +2247,12 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 				    JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
 				    TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
 				    int Year=TimeDateVector[index].date().year();
-
-				    QString YearPreLastDigit=QString::number(Year).at(2);
+                                    QString YearPreLastDigit=QString::number(Year).at(2);
 				    QString YearLastDigit=QString::number(Year).at(3);
-				    int DayOfYear=sta::calendarToDayOfYear(TimeDateVector[index]);
-				    stream<<DayOfYear<<"/"<<YearPreLastDigit<<YearLastDigit<<" "<<TimeDateVector[index].time().hour()<<":"<<TimeDateVector[index].time().minute()<<":"<<TimeDateVector[index].time().second()<<"\t";
-				}
+                                    QString DDD=sta::calendarToDayOfYear(TimeDateVector[index]);
+                                    QString Time = TimeDateVector[index].time().toString(Qt::TextDate);
+                                    stream<<DDD<<"/"<<YearPreLastDigit<<YearLastDigit<<" "<<Time;
+                                }
 				if(TimeCoordinate=="Gregorian LCL")
 				{
 				    QDateTime CurrentDate=QDateTime::currentDateTime();
@@ -2271,15 +2273,18 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 				    }
 				    DisplayDateCalendar[index]=sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]));
 
-
-				    stream<<DisplayDateCalendar[index].date().day()<<"/"<<DisplayDateCalendar[index].date().month()<<"/"<<DisplayDateCalendar[index].date().year()<<" "<<DisplayDateCalendar[index].time().hour()<<":"<<DisplayDateCalendar[index].time().minute()<<":"<<DisplayDateCalendar[index].time().second()<<"\t";
+                                    QList<QString>Date= sta::TimeLayout(DisplayDateCalendar[index].date().day(),DisplayDateCalendar[index].date().month());
+                                    QString Time=DisplayDateCalendar[index].time().toString(Qt::TextDate);
+                                    stream<<Date[0]<<"/"<<Date[1]<<"/"<<DisplayDateCalendar[index].date().year()<<" "<<Time<<"\t";
 				}
 				if(TimeCoordinate=="Gregorian UTC")
 				{
 
 				    JulianDate[index]=sta::MjdToJd(MJDdate[index])+0.00001;
 				    TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
-				    stream<<TimeDateVector[index].date().day()<<"/"<<TimeDateVector[index].date().month()<<"/"<<TimeDateVector[index].date().year()<<" "<<TimeDateVector[index].time().hour()<<":"<<TimeDateVector[index].time().minute()<<":"<<TimeDateVector[index].time().second()<<"\t";
+                                    QList<QString>Date=sta::TimeLayout(TimeDateVector[index].date().day(),TimeDateVector[index].date().month());
+                                    QString Time=TimeDateVector[index].time().toString(Qt::TextDate);
+                                    stream<<Date[0]<<"/"<<Date[1]<<"/"<<TimeDateVector[index].date().year()<<" "<<Time<<"\t";
 
 				}
 				if(TimeCoordinate=="Julian LCL")
@@ -2302,12 +2307,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 				    }
 				    DisplayDateCalendar[index]=sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]));
 
-				    double DayOfYear=sta::calendarToDayOfYear(DisplayDateCalendar[index]);
-
+                                    QString DDD=sta::calendarToDayOfYear(sta::JdToCalendar(sta::MjdToJd(MJDdate[index]+0.00001)));
 				    int Year=(sta::JdToCalendar(sta::MjdToJd(MJDdate[index]))).date().year();
 				    QString YearPreLastDigit=QString::number(Year).at(2);
 				    QString YearLastDigit=QString::number(Year).at(3);
-				    stream<<DayOfYear<<"/"<<YearPreLastDigit<<YearLastDigit<<" "<<DisplayDateCalendar[index].time().hour()<<":"<<DisplayDateCalendar[index].time().minute()<<":"<<DisplayDateCalendar[index].time().second()<<"\t";
+
+                                    QString Time=DisplayDateCalendar[index].time().toString(Qt::TextDate);
+                                    stream<<DDD<<"/"<<YearPreLastDigit<<YearLastDigit<<" "<<Time<<"\t";
 
 				}
 
@@ -2326,7 +2332,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 				    QString YearLastDigit=QString::number(Year).at(3);
 
 				    DayOfYear[index]=sta::MjdToFromEpoch(StartYearTime,MJDdate[index],"Days")+1;
-				    stream<<YearPreLastDigit<<YearLastDigit<<DayOfYear[index]<<"\t";
+                                    QList<double>DDD=sta::DayOfYearToDDD(DayOfYear[index]);
+                                    stream<<YearPreLastDigit<<YearLastDigit;
+                                    for(int i=0;i<DDD.size();i++)
+                                    {
+                                        stream<<DDD[i];
+                                    }
+                                    stream<<"\t";
 				}
 
 				if(TimeCoordinate=="Time from epoch")
@@ -2359,7 +2371,20 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
 				}
 			    }
-			    if((name=="Azimuth")||(name=="Elevation")||(name=="Range"))
+                            if(name=="Access Time")
+                            {
+                                QList<int>AccessData=analysis::calcAccessTime(MJDdate[index],AccessNumber,AccessStep,CovIndex[3],LineOfCoverageReport);
+                                if(AccessData.size()==1 && AccessData[0]==0)
+                                {
+                                    stream<<"No visibility"<<"\t";
+                                }
+                                if(AccessData.size()==2)
+                                {
+                                    stream<<AccessNumber<<"."<<AccessStep<<"\t";
+                                }
+
+                            }
+                            if((name=="Azimuth")||(name=="Elevation")||(name=="Range"))
                             {
                                 QString ToCoord=analysis::ReadCoordinateSys(treeWidgetShowInReport,parameter);
                                 QString ToUnit=analysis::ReadUnits(treeWidgetShowInReport,parameter);
@@ -3115,7 +3140,6 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 	    stream<<"\r\n";
 	}
     }
-
 
     file.close();
 
@@ -3896,7 +3920,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 
 					QString YearPreLastDigit=QString::number(Year).at(2);
 					QString YearLastDigit=QString::number(Year).at(3);
-					int DayOfYear=sta::calendarToDayOfYear(TimeDateVector[index]);
+                                        QString DayOfYear=sta::calendarToDayOfYear(TimeDateVector[index]);
 					//stream<<DayOfYear<<"/"<<YearPreLastDigit<<YearLastDigit<<" "<<TimeDateVector[index].time().hour()<<":"<<TimeDateVector[index].time().minute()<<":"<<TimeDateVector[index].time().second()<<"\t";
 				    }
 				    if(TimeCoordinate=="Gregorian LCL")  //not available to plot
@@ -3950,7 +3974,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 					}
 					DisplayDateCalendar[index]=sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]));
 
-					double DayOfYear=sta::calendarToDayOfYear(DisplayDateCalendar[index]);
+                                        QString DayOfYear=sta::calendarToDayOfYear(DisplayDateCalendar[index]);
 
 					int Year=(sta::JdToCalendar(sta::MjdToJd(MJDdate[index]))).date().year();
 					QString YearPreLastDigit=QString::number(Year).at(2);
@@ -5069,6 +5093,44 @@ Calculates the Equinoctial Elements of a certain orbit
     }
 
     return Element;
+}
+
+QList<int>  analysis::calcAccessTime(double MissionTime, int AccessNumber, int AccessStep, int CovIndex,QStringList LineOfCoverageReport)
+{
+    QList<int>AccessTime;  // AccessTime[0]=number of Access, AccessTime[1]=number of step within the Access
+
+    if(CovIndex<LineOfCoverageReport.size())
+    {
+        QString Line=LineOfCoverageReport.at(CovIndex);
+        double TimeCovReport=(Line.section("\t",0,0)).toDouble();
+
+        if(abs(MissionTime-TimeCovReport)<10e-6)
+        {
+            if(AccessStep==0)
+            {
+                AccessNumber++;
+            }
+
+            CovIndex++;
+            AccessTime.append(AccessNumber);
+            AccessTime.append(AccessStep);
+            AccessStep++;
+            return AccessTime;
+
+        }
+        else
+        {
+            AccessStep=0;
+            AccessTime.append(0);
+            return AccessTime;
+        }
+
+    }
+    else
+    {
+        AccessTime.append(0);
+        return AccessTime;
+    }
 }
 
 void analysis::addParameter()

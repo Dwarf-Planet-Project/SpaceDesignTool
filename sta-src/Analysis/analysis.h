@@ -60,6 +60,7 @@ public:
     QString ReadParameter(QTreeWidgetItem*Item);
     QString ReadUnits(QTreeWidget*Tree,QTreeWidgetItem*Item);
     QString ReadCoordinateSys(QTreeWidget*Tree,QTreeWidgetItem*Item);
+    QList<int> calcAccessTime(double MJDdate,int AccessNumber,int AccessStep,int CovIndex,QStringList LineOfCoverageReport);
 
 protected slots:
     //void on_groupBoxAnalysisFormat_toggled(bool);

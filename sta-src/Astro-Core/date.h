@@ -41,7 +41,9 @@ namespace sta
     double MjdToFromEpoch(double StartEpoch, double mjd, QString Units); //added by Ana
     double DateTimeTOjulian(QDateTime DateTime); //Added by Ana
     bool CheckIfLeapYear(int year); //added by Ana
-    double calendarToDayOfYear(QDateTime DateTime);
+    QString calendarToDayOfYear(QDateTime DateTime); //added by Ana
+    QList<QString> TimeLayout(int day, int month); //added by Ana
+    QList<double> DayOfYearToDDD(double DayOfYear);
 
     template <typename T> T secsToDays(T secs)
     {
