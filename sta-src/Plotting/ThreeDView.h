@@ -27,12 +27,15 @@
 #ifndef _THREED_VIEW_H_
 #define _THREED_VIEW_H_
 
+#include <vesta/Object.h>
 #include <QGLWidget>
 
 namespace vesta
 {
     class Universe;
     class UniverseRenderer;
+    class Observer;
+    class ObserverController;
 }
 
 /** ThreeDView is a widget with a rendered 3D view of the current space scenario.
@@ -49,6 +52,19 @@ public:
    QSize minimumSizeHint() const;
    QSize sizeHint() const;
 
+   double currentTime() const
+   {
+       return m_currentTime;
+   }
+
+public slots:
+   void setCurrentTime(double t);
+   double tick(double dt);
+   void setViewChanged()
+   {
+       m_viewChanged = true;
+   }
+
 protected:
     void initializeGL();
     void paintGL();
@@ -61,9 +77,21 @@ protected:
     void keyReleaseEvent(QKeyEvent* event);
 
 private:
+    void initializeUniverse();
+    void initializeLayers();
+    void initializeStarCatalog(const QString& fileName);
+
+private:
+    double m_currentTime;
     vesta::Universe* m_universe;
     vesta::UniverseRenderer* m_renderer;
-    double m_currentTime;
+    vesta::counted_ptr<vesta::Observer> m_observer;
+    vesta::counted_ptr<vesta::ObserverController> m_controller;
+    double m_fov;
+
+    QPointF m_mousePosition;
+
+    bool m_viewChanged;
 };
 
 #endif // _THREED_VIEW_H_
