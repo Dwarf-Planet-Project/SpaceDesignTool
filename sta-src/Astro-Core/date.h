@@ -43,7 +43,8 @@ namespace sta
     bool CheckIfLeapYear(int year); //added by Ana
     QString calendarToDayOfYear(QDateTime DateTime); //added by Ana
     QList<QString> TimeLayout(int day, int month); //added by Ana
-    QList<double> DayOfYearToDDD(double DayOfYear);
+    QList<double> DayOfYearToDDD(double DayOfYear);//added by Ana
+   QString MissionElapsedTime(double Date, double StartEpoch);//added by Ana
 
     template <typename T> T secsToDays(T secs)
     {

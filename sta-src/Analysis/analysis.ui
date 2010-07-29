@@ -1551,6 +1551,11 @@
                  </item>
                  <item>
                   <property name="text">
+                   <string>Time from epoch</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
                    <string>Altitude</string>
                   </property>
                  </item>
@@ -1567,11 +1572,6 @@
                  <item>
                   <property name="text">
                    <string>Radial Distance</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Epoch</string>
                   </property>
                  </item>
                  <item>
@@ -2670,6 +2670,11 @@
                  </item>
                  <item>
                   <property name="text">
+                   <string>Time from epoch</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
                    <string>Altitude</string>
                   </property>
                  </item>
@@ -2686,11 +2691,6 @@
                  <item>
                   <property name="text">
                    <string>Radial Distance</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Epoch</string>
                   </property>
                  </item>
                  <item>
@@ -3833,6 +3833,11 @@
                  </item>
                  <item>
                   <property name="text">
+                   <string>Time from epoch</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
                    <string>Altitude</string>
                   </property>
                  </item>
@@ -3849,11 +3854,6 @@
                  <item>
                   <property name="text">
                    <string>Radial Distance</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Epoch</string>
                   </property>
                  </item>
                  <item>

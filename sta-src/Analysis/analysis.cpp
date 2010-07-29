@@ -2317,10 +2317,12 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
 				}
 
-				if(TimeCoordinate=="Mission Elapsed Time")
+                                if(TimeCoordinate=="Mission Elapsed")
 				{
+                                    QString Elapsed= sta::MissionElapsedTime(MJDdate[index],StartEpoch);
+                                    stream<<Elapsed<<"\t";
 
-				}
+                                }
 				if(TimeCoordinate=="YYDDD")
 				{
 				    JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
@@ -2373,6 +2375,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			    }
                             if(name=="Access Time")
                             {
+                                /*
                                 QList<int>AccessData=analysis::calcAccessTime(MJDdate[index],AccessNumber,AccessStep,CovIndex[3],LineOfCoverageReport);
                                 if(AccessData.size()==1 && AccessData[0]==0)
                                 {
@@ -2381,9 +2384,10 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                 if(AccessData.size()==2)
                                 {
                                     stream<<AccessNumber<<"."<<AccessStep<<"\t";
+                                    */
                                 }
 
-                            }
+
                             if((name=="Azimuth")||(name=="Elevation")||(name=="Range"))
                             {
                                 QString ToCoord=analysis::ReadCoordinateSys(treeWidgetShowInReport,parameter);
@@ -3913,91 +3917,91 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 				    }
 				    if(TimeCoordinate=="Julian UTC") //not available to plot
 				    {
-					//format:DayOfYear/YY UTCTime
-					JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
-					TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
-					int Year=TimeDateVector[index].date().year();
-
-					QString YearPreLastDigit=QString::number(Year).at(2);
-					QString YearLastDigit=QString::number(Year).at(3);
-                                        QString DayOfYear=sta::calendarToDayOfYear(TimeDateVector[index]);
+                                        //format:DayOfYear/YY UTCTime
+                                        JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
+                                        TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
+                                        int Year=TimeDateVector[index].date().year();
+                                        QString YearPreLastDigit=QString::number(Year).at(2);
+                                        QString YearLastDigit=QString::number(Year).at(3);
+                                        QString DDD=sta::calendarToDayOfYear(TimeDateVector[index]);
+                                        QString Time = TimeDateVector[index].time().toString(Qt::TextDate);
 					//stream<<DayOfYear<<"/"<<YearPreLastDigit<<YearLastDigit<<" "<<TimeDateVector[index].time().hour()<<":"<<TimeDateVector[index].time().minute()<<":"<<TimeDateVector[index].time().second()<<"\t";
 				    }
 				    if(TimeCoordinate=="Gregorian LCL")  //not available to plot
 				    {
-					QDateTime CurrentDate=QDateTime::currentDateTime();
-					QDateTime CurrentUTC=CurrentDate.toUTC();
-					double DisplayDate[inumber];
-					QDateTime DisplayDateCalendar[inumber];
-					double CurrentDateInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentDate));
-					double CurrentUtcInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentUTC));
+                                        QDateTime CurrentDate=QDateTime::currentDateTime();
+                                        QDateTime CurrentUTC=CurrentDate.toUTC();
+                                        double DisplayDate[inumber];
+                                        QDateTime DisplayDateCalendar[inumber];
+                                        double CurrentDateInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentDate));
+                                        double CurrentUtcInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentUTC));
 
-					if(CurrentUtcInMJD-CurrentDateInMJD<0)
+                                        if(CurrentUtcInMJD-CurrentDateInMJD<0)
 
-					{
-					    DisplayDate[index]=MJDdate[index]+(CurrentDateInMJD-CurrentUtcInMJD)+0.00001;
-					}
-					else
-					{
-					    DisplayDate[index]=MJDdate[index]-(CurrentUtcInMJD-CurrentDateInMJD)+0.00001;
-					}
-					DisplayDateCalendar[index]=sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]));
+                                        {
+                                            DisplayDate[index]=MJDdate[index]+(CurrentDateInMJD-CurrentUtcInMJD)+0.00001;
+                                        }
+                                        else
+                                        {
+                                            DisplayDate[index]=MJDdate[index]-(CurrentUtcInMJD-CurrentDateInMJD)+0.00001;
+                                        }
+                                        DisplayDateCalendar[index]=sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]));
 
-
-					//stream<<DisplayDateCalendar[index].date().day()<<"/"<<DisplayDateCalendar[index].date().month()<<"/"<<DisplayDateCalendar[index].date().year()<<" "<<DisplayDateCalendar[index].time().hour()<<":"<<DisplayDateCalendar[index].time().minute()<<":"<<DisplayDateCalendar[index].time().second();
+                                        QList<QString>Date= sta::TimeLayout(DisplayDateCalendar[index].date().day(),DisplayDateCalendar[index].date().month());
+                                        QString Time=DisplayDateCalendar[index].time().toString(Qt::TextDate);
 				    }
 				    if(TimeCoordinate=="Gregorian UTC") // not available to plot
 				    {
-					////qDebug()<<index<<"time step";
-					JulianDate[index]=sta::MjdToJd(MJDdate[index])+0.00001;
-					TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
-					//stream<<TimeDateVector[index].date().day()<<"/"<<TimeDateVector[index].date().month()<<"/"<<TimeDateVector[index].date().year()<<" "<<TimeDateVector[index].time().hour()<<":"<<TimeDateVector[index].time().minute()<<":"<<TimeDateVector[index].time().second();
 
+                                        JulianDate[index]=sta::MjdToJd(MJDdate[index])+0.00001;
+                                        TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
+                                        QList<QString>Date=sta::TimeLayout(TimeDateVector[index].date().day(),TimeDateVector[index].date().month());
+                                        QString Time=TimeDateVector[index].time().toString(Qt::TextDate);
 				    }
 				    if(TimeCoordinate=="Julian LCL") // not available to plot
 				    {
-					QDateTime CurrentDate=QDateTime::currentDateTime();
-					QDateTime CurrentUTC=CurrentDate.toUTC();
-					double DisplayDate[inumber];
-					QDateTime DisplayDateCalendar[inumber];
-					double CurrentDateInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentDate));
-					double CurrentUtcInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentUTC));
+                                        QDateTime CurrentDate=QDateTime::currentDateTime();
+                                        QDateTime CurrentUTC=CurrentDate.toUTC();
+                                        double DisplayDate[inumber];
+                                        QDateTime DisplayDateCalendar[inumber];
+                                        double CurrentDateInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentDate));
+                                        double CurrentUtcInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentUTC));
 
-					if(CurrentUtcInMJD-CurrentDateInMJD<0)
+                                        if(CurrentUtcInMJD-CurrentDateInMJD<0)
 
-					{
-					    DisplayDate[index]=MJDdate[index]+(CurrentDateInMJD-CurrentUtcInMJD)+0.00001;
-					}
-					else
-					{
-					    DisplayDate[index]=MJDdate[index]-(CurrentUtcInMJD-CurrentDateInMJD)+0.00001;
-					}
-					DisplayDateCalendar[index]=sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]));
+                                        {
+                                            DisplayDate[index]=MJDdate[index]+(CurrentDateInMJD-CurrentUtcInMJD)+0.00001;
+                                        }
+                                        else
+                                        {
+                                            DisplayDate[index]=MJDdate[index]-(CurrentUtcInMJD-CurrentDateInMJD)+0.00001;
+                                        }
+                                        DisplayDateCalendar[index]=sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]));
 
-                                        QString DayOfYear=sta::calendarToDayOfYear(DisplayDateCalendar[index]);
+                                        QString DDD=sta::calendarToDayOfYear(sta::JdToCalendar(sta::MjdToJd(MJDdate[index]+0.00001)));
+                                        int Year=(sta::JdToCalendar(sta::MjdToJd(MJDdate[index]))).date().year();
+                                        QString YearPreLastDigit=QString::number(Year).at(2);
+                                        QString YearLastDigit=QString::number(Year).at(3);
 
-					int Year=(sta::JdToCalendar(sta::MjdToJd(MJDdate[index]))).date().year();
-					QString YearPreLastDigit=QString::number(Year).at(2);
-					QString YearLastDigit=QString::number(Year).at(3);
-					//stream<<DayOfYear<<"/"<<YearPreLastDigit<<YearLastDigit<<" "<<DisplayDateCalendar[index].time().hour()<<":"<<DisplayDateCalendar[index].time().minute()<<":"<<DisplayDateCalendar[index].time().second();
-
+                                        QString Time=DisplayDateCalendar[index].time().toString(Qt::TextDate);
 				    }
 
-				    if(TimeCoordinate=="Mission Elapsed Time")
+                                    if(TimeCoordinate=="Mission Elapsed") //not available to plot
 				    {
-
+                                        QString Elapsed= sta::MissionElapsedTime(MJDdate[index],StartEpoch);
 				    }
-				    if(TimeCoordinate=="YYDDD")
+                                    if(TimeCoordinate=="YYDDD") //not available to plot
 				    {
-					JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
-					TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
-					int Year=TimeDateVector[index].date().year();
-					QDateTime FirstDayCurrentYear(QDate(Year,1,1),QTime(0,0,0));
-					double StartYearTime=sta::JdToMjd(sta::CalendarToJd(FirstDayCurrentYear));
-					QString YearPreLastDigit=QString::number(Year).at(2);
-					QString YearLastDigit=QString::number(Year).at(3);
+                                        JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
+                                        TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
+                                        int Year=TimeDateVector[index].date().year();
+                                        QDateTime FirstDayCurrentYear(QDate(Year,1,1),QTime(0,0,0));
+                                        double StartYearTime=sta::JdToMjd(sta::CalendarToJd(FirstDayCurrentYear));
+                                        QString YearPreLastDigit=QString::number(Year).at(2);
+                                        QString YearLastDigit=QString::number(Year).at(3);
 
-					DayOfYear[index]=sta::MjdToFromEpoch(StartYearTime,MJDdate[index],"Days")+1;
+                                        DayOfYear[index]=sta::MjdToFromEpoch(StartYearTime,MJDdate[index],"Days")+1;
+                                        QList<double>DDD=sta::DayOfYearToDDD(DayOfYear[index]);
 
 				    }
 

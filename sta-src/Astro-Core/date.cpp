@@ -174,7 +174,7 @@ double sta::DateTimeTOjulian(QDateTime DateTime)
 QString sta::calendarToDayOfYear(QDateTime DateTime)
 {
     /*
-      transforms a date and time in QDateTime format into day of the year
+      transforms a date and time in QDateTime format into a string containg the day of the year
       */
     int DaysInMonths=0;
     int Days=0;
@@ -213,35 +213,73 @@ QString sta::calendarToDayOfYear(QDateTime DateTime)
 
     return DDD;
 }
-/*double sta::MissionElapsedTime(QDateTime Date)
+QString sta::MissionElapsedTime(double Date, double StartEpoch)
 {
-    int DaysInMonths=0;
-    int Days=0;
-    int DayOfYear=0;
-    int MonthsLength[12];
-    MonthsLength[0]=MonthsLength[2]=MonthsLength[4]=MonthsLength[6]=MonthsLength[7]=MonthsLength[9]=MonthsLength[11];
-    MonthsLength[3]=MonthsLength[5]=MonthsLength[8]=MonthsLength[10]=30;
-    MonthsLength[1]=28;
+    /*
+      Description: calculates the elapsed time between two dates, in terms of days, hours, minutes, and seconds.
+      Inputs: Date- each time step, in MJD, StartEpoch-point from which the elapsed time is calculated
+      Outputs: string with the elapsed time in the format day/hh:mm::ss
+      */
+    QString ETime;
+    double ElapsedTime=Date-StartEpoch+0.00001;
 
-    JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
-    TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
-    int Year=TimeDateVector[index].date().year();
+    double DayJD=calendarTOjulian(1858,11,18,0,0,0); //convert 1day into MJD
+    double DayMJD=sta::JdToMjd(DayJD);
+    double ElapsedTimeDays=ElapsedTime/DayMJD;
 
+    double HourJD=calendarTOjulian(1858,11,17,1,0,0); //convert 1hour into MJD
+    double HourMJD=sta::JdToMjd(HourJD);
+    double ElapsedTimeHours=ElapsedTime/HourMJD;
 
-    if(sta::CheckIfLeapYear(DateTime.date().year()))
-    {
-        MonthsLength[1]=29;
-    }
+    double MinuteJD=calendarTOjulian(1858,11,17,0,1,0); //convert 1minute into MJD
+    double MinuteMJD=sta::JdToMjd(MinuteJD);
+    double ElapsedTimeMinutes=ElapsedTime/MinuteMJD;
 
-    if(DateTime.date().month()!=1)
-    {
-      for(int i=0;i<DateTime.date().month();i++)
-      {
-        DaysInMonths=DaysInMonths+MonthsLength[i];
+    double SecondJD=calendarTOjulian(1858,11,17,0,0,1);//convert 1second into MJD
+    double SecondMJD=sta::JdToMjd(SecondJD);
+    double ElapsedTimeSeconds=ElapsedTime/SecondMJD;
 
-      }
-    }
-}*/
+    double Dayfractpart, Dayintpart;
+    Dayfractpart = modf (ElapsedTimeDays , &Dayintpart);
+    int day=(int)Dayintpart; //number of days
+
+    double NumberOfHours=Dayfractpart*ElapsedTimeHours/ElapsedTimeDays;
+    double Hourfractpart, Hourintpart;
+    Hourfractpart = modf (NumberOfHours , &Hourintpart);
+    int hour=(int)Hourintpart; //number of hours
+
+    double NumberOfMinutes=Hourfractpart*ElapsedTimeMinutes/ElapsedTimeHours;
+    double Minutefractpart, Minuteintpart;
+    Minutefractpart = modf (NumberOfMinutes , &Minuteintpart);
+    int minute=(int)Minuteintpart; //number of minutes
+
+    double NumberOfSeconds=Minutefractpart*ElapsedTimeSeconds/ElapsedTimeMinutes;
+    double Secondfractpart, Secondintpart;
+    Secondfractpart = modf (NumberOfSeconds , &Secondintpart);
+    int second=(int)Secondintpart; //number of minutes
+
+    QString STime;
+    QString Hour;
+    Hour.sprintf("%1d",hour);
+    (STime.append(Hour)).append(".");
+    QString Minute;
+    Minute.sprintf("%1d",minute);
+    (STime.append(Minute)).append(".");
+    QString Second;
+    Second.sprintf("%1d",second);
+    STime.append(Second);
+    QTime Time = QTime::fromString(STime, "h.m.s");
+
+    QString ToTime=Time.toString(Qt::TextDate);
+    QString DayToTime;
+    DayToTime.sprintf("%1d",day);
+    ETime.append(DayToTime);
+    ETime.append("/");
+    ETime.append(ToTime);
+
+    return ETime;
+
+}
 
 double sta::MjdToFromEpoch(double StartEpoch, double mjd, QString Units)
 {
@@ -283,6 +321,12 @@ Inputs: StartEpoch- beginning of propagation, mjd- considered time, Units- units
 
 QList<QString> sta::TimeLayout(int day, int month)
 {
+    /*
+      Description: writes day and month with 2 digits, adding a zero whenever the values only have one digit;
+example: day 1-> day 01
+      Inputs:day and month
+      Outputs: QList Output, day and month with 2 digits, Output[0] is day and Output[1] is month
+      */
     QString Day;
     Day.sprintf("%1d",day);
 
@@ -312,6 +356,11 @@ QList<QString> sta::TimeLayout(int day, int month)
 }
 QList<double> sta::DayOfYearToDDD(double DayOfYear)
 {
+    /*
+      Description: returns the day of the year with 3 digits in the integer part, adding zeros when the input has only 1 or 2 digits in the integer part.
+      Inputs: day of the year to transform
+      Outputs: day of year with 3 digits in the integer part
+      */
     double fractpartDay;
     double intpartDay;
     fractpartDay = modf (DayOfYear , &intpartDay);
