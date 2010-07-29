@@ -36,7 +36,13 @@ namespace vesta
     class UniverseRenderer;
     class Observer;
     class ObserverController;
+    class Entity;
+    class Body;
+    class TextureMapLoader;
 }
+
+class StaBody;
+
 
 /** ThreeDView is a widget with a rendered 3D view of the current space scenario.
   */
@@ -80,6 +86,7 @@ private:
     void initializeUniverse();
     void initializeLayers();
     void initializeStarCatalog(const QString& fileName);
+    vesta::Body* addSolarSystemBody(const StaBody* body, vesta::Entity* center);
 
 private:
     double m_currentTime;
@@ -87,6 +94,7 @@ private:
     vesta::UniverseRenderer* m_renderer;
     vesta::counted_ptr<vesta::Observer> m_observer;
     vesta::counted_ptr<vesta::ObserverController> m_controller;
+    vesta::counted_ptr<vesta::TextureMapLoader> m_textureLoader;
     double m_fov;
 
     QPointF m_mousePosition;
