@@ -2343,36 +2343,38 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     stream<<"\t";
 				}
 
-				if(TimeCoordinate=="Time from epoch")
-				{
-				    QWidget*Box=treeWidgetShowInReport->itemWidget(parameter,2);
-				    QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
-				    QString TimeUnits=ComboBox->currentText();
-
-				    double ElapsedTime=MjdToFromEpoch(StartEpoch,MJDdate[index],TimeUnits);
-
-				    if(TimeUnits=="Seconds")
-				    {
-					stream<<ElapsedTime;
-				    }
-				    if(TimeUnits=="Minutes")
-				    {
-					stream<<ElapsedTime;
-				    }
-				    if(TimeUnits=="Hours")
-				    {
-					stream<<ElapsedTime;
-				    }
-				    if(TimeUnits=="Days")
-				    {
-					stream<<ElapsedTime;
-				    }
-				}
-				if(TimeCoordinate=="GMT")
+                                /*if(TimeCoordinate=="GMT")
 				{
 
-				}
+                                }*/
 			    }
+
+                            if(name=="Epoch")
+                            {
+                                QWidget*Box=treeWidgetShowInReport->itemWidget(parameter,2);
+                                QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
+                                QString TimeUnits=ComboBox->currentText();
+
+                                double ElapsedTime=MjdToFromEpoch(StartEpoch,MJDdate[index],TimeUnits);
+
+                                if(TimeUnits=="Seconds")
+                                {
+                                    stream<<ElapsedTime<<"\t";
+                                }
+                                if(TimeUnits=="Minutes")
+                                {
+                                    stream<<ElapsedTime<<"\t";
+                                }
+                                if(TimeUnits=="Hours")
+                                {
+                                    stream<<ElapsedTime<<"\t";
+                                }
+                                if(TimeUnits=="Days")
+                                {
+                                    stream<<ElapsedTime<<"\t";
+                                }
+                            }
+
                             if(name=="Access Time")
                             {
                                 /*
@@ -2411,13 +2413,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
 					else
 					{
-					    stream<<"No visibility";
+                                            stream<<"No visibility"<<"\t";
 					}
 
 				    }
 				    else
 				    {
-					stream<<"No visibility";
+                                        stream<<"No visibility"<<"\t";
 				    }
 				}
 				if(name=="Elevation")
@@ -2438,13 +2440,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
 					else
 					{
-					    stream<<"No visibility";
+                                            stream<<"No visibility"<<"\t";
 					}
 
 				    }
 				    else
 				    {
-					stream<<"No visibility";
+                                        stream<<"No visibility"<<"\t";
 				    }
 				}
 				if(name=="Range")
@@ -2464,7 +2466,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
 					else
 					{
-					    stream<<"No visibility";
+                                            stream<<"No visibility"<<"\t";
 					}
 
 
@@ -2472,7 +2474,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 				    }
 				    else
 				    {
-					stream<<"No visibility";
+                                        stream<<"No visibility"<<"\t";
 				    }
 				}
 			    }
@@ -2494,13 +2496,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
 				    else
 				    {
-					stream<<"No visibility";
+                                        stream<<"No visibility"<<"\t";
 				    }
 
 				}
 				else
 				{
-				    stream<<"No visibility";
+                                    stream<<"No visibility"<<"\t";
 				}
 			    }
 			    if(name=="Received Frequency")
@@ -2521,13 +2523,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
 				    else
 				    {
-					stream<<"No visibility";
+                                        stream<<"No visibility"<<"\t";
 				    }
 
 				}
 				else
 				{
-				    stream<<"No visibility";
+                                    stream<<"No visibility"<<"\t";
 				}
 			    }
 			    if(name=="Doppler Shift")
@@ -2548,13 +2550,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
 				    else
 				    {
-					stream<<"No visibility";
+                                        stream<<"No visibility"<<"\t";
 				    }
 
 				}
 				else
 				{
-				    stream<<"No visibility";
+                                    stream<<"No visibility"<<"\t";
 				}
 			    }
 			    if(name=="Received Power")
@@ -2575,13 +2577,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
 				    else
 				    {
-					stream<<"No visibility";
+                                        stream<<"No visibility"<<"\t";
 				    }
 
 				}
 				else
 				{
-				    stream<<"No visibility";
+                                    stream<<"No visibility"<<"\t";
 				}
 			    }
 			    if(name=="Flux Density")
@@ -2601,13 +2603,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
 				    else
 				    {
-					stream<<"No visibility";
+                                        stream<<"No visibility"<<"\t";
 				    }
 
 				}
 				else
 				{
-				    stream<<"No visibility";
+                                    stream<<"No visibility"<<"\t";
 				}
 			    }
 			    if(name=="Overlap Bandwidth Factor")
@@ -4005,36 +4007,38 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 
 				    }
 
-				    if(TimeCoordinate=="Time from epoch")
-				    {
-					QWidget*Box=Tree.at(a)->itemWidget(parameter,2);
-					QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
-					QString TimeUnits=ComboBox->currentText();
-
-					double ElapsedTime=MjdToFromEpoch(StartEpoch,MJDdate[index],TimeUnits);
-
-					if(TimeUnits=="Seconds")
-					{
-					    LineData.append(ElapsedTime);
-					}
-					if(TimeUnits=="Minutes")
-					{
-					    LineData.append(ElapsedTime);
-					}
-					if(TimeUnits=="Hours")
-					{
-					    LineData.append(ElapsedTime);
-					}
-					if(TimeUnits=="Days")
-					{
-					    LineData.append(ElapsedTime);
-					}
-				    }
-				    if(TimeCoordinate=="GMT")
+                                   /* if(TimeCoordinate=="GMT")
 				    {
 
-				    }
+                                    }*/
 				}
+
+                                if(name=="Epoch")
+                                {
+                                    QWidget*Box=Tree.at(a)->itemWidget(parameter,2);
+                                    QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
+                                    QString TimeUnits=ComboBox->currentText();
+
+                                    double ElapsedTime=MjdToFromEpoch(StartEpoch,MJDdate[index],TimeUnits);
+
+                                    if(TimeUnits=="Seconds")
+                                    {
+                                        LineData.append(ElapsedTime);
+                                    }
+                                    if(TimeUnits=="Minutes")
+                                    {
+                                        LineData.append(ElapsedTime);
+                                    }
+                                    if(TimeUnits=="Hours")
+                                    {
+                                        LineData.append(ElapsedTime);
+                                    }
+                                    if(TimeUnits=="Days")
+                                    {
+                                        LineData.append(ElapsedTime);
+                                    }
+                                }
+
 				if((name=="Azimuth")||(name=="Elevation")||(name=="Range"))
 				{
                                     QString ToCoord=analysis::ReadCoordinateSys(Tree.at(a),SelParameters.at(i));
@@ -5312,7 +5316,7 @@ QComboBox*analysis::TimeFramesBox()
     TimeBox->addItem(tr("Gregorian LCL"));
     TimeBox->addItem(tr("YYDDD"));
     TimeBox->addItem(tr("Mission Elapsed"));
-    TimeBox->addItem(tr("GMT"));
+    //TimeBox->addItem(tr("GMT"));
 
 
     // Guillermo says: smaller font is better for the row
@@ -5448,7 +5452,7 @@ void analysis::ComboBoxOptions(QTreeWidgetItem*item)
 	treeWidgetShowInReport->setItemWidget(item,1,TimeFramesBox());
 	treeWidgetShowInReport->setItemWidget(item,2,NoUnitsBox());
     }
-    if(name=="Time from epoch")
+    if(name=="Epoch")
     {
 	treeWidgetShowInReport->setItemWidget(item,1,NoUnitsBox());
 	treeWidgetShowInReport->setItemWidget(item,2,TimeUnitsBox());
@@ -5603,7 +5607,7 @@ void analysis::PlotComboBox()
 
 
 			    }
-			    if(name=="Time from epoch")
+                            if(name=="Epoch")
 			    {
 				Tree.at(a)->setItemWidget(item,1,NoUnitsBox());
 				Tree.at(a)->setItemWidget(item,2,TimeUnitsBox());
@@ -5722,7 +5726,7 @@ void analysis::PlotComboBox()
 				    Tree.at(a)->setItemWidget(item,1,CoordinateBox());
 				    Tree.at(a)->setItemWidget(item,2,NoUnitsBox());
 				}
-				if(name=="Time from epoch")
+                                if(name=="Epoch")
 				{
 				    Tree.at(a)->setItemWidget(item,2,TimeUnitsBox());
 				}

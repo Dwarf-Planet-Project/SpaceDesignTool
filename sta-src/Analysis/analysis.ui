@@ -26,7 +26,7 @@
    <string>Analysis</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../iconary/sta-icons.qrc">
+   <iconset>
     <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -365,17 +365,12 @@
                     <string>Analysis</string>
                    </property>
                    <property name="icon">
-                    <iconset resource="../../iconary/sta-icons.qrc">
+                    <iconset>
                      <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
                    </property>
                    <item>
                     <property name="text">
                      <string>Time</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Time from epoch</string>
                     </property>
                    </item>
                    <item>
@@ -396,6 +391,11 @@
                    <item>
                     <property name="text">
                      <string>Radial Distance</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Epoch</string>
                     </property>
                    </item>
                    <item>
@@ -1541,17 +1541,12 @@
                   <string>Analysis</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../../iconary/sta-icons.qrc">
+                  <iconset>
                    <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
                  </property>
                  <item>
                   <property name="text">
                    <string>Time</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Time from epoch</string>
                   </property>
                  </item>
                  <item>
@@ -1572,6 +1567,11 @@
                  <item>
                   <property name="text">
                    <string>Radial Distance</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Epoch</string>
                   </property>
                  </item>
                  <item>
@@ -2660,17 +2660,12 @@
                   <string>Analysis</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../../iconary/sta-icons.qrc">
+                  <iconset>
                    <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
                  </property>
                  <item>
                   <property name="text">
                    <string>Time</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Time from epoch</string>
                   </property>
                  </item>
                  <item>
@@ -2691,6 +2686,11 @@
                  <item>
                   <property name="text">
                    <string>Radial Distance</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Epoch</string>
                   </property>
                  </item>
                  <item>
@@ -3823,17 +3823,12 @@
                   <string>Analysis</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../../iconary/sta-icons.qrc">
+                  <iconset>
                    <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
                  </property>
                  <item>
                   <property name="text">
                    <string>Time</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Time from epoch</string>
                   </property>
                  </item>
                  <item>
@@ -3854,6 +3849,11 @@
                  <item>
                   <property name="text">
                    <string>Radial Distance</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Epoch</string>
                   </property>
                  </item>
                  <item>
@@ -5006,9 +5006,7 @@
   <tabstop>treeWidgetYaxis</tabstop>
   <tabstop>treeWidgetXaxis</tabstop>
  </tabstops>
- <resources>
-  <include location="../../iconary/sta-icons.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>pushButton</sender>
