@@ -22,7 +22,8 @@
 */
 
 #include "Analysis/analysis.h"
-#include "math.h"
+#include "Analysis/analysisTable.h"
+#include "Analysis/AnalysisPlot.h"
 #include "Scenario/scenario.h"
 #include "Main/propagatedscenario.h"
 #include "Main/scenariotree.h"
@@ -35,13 +36,14 @@
 #include "Astro-Core/cartesianTOorbital.h"
 #include "Astro-Core/cartesianTOspherical.h"
 #include "Astro-Core/date.h"
-#include <Coverage/commanalysis.h>
-#include <Coverage/coverageanalysis.h>
-#include "Analysis/AnalysisPlot.h"
+#include "Coverage/commanalysis.h"
+#include "Coverage/coverageanalysis.h"
+
 #include "Plotting/PlotView.h"
 #include "Plotting/PlotView3D.h"
 #include "Help/HelpBrowser.h"
-#include "Analysis/analysisTable.h"
+
+#include "math.h"
 
 #include <QDesktopServices>
 #include <QUrl>
@@ -51,10 +53,18 @@
 #include <QInputDialog>
 #include <QtCore/QFile>
 #include <qtextstream.h>
+#include <QtGui>
+#include <QDebug>
+#include <QGLWidget>
+#include <QMessageBox>
+
+
+
 
 class ScenarioTree;
 
 class HelpBrowser;
+
 
 
 
@@ -1379,9 +1389,9 @@ some warning messages can de displayed if:
 
                             QString PlotTitle = "";
                             PlotTitle = PlotTitle + DataStructure[1].ParameterTitles[0];
-                            PlotTitle = PlotTitle + " = f (";
+                            PlotTitle = PlotTitle + " = f ( ";
                             PlotTitle = PlotTitle + DataStructure[0].ParameterTitles[0];
-                            PlotTitle = PlotTitle + ")";
+                            PlotTitle = PlotTitle + " )";
 
                             plotView->setTitle(PlotTitle);
                             plotView->setLeftLabel(DataStructure[1].ParameterTitles[0]);
@@ -1390,13 +1400,16 @@ some warning messages can de displayed if:
                             plotView->setMinimumSize(600, 400); // Rectangle
 
                             QHBoxLayout *buttonLayout = new QHBoxLayout;
+                            buttonLayout->addStretch();
+                            QPushButton *saveButton = new QPushButton(tr("Save"));
+                            buttonLayout->addWidget(saveButton);
+                            connect(saveButton, SIGNAL(clicked()), this, SLOT(saveImage()));
                             QPushButton *closeButton = new QPushButton(tr("Close"));
                             closeButton->setShortcut(tr("Esc"));
                             closeButton->setAutoDefault(true);
-                            buttonLayout->addStretch();
+                            connect(closeButton, SIGNAL(clicked()), window2D, SLOT(close()));
                             buttonLayout->addWidget(closeButton);
                             layout->addLayout(buttonLayout);
-                            connect(closeButton, SIGNAL(clicked()), window2D, SLOT(close()));
 
                             window2D->setLayout(layout);
                             window2D->setWindowModality(Qt::NonModal);
@@ -1453,16 +1466,19 @@ some warning messages can de displayed if:
 			    plotView->setYLabel(DataStructure[1].ParameterTitles[0]);
 			    plotView->setZLabel(DataStructure[2].ParameterTitles[0]);
 			    plotView->autoScale();
-			    plotView->setMinimumSize(500, 500);
+			    plotView->setMinimumSize(500, 500);                            
 
-			    QHBoxLayout *buttonLayout = new QHBoxLayout;
-			    QPushButton *closeButton = new QPushButton(tr("Close"));
-			    closeButton->setShortcut(tr("Esc"));
-			    closeButton->setAutoDefault(true);
-			    buttonLayout->addStretch();
-			    buttonLayout->addWidget(closeButton);
-			    layout->addLayout(buttonLayout);
-			    connect(closeButton, SIGNAL(clicked()), window3D, SLOT(close()));
+                            QHBoxLayout *buttonLayout = new QHBoxLayout;
+                            buttonLayout->addStretch();
+                            QPushButton *saveButton = new QPushButton(tr("Save"));
+                            buttonLayout->addWidget(saveButton);
+                            connect(saveButton, SIGNAL(clicked()), this, SLOT(saveImage()));
+                            QPushButton *closeButton = new QPushButton(tr("Close"));
+                            closeButton->setShortcut(tr("Esc"));
+                            closeButton->setAutoDefault(true);
+                            connect(closeButton, SIGNAL(clicked()), window3D, SLOT(close()));
+                            buttonLayout->addWidget(closeButton);
+                            layout->addLayout(buttonLayout);
 
 			    window3D->setLayout(layout);
                             window3D->setWindowModality(Qt::NonModal);
@@ -5884,3 +5900,13 @@ void analysis::DisableUnavailableOptions()
 
     }
 }
+
+
+
+void
+analysis::saveImage()
+{
+    QPixmap::grabWindow(this->winId()).save("mama.png", "PNG");
+}
+
+

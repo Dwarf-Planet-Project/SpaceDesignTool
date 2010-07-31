@@ -25,17 +25,21 @@
 #define analysis_H
 
 #include "ui_analysis.h"
+
 #include "Scenario/staschema.h"
 #include "Main/propagatedscenario.h"
+
 #include <QFont>
 #include <QDialog>
 #include<QComboBox>
 #include <QTreeWidgetItem>
+#include <QObject>
 
 
 class analysis : public QDialog , private Ui::analysisDialogClass
 {
     Q_OBJECT
+
 public:
     analysis(SpaceScenario * scenario, PropagatedScenario*propagatedScenario,QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~analysis();
@@ -51,7 +55,6 @@ public:
 	QList<double>MissionSat; //mission arc, satellite numbers
 	QList<QString>ParameterTitles;
 	QList<QList<double> >Data; // QList of lines, each line a QList of data
-
     };
 
     QList<AnalysisData> WriteDataStructure(QList<QTreeWidgetItem*> selected,QList<QTreeWidgetItem *> selectedTimes);
@@ -90,8 +93,8 @@ public slots:  // Added by Ana
     //void PlotComboBox(QList<QTreeWidgetItem*>List, int i);
     // void InsertingComboBox(int);
     // void AddDefaultTime();
-
-
+    void saveImage();
+    //void saveImage(QWidget* myWidgetPlot);
 
 private:
     SpaceScenario* m_scenario;
