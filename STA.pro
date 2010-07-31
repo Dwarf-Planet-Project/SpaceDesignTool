@@ -965,7 +965,7 @@ macx:QMAKE_CXXFLAGS_RELEASE = -ffast-math \
     -O3 \
     -Bdynamic
 linux-g++ { 
-    message("Warning: compiling a linux version with gcc v4.3")
+    message("Warning: compiling a linux version with gcc v > 4.3")
     QT += dbus
     QMAKE_CXXFLAGS_RELEASE = -ffast-math \
         -fexpensive-optimizations \
@@ -976,8 +976,8 @@ linux-g++ {
     LIBS += -ljpeg
     LIBS += -lpng
     CXXFLAGS += -std=c++0x
-    QMAKE_CXX     = g++-4.3
-    QMAKE_CC      = gcc-4.3
+    QMAKE_CXX     >= g++-4.3
+    QMAKE_CC      >= gcc-4.3
 
 }
 linux-g++-64 {
