@@ -1375,17 +1375,17 @@ some warning messages can de displayed if:
 				numberOfLines++;
 			    }
 
+			    {
                             // Patched by Guillermo to create a Non-Modal window each time the user wishes to create a 2D plot
-                            QWidget *window2D = new QWidget(this, Qt::Tool);
-
+			    QWidget *window2D = new QWidget(this, Qt::Window);
                             QVBoxLayout* layout = new QVBoxLayout(window2D);
 
-                            PlotView* plotView = new PlotView(window2D);
-                            layout->addWidget(plotView);
+			    plotView2D = new PlotView(window2D);
+			    layout->addWidget(plotView2D);
 
                             AnalysisPlot::AnalysisPlot* Data = new AnalysisPlot();
                             Data->setPoints(DataStructure,numberOfLines,numberOfParameters);
-                            plotView->addPlot(Data);
+			    plotView2D->addPlot(Data);
 
                             QString PlotTitle = "";
                             PlotTitle = PlotTitle + DataStructure[1].ParameterTitles[0];
@@ -1393,21 +1393,21 @@ some warning messages can de displayed if:
                             PlotTitle = PlotTitle + DataStructure[0].ParameterTitles[0];
                             PlotTitle = PlotTitle + " )";
 
-                            plotView->setTitle(PlotTitle);
-                            plotView->setLeftLabel(DataStructure[1].ParameterTitles[0]);
-                            plotView->setBottomLabel(DataStructure[0].ParameterTitles[0]);
-                            plotView->autoScale();
-                            plotView->setMinimumSize(600, 400); // Rectangle
+			    plotView2D->setTitle(PlotTitle);
+			    plotView2D->setLeftLabel(DataStructure[1].ParameterTitles[0]);
+			    plotView2D->setBottomLabel(DataStructure[0].ParameterTitles[0]);
+			    plotView2D->autoScale();
+			    plotView2D->setMinimumSize(600, 400); // Rectangle
 
                             QHBoxLayout *buttonLayout = new QHBoxLayout;
                             buttonLayout->addStretch();
                             QPushButton *saveButton = new QPushButton(tr("Save"));
                             buttonLayout->addWidget(saveButton);
-                            connect(saveButton, SIGNAL(clicked()), this, SLOT(saveImage()));
+			    connect(saveButton, SIGNAL(clicked()), this, SLOT(saveImage2D()));
                             QPushButton *closeButton = new QPushButton(tr("Close"));
                             closeButton->setShortcut(tr("Esc"));
                             closeButton->setAutoDefault(true);
-                            connect(closeButton, SIGNAL(clicked()), window2D, SLOT(close()));
+			    connect(closeButton, SIGNAL(clicked()), window2D, SLOT(close()));
                             buttonLayout->addWidget(closeButton);
                             layout->addLayout(buttonLayout);
 
@@ -1418,6 +1418,7 @@ some warning messages can de displayed if:
                             window2D->show();
                             window2D->raise(); // Required to keep the modeless window alive
                             window2D->activateWindow(); // Required to keep the modeless window alive
+			}
 
 			}
                         else
@@ -1441,17 +1442,17 @@ some warning messages can de displayed if:
 			{
 
 			    // Patched by Guillermo to create a Non-Modal window each time the user wishes to create a 3D plot
-                            QWidget *window3D = new QWidget(this, Qt::Tool);
+			    QWidget *window3D = new QWidget(this, Qt::Window);
 
 			    QVBoxLayout* layout = new QVBoxLayout(window3D);
 
-			    PlotView3D* plotView = new PlotView3D(window3D);
-			    layout->addWidget(plotView);  
+			    plotView3D = new PlotView3D(window3D);
+			    layout->addWidget(plotView3D);
 
 			    Analysis3D::Analysis3D *Data = new Analysis3D();
 			    Data->setPoints(DataStructure,numberOfLines,numberOfParameters);
 
-			    plotView->addPlot(Data, PlotStyle(PlotStyle::LinePlot, QPen(Qt::red, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin)));
+			    plotView3D->addPlot(Data, PlotStyle(PlotStyle::LinePlot, QPen(Qt::red, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin)));
 
 			    QString PlotTitle = "";
 			    PlotTitle = PlotTitle + DataStructure[2].ParameterTitles[0];
@@ -1461,18 +1462,18 @@ some warning messages can de displayed if:
 			    PlotTitle = PlotTitle + DataStructure[1].ParameterTitles[0];
 			    PlotTitle = PlotTitle + ")";
 
-			    plotView->setTitle(PlotTitle);
-			    plotView->setXLabel(DataStructure[0].ParameterTitles[0]);
-			    plotView->setYLabel(DataStructure[1].ParameterTitles[0]);
-			    plotView->setZLabel(DataStructure[2].ParameterTitles[0]);
-			    plotView->autoScale();
-			    plotView->setMinimumSize(500, 500);                            
+			    plotView3D->setTitle(PlotTitle);
+			    plotView3D->setXLabel(DataStructure[0].ParameterTitles[0]);
+			    plotView3D->setYLabel(DataStructure[1].ParameterTitles[0]);
+			    plotView3D->setZLabel(DataStructure[2].ParameterTitles[0]);
+			    plotView3D->autoScale();
+			    plotView3D->setMinimumSize(600, 600);
 
                             QHBoxLayout *buttonLayout = new QHBoxLayout;
                             buttonLayout->addStretch();
                             QPushButton *saveButton = new QPushButton(tr("Save"));
                             buttonLayout->addWidget(saveButton);
-                            connect(saveButton, SIGNAL(clicked()), this, SLOT(saveImage()));
+			    connect(saveButton, SIGNAL(clicked()), this, SLOT(saveImage3D()));
                             QPushButton *closeButton = new QPushButton(tr("Close"));
                             closeButton->setShortcut(tr("Esc"));
                             closeButton->setAutoDefault(true);
@@ -5904,9 +5905,43 @@ void analysis::DisableUnavailableOptions()
 
 
 void
-analysis::saveImage()
+analysis::saveImage2D()
 {
-    QPixmap::grabWindow(this->winId()).save("mama.png", "PNG");
+
+    QPixmap image = QPixmap::grabWindow(plotView2D->winId());
+    QString fileName = QFileDialog::getSaveFileName(plotView2D,
+						    tr("Save Image"),
+						    "",
+						    tr("Images (*.png  *.jpg *.tif)"));
+    if (!fileName.isEmpty())
+    {
+	bool ok = image.save(fileName);
+	if (!ok)
+	{
+	    QMessageBox::warning(this, tr("Save error"), tr("Error saving image to %1").arg(fileName));
+	}
+    }
+}
+
+
+
+void
+analysis::saveImage3D()
+{
+
+    QPixmap image = QPixmap::grabWindow(plotView3D->winId());
+    QString fileName = QFileDialog::getSaveFileName(plotView3D,
+						    tr("Save Image"),
+						    "",
+						    tr("Images (*.png  *.jpg *.tif)"));
+    if (!fileName.isEmpty())
+    {
+	bool ok = image.save(fileName);
+	if (!ok)
+	{
+	    QMessageBox::warning(this, tr("Save error"), tr("Error saving image to %1").arg(fileName));
+	}
+    }
 }
 
 

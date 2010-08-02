@@ -22,6 +22,7 @@
 
 //------------------ Author:       Chris Laurel                   -------------------
 //-----------------------------------------------------------------------------------
+// Patched by Guillermo on August 2010 to repair fonts, borders, etc
 
 
 #include "PlotDataSource.h"
@@ -130,6 +131,7 @@ PlotView::paintEvent(QPaintEvent* /* event */)
     float plotWidth = width() - m_rightMargin - m_leftMargin;
     float plotHeight = height() - m_topMargin - m_bottomMargin;
 
+
     // Draw the title
     painter.setPen(Qt::black);
     //painter.setFont(QFont("Helvetica", 10, QFont::Bold));
@@ -219,7 +221,12 @@ PlotView::paintEvent(QPaintEvent* /* event */)
         }
     }
 
-    // Draw axes
+    // Draw axes: pached by Guillermo
+    painter.setPen(Qt::blue);
+    // y
+    painter.drawLine(QPointF(m_leftMargin, m_topMargin), QPointF(m_leftMargin, m_topMargin + yscale));
+    // x
+    painter.drawLine(QPointF(m_leftMargin, m_topMargin + yscale), QPointF(m_leftMargin + xscale, m_bottomMargin + yscale));
 }
 
 

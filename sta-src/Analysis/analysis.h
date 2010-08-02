@@ -28,6 +28,8 @@
 
 #include "Scenario/staschema.h"
 #include "Main/propagatedscenario.h"
+#include "Plotting/PlotView.h"
+#include "Plotting/PlotView3D.h"
 
 #include <QFont>
 #include <QDialog>
@@ -65,6 +67,9 @@ public:
     QString ReadCoordinateSys(QTreeWidget*Tree,QTreeWidgetItem*Item);
     QList<int> calcAccessTime(double MJDdate,int AccessNumber,int AccessStep,int CovIndex,QStringList LineOfCoverageReport);
 
+    PlotView* plotView2D;
+    PlotView3D* plotView3D;
+
 protected slots:
     //void on_groupBoxAnalysisFormat_toggled(bool);
     //void on_ComboBoxAnalysisFormat_activated(const QString&);
@@ -83,6 +88,8 @@ protected slots:
     // void on_ClosePushButton_clicked();   // Guillermo says: not needed any more
     //Guillermo
     void raiseHelp();
+    void saveImage2D();
+    void saveImage3D();
 
 public slots:  // Added by Ana
     void addParameter(QTreeWidgetItem* item); // clicked
@@ -93,8 +100,7 @@ public slots:  // Added by Ana
     //void PlotComboBox(QList<QTreeWidgetItem*>List, int i);
     // void InsertingComboBox(int);
     // void AddDefaultTime();
-    void saveImage();
-    //void saveImage(QWidget* myWidgetPlot);
+
 
 private:
     SpaceScenario* m_scenario;
@@ -134,6 +140,8 @@ private:
 				   double mjd,
 				   QString FromCoordinate,
 				   QString ToCoordinate);
+
+
 
 };
 
