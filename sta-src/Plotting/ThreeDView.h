@@ -39,6 +39,7 @@ namespace vesta
     class Entity;
     class Body;
     class TextureMapLoader;
+    class TextureFont;
 }
 
 class StaBody;
@@ -65,11 +66,11 @@ public:
 
 public slots:
    void setCurrentTime(double t);
-   double tick(double dt);
-   void setViewChanged()
-   {
-       m_viewChanged = true;
-   }
+   void tick(double dt);
+
+   void setViewChanged();
+
+   void gotoBody(const StaBody* body);
 
 protected:
     void initializeGL();
@@ -88,6 +89,8 @@ private:
     void initializeStarCatalog(const QString& fileName);
     vesta::Body* addSolarSystemBody(const StaBody* body, vesta::Entity* center);
 
+    void drawOverlay();
+
 private:
     double m_currentTime;
     vesta::Universe* m_universe;
@@ -95,11 +98,12 @@ private:
     vesta::counted_ptr<vesta::Observer> m_observer;
     vesta::counted_ptr<vesta::ObserverController> m_controller;
     vesta::counted_ptr<vesta::TextureMapLoader> m_textureLoader;
+    vesta::counted_ptr<vesta::TextureFont> m_labelFont;
     double m_fov;
 
     QPointF m_mousePosition;
 
-    bool m_viewChanged;
+    int m_viewChanged;
 };
 
 #endif // _THREED_VIEW_H_

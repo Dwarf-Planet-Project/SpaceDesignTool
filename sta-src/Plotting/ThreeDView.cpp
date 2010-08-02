@@ -25,11 +25,6 @@
  */
 
 
-#include "ThreeDView.h"
-#include <Astro-Core/date.h>
-#include <Astro-Core/stamath.h>
-#include <Astro-Core/stabody.h>
-#include <Astro-Core/ephemeris.h>
 #include <vesta/Universe.h>
 #include <vesta/UniverseRenderer.h>
 #include <vesta/Observer.h>
@@ -44,7 +39,15 @@
 #include <vesta/DataChunk.h>
 #include <vesta/DDSLoader.h>
 #include <vesta/TextureMapLoader.h>
+#include <vesta/TextureFont.h>
 #include <vesta/interaction/ObserverController.h>
+
+#include "ThreeDView.h"
+
+#include <Astro-Core/date.h>
+#include <Astro-Core/stamath.h>
+#include <Astro-Core/stabody.h>
+#include <Astro-Core/ephemeris.h>
 
 #include <QWheelEvent>
 #include <QFile>
@@ -79,7 +82,7 @@ secsSinceJ2000ToMjd(double secs)
     return sta::secsToDays(secs) - (MJDBase - J2000);
 }
 
-static double BeginningOfTime = -yearsToSecs(100.0);  // 1900 CE
+static double BeginningOfTime = -yearsToSecs(200.0);  // 1900 CE
 static double EndOfTime = yearsToSecs(100.0);         // 2100 CE
 static double ValidTimeSpan = EndOfTime - BeginningOfTime;
 
@@ -218,13 +221,28 @@ public:
 };
 
 
+// Compute an orientation that will make an observer face in the directom from the 'from' point
+// to the 'to' point, with the specified 'up' vector.
+static Quaterniond
+LookAt(const Vector3d& from, const Vector3d& to, const Vector3d& up)
+{
+    Vector3d direction = (to - from).normalized();
+    Vector3d right = up.cross(direction).normalized();
+    Vector3d u = direction.cross(right);
+
+    Matrix3d m;
+    m << right, u, direction;
+    return Quaterniond(m);
+}
+
+
 
 ThreeDView::ThreeDView(QWidget* parent) :
     m_currentTime(0.0),
     m_universe(NULL),
     m_renderer(NULL),
     m_fov(sta::degToRad(60.0)),
-    m_viewChanged(true)
+    m_viewChanged(1)
 {
     m_textureLoader = counted_ptr<TextureMapLoader>(new QtTextureLoader());
 
@@ -232,10 +250,17 @@ ThreeDView::ThreeDView(QWidget* parent) :
     m_universe->addRef();
     initializeUniverse();
 
-    m_observer = counted_ptr<Observer>(new Observer(*m_universe->findFirst("Earth")));
-    m_observer->setPosition(Vector3d(0.0, 0.0, 25000.0));
+    Entity* earth = m_universe->findFirst("Earth");
+    Entity* sun = m_universe->findFirst("Sun");
+
+    m_observer = counted_ptr<Observer>(new Observer(*earth));
     m_controller = counted_ptr<ObserverController>(new ObserverController());
     m_controller->setObserver(m_observer.ptr());
+
+    // Position the observer on the sunlit side of Earth
+    m_observer->setCenter(earth);
+    m_observer->setPosition((sun->position(m_currentTime) - earth->position(m_currentTime)).normalized() * 25000.0f);
+    m_observer->setOrientation(LookAt(Vector3d::Zero(), m_observer->position(), Vector3d::UnitZ()));
 }
 
 
@@ -264,11 +289,33 @@ ThreeDView::sizeHint() const
 }
 
 
+static TextureFont*
+LoadTextureFont(const QString& fileName)
+{
+    QFile fontFile(fileName);
+    if (fontFile.open(QIODevice::ReadOnly))
+    {
+        QByteArray fontData = fontFile.readAll();
+        DataChunk chunk(fontData.data(), fontData.size());
+        return TextureFont::LoadTxf(&chunk);
+    }
+    else
+    {
+        qDebug() << "Error loading font file " << fileName;
+        return NULL;
+    }
+}
+
+
 void
 ThreeDView::initializeGL()
 {
+    m_labelFont = LoadTextureFont("fonts/sans12.txf");
+
     m_renderer = new UniverseRenderer();
     initializeLayers();
+
+    m_renderer->setAmbientLight(Spectrum::Flat(0.2f));
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glEnable(GL_DEPTH_TEST);
@@ -280,7 +327,7 @@ ThreeDView::initializeGL()
 void
 ThreeDView::paintGL()
 {
-    if (!m_viewChanged)
+    if (m_viewChanged <= 0)
     {
         // No need to repaint
         return;
@@ -288,7 +335,7 @@ ThreeDView::paintGL()
     else
     {
         // Mark the view up to date
-        m_viewChanged = false;
+        m_viewChanged--;
     }
 
     glDepthMask(GL_TRUE);
@@ -301,6 +348,63 @@ ThreeDView::paintGL()
     m_renderer->renderView(NULL, m_observer.ptr(), m_fov, viewport);
 
     m_renderer->endViewSet();
+
+    drawOverlay();
+}
+
+
+void
+ThreeDView::drawOverlay()
+{
+    int viewWidth = size().width();
+    int viewHeight = size().height();
+    glViewport(0, 0, viewWidth, viewHeight);
+
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    glEnable(GL_BLEND);
+    if (GLEW_ARB_multisample)
+    {
+        glDisable(GL_MULTISAMPLE_ARB);
+    }
+
+    // Set up projection and model view matrices so that we're
+    // drawing in window coordinates.
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluOrtho2D(0, viewWidth, 0, viewHeight);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+    glTranslatef(0.125f, 0.125f, 0);
+
+    glEnable(GL_TEXTURE_2D);
+
+    if (m_labelFont.isValid())
+    {
+        // Display the time
+        QDateTime J2000(QDate(2000, 1, 1));
+        QDateTime currentDateTime = J2000.addMSecs((qint64) (m_currentTime * 1000.0));
+        m_labelFont->bind();
+        m_labelFont->render(currentDateTime.toString("dd MMM yyyy hh:mm:ss").toLatin1().data(), Vector2f(10.0f, viewHeight - 25.0f));
+
+        // Display the position of the viewer relative to the center
+        // Vector3d position = m_observer->position();
+        // m_labelFont->render(QString("%1 %2 %3").arg(position.x()).arg(position.y()).arg(position.z()).toUtf8().data(), Vector2f(10.0f, 10.0f));
+    }
+
+    // Restore graphics state and matrices
+    glEnable(GL_DEPTH_TEST);
+    if (GLEW_ARB_multisample)
+    {
+        glEnable(GL_MULTISAMPLE_ARB);
+    }
+
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
 }
 
 
@@ -507,7 +611,6 @@ void
 ThreeDView::setCurrentTime(double mjd)
 {
     double t = mjdToSecsSinceJ2000(mjd);
-    qDebug() << "mjd: " << mjd << ", t: " << t << ", " << BeginningOfTime;
     if (t != m_currentTime)
     {
         setViewChanged();
@@ -517,7 +620,18 @@ ThreeDView::setCurrentTime(double mjd)
 }
 
 
-double
+/** Mark the view as requiring a repaint.
+  */
+void
+ThreeDView::setViewChanged()
+{
+    // Need to keep a counter rather than just a flag. Otherwise, both buffers in a double
+    // buffered swap chain may not get repainted.
+    m_viewChanged = 2;
+}
+
+
+void
 ThreeDView::tick(double dt)
 {
     Vector3d lastPosition = m_observer->absolutePosition(m_currentTime);
@@ -531,4 +645,29 @@ ThreeDView::tick(double dt)
     }
 
     update();
+}
+
+
+void
+ThreeDView::gotoBody(const StaBody* body)
+{
+    Entity* e = m_universe->findFirst(body->name().toUtf8().data());
+    Entity* sun = m_universe->findFirst("Sun");
+
+    if (e && sun)
+    {
+        float distance = 25000.0f;
+        if (e->geometry())
+        {
+            distance = e->geometry()->boundingSphereRadius() * 4.0f;
+        }
+
+        // Position the observer on the sunlit side of the body
+        m_observer->setCenter(e);
+        m_observer->setPosition((sun->position(m_currentTime) - e->position(m_currentTime)).normalized() * distance);
+        m_observer->setOrientation(LookAt(Vector3d::Zero(), m_observer->position(), Vector3d::UnitZ()));
+
+        setViewChanged();
+        update();
+    }
 }
