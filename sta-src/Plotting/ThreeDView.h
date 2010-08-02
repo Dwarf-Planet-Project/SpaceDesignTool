@@ -29,6 +29,7 @@
 
 #include <vesta/Object.h>
 #include <QGLWidget>
+#include <QHash>
 
 namespace vesta
 {
@@ -38,11 +39,16 @@ namespace vesta
     class ObserverController;
     class Entity;
     class Body;
+    class Frame;
     class TextureMapLoader;
     class TextureFont;
 }
 
 class StaBody;
+class PropagatedScenario;
+class SpaceObject;
+class GroundObject;
+class MissionArc;
 
 
 /** ThreeDView is a widget with a rendered 3D view of the current space scenario.
@@ -71,6 +77,7 @@ public slots:
    void setViewChanged();
 
    void gotoBody(const StaBody* body);
+   void setScenario(PropagatedScenario* scenario);
 
 protected:
     void initializeGL();
@@ -88,8 +95,14 @@ private:
     void initializeLayers();
     void initializeStarCatalog(const QString& fileName);
     vesta::Body* addSolarSystemBody(const StaBody* body, vesta::Entity* center);
+    vesta::Entity* findSolarSystemBody(const StaBody* body);
+    vesta::Frame* createFrame(const MissionArc* arc);
 
     void drawOverlay();
+
+    vesta::Body* createSpaceObject(const SpaceObject* spaceObj);
+    vesta::Body* createGroundObject(const GroundObject* groundObj);
+    void clearScenarioObjects();
 
 private:
     double m_currentTime;
@@ -102,6 +115,9 @@ private:
     double m_fov;
 
     QPointF m_mousePosition;
+
+    QHash<SpaceObject*, vesta::Entity*> m_scenarioSpaceObjects;
+    QHash<GroundObject*, vesta::Entity*> m_scenarioGroundObjects;
 
     int m_viewChanged;
 };

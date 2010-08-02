@@ -34,16 +34,21 @@
 #include <vesta/RotationModel.h>
 #include <vesta/WorldGeometry.h>
 #include <vesta/InertialFrame.h>
+#include <vesta/BodyFixedFrame.h>
 #include <vesta/CelestialCoordinateGrid.h>
 #include <vesta/StarsLayer.h>
 #include <vesta/DataChunk.h>
 #include <vesta/DDSLoader.h>
 #include <vesta/TextureMapLoader.h>
 #include <vesta/TextureFont.h>
+#include <vesta/Visualizer.h>
+#include <vesta/TrajectoryGeometry.h>
+#include <vesta/LabelGeometry.h>
 #include <vesta/interaction/ObserverController.h>
 
 #include "ThreeDView.h"
 
+#include <Main/propagatedscenario.h>
 #include <Astro-Core/date.h>
 #include <Astro-Core/stamath.h>
 #include <Astro-Core/stabody.h>
@@ -85,6 +90,44 @@ secsSinceJ2000ToMjd(double secs)
 static double BeginningOfTime = -yearsToSecs(200.0);  // 1900 CE
 static double EndOfTime = yearsToSecs(100.0);         // 2100 CE
 static double ValidTimeSpan = EndOfTime - BeginningOfTime;
+
+
+/** Trajectory subclass that adapt's an STA mission arc for VESTA
+  */
+class StaMissionArcTrajectory : public Trajectory
+{
+public:
+    StaMissionArcTrajectory(const MissionArc* missionArc) :
+        m_missionArc(missionArc)
+    {
+    }
+
+    virtual StateVector state(double t) const
+    {
+        // VESTA provides the time as the number of seconds since 1 Jan 2000 12:00:00 UTC.
+        double mjd = secsSinceJ2000ToMjd(t);
+
+        sta::StateVector sv;
+        m_missionArc->getStateVector(mjd, &sv);
+        return StateVector(sv.position, sv.velocity);
+    }
+
+    virtual double boundingSphereRadius() const
+    {
+        // Just return a very large value. For better performance, we should eventually return
+        // a much tighter bounding sphere.
+        return 1.0e10;
+    }
+
+    const MissionArc* missionArc()
+    {
+        return m_missionArc;
+    }
+
+private:
+    const MissionArc* m_missionArc;
+
+};
 
 
 /** Trajectory subclass that adapts STA's ephemerides for VESTA.
@@ -250,17 +293,12 @@ ThreeDView::ThreeDView(QWidget* parent) :
     m_universe->addRef();
     initializeUniverse();
 
-    Entity* earth = m_universe->findFirst("Earth");
-    Entity* sun = m_universe->findFirst("Sun");
-
+    Entity* earth = findSolarSystemBody(STA_SOLAR_SYSTEM->earth());
     m_observer = counted_ptr<Observer>(new Observer(*earth));
     m_controller = counted_ptr<ObserverController>(new ObserverController());
     m_controller->setObserver(m_observer.ptr());
 
-    // Position the observer on the sunlit side of Earth
-    m_observer->setCenter(earth);
-    m_observer->setPosition((sun->position(m_currentTime) - earth->position(m_currentTime)).normalized() * 25000.0f);
-    m_observer->setOrientation(LookAt(Vector3d::Zero(), m_observer->position(), Vector3d::UnitZ()));
+    gotoBody(STA_SOLAR_SYSTEM->earth());
 }
 
 
@@ -385,9 +423,12 @@ ThreeDView::drawOverlay()
     {
         // Display the time
         QDateTime J2000(QDate(2000, 1, 1));
+        J2000.setTimeSpec(Qt::UTC);
         QDateTime currentDateTime = J2000.addMSecs((qint64) (m_currentTime * 1000.0));
         m_labelFont->bind();
         m_labelFont->render(currentDateTime.toString("dd MMM yyyy hh:mm:ss").toLatin1().data(), Vector2f(10.0f, viewHeight - 25.0f));
+        m_labelFont->render(QString("JD %1").arg(2451545.0 + sta::secsToDays(m_currentTime), 0, 'f', 5).toLatin1().data(),
+                            Vector2f(10.0f, viewHeight - 40.0f));
 
         // Display the position of the viewer relative to the center
         // Vector3d position = m_observer->position();
@@ -546,6 +587,14 @@ ThreeDView::addSolarSystemBody(const StaBody* body, Entity* center)
 }
 
 
+// Find the VESTA body matching the specified STA body
+vesta::Entity*
+ThreeDView::findSolarSystemBody(const StaBody* body)
+{
+    return m_universe->findFirst(body->name().toUtf8().data());
+}
+
+
 // Load the star catalog from a file
 void
 ThreeDView::initializeStarCatalog(const QString& fileName)
@@ -670,4 +719,157 @@ ThreeDView::gotoBody(const StaBody* body)
         setViewChanged();
         update();
     }
+}
+
+
+void
+ThreeDView::setScenario(PropagatedScenario* scenario)
+{
+    clearScenarioObjects();
+    if (!scenario)
+    {
+        return;
+    }
+
+    foreach (SpaceObject* spaceObj, scenario->spaceObjects())
+    {
+        Body* body = createSpaceObject(spaceObj);
+        if (body)
+        {
+            m_universe->addEntity(body);
+            m_scenarioSpaceObjects.insert(spaceObj, body);
+        }
+    }
+
+    foreach (GroundObject* groundObj, scenario->groundObjects())
+    {
+        Body* body = createGroundObject(groundObj);
+        if (body)
+        {
+            m_universe->addEntity(body);
+            m_scenarioGroundObjects.insert(groundObj, body);
+        }
+    }
+}
+
+
+// Create a VESTA frame for the specified mission arc
+Frame*
+ThreeDView::createFrame(const MissionArc* arc)
+{
+    Frame* f = NULL;
+
+    switch (arc->coordinateSystem().type())
+    {
+    case sta::COORDSYS_ECLIPTIC_J2000:
+        f = InertialFrame::eclipticJ2000();
+        break;
+
+    case sta::COORDSYS_EME_J2000:
+        f = InertialFrame::equatorJ2000();
+        break;
+
+    case sta::COORDSYS_BODYFIXED:
+        {
+            Entity* e = findSolarSystemBody(arc->centralBody());
+            if (e)
+            {
+                f = new BodyFixedFrame(*e);
+            }
+        }
+        break;
+
+    default:
+        break;
+    }
+
+    return f;
+}
+
+
+/** Create a VESTA body representing an STA SpaceObject.
+  */
+Body*
+ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
+{
+    // Don't realize space objects with empty trajectories
+    if (spaceObj->mission().isEmpty())
+    {
+        return NULL;
+    }
+
+    Body* body = new Body();
+    body->setName(spaceObj->name().toUtf8().data());
+
+    foreach (MissionArc* missionArc, spaceObj->mission())
+    {
+        Entity* center = findSolarSystemBody(missionArc->centralBody());
+        if (center)
+        {
+            Frame* frame = createFrame(missionArc);
+            if (frame)
+            {
+                Arc* arc = new Arc();
+                arc->setCenter(center);
+                arc->setDuration(sta::daysToSecs(missionArc->ending() - missionArc->beginning()));
+                arc->setTrajectoryFrame(frame);
+                arc->setTrajectory(new StaMissionArcTrajectory(missionArc));
+                body->chronology()->addArc(arc);
+            }
+        }
+    }
+
+    body->chronology()->setBeginning(mjdToSecsSinceJ2000(spaceObj->mission().first()->beginning()));
+
+    Spectrum spaceObjColor(spaceObj->trajectoryColor().redF(),
+                           spaceObj->trajectoryColor().greenF(),
+                           spaceObj->trajectoryColor().blueF());
+
+    LabelGeometry* label = new LabelGeometry(spaceObj->name().toUtf8().data(), m_labelFont.ptr(), spaceObjColor);
+    body->setVisualizer("label", new Visualizer(label));
+
+    // Add a trajectory visualizer for the first arc
+    Arc* firstArc = body->chronology()->firstArc();
+    TrajectoryGeometry* trajGeom = new TrajectoryGeometry();
+    trajGeom->setColor(spaceObjColor);
+    trajGeom->computeSamples(firstArc->trajectory(),
+                             body->chronology()->beginning(),
+                             body->chronology()->beginning() + firstArc->duration(), 1000);
+    string visName = QString("%1 trajectory").arg(spaceObj->name()).toUtf8().data();
+    firstArc->center()->setVisualizer(visName, new Visualizer(trajGeom));
+
+    return body;
+}
+
+
+/** Create a VESTA body representing an STA GroundObject.
+  */
+Body*
+ThreeDView::createGroundObject(const GroundObject* groundObj)
+{
+    Body* body = new Body();
+    body->setName(groundObj->name.toUtf8().data());
+
+    m_universe->addEntity(body);
+
+    return body;
+}
+
+
+void
+ThreeDView::clearScenarioObjects()
+{
+    // Remove VESTA entities for all space and ground objects
+    foreach (Entity* e, m_scenarioSpaceObjects.values())
+    {
+        m_universe->removeEntity(e);
+    }
+
+    foreach (Entity* e, m_scenarioGroundObjects.values())
+    {
+        m_universe->removeEntity(e);
+    }
+
+    m_scenarioSpaceObjects.clear();
+    m_scenarioGroundObjects.clear();
 }
