@@ -12,6 +12,7 @@
 #include "Geometry.h"
 #include "Intersect.h"
 #include "Visualizer.h"
+#include <algorithm>
 #include <limits>
 
 using namespace vesta;
