@@ -31,6 +31,7 @@
 #include <vesta/Body.h>
 #include <vesta/Arc.h>
 #include <vesta/Trajectory.h>
+#include <vesta/FixedPointTrajectory.h>
 #include <vesta/RotationModel.h>
 #include <vesta/WorldGeometry.h>
 #include <vesta/InertialFrame.h>
@@ -44,6 +45,7 @@
 #include <vesta/Visualizer.h>
 #include <vesta/TrajectoryGeometry.h>
 #include <vesta/LabelGeometry.h>
+#include <vesta/Units.h>
 #include <vesta/interaction/ObserverController.h>
 
 #include "ThreeDView.h"
@@ -66,7 +68,6 @@ using namespace vesta;
 using namespace Eigen;
 using namespace std;
 
-static double J2000 = 2451545.0;
 static double MJDBase = 2400000.5;
 
 static double
@@ -78,13 +79,13 @@ yearsToSecs(double julianYears)
 static double
 mjdToSecsSinceJ2000(double mjd)
 {
-    return sta::daysToSecs(mjd + (MJDBase - J2000));
+    return sta::daysToSecs(mjd + (MJDBase - vesta::J2000));
 }
 
 static double
 secsSinceJ2000ToMjd(double secs)
 {
-    return sta::secsToDays(secs) - (MJDBase - J2000);
+    return sta::secsToDays(secs) - (MJDBase - vesta::J2000);
 }
 
 static double BeginningOfTime = -yearsToSecs(200.0);  // 1900 CE
@@ -280,7 +281,8 @@ LookAt(const Vector3d& from, const Vector3d& to, const Vector3d& up)
 
 
 
-ThreeDView::ThreeDView(QWidget* parent) :
+ThreeDView::ThreeDView(const QGLFormat& format, QWidget* parent) :
+    QGLWidget(format, parent),
     m_currentTime(0.0),
     m_universe(NULL),
     m_renderer(NULL),
@@ -422,7 +424,7 @@ ThreeDView::drawOverlay()
     if (m_labelFont.isValid())
     {
         // Display the time
-        QDateTime J2000(QDate(2000, 1, 1));
+        QDateTime J2000(QDate(2000, 1, 1), QTime(12, 0, 0));
         J2000.setTimeSpec(Qt::UTC);
         QDateTime currentDateTime = J2000.addMSecs((qint64) (m_currentTime * 1000.0));
         m_labelFont->bind();
@@ -477,6 +479,7 @@ ThreeDView::mouseMoveEvent(QMouseEvent *event)
     m_mousePosition = event->posF();
 
     bool leftButton = (event->buttons() & Qt::LeftButton) != 0;
+    bool rightButton = (event->buttons() & Qt::RightButton) != 0;
 
     if (leftButton)
     {
@@ -485,6 +488,15 @@ ThreeDView::mouseMoveEvent(QMouseEvent *event)
 
         m_controller->applyOrbitTorque(Vector3d::UnitX() * -xrot);
         m_controller->applyOrbitTorque(Vector3d::UnitY() * -yrot);
+    }
+    else if (rightButton)
+    {
+        double fovFactor = 1.0;//toDegrees(m_fovY) / 60.0;
+        double xrot = delta.y() / 100.0 * fovFactor;
+        double yrot = delta.x() / 100.0 * fovFactor;
+
+        m_controller->pitch(xrot);
+        m_controller->yaw(yrot);
     }
 }
 
@@ -725,6 +737,8 @@ ThreeDView::gotoBody(const StaBody* body)
 void
 ThreeDView::setScenario(PropagatedScenario* scenario)
 {
+    setViewChanged();
+
     clearScenarioObjects();
     if (!scenario)
     {
@@ -780,6 +794,7 @@ ThreeDView::createFrame(const MissionArc* arc)
         break;
 
     default:
+        qDebug() << "ThreeDView::createFrame(): Unsupported coordinate system.";
         break;
     }
 
@@ -831,6 +846,7 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
     // Add a trajectory visualizer for the first arc
     Arc* firstArc = body->chronology()->firstArc();
     TrajectoryGeometry* trajGeom = new TrajectoryGeometry();
+    trajGeom->setDisplayedPortion(TrajectoryGeometry::StartToCurrentTime);
     trajGeom->setColor(spaceObjColor);
     trajGeom->computeSamples(firstArc->trajectory(),
                              body->chronology()->beginning(),
@@ -850,7 +866,37 @@ ThreeDView::createGroundObject(const GroundObject* groundObj)
     Body* body = new Body();
     body->setName(groundObj->name.toUtf8().data());
 
-    m_universe->addEntity(body);
+    Entity* center = findSolarSystemBody(groundObj->centralBody);
+    if (center)
+    {
+        // Convert spherical coordinates to rectangular
+        double latRadians = toRadians(groundObj->latitude);
+        double lonRadians = toRadians(groundObj->longitude);
+        Vector3d position(cos(latRadians) * cos(lonRadians),
+                          cos(latRadians) * sin(lonRadians),
+                          sin(latRadians));
+        position = position.cwise() * groundObj->centralBody->radii();
+        qDebug() << "ground object: " << position.x() << ", " << position.y() << ", " << position.z();
+
+        Arc* arc = new Arc();
+        arc->setCenter(center);
+        arc->setDuration(ValidTimeSpan);
+        arc->setTrajectory(new FixedPointTrajectory(position));
+        arc->setTrajectoryFrame(new BodyFixedFrame(*center));
+
+        body->chronology()->addArc(arc);
+        body->chronology()->setBeginning(BeginningOfTime);
+    }
+    else
+    {
+        delete body;
+        return NULL;
+    }
+
+    LabelGeometry* label = new LabelGeometry(groundObj->name.toUtf8().data(), m_labelFont.ptr(), Spectrum(1.0f, 1.0f, 1.0f));
+    Visualizer* visualizer = new Visualizer(label);
+    visualizer->setDepthAdjustment(Visualizer::AdjustToFront);
+    body->setVisualizer("label", visualizer);
 
     return body;
 }

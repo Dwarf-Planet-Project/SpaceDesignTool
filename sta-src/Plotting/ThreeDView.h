@@ -59,7 +59,7 @@ public:
     Q_OBJECT
 
 public:
-    ThreeDView(QWidget *parent = 0);
+    ThreeDView(const QGLFormat& format, QWidget *parent = 0);
     ~ThreeDView();
 
    QSize minimumSizeHint() const;
