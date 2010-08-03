@@ -37,14 +37,10 @@
 #include <Astro-Core/inertialTOfixed.h>
 #include <Astro-Core/constants.h>
 
-class CelestiaBody;
-class CelestiaLocation;
-class CelestiaInterface;
 class QTemporaryFile;
 
 
 /*! A mission arc is a trajectory in a propagated scenario.
- *  It also corresponds to a TimelinePhase in Celestia.
  */
 class MissionArc
 {
@@ -114,9 +110,6 @@ public:
                         sta::StateVector* result) const;
     
     bool generateEphemerisFiles();
-    bool realize3DViewRepresentation(CelestiaInterface* celestia);
-    
-    CelestiaBody* celestiaObject() { return m_celestiaBody; }
     
 private:
     double m_missionStartTime;
@@ -126,8 +119,6 @@ private:
     QString m_name;
     QString m_modelFile;
     QColor m_trajectoryColor;
-    
-    CelestiaBody* m_celestiaBody;
 };
 
 
@@ -139,7 +130,6 @@ public:
     GroundObject();
     ~GroundObject();
 
-    bool realize3DViewRepresentation(CelestiaInterface* celestia);
     double elevationAngle(const SpaceObject* spacecraft, double t) const;
     double azimuthAngle(const SpaceObject* spacecraft, double t) const;
     double getRange(const SpaceObject* spacecraft, double t) const;
@@ -149,9 +139,6 @@ public:
     double longitude;  // degrees
     double latitude;   // degrees
     double altitude;   // meters
-    
-private:
-    CelestiaLocation* m_celestiaLocation;
 };
 
 

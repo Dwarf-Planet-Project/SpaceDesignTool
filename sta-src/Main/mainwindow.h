@@ -33,7 +33,6 @@
 
 #include <QMainWindow>
 #include <QTime>
-#include <celestia/celestiacore.h>
 #include "timelinewidget.h"
 #include "ui_mainwindow.h"
 
@@ -43,6 +42,7 @@ class QTabWidget;
 
 class OrbitPropagationDialog;
 class GroundTrackPlotTool;
+class ThreeDVisualizationTool;
 class ScenarioView;
 class SpaceScenario;
 class ScenarioElementBox;
@@ -59,10 +59,6 @@ class SEMVehicleDialog;
 class AnalysisDialog;
 class STAcalculator;
 
-class CelestiaGlWidget;
-class CelestiaActions;
-class CelestiaInterface;
-
 class QXmlSchema;
 
 
@@ -78,18 +74,10 @@ public:
     void setScenario(SpaceScenario* scenario);
 
 public:
-    void initCelestia(const QString& configFileName,
-                      const QStringList& extrasDirectories);
-    void initCelestiaState();
-    
     void readSettings();
     void writeSettings();
     void loadBookmarks();
     void saveBookmarks();
-    
-    // Callback methods for Celestia
-    void contextMenu(float x, float y, Selection sel);
-    void loadingProgressUpdate(const QString& s);
     
 public slots:
     void on_action2D_Plot_triggered();
@@ -119,10 +107,8 @@ public slots:
     void preferencesSTA();
     void ActivateSTACalc();
     
-    void celestia_tick();
-    void setTime(double jd);
-    void setTimeRate(TimelineWidget::TimeRateMode mode, double rate);
-    void pauseTime();
+    void tick();
+    void setTime(double mjd);
     void selectParticipant(int participantIndex);
     
     void refreshCentralWidget(int tabIndex);
@@ -160,6 +146,7 @@ private:
     TimelineWidget* m_timelineWidget;
     OrbitPropagationDialog* m_orbitPropagationDialog;
     GroundTrackPlotTool* m_groundTrackPlotTool;
+    ThreeDVisualizationTool* m_threeDViewWidget;
     STAcalculator* STAcalculatorWidget;
     ScenarioElementBox* m_scenarioElementBox;
     QTabWidget* m_viewPanel;
@@ -170,22 +157,15 @@ private:
     LoiteringTLEDialog* m_loiteringTLEDialog;
     SEMVehicleDialog* m_SEMVehicleDialog;
     AnalysisDialog* m_AnalysisDialog;
-
-    // Celestia data
-    CelestiaGlWidget* m_celestiaViewWidget;
-    CelestiaCore* m_celestiaCore;
-    CelestiaInterface* m_celestiaInterface;
-    CelestiaActions* m_celestiaActions;
-    CelestiaCore::Alerter* m_celestiaAlerter;
-    QString m_celestiaDataDirPath;
     
-    QTimer* m_celestiaUpdateTimer;
+    QTimer* m_viewUpdateTimer;
     QTime m_intervalChangeTime;
     
     QAction* m_dockGroundTrackAction;
 
     QXmlSchema* m_spaceScenarioSchema;
 
+    double m_lastTime;
 };
 
 #endif // _MAIN_MAINWINDOW_H_

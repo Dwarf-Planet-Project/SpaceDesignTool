@@ -54,12 +54,13 @@ Q_OBJECT
     double currentTime() const { return m_currentTime; }
 
  public slots:
-    void setCurrentTime(double jd);
+    void setCurrentTime(double mjd);
     
  signals:
-    void timelineClicked(double jd);
+    void timelineClicked(double mjd);
     void participantClicked(int participantIndex);
-    
+    void currentTimeChanged(double currentTime);
+
  protected:
     void paintEvent(QPaintEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);

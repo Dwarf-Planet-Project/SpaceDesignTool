@@ -49,11 +49,17 @@
 #include "timelineview.h"
 #include "Scenario/scenario.h"
 #include "Scenario/propagationfeedback.h"
+#include "Plotting/ThreeDView.h"
 #include "Plotting/groundtrackplottool.h"
 //#include "Plotting/plottingtool.h"
 #include "Plotting/threedvisualizationtool.h"
 #include "Astro-Core/date.h"
 
+#if DEBUG_PLOT
+#include "Plotting/PlotDataSource.h"
+#include "Plotting/PlotView.h"
+#include "Plotting/PlotView3D.h"
+#endif
 
 #include "Scenario/scenarioPropagator.h"
 
@@ -81,33 +87,7 @@
 #include "Constellations/canalysis.h"
 #include "Constellations/constellationwizard.h"
 
-// Celestia headers
-#include "celestia/qt/qtglwidget.h"
-#include "celestia/qt/qtpreferencesdialog.h"
-#include "celestia/qt/qtpreferencesdialog.h"
-#include "celestia/qt/qtsolarsystembrowser.h"
-#include "celestia/qt/qtcelestialbrowser.h"
-#include "celestia/qt/qtdeepskybrowser.h"
-#include "celestia/qt/qtselectionpopup.h"
-#include "celestia/qt/qttimetoolbar.h"
-#include "celestia/qt/qtcelestiaactions.h"
-#include "celestia/qt/qtinfopanel.h"
-#include "celestia/qt/qteventfinder.h"
-#include "celestia/qt/qtsettimedialog.h"
-//#include "qtvideocapturedialog.h"
-#include "celestia/scriptmenu.h"
-#include "celestia/url.h"
-#include "celengine/gl.h"
-#include "celengine/glext.h"
-#include "celestia/qt/qtbookmark.h"
-
-#include "celestiainterface.h"
-
 #include "ui_mainwindow.h"
-
-#ifdef _WIN32
-#include "celestia/avicapture.h"
-#endif
 
 #ifdef TARGET_OS_MAC
 #include <Carbon/Carbon.h>
@@ -126,7 +106,6 @@ QUrl STAForums("http://forge.osor.eu/forum/?group_id=134");
 QUrl STADownloads("http://forge.osor.eu/frs/?group_id=134");
 QUrl STAmail("mailto:space.trajectory.analysis@gmail.com?subject=Help&body=Need help with STA...");
 
-const QGLContext* glctx = NULL;
 QString DEFAULT_CONFIG_FILE = "STA.cfg";
 QString BOOKMARKS_FILE = "bookmarks.xbel";
 QString SCHEMA_FILE = "schema/spacescenario/2.0/scenario.xsd";
@@ -137,58 +116,10 @@ const QPoint DEFAULT_MAIN_WINDOW_POSITION(30,30);
 
 // Used when saving and restoring main window state; increment whenever
 // new dockables or toolbars are added.
-static const int STA_MAIN_WINDOW_VERSION = 14;
-
-// Terrible hack required because Celestia's context menu callback doesn't
-// retain any state.
-static MainWindow* MainWindowInstance = NULL;
-static void ContextMenu(float x, float y, Selection sel);
+static const int STA_MAIN_WINDOW_VERSION = 15;
 
 // Number of spaces to indent when writing scenario XML files
 static const int SCENARIO_FILE_INDENT_LEVEL = 2;
-
-// Progress notifier class receives update messages from CelestiaCore
-// at startup. This simple implementation just forwards messages on
-// to the main Celestia window.
-class AppProgressNotifier : public ProgressNotifier
-{
-public:
-    AppProgressNotifier(MainWindow* _appWin) :
-            appWin(_appWin)
-    {
-    }
-
-    void update(const string& s)
-    {
-	appWin->loadingProgressUpdate(QString(s.c_str()));
-    }
-
-private:
-    MainWindow* appWin;
-};
-
-
-// Alerter callback class for CelestiaCore
-class AppAlerter : public CelestiaCore::Alerter
-{
-public:
-    AppAlerter(QWidget* _parent) :
-	    parent(_parent)
-    {
-    }
-
-    ~AppAlerter()
-    {
-    }
-
-    void fatalError(const string& msg)
-    {
-        QMessageBox::critical(parent, "STA", QString(msg.c_str()));
-    }
-
-private:
-    QWidget* parent;
-};
 
 
 
@@ -210,14 +141,11 @@ MainWindow::MainWindow(QWidget *parent)	:
 	m_SEMVehicleDialog(NULL),
 	m_AnalysisDialog(NULL),
 
-	m_celestiaViewWidget(NULL),
-	m_celestiaCore(NULL),
-	m_celestiaInterface(NULL),
-	m_celestiaActions(NULL),
-	m_celestiaAlerter(NULL),
-	m_celestiaUpdateTimer(NULL),
+    m_threeDViewWidget(NULL),
 
-	m_spaceScenarioSchema(NULL)
+    m_spaceScenarioSchema(NULL),
+
+    m_lastTime(0.0)
 {
     setupUi(this);
     connect(actionQuit, SIGNAL(triggered()), QApplication::instance(), SLOT(closeAllWindows()));
@@ -269,26 +197,18 @@ MainWindow::MainWindow(QWidget *parent)	:
     addDockWidget(Qt::BottomDockWidgetArea, timelineDock);
     timelineDock->setVisible(true);
 
-    connect(m_timelineWidget, SIGNAL(timeRate(TimelineWidget::TimeRateMode, double)),
-            this, SLOT(setTimeRate(TimelineWidget::TimeRateMode, double)));
-    connect(m_timelineWidget, SIGNAL(pause()), this, SLOT(pauseTime()));
-    connect(m_timelineWidget->timelineView(), SIGNAL(timelineClicked(double)),
-            this, SLOT(setTime(double)));
+    connect(m_timelineWidget, SIGNAL(currentTimeChanged(double)), this, SLOT(setTime(double)));
     connect(m_timelineWidget->timelineView(), SIGNAL(participantClicked(int)),
             this, SLOT(selectParticipant(int)));
 
     QStringList extrasDirs;
-    //initCelestia("celestia.cfg", extrasDirs);  //Patched by Guillermo to make it generic
-    initCelestia(DEFAULT_CONFIG_FILE, extrasDirs);
 
     // Set up the central widget
     m_viewPanel = new QTabWidget(this);
     m_viewPanel->addTab(m_groundTrackPlotTool, tr("Ground Track View"));
-    if (m_celestiaViewWidget)
-    {
-        ThreeDVisualizationTool* view3d = new ThreeDVisualizationTool(this, m_celestiaViewWidget, m_celestiaInterface, m_celestiaCore);
-        m_viewPanel->addTab(view3d, tr("3D View"));
-    }
+
+    m_threeDViewWidget = new ThreeDVisualizationTool(this);
+    m_viewPanel->addTab(m_threeDViewWidget, tr("3D View"));
 
     setCentralWidget(m_viewPanel);
 
@@ -312,8 +232,6 @@ MainWindow::MainWindow(QWidget *parent)	:
     actionSat_to_Ground->setEnabled(m_scenario != NULL);
     actionSystem_Engineering->setEnabled(m_scenario != NULL);
     actionAnalyse->setEnabled(m_scenario != NULL);
-
-    if (m_celestiaCore) initCelestiaState();
 
     // Next lines patched by Guillermo to handle the "ABOUT" menu
     aboutAct = new QAction(tr("&About"), this);
@@ -348,6 +266,25 @@ MainWindow::MainWindow(QWidget *parent)	:
     //menuBar()->addMenu(tr("&Tools"));  // Not required sice it is done on QtDesigner already
     //menuTools()->addSeparator();
 
+    // Initialize the time to the current system time
+    double now = sta::JdToMjd(sta::CalendarToJd(QDateTime::currentDateTime()));
+    setTime(now);
+    m_timelineWidget->timelineView()->setTimeRange(now - 1 / 24.0, now + 1.0);
+    m_timelineWidget->setZoom("all");
+
+    // Point the camera in the 3D view at Earth
+    if (m_threeDViewWidget)
+    {
+        m_threeDViewWidget->view()->gotoBody(STA_SOLAR_SYSTEM->earth());
+    }
+
+    // Read saved window preferences
+    readSettings();
+
+    // We use a timer with a null timeout value
+    m_viewUpdateTimer = new QTimer(this);
+    QObject::connect(m_viewUpdateTimer, SIGNAL(timeout()), SLOT(tick()));
+    m_viewUpdateTimer->start(5);
 }
 
 
@@ -635,33 +572,6 @@ void MainWindow::on_actionExport_triggered()
 
 void MainWindow::on_actionOpenScript_triggered()
 {
-    QString dir;
-    QSettings settings;
-    settings.beginGroup("Preferences");
-    if (settings.contains("OpenScriptDir"))
-    {
-        dir = settings.value("OpenScriptDir").toString();
-    }
-    else
-    {
-        dir = "scripts";
-    }
-
-    QString scriptFileName = QFileDialog::getOpenFileName(this,
-                                                          tr("Open Script"),
-                                                          dir,
-                                                          tr("STA Scripts (*.celx)"));
-
-    if (!scriptFileName.isEmpty())
-    {
-        m_celestiaCore->cancelScript();
-        m_celestiaCore->runScript(scriptFileName.toUtf8().data());
-
-        QFileInfo scriptFile(scriptFileName);
-        settings.setValue("OpenScriptDir", scriptFile.absolutePath());
-    }
-
-    settings.endGroup();
 }
 
 
@@ -779,8 +689,7 @@ void MainWindow::on_actionSTA_Forums_triggered()
 
 void MainWindow::on_action3dViewPreferences_triggered()
 {
-    PreferencesDialog dlg(this, m_celestiaCore);
-    dlg.exec();
+    // Set VESTA preferences
 }
 
 
@@ -1041,30 +950,13 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
             m_groundTrackPlotTool->view()->setScenario(propScenario);
         }
 
-        configureTimeline(propScenario);
-        setTime(sta::MjdToJd(propScenario->startTime()));
-        if (m_celestiaInterface)
+        if (m_threeDViewWidget)
         {
-            foreach (SpaceObject* spaceObject, propScenario->spaceObjects())
-            {
-                // Ephemeris files are required for creating trajectories for the 3D view (at least for now.)
-                if (!spaceObject->generateEphemerisFiles())
-                {
-                    QMessageBox::information(this, tr("Warning"), tr("Error occurred while writing ephemeris files."));
-                    break;
-                }
-
-                m_celestiaInterface->select(NULL);
-
-                spaceObject->realize3DViewRepresentation(m_celestiaInterface);
-
-            }
-            foreach (GroundObject* groundObject, propScenario->groundObjects())
-            {
-                groundObject->realize3DViewRepresentation(m_celestiaInterface);
-            }
-            m_celestiaCore->setViewChanged();
+            m_threeDViewWidget->view()->setScenario(propScenario);
         }
+
+        configureTimeline(propScenario);
+        setTime(propScenario->startTime());
 
         delete m_propagatedScenario;
         m_propagatedScenario = propScenario;
@@ -1100,14 +992,63 @@ void MainWindow::on_actionSystem_Engineering_triggered()
 
 
 
+
+#if DEBUG_PLOT
+class SamplePlotData : public PlotDataSource
+{
+public:
+    SamplePlotData()
+    {
+    }
+
+    virtual unsigned int getPointCount() const
+    {
+        return 100;
+    }
+
+    virtual Vector2d getPoint(unsigned int index) const
+    {
+        double x = double(index) / 100.0;
+        double y = sin(x * 20);
+        return Vector2d(x, y);
+    }
+};
+
+
+class SamplePlotData3D : public PlotDataSource3D
+{
+public:
+    SamplePlotData3D()
+    {
+    }
+
+    virtual unsigned int getPointCount() const
+    {
+        return 100;
+    }
+
+    virtual Vector3d getPoint(unsigned int index) const
+    {
+        double x = double(index) / 100.0;
+        double y = sin(x * 20);
+        double z = cos(x * 20) * 0.666;
+        return Vector3d(x, y, z);
+    }
+};
+
+#endif
+
 ///////////////////////////////////////////  Action ANALYZE ////////////////////////////////////////
 void MainWindow::on_actionAnalyse_triggered()
 {
     if (!scenario())
-	return;
+    {
+        return;
+    }
 
     analysis* AnalysisWidget = new analysis(m_scenario,m_propagatedScenario, this, Qt::Window);
     AnalysisWidget->show();
+
     //AnalysisWidget->raise(); // Required to keep the modeless window alive
     //AnalysisWidget->activateWindow(); // Required to keep the modeless window alive
 }	///////////////////////////////////////////  End of Action ANALYZE ////////////////////////////////////////
@@ -1177,9 +1118,6 @@ void MainWindow::showGroundTrackPlotTool()
 }
 
 
-
-
-
 void MainWindow::configureTimeline(PropagatedScenario* scenario)
 {
     double duration = scenario->endTime() - scenario->startTime();
@@ -1211,12 +1149,37 @@ void MainWindow::configureTimeline(PropagatedScenario* scenario)
 }
 
 
-
-
-
-
-void MainWindow::celestia_tick()
+// Handle timer signals and notify animated widgets.
+void MainWindow::tick()
 {
+    QDateTime currentTime = QDateTime::currentDateTime();
+
+    // Get the current time as the number of seconds since J2000
+    double now = 86400.0 * QDate(2000, 1, 1).daysTo(currentTime.date()) +
+                 (1.0 / 1000.0) * QTime(0, 0).msecsTo(currentTime.time());
+
+    if (m_lastTime == 0.0)
+    {
+        m_lastTime = now;
+    }
+
+    double dt = now - m_lastTime;
+    m_lastTime = now;
+
+    // Update the timeline widget (necessary whenever the timeline isn't paused)
+    m_timelineWidget->tick(dt);
+
+    // Update the 3D widget. The 3D widget needs special handling for smooth camera
+    // motions. Other view widgets (such as the ground track view) should be updated
+    // in the setTime() method.
+    if (m_threeDViewWidget)
+    {
+        m_threeDViewWidget->view()->tick(dt);
+    }
+
+    // Old code kept around in case we need to implement another workaround to
+    // avoid using CPU time when no updates are required.
+#if USE_CELESTIA
     const int SlowUpdateInterval = 30;         // millisec
     const int TimerIntervalChangeDelay = 1000; // millisec
 
@@ -1242,76 +1205,35 @@ void MainWindow::celestia_tick()
                 m_intervalChangeTime.restart();
             }
         }
-
-        m_celestiaCore->tick();
-        if (m_celestiaCore->viewUpdateRequired())
-            m_celestiaViewWidget->updateGL();
-
-        // Synchronize the timeline view
-        m_timelineWidget->timelineView()->setCurrentTime(sta::JdToMjd(m_celestiaCore->getSimulation()->getTime()));
-
-        if (m_groundTrackPlotTool)
-        {
-            m_groundTrackPlotTool->view()->setCurrentTime(sta::JdToMjd(m_celestiaCore->getSimulation()->getTime()));
-        }
     }
+#endif
 }
 
 
 
-void MainWindow::setTime(double jd)
+void MainWindow::setTime(double mjd)
 {
-    if (m_celestiaCore)
-    {
-        m_celestiaCore->getSimulation()->setTime(jd);
-        m_celestiaCore->setViewChanged();
-    }
-
+    // Notify all view widgets that care about time updates.
     if (m_timelineWidget)
     {
-        m_timelineWidget->timelineView()->setCurrentTime(sta::JdToMjd(jd));
+        m_timelineWidget->timelineView()->setCurrentTime(mjd);
     }
 
     if (m_groundTrackPlotTool)
     {
-        m_groundTrackPlotTool->view()->setCurrentTime(sta::JdToMjd(jd));
+        m_groundTrackPlotTool->view()->setCurrentTime(mjd);
     }
-}
 
-
-void MainWindow::setTimeRate(TimelineWidget::TimeRateMode mode, double rate)
-{
-    double timeScale = rate;
-    if (mode == TimelineWidget::SetTimeRateRelative)
-        rate *= m_celestiaCore->getSimulation()->getTimeScale();
-
-    if (timeScale == 0.0)
+    if (m_threeDViewWidget)
     {
-        m_celestiaCore->getSimulation()->setPauseState(true);
+        m_threeDViewWidget->view()->setCurrentTime(mjd);
     }
-    else
-    {
-        m_celestiaCore->getSimulation()->setTimeScale(rate);
-        m_celestiaCore->getSimulation()->setPauseState(false);
-    }
-}
-
-
-void MainWindow::pauseTime()
-{
-    m_celestiaCore->getSimulation()->setPauseState(!m_celestiaCore->getSimulation()->getPauseState());
 }
 
 
 void MainWindow::selectParticipant(int participantIndex)
 {
-    if (m_propagatedScenario && m_celestiaInterface)
-    {
-        if (participantIndex < m_propagatedScenario->spaceObjects().size())
-        {
-            m_celestiaInterface->select(m_propagatedScenario->spaceObjects().at(participantIndex)->celestiaObject());
-        }
-    }
+    // TODO: Highlight participant in VESTA
 }
 
 
@@ -1328,15 +1250,9 @@ void MainWindow::refreshCentralWidget(int tabIndex)
     }
     else if (tabIndex == 1)
     {
-        if (m_celestiaCore)
-        {
-            m_celestiaCore->setViewChanged();
-            m_celestiaViewWidget->update();
-        }
+        // TODO: Update VESTA widget
     }
 }
-
-
 
 
 void MainWindow::toggleGroundTrackView()
@@ -1357,6 +1273,7 @@ void MainWindow::toggleGroundTrackView()
 }
 
 
+#if USE_CELESTIA
 void MainWindow::initCelestia(const QString& qConfigFileName,
                               const QStringList& qExtrasDirectories)
 {
@@ -1461,31 +1378,7 @@ void MainWindow::initCelestia(const QString& qConfigFileName,
     // Create the STA interface to Celestia
     m_celestiaInterface = CelestiaInterface::Create(m_celestiaCore);
 }
-
-
-void MainWindow::initCelestiaState()
-{
-    // Set up the default time zone name and offset from UTC
-    time_t curtime = time(NULL);
-    m_celestiaCore->start(astro::UTCtoTDB((double) curtime / 86400.0 + (double) astro::Date(1970, 1, 1)));
-
-    // Start Celestia paused
-    m_celestiaCore->getSimulation()->setTimeScale(0.0);
-
-    // Set up the render flags
-    m_celestiaCore->getRenderer()->setRenderFlags(Renderer::ShowAtmospheres |
-                                                  Renderer::ShowAutoMag     |
-                                                  Renderer::ShowEclipseShadows |
-						  Renderer::ShowOrbits      |
-                                                  Renderer::ShowPlanets     |
-                                                  Renderer::ShowRingShadows |
-                                                  Renderer::ShowStars);
-    m_celestiaCore->getRenderer()->setLabelMode(Renderer::SpacecraftLabels  |
-                                                Renderer::LocationLabels);
-
-    // All STA created locations are type Observatory (for now)
-    m_celestiaCore->getSimulation()->getActiveObserver()->setLocationFilter(Location::Observatory);
-}
+#endif
 
 
 /*! Set up the application data directory, creating it if necessary. The
@@ -1530,19 +1423,7 @@ void MainWindow::initAppDataDirectory()
         QDir appDataDir(appDataPath);
         if (appDataDir.exists())
         {
-            m_celestiaDataDirPath = appDataDir.filePath("STA");
-            QDir celestiaDataDir(m_celestiaDataDirPath);
-            if (!celestiaDataDir.exists())
-            {
-                appDataDir.mkdir("STA");
-            }
-
-            // If the doesn't exist even after we tried to create it, give up
-            // on trying to load user data from there.
-            if (!celestiaDataDir.exists())
-            {
-                m_celestiaDataDirPath = "";
-            }
+            // TODO: Set path for loading VESTA info
         }
     }
 #ifdef _DEBUG
@@ -1572,7 +1453,9 @@ void MainWindow::readSettings()
     {
         QRect screenGeometry = desktop.screenGeometry(screenIndex);
         if (screenGeometry.contains(windowPosition))
+        {
             onScreen = true;
+        }
     }
 
     if (!onScreen)
@@ -1584,9 +1467,13 @@ void MainWindow::readSettings()
     resize(windowSize);
     move(windowPosition);
     if (settings.contains("State"))
+    {
         restoreState(settings.value("State").toByteArray(), STA_MAIN_WINDOW_VERSION);
+    }
     if (settings.value("Fullscreen", false).toBool())
+    {
         showFullScreen();
+    }
 
     QPoint winpos = settings.value("Pos", DEFAULT_MAIN_WINDOW_SIZE).toPoint();
     settings.endGroup();
@@ -1615,37 +1502,6 @@ void MainWindow::writeSettings()
     settings.setValue("State", saveState(STA_MAIN_WINDOW_VERSION));
     settings.setValue("Fullscreen", isFullScreen());
     settings.endGroup();
-
-    // Renderer settings
-    Renderer* renderer = m_celestiaCore->getRenderer();
-    settings.setValue("RenderFlags", renderer->getRenderFlags());
-    settings.setValue("OrbitMask", renderer->getOrbitMask());
-    settings.setValue("LabelMode", renderer->getLabelMode());
-    settings.setValue("AmbientLightLevel", renderer->getAmbientLightLevel());
-    settings.setValue("StarStyle", renderer->getStarStyle());
-    settings.setValue("RenderPath", (int) renderer->getGLContext()->getRenderPath());
-    settings.setValue("TextureResolution", renderer->getResolution());
-
-    Simulation* simulation = m_celestiaCore->getSimulation();
-    settings.beginGroup("Preferences");
-    settings.setValue("SyncTime", simulation->getSyncTime());
-    settings.setValue("FramesVisible", m_celestiaCore->getFramesVisible());
-    settings.setValue("ActiveFrameVisible", m_celestiaCore->getActiveFrameVisible());
-
-    // TODO: This is not a reliable way determine when local time is enabled, but it's
-    // all that CelestiaCore offers right now. useLocalTime won't ever be true when the system
-    // time zone is UTC+0. This could be a problem when switching to/from daylight saving
-    // time.
-    bool useLocalTime = m_celestiaCore->getTimeZoneBias() != 0;
-    settings.setValue("LocalTime", useLocalTime);
-    settings.setValue("TimeZoneName", QString::fromUtf8(m_celestiaCore->getTimeZoneName().c_str()));
-    settings.endGroup();
-}
-
-
-void MainWindow::loadingProgressUpdate(const QString& s)
-{
-    emit progressUpdate(s, Qt::AlignLeft, Qt::white);
 }
 
 
@@ -1672,22 +1528,6 @@ void MainWindow::clearViews()
     m_scenarioView->update();  // Lined added by Guillermo as suggested by Chris to update the view of STA
     m_scenarioView->m_scenarioTree->update();
 }
-
-
-void MainWindow::contextMenu(float x, float y, Selection sel)
-{
-    SelectionPopup* menu = new SelectionPopup(sel, m_celestiaCore, this);
-    connect(menu, SIGNAL(selectionInfoRequested(Selection&)),
-            this, SLOT(slotShowObjectInfo(Selection&)));
-    menu->popupAtCenter(centralWidget()->mapToGlobal(QPoint((int) x, (int) y)));
-}
-
-
-void ContextMenu(float x, float y, Selection sel)
-{
-    MainWindowInstance->contextMenu(x, y, sel);
-}
-
 
 
 // Constellation (Claas Grohnfeldt, Steffen Peter)
@@ -1792,7 +1632,9 @@ void MainWindow::on_actionPropagateCoverage_triggered()
 	}
 
 	configureTimeline(propScenario);
-	setTime(sta::MjdToJd(propScenario->startTime()));
+    setTime(propScenario->startTime());
+
+#if USE_CELESTIA
 	if (m_celestiaInterface)
 	{
 	    foreach (SpaceObject* spaceObject, propScenario->spaceObjects())
@@ -1815,6 +1657,7 @@ void MainWindow::on_actionPropagateCoverage_triggered()
 	    }
 	    m_celestiaCore->setViewChanged();
 	}
+#endif
 
 	delete m_propagatedScenario;
 	m_propagatedScenario = propScenario;
@@ -1905,7 +1748,9 @@ void MainWindow::on_actionSat_to_Sat_triggered()
 	}
 
 	configureTimeline(propScenario);
-	setTime(sta::MjdToJd(propScenario->startTime()));
+    setTime(propScenario->startTime());
+
+#if USE_CELESTIA
 	if (m_celestiaInterface)
 	{
 	    foreach (SpaceObject* spaceObject, propScenario->spaceObjects())
@@ -1928,6 +1773,7 @@ void MainWindow::on_actionSat_to_Sat_triggered()
 	    }
 	    m_celestiaCore->setViewChanged();
 	}
+#endif
 
 	delete m_propagatedScenario;
 	m_propagatedScenario = propScenario;
@@ -2013,7 +1859,9 @@ void MainWindow::on_actionSat_to_Ground_triggered()
 	}
 
 	configureTimeline(propScenario);
-	setTime(sta::MjdToJd(propScenario->startTime()));
+    setTime(propScenario->startTime());
+
+#if USE_CELESTIA
 	if (m_celestiaInterface)
 	{
 	    foreach (SpaceObject* spaceObject, propScenario->spaceObjects())
@@ -2036,6 +1884,7 @@ void MainWindow::on_actionSat_to_Ground_triggered()
 	    }
 	    m_celestiaCore->setViewChanged();
 	}
+#endif
 
 	delete m_propagatedScenario;
 	m_propagatedScenario = propScenario;

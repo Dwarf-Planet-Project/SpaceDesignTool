@@ -57,6 +57,7 @@ namespace sta
     }
     
     extern double J2000;
+    extern double MJDBase;
 }
 
 #endif // _ASTROCORE_STATEVECTOR_H_

@@ -84,6 +84,7 @@ TimelineView::setCurrentTime(double mjd)
     if (mjd != m_currentTime)
     {
         m_currentTime = mjd;
+        emit currentTimeChanged(m_currentTime);
         viewport()->update();
     }
 }
@@ -194,9 +195,13 @@ TimelineView::paintEvent(QPaintEvent* /* event */)
 	int hour = (int) (std::floor(decimalTime * 24) + 12) % 24;
 	int minute = (int) std::floor(decimalTime * 1440) % 60;
 	int second = (int) std::floor(decimalTime * 86400) % 60;
-	QDate date = QDate::fromJulianDay(sta::MjdToJd(t0));
+
+#if 0
+    QDate date = QDate::fromJulianDay(sta::MjdToJd(t0));
 	QTime time (hour, minute, second);
 	QDateTime dateTime(date, time);
+#endif
+    QDateTime dateTime = sta::JdToCalendar(sta::MjdToJd(t0));
 	//float x = (float) (viewWidth * (t0 - viewStartTime) / m_visibleSpan);
 	float x = 45;
 	//float x = (float) (viewWidth * (m_currentTime - viewStartTime) / m_visibleSpan);
@@ -212,16 +217,19 @@ TimelineView::paintEvent(QPaintEvent* /* event */)
         double decimalTime = t - std::floor(t);
         decimalTime += 0.01 / 86400.0; // Adjust for rounding errors
         
-        int hour = (int) (std::floor(decimalTime * 24) + 12) % 24;
+        int hour = (int) (std::floor(decimalTime * 24)) % 24;
         int minute = (int) std::floor(decimalTime * 1440) % 60;
         int second = (int) std::floor(decimalTime * 86400) % 60;
         
         if (subdiv >= 1.0 || (hour == 0 && minute == 0 && second == 0))
         {
             // Show the date and time of day
+#if 0
             QDate date = QDate::fromJulianDay(sta::MjdToJd(t) + 1 + 0.01);
-	    QTime time (hour, minute, second);
-	    QDateTime dateTime(date, time);
+            QTime time (hour, minute, second);
+            QDateTime dateTime(date, time);
+#endif
+            QDateTime dateTime = sta::JdToCalendar(sta::MjdToJd(t));
             
             float x = (float) (viewWidth * (t - viewStartTime) / m_visibleSpan);
             painter.drawText(QRectF(x - 30.0f, 0.0f, 60.0f, TimeHeaderHeight),
@@ -268,7 +276,7 @@ TimelineView::mouseReleaseEvent(QMouseEvent* event)
         }
     }
     
-    emit timelineClicked(sta::MjdToJd(mjd));
+    emit timelineClicked(mjd);
 }
 
 
@@ -280,7 +288,7 @@ TimelineView::mouseMoveEvent(QMouseEvent* event)
     
     double mjd = viewStartTime + m_visibleSpan * (double) event->x() / (double) viewWidth;
     setCurrentTime(mjd);
-    emit timelineClicked(sta::MjdToJd(mjd));
+    emit timelineClicked(mjd);
 }
 
 

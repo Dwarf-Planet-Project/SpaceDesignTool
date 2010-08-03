@@ -636,7 +636,7 @@ ThreeDView::initializeStarCatalog(const QString& fileName)
 
         if (in.status() == QDataStream::Ok)
         {
-            stars->addStar(float(sta::degToRad(ra)), float(sta::degToRad(dec)), apparentMagnitude, bvColorIndex);
+            stars->addStar(id, float(sta::degToRad(ra)), float(sta::degToRad(dec)), apparentMagnitude, bvColorIndex);
         }
         else
         {

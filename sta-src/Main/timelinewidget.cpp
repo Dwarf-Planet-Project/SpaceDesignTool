@@ -26,6 +26,7 @@
 
 #include "timelinewidget.h"
 #include "timelineview.h"
+#include "Astro-Core/date.h"
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QToolBar>
@@ -36,9 +37,12 @@
 
 TimelineWidget::TimelineWidget(QWidget* parent) :
     QWidget(parent),
-    m_timelineView(NULL)
+    m_timelineView(NULL),
+    m_timeRate(1.0),
+    m_paused(true)
 {
     m_timelineView = new TimelineView(this);
+    connect(m_timelineView, SIGNAL(currentTimeChanged(double)), this, SIGNAL(currentTimeChanged(double)));
     
     QWidget* controls = new QWidget(this);
     controls->setContentsMargins(0, 0, 0, 0);
@@ -57,7 +61,6 @@ TimelineWidget::TimelineWidget(QWidget* parent) :
                        "<a href=\"365\">1y</a> "
                        "<a href=\"all\">all</a>");
 
-#if 1
     QToolBar* toolbar = new QToolBar(controls);
     toolbar->setIconSize(QSize(24, 24));
     toolbar->setMaximumHeight(24);
@@ -89,7 +92,7 @@ TimelineWidget::TimelineWidget(QWidget* parent) :
     connect(halfTimeAction, SIGNAL(triggered()), this, SLOT(halfTime()));
     toolbar->addAction(halfTimeAction);
     
-    connect(pauseAction, SIGNAL(triggered()), this, SLOT(pauseTime()));
+    connect(pauseAction, SIGNAL(triggered()), this, SLOT(togglePaused()));
     toolbar->addAction(pauseAction);
     
     connect(realTimeAction, SIGNAL(triggered()), this, SLOT(realTime()));
@@ -101,11 +104,8 @@ TimelineWidget::TimelineWidget(QWidget* parent) :
     connect(fastTimeAction, SIGNAL(triggered()), this, SLOT(fasterTime()));
     toolbar->addAction(fastTimeAction);
     
-    //connect(currentTimeAction, SIGNAL(triggered()), this, SLOT(slotCurrentTime()));
-    //toolbar->addAction(currentTimeAction);
     
     controlsLayout->addWidget(toolbar);
-#endif
     
     controlsLayout->addStretch(1);
     controlsLayout->addWidget(zoomLabel);
@@ -149,7 +149,9 @@ TimelineWidget::setZoom(const QString& duration)
     if (ok)
     {
         if (days > 0.0)
+        {
             m_timelineView->setVisibleSpan(days);
+        }
     }
 }
 
@@ -157,42 +159,83 @@ TimelineWidget::setZoom(const QString& duration)
 void 
 TimelineWidget::reverseTime()
 {
-    emit timeRate(SetTimeRateRelative, -1.0);
+    m_timeRate = -m_timeRate;
 }
 
 void
 TimelineWidget::slowerTime()
 {
-    emit timeRate(SetTimeRateRelative, 0.1);
+    m_timeRate *= 0.1;
 }
 
 void 
 TimelineWidget::halfTime()
 {
-    emit timeRate(SetTimeRateRelative, 0.5);
+    m_timeRate *= 0.5;
 }
 
 void
-TimelineWidget::pauseTime()
+TimelineWidget::togglePaused()
 {
-    emit pause();
+    setPaused(!isPaused());
 }
 
 void 
 TimelineWidget::realTime()
 {
-    emit timeRate(SetTimeRateAbsolute, 1.0);
+    m_timeRate = 1.0;
+    setPaused(false);
 }
 
 void
 TimelineWidget::doubleTime()
 {
-    emit timeRate(SetTimeRateRelative, 2.0);
+    m_timeRate *= 2.0;
 }
 
 void
 TimelineWidget::fasterTime()
 {
-    emit timeRate(SetTimeRateRelative, 10.0);
+    m_timeRate *= 10.0;
 }
 
+
+double
+TimelineWidget::currentTime() const
+{
+    return m_timelineView->currentTime();
+}
+
+
+void
+TimelineWidget::setCurrentTime(double mjd)
+{
+    m_timelineView->setCurrentTime(mjd);
+}
+
+void
+TimelineWidget::setTimeRate(double timeRate)
+{
+    m_timeRate = timeRate;
+}
+
+
+void
+TimelineWidget::setPaused(bool pause)
+{
+    m_paused = pause;
+}
+
+
+/** Update the timeline widget.
+  *
+  * \param dt seconds of real time elapsed since the last call to tick
+  */
+void
+TimelineWidget::tick(double dt)
+{
+    if (!m_paused && m_timeRate != 0.0)
+    {
+        setCurrentTime(currentTime() + sta::secsToDays(dt) * m_timeRate);
+    }
+}

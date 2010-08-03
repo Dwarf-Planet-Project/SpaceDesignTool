@@ -33,7 +33,6 @@
 #include <QtDebug>
 
 #include "propagatedscenario.h"
-#include "celestiainterface.h"
 #include <Astro-Core/RotationState.h>
 #include <Astro-Core/Interpolators.h>
 #include <Astro-Core/stamath.h>
@@ -224,8 +223,7 @@ MissionArc::generateEphemerisFile()
 
 SpaceObject::SpaceObject() :
     m_missionStartTime(0.0),
-    m_missionEndTime(0.0),
-    m_celestiaBody(NULL)
+    m_missionEndTime(0.0)
 {
 }
 
@@ -236,8 +234,6 @@ SpaceObject::~SpaceObject()
     {
         delete arc;
     }
-
-    delete m_celestiaBody;
 }
 
 
@@ -328,6 +324,7 @@ SpaceObject::generateEphemerisFiles()
 }
 
 
+#if USE_CELESTIA
 /*! Create a representation of this space object in the 3D view. Return true
  *  if a Celestia object was successfully created, false if not.
  */
@@ -361,22 +358,22 @@ SpaceObject::realize3DViewRepresentation(CelestiaInterface* celestia)
     }
     return m_celestiaBody != NULL;
 }
+#endif
 
 
 /****** GroundObject ******/
 
-GroundObject::GroundObject() :
-    m_celestiaLocation(NULL)
+GroundObject::GroundObject()
 {
 }
 
 
 GroundObject::~GroundObject()
 {
-    delete m_celestiaLocation;
 }
 
 
+#if USE_CELESTIA
 /*! Create a representation of this space object in the 3D view. Return true
  *  if a Celestia object was successfully created, false if not.
  */
@@ -392,6 +389,7 @@ GroundObject::realize3DViewRepresentation(CelestiaInterface* celestia)
 
     return true;
 }
+#endif
 
 
 /** Return the apparent angle of a spacecraft above a ground station's horizon.

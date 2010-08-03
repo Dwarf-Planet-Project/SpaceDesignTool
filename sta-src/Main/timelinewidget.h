@@ -40,29 +40,41 @@ Q_OBJECT
     
     TimelineView* timelineView() const { return m_timelineView; }
     
-    enum TimeRateMode
+    double timeRate() const
     {
-        SetTimeRateAbsolute,
-        SetTimeRateRelative
-    };
-    
+        return m_timeRate;
+    }
+
+    bool isPaused() const
+    {
+        return m_paused;
+    }
+
+    double currentTime() const;
+
  public slots:
+    void setCurrentTime(double mjd);
+    void setTimeRate(double timeRate);
+    void setPaused(bool pause);
+    void tick(double dt);
+
     void setZoom(const QString& duration);
     
     void reverseTime();
     void slowerTime();
     void halfTime();
-    void pauseTime();
+    void togglePaused();
     void realTime();
     void doubleTime();
     void fasterTime();
-    
+
  signals:
-    void timeRate(TimelineWidget::TimeRateMode, double factor);
-    void pause();
-    
+    void currentTimeChanged(double currentTime);
+
  private:
     TimelineView* m_timelineView;
+    double m_timeRate;
+    bool m_paused;
 };
 
 #endif // _MAIN_TIMELINEWIDGET_H_

@@ -3234,7 +3234,6 @@ ScenarioLV::ScenarioLV()
 {
     m_Program = QSharedPointer<ScenarioLVProgramType>(new ScenarioLVProgramType());
     m_Mission = QSharedPointer<ScenarioLVMissionType>(new ScenarioLVMissionType());
-    m_System = QSharedPointer<ScenarioLVSystemType>(new ScenarioLVSystemType());
     m_Optimization = QSharedPointer<ScenarioOptimization>(new ScenarioOptimization());
     m_OutputFiles = QSharedPointer<ScenarioOutputFiles>(new ScenarioOutputFiles());
 }
@@ -3262,7 +3261,8 @@ bool ScenarioLV::load(const QDomElement& e, QDomElement* next)
     *next = next->nextSiblingElement();
     if (next->tagName() == "tns:System")
         m_System = QSharedPointer<ScenarioLVSystemType>(ScenarioLVSystemType::create(*next));
-    *next = next->nextSiblingElement();
+if (!m_System.isNull())
+        *next = next->nextSiblingElement();
     if (next->tagName() == "tns:Optimization")
         m_Optimization = QSharedPointer<ScenarioOptimization>(ScenarioOptimization::create(*next));
     *next = next->nextSiblingElement();

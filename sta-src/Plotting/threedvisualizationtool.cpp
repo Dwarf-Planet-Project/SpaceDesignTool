@@ -26,29 +26,27 @@
  */
 
 #include "threedvisualizationtool.h"
+#include "ThreeDView.h"
 #include "visualizationtoolbar.h"
 #include "Astro-Core/stabody.h"
-#include "celestia/qt/qtglwidget.h"
-#include "celengine/planetgrid.h"
 #include <QBoxLayout>
 #include <QFileDialog>
 #include <QMessageBox>
 
-// TODO: CelestiaInterface should be moved from Main to Plotting module
-#include "Main/celestiainterface.h"
 
-ThreeDVisualizationTool::ThreeDVisualizationTool(QWidget* parent,
-                                                 CelestiaGlWidget* celestiaView,
-                                                 CelestiaInterface* celestia,
-                                                 CelestiaCore* celestiaCore) :
+ThreeDVisualizationTool::ThreeDVisualizationTool(QWidget* parent) :
     QWidget(parent),
-    m_celestiaView(celestiaView),
-    m_celestia(celestia),
-    m_celestiaCore(celestiaCore),
-    m_sun(NULL),
-    m_ssb(NULL)
+    m_view(NULL)
 {
-    // Create and hook up the tool bar
+    QGLFormat format;
+    format = QGLFormat::defaultFormat();
+    format.setDepth(true);
+    format.setDepthBufferSize(24);
+    format.setSampleBuffers(true);
+    format.setSamples(4);
+    format.setSwapInterval(1);
+    m_view = new ThreeDView(format, this);
+
     VisualizationToolBar* toolBar = new VisualizationToolBar(tr("3D View Controls"), this);
     connect(toolBar, SIGNAL(bodyChanged(const StaBody*)),  this, SLOT(gotoBody(const StaBody*)));
     connect(toolBar, SIGNAL(gridToggled(bool)),            this, SLOT(showGrid(bool)));
@@ -59,19 +57,11 @@ ThreeDVisualizationTool::ThreeDVisualizationTool(QWidget* parent,
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->setSpacing(1);
     layout->setContentsMargins(3, 3, 3, 3);
-    layout->addWidget(m_celestiaView);
+    layout->addWidget(m_view);
     layout->addWidget(toolBar);
     setLayout(layout);
 
-    Selection sun = celestiaCore->getSimulation()->getUniverse()->find("Sol");
-    m_sun = sun.star();
-    Selection ssb = celestiaCore->getSimulation()->getUniverse()->find("SSB");
-    m_ssb = ssb.star();
-
     // Sync 3D view state with toolbar settings
-    //showGrid(true);
-    showGrid(false);
-
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
@@ -81,54 +71,16 @@ ThreeDVisualizationTool::~ThreeDVisualizationTool()
 }
 
 
-double kmToCelUnits(double km)
-{
-    return astro::kilometersToLightYears(km);
-}
-
-
 void
 ThreeDVisualizationTool::gotoBody(const StaBody* body)
 {
-    if (!body)
-        return;
-
-    Body* celBody = findBody(body);
-    if (!celBody)
-        return;
-
-    Simulation* simulation = m_celestiaCore->getSimulation();
-    simulation->setSelection(Selection(celBody));
-    simulation->follow();
-    simulation->gotoSelection(0.0,
-                              kmToCelUnits(celBody->getRadius() * 7.0),
-                              Vec3f(0.0f, 1.0f, 0.0f),
-                              ObserverFrame::Equatorial);
-    m_celestiaCore->setViewChanged();
+    m_view->gotoBody(body);
 }
 
 
 void
-ThreeDVisualizationTool::showGrid(bool enabled)
+ThreeDVisualizationTool::showGrid(bool /* enabled */)
 {
-    foreach (const StaBody* body, STA_SOLAR_SYSTEM->majorBodies())
-    {
-        Body* celBody = findBody(body);
-        if (celBody)
-        {
-            if (enabled)
-            {
-                PlanetographicGrid* grid = new PlanetographicGrid(*celBody);
-                grid->setTag("longlatgrid");
-                celBody->addReferenceMark(grid);
-            }
-            else
-            {
-                celBody->removeReferenceMark("longlatgrid");
-            }
-        }
-    }
-    m_celestiaCore->setViewChanged();
 }
 
 
@@ -141,7 +93,7 @@ ThreeDVisualizationTool::setTickInterval(double /* seconds */)
 void
 ThreeDVisualizationTool::saveImage()
 {
-    QImage image = m_celestiaView->grabFrameBuffer();
+    QImage image = m_view->grabFrameBuffer(false);
     QString fileName = QFileDialog::getSaveFileName(this,
                                                     tr("Save Image"),
                                                     "",
@@ -157,20 +109,7 @@ ThreeDVisualizationTool::saveImage()
 }
 
 
-Body*
-ThreeDVisualizationTool::findBody(const StaBody* body)
-{
-    string cname = body->name().toUtf8().data();
-
-    Selection searchContexts[2] = { Selection(m_sun), Selection(m_ssb) };
-    Selection object = m_celestiaCore->getSimulation()->getUniverse()->find(cname, searchContexts, 2);
-
-    return object.body();
-}
-
-
 void
 ThreeDVisualizationTool::resizeEvent(QResizeEvent* /* ev */)
 {
-    this->m_celestiaCore->setViewChanged();
 }

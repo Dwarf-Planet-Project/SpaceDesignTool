@@ -29,28 +29,20 @@
 
 #include <QWidget>
 
-class CelestiaCore;
-
-class QResizeEvent;
-
-class CelestiaGlWidget;
-class CelestiaInterface;
+class ThreeDView;
 class StaBody;
 
-// Celestia classes
-class Star;
-class Body;
 
-
+/** ThreeDVisualizationTool is a widget containing a 3D view along with
+  * controls specific for navigating and controlling the presentation of
+  * the 3D view.
+  */
 class ThreeDVisualizationTool : public QWidget
 {
 Q_OBJECT
 
 public:
-    ThreeDVisualizationTool(QWidget* parent,
-                            CelestiaGlWidget* celestiaView,
-                            CelestiaInterface* celestia,
-                            CelestiaCore* celestiaCore);
+    ThreeDVisualizationTool(QWidget* parent);
     ~ThreeDVisualizationTool();
 
 public slots:
@@ -59,24 +51,16 @@ public slots:
     void setTickInterval(double seconds);
     void saveImage();
 
+    ThreeDView* view() const
+    {
+        return m_view;
+    }
+
 protected:
     void resizeEvent(QResizeEvent* event);
 
 private:
-    Body* findBody(const StaBody* body);
-
-private:
-    CelestiaGlWidget* m_celestiaView;
-    CelestiaInterface* m_celestia;
-
-    // TODO: Only a CelestiaInterface object should be required. But first,
-    // the CelestiaInterface needs to be expanded with wrappers for more
-    // Celestia features.
-    CelestiaCore* m_celestiaCore;
-
-    // Celestia objects representing the Sun and Solar System Barycenter
-    Star* m_sun;
-    Star* m_ssb;
+    ThreeDView* m_view;
 };
 
 #endif // _THREED_VISUALIZATION_TOOL_H_

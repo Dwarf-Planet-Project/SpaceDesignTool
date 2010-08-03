@@ -47,6 +47,7 @@
  * elements of artificial Earth satellites. Since no such objects existed prior to
  * October 4, 1957, all satellite-related MJDs are positive.
  */
+double sta::MJDBase = 2400000.5;
 //double sta::J2000 = 2451545.0;
 double sta::J2000 = 2400000.5;
 
@@ -120,20 +121,20 @@ QDateTime sta::JdToCalendar(double jd)
     return QDateTime(QDate(year, month, day), QTime(hour, minute, second, msec), Qt::UTC);
 }
 
-/*! Convert a modified Julian date (day offset from J2000.0) to a 
+/*! Convert a modified Julian date (day offset from JD 2400000.0) to a
  *  standard Julian date.
  */
 double sta::MjdToJd(double mjd)
 {
-    return mjd + sta::J2000;
+    return mjd + sta::MJDBase;
 }
 
 /*! Convert a standard Julian date to a modified Julian date (day offset
- *  from J2000.0.)
+ *  from JD 2400000.0.)
  */
 double sta::JdToMjd(double jd)
 {
-    return jd - sta::J2000;
+    return jd - sta::MJDBase;
 }
 
 /*! functions added by Ana Raposo to fulfill some Analysis Module requirements*/
