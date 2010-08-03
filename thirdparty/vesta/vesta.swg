@@ -1,5 +1,5 @@
 //
-// $Revision: 383 $ $Date: 2010-07-22 11:29:58 -0700 (Thu, 22 Jul 2010) $
+// $Revision: 405 $ $Date: 2010-08-03 13:05:54 -0700 (Tue, 03 Aug 2010) $
 //
 // Copyright by Astos Solutions GmbH, Germany
 //  
@@ -622,7 +622,7 @@ public:
     ~StarCatalog();
 
     unsigned int size() const;
-    void addStar(double ra, double dec, double vmag, double vmag);
+    void addStar(unsigned int identifier, double ra, double dec, double vmag, double vmag);
 };
 
 

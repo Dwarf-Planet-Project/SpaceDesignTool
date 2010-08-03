@@ -1,5 +1,5 @@
 /*
- * $Revision: 356 $ $Date: 2010-07-14 16:48:17 -0700 (Wed, 14 Jul 2010) $
+ * $Revision: 394 $ $Date: 2010-07-30 11:50:49 -0700 (Fri, 30 Jul 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -91,6 +91,8 @@ public:
         return m_samples.z();
     }
 
+    void normalize();
+
     static Spectrum White()
     {
         return Spectrum(1.0f, 1.0f, 1.0f);
@@ -105,6 +107,11 @@ public:
     {
         return Spectrum(f, f, f);
     }
+
+    static Spectrum XYZtoLinearSRGB(const Spectrum& xyz);
+    static Spectrum LinearSRGBtoXYZ(const Spectrum& srgb);
+    static Spectrum LinearSRGBtoSRGB(const Spectrum& srgb);
+    static Spectrum SRGBtoLinearSRGB(const Spectrum& srgb);
 
 private:
     Spectrum(const Eigen::Vector4f& v) :

@@ -48,19 +48,33 @@ public:
         return m_style;
     }
 
-    void setStyle(StarStyle style)
+    void setStyle(StarStyle style);
+
+    /** Return the apparent magnitude of the faintest stars that will be visible.
+      */
+    float limitingMagnitude() const
     {
-        m_style = style;
+        return m_limitingMagnitude;
     }
+
+    /** Set the magnitude of the faintest stars that will be visible. A value of
+      * 6.5 is approximately right for a human observer under clear, dark skies.
+      */
+    void setLimitingMagnitude(float limitingMagnitude);
+
+private:
+    void updateVertexBuffer();
 
 private:
     counted_ptr<StarCatalog> m_starCatalog;
+    char* m_vertexArray;
     counted_ptr<GLVertexBuffer> m_vertexBuffer;
     counted_ptr<GLShaderProgram> m_starShader;
     counted_ptr<GLShaderProgram> m_starShaderSRGB;
     bool m_vertexBufferCurrent;
     bool m_starShaderCompiled;
     StarStyle m_style;
+    float m_limitingMagnitude;
 };
 
 }

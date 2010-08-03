@@ -1,5 +1,5 @@
 /*
- * $Revision: 373 $ $Date: 2010-07-20 10:50:15 -0700 (Tue, 20 Jul 2010) $
+ * $Revision: 404 $ $Date: 2010-08-03 13:04:00 -0700 (Tue, 03 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -16,6 +16,7 @@
 #include "Debug.h"
 #include <algorithm>
 #include <cassert>
+#include <limits>
 
 // 3D file format support
 #include "VertexPool.h"
@@ -193,13 +194,35 @@ MeshGeometry::handleRayPick(const Eigen::Vector3d& pickOrigin,
 {
     Matrix3d invScale = m_meshScale.cast<double>().cwise().inverse().asDiagonal();
     Vector3d origin = invScale * pickOrigin;
-    Vector3d direction = invScale * pickDirection;
+    Vector3d direction = (invScale * pickDirection).normalized();
 
-    Vector3d n = -direction;
-    double t = n.dot(origin) / n.dot(direction);
-    *distance = m_meshScale.norm() * t;
+    double closestHit = numeric_limits<double>::infinity();
 
-    return true;
+    for (vector<counted_ptr<Submesh> >::const_iterator iter = m_submeshes.begin();
+         iter != m_submeshes.end(); ++iter)
+    {
+        double submeshDistance = 0.0;
+
+        // TODO: Check the bounding box of the submesh before doing the actual mesh
+        // intersection test.
+        if ((*iter)->rayPick(origin, direction, &submeshDistance))
+        {
+            if (submeshDistance < closestHit)
+            {
+                closestHit = submeshDistance;
+            }
+        }
+    }
+
+    if (closestHit < numeric_limits<double>::infinity())
+    {
+        *distance = closestHit;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 

@@ -21,6 +21,7 @@ VESTA_SOURCES = \
     $$VESTA_PATH/CelestialCoordinateGrid.cpp \
     $$VESTA_PATH/Chronology.cpp \
     $$VESTA_PATH/ConeGeometry.cpp \
+    $$VESTA_PATH/ConstellationsLayer.cpp \
     $$VESTA_PATH/CubeMapFramebuffer.cpp \
     $$VESTA_PATH/DataChunk.cpp \
     $$VESTA_PATH/DDSLoader.cpp \
@@ -48,6 +49,7 @@ VESTA_SOURCES = \
     $$VESTA_PATH/LightingEnvironment.cpp \
     $$VESTA_PATH/SensorVisualizer.cpp \
     $$VESTA_PATH/ShaderBuilder.cpp \
+    $$VESTA_PATH/Spectrum.cpp \
     $$VESTA_PATH/StarCatalog.cpp \
     $$VESTA_PATH/StarsLayer.cpp \
     $$VESTA_PATH/Submesh.cpp \
@@ -82,6 +84,7 @@ VESTA_HEADERS = \
     $$VESTA_PATH/CelestialCoordinateGrid.h \
     $$VESTA_PATH/Chronology.h \
     $$VESTA_PATH/ConeGeometry.h \
+    $$VESTA_PATH/ConstellationsLayer.h \
     $$VESTA_PATH/CubeMapFramebuffer.h \
     $$VESTA_PATH/DataChunk.h \
     $$VESTA_PATH/Debug.h \

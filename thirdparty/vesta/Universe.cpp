@@ -1,5 +1,5 @@
 /*
- * $Revision: 374 $ $Date: 2010-07-20 12:22:50 -0700 (Tue, 20 Jul 2010) $
+ * $Revision: 398 $ $Date: 2010-08-02 13:26:22 -0700 (Mon, 02 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -56,11 +56,14 @@ Universe::addEntity(Entity* entity)
 /** Remove an entity from the universe.
   */
 void
-Universe::removeEntity(Entity* /* entity */)
+Universe::removeEntity(Entity* entity)
 {
-    // find
-    // remove
-    // release reference if removed
+    vector<Entity*>::iterator iter = find(m_entities.begin(), m_entities.end(), entity);
+    if (iter != m_entities.end())
+    {
+        (*iter)->release();
+        m_entities.erase(iter);
+    }
 }
 
 

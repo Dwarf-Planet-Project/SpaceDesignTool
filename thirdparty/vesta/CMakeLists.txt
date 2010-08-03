@@ -1,5 +1,5 @@
 #
-# $Revision: 389 $ $Date: 2010-07-26 19:34:58 -0700 (Mon, 26 Jul 2010) $
+# $Revision: 405 $ $Date: 2010-08-03 13:05:54 -0700 (Tue, 03 Aug 2010) $
 #
 # Copyright by Astos Solutions GmbH, Germany
 #
@@ -39,6 +39,7 @@ set (SRCS
     CelestialCoordinateGrid.cpp
     Chronology.cpp
     ConeGeometry.cpp
+    ConstellationsLayer.cpp
     CubeMapFramebuffer.cpp
     DataChunk.cpp
     DDSLoader.cpp
@@ -66,6 +67,7 @@ set (SRCS
     RenderContext.cpp
     SensorVisualizer.cpp
     ShaderBuilder.cpp
+    Spectrum.cpp
     StarCatalog.cpp
     StarsLayer.cpp
     Submesh.cpp

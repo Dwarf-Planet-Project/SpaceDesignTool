@@ -1,5 +1,5 @@
 /*
- * $Revision: 369 $ $Date: 2010-07-19 19:13:37 -0700 (Mon, 19 Jul 2010) $
+ * $Revision: 404 $ $Date: 2010-08-03 13:04:00 -0700 (Tue, 03 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -60,6 +60,11 @@ public:
     {
         return m_boundingSphereRadius;
     }
+
+    bool
+    rayPick(const Eigen::Vector3d& pickOrigin,
+            const Eigen::Vector3d& pickDirection,
+            double* distance) const;
 
     static Submesh* mergeSubmeshes(const std::vector<Submesh*>& submeshes);
     bool uniquifyVertices(float positionTolerance = 0.0f, float normalTolerance = 0.0f, float texCoordTolerance = 0.0f);

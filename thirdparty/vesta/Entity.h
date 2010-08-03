@@ -1,5 +1,5 @@
 /*
- * $Revision: 307 $ $Date: 2010-06-28 14:15:57 -0700 (Mon, 28 Jun 2010) $
+ * $Revision: 402 $ $Date: 2010-08-03 13:00:55 -0700 (Tue, 03 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -93,6 +93,7 @@ public:
     void removeVisualizer(const std::string& tag);
     Visualizer* visualizer(const std::string& tag) const;
     bool hasVisualizers() const;
+    void clearVisualizers();
 
     LightSource* lightSource() const
     {

@@ -549,7 +549,6 @@ CurvePlot::render(const Transform3d& modelview,
     vbuf.createVertexBuffer();
     vbuf.setup();
 
-    clog << "size: " << m_samples.size() << endl;
     for (unsigned int i = 1; i < m_samples.size(); i++)
     {
         // Transform the points into camera space.

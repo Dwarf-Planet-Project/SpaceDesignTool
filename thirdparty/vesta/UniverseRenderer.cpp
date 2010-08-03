@@ -1,5 +1,5 @@
 /*
- * $Revision: 389 $ $Date: 2010-07-26 19:34:58 -0700 (Mon, 26 Jul 2010) $
+ * $Revision: 397 $ $Date: 2010-07-30 23:47:00 -0700 (Fri, 30 Jul 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -889,7 +889,7 @@ UniverseRenderer::renderDepthBufferSpanShadows(const DepthBufferSpan& span,
     for (unsigned int i = 0; i < span.itemCount; ++i)
     {
         const VisibleItem& item = m_visibleItems[span.backItemIndex - i];
-        const Geometry* geometry = item.entity->geometry();
+        const Geometry* geometry = item.geometry;
 
         if (geometry->isShadowReceiver())
         {

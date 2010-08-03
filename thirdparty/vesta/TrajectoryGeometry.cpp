@@ -1,5 +1,5 @@
 /*
- * $Revision: 265 $ $Date: 2010-05-19 10:54:24 -0700 (Wed, 19 May 2010) $
+ * $Revision: 400 $ $Date: 2010-08-02 17:39:12 -0700 (Mon, 02 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -26,7 +26,8 @@ TrajectoryGeometry::TrajectoryGeometry() :
     m_curvePlot(0),
     m_startTime(0.0),
     m_endTime(0.0),
-    m_boundingRadius(0.0)
+    m_boundingRadius(0.0),
+    m_displayedPortion(Entire)
 {
     // Make trajectories splittable by default in order to prevent
     // clipping artifacts.
@@ -41,7 +42,7 @@ TrajectoryGeometry::~TrajectoryGeometry()
 
 
 void
-TrajectoryGeometry::render(RenderContext& rc, float /* cameraDistance */, double /* animationTime */) const
+TrajectoryGeometry::render(RenderContext& rc, float /* cameraDistance */, double animationTime) const
 {
     if (!m_curvePlot)
     {
@@ -67,10 +68,24 @@ TrajectoryGeometry::render(RenderContext& rc, float /* cameraDistance */, double
     rc.pushModelView();
     rc.identityModelView();
 
+    double startTime = m_startTime;
+    double endTime = m_endTime;
+    switch (m_displayedPortion)
+    {
+    case StartToCurrentTime:
+        endTime = animationTime;
+        break;
+    case CurrentTimeToEnd:
+        startTime = animationTime;
+        break;
+    default:
+        break;
+    }
+
     m_curvePlot->render(modelview,
                         -frustum.nearZ, -frustum.farZ, frustum.planeNormals, // viewFrustum
-                        rc.pixelSize() * 30.0);                              // subdivisionThreshold
-                        //m_startTime, m_endTime);
+                        rc.pixelSize() * 30.0,                               // subdivisionThreshold
+                        startTime, endTime);
 
     rc.popModelView();
 }
@@ -107,7 +122,7 @@ TrajectoryGeometry::computeSamples(const Trajectory* trajectory, double startTim
 
     for (unsigned int i = 0; i <= steps; ++i)
     {
-        double t = i * dt;
+        double t = m_startTime + i * dt;
         StateVector state = trajectory->state(t);
 
         CurvePlotSample sample;

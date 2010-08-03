@@ -1,5 +1,5 @@
 /*
- * $Revision: 223 $ $Date: 2010-03-30 05:44:44 -0700 (Tue, 30 Mar 2010) $
+ * $Revision: 405 $ $Date: 2010-08-03 13:05:54 -0700 (Tue, 03 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -12,6 +12,8 @@
 #define _VESTA_STAR_CATALOG_H_
 
 #include "Entity.h"
+#include "Spectrum.h"
+#include "IntegerTypes.h"
 #include <vector>
 
 namespace vesta
@@ -28,24 +30,27 @@ public:
         return m_starData.size();
     }
 
-    void addStar(double ra, double dec, double vmag, double bv);
+    void addStar(v_uint32 identifier, double ra, double dec, double vmag, double bv);
+    void buildCatalogIndex();
 
 public:
     struct StarRecord
     {
-        float x;
-        float y;
-        float z;
-        unsigned char color[4];
+        v_uint32 identifier;
+        float RA;
+        float declination;
+        float apparentMagnitude;
+        float bvColorIndex;
     };
 
-    const StarRecord* vertexBuffer() const
+    const StarRecord& star(unsigned int index)
     {
-        if (m_starData.empty())
-            return 0;
-        else
-            return &m_starData[0];
+        return m_starData[index];
     }
+
+    const StarRecord* findStarIdentifier(v_uint32 id);
+
+    static Spectrum StarColor(float bv);
 
 private:
     std::vector<StarRecord> m_starData;

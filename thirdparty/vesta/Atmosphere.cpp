@@ -1,5 +1,5 @@
 /*
- * $Revision: 345 $ $Date: 2010-07-12 08:53:00 -0700 (Mon, 12 Jul 2010) $
+ * $Revision: 401 $ $Date: 2010-08-02 17:41:13 -0700 (Mon, 02 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -57,7 +57,7 @@ const double Atmosphere::MolecularDensity_Air_15 = Mole * Density_Air_15 / Molar
 
 static const double EarthEquatorialRadius = 6378.14;
 
-static const Vector3d standardWavelengths(680.0, 550.0, 440.0);
+static const Vector3d standardWavelengths(650.0, 550.0, 440.0);
 
 // Calculate the Rayleigh scattering coefficient for the specified
 // wavelength (in nanometers), index of refraction n, and molecular

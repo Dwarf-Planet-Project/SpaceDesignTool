@@ -1,5 +1,5 @@
 /*
- * $Revision: 223 $ $Date: 2010-03-30 05:44:44 -0700 (Tue, 30 Mar 2010) $
+ * $Revision: 402 $ $Date: 2010-08-03 13:00:55 -0700 (Tue, 03 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -186,4 +186,16 @@ bool
 Entity::hasVisualizers() const
 {
     return m_visualizers && !m_visualizers->empty();
+}
+
+
+void
+Entity::clearVisualizers()
+{
+    if (m_visualizers)
+    {
+        m_visualizers->clear();
+        delete m_visualizers;
+        m_visualizers = NULL;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * $Revision: 369 $ $Date: 2010-07-19 19:13:37 -0700 (Mon, 19 Jul 2010) $
+ * $Revision: 404 $ $Date: 2010-08-03 13:04:00 -0700 (Tue, 03 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -10,10 +10,13 @@
 
 #include "Submesh.h"
 #include "Debug.h"
+#include <Eigen/LU>
+#include <Eigen/Geometry>
 #include <algorithm>
 #include <exception>
 #include <cmath>
 #include <cassert>
+#include <limits>
 
 using namespace vesta;
 using namespace Eigen;
@@ -489,4 +492,208 @@ Submesh::uniquifyVertices(float positionTolerance, float normalTolerance, float 
     //VESTA_LOG("%d of %d vertices unique.", uniqueVertexCount, vertexIndices.size());
 
     return true;
+}
+
+
+// Helper function to get the vertex indices of a triangle
+// Handles unindexed primitive batches, all triangle primitives types, and
+// 16- and 32-bit vertex indices.
+static void getTriangleVertexIndices(const PrimitiveBatch* primitives,
+                                     unsigned int triangleIndex,
+                                     unsigned int *index0,
+                                     unsigned int *index1,
+                                     unsigned int *index2)
+{
+    const v_uint32* index32 = NULL;
+    const v_uint16* index16 = NULL;
+    if (primitives->indexData())
+    {
+        if (primitives->indexSize() == PrimitiveBatch::Index16)
+        {
+            index16 = reinterpret_cast<const v_uint16*>(primitives->indexData());
+        }
+        else
+        {
+            index32 = reinterpret_cast<const v_uint32*>(primitives->indexData());
+        }
+    }
+
+    switch (primitives->primitiveType())
+    {
+    case PrimitiveBatch::Triangles:
+        if (index32)
+        {
+            *index0 = index32[triangleIndex * 3];
+            *index1 = index32[triangleIndex * 3 + 1];
+            *index2 = index32[triangleIndex * 3 + 2];
+        }
+        else if (index16)
+        {
+            *index0 = index16[triangleIndex * 3];
+            *index1 = index16[triangleIndex * 3 + 1];
+            *index2 = index16[triangleIndex * 3 + 2];
+        }
+        else
+        {
+            *index0 = primitives->firstVertex() + triangleIndex * 3;
+            *index1 = *index0 + 1;
+            *index2 = *index0 + 2;
+        }
+        break;
+
+    case PrimitiveBatch::TriangleStrip:
+        if (index32)
+        {
+            *index0 = index32[triangleIndex];
+            *index1 = index32[triangleIndex + 1];
+            *index2 = index32[triangleIndex + 2];
+        }
+        else if (index16)
+        {
+            *index0 = index16[triangleIndex];
+            *index1 = index16[triangleIndex + 1];
+            *index2 = index16[triangleIndex + 2];
+        }
+        else
+        {
+            *index0 = primitives->firstVertex() + triangleIndex;
+            *index1 = *index0 + 1;
+            *index2 = *index0 + 2;
+        }
+        break;
+
+    case PrimitiveBatch::TriangleFan:
+        if (index32)
+        {
+            *index0 = index32[0];
+            *index1 = index32[triangleIndex + 1];
+            *index2 = index32[triangleIndex + 2];
+        }
+        else if (index16)
+        {
+            *index0 = index16[0];
+            *index1 = index16[triangleIndex + 1];
+            *index2 = index16[triangleIndex + 2];
+        }
+        else
+        {
+            *index0 = primitives->firstVertex();
+            *index1 = *index0 + triangleIndex + 1;
+            *index2 = *index0 + triangleIndex + 2;
+        }
+        break;
+
+    default:
+        return;
+    }
+}
+
+
+/** Test whether this submesh is intersected by the given pick
+  * ray. The pickOrigin and pickDirection are local coordinate
+  * system of the submesh. Only triangles are tested for intersection.
+  * Materials are not considered, and thus its possible for the
+  * intersection test to return hits on completely transparent
+  * geometry.
+  *
+  * @param pickOrigin origin of the pick ray in model space
+  * @param pickDirection direction of the pick ray in model space (must be normalized)
+  * @param distance filled in with the distance to the geometry if the ray hits
+  */
+bool
+Submesh::rayPick(const Vector3d& pickOrigin,
+                 const Vector3d& pickDirection,
+                 double* distance) const
+{
+    // Verify that we have a valid position attribute
+    unsigned int positionIndex = m_vertices->vertexSpec().attributeIndex(VertexAttribute::Position);
+    if (positionIndex == VertexSpec::InvalidAttribute)
+    {
+        return false;
+    }
+
+    Vector3f pickOriginf = pickOrigin.cast<float>();
+    Vector3f pickDirectionf = pickDirection.cast<float>();
+
+    float closestHit = numeric_limits<float>::infinity();
+
+    for (vector<PrimitiveBatch*>::const_iterator iter = m_primitiveBatches.begin(); iter != m_primitiveBatches.end(); ++iter)
+    {
+        const PrimitiveBatch* prims = *iter;
+
+        // Only check for intersections with primitives that have non-zero area (i.e. triangles)
+        if (prims->primitiveType() == PrimitiveBatch::Triangles ||
+            prims->primitiveType() == PrimitiveBatch::TriangleStrip ||
+            prims->primitiveType() == PrimitiveBatch::TriangleFan)
+        {
+            for (unsigned int triIndex = 0; triIndex < prims->primitiveCount(); ++triIndex)
+            {
+                // Get the indices of the triangle vertices
+                unsigned int index0 = 0;
+                unsigned int index1 = 0;
+                unsigned int index2 = 0;
+                getTriangleVertexIndices(prims, triIndex, &index0, &index1, &index2);
+
+                if (index0 < m_vertices->count() && index1 < m_vertices->count() && index2 < m_vertices->count())
+                {
+                    // We have valid vertex indices, now perform the intersection test
+                    Vector3f v0 = m_vertices->position(index0);
+                    Vector3f v1 = m_vertices->position(index1);
+                    Vector3f v2 = m_vertices->position(index2);
+
+                    Vector3f edge0 = v1 - v0;
+                    Vector3f edge1 = v2 - v0;
+                    Vector3f normal = edge0.cross(edge1);
+
+                    // If the triangle normal and direction are perpendicular, the ray is parallel to the triangle.
+                    // Treat this as always being a miss (even when the direction vector lies in the plane of the
+                    // triangle.)
+                    float d = normal.dot(pickDirectionf);
+                    if (d != 0.0f)
+                    {
+                        float planeIntersect = normal.dot(v0 - pickOriginf) / d;
+
+                        // See if the intersection point is in front of the ray origin and
+                        // closer than the closest hit so far.
+                        if (planeIntersect > 0.0f && planeIntersect < closestHit)
+                        {
+                            Matrix2f e;
+                            e << edge0.dot(edge0), edge0.dot(edge1),
+                                 edge1.dot(edge0), edge1.dot(edge1);
+                            float a = e.determinant();
+                            if (a != 0.0f)
+                            {
+                                e *= (1.0f / a);
+
+                                // Compute the point at which the the pick ray intersects the triangle plane
+                                Vector3f p = pickOriginf + pickDirectionf * planeIntersect - v0;
+                                float p0 = p.dot(edge0);
+                                float p1 = p.dot(edge1);
+
+                                // Compute the barycentric coordinates (s, t) of the intersection point.
+                                // (s, t) lies in the triangle if s >= 0 and t >= 0 and s + t <= 1
+                                float s = e(1, 1) * p0 - e(0, 1) * p1;
+                                float t = e(0, 0) * p1 - e(1, 0) * p0;
+                                if (s >= 0.0f && t >= 0.0f && s + t <= 1.0f)
+                                {
+                                    closestHit = planeIntersect;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (closestHit < numeric_limits<float>::infinity())
+    {
+        *distance = closestHit;
+        return true;
+    }
+    else
+    {
+        // No intersection
+        return false;
+    }
 }

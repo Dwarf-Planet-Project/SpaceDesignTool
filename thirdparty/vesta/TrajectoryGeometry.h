@@ -1,5 +1,5 @@
 /*
- * $Revision: 223 $ $Date: 2010-03-30 05:44:44 -0700 (Tue, 30 Mar 2010) $
+ * $Revision: 400 $ $Date: 2010-08-02 17:39:12 -0700 (Mon, 02 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -75,6 +75,31 @@ public:
 
     void computeSamples(const Trajectory* trajectory, double startTime, double endTime, unsigned int steps);
 
+    enum TrajectoryPortion
+    {
+        Entire             = 0,
+        StartToCurrentTime = 1,
+        CurrentTimeToEnd   = 2,
+    };
+
+    /** Return the portion of the trajectory that will be displayed.
+      */
+    TrajectoryPortion displayedPortion() const
+    {
+        return m_displayedPortion;
+    }
+
+    /** Set the portion of the trajectory that will be displayed. There are three
+      * options:
+      *    Entire - show the complete trajectory from beginning to end
+      *    StartToCurrentTime - show the trajectory from the first point through the current time
+      *    CurrenTimeToEnd - show the trajectory from the current time through the end point
+      */
+    void setDisplayedPortion(TrajectoryPortion portion)
+    {
+        m_displayedPortion = portion;
+    }
+
 private:
     Spectrum m_color;
     float m_opacity;
@@ -82,6 +107,7 @@ private:
     double m_startTime;
     double m_endTime;
     double m_boundingRadius;
+    TrajectoryPortion m_displayedPortion;
 };
 
 }
