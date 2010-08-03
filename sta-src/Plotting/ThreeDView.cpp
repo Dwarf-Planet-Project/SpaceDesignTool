@@ -454,7 +454,7 @@ ThreeDView::drawOverlay()
 void
 ThreeDView::resizeGL(int width, int height)
 {
-    glViewport(0, 0, width, height);
+    setViewChanged();
 }
 
 
