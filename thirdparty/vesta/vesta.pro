@@ -1,4 +1,5 @@
 TEMPLATE = lib
+
 CONFIG += static
 
 TARGET = vesta
@@ -257,8 +258,9 @@ DEFINES += EIGEN_USE_NEW_STDVECTOR
 win32-g++ {
     # Work around alignment problems with MinGW. Fixed-size Eigen matrices
     # are sometimes allocated on the stack at unaligned addresses even though
-    # __alignof e.g. Vector4d is 16.
-    DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+    # __alignof e.g. Vector4d is 16. The flag below works on g++ versions 4 and
+    # higher. For older versions, we need to define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+    QMAKE_CXXFLAGS += -mincoming-stack-boundary=2
 
     # Disable min and max preprocessor on Win32 platform that interfere
     # with the C++ Standard Library template functions.

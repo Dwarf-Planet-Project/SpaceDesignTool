@@ -615,6 +615,10 @@ win32-g++ {
         -fexpensive-optimizations \
         -O3 \
         -Bdynamic
+
+    # The below libraries are already included automatically by Qt, but they need to appear
+    # *after* libvesta on the command line. This seems to work pretty well.
+    LIBS += -lopengl32 -lglu32
 }
 
 

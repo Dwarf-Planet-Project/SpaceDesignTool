@@ -536,7 +536,7 @@ ThreeDView::initializeUniverse()
     // Create the Solar System Barycenter
     Entity* ssb = new Entity();
     ssb->setName("SSB");
-    ssb->chronology()->addArc(new Arc());
+    ssb->chronology()->addArc(new vesta::Arc());
     ssb->chronology()->setBeginning(BeginningOfTime);
     ssb->chronology()->firstArc()->setDuration(ValidTimeSpan);
     m_universe->addEntity(ssb);
@@ -573,7 +573,7 @@ ThreeDView::addSolarSystemBody(const StaBody* body, Entity* center)
 
     Body* b = new Body();
     b->setName(body->name().toUtf8().data());
-    Arc* arc = new Arc();
+    vesta::Arc* arc = new vesta::Arc();
     arc->setDuration(ValidTimeSpan);
     arc->setCenter(center);
     arc->setTrajectory(new StaBodyTrajectory(body, staCenter));
@@ -824,7 +824,7 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
             Frame* frame = createFrame(missionArc);
             if (frame)
             {
-                Arc* arc = new Arc();
+                vesta::Arc* arc = new vesta::Arc();
                 arc->setCenter(center);
                 arc->setDuration(sta::daysToSecs(missionArc->ending() - missionArc->beginning()));
                 arc->setTrajectoryFrame(frame);
@@ -844,7 +844,7 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
     body->setVisualizer("label", new Visualizer(label));
 
     // Add a trajectory visualizer for the first arc
-    Arc* firstArc = body->chronology()->firstArc();
+    vesta::Arc* firstArc = body->chronology()->firstArc();
     TrajectoryGeometry* trajGeom = new TrajectoryGeometry();
     trajGeom->setDisplayedPortion(TrajectoryGeometry::StartToCurrentTime);
     trajGeom->setColor(spaceObjColor);
@@ -878,7 +878,7 @@ ThreeDView::createGroundObject(const GroundObject* groundObj)
         position = position.cwise() * groundObj->centralBody->radii();
         qDebug() << "ground object: " << position.x() << ", " << position.y() << ", " << position.z();
 
-        Arc* arc = new Arc();
+        vesta::Arc* arc = new vesta::Arc();
         arc->setCenter(center);
         arc->setDuration(ValidTimeSpan);
         arc->setTrajectory(new FixedPointTrajectory(position));
