@@ -37,7 +37,7 @@
 #include "Astro-Core/nedTOfixed.h"
 #include "Astro-Core/rectangularTOpolar.h"
 #include <vector>
-#include <celmath/vecmath.h>
+
 using namespace sta;
 using namespace Eigen;
 
