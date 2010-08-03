@@ -22,7 +22,8 @@ class RenderContext;
 class SkyLayer : public Object
 {
 public:
-    SkyLayer()
+    SkyLayer() :
+        m_visible(false)
     {
     }
 

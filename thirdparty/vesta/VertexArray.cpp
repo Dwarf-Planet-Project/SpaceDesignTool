@@ -1,5 +1,5 @@
 /*
- * $Revision: 404 $ $Date: 2010-08-03 13:04:00 -0700 (Tue, 03 Aug 2010) $
+ * $Revision: 407 $ $Date: 2010-08-03 14:35:35 -0700 (Tue, 03 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -88,7 +88,7 @@ VertexArray::computeBoundingSphereRadius() const
     float maxDistSquared = 0.0f;
 
     unsigned int positionIndex = m_vertexSpec.attributeIndex(VertexAttribute::Position);
-    assert(positionIndex >= 0);
+    assert(positionIndex != VertexSpec::InvalidAttribute);
     if (positionIndex != VertexSpec::InvalidAttribute)
     {
         const float* floatData = reinterpret_cast<float*>(m_data) + m_vertexSpec.attributeOffset(positionIndex) / 4;

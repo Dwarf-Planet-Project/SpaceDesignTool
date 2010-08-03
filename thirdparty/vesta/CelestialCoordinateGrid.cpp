@@ -1,5 +1,5 @@
 /*
- * $Revision: 228 $ $Date: 2010-04-02 12:42:58 -0700 (Fri, 02 Apr 2010) $
+ * $Revision: 408 $ $Date: 2010-08-03 14:38:16 -0700 (Tue, 03 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -24,7 +24,6 @@ CelestialCoordinateGrid::CelestialCoordinateGrid() :
     m_orientation(Quaterniond::Identity()),
     m_longitudeUnits(Hours),
     m_color(1.0f, 1.0f, 1.0f),
-    m_visible(true),
     m_style(LabeledGrid)
 {
 }

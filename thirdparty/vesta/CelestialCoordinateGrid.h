@@ -1,5 +1,5 @@
 /*
- * $Revision: 381 $ $Date: 2010-07-21 12:26:04 -0700 (Wed, 21 Jul 2010) $
+ * $Revision: 408 $ $Date: 2010-08-03 14:38:16 -0700 (Tue, 03 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -113,7 +113,6 @@ private:
     Eigen::Quaterniond m_orientation;
     LongitudeUnits m_longitudeUnits;
     Spectrum m_color;
-    bool m_visible;
     GridStyle m_style;
 };
 
