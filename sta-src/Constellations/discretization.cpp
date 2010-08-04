@@ -31,7 +31,6 @@
 
 #include "Constellations/discretization.h"
 #include "Astro-Core/stamath.h"
-#include "celestia-src/celmath/mathlib.h"
 
 using namespace Eigen;
 
@@ -61,7 +60,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     for (int k = 0; k < numberRows; k++)
     {
         latitudeValues[k] = 90.0f - ((float)(k+1)-0.5f) * rowSpacing;
-        periphery[k] = 2 * PI * centralBody->meanRadius() * cos(sta::degToRad(latitudeValues[k]));
+        periphery[k] = 2 * sta::Pi() * centralBody->meanRadius() * cos(sta::degToRad(latitudeValues[k]));
         numberColumns[k] = (int)(periphery[k] / (double)heightRow);
         if (numberColumns[k] % 2 == 0)
         {
