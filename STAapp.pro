@@ -666,18 +666,12 @@ SEMMISCELANEOUS_SOURCE = sta-data/data
 SEMMISCELANEOUS_FILES = $$SEMMISCELANEOUS_SOURCE/EclipseDetailedReport.stad \
     $$SEMMISCELANEOUS_SOURCE/EclipseStarLight.stad \
     $$SEMMISCELANEOUS_SOURCE/PlanetThermalProperties.stad
-CONFIGURATION_SOURCE = sta-data
-CONFIGURATION_FILES = $$CONFIGURATION_SOURCE/STA.cfg \
-    $$CONFIGURATION_SOURCE/ESA_tour.cel \
-    $$CONFIGURATION_SOURCE/start.cel
 EPHEMERIS_SOURCE = sta-data/ephemerides
 EPHEMERIS_FILES = sta-data/ephemerides/de406_1800-2100.dat
 TEXTURE_SOURCE = sta-data/textures/medres
 TEXTURE_FILES = 
 MODEL_SOURCE = sta-data/models
 MODEL_FILES = 
-FONT_SOURCE = sta-data/fonts
-FONT_FILES = 
 ESTIMATIONS_SOURCE = sta-data/data/Estimations
 ESTIMATIONS_FILES = 
 MATERIALS_SOURCE = sta-data/data/MaterialDatabase
@@ -705,7 +699,7 @@ EXAMPLES_FILES =
 MACOSXIconFiles_SOURCE = iconary
 #MACOSXIconFiles_FILES =
 USERMANUAL_SOURCE = sta-data/help
-USERMANUAL_FILES = 
+USERMANUAL_FILES =
 
 # ############### MAC OS X bundle ########################
 macx { 
@@ -716,8 +710,6 @@ macx {
     TEXTURE_FILES = $$join(FILES, " $$TEXTURE_SOURCE/", $$TEXTURE_SOURCE/)
     FILES = $$system(ls $$MODEL_SOURCE)
     MODEL_FILES = $$join(FILES, " $$MODEL_SOURCE/", $$MODEL_SOURCE/)
-    FILES = $$system(ls $$FONT_SOURCE)
-    FONT_FILES = $$join(FILES, " $$FONT_SOURCE/", $$FONT_SOURCE/)
     FILES = $$system(ls $$ESTIMATIONS_SOURCE)
     ESTIMATIONS_FILES = $$join(FILES, " $$ESTIMATIONS_SOURCE/", $$ESTIMATIONS_SOURCE/)
     FILES = $$system(ls $$MATERIALS_SOURCE)
@@ -749,25 +741,16 @@ macx {
 }
 
 macx { 
+    QT += dbus
+    QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
+    QMAKE_LFLAGS += -framework CoreFoundation
 
-     QT += dbus
-     QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
-     QMAKE_LFLAGS += -framework \
-        CoreFoundation \
-        -framework \
-        ApplicationServices
     message( "Warning: building on MAC OS X for x86 architecture only" )
+
     CONFIG += x86
     INCLUDEPATH += $$MACOSX_LIBRARIES_DIR
-    DEFINES += TARGET_OS_MAC \
-        __AIFF__
-    PRECOMPILED_HEADER += thirdparty/macosx/Util.h
-    FRAMEWORKPATH = thirdparty/macosx/Frameworks
-    LIBS += -L$$FRAMEWORKPATH
     FRAMEWORKS.path = Contents/Frameworks
     QMAKE_BUNDLE_DATA += FRAMEWORKS
-    CONFIGURATION.path = Contents/Resources/STAResources
-    CONFIGURATION.files = $$CONFIGURATION_FILES
     VIS3D.path = Contents/Resources/STAResources/vis3d
     VIS3D.files = $$VIS3D_FILES
     CATALOGS.path = Contents/Resources/STAResources/data
@@ -776,8 +759,6 @@ macx {
     TEXTURES.files = $$TEXTURE_FILES
     MODELS.path = Contents/Resources/STAResources/models
     MODELS.files = $$MODEL_FILES
-    FONTS.path = Contents/Resources/STAResources/fonts
-    FONTS.files = $$FONT_FILES
     EPHEMERIDES.path = Contents/Resources/STAResources/ephemerides
     EPHEMERIDES.files = $$EPHEMERIS_FILES
     ESTIMATIONS.path = Contents/Resources/STAResources/data/Estimations
@@ -810,13 +791,12 @@ macx {
     USERMANUAL.files = $$USERMANUAL_FILES
     MACOSXIconFiles.path = Contents/Resources
     MACOSXIconFiles.files = $$MACOSXIconFiles_FILES
+
     QMAKE_BUNDLE_DATA += \
-        CONFIGURATION \
         VIS3D \
         CATALOGS \
         TEXTURES \
         MODELS \
-        FONTS \
         EPHEMERIDES \
         ESTIMATIONS \
         MATERIALS \
@@ -827,18 +807,20 @@ macx {
         SEMMISCELANEOUS \
         USERMANUAL \
         MACOSXIconFiles
-    QMAKE_BUNDLE_DATA += HEATRATES \
+    QMAKE_BUNDLE_DATA += \
+        HEATRATES \
         AERODYNAMICS \
         RAMOUTPUT \
         VEHICLEWGS \
         ATMOSPHERES \
         BODIES
+
 }
 
 ## MAC OS X specifics to load inside the bundle the Qt frameworks to avoid separated installation
 ## and make STA a droppable and callable application, MAC alike
 macx {
-	QMAKE_INFO_PLIST= ./sta-data/macosx/Info.plist
+    QMAKE_INFO_PLIST= ./sta-data/macosx/Info.plist
 
 	# Next command has been moved to the Qt Projects Build Steps list
 	## Deploys Qt frameworks inside the MAC bundle but efficiently

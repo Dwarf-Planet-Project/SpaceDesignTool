@@ -350,7 +350,7 @@ LoadTextureFont(const QString& fileName)
 void
 ThreeDView::initializeGL()
 {
-    m_labelFont = LoadTextureFont("fonts/sans12.txf");
+    m_labelFont = LoadTextureFont("vis3d/sans12.txf");
 
     m_renderer = new UniverseRenderer();
     initializeLayers();
