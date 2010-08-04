@@ -357,6 +357,9 @@ ThreeDView::initializeGL()
 
     m_renderer->setAmbientLight(Spectrum::Flat(0.2f));
 
+    // Create icon textures
+    m_spacecraftIcon = m_textureLoader->loadTexture(":/icons/Icon3DViewSpacecraft", TextureProperties(TextureProperties::Clamp));
+
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
@@ -840,7 +843,9 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
                            spaceObj->trajectoryColor().greenF(),
                            spaceObj->trajectoryColor().blueF());
 
-    LabelGeometry* label = new LabelGeometry(spaceObj->name().toUtf8().data(), m_labelFont.ptr(), spaceObjColor);
+    LabelGeometry* label = new LabelGeometry(spaceObj->name().toUtf8().data(), m_labelFont.ptr(), spaceObjColor, 7.0f);
+    label->setIcon(m_spacecraftIcon.ptr());
+    label->setIconColor(spaceObjColor);
     body->setVisualizer("label", new Visualizer(label));
 
     // Add a trajectory visualizer for the first arc
@@ -851,7 +856,7 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
     trajGeom->computeSamples(firstArc->trajectory(),
                              body->chronology()->beginning(),
                              body->chronology()->beginning() + firstArc->duration(), 1000);
-    string visName = QString("%1 trajectory").arg(spaceObj->name()).toUtf8().data();
+    string visName = QString("%1 trajectory").arg(qHash(spaceObj)).toUtf8().data();
     firstArc->center()->setVisualizer(visName, new Visualizer(trajGeom));
 
     return body;
@@ -876,7 +881,6 @@ ThreeDView::createGroundObject(const GroundObject* groundObj)
                           cos(latRadians) * sin(lonRadians),
                           sin(latRadians));
         position = position.cwise() * groundObj->centralBody->radii();
-        qDebug() << "ground object: " << position.x() << ", " << position.y() << ", " << position.z();
 
         vesta::Arc* arc = new vesta::Arc();
         arc->setCenter(center);

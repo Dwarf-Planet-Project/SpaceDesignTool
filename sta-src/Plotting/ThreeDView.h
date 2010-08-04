@@ -40,6 +40,7 @@ namespace vesta
     class Entity;
     class Body;
     class Frame;
+    class TextureMap;
     class TextureMapLoader;
     class TextureFont;
 }
@@ -112,6 +113,9 @@ private:
     vesta::counted_ptr<vesta::ObserverController> m_controller;
     vesta::counted_ptr<vesta::TextureMapLoader> m_textureLoader;
     vesta::counted_ptr<vesta::TextureFont> m_labelFont;
+
+    vesta::counted_ptr<vesta::TextureMap> m_spacecraftIcon;
+
     double m_fov;
 
     QPointF m_mousePosition;
