@@ -71,10 +71,10 @@ Q_OBJECT
     void updateScrollBars();
     
  private:
+    double m_currentTime;
     double m_startTime;
     double m_endTime;
     double m_visibleSpan;
-    double m_currentTime;
     int m_participantCount;
     
     struct MissionSegment

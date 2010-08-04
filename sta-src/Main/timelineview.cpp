@@ -45,6 +45,7 @@ static const float MissionSegmentBarSpacing = 8.0f;  // pixels
 
 TimelineView::TimelineView(QWidget* parent) :
     QAbstractScrollArea(parent),
+    m_currentTime(0.0),
     m_startTime(0.0),
     m_endTime(1.0),
     m_visibleSpan(1.0 / 24.0),
@@ -180,10 +181,10 @@ TimelineView::paintEvent(QPaintEvent* /* event */)
     // Draw a line indicating the current time
     {
         float x = (float) (viewWidth * (m_currentTime - viewStartTime) / m_visibleSpan);
-	//painter.setPen(Qt::red);
-	QPen guillermosPen(Qt::red, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-	painter.setPen(guillermosPen);
-	painter.drawLine(QPointF(x, 0), QPointF(x, viewHeight));
+        //painter.setPen(Qt::red);
+        QPen guillermosPen(Qt::red, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        painter.setPen(guillermosPen);
+        painter.drawLine(QPointF(x, 0), QPointF(x, viewHeight));
     }
 
 
@@ -196,11 +197,6 @@ TimelineView::paintEvent(QPaintEvent* /* event */)
 	int minute = (int) std::floor(decimalTime * 1440) % 60;
 	int second = (int) std::floor(decimalTime * 86400) % 60;
 
-#if 0
-    QDate date = QDate::fromJulianDay(sta::MjdToJd(t0));
-	QTime time (hour, minute, second);
-	QDateTime dateTime(date, time);
-#endif
     QDateTime dateTime = sta::JdToCalendar(sta::MjdToJd(t0));
 	//float x = (float) (viewWidth * (t0 - viewStartTime) / m_visibleSpan);
 	float x = 45;
@@ -224,11 +220,6 @@ TimelineView::paintEvent(QPaintEvent* /* event */)
         if (subdiv >= 1.0 || (hour == 0 && minute == 0 && second == 0))
         {
             // Show the date and time of day
-#if 0
-            QDate date = QDate::fromJulianDay(sta::MjdToJd(t) + 1 + 0.01);
-            QTime time (hour, minute, second);
-            QDateTime dateTime(date, time);
-#endif
             QDateTime dateTime = sta::JdToCalendar(sta::MjdToJd(t));
             
             float x = (float) (viewWidth * (t - viewStartTime) / m_visibleSpan);
