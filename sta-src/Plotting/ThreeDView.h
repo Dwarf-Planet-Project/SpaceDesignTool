@@ -80,6 +80,8 @@ public slots:
    void gotoBody(const StaBody* body);
    void setScenario(PropagatedScenario* scenario);
 
+   void setEquatorialPlane(bool enabled);
+
 protected:
     void initializeGL();
     void paintGL();

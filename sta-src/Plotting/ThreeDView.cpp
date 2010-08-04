@@ -45,6 +45,7 @@
 #include <vesta/Visualizer.h>
 #include <vesta/TrajectoryGeometry.h>
 #include <vesta/LabelGeometry.h>
+#include <vesta/PlaneVisualizer.h>
 #include <vesta/Units.h>
 #include <vesta/interaction/ObserverController.h>
 
@@ -696,6 +697,28 @@ ThreeDView::setViewChanged()
 
 
 void
+ThreeDView::setEquatorialPlane(bool enabled)
+{
+    Entity* earth = findSolarSystemBody(STA_SOLAR_SYSTEM->earth());
+    if (earth)
+    {
+        Visualizer* vis = earth->visualizer("equatorial plane");
+        if (!vis)
+        {
+            PlaneVisualizer* planeVis = new PlaneVisualizer(earth->geometry()->boundingSphereRadius() * 5.0);
+            planeVis->setFrame(InertialFrame::equatorJ2000());
+            planeVis->plane()->setGridLineSpacing(3000.0);
+            planeVis->plane()->setOpacity(0.35f);
+            earth->setVisualizer("equatorial plane", planeVis);
+            vis = planeVis;
+        }
+        vis->setVisibility(enabled);
+        setViewChanged();
+    }
+}
+
+
+void
 ThreeDView::tick(double dt)
 {
     Vector3d lastPosition = m_observer->absolutePosition(m_currentTime);
@@ -805,6 +828,12 @@ ThreeDView::createFrame(const MissionArc* arc)
 }
 
 
+static string TrajectoryVisualizerTag(const Entity* spaceObj)
+{
+    return string(QString("%1 trajectory").arg(qHash(spaceObj)).toUtf8().data());
+}
+
+
 /** Create a VESTA body representing an STA SpaceObject.
   */
 Body*
@@ -856,8 +885,7 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
     trajGeom->computeSamples(firstArc->trajectory(),
                              body->chronology()->beginning(),
                              body->chronology()->beginning() + firstArc->duration(), 1000);
-    string visName = QString("%1 trajectory").arg(qHash(spaceObj)).toUtf8().data();
-    firstArc->center()->setVisualizer(visName, new Visualizer(trajGeom));
+    firstArc->center()->setVisualizer(TrajectoryVisualizerTag(body), new Visualizer(trajGeom));
 
     return body;
 }
@@ -912,6 +940,9 @@ ThreeDView::clearScenarioObjects()
     // Remove VESTA entities for all space and ground objects
     foreach (Entity* e, m_scenarioSpaceObjects.values())
     {
+        // Remove trajectory visualizers from central body
+        e->chronology()->firstArc()->center()->removeVisualizer(TrajectoryVisualizerTag(e));
+
         m_universe->removeEntity(e);
     }
 
