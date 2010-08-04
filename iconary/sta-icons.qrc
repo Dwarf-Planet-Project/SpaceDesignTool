@@ -95,6 +95,7 @@
         <file>IconDOWNLOAD.png</file>
         <file>IconGRID.png</file>
         <file>IconSUN.png</file>
+        <file>Icon3DViewSpacecraft.png</file>
         <file>mission-arcs-loiteringTLE.png</file>
     </qresource>
 </RCC>
