@@ -356,10 +356,6 @@ PropagateLoiteringTLETrajectory(ScenarioLoiteringTLEType* loiteringTLE,
 
     int tleError = parse_elements(loiteringTLE->tleLine1().toAscii().data(), loiteringTLE->tleLine2().toAscii().data(), &tle);
 
-    //out << tle.epoch << " " << tle.omegao << " " << tle.xincl << " " << tle.xmo << " " << tle.xno << endl;
-
-    //out << "tleError: " << tleError << endl;
-
     if (tleError != 0)
     {
 	if (tleError == 3)
@@ -419,7 +415,7 @@ PropagateLoiteringTLETrajectory(ScenarioLoiteringTLEType* loiteringTLE,
     // Time variable for SGP is in minutes
     //double timeBase = (sta::MjdToJd(m_timeline->startTime()) - tle.epoch) * 1440.0;
 
-    // Obtaning the Julian date of the start epoch
+    // Obtaining the Julian date of the start epoch
     // Defining the separator that will segment the lines of the TLEs
     QRegExp separator("\\s+");  // the + Means one or more spaces!
     QString Temporal = loiteringTLE->TimeLine()->StartTime().toString("yyyy MM dd hh mm ss.zzzz");
@@ -430,13 +426,8 @@ PropagateLoiteringTLETrajectory(ScenarioLoiteringTLEType* loiteringTLE,
     int TheMinute         = int (Temporal.section(separator, 4, 4).toDouble());    //out << "mm: " << TheMinute << endl;
     double TheSecond      = int (Temporal.section(separator, 5, 5).toDouble());    //out << "ss: " << TheSecond << endl;
 
-    double startTimeJulianDate = calendarTOjulian(TheYear, TheMonth, TheDay, TheHour, TheMinute, TheSecond);
-
-    //double timeBase = (sta::MjdToJd(m_timeline->startTime()) - tle.epoch) * 1440.0;
-    double timeBase = (startTimeJulianDate - tle.epoch) * 1440.0;
-
-    //out << "startTimeJulianDate: " << startTimeJulianDate << "  timeBase: " << timeBase <<  endl;
-
+    double startTimeJd = calendarTOjulian(TheYear, TheMonth, TheDay, TheHour, TheMinute, TheSecond);
+    double timeBase = (startTimeJd - tle.epoch) * 1440.0;
 
     sta::StateVector state;
 
@@ -472,12 +463,8 @@ PropagateLoiteringTLETrajectory(ScenarioLoiteringTLEType* loiteringTLE,
 	state.velocity /= 60.0;
 
 	//sampleTimes << m_timeline->startTime() + sta::secsToDays(tclamp);
-	sampleTimes << startTimeJulianDate + sta::secsToDays(tclamp);
-	//out << "samples size: " << samples.size() << endl;
+        sampleTimes << sta::JdToMjd(startTimeJd) + sta::secsToDays(tclamp);
 	samples << state;
-
-	//out << state.position(0) << " " << state.position(1) << " " << state.position(2) << endl;
-
     }
 
 
