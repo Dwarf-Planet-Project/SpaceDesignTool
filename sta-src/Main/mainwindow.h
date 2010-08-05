@@ -130,7 +130,8 @@ private:
     void showGroundTrackPlotTool();
     void replaceCurrentScenario(SpaceScenario* scenario, QString filename);
     void configureTimeline(PropagatedScenario* scenario);
- 
+    void setPropagatedScenario(PropagatedScenario* scenario);
+
     void initAppDataDirectory();
     
     void closeEvent(QCloseEvent* event);

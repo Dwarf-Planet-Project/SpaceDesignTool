@@ -254,6 +254,10 @@ MainWindow::MainWindow(QWidget *parent)	:
     //setUnifiedTitleAndToolBarOnMac(false);
     //setAttribute(Qt::WA_DeleteOnClose);
 
+    // Next line patched by Guillermo with the 'Cambrian' logo
+    setWindowIcon(QIcon(":/icons/STAlogo.png"));
+    setWindowTitle("Space Trajectory Analysis");
+
     // Fixes ground track update problems on Mac OS X; harmless on other platforms.
     connect(m_viewPanel, SIGNAL(currentChanged(int)), this, SLOT(refreshCentralWidget(int)));
 
@@ -891,8 +895,6 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
     PropagationFeedback feedback;
     PropagatedScenario* propScenario = new PropagatedScenario();
 
-    //out << "PropagatedScenario created " << endl;
-
     //extern int Lagrmode;
 
     int Lagrmode = 99;	    //Guillermo says: take this thong out of here
@@ -943,26 +945,7 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
 
     if (propScenario)
     {
-        // Update all of the propagated scenario views:
-        //   Timeline, ground track, 3D view
-        if (m_groundTrackPlotTool)
-        {
-            m_groundTrackPlotTool->view()->setScenario(propScenario);
-        }
-
-        if (m_threeDViewWidget)
-        {
-            m_threeDViewWidget->view()->setScenario(propScenario);
-        }
-
-        configureTimeline(propScenario);
-        setTime(propScenario->startTime());
-
-        delete m_propagatedScenario;
-        m_propagatedScenario = propScenario;
-
-        //Activate now the modules that are allowed to be used after propagation
-        actionAnalyse->setEnabled(m_propagatedScenario);
+        setPropagatedScenario(propScenario);
     }
 }   ////////////////////////// End of action PROPAGATE /////////////////////////////
 
@@ -1149,6 +1132,37 @@ void MainWindow::configureTimeline(PropagatedScenario* scenario)
 }
 
 
+// Set the propagated scenario and notify all view widgets so they can show
+// the results of the new propagation.
+void
+MainWindow::setPropagatedScenario(PropagatedScenario* scenario)
+{
+    if (scenario != m_propagatedScenario)
+    {
+        // Update all of the propagated scenario views:
+        //   Timeline, ground track, 3D view
+        if (m_groundTrackPlotTool)
+        {
+            m_groundTrackPlotTool->view()->setScenario(scenario);
+        }
+
+        if (m_threeDViewWidget)
+        {
+            m_threeDViewWidget->view()->setScenario(scenario);
+        }
+
+        configureTimeline(scenario);
+        setTime(scenario->startTime());
+
+        delete m_propagatedScenario;
+        m_propagatedScenario = scenario;
+
+        // Activate now the modules that are allowed to be used after propagation
+        actionAnalyse->setEnabled(m_propagatedScenario);
+    }
+}
+
+
 // Handle timer signals and notify animated widgets.
 void MainWindow::tick()
 {
@@ -1271,114 +1285,6 @@ void MainWindow::toggleGroundTrackView()
         m_dockGroundTrackAction->setText(tr("Undock Ground Track View"));
     }
 }
-
-
-#if USE_CELESTIA
-void MainWindow::initCelestia(const QString& qConfigFileName,
-                              const QStringList& qExtrasDirectories)
-{
-    // Get the config file name
-    string configFileName;
-    if (qConfigFileName.isEmpty())
-        configFileName = DEFAULT_CONFIG_FILE.toUtf8().data();
-    else
-        configFileName = qConfigFileName.toUtf8().data();
-
-    // Translate extras directories from QString -> std::string
-    vector<string> extrasDirectories;
-    for (QStringList::const_iterator iter = qExtrasDirectories.begin();
-    iter != qExtrasDirectories.end(); iter++)
-    {
-        extrasDirectories.push_back(iter->toUtf8().data());
-    }
-
-    initAppDataDirectory();
-
-    m_celestiaCore = new CelestiaCore();
-
-    AppProgressNotifier* progress = new AppProgressNotifier(this);
-    m_celestiaAlerter = new AppAlerter(this);
-    m_celestiaCore->setAlerter(m_celestiaAlerter);
-
-    // Next line patched by Guillermo with the 'Cambrian' logo
-    setWindowIcon(QIcon(":/icons/STAlogo.png"));
-
-    m_celestiaCore->initSimulation(&configFileName,
-				   &extrasDirectories,
-				   progress);
-    delete progress;
-
-    // Enable antialiasing if requested in the config file.
-    // TODO: Make this settable via the GUI
-    QGLFormat glformat = QGLFormat::defaultFormat();
-    if (m_celestiaCore->getConfig()->aaSamples > 1)
-    {
-	glformat.setSampleBuffers(true);
-	glformat.setSamples(m_celestiaCore->getConfig()->aaSamples);
-	QGLFormat::setDefaultFormat(glformat);
-    }
-
-    m_celestiaViewWidget = new CelestiaGlWidget(NULL, "Celestia", m_celestiaCore);
-    glctx = m_celestiaViewWidget->context();
-    m_celestiaCore->setCursorHandler(m_celestiaViewWidget);
-    m_celestiaCore->setContextMenuCallback(ContextMenu);
-    MainWindowInstance = this; // TODO: Fix context menu callback
-
-    setWindowTitle("Space Trajectory Analysis");
-
-    m_celestiaActions = new CelestiaActions(this, m_celestiaCore);
-
-    // Create the guides toolbar
-    QToolBar* guidesToolBar = new QToolBar(tr("Guides"));
-    guidesToolBar->setObjectName("guides-toolbar");
-    guidesToolBar->setFloatable(true);
-    guidesToolBar->setMovable(true);
-    guidesToolBar->setToolButtonStyle(Qt::ToolButtonTextOnly);
-
-    guidesToolBar->addAction(m_celestiaActions->equatorialGridAction);
-    guidesToolBar->addAction(m_celestiaActions->eclipticAction);
-    guidesToolBar->addAction(m_celestiaActions->markersAction);
-    guidesToolBar->addAction(m_celestiaActions->constellationsAction);
-    guidesToolBar->addAction(m_celestiaActions->orbitsAction);
-    guidesToolBar->addAction(m_celestiaActions->labelsAction);
-
-    // Probably don't need these in STA
-    //guidesToolBar->addAction(m_celestiaActions->galacticGridAction);
-    //guidesToolBar->addAction(m_celestiaActions->boundariesAction);
-
-    addToolBar(Qt::RightToolBarArea, guidesToolBar);
-
-    QToolBar* navToolBar = new QToolBar(tr("Navigation"));
-    navToolBar->setObjectName("navigation-toolbar");
-    navToolBar->setFloatable(true);
-    navToolBar->setMovable(true);
-    navToolBar->setToolButtonStyle(Qt::ToolButtonTextOnly);
-
-    navToolBar->addAction(m_celestiaActions->centerAction);
-    navToolBar->addAction(m_celestiaActions->followAction);
-    navToolBar->addAction(m_celestiaActions->bodyFixedAction);
-    navToolBar->addAction(m_celestiaActions->gotoAction);
-    navToolBar->addAction(m_celestiaActions->fastGotoAction);
-
-    addToolBar(Qt::RightToolBarArea, navToolBar);
-
-    // Give keyboard focus to the 3D view
-    // m_celestiaViewWidget->setFocus();
-
-    // Read saved window preferences
-    readSettings();
-
-    // We use a timer with a null timeout value
-    // to add m_celestiaCore->tick to Qt's event loop
-    m_celestiaUpdateTimer = new QTimer(this);// new QTimer(dynamic_cast<QObject *>(this));
-    QObject::connect(m_celestiaUpdateTimer, SIGNAL(timeout()), SLOT(celestia_tick()));
-    m_celestiaUpdateTimer->start(0);
-    m_intervalChangeTime.start();
-
-    // Create the STA interface to Celestia
-    m_celestiaInterface = CelestiaInterface::Create(m_celestiaCore);
-}
-#endif
 
 
 /*! Set up the application data directory, creating it if necessary. The
@@ -1622,48 +1528,11 @@ void MainWindow::on_actionPropagateCoverage_triggered()
 
     if (propScenario)
     {
-	// Update all of the propagated scenario views:
-	//   Timeline, ground track, 3D view
-	if (m_groundTrackPlotTool)
-	{
-	    m_groundTrackPlotTool->view()->setScenario(propScenario);
-
-	    m_groundTrackPlotTool->setAnalysis(analysisOfConstellations);
-	}
-
-	configureTimeline(propScenario);
-    setTime(propScenario->startTime());
-
-#if USE_CELESTIA
-	if (m_celestiaInterface)
-	{
-	    foreach (SpaceObject* spaceObject, propScenario->spaceObjects())
-	    {
-
-		// Ephemeris files are required for creating trajectories for the 3D view (at least for now.)
-		if (!spaceObject->generateEphemerisFiles())
-		{
-		    QMessageBox::information(this, tr("Warning"), tr("Error occurred while writing ephemeris files."));
-		    break;
-		}
-
-		m_celestiaInterface->select(NULL);
-
-		spaceObject->realize3DViewRepresentation(m_celestiaInterface);
-	    }
-	    foreach (GroundObject* groundObject, propScenario->groundObjects())
-	    {
-		groundObject->realize3DViewRepresentation(m_celestiaInterface);
-	    }
-	    m_celestiaCore->setViewChanged();
-	}
-#endif
-
-	delete m_propagatedScenario;
-	m_propagatedScenario = propScenario;
-
-	//Activate now the modules that are allowed to be used after propagation
-	actionAnalyse->setEnabled(m_propagatedScenario);
+        setPropagatedScenario(propScenario);
+        if (m_groundTrackPlotTool)
+        {
+            m_groundTrackPlotTool->setAnalysis(analysisOfConstellations);
+        }
     }
 
 }   ///////////////////////////////////////////  End of Action PROPAGATE WITH COVERAGE ////////////////////////////////////////
@@ -1738,49 +1607,13 @@ void MainWindow::on_actionSat_to_Sat_triggered()
 
     if (propScenario)
     {
-	// Update all of the propagated scenario views:
-	//   Timeline, ground track, 3D view
-	if (m_groundTrackPlotTool)
-	{
-	    m_groundTrackPlotTool->view()->setScenario(propScenario);
-
-	    m_groundTrackPlotTool->setAnalysis(analysisOfConstellations);
-	}
-
-	configureTimeline(propScenario);
-    setTime(propScenario->startTime());
-
-#if USE_CELESTIA
-	if (m_celestiaInterface)
-	{
-	    foreach (SpaceObject* spaceObject, propScenario->spaceObjects())
-	    {
-
-		// Ephemeris files are required for creating trajectories for the 3D view (at least for now.)
-		if (!spaceObject->generateEphemerisFiles())
-		{
-		    QMessageBox::information(this, tr("Warning"), tr("Error occurred while writing ephemeris files."));
-		    break;
-		}
-
-		m_celestiaInterface->select(NULL);
-
-		spaceObject->realize3DViewRepresentation(m_celestiaInterface);
-	    }
-	    foreach (GroundObject* groundObject, propScenario->groundObjects())
-	    {
-		groundObject->realize3DViewRepresentation(m_celestiaInterface);
-	    }
-	    m_celestiaCore->setViewChanged();
-	}
-#endif
-
-	delete m_propagatedScenario;
-	m_propagatedScenario = propScenario;
-
-	//Activate now the modules that are allowed to be used after propagation
-	actionAnalyse->setEnabled(m_propagatedScenario);
+        setPropagatedScenario(propScenario);
+        if (m_groundTrackPlotTool)
+        {
+            m_groundTrackPlotTool->setAnalysis(analysisOfConstellations);
+        }
     }
+
 }  ///////////////////////////////////////////  End of Action PROPAGATE WITH COVERAGE BETWEEN SATELLITES ////////////////////////////////////////
 
 
@@ -1849,49 +1682,13 @@ void MainWindow::on_actionSat_to_Ground_triggered()
 
     if (propScenario)
     {
-	// Update all of the propagated scenario views:
-	//   Timeline, ground track, 3D view
-	if (m_groundTrackPlotTool)
-	{
-	    m_groundTrackPlotTool->view()->setScenario(propScenario);
-
-	    m_groundTrackPlotTool->setAnalysis(analysisOfConstellations);
-	}
-
-	configureTimeline(propScenario);
-    setTime(propScenario->startTime());
-
-#if USE_CELESTIA
-	if (m_celestiaInterface)
-	{
-	    foreach (SpaceObject* spaceObject, propScenario->spaceObjects())
-	    {
-
-		// Ephemeris files are required for creating trajectories for the 3D view (at least for now.)
-		if (!spaceObject->generateEphemerisFiles())
-		{
-		    QMessageBox::information(this, tr("Warning"), tr("Error occurred while writing ephemeris files."));
-		    break;
-		}
-
-		m_celestiaInterface->select(NULL);
-
-		spaceObject->realize3DViewRepresentation(m_celestiaInterface);
-	    }
-	    foreach (GroundObject* groundObject, propScenario->groundObjects())
-	    {
-		groundObject->realize3DViewRepresentation(m_celestiaInterface);
-	    }
-	    m_celestiaCore->setViewChanged();
-	}
-#endif
-
-	delete m_propagatedScenario;
-	m_propagatedScenario = propScenario;
-
-	//Activate now the modules that are allowed to be used after propagation
-	actionAnalyse->setEnabled(m_propagatedScenario);
+        setPropagatedScenario(propScenario);
+        if (m_groundTrackPlotTool)
+        {
+            m_groundTrackPlotTool->setAnalysis(analysisOfConstellations);
+        }
     }
+
 }  ///////////////////////////////////////////  End of Action PROPAGATE WITH COVERAGE BETWEEN STATIONS AND SATELLITES ////////////////////////////////////////
 
 
