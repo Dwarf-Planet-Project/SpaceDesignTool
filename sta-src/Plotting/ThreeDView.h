@@ -79,6 +79,7 @@ public slots:
 
    void gotoBody(const StaBody* body);
    void setScenario(PropagatedScenario* scenario);
+   void selectParticipant(SpaceObject* spaceObject);
 
    void setEquatorialPlane(bool enabled);
 
@@ -126,6 +127,7 @@ private:
     QHash<GroundObject*, vesta::Entity*> m_scenarioGroundObjects;
 
     int m_viewChanged;
+    SpaceObject* m_selectedSpacecraft;
 };
 
 #endif // _THREED_VIEW_H_

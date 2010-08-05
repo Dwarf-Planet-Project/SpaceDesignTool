@@ -287,8 +287,9 @@ ThreeDView::ThreeDView(const QGLFormat& format, QWidget* parent) :
     m_currentTime(0.0),
     m_universe(NULL),
     m_renderer(NULL),
-    m_fov(sta::degToRad(60.0)),
-    m_viewChanged(1)
+    m_fov(sta::degToRad(50.0)),
+    m_viewChanged(1),
+    m_selectedSpacecraft(NULL)
 {
     m_textureLoader = counted_ptr<TextureMapLoader>(new QtTextureLoader());
 
@@ -432,10 +433,39 @@ ThreeDView::drawOverlay()
         J2000.setTimeSpec(Qt::UTC);
         QDateTime currentDateTime = J2000.addMSecs((qint64) (m_currentTime * 1000.0));
         m_labelFont->bind();
-        m_labelFont->render(currentDateTime.toString("dd MMM yyyy hh:mm:ss").toLatin1().data(), Vector2f(10.0f, viewHeight - 25.0f));
+        m_labelFont->render(currentDateTime.toString("dd MMM yyyy hh:mm:ss 'UTC'").toLatin1().data(), Vector2f(10.0f, viewHeight - 25.0f));
         m_labelFont->render(QString("JD %1").arg(2451545.0 + sta::secsToDays(m_currentTime), 0, 'f', 5).toLatin1().data(),
                             Vector2f(10.0f, viewHeight - 40.0f));
 
+        if (m_selectedSpacecraft)
+        {
+            if (m_scenarioSpaceObjects.contains(m_selectedSpacecraft))
+            {
+                Entity* selectedBody = m_scenarioSpaceObjects.value(m_selectedSpacecraft);
+                if (selectedBody)
+                {                    
+                    m_labelFont->render(selectedBody->name().c_str(), Vector2f(10.0f, 25.0f));
+                    double beginning = selectedBody->chronology()->beginning();
+                    if (m_currentTime >= beginning && m_currentTime < beginning + selectedBody->chronology()->duration())
+                    {
+                        StateVector sv = selectedBody->state(m_currentTime);
+
+                        Entity* centralBody = selectedBody->chronology()->firstArc()->center();
+                        StateVector centerSv = centralBody->state(m_currentTime);
+
+                        double r = (sv.position() - centerSv.position()).norm();
+                        if (dynamic_cast<WorldGeometry*>(centralBody->geometry()))
+                        {
+                            WorldGeometry* globe = dynamic_cast<WorldGeometry*>(centralBody->geometry());
+                            r -= globe->meanRadius();
+                        }
+
+                        m_labelFont->render(QString("Altitude: %1 km").arg(r, 0, 'f', 2).toLatin1().data(),
+                                            Vector2f(10.0f, 10.0f));
+                    }
+                }
+            }
+        }
         // Display the position of the viewer relative to the center
         // Vector3d position = m_observer->position();
         // m_labelFont->render(QString("%1 %2 %3").arg(position.x()).arg(position.y()).arg(position.z()).toUtf8().data(), Vector2f(10.0f, 10.0f));
@@ -661,6 +691,7 @@ ThreeDView::initializeLayers()
         StarsLayer* stars = new StarsLayer();
         stars->setStarCatalog(m_universe->starCatalog());
         stars->setVisibility(true);
+        stars->setLimitingMagnitude(8.5);
         m_renderer->addSkyLayer(stars);
     }
 
@@ -937,6 +968,8 @@ ThreeDView::createGroundObject(const GroundObject* groundObj)
 void
 ThreeDView::clearScenarioObjects()
 {
+    m_selectedSpacecraft = NULL;
+
     // Remove VESTA entities for all space and ground objects
     foreach (Entity* e, m_scenarioSpaceObjects.values())
     {
@@ -953,4 +986,11 @@ ThreeDView::clearScenarioObjects()
 
     m_scenarioSpaceObjects.clear();
     m_scenarioGroundObjects.clear();
+}
+
+
+void
+ThreeDView::selectParticipant(SpaceObject* spaceObj)
+{
+    m_selectedSpacecraft = spaceObj;
 }

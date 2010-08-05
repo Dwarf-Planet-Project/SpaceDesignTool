@@ -1247,7 +1247,17 @@ void MainWindow::setTime(double mjd)
 
 void MainWindow::selectParticipant(int participantIndex)
 {
-    // TODO: Highlight participant in VESTA
+    if (m_threeDViewWidget)
+    {
+        if (participantIndex >= 0 && participantIndex < m_propagatedScenario->spaceObjects().size())
+        {
+            m_threeDViewWidget->view()->selectParticipant(m_propagatedScenario->spaceObjects().at(participantIndex));
+        }
+        else
+        {
+            m_threeDViewWidget->view()->selectParticipant(NULL);
+        }
+    }
 }
 
 
