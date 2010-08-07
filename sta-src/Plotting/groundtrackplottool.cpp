@@ -184,10 +184,10 @@ GroundTrackView::GroundTrackView(QWidget* parent) :
     setBody(STA_SOLAR_SYSTEM->lookup(STA_EARTH));
 
     QGLFormat glformat;
-    //QVBoxLayout wformat;
-    //glformat.setSampleBuffers(true);
-    //glformat.setSamples(4);
-    //glformat.setDepth(false);
+    QVBoxLayout wformat;
+    glformat.setSampleBuffers(true);
+    glformat.setSamples(4);
+    glformat.setDepth(false);
     glformat.setSampleBuffers(true);
     glformat.setSamples(16);
     glformat.setDepth(true);
@@ -196,7 +196,7 @@ GroundTrackView::GroundTrackView(QWidget* parent) :
     glformat.setAlpha(true);
     glformat.setDepthBufferSize(16);
     glformat.setOverlay(true);
-    //setViewport(new QGLWidget(glformat, this));
+    setViewport(new QGLWidget(glformat, this));
 
     constrainCenter();
 
