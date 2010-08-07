@@ -22,9 +22,13 @@ message(Qt version: $$[QT_VERSION])
 message(Qt is installed in $$[QT_INSTALL_PREFIX])
 
 CONFIG += debug_and_release
-CONFIG += release
-
+CONFIG += Release
 CONFIG += warn_off
+
+target.path =
+INSTALLS += target
+
+TARGET = STA
 
 TEMPLATE = subdirs
 
@@ -35,3 +39,4 @@ SUBDIRS += \
 STAapp.file = ./STAapp.pro
 STAapp.depends = vesta
 vesta.subdir = thirdparty/vesta
+

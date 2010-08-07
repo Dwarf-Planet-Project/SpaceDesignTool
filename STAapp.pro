@@ -18,11 +18,8 @@
 # - Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) - #
 #                                                                                    #
 ######################################################################################
-#message(Qt version: $$[QT_VERSION])
-#message(Qt is installed in $$[QT_INSTALL_PREFIX])
 
-# target.path =
-# INSTALLS += target
+
 
 CONFIG += debug_and_release
 CONFIG += release
@@ -31,6 +28,7 @@ CONFIG += warn_off
 TEMPLATE = app
 
 TARGET = STA
+
 QT += opengl
 QT += xml \
     xmlpatterns
