@@ -185,18 +185,15 @@ GroundTrackView::GroundTrackView(QWidget* parent) :
 
     QGLFormat glformat;
     QVBoxLayout wformat;
-    glformat.setSampleBuffers(true);
+    glformat.setSampleBuffers(false);
     glformat.setSamples(4);
-    glformat.setDepth(false);
-    glformat.setSampleBuffers(true);
-    glformat.setSamples(16);
     glformat.setDepth(true);
     glformat.setDirectRendering(true);
     glformat.setDoubleBuffer(true);
     glformat.setAlpha(true);
-    glformat.setDepthBufferSize(16);
-    glformat.setOverlay(true);
-    setViewport(new QGLWidget(glformat, this));
+    glformat.setDepthBufferSize(4);
+    glformat.setOverlay(false);
+    //setViewport(new QGLWidget(glformat, this));
 
     constrainCenter();
 
@@ -209,22 +206,23 @@ GroundTrackView::GroundTrackView(QWidget* parent) :
     m_maxHeightSlider->setTickPosition(QSlider::TicksBothSides);
     m_maxHeightSlider->setTickInterval(100);
     QGraphicsProxyWidget* sliderProxy = m_scene->addWidget(m_maxHeightSlider);
-    //slider->setAutoFillBackground(true);
     QPalette palette;
     palette.setColor(m_maxHeightSlider->backgroundRole(), Qt::white);
-    //palette.setColor(m_maxHeightSlider->backgroundRole(), Qt::black);
     m_maxHeightSlider->setPalette(palette);
-
     m_maxHeightSlider->hide();
-
     connect(m_maxHeightSlider, SIGNAL(valueChanged(int)), this, SLOT(setMaxHeight(int)));
     m_maxHeightSlider->setValue(500);
     setScene(m_scene);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
-    // Changing the position of the slider
-    //setAlignment(Qt::AlignRight | Qt::AlignBottom);
-}
 
+    // Changing the color of the background. See http://www.colorcombos.com/combotester.html
+    QColor myLightGrayColor(241, 241, 241, 255);
+    QPalette pal = this->palette();
+    //pal.setColor(this->backgroundRole(), myLightGrayColor);
+    pal.setColor(this->backgroundRole(), Qt::transparent);
+    this->setPalette(pal);
+
+}
 
 GroundTrackView::~GroundTrackView()
 {

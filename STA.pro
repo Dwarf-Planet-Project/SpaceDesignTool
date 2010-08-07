@@ -26,7 +26,7 @@ CONFIG += Release
 CONFIG += warn_off
 
 #target.path =
-INSTALLS += target
+#INSTALLS += target
 
 TARGET = STA
 
