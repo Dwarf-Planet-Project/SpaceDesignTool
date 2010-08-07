@@ -207,7 +207,7 @@ GroundTrackView::GroundTrackView(QWidget* parent) :
     m_maxHeightSlider->setTickInterval(100);
     QGraphicsProxyWidget* sliderProxy = m_scene->addWidget(m_maxHeightSlider);
     QPalette palette;
-    palette.setColor(m_maxHeightSlider->backgroundRole(), Qt::white);
+    palette.setColor(m_maxHeightSlider->backgroundRole(), Qt::transparent);
     m_maxHeightSlider->setPalette(palette);
     m_maxHeightSlider->hide();
     connect(m_maxHeightSlider, SIGNAL(valueChanged(int)), this, SLOT(setMaxHeight(int)));
