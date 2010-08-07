@@ -24,6 +24,7 @@
 ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) -----------------------------------------
  Patched by Guillermo on June 2010 to include the constellations module
+ Patched by Guillermo August 2010 to include the equqtorial grid button
  */
 
 #include "visualizationtoolbar.h"
@@ -114,6 +115,10 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     m_gridAction->setCheckable(true);
     m_gridAction->setToolTip(tr("Toggle long/lat grid"));
 
+    m_equatorAction = new QAction(QIcon(":/icons/IconEQUATOR.png"), tr("Equator"), this);
+    m_equatorAction->setCheckable(true);
+    m_equatorAction->setToolTip(tr("Toggle Equator plane"));
+
     m_enable25DViewAction = new QAction(QIcon(":/icons/Icon25D.png"), tr("2.5D View"), this);
     m_enable25DViewAction->setCheckable(true);
     m_enable25DViewAction->setToolTip(tr("Toggle 2.5D view"));
@@ -151,11 +156,7 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     m_linkGOAction->setToolTip(tr("Show links between satellites and ground stations"));
     m_linkGOAction->setVisible(false);
 
-
-
     // create Analysis Menu
-    //QMenu* tickMenu = new QMenu(tr("Ticks"), this);
-    //QMenu* m_analysisMenu = new QMenu(tr("Constellation Tools"), this);
     m_analysisMenu = new QMenu(this);
     m_analysisMenu->addAction(m_linkSOAction);
     m_analysisMenu->addAction(m_linkGOAction);
@@ -164,14 +165,13 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     m_analysisMenu->addAction(m_coverageHistoryAction);
     m_analysisAction = new QAction(QIcon(":/icons/IconCONSTELLATION.png"), tr("Constellation Tools"), this);
     m_analysisAction->setMenu(m_analysisMenu);
-    //m_analysisAction->setVisible(false); // hide button until scenario is propagated
-
 
     // Add all actions and widgets to the toolbar
     addWidget(m_bodySelectCombo);
     addSeparator();  // Guillermo says: in windows, it looks better to be separated from the combobox
     addAction(m_tickIntervalAction);
     addAction(m_gridAction);
+    addAction(m_equatorAction);
     addAction(m_terminatorAction);
     addAction(m_enable25DViewAction);
     addAction(m_saveImageAction);
@@ -179,37 +179,29 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     // Guillermo on widget patching
     addAction(m_analysisAction);
 
-
-
     // Set the initial state of the actions and widgets
     m_enable25DViewAction->setChecked(false);
-    // Next line patch by Guillermo to set to false initial grid
-    //m_gridAction->setChecked(true);
+    // Next line patch by Guillermo to set to false initial grid and equator
     m_gridAction->setChecked(false);
+    m_equatorAction->setChecked(false);
     m_terminatorAction->setChecked(false);
-
     // Guillermo
     m_analysisAction->setVisible(false);
 
-
-
     connect(m_bodySelectCombo,     SIGNAL(currentIndexChanged(QString)), this, SLOT(mapBodyChanged(QString)));
     connect(m_gridAction,          SIGNAL(triggered(bool)),              this, SIGNAL(gridToggled(bool)));
+    connect(m_equatorAction,       SIGNAL(triggered(bool)),              this, SIGNAL(equatorToggled(bool)));
     connect(m_terminatorAction,    SIGNAL(triggered(bool)),              this, SIGNAL(terminatorToggled(bool)));
     connect(m_enable25DViewAction, SIGNAL(toggled(bool)),                this, SIGNAL(projectionChanged(bool)));
     connect(m_saveImageAction,     SIGNAL(triggered()),                  this, SIGNAL(saveImageRequested()));
 
     // Analysis (Claas Grohnfeldt, Steffen Peter)
     m_discretizationAction->setChecked(false);
-    connect(m_discretizationAction,SIGNAL(triggered(bool)),              this, SIGNAL(discretizationToggled(bool)));
+    connect(m_discretizationAction,	  SIGNAL(triggered(bool)),              this, SIGNAL(discretizationToggled(bool)));
     connect(m_coverageCurrentAction,      SIGNAL(triggered(bool)),              this, SIGNAL(coverageCurrentToggled(bool)));
     connect(m_coverageHistoryAction,      SIGNAL(triggered(bool)),              this, SIGNAL(coverageHistoryToggled(bool)));
-    connect(m_linkSOAction,        SIGNAL(triggered(bool)),              this, SIGNAL(linkSOToggled(bool)));
-    connect(m_linkGOAction,        SIGNAL(triggered(bool)),              this, SIGNAL(linkGOToggled(bool)));
-
-
-
-
+    connect(m_linkSOAction,		  SIGNAL(triggered(bool)),              this, SIGNAL(linkSOToggled(bool)));
+    connect(m_linkGOAction,		  SIGNAL(triggered(bool)),              this, SIGNAL(linkGOToggled(bool)));
 }
 
 
@@ -220,8 +212,7 @@ VisualizationToolBar::~VisualizationToolBar()
 
 // Private slot to translate a tick interval menu event into
 // a signal with a double parameter.
-void
-VisualizationToolBar::mapSetTickInterval()
+void VisualizationToolBar::mapSetTickInterval()
 {
     QAction* action = qobject_cast<QAction*>(sender());
     if (action)
@@ -233,8 +224,7 @@ VisualizationToolBar::mapSetTickInterval()
 
 
 // Private slot to translate a body name into an STA Body
-void
-VisualizationToolBar::mapBodyChanged(QString bodyName)
+void VisualizationToolBar::mapBodyChanged(QString bodyName)
 {
     const StaBody* body = STA_SOLAR_SYSTEM->lookup(bodyName);
     if (body)
@@ -247,8 +237,7 @@ VisualizationToolBar::mapBodyChanged(QString bodyName)
 
 // Analysis (Claas Grohnfeldt, Steffen Peter)
 // Procedure to create and show the Analysis Toolbar
-void
-VisualizationToolBar::enableAnalysisTools(ConstellationAnalysis* analysisOfConstellations)
+void VisualizationToolBar::enableAnalysisTools(ConstellationAnalysis* analysisOfConstellations)
 {
     // reset
     m_analysisAction->setVisible(false);
@@ -290,8 +279,7 @@ VisualizationToolBar::enableAnalysisTools(ConstellationAnalysis* analysisOfConst
     }
 }
 
-void
-VisualizationToolBar::disableAnalysisTools()
+void VisualizationToolBar::disableAnalysisTools()
 {
     m_analysisAction->setVisible(false);
 }

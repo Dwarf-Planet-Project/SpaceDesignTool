@@ -97,5 +97,6 @@
         <file>IconSUN.png</file>
         <file>Icon3DViewSpacecraft.png</file>
         <file>mission-arcs-loiteringTLE.png</file>
+        <file>IconEQUATOR.png</file>
     </qresource>
 </RCC>

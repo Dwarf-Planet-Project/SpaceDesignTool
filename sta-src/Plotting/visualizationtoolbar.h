@@ -52,6 +52,9 @@ public:
    void enableAnalysisTools(ConstellationAnalysis* analysisOfConstellations);
    void disableAnalysisTools();
 
+   QAction* m_gridAction;
+   QAction* m_equatorAction;
+
 private slots:
     void mapSetTickInterval();
     void mapBodyChanged(QString bodyName);
@@ -59,6 +62,7 @@ private slots:
 signals:
     void bodyChanged(const StaBody* body);
     void gridToggled(bool enabled);
+    void equatorToggled(bool enabled);
     void terminatorToggled(bool enabled);
     void projectionChanged(bool enable25DView);
     void saveImageRequested();
@@ -75,7 +79,8 @@ signals:
 private:
     QComboBox* m_bodySelectCombo;
     QAction* m_tickIntervalAction;
-    QAction* m_gridAction;
+    //QAction* m_gridAction;
+    //QAction* m_equatorAction;
     QAction* m_terminatorAction;
     QAction* m_saveImageAction;
 

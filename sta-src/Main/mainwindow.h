@@ -73,6 +73,8 @@ public:
     SpaceScenario* scenario() const;
     void setScenario(SpaceScenario* scenario);
 
+    GroundTrackPlotTool* m_groundTrackPlotTool;
+
 public:
     void readSettings();
     void writeSettings();
@@ -146,7 +148,7 @@ private:
     ScenarioView* m_scenarioView;
     TimelineWidget* m_timelineWidget;
     OrbitPropagationDialog* m_orbitPropagationDialog;
-    GroundTrackPlotTool* m_groundTrackPlotTool;
+    //GroundTrackPlotTool* m_groundTrackPlotTool;
     ThreeDVisualizationTool* m_threeDViewWidget;
     STAcalculator* STAcalculatorWidget;
     ScenarioElementBox* m_scenarioElementBox;

@@ -99,6 +99,7 @@ Q_OBJECT
     double currentTime() const { return m_currentTime; }
     bool showEntireTracks() const { return m_showEntireTracks; }
     bool showGrid() const { return m_showGrid; }
+    bool showEquator() const { return m_showEquator; }
     bool showTicks() const { return m_showTicks; }
     double tickInterval() const { return m_tickInterval; }
 
@@ -109,6 +110,7 @@ Q_OBJECT
     void setCurrentTime(double jd);
     void setShowEntireTracks(bool show);
     void setShowGrid(bool show);
+    void setShowEquator(bool show);
     void setShowTicks(bool show);
     void setTerminatorVisible(bool visible);
     void setTickInterval(double seconds);
@@ -182,6 +184,7 @@ Q_OBJECT
     QMenu* m_contextMenu;
     bool m_showEntireTracks;
     bool m_showGrid;
+    bool m_showEquator;
     bool m_showTicks;
     bool m_showTerminator;
     double m_tickInterval;
@@ -221,7 +224,9 @@ Q_OBJECT
 public:
     GroundTrackPlotTool(QWidget* parent);
     ~GroundTrackPlotTool();
-    
+
+    VisualizationToolBar* m_toolBar;
+
     GroundTrackView* view() const { return m_view; }
 
     // Analysis (Claas Grohnfeldt, Steffen Peter)
@@ -230,7 +235,7 @@ public:
 private:
     GroundTrackView* m_view;
     // Analysis (Claas Grohnfeldt, Steffen Peter)
-    VisualizationToolBar* m_toolBar;
+    //VisualizationToolBar* m_toolBar;
 };
 
 #endif // _PLOTTING_GROUNDTRACKPLOTTOOL_H_

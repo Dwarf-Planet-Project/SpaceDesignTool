@@ -24,16 +24,22 @@
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
  ------------------ Guillermo Ortega (ESA) ---------------------------------------
  Patched by Guillermo on June 2010 to include the code of Claas and Stephen
+ Patched by Guillermo August 2010 to add the equqtor line
  */
 
-
-#include "groundtrackplottool.h"
-#include "visualizationtoolbar.h"
+#include "Plotting/groundtrackplottool.h"
+#include "Plotting/visualizationtoolbar.h"
 #include "Main/propagatedscenario.h"
 #include "Astro-Core/rectangularTOpolar.h"
 #include "Astro-Core/stamath.h"
 #include "Astro-Core/date.h"
 #include "Scenario/scenario.h"
+//#include "Scenario/scenariospacevehicle.h"
+//#include "Scenario/scenariotrajectoryplan.h"
+//#include "Scenario/scenarioabstracttrajectory.h"
+#include "Constellations/constellationmodule.h"  // Analysis (Claas Grohnfeldt, Steffen Peter)
+#include "Main/mainwindow.h"
+
 #include <QTextStream>
 #include <QtGui>
 #include <QGLWidget>
@@ -43,16 +49,7 @@
 #include <limits>
 #include <algorithm>
 
-//#include "Scenario/scenariospacevehicle.h"
-//#include "Scenario/scenariotrajectoryplan.h"
-//#include "Scenario/scenarioabstracttrajectory.h"
-
-
-// Analysis (Claas Grohnfeldt, Steffen Peter)
-#include "Constellations/constellationmodule.h"
-
 using namespace Eigen;
-
 
 // The ground track view is a 2D or pseudo-3D projection of a planet that may panned
 // and zoomed by the user.
@@ -107,19 +104,19 @@ static double LongLatSpacings[] =
     30 * 60,
     20 * 60,
     10 * 60,
-     5 * 60,
-     3 * 60,
-     2 * 60,
-     1 * 60,
+    5 * 60,
+    3 * 60,
+    2 * 60,
+    1 * 60,
 
     // arcsec
     30,
     20,
     10,
-     5,
-     3,
-     2,
-     1,
+    5,
+    3,
+    2,
+    1,
 };
 
 
@@ -157,32 +154,32 @@ static const QColor GroundStationColor(255, 64, 20);
 
 
 GroundTrackView::GroundTrackView(QWidget* parent) :
-    QGraphicsView(parent),
-    m_scenario(NULL),
-    m_currentTime(0.0),
-    m_pixmap(NULL),
-    m_pixmapOk(false),
-    m_contextMenu(NULL),
-    m_showEntireTracks(true),
-    //m_showGrid(true),
-    m_showGrid(false),
-    m_showTicks(false),
-    m_showTerminator(false),
-    m_tickInterval(300.0), // seconds
-    m_body(NULL),
-    m_zoomFactor(1.0f),
-    m_center(0.0f, 0.0f),
-    m_maxHeight(180.0f),
-    m_lastMousePosition(0.0f, 0.0f),
-    m_projection(Planar),
-    m_scene(NULL),
-    m_maxHeightSlider(NULL),
-    m_showAnalysis(true), // Analysis (Claas Grohnfeldt, Steffen Peter)
-    m_showDiscretization(false), // Analysis
-    m_showCoverageCurrent(false), // Analysis
-    m_showCoverageHistory(false), // Analysis
-    m_showSOLink(false), // Analysis
-    m_showGOLink(false) // Analysis
+	QGraphicsView(parent),
+	m_scenario(NULL),
+	m_currentTime(0.0),
+	m_pixmap(NULL),
+	m_pixmapOk(false),
+	m_contextMenu(NULL),
+	m_showEntireTracks(true),
+	m_showGrid(false),
+	m_showEquator(false),
+	m_showTicks(false),
+	m_showTerminator(false),
+	m_tickInterval(300.0), // seconds
+	m_body(NULL),
+	m_zoomFactor(1.0f),
+	m_center(0.0f, 0.0f),
+	m_maxHeight(180.0f),
+	m_lastMousePosition(0.0f, 0.0f),
+	m_projection(Planar),
+	m_scene(NULL),
+	m_maxHeightSlider(NULL),
+	m_showAnalysis(true), // Analysis (Claas Grohnfeldt, Steffen Peter)
+	m_showDiscretization(false), // Analysis
+	m_showCoverageCurrent(false), // Analysis
+	m_showCoverageHistory(false), // Analysis
+	m_showSOLink(false), // Analysis
+	m_showGOLink(false) // Analysis
 {
     setBody(STA_SOLAR_SYSTEM->lookup(STA_EARTH));
 
@@ -235,8 +232,7 @@ GroundTrackView::~GroundTrackView()
 }
 
 
-void
-GroundTrackView::setScenario(PropagatedScenario* scenario)
+void GroundTrackView::setScenario(PropagatedScenario* scenario)
 {
     foreach (GroundTrack* path, m_groundTrackList)
     {
@@ -258,8 +254,7 @@ GroundTrackView::setScenario(PropagatedScenario* scenario)
 }
 
 
-bool
-GroundTrackView::addGroundTrack(SpaceObject* vehicle)
+bool GroundTrackView::addGroundTrack(SpaceObject* vehicle)
 {
     GroundTrack* track = new GroundTrack();
     track->color = vehicle->trajectoryColor();
@@ -280,8 +275,7 @@ GroundTrackView::addGroundTrack(SpaceObject* vehicle)
 
 
 
-void
-GroundTrackView::computeGroundTrack(GroundTrack& track)
+void GroundTrackView::computeGroundTrack(GroundTrack& track)
 {
     track.samples.clear();
 
@@ -308,8 +302,7 @@ GroundTrackView::computeGroundTrack(GroundTrack& track)
 
 
 // Calculate ticks at regular time intervals on the ground track
-void
-GroundTrackView::computeTicks(GroundTrack& track, double interval)
+void GroundTrackView::computeTicks(GroundTrack& track, double interval)
 {
     track.ticks.clear();
 
@@ -369,8 +362,7 @@ GroundTrackView::computeTicks(GroundTrack& track, double interval)
 }
 
 
-void
-GroundTrackView::setCurrentTime(double mjd)
+void GroundTrackView::setCurrentTime(double mjd)
 {
     if (mjd != m_currentTime)
     {
@@ -380,24 +372,28 @@ GroundTrackView::setCurrentTime(double mjd)
 }
 
 
-void
-GroundTrackView::setShowEntireTracks(bool show)
+void GroundTrackView::setShowEntireTracks(bool show)
 {
     m_showEntireTracks = show;
     viewport()->update();
 }
 
 
-void
-GroundTrackView::setShowGrid(bool show)
+void GroundTrackView::setShowGrid(bool show)
 {
     m_showGrid = show;
     viewport()->update();
 }
 
 
-void
-GroundTrackView::setShowTicks(bool show)
+void GroundTrackView::setShowEquator(bool show)
+{
+    m_showEquator = show;
+    viewport()->update();
+}
+
+
+void GroundTrackView::setShowTicks(bool show)
 {
     m_showTicks = show;
     viewport()->update();
@@ -408,8 +404,7 @@ GroundTrackView::setShowTicks(bool show)
  *  of seconds.) Setting the tick interval to zero will disable
  *  ticks.
  */
-void
-GroundTrackView::setTickInterval(double seconds)
+void GroundTrackView::setTickInterval(double seconds)
 {
     if (seconds == 0.0)
     {
@@ -429,8 +424,7 @@ GroundTrackView::setTickInterval(double seconds)
 }
 
 
-void
-GroundTrackView::setBody(const StaBody* newBody)
+void GroundTrackView::setBody(const StaBody* newBody)
 {
     if (newBody && newBody != m_body)
     {
@@ -466,16 +460,14 @@ GroundTrackView::setBody(const StaBody* newBody)
 }
 
 
-void
-GroundTrackView::setTerminatorVisible(bool visible)
+void GroundTrackView::setTerminatorVisible(bool visible)
 {
     m_showTerminator = visible;
     viewport()->update();
 }
 
 
-void
-GroundTrackView::setProjection(ProjectionType projection)
+void GroundTrackView::setProjection(ProjectionType projection)
 {
     m_projection = projection;
     m_maxHeightSlider->setVisible(projection != Planar);
@@ -483,8 +475,7 @@ GroundTrackView::setProjection(ProjectionType projection)
 }
 
 
-void
-GroundTrackView::set2HalfDView(bool enabled)
+void GroundTrackView::set2HalfDView(bool enabled)
 {
     if (enabled)
         setProjection(Oblique);
@@ -493,16 +484,14 @@ GroundTrackView::set2HalfDView(bool enabled)
 }
 
 
-void
-GroundTrackView::setMaxHeight(int logMaxHeight)
+void GroundTrackView::setMaxHeight(int logMaxHeight)
 {
     m_maxHeight = (float) exp(log(30000.0) * (logMaxHeight / 1000.0));
     viewport()->update();
 }
 
 
-void
-GroundTrackView::saveImage()
+void GroundTrackView::saveImage()
 {
     // The following code relies on the fact that the viewport is an OpenGL widget. Another
     // approach would be to create an image and draw using the painter instance for that
@@ -535,11 +524,11 @@ GroundTrackView::saveImage()
 // a point in the body fixed frame of the current planet. Longitude and
 // latitude are in degrees, altitude is in kilometers.
 void
-GroundTrackView::planetographicCoords(const Vector3d& position,
-                                      const StaBody* body,
-                                      double* longitude,
-                                      double* latitude,
-                                      double* altitude) const
+	GroundTrackView::planetographicCoords(const Vector3d& position,
+					      const StaBody* body,
+					      double* longitude,
+					      double* latitude,
+					      double* altitude) const
 {
     // TODO: This simple approximation doesn't account for oblateness
     double radius = 0.0;
@@ -564,16 +553,14 @@ double reduceLongitude(double degrees)
 }
 
 
-void
-GroundTrackView::setCenter(QPointF center)
+void GroundTrackView::setCenter(QPointF center)
 {
     m_center = center;
     constrainCenter();
 }
 
 
-void
-GroundTrackView::setZoomFactor(float zoomFactor)
+void GroundTrackView::setZoomFactor(float zoomFactor)
 {
     m_zoomFactor = zoomFactor;
     constrainCenter();
@@ -581,8 +568,7 @@ GroundTrackView::setZoomFactor(float zoomFactor)
 
 
 // Clamp the center so that the map doesn't move out of view
-void
-GroundTrackView::constrainCenter()
+void GroundTrackView::constrainCenter()
 {
     float x = m_center.x();
     float y = m_center.y();
@@ -610,8 +596,7 @@ GroundTrackView::constrainCenter()
 
 
 // Mouse wheel will zoom in and out
-void
-GroundTrackView::wheelEvent(QWheelEvent* event)
+void GroundTrackView::wheelEvent(QWheelEvent* event)
 {
     if (event->orientation() == Qt::Vertical)
     {
@@ -627,8 +612,7 @@ GroundTrackView::wheelEvent(QWheelEvent* event)
 }
 
 
-void
-GroundTrackView::mouseMoveEvent(QMouseEvent* event)
+void GroundTrackView::mouseMoveEvent(QMouseEvent* event)
 {
     if (itemAt(event->pos()))
     {
@@ -658,8 +642,7 @@ GroundTrackView::mouseMoveEvent(QMouseEvent* event)
 }
 
 
-void
-GroundTrackView::mousePressEvent(QMouseEvent* event)
+void GroundTrackView::mousePressEvent(QMouseEvent* event)
 {
     if (itemAt(event->pos()))
     {
@@ -679,14 +662,12 @@ GroundTrackView::mousePressEvent(QMouseEvent* event)
 }
 
 
-void
-GroundTrackView::resizeEvent(QResizeEvent* event)
+void GroundTrackView::resizeEvent(QResizeEvent* event)
 {
 }
 
 
-void
-GroundTrackView::drawBackground(QPainter* painter, const QRectF& rect)
+void GroundTrackView::drawBackground(QPainter* painter, const QRectF& rect)
 {
     QTransform savedTransform(painter->worldTransform());
     painter->setWorldTransform(QTransform());
@@ -742,7 +723,7 @@ enum
     OUT_NORTH  = 0x08,
     OUT_ABOVE  = 0x10,
     OUT_BELOW  = 0x20
-};
+	     };
 
 
 // Compute outcodes for Cohen-Sutherland line clipping
@@ -997,7 +978,7 @@ static void clippedWrappedLine(const AlignedBox<float, 3>& clipBox,
 
 
 bool
-GroundTrackView::inView(float longitude, float latitude, float altitude)
+	GroundTrackView::inView(float longitude, float latitude, float altitude)
 {
     if (latitude >= m_south && latitude <= m_north)
     {
@@ -1012,8 +993,7 @@ GroundTrackView::inView(float longitude, float latitude, float altitude)
 }
 
 
-void
-GroundTrackView::paintObliqueView(QPainter& painter)
+void GroundTrackView::paintObliqueView(QPainter& painter)
 {
     //QPainter painter(viewport());
     int viewWidth = viewport()->size().width();
@@ -1110,9 +1090,9 @@ GroundTrackView::paintObliqueView(QPainter& painter)
     float zshear = xform.m21() / xform.m11() * zscale;
     Transform3f proj;
     proj.matrix() << 1.0f, 0.0f, -zshear / m_zoomFactor, 0.0f,
-                     0.0f, 1.0f, zscale / m_zoomFactor,    0.0f,
-                     0.0f, 0.0f, 1.0f, 0.0f,
-                     0.0f, 0.0f, 0.0f, 1.0f;
+    0.0f, 1.0f, zscale / m_zoomFactor,    0.0f,
+    0.0f, 0.0f, 1.0f, 0.0f,
+    0.0f, 0.0f, 0.0f, 1.0f;
 
     // Draw the left and back sides of a box
     painter.setBrush(QColor(200, 200, 200));
@@ -1199,6 +1179,33 @@ GroundTrackView::paintObliqueView(QPainter& painter)
             painter.setPen(boxLineColor);
             drawLine(painter, proj, Vector3f(m_west, l, 0.0f), Vector3f(m_west, l, m_maxHeight));
         }
+    }
+
+    // Draw the Equator grid
+    if (m_showEquator)
+    {
+
+	double maxLongitudeLines = 10.0;
+	double longitudeSpacing = meridianSpacing(maxLongitudeLines);
+	double latitudeSpacing = longitudeSpacing; // identical to meridian spacing (for now)
+
+	QColor boxLineColor(50, 50, 50, 100);
+	QColor equatorColor(220, 220, 0, 100);
+	QColor equatorColorOpaque = equatorColor;
+	equatorColorOpaque.setAlpha(255);
+	QPen equatorPen(equatorColor);
+	painter.setPen(equatorPen);
+
+	double longitudeSpacingDeg = longitudeSpacing / 3600.0;
+	double latitudeSpacingDeg = latitudeSpacing / 3600.0;
+	float startLongitude = (float) (floor(m_west / longitudeSpacingDeg) + 1.0f) * longitudeSpacingDeg;
+	float endLatitude = 0.0f;
+	float startLatitude = 0.0f;
+
+	float l = 0.0f;
+	drawLine(painter, proj, Vector3f(m_east, l, 0.0f), Vector3f(m_west, l, 0.0f));
+	painter.setPen(boxLineColor);
+	drawLine(painter, proj, Vector3f(m_west, l, 0.0f), Vector3f(m_west, l, m_maxHeight));
     }
 
     float indicatorSize = 3.0f / m_zoomFactor;
@@ -1417,7 +1424,7 @@ GroundTrackView::paintObliqueView(QPainter& painter)
                     Vector3f skyPoint    = proj * Vector3f(tickLongitude, tick.latitude, std::min(m_maxHeight, tick.altitude));
 
                     m_trackPoints << QPointF(groundPoint.x(), groundPoint.y())
-                                  << QPointF(skyPoint.x(), skyPoint.y());
+			    << QPointF(skyPoint.x(), skyPoint.y());
                 }
             }
         }
@@ -1438,8 +1445,7 @@ GroundTrackView::paintObliqueView(QPainter& painter)
 }
 
 
-void
-GroundTrackView::paint2DView(QPainter& painter)
+void GroundTrackView::paint2DView(QPainter& painter)
 {
     int viewWidth = viewport()->size().width();
     int viewHeight = viewport()->size().height();
@@ -1611,6 +1617,89 @@ GroundTrackView::paint2DView(QPainter& painter)
         }
     }
 
+    // Draw the Equatorial grid
+    if (m_showEquator)
+    {
+	double maxLongitudeLines = 0.0;
+	double longitudeSpacing = 0.0f;
+	double latitudeSpacing = longitudeSpacing; // identical to meridian spacing (for now)
+
+	// Leave some space at the edge of the view for labels
+	float labelLeftMarginPixels = 20.0f;
+	float labelTopMarginPixels = 20.0f;
+
+	// xform transforms long/lat to pixels
+	QTransform xform = painter.worldTransform();
+	QTransform invXform = xform.inverted();
+
+	QPointF topLeftWorld = (destRect.topLeft() + QPointF(labelLeftMarginPixels, labelTopMarginPixels)) * invXform;
+	double longitudeSpacingDeg = longitudeSpacing / 3600.0;
+	double latitudeSpacingDeg = latitudeSpacing / 3600.0;
+
+	// Calculate the start and end of long/lat lines so that a margin remains
+	// clear for labels.
+	float startLongitude = (float) (floor(topLeftWorld.x() / longitudeSpacingDeg) + 0.0f) * longitudeSpacingDeg;
+	float endLongitude = startLongitude + (float) longitudeSpacingDeg * maxLongitudeLines;
+	float endLatitude = 0.0f;
+	float startLatitude = 0.0f;
+
+	/*
+	// Draw lines of longitude
+	for (float l = startLongitude; l < endLongitude; l += (float) longitudeSpacing / 3600.0f)
+	{
+	    if (l != 0.0f)
+		//painter.setPen(longLatPen);
+	        painter.setPen(equatorialPen);
+	    else
+		//painter.setPen(longLatColor);
+		painter.setPen(equatorialPen);
+
+	    // Calculate the top margin in world coordinates
+	    QPointF top(0.0f, labelTopMarginPixels + destRect.top());
+	    top = top * invXform;
+
+	    painter.drawLine(QPointF(l, top.y()), QPointF(l, -90.0f));
+	    // We don't want the transformation to scale the text. So, we temporarily
+	    // reset the transformation to an identity matrix, draw the text, then restore
+	    // the matrix.
+	    painter.setWorldTransform(QTransform());
+
+	    QPointF textOrigin = QPointF(l, 0.0f) * xform;
+	    QRectF textRect(textOrigin.x() - 20.0f, destRect.top(), 40.0f, labelTopMarginPixels);
+
+	    QString meridianLabel = QString::number(reduceLongitude(l));
+	    painter.setPen(longLatColorOpaque);
+	    painter.drawText(textRect, Qt::AlignCenter, meridianLabel);
+	    painter.setWorldTransform(xform);
+	}
+	*/
+
+	QColor equatorColor(220, 220, 0, 100);
+	QColor equatorColorOpaque = equatorColor;
+	equatorColorOpaque.setAlpha(255);
+	QPen equatorPen(equatorColor);
+	painter.setPen(equatorPen);
+
+	// Calculate the top margin in world coordinates
+	QPointF left(destRect.left() + labelLeftMarginPixels, 0.0f);
+	left = left * invXform;
+
+	painter.drawLine(QPointF(left.x(), 0.0f), QPointF(m_east, 0.0f));
+	// We don't want the transformation to scale the text. So, we temporarily
+	// reset the transformation to an identity matrix, draw the text, then restore
+	// the matrix.
+	painter.setWorldTransform(QTransform());
+
+	QPointF textOrigin = QPointF(0.0f, 0.0f) * xform;
+	QRectF textRect(destRect.left() + 5.0f, textOrigin.y() - labelTopMarginPixels / 2, 40.0f, labelTopMarginPixels);
+
+	QString parallelLabel = QString::number(0.0f);
+	painter.setPen(equatorColorOpaque);
+	painter.drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft, parallelLabel);
+	painter.setWorldTransform(xform);
+    }
+
+
     // Coming back to a 9 points font;
     painter.setFont(font);
 
@@ -1736,7 +1825,7 @@ GroundTrackView::paint2DView(QPainter& painter)
             else
             {
                 m_trackPoints << QPointF(long0, lat0)
-                              << QPointF(long1, lat1);
+			<< QPointF(long1, lat1);
             }
         }
 
@@ -1762,8 +1851,8 @@ GroundTrackView::paint2DView(QPainter& painter)
                     tickLongitude += 360.0f;
                 m_trackPoints << QPointF(tickLongitude - tick.dx * tickScale,
                                          tick.latitude  - tick.dy * tickScale)
-                              << QPointF(tickLongitude + tick.dx * tickScale,
-                                         tick.latitude  + tick.dy * tickScale);
+		<< QPointF(tickLongitude + tick.dx * tickScale,
+			   tick.latitude  + tick.dy * tickScale);
             }
         }
 
@@ -1844,14 +1933,14 @@ GroundTrackView::paint2DView(QPainter& painter)
         for (int i=0; i < m_analysis->m_anaSpaceObjectList.length(); i++)
         {
             if (!(m_analysis->m_anaSpaceObjectList.at(i).coveragesample.back().curtime < m_currentTime ||
-                m_analysis->m_anaSpaceObjectList.at(i).coveragesample.first().curtime > m_currentTime))
+		  m_analysis->m_anaSpaceObjectList.at(i).coveragesample.first().curtime > m_currentTime))
             {
                 CoverageSample tmpS;
                 tmpS.curtime = m_currentTime;
                 QList<CoverageSample>::const_iterator iter = qLowerBound(m_analysis->m_anaSpaceObjectList.at(i).coveragesample.begin(),
-                                                                 m_analysis->m_anaSpaceObjectList.at(i).coveragesample.end(),
-                                                                 tmpS,
-                                                                 coverageSampleLessThan);
+									 m_analysis->m_anaSpaceObjectList.at(i).coveragesample.end(),
+									 tmpS,
+									 coverageSampleLessThan);
                 if (m_showCoverageHistory)
                 {
                     drawCoverage(painter, m_analysis->m_anaSpaceObjectList.at(i).asocolor, false, iter->histpoints);
@@ -2018,7 +2107,7 @@ GroundTrackView::paint2DView(QPainter& painter)
 // Calculate the spacing between longitude lines. Find the value in the spacings table that
 // gives as many lines as possible without exceeding the maximum number of lines.
 double
-GroundTrackView::meridianSpacing(int maxMeridians)
+	GroundTrackView::meridianSpacing(int maxMeridians)
 {
     double visibleLongitudeRange = 360.0 / m_zoomFactor;
     double idealLongitudeSpacing = visibleLongitudeRange * 3600.0 / maxMeridians;
@@ -2034,8 +2123,7 @@ GroundTrackView::meridianSpacing(int maxMeridians)
 }
 
 
-void
-GroundTrackView::contextMenuEvent(QContextMenuEvent* event)
+void GroundTrackView::contextMenuEvent(QContextMenuEvent* event)
 {
     if (!m_contextMenu)
         m_contextMenu = new QMenu(this);
@@ -2047,13 +2135,24 @@ GroundTrackView::contextMenuEvent(QContextMenuEvent* event)
     connect(entireAction, SIGNAL(triggered(bool)), this, SLOT(setShowEntireTracks(bool)));
 
     QAction* gridAction = new QAction(tr("Show &Grid"), m_contextMenu);
+    connect(gridAction, SIGNAL(triggered(bool)), this, SLOT(setShowGrid(bool)));
     gridAction->setCheckable(true);
     gridAction->setChecked(m_showGrid);
-    connect(gridAction, SIGNAL(triggered(bool)), this, SLOT(setShowGrid(bool)));
+    MainWindow myMainWindow;
+    myMainWindow.m_groundTrackPlotTool->m_toolBar->m_gridAction->setChecked(m_showGrid);
+    myMainWindow.m_groundTrackPlotTool->show();
+
+    QAction* equatorAction = new QAction(tr("Show &Equator"), m_contextMenu);
+    connect(equatorAction, SIGNAL(triggered(bool)), this, SLOT(setShowEquator(bool)));
+    equatorAction->setCheckable(true);
+    equatorAction->setChecked(m_showEquator);
+    myMainWindow.m_groundTrackPlotTool->m_toolBar->m_equatorAction->setChecked(m_showEquator);
+    myMainWindow.m_groundTrackPlotTool->show();
 
 
     m_contextMenu->addAction(entireAction);
     m_contextMenu->addAction(gridAction);
+    m_contextMenu->addAction(equatorAction);
 
     m_contextMenu->popup(event->globalPos());
 }
@@ -2076,36 +2175,31 @@ void GroundTrackView::setDiscretizationVisible(bool visible)
     viewport()->update();
 }
 
-void
-GroundTrackView::setCoverageCurrentVisible(bool visible)
+void GroundTrackView::setCoverageCurrentVisible(bool visible)
 {
     m_showCoverageCurrent = visible;
     viewport()->update();
 }
 
-void
-GroundTrackView::setCoverageHistoryVisible(bool visible)
+void GroundTrackView::setCoverageHistoryVisible(bool visible)
 {
     m_showCoverageHistory = visible;
     viewport()->update();
 }
 
-void
-GroundTrackView::setLinkSOVisible(bool visible)
+void GroundTrackView::setLinkSOVisible(bool visible)
 {
     m_showSOLink = visible;
     viewport()->update();
 }
 
-void
-GroundTrackView::setLinkGOVisible(bool visible)
+void GroundTrackView::setLinkGOVisible(bool visible)
 {
     m_showGOLink = visible;
     viewport()->update();
 }
 
-void
-GroundTrackView::drawDiscretization(QPainter& painter, QList<DiscretizationPoint> discretePoints)
+void GroundTrackView::drawDiscretization(QPainter& painter, QList<DiscretizationPoint> discretePoints)
 {
     painter.setBrush(Qt::NoBrush);
     painter.setPen(Qt::NoPen);
@@ -2137,8 +2231,7 @@ GroundTrackView::drawDiscretization(QPainter& painter, QList<DiscretizationPoint
     painter.setPen(Qt::NoPen);
 }
 
-void
-GroundTrackView::drawCoverage(QPainter& painter, QColor asocolor, bool colored, QList<DiscretizationPoint> discretePoints)
+void GroundTrackView::drawCoverage(QPainter& painter, QColor asocolor, bool colored, QList<DiscretizationPoint> discretePoints)
 {
     painter.setBrush(Qt::NoBrush);
     painter.setPen(Qt::NoPen);
@@ -2249,13 +2342,13 @@ static Vector3d ellipsoidClosestPoint(const Vector3d& semiAxes, const Vector3d& 
   * @return true if some area of coverage exists, false if not (e.g. minElevation >= 90 degrees)
   */
 bool
-GroundTrackView::computeCoverageFootprint(double stationLongitude,
-                                          double stationLatitude,
-                                          const StaBody* planet,
-                                          double minElevation,
-                                          double spacecraftAltitude,
-                                          unsigned int profilePointCount,
-                                          QVector<Eigen::Vector3d>& profile) const
+	GroundTrackView::computeCoverageFootprint(double stationLongitude,
+						  double stationLatitude,
+						  const StaBody* planet,
+						  double minElevation,
+						  double spacecraftAltitude,
+						  unsigned int profilePointCount,
+						  QVector<Eigen::Vector3d>& profile) const
 {
     if (std::abs(minElevation) >= sta::Pi() || spacecraftAltitude <= 0.0)
     {
@@ -2319,12 +2412,12 @@ GroundTrackView::computeCoverageFootprint(double stationLongitude,
 
 
 void
-GroundTrackView::drawCoverageFootprint(QPainter& painter,
-                                       double stationLongitude,
-                                       double stationLatitude,
-                                       const StaBody* planet,
-                                       double minElevation,
-                                       double spacecraftAltitude)
+	GroundTrackView::drawCoverageFootprint(QPainter& painter,
+					       double stationLongitude,
+					       double stationLatitude,
+					       const StaBody* planet,
+					       double minElevation,
+					       double spacecraftAltitude)
 {
     m_coverageProfile.clear();
     computeCoverageFootprint(stationLongitude, stationLatitude, planet,
@@ -2379,8 +2472,7 @@ GroundTrackView::drawCoverageFootprint(QPainter& painter,
 }
 
 
-void
-GroundTrackView::drawSubsolarPoint(QPainter& painter, QColor color, float size)
+void GroundTrackView::drawSubsolarPoint(QPainter& painter, QColor color, float size)
 {
     // Get the position of the Sun in the current planet-fixed coordinate frame.
     sta::StateVector sunState = STA_SOLAR_SYSTEM->sun()->stateVector(m_currentTime, m_body, sta::COORDSYS_BODYFIXED);
@@ -2414,7 +2506,7 @@ GroundTrackView::drawSubsolarPoint(QPainter& painter, QColor color, float size)
 // Draw the region of the planet illuminated by the Sun.
 // TODO: This function still approximates the body as a sphere
 void
-GroundTrackView::drawDaylitRegion(QPainter& painter)
+	GroundTrackView::drawDaylitRegion(QPainter& painter)
 {
     // Get the position of the Sun in the current planet-fixed coordinate frame.
     sta::StateVector sunState = STA_SOLAR_SYSTEM->sun()->stateVector(m_currentTime, m_body, sta::COORDSYS_BODYFIXED);
@@ -2478,9 +2570,9 @@ GroundTrackView::drawDaylitRegion(QPainter& painter)
 /*** GroundTrackPlotTool implementation ***/
 
 GroundTrackPlotTool::GroundTrackPlotTool(QWidget* parent) :
-    QWidget(parent),
-    m_view(NULL),
-    m_toolBar(NULL)
+	QWidget(parent),
+	m_view(NULL),
+	m_toolBar(NULL)
 {
     m_view = new GroundTrackView(this);
 
@@ -2488,6 +2580,7 @@ GroundTrackPlotTool::GroundTrackPlotTool(QWidget* parent) :
     m_toolBar = new VisualizationToolBar(tr("View Controls"), this);
     connect(m_toolBar, SIGNAL(bodyChanged(const StaBody*)),  m_view, SLOT(setBody(const StaBody*)));
     connect(m_toolBar, SIGNAL(gridToggled(bool)),            m_view, SLOT(setShowGrid(bool)));
+    connect(m_toolBar, SIGNAL(equatorToggled(bool)),         m_view, SLOT(setShowEquator(bool)));
     connect(m_toolBar, SIGNAL(terminatorToggled(bool)),      m_view, SLOT(setTerminatorVisible(bool)));
     connect(m_toolBar, SIGNAL(tickIntervalChanged(double)),  m_view, SLOT(setTickInterval(double)));
     connect(m_toolBar, SIGNAL(projectionChanged(bool)),      m_view, SLOT(set2HalfDView(bool)));

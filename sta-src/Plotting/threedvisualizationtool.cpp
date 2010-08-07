@@ -23,6 +23,7 @@
 ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
  Patched by Guillermo (Nov 09) to un-grid planets by default
+ Patched by Guillermo August 2010 to connect the proper equator grid button
  */
 
 #include "threedvisualizationtool.h"
@@ -49,7 +50,7 @@ ThreeDVisualizationTool::ThreeDVisualizationTool(QWidget* parent) :
 
     VisualizationToolBar* toolBar = new VisualizationToolBar(tr("3D View Controls"), this);
     connect(toolBar, SIGNAL(bodyChanged(const StaBody*)),  this, SLOT(gotoBody(const StaBody*)));
-    connect(toolBar, SIGNAL(gridToggled(bool)),            m_view, SLOT(setEquatorialPlane(bool)));
+    connect(toolBar, SIGNAL(equatorToggled(bool)),            m_view, SLOT(setEquatorialPlane(bool)));
     connect(toolBar, SIGNAL(tickIntervalChanged(double)),  this, SLOT(setTickInterval(double)));
     //connect(toolBar, SIGNAL(projectionChanged(bool)),      m_view, SLOT(set2HalfDView(bool)));
     connect(toolBar, SIGNAL(saveImageRequested()),         this, SLOT(saveImage()));

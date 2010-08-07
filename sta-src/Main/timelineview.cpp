@@ -182,7 +182,7 @@ TimelineView::paintEvent(QPaintEvent* /* event */)
     {
         float x = (float) (viewWidth * (m_currentTime - viewStartTime) / m_visibleSpan);
         //painter.setPen(Qt::red);
-        QPen guillermosPen(Qt::red, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+	QPen guillermosPen(Qt::red, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
         painter.setPen(guillermosPen);
         painter.drawLine(QPointF(x, 0), QPointF(x, viewHeight));
     }
