@@ -656,7 +656,7 @@ void SpreadSheet::setupContextMenu()
 
 void SpreadSheet::setupContents(QString analysisFileOutput)
 {
-    // Defining the separator that will segment the lines of the TLEs
+    // Defining the separator that will segment the variables
     QRegExp spaceSeparator("\\s+");  // the + Means one or more spaces!
     QRegExp tabSeparator("\\t+");  // the + Means one or more tabs!
 

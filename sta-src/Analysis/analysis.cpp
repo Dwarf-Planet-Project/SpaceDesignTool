@@ -1798,7 +1798,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			QString Unit=analysis::ReadUnits(treeWidgetShowInReport,treeWidgetShowInReport->topLevelItem(i));
 			// Guillermo patched the following line
 			//stream<<"\t"<<name<<"("<<Unit<<")"<<"\t";
-			stream << name << "(" << Unit << ")" << "\t";
+			stream << name << " (" << Unit << ") " << "\t";
 			numberOfColumns = numberOfColumns +1;
 
 			if(i==((treeWidgetShowInReport->topLevelItemCount())-1))
@@ -1859,7 +1859,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     Fixed);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x(),"km")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].position.x(),"km")<<"\t";
 
 
 				    }
@@ -1875,7 +1875,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     Ecliptic);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x(),"km")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].position.x(),"km")<<"\t";
 
 				    }
 				    if(Coordinate=="EME J2000")
@@ -1892,7 +1892,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     EME2000);
 
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x(),"km")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].position.x(),"km")<<"\t";
 
 
 				    }
@@ -1908,7 +1908,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     B1950);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x(),"km")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].position.x(),"km")<<"\t";
 
 				    }
 				}
@@ -1927,7 +1927,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     Fixed);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y(),"km")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].position.y(),"km")<<"\t";
 
 				    }
 				    if(Coordinate=="Ecliptic J2000")
@@ -1942,7 +1942,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     Ecliptic);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y(),"km")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].position.y(),"km")<<"\t";
 
 				    }
 				    if(Coordinate=="EME J2000")
@@ -1956,7 +1956,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     EME2000);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y(),"km")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].position.y(),"km")<<"\t";
 
 				    }
 				    if(Coordinate=="EME B1950")
@@ -1971,7 +1971,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     B1950);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.y(),"km")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].position.y(),"km")<<"\t";
 
 				    }
 				}
@@ -1992,7 +1992,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     Fixed);
 
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z(),"km")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].position.z(),"km")<<"\t";
 
 				    }
 				    if(Coordinate=="Ecliptic J2000")
@@ -2007,7 +2007,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     Ecliptic);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z(),"km")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].position.z(),"km")<<"\t";
 
 				    }
 				    if(Coordinate=="EME J2000")
@@ -2021,7 +2021,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     EME2000);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z(),"km")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].position.z(),"km")<<"\t";
 
 				    }
 				    if(Coordinate=="EME B1950")
@@ -2036,7 +2036,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     B1950);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.z(),"km")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].position.z(),"km")<<"\t";
 
 				    }
 
@@ -2056,7 +2056,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     Fixed);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x(),"km/s")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.x(),"km/s")<<"\t";
 
 
 
@@ -2073,7 +2073,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     Ecliptic);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x(),"km/s")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.x(),"km/s")<<"\t";
 
 
 
@@ -2089,7 +2089,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     EME2000);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x(),"km/s")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.x(),"km/s")<<"\t";
 
 				    }
 				    if(Coordinate=="EME B1950")
@@ -2104,7 +2104,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     B1950);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.x(),"km/s")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.x(),"km/s")<<"\t";
 
 
 
@@ -2124,7 +2124,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     Fixed);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y(),"km/s")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.y(),"km/s")<<"\t";
 
 
 
@@ -2141,7 +2141,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     Ecliptic);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y(),"km/s")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.y(),"km/s")<<"\t";
 
 
 
@@ -2157,7 +2157,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     EME2000);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y(),"km/s")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.y(),"km/s")<<"\t";
 
 				    }
 				    if(Coordinate=="EME B1950")
@@ -2172,7 +2172,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     B1950);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.y(),"km/s")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.y(),"km/s")<<"\t";
 
 
 
@@ -2192,7 +2192,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     Fixed);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z(),"km/s")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.z(),"km/s")<<"\t";
 
 				    }
 				    if(Coordinate=="Ecliptic J2000")
@@ -2207,7 +2207,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     Ecliptic);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z(),"km/s")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.z(),"km/s")<<"\t";
 				    }
 				    if(Coordinate=="EME J2000")
 				    {
@@ -2220,7 +2220,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     EME2000);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z(),"km/s")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.z(),"km/s")<<"\t";
 
 				    }
 				    if(Coordinate=="EME B1950")
@@ -2235,7 +2235,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 										     EME2000,
 										     STA_SOLAR_SYSTEM->lookup("Earth"),
 										     B1950);
-					stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].velocity.z(),"km/s")<<"\t";
+					stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.z(),"km/s")<<"\t";
 
 
 
@@ -3174,7 +3174,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
     SpreadSheet* resultsSheet = new SpreadSheet(numberOfRows + 5, numberOfColumns);
     resultsSheet->setupContents(analysisFileOutput);
     resultsSheet->setWindowIcon(QPixmap(":/icons/CoordinateSystemBody.png"));
-    resultsSheet->setWindowTitle("Analsyis");
+    resultsSheet->setWindowTitle("Analsyis report");
     resultsSheet->resize(640, 420);
     resultsSheet->setWindowModality(Qt::NonModal);
     resultsSheet->activateWindow();
@@ -3582,7 +3582,6 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 
 					    //stream<<"\t"<<sta::ConvertUnits(Units,ModifVector[index].position.x())<<"\t";
 					    //DataStructure[a].Data[index].append(sta::ConvertUnits(Units,ModifVector[index].position.x()));
-
 					    LineData.append(sta::ConvertUnits(Units,ModifVector[index].position.x(),"km"));
 
 					}
@@ -5904,8 +5903,7 @@ void analysis::DisableUnavailableOptions()
 
 
 
-void
-analysis::saveImage2D()
+void analysis::saveImage2D()
 {
 
     QPixmap image = QPixmap::grabWindow(plotView2D->winId());
@@ -5925,8 +5923,7 @@ analysis::saveImage2D()
 
 
 
-void
-analysis::saveImage3D()
+void analysis::saveImage3D()
 {
 
     QPixmap image = QPixmap::grabWindow(plotView3D->winId());
