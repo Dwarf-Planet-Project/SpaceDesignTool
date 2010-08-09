@@ -163,7 +163,7 @@ void ConstellationWizardDialog::accept()
         if (!scheme) domega = fakdg * limitedOrbitNodeRangeLineEdit->text().toDouble(&ok);
         // get central body data
 	// ScenarioEnvironment* env = new ScenarioEnvironment();    // Guillermo comented out
-	ScenarioSCEnvironmentType* env = new ScenarioSCEnvironmentType();
+	ScenarioEnvironmentType* env = new ScenarioEnvironmentType();
 	//loiteringdialog->saveValues(env);
 	// const StaBody* body =  env->centralBody()->body(); // Guillermo comented out
 	const StaBody* body = STA_SOLAR_SYSTEM->lookup("Earth");

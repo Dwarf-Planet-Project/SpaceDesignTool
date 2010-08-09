@@ -1758,7 +1758,7 @@ void SemMainGUI::RetrieveScenarioSC()
                         = dynamic_cast<ScenarioTransmitterPayloadType*>(payload.data());
                 (SC.getNewPayloads()+i)->setPayloadName
                         (myPayload->ElementIdentifier()->Name());
-                myPayload->ElementIdentifier()->setOrder(i);
+		myPayload->ElementIdentifier()->setTheOrder(i);
 
                 (SC.getNewPayloads()+i)->setPayloadHeight
                         (myPayload->Budget()->Size()->Height());
@@ -1798,7 +1798,7 @@ void SemMainGUI::RetrieveScenarioSC()
                         = dynamic_cast<ScenarioReceiverPayloadType*>(payload.data());
                 (SC.getNewPayloads()+i)->setPayloadName
                         (myPayload->ElementIdentifier()->Name());
-                myPayload->ElementIdentifier()->setOrder(i);
+		myPayload->ElementIdentifier()->setTheOrder(i);
 
                 (SC.getNewPayloads()+i)->setPayloadHeight
                         (myPayload->Budget()->Size()->Height());
@@ -1838,7 +1838,7 @@ void SemMainGUI::RetrieveScenarioSC()
                         = dynamic_cast<ScenarioOpticalPayloadType*>(payload.data());
                 (SC.getNewPayloads()+i)->setPayloadName
                         (myPayload->ElementIdentifier()->Name());
-                myPayload->ElementIdentifier()->setOrder(i);
+		myPayload->ElementIdentifier()->setTheOrder(i);
 
                 (SC.getNewPayloads()+i)->setPayloadHeight
                         (myPayload->Budget()->Size()->Height());
@@ -1878,7 +1878,7 @@ void SemMainGUI::RetrieveScenarioSC()
                         = dynamic_cast<ScenarioRadarPayloadType*>(payload.data());
                 (SC.getNewPayloads()+i)->setPayloadName
                         (myPayload->ElementIdentifier()->Name());
-                myPayload->ElementIdentifier()->setOrder(i);
+		myPayload->ElementIdentifier()->setTheOrder(i);
 
                 (SC.getNewPayloads()+i)->setPayloadHeight
                         (myPayload->Budget()->Size()->Height());

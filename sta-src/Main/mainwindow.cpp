@@ -41,7 +41,9 @@
 #include <QUrl> // Added by Guillermo to work with URLs
 #include <QXmlSchema>
 #include <QXmlSchemaValidator>
+
 #include "mainwindow.h"
+#include "Main/preferences.h"
 #include "scenarioelementbox.h"
 #include "scenarioview.h"
 #include "scenariotree.h"
@@ -615,8 +617,9 @@ void MainWindow::ActivateSTACalc()
 
 void MainWindow::preferencesSTA()
 {
-    // Calling -for the time being- the preferences of STA
-    on_action3dViewPreferences_triggered();
+    preferences* STApreferencesWidget = new preferences(this, Qt::Window);  // Creating the widget as a Window
+    STApreferencesWidget->exec();  // Modal window
+
 }
 
 // Next lines created by Guillermo to handle the spawning of web browsers and e-mail clients, etc.

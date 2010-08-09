@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DialogPreferences</class>
+ <widget class="QDialog" name="DialogPreferences">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>661</width>
+    <height>384</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>661</width>
+    <height>384</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>661</width>
+    <height>384</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QDialogButtonBox" name="buttonBoxPreferences">
+   <property name="geometry">
+    <rect>
+     <x>308</x>
+     <y>348</y>
+     <width>341</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>341</width>
+     <height>32</height>
+    </size>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QTabWidget" name="tabWidgetPreferences">
+   <property name="geometry">
+    <rect>
+     <x>16</x>
+     <y>16</y>
+     <width>629</width>
+     <height>325</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>629</width>
+     <height>325</height>
+    </size>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <widget class="QWidget" name="scenarioPreferences">
+    <attribute name="title">
+     <string>Scenario</string>
+    </attribute>
+    <widget class="QGroupBox" name="groupBoxTrajectories">
+     <property name="geometry">
+      <rect>
+       <x>8</x>
+       <y>-4</y>
+       <width>293</width>
+       <height>149</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Trajectories</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="gridLayout_5">
+        <item row="0" column="0">
+         <widget class="QCheckBox" name="satellitesTrajectories">
+          <property name="text">
+           <string>Satellites</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QCheckBox" name="planetsTrajectories">
+          <property name="text">
+           <string>Planets</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QCheckBox" name="moonsTrajectories">
+          <property name="text">
+           <string>Moons</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QCheckBox" name="cometsTrajectories">
+          <property name="text">
+           <string>Comets</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QCheckBox" name="asteroidsTrajectories">
+          <property name="text">
+           <string>Asteroids</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QCheckBox" name="reentryTrajectories">
+          <property name="text">
+           <string>Re-entry vehicles</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBoxLabels">
+     <property name="geometry">
+      <rect>
+       <x>316</x>
+       <y>-4</y>
+       <width>297</width>
+       <height>149</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Labels</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <widget class="QCheckBox" name="spaceVehicleLabels">
+          <property name="text">
+           <string>Space vehicles</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QCheckBox" name="groundStationsLabels">
+          <property name="text">
+           <string>Ground stations</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QCheckBox" name="launchPadLabels">
+          <property name="text">
+           <string>Launch pads</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QCheckBox" name="pointsLabels">
+          <property name="text">
+           <string>Points</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QCheckBox" name="planetsLabels">
+          <property name="text">
+           <string>Planets</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QCheckBox" name="moonsLabels">
+          <property name="text">
+           <string>Moons</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QCheckBox" name="cometsLabels">
+          <property name="text">
+           <string>Comets</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QCheckBox" name="asteroidsLabels">
+          <property name="text">
+           <string>Asteroids</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBoxDisplay">
+     <property name="geometry">
+      <rect>
+       <x>8</x>
+       <y>148</y>
+       <width>293</width>
+       <height>133</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Display</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_6">
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="QCheckBox" name="dateAndTime">
+          <property name="text">
+           <string>Date and time</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QCheckBox" name="altitude">
+          <property name="text">
+           <string>Altitude</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QCheckBox" name="centralBody">
+          <property name="text">
+           <string>Central body</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="renderingPreferences">
+    <attribute name="title">
+     <string>Rendering</string>
+    </attribute>
+    <widget class="QSlider" name="horizontalSliderAmbientLight">
+     <property name="geometry">
+      <rect>
+       <x>236</x>
+       <y>236</y>
+       <width>261</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>132</x>
+       <y>238</y>
+       <width>93</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Ambient light</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>216</y>
+       <width>41</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Low</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_3">
+     <property name="geometry">
+      <rect>
+       <x>472</x>
+       <y>216</y>
+       <width>41</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>High</string>
+     </property>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="geometry">
+      <rect>
+       <x>12</x>
+       <y>-4</y>
+       <width>601</width>
+       <height>181</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Features</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_8">
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="gridLayout_7">
+        <item row="0" column="0">
+         <widget class="QCheckBox" name="atmospheres">
+          <property name="text">
+           <string>Atmospheres</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QCheckBox" name="clouds">
+          <property name="text">
+           <string>Clouds</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QCheckBox" name="nightLigfhts">
+          <property name="text">
+           <string>Night lights</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QCheckBox" name="shadows">
+          <property name="text">
+           <string>Shadows</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QCheckBox" name="reflections">
+          <property name="text">
+           <string>Refections</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QCheckBox" name="stars">
+          <property name="text">
+           <string>Stars</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QCheckBox" name="celestialGrid">
+          <property name="text">
+           <string>Celestial grid</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QCheckBox" name="fieldOfView">
+          <property name="text">
+           <string>Field of view</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QCheckBox" name="coordinateSystems">
+          <property name="text">
+           <string>Coordinate systems</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QCheckBox" name="dataLayers">
+          <property name="text">
+           <string>Data layers</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QCheckBox" name="coverageAreas">
+          <property name="text">
+           <string>Coverage areas</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>satellitesTrajectories</tabstop>
+  <tabstop>reentryTrajectories</tabstop>
+  <tabstop>moonsTrajectories</tabstop>
+  <tabstop>planetsTrajectories</tabstop>
+  <tabstop>cometsTrajectories</tabstop>
+  <tabstop>asteroidsTrajectories</tabstop>
+  <tabstop>spaceVehicleLabels</tabstop>
+  <tabstop>groundStationsLabels</tabstop>
+  <tabstop>launchPadLabels</tabstop>
+  <tabstop>pointsLabels</tabstop>
+  <tabstop>planetsLabels</tabstop>
+  <tabstop>moonsLabels</tabstop>
+  <tabstop>cometsLabels</tabstop>
+  <tabstop>asteroidsLabels</tabstop>
+  <tabstop>dateAndTime</tabstop>
+  <tabstop>altitude</tabstop>
+  <tabstop>centralBody</tabstop>
+  <tabstop>buttonBoxPreferences</tabstop>
+  <tabstop>tabWidgetPreferences</tabstop>
+  <tabstop>atmospheres</tabstop>
+  <tabstop>clouds</tabstop>
+  <tabstop>nightLigfhts</tabstop>
+  <tabstop>shadows</tabstop>
+  <tabstop>reflections</tabstop>
+  <tabstop>stars</tabstop>
+  <tabstop>celestialGrid</tabstop>
+  <tabstop>fieldOfView</tabstop>
+  <tabstop>coordinateSystems</tabstop>
+  <tabstop>dataLayers</tabstop>
+  <tabstop>coverageAreas</tabstop>
+  <tabstop>horizontalSliderAmbientLight</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBoxPreferences</sender>
+   <signal>accepted()</signal>
+   <receiver>DialogPreferences</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>526</x>
+     <y>362</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBoxPreferences</sender>
+   <signal>rejected()</signal>
+   <receiver>DialogPreferences</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>594</x>
+     <y>368</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

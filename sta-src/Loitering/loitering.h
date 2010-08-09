@@ -45,12 +45,12 @@ public:
     LoiteringDialog(ScenarioTree* parent = NULL);
     ~LoiteringDialog();
     bool loadValues(ScenarioLoiteringType* loitering);
-    bool loadValues(ScenarioSCEnvironmentType* environment);
+    bool loadValues(ScenarioEnvironmentType* environment);
     bool loadValues(ScenarioTimeLine* parameters);
     bool loadValues(ScenarioPropagationPositionType* propagation);
     bool loadValues(ScenarioInitialPositionType* initPosition);
     bool saveValues(ScenarioLoiteringType* loitering);
-    bool saveValues(ScenarioSCEnvironmentType* environment);
+    bool saveValues(ScenarioEnvironmentType* environment);
     bool saveValues(ScenarioTimeLine* parameters);
     bool saveValues(ScenarioPropagationPositionType* propagation);
     bool saveValues(ScenarioInitialPositionType* initPosition);

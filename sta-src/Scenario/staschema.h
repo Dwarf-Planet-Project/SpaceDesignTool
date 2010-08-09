@@ -172,7 +172,6 @@ class ScenarioSC;
 class ScenarioSCProgram;
 class ScenarioSCMission;
 class ScenarioTrajectoryPlan;
-class ScenarioSCEnvironmentType;
 class ScenarioLoiteringType;
 class ScenarioRendezvousType;
 class ScenarioParameters;
@@ -633,14 +632,24 @@ public:
     { return m_Name; }
     void setName(QString Name)
     { m_Name = Name; }
-    int Order() const
-    { return m_Order; }
-    void setOrder(int Order)
-    { m_Order = Order; }
+    int theOrder() const
+    { return m_theOrder; }
+    void setTheOrder(int theOrder)
+    { m_theOrder = theOrder; }
+    QString modelName() const
+    { return m_modelName; }
+    void setModelName(QString modelName)
+    { m_modelName = modelName; }
+    QString colorName() const
+    { return m_colorName; }
+    void setColorName(QString colorName)
+    { m_colorName = colorName; }
 
 private:
     QString m_Name;
-    int m_Order;
+    int m_theOrder;
+    QString m_modelName;
+    QString m_colorName;
 };
 
 
@@ -762,6 +771,12 @@ public:
     { return m_thirdBody; }
     void setThirdBody(bool thirdBody)
     { m_thirdBody = thirdBody; }
+    const QList<QString>& perturbingBody() const
+    { return m_perturbingBody; }
+    QList<QString>& perturbingBody()
+    { return m_perturbingBody; }
+    void setPerturbingBody(QList<QString> perturbingBody)
+    { m_perturbingBody = perturbingBody; }
     bool userDefined() const
     { return m_userDefined; }
     void setUserDefined(bool userDefined)
@@ -776,6 +791,7 @@ private:
     int m_Cr;
     bool m_micrometeoroids;
     bool m_thirdBody;
+    QList<QString> m_perturbingBody;
     bool m_userDefined;
 };
 
@@ -6508,40 +6524,6 @@ private:
 };
 
 
-// ScenarioSCEnvironmentType
-class ScenarioSCEnvironmentType : public ScenarioEnvironmentType
-{
-public:
-    ScenarioSCEnvironmentType();
-    static ScenarioSCEnvironmentType* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "SCEnvironmentType"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    const QList<QString>& perturbingBody() const
-    { return m_perturbingBody; }
-    QList<QString>& perturbingBody()
-    { return m_perturbingBody; }
-    void setPerturbingBody(QList<QString> perturbingBody)
-    { m_perturbingBody = perturbingBody; }
-    bool atmosphericDrag() const
-    { return m_atmosphericDrag; }
-    void setAtmosphericDrag(bool atmosphericDrag)
-    { m_atmosphericDrag = atmosphericDrag; }
-    bool solarPressure() const
-    { return m_solarPressure; }
-    void setSolarPressure(bool solarPressure)
-    { m_solarPressure = solarPressure; }
-
-private:
-    QList<QString> m_perturbingBody;
-    bool m_atmosphericDrag;
-    bool m_solarPressure;
-};
-
-
 // ScenarioLoiteringType
 class ScenarioLoiteringType : public ScenarioAbstractTrajectoryType
 {
@@ -6558,9 +6540,9 @@ public:
     { return m_ElementIdentifier; }
     void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
     { m_ElementIdentifier = ElementIdentifier; }
-    QSharedPointer<ScenarioSCEnvironmentType> Environment() const
+    QSharedPointer<ScenarioEnvironmentType> Environment() const
     { return m_Environment; }
-    void setEnvironment(QSharedPointer<ScenarioSCEnvironmentType> Environment)
+    void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
     { m_Environment = Environment; }
     QSharedPointer<ScenarioTimeLine> TimeLine() const
     { return m_TimeLine; }
@@ -6585,7 +6567,7 @@ public:
 
 private:
     QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
-    QSharedPointer<ScenarioSCEnvironmentType> m_Environment;
+    QSharedPointer<ScenarioEnvironmentType> m_Environment;
     QSharedPointer<ScenarioTimeLine> m_TimeLine;
     QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
     QSharedPointer<ScenarioInitialAttitudeType> m_InitialAttitude;
@@ -6606,9 +6588,9 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioSCEnvironmentType> Environment() const
+    QSharedPointer<ScenarioEnvironmentType> Environment() const
     { return m_Environment; }
-    void setEnvironment(QSharedPointer<ScenarioSCEnvironmentType> Environment)
+    void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
     { m_Environment = Environment; }
     QSharedPointer<ScenarioParameters> Parameters() const
     { return m_Parameters; }
@@ -6624,7 +6606,7 @@ public:
     { m_ManoeuvrePlan = ManoeuvrePlan; }
 
 private:
-    QSharedPointer<ScenarioSCEnvironmentType> m_Environment;
+    QSharedPointer<ScenarioEnvironmentType> m_Environment;
     QSharedPointer<ScenarioParameters> m_Parameters;
     QString m_Target;
     QSharedPointer<ScenarioManoeuvrePlan> m_ManoeuvrePlan;

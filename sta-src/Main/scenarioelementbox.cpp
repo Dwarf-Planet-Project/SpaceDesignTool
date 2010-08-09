@@ -354,7 +354,6 @@ static QByteArray loiteringFragment(const char* name)
     initAtt->setPsiDot(0.00000);
     loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
 
-
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
     loitering.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
@@ -363,7 +362,14 @@ static QByteArray loiteringFragment(const char* name)
     loitering.PropagationPosition()->setPropagator("TWO BODY");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
+    loitering.Environment()->CentralBody()->GravityModel()->setModelName("EGM2008");
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(1);
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(1);
+
     loitering.ElementIdentifier()->setName("loitering");
+    loitering.ElementIdentifier()->setTheOrder(1);
+    loitering.ElementIdentifier()->setModelName("iss.3ds");
+    loitering.ElementIdentifier()->setColorName("yellow");
 
     QDomDocument doc;
     return fragmentText(CreateLoiteringElement(&loitering, doc)).toUtf8();

@@ -377,8 +377,7 @@ void changeLabels(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
 
 
 
-void
-ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
+void ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
 {
 
     // Store a pointer to the this ScenarioObject in the widget item.
@@ -406,7 +405,7 @@ ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioOb
     QList<QSharedPointer<ScenarioObject> > children = scenarioObject->children();
     foreach (QSharedPointer<ScenarioObject> child, children)
     {
-        if (!child.isNull())
+	if (!child.isNull())
         {
             QTreeWidgetItem* childItem = new QTreeWidgetItem(item);
             addScenarioItems(childItem, child.data());
@@ -414,7 +413,7 @@ ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioOb
     }
 
     // Guillermo: expand items by default or not
-    //item->setExpanded(true);
+    item->setExpanded(true);
 
     if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject))
     {
@@ -424,6 +423,11 @@ ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scenarioOb
     else if (dynamic_cast<ScenarioParticipantType*>(scenarioObject))
     {
 	item->setText(1, dynamic_cast<ScenarioParticipantType*>(scenarioObject)->Name());
+    }
+    else if (dynamic_cast<ScenarioGravityModel*>(scenarioObject))
+    {
+
+	item->setText(1, dynamic_cast<ScenarioGravityModel*>(scenarioObject)->modelName());
     }
 
     changeLabels(item, scenarioObject);

@@ -144,8 +144,6 @@
 
 
 	<element name="Environment" type="tns:EnvironmentType"></element>
-	
-	
 	<complexType name="EnvironmentType">
 		<sequence>
 			<element name="CentralBody" type="tns:CentralBodyType"></element>
@@ -154,12 +152,12 @@
 	</complexType>
 	
 	<element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
-
-
 	<complexType name="ElementIdentifierType">
 		<sequence>
 			<element name="Name" type="string"></element>
-			<element name="Order" type="int"></element>
+			<element name="theOrder" type="int"></element>
+			<element name="modelName" type="string"></element>
+			<element name="colorName" type="string"></element>
 		</sequence>
 	</complexType>
 
@@ -193,6 +191,7 @@
 			<element name="Cr" type="int" minOccurs="0"></element>
 			<element name="micrometeoroids" type="boolean" minOccurs="0"></element>
 			<element name="thirdBody" type="boolean" minOccurs="0"></element>
+			<element name="perturbingBody" type="tns:ListOfString"></element>
 			<element name="userDefined" type="boolean" minOccurs="0"></element>
 		</sequence>
 	</complexType>

@@ -60,7 +60,8 @@ MAIN_SOURCES = \
     sta-src/Main/initialstateThreebodyEditor.cpp \
     sta-src/Main/exportdialog.cpp \
     sta-src/Main/entrymass.cpp \
-    sta-src/Main/about.cpp
+    sta-src/Main/about.cpp \
+    sta-src/Main/preferences.cpp
 MAIN_HEADERS = \
     sta-src/Main/initialstateeditor.h \
     sta-src/Main/main.h \
@@ -80,7 +81,8 @@ MAIN_HEADERS = \
     sta-src/Main/initialstateThreebodyEditor.h \
     sta-src/Main/exportdialog.h \
     sta-src/Main/entrymass.h \
-    sta-src/Main/about.h
+    sta-src/Main/about.h \
+    sta-src/Main/preferences.h
 MAIN_FORMS = sta-src/Main/initialstateeditor.ui \
     sta-src/Main/mainwindow.ui \
     sta-src/Main/scenarioelementbox.ui \
@@ -92,7 +94,8 @@ MAIN_FORMS = sta-src/Main/initialstateeditor.ui \
     sta-src/Main/initialstateThreebodyEditor.ui \
     sta-src/Main/exportdialog.ui \
     sta-src/Main/entrymass.ui \
-    sta-src/Main/about.ui
+    sta-src/Main/about.ui \
+    sta-src/Main/preferences.ui
 
 # ##################### Astro Core ############################
 ASTROCORE_SOURCES = sta-src/Astro-Core/calendarTOjulian.cpp \

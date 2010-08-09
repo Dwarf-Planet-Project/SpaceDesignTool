@@ -240,7 +240,8 @@ void LoiteringDialog::disableIntegratorComboBox(int i)
 
 bool LoiteringDialog::loadValues(ScenarioLoiteringType* loitering)
 {
-    ScenarioSCEnvironmentType* environment	    = loitering->Environment().data();
+    //ScenarioSCEnvironmentType* environment	    = loitering->Environment().data();
+    ScenarioEnvironmentType* environment	    = loitering->Environment().data();
     ScenarioTimeLine* parameters		    = loitering->TimeLine().data();
     ScenarioPropagationPositionType* propagation    = loitering->PropagationPosition().data();
     ScenarioInitialPositionType* initPosition	    = loitering->InitialPosition().data();  //Modified by Dominic to reflect chages in XML schema (initial position now in sharedelements)
@@ -255,7 +256,7 @@ bool LoiteringDialog::loadValues(ScenarioLoiteringType* loitering)
     }
 }
 
-bool LoiteringDialog::loadValues(ScenarioSCEnvironmentType* environment)
+bool LoiteringDialog::loadValues(ScenarioEnvironmentType* environment)
 {
     QSharedPointer<ScenarioCentralBodyType> centralBody = environment->CentralBody();
     if (!centralBody.isNull())
@@ -545,7 +546,7 @@ bool LoiteringDialog::loadValues(ScenarioInitialPositionType* initPosition)
 
 bool LoiteringDialog::saveValues(ScenarioLoiteringType* loitering)
 {
-    ScenarioSCEnvironmentType* environment	 = loitering->Environment().data();
+    ScenarioEnvironmentType* environment	 = loitering->Environment().data();
     ScenarioTimeLine* parameters		 = loitering->TimeLine().data();
     ScenarioPropagationPositionType* propagation = loitering->PropagationPosition().data();
     ScenarioInitialPositionType* initPosition    = loitering->InitialPosition().data();//Modified by Dominic to reflect chages in XML schema (initial position now in sharedelements)
@@ -562,7 +563,7 @@ bool LoiteringDialog::saveValues(ScenarioLoiteringType* loitering)
 }
 
 
-bool LoiteringDialog::saveValues(ScenarioSCEnvironmentType* environment)
+bool LoiteringDialog::saveValues(ScenarioEnvironmentType* environment)
 {
     StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(CentralBodyComboBox->currentText());
     if (centralBody)
@@ -591,7 +592,8 @@ bool LoiteringDialog::saveValues(ScenarioSCEnvironmentType* environment)
     }
 #endif
 
-    environment->setAtmosphericDrag(AtmDragRadioButton->isChecked());
+    //environment->setAtmosphericDrag(AtmDragRadioButton->isChecked());
+    environment->PerturbationsToCentralBody()->setAtmosphereDrag(AtmDragRadioButton->isChecked());
 
     // TODO: Is the code below still necessary with the new schema? -cjl
 #if OLDSCENARIO
@@ -607,7 +609,8 @@ bool LoiteringDialog::saveValues(ScenarioSCEnvironmentType* environment)
     }
 #endif
 
-    environment->setSolarPressure(SolarPressureRadioButton->isChecked());
+    //environment->setSolarPressure(SolarPressureRadioButton->isChecked());
+    environment->PerturbationsToCentralBody()->setSolarPressure(SolarPressureRadioButton->isChecked());
 
     // TODO: Is the code below still necessary with the new schema? -cjl
 #if OLDSCENARIO
@@ -623,7 +626,8 @@ bool LoiteringDialog::saveValues(ScenarioSCEnvironmentType* environment)
 #endif
 
     // Reset the perturbing bodies list
-    environment->perturbingBody().clear();
+    //environment->perturbingBody().clear();
+    environment->PerturbationsToCentralBody()->perturbingBody().clear();
 
     // Add selected perturbers
     if (PertBodyRadioButton->isChecked() && PertBodyListWidget->count() != 0)
@@ -633,7 +637,8 @@ bool LoiteringDialog::saveValues(ScenarioSCEnvironmentType* environment)
             StaBody* body = STA_SOLAR_SYSTEM->lookup(PertBodyListWidget->item(j)->text());
             if (body && body != centralBody)
             {
-                environment->perturbingBody().append(body->name());
+		//environment->perturbingBody().append(body->name());
+		environment->PerturbationsToCentralBody()->perturbingBody().append(body->name());
             }
         }
     }

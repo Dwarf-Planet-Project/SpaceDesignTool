@@ -8,7 +8,7 @@
 				<extension base="tns:ParticipantType">
 					<sequence>
 					    <element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
-						<element ref="tns:SCProgram"></element>
+						<element ref="tns:SCProgram" minOccurs="0"></element>
 						<element ref="tns:SCMission"></element>
 						<element name="System" type="tns:SCSystemType"></element>
 						<element ref="tns:Optimization" minOccurs="0"></element>
@@ -34,8 +34,7 @@
 				<element name="TrajectoryPlan">
 					<complexType>
 						<sequence>
-							<element ref="tns:AbstractTrajectory"
-								minOccurs="0" maxOccurs="unbounded">
+							<element ref="tns:AbstractTrajectory" minOccurs="0" maxOccurs="unbounded">
 							</element>
 						</sequence>
 					</complexType>
@@ -74,29 +73,18 @@
 	<element name="LoiteringTLE" substitutionGroup="tns:AbstractTrajectory"
 		type="tns:LoiteringTLEType"></element>
 
-	<complexType name="SCEnvironmentType">
-		<complexContent>
-			<extension base="tns:EnvironmentType">
-				<sequence>
-					<element name="perturbingBody" type="tns:ListOfString"></element>
-					<element name="atmosphericDrag" type="boolean"></element>
-					<element name="solarPressure" type="boolean"></element>
-				</sequence>
-			</extension>
-		</complexContent>
-	</complexType>
 
 	<complexType name="LoiteringType">
 		<complexContent>
 			<extension base="tns:AbstractTrajectoryType">
 				<sequence>
-				    <element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
-					<element name="Environment" type="tns:SCEnvironmentType"></element>
+				    <element ref="tns:ElementIdentifier"></element>
+					<element ref="tns:Environment"></element>
 					<element ref="tns:TimeLine"></element>
-					<element ref="tns:InitialPosition" />
-					<element ref="tns:InitialAttitude" />
-					<element ref="tns:PropagationPosition" />
-					<element ref="tns:PropagationAttitude" />
+					<element ref="tns:InitialPosition"></element>
+					<element ref="tns:InitialAttitude"></element>
+					<element ref="tns:PropagationPosition"></element>
+					<element ref="tns:PropagationAttitude"></element>
 				</sequence>
 			</extension>
 		</complexContent>
@@ -106,7 +94,7 @@
 		<complexContent>
 			<extension base="tns:AbstractTrajectoryType">
 				<sequence>
-					<element name="Environment" type="tns:SCEnvironmentType"></element>
+					<element name="Environment" type="tns:EnvironmentType"></element>
 					<element name="Parameters">
 						<complexType>
 							<sequence>
