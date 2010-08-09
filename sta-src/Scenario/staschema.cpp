@@ -3234,6 +3234,7 @@ ScenarioLV::ScenarioLV()
 {
     m_Program = QSharedPointer<ScenarioLVProgramType>(new ScenarioLVProgramType());
     m_Mission = QSharedPointer<ScenarioLVMissionType>(new ScenarioLVMissionType());
+    m_System = QSharedPointer<ScenarioLVSystemType>(new ScenarioLVSystemType());
     m_Optimization = QSharedPointer<ScenarioOptimization>(new ScenarioOptimization());
     m_OutputFiles = QSharedPointer<ScenarioOutputFiles>(new ScenarioOutputFiles());
 }
@@ -3261,8 +3262,7 @@ bool ScenarioLV::load(const QDomElement& e, QDomElement* next)
     *next = next->nextSiblingElement();
     if (next->tagName() == "tns:System")
         m_System = QSharedPointer<ScenarioLVSystemType>(ScenarioLVSystemType::create(*next));
-if (!m_System.isNull())
-        *next = next->nextSiblingElement();
+    *next = next->nextSiblingElement();
     if (next->tagName() == "tns:Optimization")
         m_Optimization = QSharedPointer<ScenarioOptimization>(ScenarioOptimization::create(*next));
     *next = next->nextSiblingElement();
@@ -10085,8 +10085,6 @@ ScenarioSC::ScenarioSC()
     m_SCProgram = QSharedPointer<ScenarioSCProgram>(new ScenarioSCProgram());
     m_SCMission = QSharedPointer<ScenarioSCMission>(new ScenarioSCMission());
     m_System = QSharedPointer<ScenarioSCSystemType>(new ScenarioSCSystemType());
-    m_Optimization = QSharedPointer<ScenarioOptimization>(new ScenarioOptimization());
-    m_OutputFiles = QSharedPointer<ScenarioOutputFiles>(new ScenarioOutputFiles());
 }
 
 ScenarioSC* ScenarioSC::create(const QDomElement& e)
@@ -10118,10 +10116,12 @@ bool ScenarioSC::load(const QDomElement& e, QDomElement* next)
     *next = next->nextSiblingElement();
     if (next->tagName() == "tns:Optimization")
         m_Optimization = QSharedPointer<ScenarioOptimization>(ScenarioOptimization::create(*next));
-    *next = next->nextSiblingElement();
+if (!m_Optimization.isNull())
+        *next = next->nextSiblingElement();
     if (next->tagName() == "tns:OutputFiles")
         m_OutputFiles = QSharedPointer<ScenarioOutputFiles>(ScenarioOutputFiles::create(*next));
-    *next = next->nextSiblingElement();
+if (!m_OutputFiles.isNull())
+        *next = next->nextSiblingElement();
     return true;
 }
 
