@@ -1639,7 +1639,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
     QDateTime ReportDateTime=QDateTime::currentDateTime();
 
     stream<<"Report generated on"<<"\t"<<ReportDateTime.date().day()<<"/"<<ReportDateTime.date().month()<<"/"<<ReportDateTime.date().year()<<" "<<"at"<<" "<<ReportDateTime.time().hour()<<":"<<ReportDateTime.time().minute()<<":"<<ReportDateTime.time().second()<<"\r\n";
-
+    int CStart, CStop;
 
     for(int z=0;z<MParentIndex.size();z++)
     {
@@ -1756,16 +1756,20 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
 		int ControlStart=0;
 		int ControlStop=0;
-		if ((StopTime[k]>(StopEpoch+2*pow(10,-5)))||(StopTime[k]<=(StartEpoch-2*pow(10,-5))))
+                if ((StartTime[k]>(StopEpoch+2*pow(10,-5)))||(StartTime[k]<=(StartEpoch-2*pow(10,-5))))
 		{
+
 		    ControlStart++;
 		}
 		if ((StopTime[k]>(StopEpoch+2*pow(10,-5)))||(StopTime[k]<=(StartEpoch-2*pow(10,-5))))
 		{
+
 		    ControlStop++;
 		}
+                CStart=ControlStart;
+                CStop=ControlStop;
 
-		if((ControlStop==0)&&(ControlStop==0))
+                if((ControlStart==0)&&(ControlStop==0))
 
 		{
 
@@ -1789,7 +1793,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
 
 		    //stream<<"Satellite:"<<MParentIndex.at(z)+1<<"\t"<<"Mission Arc:"<<indMissionArc+1<<"\r\n";
-		    stream<<"#######Beginning of time"<<" "<<(k+1)<<"######"<<"\r\n"<<"######"<<"Start Time"<<" "<<Start<<"\t"<<"Stop Time"<<" "<<Stop<<"######"<<"\r\n";
+                    stream<<"###Beginning of time"<<" "<<(k+1)<<"###"<<"\r\n"<<"Start Time"<<" "<<Start<<"###"<<"Stop Time"<<" "<<Stop<<"\r\n";
 
 		    //printing the labels of the displayed parameters
 		    for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++)
@@ -3153,11 +3157,18 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			numberOfRows = numberOfRows + 1;
 		    }
 		}
-		else
+                else
 		{
-		    stream<<"#######Beginning of time"<<" "<<(k+1)<<"######"<<"\r\n";
-		    stream<<"No data available for the chosen time interval, please check the options of the propagation"<<"\r\n";
-		}
+                    stream<<"#######Beginning of time"<<" "<<(k+1)<<"######"<<"\r\n";
+                    stream<<"No data available for the chosen time interval, please check the options of the propagation"<<"\r\n";
+                    if(selectedTimes.size()==1)
+                    {
+                    QMessageBox Warning;
+                    Warning.setText("No data available for the selected time interval");
+                    Warning.exec();
+
+                 }
+                }
 	    } //
 
 	    stream<<"\r\n";
@@ -3165,7 +3176,8 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
     }
 
     file.close();
-
+if(CStart==0&&CStop==0) //added by Ana to prevent crashing in report
+    {
     // Patched by Guillermo to allow read of files in MAC and Linux
     QString ResourcesPathOutput = QDir::currentPath ();
     QString analysisFileOutput = ResourcesPathOutput + "/" + "analysisReport.txt";
@@ -3183,7 +3195,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
     // Guillermo says: next line to used any more since we have now a spreadsheet table
     //QDesktopServices::openUrl(QUrl(analysisFileOutputURL));
-
+}
 }
 
 QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetItem*>selected,QList<QTreeWidgetItem*>selectedTimes)
