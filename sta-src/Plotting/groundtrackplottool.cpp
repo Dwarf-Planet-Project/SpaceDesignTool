@@ -491,6 +491,8 @@ void GroundTrackView::setMaxHeight(int logMaxHeight)
 
 void GroundTrackView::saveImage()
 {
+    // Code of Chris patched by Guillermo since now the view is not OpenGL
+    /*
     // The following code relies on the fact that the viewport is an OpenGL widget. Another
     // approach would be to create an image and draw using the painter instance for that
     // image.
@@ -515,6 +517,21 @@ void GroundTrackView::saveImage()
             }
         }
     }
+    */
+    QPixmap image = QPixmap::grabWindow(this->winId());
+    QString fileName = QFileDialog::getSaveFileName(this,
+						    tr("Save Image"),
+						    "",
+						    tr("Images (*.png  *.jpg *.tif)"));
+    if (!fileName.isEmpty())
+    {
+	bool ok = image.save(fileName);
+	if (!ok)
+	{
+	    QMessageBox::warning(this, tr("Save error"), tr("Error saving image to %1").arg(fileName));
+	}
+    }
+
 }
 
 
