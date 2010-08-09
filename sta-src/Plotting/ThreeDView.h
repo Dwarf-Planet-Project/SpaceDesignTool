@@ -43,6 +43,7 @@ namespace vesta
     class TextureMap;
     class TextureMapLoader;
     class TextureFont;
+    class MeshGeometry;
 }
 
 class StaBody;
@@ -116,6 +117,7 @@ private:
     vesta::counted_ptr<vesta::ObserverController> m_controller;
     vesta::counted_ptr<vesta::TextureMapLoader> m_textureLoader;
     vesta::counted_ptr<vesta::TextureFont> m_labelFont;
+    vesta::counted_ptr<vesta::MeshGeometry> m_defaultSpacecraftMesh;
 
     vesta::counted_ptr<vesta::TextureMap> m_spacecraftIcon;
 

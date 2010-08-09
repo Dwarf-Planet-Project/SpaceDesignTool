@@ -47,6 +47,7 @@
 #include <vesta/LabelGeometry.h>
 #include <vesta/PlaneVisualizer.h>
 #include <vesta/Units.h>
+#include <vesta/MeshGeometry.h>
 #include <vesta/interaction/ObserverController.h>
 
 #include "ThreeDView.h"
@@ -92,6 +93,8 @@ secsSinceJ2000ToMjd(double secs)
 static double BeginningOfTime = -yearsToSecs(200.0);  // 1900 CE
 static double EndOfTime = yearsToSecs(100.0);         // 2100 CE
 static double ValidTimeSpan = EndOfTime - BeginningOfTime;
+
+const static string DefaultSpacecraftMeshFile = "models/acrimsat.3ds";
 
 
 /** Trajectory subclass that adapt's an STA mission arc for VESTA
@@ -217,6 +220,14 @@ public:
     bool handleMakeResident(TextureMap* texture)
     {
         QString fileName = texture->name().c_str();
+
+        // Also check the models directory; this should be generalized
+        // so that a list of alternate search paths can be specified.
+        if (!fileName.startsWith(":") && !QFileInfo(fileName).exists())
+        {
+            fileName = "models/" + fileName;
+        }
+        qDebug() << "Loading texture " << fileName;
 
         if (QFileInfo(fileName).suffix() == "dds")
         {
@@ -366,6 +377,10 @@ ThreeDView::initializeGL()
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     glEnable(GL_CULL_FACE);
+
+    // Load the default spacecraft model
+    m_defaultSpacecraftMesh = MeshGeometry::loadFromFile(DefaultSpacecraftMeshFile, m_textureLoader.ptr());
+    m_defaultSpacecraftMesh->setMeshScale(0.002f / m_defaultSpacecraftMesh->boundingSphereRadius());
 }
 
 
@@ -899,6 +914,8 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
 
     body->chronology()->setBeginning(mjdToSecsSinceJ2000(spaceObj->mission().first()->beginning()));
 
+    body->setGeometry(m_defaultSpacecraftMesh.ptr());
+
     Spectrum spaceObjColor(spaceObj->trajectoryColor().redF(),
                            spaceObj->trajectoryColor().greenF(),
                            spaceObj->trajectoryColor().blueF());
@@ -906,7 +923,9 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
     LabelGeometry* label = new LabelGeometry(spaceObj->name().toUtf8().data(), m_labelFont.ptr(), spaceObjColor, 7.0f);
     label->setIcon(m_spacecraftIcon.ptr());
     label->setIconColor(spaceObjColor);
-    body->setVisualizer("label", new Visualizer(label));
+    Visualizer* visualizer = new Visualizer(label);
+    visualizer->setDepthAdjustment(Visualizer::AdjustToFront);
+    body->setVisualizer("label", visualizer);
 
     // Add a trajectory visualizer for the first arc
     vesta::Arc* firstArc = body->chronology()->firstArc();
@@ -970,6 +989,9 @@ ThreeDView::clearScenarioObjects()
 {
     m_selectedSpacecraft = NULL;
 
+    // Reset the observer position if a spacecraft view was active
+    gotoBody(STA_SOLAR_SYSTEM->earth());
+
     // Remove VESTA entities for all space and ground objects
     foreach (Entity* e, m_scenarioSpaceObjects.values())
     {
@@ -989,8 +1011,31 @@ ThreeDView::clearScenarioObjects()
 }
 
 
+static void
+setSpacecraftView(Observer* observer, Entity* e, double t)
+{
+    observer->setCenter(e);
+    Geometry* geom = e->geometry();
+    float distance = 1.0f;
+    if (geom)
+    {
+        distance = 3.0f * geom->boundingSphereRadius();
+    }
+
+    Vector3d toCenter = e->chronology()->firstArc()->center()->position(t) - e->position(t);
+    observer->setPosition(-toCenter.normalized() * distance);
+    observer->setOrientation(LookAt(Vector3d::Zero(), -toCenter, Vector3d::UnitZ()));
+}
+
+
 void
 ThreeDView::selectParticipant(SpaceObject* spaceObj)
 {
     m_selectedSpacecraft = spaceObj;
+
+    if (m_scenarioSpaceObjects.contains(m_selectedSpacecraft))
+    {
+        Entity* selectedBody = m_scenarioSpaceObjects.value(m_selectedSpacecraft);
+        setSpacecraftView(m_observer.ptr(), selectedBody, m_currentTime);
+    }
 }
