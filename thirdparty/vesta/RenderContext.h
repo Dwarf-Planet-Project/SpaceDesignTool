@@ -1,5 +1,5 @@
 /*
- * $Revision: 381 $ $Date: 2010-07-21 12:26:04 -0700 (Wed, 21 Jul 2010) $
+ * $Revision: 417 $ $Date: 2010-08-09 20:21:33 -0700 (Mon, 09 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -132,6 +132,12 @@ public:
     enum
     {
         MaxLights = 4
+    };
+
+    enum RendererOutput
+    {
+        FragmentColor,
+        CameraDistance,
     };
 
     struct Environment
@@ -297,6 +303,9 @@ public:
     void drawParticles(ParticleEmitter* emitter, double clock);
 
     void unbindShader();
+
+    RendererOutput rendererOutput() const;
+    void setRendererOutput(RendererOutput output);
             
     /** Graphics shader capability levels:
       *   FixedFunction: legacy mode, no shaders
@@ -368,8 +377,12 @@ private:
     Material m_currentMaterial;
     Environment m_environment;
 
+    // Special purpose shaders
+    counted_ptr<GLShaderProgram> m_cameraDistanceShader;
+
     bool m_shaderStateCurrent;
     bool m_modelViewMatrixCurrent;
+    RendererOutput m_rendererOutput;
 };
 
 }

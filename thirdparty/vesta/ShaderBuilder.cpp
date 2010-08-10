@@ -1,5 +1,5 @@
 /*
- * $Revision: 363 $ $Date: 2010-07-16 18:12:52 -0700 (Fri, 16 Jul 2010) $
+ * $Revision: 416 $ $Date: 2010-08-09 17:19:13 -0700 (Mon, 09 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -223,7 +223,7 @@ static void declareTransmittanceFunc(ostream& out)
 }
 
 
-static void declareScatteringFunc(ostream& out, const ShaderInfo& shaderInfo)
+static void declareScatteringFunc(ostream& out)
 {
     out << "    uniform float scaleHeight;" << endl;
     out << "    uniform float Bs;" << endl;                // scattering coefficient
@@ -344,7 +344,7 @@ static void declareHelperFunctions(ostream& fragment, const ShaderInfo& shaderIn
 
     if (shaderInfo.hasScattering())
     {
-        declareScatteringFunc(fragment, shaderInfo);
+        declareScatteringFunc(fragment);
     }
 }
 
@@ -712,6 +712,168 @@ static void generateBlinnPhongShader(ostream& vertex, ostream& fragment, const S
 }
 
 
+// Generate a shader for a volume of partculates that scatters light. This is currently
+// used only for rendering planetary rings.
+static void generateParticulateShader(ostream& vertex, ostream& fragment, const ShaderInfo& shaderInfo)
+{
+    // Interpolated variables
+    declareVarying(vertex, fragment, "vec3", "position"); // position in local space
+
+    // Fragment shader constants
+    declareSamplers(fragment, shaderInfo.textures());
+    declareUniform(fragment, "vec3", "color");
+    declareUniform(fragment, "float", "opacity");
+    declareUniform(fragment, "vec3", "ambientLight");
+
+    if (shaderInfo.hasShadows())
+    {
+        unsigned int count = shaderInfo.shadowCount();
+        declareUniformArray(vertex, "mat4", "shadowMatrix", count);
+        declareVaryingArray(vertex, fragment, "vec4", "shadowCoord", count);
+        declareShadowSamplers(fragment, count);
+    }
+
+    if (shaderInfo.hasScattering())
+    {
+        fragment << "uniform sampler2D transmittanceTex;" << endl;
+        fragment << "uniform sampler3D scatterTex;" << endl;
+    }
+
+    declareUniform(fragment, "vec3", "eyePosition");
+
+    if (shaderInfo.hasScattering())
+    {
+        declareUniform(fragment, "float", "atmosphereRadius");
+        declareUniform(fragment, "float", "planetRadius");
+        declareUniform(fragment, "vec3", "atmosphereColor");
+    }
+
+    // Light position in local space
+    declareUniformArray(fragment, "vec3", "lightPosition", shaderInfo.lightCount());
+    declareUniformArray(fragment, "vec3", "lightColor", shaderInfo.lightCount());
+
+    declareHelperFunctions(fragment, shaderInfo);
+
+    vertex << "void main()" << endl;
+    vertex << "{" << endl;
+    if (shaderInfo.textures() != 0)
+    {
+        vertex << "    texCoord = gl_MultiTexCoord0.xy;" << endl;
+    }
+    if (shaderInfo.hasVertexColors() != 0)
+    {
+        vertex << "    vertexColor = gl_Color;" << endl;
+    }
+
+    // Note that this is the model space position
+    vertex << "    position = gl_Vertex.xyz;" << endl;
+
+    // Output shadow coordinates for shaders that have shadows
+    if (shaderInfo.hasShadows())
+    {
+        for (unsigned int i = 0; i < shaderInfo.shadowCount(); ++i)
+        {
+            vertex << "    shadowCoord[" << i << "] = shadowMatrix[" << i << "] * gl_Vertex;" << endl;
+        }
+    }
+
+    // Position is always required
+    vertex << "    gl_Position = ftransform();" << endl;
+
+    vertex << "}" << endl;
+
+    // Values used in fragment shader light calculation:
+    //    V - view vector (model space)
+    fragment << "void main()" << endl;
+    fragment << "{" << endl;
+
+    fragment << "    vec3 diffLight = ambientLight;" << endl;
+    fragment << "    vec3 V = normalize(eyePosition - " << position(shaderInfo) << ");" << endl;
+
+    if (shaderInfo.hasScattering())
+    {
+        fragment << "vec3 sc;" << endl;  // scattering
+        fragment << "vec3 sunAttenuation;" << endl;  // extinction
+        fragment << "vec3 eyeAttenuation;" << endl;  // extinction
+        fragment << "scattering(" << position(shaderInfo) << ", eyePosition, -V, lightPosition[0], sc, sunAttenuation, eyeAttenuation);" << endl;
+    }
+
+    // Loop over the light sources and accumulate the contributions from each.
+    for (unsigned int light = 0; light < shaderInfo.lightCount(); ++light)
+    {
+        fragment << "    {" << endl;
+        string lightPosition;
+        if (light == 0)
+        {
+            // Light source zero is directional (i.e. effectively an infinite distance from the object)
+            lightPosition = arrayIndex("lightPosition", light);
+        }
+        else
+        {
+            // Light source is a point source
+            lightPosition = "lightPos";
+            fragment << "        vec3 lightPos = " << arrayIndex("lightPosition", light) << " - " << position(shaderInfo) << ";" << endl;
+            fragment << "        lightPos = normalize(lightPos);" << endl;
+        }
+
+        if (shaderInfo.shadowCount() > light)
+        {
+             fragment << "        float shadow = shadowPCF(shadowTex" << light << ", shadowCoord[" << light << "]);" << endl;
+        }
+        else
+        {
+            // No need for shadow term
+            fragment << "        float shadow = 1.0;" << endl;
+        }
+
+        // Henyey-Greenstein phase function; g should be a shader parameter
+        fragment << "        float cosLV = dot(" << lightPosition << ", V);\n";
+        fragment << "        float g = 0.3;\n";
+        fragment << "        float ph = 0.25 * (1.0 - g * g) * pow(1.0 + g * g - 2.0 * g * cosLV, -1.5);" << endl;
+
+        string lightColor = arrayIndex("lightColor", light);
+        if (shaderInfo.hasScattering() && light == 0)
+        {
+            lightColor = lightColor + " * sunAttenuation";
+        }
+        fragment << "        diffLight += shadow * ph * " << lightColor << ";" << endl;
+
+        fragment << "    }" << endl;
+    }
+
+    fragment << "    vec4 diffuse = vec4(color, opacity);" << endl;
+
+    if (shaderInfo.hasTexture(ShaderInfo::DiffuseTexture))
+    {
+        if (shaderInfo.hasAlphaTexture())
+        {
+            fragment << "    diffuse.a *= texture2D(diffuseTex, texCoord).a;" << endl;
+        }
+        else
+        {
+            fragment << "    diffuse *= texture2D(diffuseTex, texCoord);" << endl;
+        }
+    }
+
+    if (shaderInfo.hasVertexColors())
+    {
+        fragment << "    diffuse *= vertexColor;" << endl;
+    }
+
+    string colorSum = "diffuse.rgb * diffLight";
+    string alphaSum = "diffuse.a";
+    if (shaderInfo.hasScattering())
+    {
+        colorSum = "(" + colorSum + ") * eyeAttenuation * 1.0 + sc * 2.0";
+        alphaSum = "diffuse.a + (1.0 - eyeAttenuation.g)";
+    }
+
+    fragment << "    gl_FragColor = vec4(" << colorSum << ", " << alphaSum << ");" << endl;
+
+    fragment << "}" << endl;
+}
+
+
 GLShaderProgram*
 ShaderBuilder::generateShader(const ShaderInfo& shaderInfo) const
 {
@@ -734,6 +896,10 @@ ShaderBuilder::generateShader(const ShaderInfo& shaderInfo) const
     if (shaderInfo.lightCount() == 0 || shaderInfo.reflectanceModel() == ShaderInfo::Emissive)
     {
         generateUnlitShader(vertex, fragment, shaderInfo);
+    }
+    else if (shaderInfo.reflectanceModel() == ShaderInfo::Particulate)
+    {
+        generateParticulateShader(vertex, fragment, shaderInfo);
     }
     else
     {

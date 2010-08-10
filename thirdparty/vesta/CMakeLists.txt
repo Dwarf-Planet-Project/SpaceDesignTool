@@ -1,5 +1,5 @@
 #
-# $Revision: 405 $ $Date: 2010-08-03 13:05:54 -0700 (Tue, 03 Aug 2010) $
+# $Revision: 413 $ $Date: 2010-08-06 16:16:26 -0700 (Fri, 06 Aug 2010) $
 #
 # Copyright by Astos Solutions GmbH, Germany
 #
@@ -62,6 +62,7 @@ set (SRCS
     OrbitalElements.cpp
     ParticleSystemGeometry.cpp
     PlaneGeometry.cpp
+    PlanetaryRings.cpp
     PlaneVisualizer.cpp
     PrimitiveBatch.cpp
     RenderContext.cpp

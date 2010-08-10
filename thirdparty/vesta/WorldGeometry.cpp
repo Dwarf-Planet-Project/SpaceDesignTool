@@ -1,5 +1,5 @@
 /*
- * $Revision: 344 $ $Date: 2010-07-11 19:31:16 -0700 (Sun, 11 Jul 2010) $
+ * $Revision: 413 $ $Date: 2010-08-06 16:16:26 -0700 (Fri, 06 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -16,6 +16,7 @@
 #include "OGLHeaders.h"
 #include "ShaderBuilder.h"
 #include "Atmosphere.h"
+#include "PlanetaryRings.h"
 #include "Debug.h"
 #include <Eigen/LU>
 #include <algorithm>
@@ -1032,7 +1033,7 @@ WorldGeometry::~WorldGeometry()
 void
 WorldGeometry::render(RenderContext& rc,
                       float cameraDistance,
-                      double /* animationClock */) const
+                      double t) const
 {
     // Determine the level of detail
     float radius = maxRadius();
@@ -1283,6 +1284,10 @@ WorldGeometry::render(RenderContext& rc,
         rc.pushModelView();
         rc.scaleModelView(Vector3f::Constant(scale));
 
+        // Atmosphere rendering benefits greatly from sRGB gamma correction; enable this
+        // setting eventually:
+        // if (GLEW_EXT_framebuffer_sRGB)
+        //     glEnable(GL_FRAMEBUFFER_SRGB_EXT);
         Material atmosphereMaterial;
         atmosphereMaterial.setOpacity(0.0f);
         atmosphereMaterial.setBlendMode(Material::PremultipliedAlphaBlend);
@@ -1291,6 +1296,8 @@ WorldGeometry::render(RenderContext& rc,
 
         rc.popModelView();
         glCullFace(GL_BACK);
+        // if (GLEW_EXT_framebuffer_sRGB)
+        //     glDisable(GL_FRAMEBUFFER_SRGB_EXT);
 
         rc.setScattering(false);
     }
@@ -1344,6 +1351,11 @@ WorldGeometry::render(RenderContext& rc,
 #endif // DEBUG_QUADTREE
 
     rc.popModelView();
+
+    if (m_ringSystem.isValid())
+    {
+        m_ringSystem->render(rc, cameraDistance, t);
+    }
 }
 
 
@@ -1568,13 +1580,64 @@ WorldGeometry::renderPatch(int subdivisions,
 float
 WorldGeometry::boundingSphereRadius() const
 {
-    float r = m_ellipsoidAxes.maxCoeff() * 0.5f;
-    if (!m_atmosphere.isNull())
+    float r = maxRadius();
+
+    float atmosphereHeight = 0.0f;
+    if (m_atmosphere.isValid())
     {
-        //r += m_atmosphere->transparentHeight();
+        atmosphereHeight = m_atmosphere->transparentHeight();
     }
 
-    return r;
+    if (m_cloudMap.isValid())
+    {
+        atmosphereHeight = max(atmosphereHeight, m_cloudAltitude);
+    }
+
+    float boundingRadius = r + atmosphereHeight;
+    if (m_ringSystem.isValid())
+    {
+        boundingRadius = max(boundingRadius, m_ringSystem->outerRadius());
+    }
+
+    return boundingRadius;
+}
+
+
+float
+WorldGeometry::nearPlaneDistance(const Eigen::Vector3f& cameraPosition) const
+{
+    // Use a custom calculation for the near plane distance. We're concerned about
+    // clipping the main planet geometry and not as worried about the rings,
+    // atmosphere, and cloud layer.
+    // TODO: We should compute the distance to the planet ellipsoid (and eventually
+    // the terrain model), not just the bounding sphere.
+    float nearDistance = cameraPosition.norm() - maxRadius();
+    if (m_ringSystem.isValid())
+    {
+        // Avoid near clipping of the rings; calculate the distance from the viewer
+        // to the ring geometry. CameraPosition is in local coordinates, so
+        // so |cameraPosition.z| is the distance to the ring plane.
+        float ringPlaneDistance = abs(cameraPosition.z());
+
+        // Calculate the distance between the rings and the projection of the camera
+        // position onto the ring plane.
+        Vector2f ringPlanePos(cameraPosition.x(), cameraPosition.y());
+        float r = ringPlanePos.norm();
+        float inPlaneDistance = 0.0f;
+        if (r > m_ringSystem->outerRadius())
+        {
+            inPlaneDistance = r - m_ringSystem->outerRadius();
+        }
+        else
+        {
+            inPlaneDistance = m_ringSystem->innerRadius() - r;
+        }
+
+        float distanceToRings = max(1.0f, max(ringPlaneDistance, inPlaneDistance));
+        nearDistance = min(nearDistance, distanceToRings);
+    }
+
+    return nearDistance;
 }
 
 
@@ -1724,6 +1787,16 @@ void
 WorldGeometry::setCloudMap(TextureMap* cloudMap)
 {
     m_cloudMap = cloudMap;
+}
+
+
+/** Set the ring system. Setting it to null indicates that the planet has no
+  * ring system (the default state.)
+  */
+void
+WorldGeometry::setRingSystem(PlanetaryRings* rings)
+{
+    m_ringSystem = rings;
 }
 
 

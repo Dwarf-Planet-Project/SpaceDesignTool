@@ -696,11 +696,6 @@ ConstellationsLayer::~ConstellationsLayer()
 void
 ConstellationsLayer::render(RenderContext& rc)
 {
-    if (!isVisible())
-    {
-        return;
-    }
-
     rc.setVertexInfo(VertexSpec::Position);
 
     Material material;

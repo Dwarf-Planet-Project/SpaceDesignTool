@@ -1,5 +1,5 @@
 /*
- * $Revision: 389 $ $Date: 2010-07-26 19:34:58 -0700 (Mon, 26 Jul 2010) $
+ * $Revision: 414 $ $Date: 2010-08-09 13:35:00 -0700 (Mon, 09 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -123,6 +123,12 @@ public:
     {
         const LightSource* lightSource;
         Eigen::Vector3d position;
+    };
+
+    struct VisibleLightSourceItem
+    {
+        const LightSource* lightSource;
+        Eigen::Vector3d position;
         Eigen::Vector3d cameraRelativePosition;
     };
 
@@ -137,6 +143,7 @@ public:
     };
 
 private:
+    void buildVisibleLightSourceList(const Eigen::Vector3d& cameraPosition);
     void splitDepthBuffer();
     void coalesceDepthBuffer();
     void renderDepthBufferSpan(const DepthBufferSpan& span,
@@ -169,6 +176,7 @@ private:
     std::vector<DepthBufferSpan> m_depthBufferSpans;
     std::vector<DepthBufferSpan> m_mergedDepthBufferSpans;
     std::vector<LightSourceItem> m_lightSources;
+    std::vector<VisibleLightSourceItem> m_visibleLightSources;
 
     Spectrum m_ambientLight;
     std::vector<counted_ptr<SkyLayer> > m_skyLayers;

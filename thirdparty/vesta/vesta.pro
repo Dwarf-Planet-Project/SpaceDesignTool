@@ -44,6 +44,7 @@ VESTA_SOURCES = \
     $$VESTA_PATH/OrbitalElements.cpp \
     $$VESTA_PATH/ParticleSystemGeometry.cpp \
     $$VESTA_PATH/PlaneGeometry.cpp \
+    $$VESTA_PATH/PlanetaryRings.cpp \
     $$VESTA_PATH/PlaneVisualizer.cpp \
     $$VESTA_PATH/PrimitiveBatch.cpp \
     $$VESTA_PATH/RenderContext.cpp \
@@ -115,6 +116,7 @@ VESTA_HEADERS = \
     $$VESTA_PATH/ParticleSystemGeometry.h \
     $$VESTA_PATH/PickResult.h \
     $$VESTA_PATH/PlaneGeometry.h \
+    $$VESTA_PATH/PlanetaryRings.h \
     $$VESTA_PATH/PlaneVisualizer.h \
     $$VESTA_PATH/PrimitiveBatch.h \
     $$VESTA_PATH/RenderContext.h \

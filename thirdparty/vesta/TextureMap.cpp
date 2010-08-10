@@ -1,5 +1,5 @@
 /*
- * $Revision: 389 $ $Date: 2010-07-26 19:34:58 -0700 (Mon, 26 Jul 2010) $
+ * $Revision: 416 $ $Date: 2010-08-09 17:19:13 -0700 (Mon, 09 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -49,10 +49,10 @@ ToGlFormat(TextureMap::ImageFormat format)
         return GL_RGBA;
     case TextureMap::R16F:
     case TextureMap::R32F:
-        return GL_LUMINANCE;
+        return GL_RED;
     case TextureMap::RG16F:
     case TextureMap::RG32F:
-        return GL_LUMINANCE_ALPHA;
+        return GL_RG;
 
     case TextureMap::Depth24:
         return GL_DEPTH_COMPONENT;
@@ -75,10 +75,12 @@ ToGlInternalFormat(TextureMap::ImageFormat format)
         return GL_RGB8;
 
     // Compressed formats are identical to their internal formats
-    case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
-    case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
-    case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
-        return format;
+    case TextureMap::DXT1:
+        return GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+    case TextureMap::DXT3:
+        return GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+    case TextureMap::DXT5:
+        return GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
 
     // Half-precision (16-bit / channel) floating point formats
     case TextureMap::RGB16F:
@@ -86,9 +88,9 @@ ToGlInternalFormat(TextureMap::ImageFormat format)
     case TextureMap::RGBA16F:
         return GL_RGBA16F_ARB;
     case TextureMap::R16F:
-        return GL_LUMINANCE16F_ARB;
+        return GL_R16F;
     case TextureMap::RG16F:
-        return GL_LUMINANCE_ALPHA16F_ARB;
+        return GL_RG16F;
 
     // Single precision (32-bit / channel) floating point formats
     case TextureMap::RGB32F:
@@ -96,9 +98,9 @@ ToGlInternalFormat(TextureMap::ImageFormat format)
     case TextureMap::RGBA32F:
         return GL_RGBA32F_ARB;
     case TextureMap::R32F:
-        return GL_LUMINANCE32F_ARB;
+        return GL_R32F;
     case TextureMap::RG32F:
-        return GL_LUMINANCE_ALPHA32F_ARB;
+        return GL_RG32F;
 
     case TextureMap::Depth24:
         return GL_DEPTH_COMPONENT;
@@ -126,12 +128,34 @@ BytesPerPixel(TextureMap::ImageFormat format)
     case TextureMap::B8G8R8A8:
         return 4;
 
+    // Compressed formats
     case TextureMap::DXT1:
         return 8;
 
     case TextureMap::DXT3:
     case TextureMap::DXT5:
         return 16;
+
+    // Floating point formats
+    case TextureMap::RGBA32F:
+        return 16;
+
+    case TextureMap::RGB32F:
+        return 12;
+
+    case TextureMap::RG32F:
+    case TextureMap::RGBA16F:
+        return 8;
+
+    case TextureMap::RGB16F:
+        return 6;
+
+    case TextureMap::R32F:
+    case TextureMap::RG16F:
+        return 4;
+
+    case TextureMap::R16F:
+        return 2;
 
     default:
         return 0;

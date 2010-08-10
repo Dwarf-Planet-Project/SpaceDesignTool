@@ -1,5 +1,5 @@
 /*
- * $Revision: 363 $ $Date: 2010-07-16 18:12:52 -0700 (Fri, 16 Jul 2010) $
+ * $Revision: 416 $ $Date: 2010-08-09 17:19:13 -0700 (Mon, 09 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -43,6 +43,7 @@ public:
         Lambert,
         BlinnPhong,
         BlinnPhongReflective,
+        ParticulateVolume,
     };
 
     Material() :

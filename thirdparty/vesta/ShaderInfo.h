@@ -1,5 +1,5 @@
 /*
- * $Revision: 363 $ $Date: 2010-07-16 18:12:52 -0700 (Fri, 16 Jul 2010) $
+ * $Revision: 416 $ $Date: 2010-08-09 17:19:13 -0700 (Mon, 09 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -26,9 +26,10 @@ class ShaderInfo
 public:
     enum ReflectanceModel
     {
-        Emissive   = 0,
-        Lambert    = 1,
-        BlinnPhong = 2,
+        Emissive    = 0,
+        Lambert     = 1,
+        BlinnPhong  = 2,
+        Particulate = 3,
     };
 
     enum

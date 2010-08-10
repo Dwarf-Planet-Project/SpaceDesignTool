@@ -1,5 +1,5 @@
 /*
- * $Revision: 330 $ $Date: 2010-07-06 17:47:49 -0700 (Tue, 06 Jul 2010) $
+ * $Revision: 413 $ $Date: 2010-08-06 16:16:26 -0700 (Fri, 06 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -26,6 +26,7 @@ class TextureMap;
 class Atmosphere;
 class QuadtreeTileAllocator;
 class TiledMap;
+class PlanetaryRings;
 
 /** WorldGeometry is a Geometry object specialized for rendering
   * spherical (or ellipsoidal) worlds. Optionally, a WorldGeometry
@@ -45,6 +46,8 @@ public:
                 double animationClock) const;
     
     float boundingSphereRadius() const;
+
+    virtual float nearPlaneDistance(const Eigen::Vector3f& cameraPosition) const;
 
     /** Get the lengths of the axes of the globe in kilometers. Note that these are
       * diameters, not radii.
@@ -171,6 +174,15 @@ public:
         m_cloudAltitude = altitude;
     }
 
+    /** Get the ring system. Returns null if the planet has no rings.
+      */
+    PlanetaryRings* ringSystem() const
+    {
+        return m_ringSystem.ptr();
+    }
+
+    void setRingSystem(PlanetaryRings* rings);
+
     /** Get the specular reflectance coefficients. These will be zero (black) for
       * globes that aren't glossy.
       */
@@ -230,6 +242,7 @@ private:
     counted_ptr<TiledMap> m_baseTiledMap;
     counted_ptr<Material> m_material;
     counted_ptr<Atmosphere> m_atmosphere;
+    counted_ptr<PlanetaryRings> m_ringSystem;
     std::vector<counted_ptr<MapLayer> > m_layers;
     bool m_emissive;
     Spectrum m_specularReflectance;

@@ -90,13 +90,81 @@ CubeMapFramebuffer::CreateCubicReflectionMap(unsigned int size, TextureMap::Imag
 
 /** Create a cube map framebuffer with six depth-only faces for use as an
   * omnidirectional shadow map.
-  *
-  * NOT YET IMPLEMENTED
   */
 CubeMapFramebuffer*
-CubeMapFramebuffer::CreateCubicShadowMap(unsigned int /* size */)
+CubeMapFramebuffer::CreateCubicShadowMap(unsigned int size)
 {
-    return NULL;
+    counted_ptr<TextureMap> cubeMap(TextureMap::CreateCubeMap(size, TextureMap::R32F));
+    if (!cubeMap.isValid())
+    {
+        return NULL;
+    }
+
+    CubeMapFramebuffer* cubeMapFb(new CubeMapFramebuffer(size, TextureMap::R32F));
+
+    // Allocate the depth buffer objects
+    for (int i = 0; i < 6; ++i)
+    {
+        Framebuffer* fb = new Framebuffer(size, size,
+                                          Framebuffer::ColorAttachment,
+                                          TextureMap::R32F);
+        if (!fb)
+        {
+            return NULL;
+        }
+
+        GLenum status = fb->m_fb->attachTarget(GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB + i, cubeMap->id());
+        if (status != GL_FRAMEBUFFER_COMPLETE_EXT)
+        {
+            delete fb;
+            delete cubeMapFb;
+            return NULL;
+        }
+
+        cubeMapFb->m_faces[i] = fb;
+    }
+
+    cubeMapFb->m_colorTexture = cubeMap.ptr();
+    cubeMapFb->m_depthTexture = NULL;
+
+    return cubeMapFb;
+
+#if 0
+    counted_ptr<TextureMap> cubeMap(TextureMap::CreateCubeMap(size, TextureMap::Depth24));
+    if (!cubeMap.isValid())
+    {
+        return NULL;
+    }
+
+    CubeMapFramebuffer* cubeMapFb(new CubeMapFramebuffer(size, TextureMap::R8G8B8A8));
+
+    // Allocate the depth buffer objects
+    for (int i = 0; i < 6; ++i)
+    {
+        Framebuffer* fb = new Framebuffer(size, size,
+                                          Framebuffer::DepthAttachment,
+                                          TextureMap::R8G8B8A8);
+        if (!fb)
+        {
+            return NULL;
+        }
+
+        GLenum status = fb->m_fb->attachTarget(GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB + i, cubeMap->id());
+        if (status != GL_FRAMEBUFFER_COMPLETE_EXT)
+        {
+            delete fb;
+            delete cubeMapFb;
+            return NULL;
+        }
+
+        cubeMapFb->m_faces[i] = fb;
+    }
+
+    cubeMapFb->m_colorTexture = NULL;
+    cubeMapFb->m_depthTexture = cubeMap.ptr();
+
+    return cubeMapFb;
+#endif
 }
 
 

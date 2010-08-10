@@ -1,5 +1,5 @@
 /*
- * $Revision: 397 $ $Date: 2010-07-30 23:47:00 -0700 (Fri, 30 Jul 2010) $
+ * $Revision: 418 $ $Date: 2010-08-10 09:07:36 -0700 (Tue, 10 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -145,6 +145,35 @@ UniverseRenderer::beginViewSet(const Universe& universe, double t)
     m_universe = &universe;
     m_currentTime = t;
 
+    // Build the light source list
+    // TODO: maintain a bounding sphere hierarchy in order to avoid having to do a linear
+    // traversal of all objects.
+    m_lightSources.clear();
+
+    // Add a light source for the Sun
+    // TODO: Consider whether it might be good to *not* set this automatically
+    LightSourceItem sunItem;
+    sunItem.lightSource = 0;
+    sunItem.position = Vector3d::Zero();
+    m_lightSources.push_back(sunItem);
+
+    const vector<Entity*>& entities = m_universe->entities();
+    for (vector<Entity*>::const_iterator iter = entities.begin(); iter != entities.end(); ++iter)
+    {
+        const Entity* entity = *iter;
+        const LightSource* light = entity->lightSource();
+
+        if (light && entity->isVisible(m_currentTime))
+        {
+            Vector3d position = entity->position(m_currentTime);
+
+            LightSourceItem lsi;
+            lsi.lightSource = light;
+            lsi.position = position;
+            m_lightSources.push_back(lsi);
+        }
+    }
+
     return RenderOk;
 }
 
@@ -276,7 +305,10 @@ UniverseRenderer::renderView(const LightingEnvironment* lighting,
              iter != m_skyLayers.end(); ++iter)
         {
             glDisable(GL_LIGHTING);
-            iter->ptr()->render(*m_renderContext);
+            if (iter->ptr()->isVisible())
+            {
+                iter->ptr()->render(*m_renderContext);
+            }
         }
     }
     glEnable(GL_LIGHTING);
@@ -290,25 +322,18 @@ UniverseRenderer::renderView(const LightingEnvironment* lighting,
     m_renderContext->setActiveLightCount(1);
     m_renderContext->setAmbientLight(m_ambientLight);
 
-    // This factor will ensure that the view frustum near plane
+    // This adjustment factor will ensure that the view frustum near plane
     // doesn't intersect the geometry of a body.
-    float nearAdjust = (float) (cos(fieldOfView / 2.0) / sqrt(1.0 + aspectRatio * aspectRatio));
+    float nearPlaneFovAdjustment = (float) (cos(fieldOfView / 2.0) / sqrt(1.0 + aspectRatio * aspectRatio));
 
     const vector<Entity*>& entities = m_universe->entities();
 
     m_visibleItems.clear();
     m_splittableItems.clear();
-    m_lightSources.clear();
 
     m_lighting = lighting;
 
-    // Add a light source for the Sun
-    // TODO: Consider whether it might be good to *not* set this automatically
-    LightSourceItem sunItem;
-    sunItem.lightSource = 0;
-    sunItem.position = Vector3d::Zero();
-    sunItem.cameraRelativePosition = -cameraPosition;
-    m_lightSources.push_back(sunItem);
+    buildVisibleLightSourceList(cameraPosition);
 
     // Simply scan through all entities in the universe. For much better performance with
     // many entities, we should maintain a bounding sphere hierarchy.
@@ -324,17 +349,6 @@ UniverseRenderer::renderView(const LightingEnvironment* lighting,
             // precision for the rest of the work.
             Vector3d cameraRelativePosition = (position - cameraPosition);
 
-            // If the item is a light, add it to the light source list
-            const LightSource* light = entity->lightSource();
-            if (light)
-            {
-                LightSourceItem lsi;
-                lsi.lightSource = light;
-                lsi.position = position;
-                lsi.cameraRelativePosition = cameraRelativePosition;
-                m_lightSources.push_back(lsi);
-            }
-
             // Cull objects based on size. If an object is less than one pixel in size,
             // we don't draw its geometry. Visualizers have sizes that may be unrelated
             // to the size of the object, so we don't cull them.
@@ -345,7 +359,7 @@ UniverseRenderer::renderView(const LightingEnvironment* lighting,
             if (entity->geometry())
             {
                 float projectedSize = (entity->geometry()->boundingSphereRadius() / float(cameraRelativePosition.norm())) / m_renderContext->pixelSize();
-                sizeCull = projectedSize < 1.0f;
+                sizeCull = projectedSize < 0.5f;
             }
             else
             {
@@ -362,7 +376,7 @@ UniverseRenderer::renderView(const LightingEnvironment* lighting,
                 addVisibleItem(entity, entity->geometry(),
                                position, cameraRelativePosition, cameraSpacePosition,
                                entity->orientation(m_currentTime).cast<float>(),
-                               nearAdjust);
+                               nearPlaneFovAdjustment);
             }
 
             if (entity->hasVisualizers() && m_visualizersEnabled)
@@ -392,7 +406,7 @@ UniverseRenderer::renderView(const LightingEnvironment* lighting,
                         addVisibleItem(entity, visualizer->geometry(),
                                        position, adjustedPosition, adjustedCameraSpacePosition,
                                        visualizer->orientation(entity, m_currentTime).cast<float>(),
-                                       nearAdjust);
+                                       nearPlaneFovAdjustment);
                     }
                 }
             }
@@ -531,7 +545,50 @@ UniverseRenderer::renderView(const Observer* observer,
 }
 
 
-void UniverseRenderer::setDepthRange(float front, float back)
+// Private method to create the visible light source list from the main light
+// source list. Only light sources which interact with objects in the view
+// frustum will appear in the visible light list.
+void
+UniverseRenderer::buildVisibleLightSourceList(const Vector3d& cameraPosition)
+{
+    // Create the list of visible light sources. We filter the list of all light sources
+    // and only keep the ones that interact with objects in the view frustum.
+    m_visibleLightSources.clear();
+    for (vector<LightSourceItem>::const_iterator iter = m_lightSources.begin(); iter != m_lightSources.end(); ++iter)
+    {
+        const LightSourceItem& lsi = *iter;
+        Vector3d cameraRelativePosition = lsi.position - cameraPosition;
+
+        bool cull = false;
+        if (lsi.lightSource != NULL)
+        {
+            float projectedSize = (lsi.lightSource->range() / float(cameraRelativePosition.norm())) / m_renderContext->pixelSize();
+            if (projectedSize < 1.0f)
+            {
+                // Light might be in the view frustum, but it affects a region that occupies less than
+                // a pixel on screen.
+                cull = true;
+            }
+        }
+        else
+        {
+            // Handle the Sun specially--it is never culled.
+        }
+
+        if (!cull)
+        {
+            VisibleLightSourceItem visibleLight;
+            visibleLight.lightSource = lsi.lightSource;
+            visibleLight.position = lsi.position;
+            visibleLight.cameraRelativePosition = cameraRelativePosition;
+            m_visibleLightSources.push_back(visibleLight);
+        }
+    }
+}
+
+
+void
+UniverseRenderer::setDepthRange(float front, float back)
 {
     m_depthRangeFront = front;
     m_depthRangeBack = back;
@@ -555,7 +612,7 @@ UniverseRenderer::addVisibleItem(const Entity* entity,
     float farDistance = -cameraSpacePosition.z() + boundingRadius;
 
     // Calculate a near distance that's as far from the camera as possible.
-    float nearDistance = cameraRelativePosition.norm() - boundingRadius;
+    float nearDistance = geometry->nearPlaneDistance(orientation.conjugate() * -cameraRelativePosition.cast<float>());
 
     // Generally, the near distance for an individual object will never be less
     // than MinimumNearFarRatio times the bounding diameter. Exceptions are things
@@ -795,7 +852,7 @@ void UniverseRenderer::renderDepthBufferSpan(const DepthBufferSpan& span,
     bool shadowsOn = false;
     if (m_shadowsEnabled && !m_lightSources.empty())
     {
-        shadowsOn = renderDepthBufferSpanShadows(span, m_lightSources[0].cameraRelativePosition);
+        shadowsOn = renderDepthBufferSpanShadows(span, m_visibleLightSources[0].cameraRelativePosition);
     }
 
     // Enforce the minimum near plane distance
@@ -971,7 +1028,7 @@ UniverseRenderer::drawItem(const VisibleItem& item)
     unsigned int lightCount = 0;
     if (!m_lightSources.empty())
     {
-        for (vector<LightSourceItem>::const_iterator iter = m_lightSources.begin(); iter != m_lightSources.end(); ++iter)
+        for (vector<VisibleLightSourceItem>::const_iterator iter = m_visibleLightSources.begin(); iter != m_visibleLightSources.end(); ++iter)
         {
             if (!iter->lightSource)
             {

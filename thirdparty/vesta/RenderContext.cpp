@@ -1,5 +1,5 @@
 /*
- * $Revision: 380 $ $Date: 2010-07-20 17:45:27 -0700 (Tue, 20 Jul 2010) $
+ * $Revision: 417 $ $Date: 2010-08-09 20:21:33 -0700 (Mon, 09 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -60,6 +60,28 @@ static const unsigned int ScatterTextureUnit       = 7;
 static const unsigned int ReflectionTextureUnit    = 8;
 
 
+// Camera distance shader used for generating shadow maps.
+// The shader simply writes distance to the camera position in the
+// red channel of the color buffer. When rendering shadow maps,
+// the camera is located at the light position.
+static const char* CameraDistanceVertexShaderSource =
+"varying vec3 position;           \n"
+"void main()                      \n"
+"{                                \n"
+"    position = (gl_ModelViewMatrix * gl_Vertex).xyz;\n"
+"    gl_Position = ftransform();  \n"
+"}                                \n"
+;
+
+static const char* CameraDistanceFragmentShaderSource =
+"varying vec3 position;           \n"
+"void main()                      \n"
+"{                                \n"
+"    gl_FragColor = vec4(length(position), 0.0, 0.0, 0.0);\n"
+"}                                \n"
+;
+
+
 
 RenderContext::Environment::Environment() :
     m_activeLightCount(0),
@@ -86,7 +108,8 @@ RenderContext::RenderContext() :
     m_vertexStreamFloats(NULL),
     m_shaderCapability(FixedFunction),
     m_shaderStateCurrent(false),
-    m_modelViewMatrixCurrent(false)
+    m_modelViewMatrixCurrent(false),
+    m_rendererOutput(FragmentColor)
 {
     m_matrixStack[0] = Matrix4f::Identity();
 
@@ -114,6 +137,19 @@ RenderContext::RenderContext() :
     else
     {
         VESTA_LOG("Creating fixed function RenderContext");
+    }
+
+    if (m_shaderCapability != FixedFunction)
+    {
+        // Create special purpose shaders.
+
+        // Camera distance shader is used for rendering cubic shadow maps
+        m_cameraDistanceShader = GLShaderProgram::CreateShaderProgram(CameraDistanceVertexShaderSource,
+                                                                      CameraDistanceFragmentShaderSource);
+        if (m_cameraDistanceShader.isNull())
+        {
+            VESTA_WARNING("Error creating camera distance shader for shadow mapping.");
+        }
     }
 }
 
@@ -719,12 +755,25 @@ computeShaderInfo(const Material* material,
     }
 
     bool hasSpecular = false;
+    bool lightingEnabled = true;
 
-    if (!vertexInfo->hasNormals || environment.m_activeLightCount == 0)
+    if (environment.m_activeLightCount == 0)
+    {
+        shaderInfo.setReflectanceModel(ShaderInfo::Emissive);
+        lightingEnabled = false;
+    }
+    else if (material->brdf() == Material::ParticulateVolume)
+    {
+        shaderInfo.setReflectanceModel(ShaderInfo::Particulate);
+    }
+    else if (!vertexInfo->hasNormals)
     {
         // Only very limited lighting models are available when we don't have
-        // surface normals.
+        // surface normals
+        // TODO: Probably better if we define a special material type for this
+        // case.
         shaderInfo.setReflectanceModel(ShaderInfo::Emissive);
+        lightingEnabled = false;
     }
     else
     {
@@ -741,7 +790,10 @@ computeShaderInfo(const Material* material,
         {
             shaderInfo.setReflectanceModel(ShaderInfo::Lambert);
         }
+    }
 
+    if (lightingEnabled)
+    {
         shaderInfo.setLightCount(environment.m_activeLightCount);
         shaderInfo.setShadowCount(std::min(environment.m_activeLightCount, environment.m_shadowMapCount));
     }
@@ -815,6 +867,11 @@ computeShaderInfo(const Material* material,
 void
 RenderContext::setShaderMaterial(const Material* material)
 {
+    if (m_rendererOutput != FragmentColor)
+    {
+        return;
+    }
+
     // TODO: For efficiency, we should cache the indexes of uniform variables used
     // in shaders.
 
@@ -838,7 +895,8 @@ RenderContext::setShaderMaterial(const Material* material)
 
     ShaderInfo::ReflectanceModel model = shaderInfo.reflectanceModel();
     bool isViewDependent = false;
-    if (model == ShaderInfo::BlinnPhong || shaderInfo.hasScattering() || shaderInfo.hasTexture(ShaderInfo::ReflectionTexture))
+    if (model == ShaderInfo::BlinnPhong || model == ShaderInfo::Particulate ||
+        shaderInfo.hasScattering() || shaderInfo.hasTexture(ShaderInfo::ReflectionTexture))
     {
         isViewDependent = true;
     }
@@ -910,7 +968,8 @@ RenderContext::setShaderMaterial(const Material* material)
         lightColors[lightIndex] = Vector3f(light.color.data());
     }
 
-    if (model == ShaderInfo::Lambert || model == ShaderInfo::BlinnPhong)
+    //if (model == ShaderInfo::Lambert || model == ShaderInfo::BlinnPhong)
+    if (model != ShaderInfo::Emissive)
     {
         shader->setConstantArray("lightPosition", lightPositions, shaderInfo.lightCount());
         shader->setConstantArray("lightColor", lightColors,  shaderInfo.lightCount());
@@ -996,7 +1055,11 @@ RenderContext::updateShaderState()
         {
             if (m_customShader.isValid())
             {
-                m_customShader->bind();
+                // Ignore the custom shader if we're in a special output mode
+                if (m_rendererOutput != FragmentColor)
+                {
+                    m_customShader->bind();
+                }
             }
             else
             {
@@ -1020,7 +1083,7 @@ RenderContext::updateShaderTransformConstants()
     if (!m_modelViewMatrixCurrent)
     {
         m_modelViewMatrixCurrent = true;
-        if (m_shaderCapability != FixedFunction)
+        if (m_shaderCapability != FixedFunction && m_rendererOutput == FragmentColor)
         {
             // The shadow matrix must be updated whenever the modelview matrix changes; it is
             // the product of the model-to-world and world-to-shadow matrixes.
@@ -1547,5 +1610,42 @@ RenderContext::unbindShader()
     if (m_shaderCapability != FixedFunction)
     {
         glUseProgramObjectARB(0);
+    }
+}
+
+
+/** Get the current renderer output. Possibilities are:
+  *   FragmentColor - render the usual pixel color
+  *   CameraDistance - write the distance of the pixel from the camera (in the red channel)
+  */
+RenderContext::RendererOutput
+RenderContext::rendererOutput() const
+{
+    return m_rendererOutput;
+}
+
+
+/** Set the current renderer output. The output must be one of:
+  *   FragmentColor - render the usual pixel color
+  *   CameraDistance - write the distance of the pixel from the camera (in the red channel)
+  *
+  * The output should be set to CameraDistance when rendering to a cubic shadow map; for
+  * an ordinary shadow map, FragmentColor is appropriate (since color writes are disabled.)
+  */
+void
+RenderContext::setRendererOutput(RendererOutput output)
+{
+    if (m_shaderCapability == FixedFunction && output != FragmentColor)
+    {
+        VESTA_WARNING("setRendererOutput() color called, but RenderContext is fixed function only.");
+    }
+    else
+    {
+        if (output != m_rendererOutput)
+        {
+            m_rendererOutput = output;
+            invalidateShaderState();
+            invalidateModelViewMatrix();
+        }
     }
 }

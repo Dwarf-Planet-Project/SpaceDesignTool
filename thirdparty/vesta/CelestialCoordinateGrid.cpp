@@ -1,5 +1,5 @@
 /*
- * $Revision: 408 $ $Date: 2010-08-03 14:38:16 -0700 (Tue, 03 Aug 2010) $
+ * $Revision: 418 $ $Date: 2010-08-10 09:07:36 -0700 (Tue, 10 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -42,9 +42,6 @@ CelestialCoordinateGrid::render(RenderContext& rc)
     const unsigned int latitudeStepSec = 10 * 3600;
     unsigned int longitudeSteps = (360 * 3600) / longitudeStepSec;
     unsigned int latitudeSteps = (180 * 3600) / latitudeStepSec;
-
-    if (!isVisible())
-        return;
 
     rc.setVertexInfo(VertexSpec::Position);
 

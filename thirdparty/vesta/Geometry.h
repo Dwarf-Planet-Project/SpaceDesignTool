@@ -1,5 +1,5 @@
 /*
- * $Revision: 320 $ $Date: 2010-06-30 16:58:23 -0700 (Wed, 30 Jun 2010) $
+ * $Revision: 410 $ $Date: 2010-08-06 11:45:36 -0700 (Fri, 06 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -112,6 +112,16 @@ public:
     NearClippingPolicy clippingPolicy() const
     {
         return m_clippingPolicy;
+    }
+
+    /** Compute the near plane distance given the camera position in local
+      * coordinates. This will be further modified by the near clipping
+      * policy. The default implementation returns the distance of the
+      * camera minus the bounding sphere radius.
+      */
+    virtual float nearPlaneDistance(const Eigen::Vector3f& cameraPosition) const
+    {
+        return cameraPosition.norm() - boundingSphereRadius();
     }
 
     /** Returns true if this geometry occupies a fixed size on screen (i.e.
