@@ -29,17 +29,22 @@
 #include "ui_preferences.h"
 #include <QDialog>
 
-class preferences : public QDialog , private Ui::DialogPreferences
+class ViewActionGroup;
+
+class Preferences : public QDialog , private Ui::DialogPreferences
 {
 Q_OBJECT
 public:
-	preferences( QWidget * parent = 0, Qt::WindowFlags f = 0 );
-	~preferences();
+    Preferences(QWidget* parent = 0, Qt::WindowFlags f = 0);
+    ~Preferences();
+
+    void connectViewActions(const ViewActionGroup* viewActions);
+
 protected slots:
 	void on_DialogPreferences_accepted();
 	void on_DialogPreferences_rejected();
 	void on_horizontalSliderAmbientLight_valueChanged(int);
-	void on_shadows_clicked(bool);
+    void on_shadows_clicked(bool);
 	void on_atmospheres_clicked(bool);
 	void on_clouds_clicked(bool);
 	void on_nightLigfhts_clicked(bool);
@@ -67,6 +72,5 @@ protected slots:
 	void on_dateAndTime_clicked(bool);
 	void on_altitude_clicked(bool);
 	void on_centralBody_clicked();
-	
 };
 #endif //PREFERENCES_H

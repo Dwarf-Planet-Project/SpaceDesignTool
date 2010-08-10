@@ -59,6 +59,8 @@ class SEMVehicleDialog;
 class AnalysisDialog;
 class STAcalculator;
 
+class ViewActionGroup;
+
 class QXmlSchema;
 
 
@@ -167,6 +169,8 @@ private:
     QAction* m_dockGroundTrackAction;
 
     QXmlSchema* m_spaceScenarioSchema;
+
+    ViewActionGroup* m_viewActions;
 
     double m_lastTime;
 };

@@ -26,167 +26,208 @@
 
 
 #include "preferences.h"
+#include "ViewActionGroup.h"
 
-preferences::preferences( QWidget * parent, Qt::WindowFlags f) : QDialog(parent,f)
+
+Preferences::Preferences( QWidget * parent, Qt::WindowFlags f) : QDialog(parent,f)
 {
 	setupUi(this);
 }
 
-preferences::~preferences()
+Preferences::~Preferences()
 {
 }
 
-void preferences::on_DialogPreferences_accepted()
+
+// Connect widgets to the view actions
+void Preferences::connectViewActions(const ViewActionGroup* viewActions)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    // Synchronize state from the view actions group
+    shadows->setChecked(viewActions->shadowsAction()->isChecked());
+    atmospheres->setChecked(viewActions->atmospheresAction()->isChecked());
+    clouds->setChecked(viewActions->cloudsAction()->isChecked());
+    reflections->setChecked(viewActions->reflectionsAction()->isChecked());
+    stars->setChecked(viewActions->starsAction()->isChecked());
+    celestialGrid->setChecked(viewActions->equatorialGridAction()->isChecked());
+    satellitesTrajectories->setChecked(viewActions->satelliteTrajectoriesAction()->isChecked());
+    reentryTrajectories->setChecked(viewActions->reentryTrajectoriesAction()->isChecked());
+
+    // Connect dialog widgets to view actions
+    // Note that we connect from the clicked() signal of the checkbox widgets. This prevents circular
+    // connection, since the clicked() signal is only emitted when the user clicks the checkbox, not
+    // whenever the state changes.
+    connect(shadows,                SIGNAL(clicked(bool)), viewActions->shadowsAction(),               SLOT(setChecked(bool)));
+    connect(atmospheres,            SIGNAL(clicked(bool)), viewActions->atmospheresAction(),           SLOT(setChecked(bool)));
+    connect(clouds,                 SIGNAL(clicked(bool)), viewActions->cloudsAction(),                SLOT(setChecked(bool)));
+    connect(reflections,            SIGNAL(clicked(bool)), viewActions->reflectionsAction(),           SLOT(setChecked(bool)));
+    connect(stars,                  SIGNAL(clicked(bool)), viewActions->starsAction(),                 SLOT(setChecked(bool)));
+    connect(celestialGrid,          SIGNAL(clicked(bool)), viewActions->equatorialGridAction(),        SLOT(setChecked(bool)));
+    connect(satellitesTrajectories, SIGNAL(clicked(bool)), viewActions->satelliteTrajectoriesAction(), SLOT(setChecked(bool)));
+    connect(reentryTrajectories,    SIGNAL(clicked(bool)), viewActions->reentryTrajectoriesAction(),   SLOT(setChecked(bool)));
+
+    // Connect from view actions to dialog widgets
+    connect(viewActions->shadowsAction(),               SIGNAL(toggled(bool)), shadows,                SLOT(setChecked(bool)));
+    connect(viewActions->atmospheresAction(),           SIGNAL(toggled(bool)), atmospheres,            SLOT(setChecked(bool)));
+    connect(viewActions->cloudsAction(),                SIGNAL(toggled(bool)), clouds,                 SLOT(setChecked(bool)));
+    connect(viewActions->reflectionsAction(),           SIGNAL(toggled(bool)), reflections,            SLOT(setChecked(bool)));
+    connect(viewActions->starsAction(),                 SIGNAL(toggled(bool)), stars,                  SLOT(setChecked(bool)));
+    connect(viewActions->equatorialGridAction(),        SIGNAL(toggled(bool)), celestialGrid,          SLOT(setChecked(bool)));
+    connect(viewActions->satelliteTrajectoriesAction(), SIGNAL(toggled(bool)), satellitesTrajectories, SLOT(setChecked(bool)));
+    connect(viewActions->reentryTrajectoriesAction(),   SIGNAL(toggled(bool)), reentryTrajectories,    SLOT(setChecked(bool)));
 }
 
-void preferences::on_DialogPreferences_rejected()
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
 
-void preferences::on_horizontalSliderAmbientLight_valueChanged(int)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void preferences::on_shadows_clicked(bool)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void preferences::on_atmospheres_clicked(bool)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void preferences::on_clouds_clicked(bool)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void preferences::on_nightLigfhts_clicked(bool)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void preferences::on_reflections_clicked(bool)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void preferences::on_stars_clicked(bool)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void preferences::on_celestialGrid_clicked(bool)
+void Preferences::on_DialogPreferences_accepted()
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void preferences::on_fieldOfView_clicked(bool)
+void Preferences::on_DialogPreferences_rejected()
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void preferences::on_coordinateSystems_clicked(bool)
+void Preferences::on_horizontalSliderAmbientLight_valueChanged(int)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void preferences::on_dataLayers_clicked(bool)
+void Preferences::on_shadows_clicked(bool)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void preferences::on_coverageAreas_clicked(bool)
+void Preferences::on_atmospheres_clicked(bool)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void preferences::on_satellitesTrajectories_clicked(bool)
+void Preferences::on_clouds_clicked(bool)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void preferences::on_planetsTrajectories_clicked(bool)
+void Preferences::on_nightLigfhts_clicked(bool)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void preferences::on_moonsTrajectories_clicked(bool)
+void Preferences::on_reflections_clicked(bool)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void preferences::on_cometsTrajectories_clicked(bool)
+void Preferences::on_stars_clicked(bool)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void preferences::on_asteroidsTrajectories_clicked(bool)
+void Preferences::on_celestialGrid_clicked(bool)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void preferences::on_reentryTrajectories_clicked(bool)
+void Preferences::on_fieldOfView_clicked(bool)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void preferences::on_spaceVehicleLabels_clicked(bool)
+void Preferences::on_coordinateSystems_clicked(bool)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void preferences::on_groundStationsLabels_clicked(bool)
+void Preferences::on_dataLayers_clicked(bool)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void preferences::on_launchPadLabels_clicked(bool)
+void Preferences::on_coverageAreas_clicked(bool)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void preferences::on_pointsLabels_clicked(bool)
+void Preferences::on_satellitesTrajectories_clicked(bool)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void preferences::on_planetsLabels_clicked(bool)
+void Preferences::on_planetsTrajectories_clicked(bool)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void preferences::on_moonsLabels_clicked(bool)
+void Preferences::on_moonsTrajectories_clicked(bool)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void preferences::on_cometsLabels_clicked(bool)
+void Preferences::on_cometsTrajectories_clicked(bool)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void preferences::on_asteroidsLabels_clicked(bool)
+void Preferences::on_asteroidsTrajectories_clicked(bool)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void preferences::on_dateAndTime_clicked(bool)
+void Preferences::on_reentryTrajectories_clicked(bool)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void preferences::on_altitude_clicked(bool)
+void Preferences::on_spaceVehicleLabels_clicked(bool)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void preferences::on_centralBody_clicked()
+void Preferences::on_groundStationsLabels_clicked(bool)
+{
+	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+}
+
+void Preferences::on_launchPadLabels_clicked(bool)
+{
+	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+}
+
+void Preferences::on_pointsLabels_clicked(bool)
+{
+	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+}
+
+void Preferences::on_planetsLabels_clicked(bool)
+{
+	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+}
+
+void Preferences::on_moonsLabels_clicked(bool)
+{
+	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+}
+
+void Preferences::on_cometsLabels_clicked(bool)
+{
+	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+}
+
+void Preferences::on_asteroidsLabels_clicked(bool)
+{
+	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+}
+
+void Preferences::on_dateAndTime_clicked(bool)
+{
+	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+}
+
+void Preferences::on_altitude_clicked(bool)
+{
+	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+}
+
+void Preferences::on_centralBody_clicked()
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }

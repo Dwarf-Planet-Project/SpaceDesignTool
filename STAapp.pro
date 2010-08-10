@@ -61,7 +61,8 @@ MAIN_SOURCES = \
     sta-src/Main/exportdialog.cpp \
     sta-src/Main/entrymass.cpp \
     sta-src/Main/about.cpp \
-    sta-src/Main/preferences.cpp
+    sta-src/Main/preferences.cpp \
+    sta-src/Main/ViewActionGroup.cpp
 MAIN_HEADERS = \
     sta-src/Main/initialstateeditor.h \
     sta-src/Main/main.h \
@@ -82,7 +83,8 @@ MAIN_HEADERS = \
     sta-src/Main/exportdialog.h \
     sta-src/Main/entrymass.h \
     sta-src/Main/about.h \
-    sta-src/Main/preferences.h
+    sta-src/Main/preferences.h \
+    sta-src/Main/ViewActionGroup.h
 MAIN_FORMS = sta-src/Main/initialstateeditor.ui \
     sta-src/Main/mainwindow.ui \
     sta-src/Main/scenarioelementbox.ui \

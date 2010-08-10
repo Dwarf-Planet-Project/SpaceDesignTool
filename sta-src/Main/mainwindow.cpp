@@ -49,19 +49,13 @@
 #include "scenariotree.h"
 #include "timelinewidget.h"
 #include "timelineview.h"
+#include "ViewActionGroup.h"
 #include "Scenario/scenario.h"
 #include "Scenario/propagationfeedback.h"
 #include "Plotting/ThreeDView.h"
 #include "Plotting/groundtrackplottool.h"
-//#include "Plotting/plottingtool.h"
 #include "Plotting/threedvisualizationtool.h"
 #include "Astro-Core/date.h"
-
-#if DEBUG_PLOT
-#include "Plotting/PlotDataSource.h"
-#include "Plotting/PlotView.h"
-#include "Plotting/PlotView3D.h"
-#endif
 
 #include "Scenario/scenarioPropagator.h"
 
@@ -146,6 +140,8 @@ MainWindow::MainWindow(QWidget *parent)	:
     m_threeDViewWidget(NULL),
 
     m_spaceScenarioSchema(NULL),
+
+    m_viewActions(NULL),
 
     m_lastTime(0.0)
 {
@@ -284,6 +280,8 @@ MainWindow::MainWindow(QWidget *parent)	:
         m_threeDViewWidget->view()->gotoBody(STA_SOLAR_SYSTEM->earth());
     }
 
+    m_viewActions = new ViewActionGroup();
+
     // Read saved window preferences
     readSettings();
 
@@ -297,6 +295,7 @@ MainWindow::MainWindow(QWidget *parent)	:
 MainWindow::~MainWindow()
 {
     delete m_propagatedScenario;
+    delete m_viewActions;
 }
 
 
@@ -617,8 +616,9 @@ void MainWindow::ActivateSTACalc()
 
 void MainWindow::preferencesSTA()
 {
-    preferences* STApreferencesWidget = new preferences(this, Qt::Window);  // Creating the widget as a Window
-    STApreferencesWidget->exec();  // Modal window
+    Preferences* staPreferencesWidget = new Preferences(this, Qt::Window);  // Creating the widget as a Window
+    staPreferencesWidget->connectViewActions(m_viewActions);
+    staPreferencesWidget->exec();  // Modal window
 
 }
 
@@ -977,52 +977,6 @@ void MainWindow::on_actionSystem_Engineering_triggered()
 }   ///////////////////////////////////////////  End of Action ACTIVATE SEM ////////////////////////////////////////
 
 
-
-
-#if DEBUG_PLOT
-class SamplePlotData : public PlotDataSource
-{
-public:
-    SamplePlotData()
-    {
-    }
-
-    virtual unsigned int getPointCount() const
-    {
-        return 100;
-    }
-
-    virtual Vector2d getPoint(unsigned int index) const
-    {
-        double x = double(index) / 100.0;
-        double y = sin(x * 20);
-        return Vector2d(x, y);
-    }
-};
-
-
-class SamplePlotData3D : public PlotDataSource3D
-{
-public:
-    SamplePlotData3D()
-    {
-    }
-
-    virtual unsigned int getPointCount() const
-    {
-        return 100;
-    }
-
-    virtual Vector3d getPoint(unsigned int index) const
-    {
-        double x = double(index) / 100.0;
-        double y = sin(x * 20);
-        double z = cos(x * 20) * 0.666;
-        return Vector3d(x, y, z);
-    }
-};
-
-#endif
 
 ///////////////////////////////////////////  Action ANALYZE ////////////////////////////////////////
 void MainWindow::on_actionAnalyse_triggered()
@@ -1396,6 +1350,8 @@ void MainWindow::readSettings()
 
     QPoint winpos = settings.value("Pos", DEFAULT_MAIN_WINDOW_SIZE).toPoint();
     settings.endGroup();
+
+    m_viewActions->restoreSettings();
 
     // Render settings read in qtglwidget
 }
