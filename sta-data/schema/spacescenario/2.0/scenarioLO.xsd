@@ -7,7 +7,7 @@
 			<complexContent>
 				<extension base="tns:ParticipantType">
 					<sequence>
-					    <element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
+						<element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
 						<element name="Location" type="tns:LocationType"></element>
 						<element ref="tns:PayloadSet"></element>
 						<element name="GroundStationEnvironment">
@@ -41,7 +41,7 @@
 			<complexContent>
 				<extension base="tns:ParticipantType">
 					<sequence>
-					    <element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
+						<element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
 						<element name="Location" type="tns:LocationType"></element>
 						<element ref="tns:PayloadSet"></element>
 						<element name="clearingAltitude" type="double"></element>
@@ -58,7 +58,7 @@
 			<complexContent>
 				<extension base="tns:ParticipantType">
 					<sequence>
-					    <element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
+						<element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
 						<element name="Location" type="tns:LocationType"></element>
 						<element ref="tns:PayloadSet"></element>
 					</sequence>

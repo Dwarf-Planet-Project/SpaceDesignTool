@@ -38,7 +38,9 @@
 #include "Astro-Core/stamath.h"
 #include "Astro-Core/calendarTOjulian.h"
 #include "Astro-Core/date.h"
-#include <Astro-Core/constants.h>
+#include "Astro-Core/constants.h"
+#include "Scenario/missionsDefaults.h"
+
 #include <QPushButton>
 #include <QHeaderView>
 #include <QMimeData>
@@ -152,6 +154,7 @@ static QByteArray spaceVehicleFragment(const char* name, const char* vehicleType
     QDomDocument doc;
     return fragmentText(CreateSCElement(&spacecraft, doc)).toUtf8();
 }
+
 
 
 //Created by Dominic to allow REV to be dragged and dropped
@@ -329,50 +332,17 @@ static QByteArray groundElementFragment(const char* name,
 
 static QByteArray loiteringFragment(const char* name)
 {
-    ScenarioLoiteringType loitering;
+    MissionsDefaults myMissionDefaults;
+    ScenarioLoiteringType loiteringDefault;
 
-    /*** fill in defaults ***/
-    loitering.Environment()->CentralBody()->setName("Earth");
-    loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
-    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
 
-    // Patched by Guillermo April 23 2010 to get default values for ISS orbits
-    QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
-    initPos->setSemiMajorAxis(6378.0+450.1365);
-    initPos->setInclination(51.6651);
-    initPos->setEccentricity(0.0006);
-    initPos->setRAAN(12.4829);
-    initPos->setArgumentOfPeriapsis(45.0278);
-    initPos->setTrueAnomaly(87.3523);
-    loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
-    QSharedPointer<ScenarioEulerBIType> initAtt(new ScenarioEulerBIType());
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
-
-    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
-    loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
-    loitering.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
-    loitering.TimeLine()->setStepTime(60.0);
-
-    loitering.PropagationPosition()->setPropagator("TWO BODY");
-    loitering.PropagationPosition()->setTimeStep(60.0);
-
-    loitering.Environment()->CentralBody()->GravityModel()->setModelName("EGM2008");
-    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(1);
-    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(1);
-
-    loitering.ElementIdentifier()->setName("loitering");
-    loitering.ElementIdentifier()->setTheOrder(1);
-    loitering.ElementIdentifier()->setModelName("iss.3ds");
-    loitering.ElementIdentifier()->setColorName("yellow");
+    if (name == "Loitering 1")
+	loiteringDefault = myMissionDefaults.MissionsDefaults_ISS();
+    else if (name == "ISS")
+	loiteringDefault = myMissionDefaults.MissionsDefaults_ISS();
 
     QDomDocument doc;
-    return fragmentText(CreateLoiteringElement(&loitering, doc)).toUtf8();
+    return fragmentText(CreateLoiteringElement(&loiteringDefault, doc)).toUtf8();
 }
 
 
@@ -456,6 +426,24 @@ static QByteArray externalFragment(const char* name)
 
     return data;
 }
+
+
+
+/////////////////////// Creating vehicle with trajectories ///////////////////////////
+static QByteArray spaceVehicleWithTrajectoryFragment(const char* name, const char* vehicleType)
+{
+    ScenarioSC spacecraft;
+    spacecraft.ElementIdentifier()->setName(name);
+    MissionsDefaults myMissionDefaults;
+    ScenarioLoiteringType loiteringDefault;
+    loiteringDefault = myMissionDefaults.MissionsDefaults_ISS();
+    spacecraft.SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(&loiteringDefault));
+
+    QDomDocument doc;
+    return fragmentText(CreateSCElement(&spacecraft, doc)).toUtf8();
+}
+
+
 
 
 
@@ -593,7 +581,45 @@ addESASatelliteItem(QTreeWidgetItem* parent, const char* name)
     myESASatelliteItem->setIcon(0, QIcon(":/icons/ParticipantSATELLITE.png"));
     setDragAndDropInfo(myESASatelliteItem,
                        ScenarioElementBox::PARTICIPANT_MIME_TYPE,
-                       spaceVehicleFragment(name, "Satellite"));
+		       spaceVehicleWithTrajectoryFragment(name, "Satellite"));
+
+    /*
+    QTreeWidgetItem* myMission = new QTreeWidgetItem(myESASatelliteItem->child(0));
+    QTreeWidgetItem* myTrajectoryPlan = new QTreeWidgetItem(myMission->child(0));
+    QTreeWidgetItem* loiteringItem = new QTreeWidgetItem(myTrajectoryPlan);
+    myTrajectoryPlan->addChild(loiteringItem);
+    */
+
+    /*
+
+    QTreeWidgetItem* myIdentifier = new QTreeWidgetItem(myESASatelliteItem);
+    myESASatelliteItem->insertChild(1, myIdentifier);
+    myIdentifier->setText(0, "Identifier");
+
+    QTreeWidgetItem* myMission = new QTreeWidgetItem(myESASatelliteItem);
+    myESASatelliteItem->insertChild(2, myMission);
+    myMission->setText(0, "Mission");
+
+    QTreeWidgetItem* myTrajectoryPlan = new QTreeWidgetItem(myMission);
+    myMission->insertChild(1, myTrajectoryPlan);
+    myTrajectoryPlan->setText(0, "Trajectory plan:");
+
+    QTreeWidgetItem* loiteringItem = new QTreeWidgetItem(myTrajectoryPlan);
+    myTrajectoryPlan->insertChild(1, loiteringItem);
+    loiteringItem->setText(0, "Loitering");
+    loiteringItem->setIcon(0, QIcon(":/icons/mission-arcs-loitering.png"));
+
+    loiteringItem->setData(0, ScenarioFragmentTypeRole, ScenarioElementBox::MISSION_ARC_MIME_TYPE);
+    loiteringItem->setData(0, ScenarioFragmentRole, loiteringFragment("ISS"));
+
+    */
+
+   /*
+    setDragAndDropInfo(loiteringItem,
+		       ScenarioElementBox::PARTICIPANT_MIME_TYPE,
+		       loiteringFragment(name));
+		       */
+		       
 }
 
 
@@ -657,7 +683,7 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
     m_elementTreeWidget->addTopLevelItem(missionArcsItem);
     m_elementTreeWidget->addTopLevelItem(payloadsItem);
     m_elementTreeWidget->addTopLevelItem(maneuversItem);
-    //m_elementTreeWidget->addTopLevelItem(ESASatellitesItem);
+    m_elementTreeWidget->addTopLevelItem(ESASatellitesItem);
     m_elementTreeWidget->addTopLevelItem(ESAgroundStationsItem);
     m_elementTreeWidget->addTopLevelItem(NASAgroundStationsItem);
 
@@ -823,7 +849,8 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
     //////////////// Adding now concrete widgets into the scenario
 
     // Some  ESA Satellites
-    //addESASatelliteItem(ESASatellitesItem, "Cryosat-2");
+    // See the list of available satellites in the file "missionsDefaults.cpp"
+    addESASatelliteItem(ESASatellitesItem, "ISS");
 
     // The ESTRACK ground stations (LAT, LON, ALT)
     addGroundStationItem(ESAgroundStationsItem, "Cebreros",     "Earth",  40.45268986,  -4.36754881, 794.1);

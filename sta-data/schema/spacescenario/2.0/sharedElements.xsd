@@ -19,13 +19,15 @@
 		</sequence>
 	</complexType>
 
-	<element name="AbstractTrajectory" abstract="true" type="tns:AbstractTrajectoryType"></element>
+	<element name="AbstractTrajectory" abstract="true"
+		type="tns:AbstractTrajectoryType"></element>
 	<complexType name="AbstractTrajectoryType">
 		<sequence />
 	</complexType>
 
 
-	<element name="AbstractPayload" abstract="true" type="tns:AbstractPayloadType"></element>
+	<element name="AbstractPayload" abstract="true"
+		type="tns:AbstractPayloadType"></element>
 	<complexType name="AbstractPayloadType" abstract="true">
 		<sequence>
 			<element name="Budget" type="tns:BudgetType"></element>
@@ -147,10 +149,11 @@
 	<complexType name="EnvironmentType">
 		<sequence>
 			<element name="CentralBody" type="tns:CentralBodyType"></element>
-			<element name="PerturbationsToCentralBody" type="tns:PerturbationsType" minOccurs="0"></element>
+			<element name="PerturbationsToCentralBody" type="tns:PerturbationsType"
+				minOccurs="0"></element>
 		</sequence>
 	</complexType>
-	
+
 	<element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
 	<complexType name="ElementIdentifierType">
 		<sequence>
@@ -421,17 +424,6 @@
 
 	<!-- ANTENNA -->
 
-
-
-
-
-
-
-
-
-
-
-
 	<complexType name="TelescopeType">
 		<sequence>
 			<element name="OpticalProperties">
@@ -470,8 +462,6 @@
 	<element name="Radar" type="tns:RadarType"></element>
 
 	<element name="Telescope" type="tns:TelescopeType"></element>
-
-
 
 	<complexType name="AntennaType" abstract="true">
 		<sequence>
@@ -588,12 +578,6 @@
 			</complexContent>
 		</complexType>
 	</element>
-
-	<!-- PAYLOADS -->
-
-
-
-
 
 
 	<complexType name="AeroCoefFileType">
