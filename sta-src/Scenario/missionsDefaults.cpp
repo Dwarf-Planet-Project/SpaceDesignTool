@@ -28,7 +28,7 @@
 */
 
 #include "Scenario/staschema.h"
-#include "Scenario/MissionsDefaults.h"
+#include "Scenario/missionsDefaults.h"
 
 
 
