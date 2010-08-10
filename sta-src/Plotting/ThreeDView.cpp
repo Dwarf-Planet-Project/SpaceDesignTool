@@ -380,7 +380,10 @@ ThreeDView::initializeGL()
 
     // Load the default spacecraft model
     m_defaultSpacecraftMesh = MeshGeometry::loadFromFile(DefaultSpacecraftMeshFile, m_textureLoader.ptr());
-    m_defaultSpacecraftMesh->setMeshScale(0.002f / m_defaultSpacecraftMesh->boundingSphereRadius());
+    if (m_defaultSpacecraftMesh.isValid())
+    {
+        m_defaultSpacecraftMesh->setMeshScale(0.002f / m_defaultSpacecraftMesh->boundingSphereRadius());
+    }
 }
 
 
