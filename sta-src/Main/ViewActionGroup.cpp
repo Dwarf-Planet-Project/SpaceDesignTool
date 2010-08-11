@@ -24,6 +24,7 @@
 */
 
 #include "ViewActionGroup.h"
+#include <QSettings>
 
 
 /** ViewActionGroup contains all actions that control the appearance of the 2D, 2.5D, and 3D
@@ -62,7 +63,19 @@ ViewActionGroup::~ViewActionGroup()
 void
 ViewActionGroup::saveSettings()
 {
-    // TODO
+    QSettings settings;
+    settings.beginGroup("ViewSettings");
+
+    settings.setValue("Shadows", m_shadowsAction->isChecked());
+    settings.setValue("Atmospheres", m_atmospheresAction->isChecked());
+    settings.setValue("Clouds", m_cloudsAction->isChecked());
+    settings.setValue("Reflections", m_reflectionsAction->isChecked());
+    settings.setValue("Stars", m_starsAction->isChecked());
+    settings.setValue("EquatorialGrid", m_equatorialGridAction->isChecked());
+    settings.setValue("ReentryTrajectories", m_reentryTrajectoriesAction->isChecked());
+    settings.setValue("SatelliteTrajectories", m_satelliteTrajectoriesAction->isChecked());
+    qDebug("Saved settings...");
+    settings.endGroup();
 }
 
 
@@ -71,5 +84,17 @@ ViewActionGroup::saveSettings()
 void
 ViewActionGroup::restoreSettings()
 {
-    // TODO
+    QSettings settings;
+    settings.beginGroup("ViewSettings");
+
+    m_shadowsAction->setChecked(settings.value("Shadows", false).toBool());
+    m_atmospheresAction->setChecked(settings.value("Atmospheres", false).toBool());
+    m_cloudsAction->setChecked(settings.value("Clouds", false).toBool());
+    m_reflectionsAction->setChecked(settings.value("Reflections", false).toBool());
+    m_starsAction->setChecked(settings.value("Stars", true).toBool());
+    m_equatorialGridAction->setChecked(settings.value("EquatorialGrid", false).toBool());
+    m_reentryTrajectoriesAction->setChecked(settings.value("ReentryTrajectories", true).toBool());
+    m_satelliteTrajectoriesAction->setChecked(settings.value("SatelliteTrajectories", true).toBool());
+
+    settings.endGroup();
 }

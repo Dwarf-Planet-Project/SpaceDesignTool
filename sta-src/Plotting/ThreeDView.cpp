@@ -96,6 +96,17 @@ static double ValidTimeSpan = EndOfTime - BeginningOfTime;
 
 const static string DefaultSpacecraftMeshFile = "models/acrimsat.3ds";
 
+// Get texture properties appropriate for planet maps: the map should
+// wrap in longitude (so there's no seam on a meridian), but not in
+// latitude.
+TextureProperties planetTextureProperties()
+{
+    TextureProperties texProps;
+    texProps.addressS = TextureProperties::Wrap;
+    texProps.addressT = TextureProperties::Clamp;
+    return texProps;
+}
+
 
 /** Trajectory subclass that adapt's an STA mission arc for VESTA
   */
@@ -308,6 +319,10 @@ ThreeDView::ThreeDView(const QGLFormat& format, QWidget* parent) :
     m_universe->addRef();
     initializeUniverse();
 
+    m_renderer = new UniverseRenderer();
+    initializeLayers();
+    m_renderer->setAmbientLight(Spectrum::Flat(0.2f));
+
     Entity* earth = findSolarSystemBody(STA_SOLAR_SYSTEM->earth());
     m_observer = counted_ptr<Observer>(new Observer(*earth));
     m_controller = counted_ptr<ObserverController>(new ObserverController());
@@ -363,12 +378,12 @@ LoadTextureFont(const QString& fileName)
 void
 ThreeDView::initializeGL()
 {
+    if (!m_renderer->initializeGraphics())
+    {
+
+    }
+
     m_labelFont = LoadTextureFont("vis3d/sans12.txf");
-
-    m_renderer = new UniverseRenderer();
-    initializeLayers();
-
-    m_renderer->setAmbientLight(Spectrum::Flat(0.2f));
 
     // Create icon textures
     m_spacecraftIcon = m_textureLoader->loadTexture(":/icons/Icon3DViewSpacecraft", TextureProperties(TextureProperties::Clamp));
@@ -633,15 +648,12 @@ ThreeDView::addSolarSystemBody(const StaBody* body, Entity* center)
     b->chronology()->setBeginning(BeginningOfTime);
     b->chronology()->addArc(arc);
 
-    TextureProperties texProps;
-    texProps.addressS = TextureProperties::Wrap;
-    texProps.addressT = TextureProperties::Clamp;
     WorldGeometry* globe = new WorldGeometry();
     globe->setSphere(body->meanRadius());
     if (!body->baseTexture().isEmpty())
     {
         std::string textureName = body->baseTexture().toUtf8().data();
-        globe->setBaseMap(m_textureLoader->loadTexture(textureName, texProps));
+        globe->setBaseMap(m_textureLoader->loadTexture(textureName, planetTextureProperties()));
     }
     b->setGeometry(globe);
 
@@ -656,6 +668,14 @@ vesta::Entity*
 ThreeDView::findSolarSystemBody(const StaBody* body)
 {
     return m_universe->findFirst(body->name().toUtf8().data());
+}
+
+
+// Find the VESTA body matching the specified STA body id
+vesta::Entity*
+ThreeDView::findSolarSystemBody(StaBodyId id)
+{
+    return findSolarSystemBody(STA_SOLAR_SYSTEM->lookup(id));
 }
 
 
@@ -708,7 +728,6 @@ ThreeDView::initializeLayers()
     {
         StarsLayer* stars = new StarsLayer();
         stars->setStarCatalog(m_universe->starCatalog());
-        stars->setVisibility(true);
         stars->setLimitingMagnitude(8.5);
         m_renderer->addSkyLayer(stars);
     }
@@ -1042,3 +1061,80 @@ ThreeDView::selectParticipant(SpaceObject* spaceObj)
         setSpacecraftView(m_observer.ptr(), selectedBody, m_currentTime);
     }
 }
+
+
+void
+ThreeDView::setStars(bool enabled)
+{
+    SkyLayer* grid = m_renderer->skyLayer(0);
+    if (grid)
+    {
+        grid->setVisibility(enabled);
+        setViewChanged();
+    }
+}
+
+
+void ThreeDView::setAtmospheres(bool enabled)
+{
+}
+
+
+void ThreeDView::setClouds(bool enabled)
+{
+    Entity* e = findSolarSystemBody(STA_EARTH);
+    if (e)
+    {
+        WorldGeometry* globe = dynamic_cast<WorldGeometry*>(e->geometry());
+        if (globe)
+        {
+            if (enabled)
+            {
+                globe->setCloudMap(m_textureLoader->loadTexture("textures/medres/earth-clouds.png", planetTextureProperties()));
+                globe->setCloudAltitude(7.0f);
+            }
+            else
+            {
+                globe->setCloudMap(NULL);
+            }
+        }
+    }
+    setViewChanged();
+}
+
+
+void ThreeDView::setShadows(bool enabled)
+{
+}
+
+
+void
+ThreeDView::setReflections(bool enabled)
+{
+}
+
+
+void
+ThreeDView::setEquatorialGrid(bool enabled)
+{
+    SkyLayer* grid = m_renderer->skyLayer(1);
+    if (grid)
+    {
+        grid->setVisibility(enabled);
+        setViewChanged();
+    }
+}
+
+
+void
+ThreeDView::setSatelliteTrajectories(bool enabled)
+{
+}
+
+
+void
+ThreeDView::setReentryTrajectories(bool enabled)
+{
+}
+
+

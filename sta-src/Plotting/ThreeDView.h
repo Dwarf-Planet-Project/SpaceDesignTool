@@ -27,6 +27,7 @@
 #ifndef _THREED_VIEW_H_
 #define _THREED_VIEW_H_
 
+#include "Astro-Core/stabody.h"
 #include <vesta/Object.h>
 #include <QGLWidget>
 #include <QHash>
@@ -83,6 +84,15 @@ public slots:
    void selectParticipant(SpaceObject* spaceObject);
 
    void setEquatorialPlane(bool enabled);
+   void setStars(bool enabled);
+   void setAtmospheres(bool enabled);
+   void setClouds(bool enabled);
+   void setShadows(bool enabled);
+   void setReflections(bool enabled);
+   void setEquatorialGrid(bool enabled);
+
+   void setSatelliteTrajectories(bool enabled);
+   void setReentryTrajectories(bool enabled);
 
 protected:
     void initializeGL();
@@ -101,6 +111,7 @@ private:
     void initializeStarCatalog(const QString& fileName);
     vesta::Body* addSolarSystemBody(const StaBody* body, vesta::Entity* center);
     vesta::Entity* findSolarSystemBody(const StaBody* body);
+    vesta::Entity* findSolarSystemBody(StaBodyId id);
     vesta::Frame* createFrame(const MissionArc* arc);
 
     void drawOverlay();

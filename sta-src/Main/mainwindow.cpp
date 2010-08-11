@@ -274,13 +274,20 @@ MainWindow::MainWindow(QWidget *parent)	:
     m_timelineWidget->timelineView()->setTimeRange(now - 1 / 24.0, now + 1.0);
     m_timelineWidget->setZoom("all");
 
-    // Point the camera in the 3D view at Earth
+    m_viewActions = new ViewActionGroup();
+
     if (m_threeDViewWidget)
     {
-        m_threeDViewWidget->view()->gotoBody(STA_SOLAR_SYSTEM->earth());
-    }
+        ThreeDView* view = m_threeDViewWidget->view();
 
-    m_viewActions = new ViewActionGroup();
+        // Point the camera in the 3D view at Earth
+        view->gotoBody(STA_SOLAR_SYSTEM->earth());
+
+        // Connect actions
+        connect(m_viewActions->starsAction(), SIGNAL(toggled(bool)), view, SLOT(setStars(bool)));
+        connect(m_viewActions->equatorialGridAction(), SIGNAL(toggled(bool)), view, SLOT(setEquatorialGrid(bool)));
+        connect(m_viewActions->cloudsAction(), SIGNAL(toggled(bool)), view, SLOT(setClouds(bool)));
+    }
 
     // Read saved window preferences
     readSettings();
@@ -1377,6 +1384,8 @@ void MainWindow::writeSettings()
     settings.setValue("State", saveState(STA_MAIN_WINDOW_VERSION));
     settings.setValue("Fullscreen", isFullScreen());
     settings.endGroup();
+
+    m_viewActions->saveSettings();
 }
 
 
