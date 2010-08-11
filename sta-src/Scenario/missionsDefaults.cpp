@@ -40,94 +40,98 @@ MissionsDefaults::~MissionsDefaults()
 
 /////////////////////////////////////// Generic elements //////////////////////////////////////
 
-void MissionsDefaults::MissionsDefaults_GenericPlatform(ScenarioSCSystemType* genericPlatform)
+ScenarioSCSystemType MissionsDefaults::MissionsDefaults_GenericPlatform()
 {
-    genericPlatform->SystemBudgets()->MassOfSystem()->setDryMass(1000.0);
-    genericPlatform->SystemBudgets()->MassOfSystem()->setWetMass(1500.0);
-    genericPlatform->SystemBudgets()->PowerOfSystem()->setTotalPowerBoL(200.0);
-    genericPlatform->SystemBudgets()->PowerOfSystem()->setTotalPowerEoL(100.0);
-    genericPlatform->SystemBudgets()->Link()->setDownlinkMargin(10);
-    genericPlatform->SystemBudgets()->Link()->setUplinkMargin(10);
+    ScenarioSCSystemType genericPlatform;
 
-    genericPlatform->SCAerodynamics()->setSurfaceArea(1.0);
-    genericPlatform->SCAerodynamics()->setCd(0.25);
+    genericPlatform.SystemBudgets()->MassOfSystem()->setDryMass(1000.0);
+    genericPlatform.SystemBudgets()->MassOfSystem()->setWetMass(1500.0);
+    genericPlatform.SystemBudgets()->PowerOfSystem()->setTotalPowerBoL(200.0);
+    genericPlatform.SystemBudgets()->PowerOfSystem()->setTotalPowerEoL(100.0);
+    genericPlatform.SystemBudgets()->Link()->setDownlinkMargin(10);
+    genericPlatform.SystemBudgets()->Link()->setUplinkMargin(10);
 
-    genericPlatform->Propulsion()->setNumberOfEngines(1);
-    genericPlatform->Propulsion()->setPropellantMass(500);
-    genericPlatform->Propulsion()->setSpecificImpulse(312);
-    genericPlatform->Propulsion()->setThrustPerEngine(100);
-    genericPlatform->Propulsion()->setTotalPropulsionDryMass(25);
+    genericPlatform.SCAerodynamics()->setSurfaceArea(1.0);
+    genericPlatform.SCAerodynamics()->setCd(0.25);
 
-    genericPlatform->Structure()->setStructuralShape("Cube");			    // Cube, Cylinder or Sphere
-    genericPlatform->Structure()->setStructuralMaterial("Aluminium");		    // Steel or Aluminium
-    genericPlatform->Structure()->setTotalStructureMass(800);
-    genericPlatform->Structure()->Sizing()->setHeight(1);
-    genericPlatform->Structure()->Sizing()->setLength(1);
-    genericPlatform->Structure()->Sizing()->setWidth(1);
-    genericPlatform->Structure()->Sizing()->setVolume(1);
-    genericPlatform->Structure()->MomentsOfInertia()->setXAxis(150);
-    genericPlatform->Structure()->MomentsOfInertia()->setYAxis(150);
-    genericPlatform->Structure()->MomentsOfInertia()->setZAxis(150);
-    genericPlatform->Structure()->SecondMomentsOfArea()->setXAxis(20);
-    genericPlatform->Structure()->SecondMomentsOfArea()->setYAxis(20);
-    genericPlatform->Structure()->SecondMomentsOfArea()->setZAxis(20);
-    genericPlatform->Structure()->NaturalFrequency()->setAxialFrequency(50);
-    genericPlatform->Structure()->NaturalFrequency()->setLateralFrequency(12);
+    genericPlatform.Propulsion()->setNumberOfEngines(1);
+    genericPlatform.Propulsion()->setPropellantMass(500);
+    genericPlatform.Propulsion()->setSpecificImpulse(312);
+    genericPlatform.Propulsion()->setThrustPerEngine(100);
+    genericPlatform.Propulsion()->setTotalPropulsionDryMass(25);
 
-    genericPlatform->TCS()->Temperature()->setMaximumSCTemperature(85);
-    genericPlatform->TCS()->Temperature()->setMinimumSCTemperature(15);
-    genericPlatform->TCS()->setHeaterPower(50);
-    genericPlatform->TCS()->setRadiatedPower(12);
-    genericPlatform->TCS()->setHeaterPower(25);
-    genericPlatform->TCS()->setTotalTCSMass(15);
-    genericPlatform->TCS()->CoatingArea()->ColdSurface()->ColdCoating()->setAbsorptivity(0.2);
-    genericPlatform->TCS()->CoatingArea()->ColdSurface()->ColdCoating()->setEmissivity(0.3);
-    genericPlatform->TCS()->CoatingArea()->ColdSurface()->setTotalColdArea(1);
-    genericPlatform->TCS()->CoatingArea()->HotSurface()->HotCoating()->setAbsorptivity(0.2);
-    genericPlatform->TCS()->CoatingArea()->HotSurface()->HotCoating()->setEmissivity(0.3);
-    genericPlatform->TCS()->CoatingArea()->HotSurface()->setTotalHotArea(1);
+    genericPlatform.Structure()->setStructuralShape("Cube");			    // Cube, Cylinder or Sphere
+    genericPlatform.Structure()->setStructuralMaterial("Aluminium");		    // Steel or Aluminium
+    genericPlatform.Structure()->setTotalStructureMass(800);
+    genericPlatform.Structure()->Sizing()->setHeight(1);
+    genericPlatform.Structure()->Sizing()->setLength(1);
+    genericPlatform.Structure()->Sizing()->setWidth(1);
+    genericPlatform.Structure()->Sizing()->setVolume(1);
+    genericPlatform.Structure()->MomentsOfInertia()->setXAxis(150);
+    genericPlatform.Structure()->MomentsOfInertia()->setYAxis(150);
+    genericPlatform.Structure()->MomentsOfInertia()->setZAxis(150);
+    genericPlatform.Structure()->SecondMomentsOfArea()->setXAxis(20);
+    genericPlatform.Structure()->SecondMomentsOfArea()->setYAxis(20);
+    genericPlatform.Structure()->SecondMomentsOfArea()->setZAxis(20);
+    genericPlatform.Structure()->NaturalFrequency()->setAxialFrequency(50);
+    genericPlatform.Structure()->NaturalFrequency()->setLateralFrequency(12);
 
-    genericPlatform->EPS()->SolarArray()->setSACellType("Silicon");		    // Silicon, GaAs, Multijunction
-    genericPlatform->EPS()->SolarArray()->setAreaOfSolarArray(4);
-    genericPlatform->EPS()->SolarArray()->setMassOfSolarArray(30);
-    genericPlatform->EPS()->BatteryType()->setBatteryType("Lithium_Ion");	    // Lithium_Ion, Nickel_Cadmium, Lead_Acid
-    genericPlatform->EPS()->BatteryType()->setNumberOfBatteries(4);
-    genericPlatform->EPS()->BatteryType()->setTotalMassOfBatteries(30);
-    genericPlatform->EPS()->BatteryType()->setTotalVolumeOfBatteries(0.01);
-    genericPlatform->EPS()->setMassOfPCU(0.1);
-    genericPlatform->EPS()->setTotalEPSMass(70);
+    genericPlatform.TCS()->Temperature()->setMaximumSCTemperature(85);
+    genericPlatform.TCS()->Temperature()->setMinimumSCTemperature(15);
+    genericPlatform.TCS()->setHeaterPower(50);
+    genericPlatform.TCS()->setRadiatedPower(12);
+    genericPlatform.TCS()->setHeaterPower(25);
+    genericPlatform.TCS()->setTotalTCSMass(15);
+    genericPlatform.TCS()->CoatingArea()->ColdSurface()->ColdCoating()->setAbsorptivity(0.2);
+    genericPlatform.TCS()->CoatingArea()->ColdSurface()->ColdCoating()->setEmissivity(0.3);
+    genericPlatform.TCS()->CoatingArea()->ColdSurface()->setTotalColdArea(1);
+    genericPlatform.TCS()->CoatingArea()->HotSurface()->HotCoating()->setAbsorptivity(0.2);
+    genericPlatform.TCS()->CoatingArea()->HotSurface()->HotCoating()->setEmissivity(0.3);
+    genericPlatform.TCS()->CoatingArea()->HotSurface()->setTotalHotArea(1);
 
-    genericPlatform->TTC()->setTotalTTCMass(70);
-    genericPlatform->TTC()->TTCAntenna()->setDataRate(300);
-    genericPlatform->TTC()->TTCAntenna()->setLinkDuration(10);
-    genericPlatform->TTC()->TTCAntenna()->setTransmitterEfficiency(90);
-    genericPlatform->TTC()->TTCAntenna()->setTransmitterFrequency(25);
-    genericPlatform->TTC()->TTCAntenna()->setTransmitterGain(30);
-    genericPlatform->TTC()->TTCAntenna()->setTransmitterPower(100);
+    genericPlatform.EPS()->SolarArray()->setSACellType("Silicon");		    // Silicon, GaAs, Multijunction
+    genericPlatform.EPS()->SolarArray()->setAreaOfSolarArray(4);
+    genericPlatform.EPS()->SolarArray()->setMassOfSolarArray(30);
+    genericPlatform.EPS()->BatteryType()->setBatteryType("Lithium_Ion");	    // Lithium_Ion, Nickel_Cadmium, Lead_Acid
+    genericPlatform.EPS()->BatteryType()->setNumberOfBatteries(4);
+    genericPlatform.EPS()->BatteryType()->setTotalMassOfBatteries(30);
+    genericPlatform.EPS()->BatteryType()->setTotalVolumeOfBatteries(0.01);
+    genericPlatform.EPS()->setMassOfPCU(0.1);
+    genericPlatform.EPS()->setTotalEPSMass(70);
 
-    genericPlatform->AOCS()->setTotalAOCSMass(0.5);
+    genericPlatform.TTC()->setTotalTTCMass(70);
+    genericPlatform.TTC()->TTCAntenna()->setDataRate(300);
+    genericPlatform.TTC()->TTCAntenna()->setLinkDuration(10);
+    genericPlatform.TTC()->TTCAntenna()->setTransmitterEfficiency(90);
+    genericPlatform.TTC()->TTCAntenna()->setTransmitterFrequency(25);
+    genericPlatform.TTC()->TTCAntenna()->setTransmitterGain(30);
+    genericPlatform.TTC()->TTCAntenna()->setTransmitterPower(100);
 
-    genericPlatform->OBDH()->setTotalOBDHMass(0.5);
-    genericPlatform->OBDH()->setTotalSizeOfMemory(200);
+    genericPlatform.AOCS()->setTotalAOCSMass(0.5);
+
+    genericPlatform.OBDH()->setTotalOBDHMass(0.5);
+    genericPlatform.OBDH()->setTotalSizeOfMemory(200);
+
+    return genericPlatform;
 
 }
 
-void MissionsDefaults_GenericTransmitter(ScenarioTransmitterPayloadType* genericTransmitter)
-{
-
-}
-
-void MissionsDefaults_GenericReceiver(ScenarioReceiverPayloadType* genericReceiver)
-{
-
-}
-
-void MissionsDefaults_GenericOpticalPayload(ScenarioOpticalPayloadType* genericOpticalPayload)
+ScenarioTransmitterPayloadType MissionsDefaults_GenericTransmitter()
 {
 
 }
 
-void MissionsDefaults_GenericRadarPayload(ScenarioRadarPayloadType* genericRadarPayload)
+ScenarioReceiverPayloadType MissionsDefaults_GenericReceiver()
+{
+
+}
+
+ScenarioOpticalPayloadType MissionsDefaults_GenericOpticalPayload()
+{
+
+}
+
+ScenarioRadarPayloadType MissionsDefaults_GenericRadarPayload()
 {
 
 }
@@ -135,136 +139,136 @@ void MissionsDefaults_GenericRadarPayload(ScenarioRadarPayloadType* genericRadar
 
 //////////////////////////////////////// Science /////////////////////////////////////////////////
 
-void MissionsDefaults::MissionsDefaults_XMM(ScenarioLoiteringType* loiteringXMM)
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_XMM()
 {
 
 }
 
 
-void MissionsDefaults_INTEGRAL(ScenarioLoiteringType* loiteringINTEGRAL)
+ScenarioLoiteringType MissionsDefaults_INTEGRAL()
 {
 
 }
 
-void MissionsDefaults_MEX(ScenarioLoiteringType* loiteringMEX)
+ScenarioLoiteringType MissionsDefaults_MEX()
 {
 }
 
-void MissionsDefaults_Rosetta(ScenarioLoiteringType* loiteringRosetta)
+ScenarioLoiteringType MissionsDefaults_Rosetta()
 {
 }
 
-void MissionsDefaults_VEX(ScenarioLoiteringType* loiteringVEX)
+ScenarioLoiteringType MissionsDefaults_VEX()
 {
 }
 
-void MissionsDefaults_Herschel(ScenarioLoiteringType* loiteringHerschel)
+ScenarioLoiteringType MissionsDefaults_Herschel()
 {
 }
 
-void MissionsDefaults_Planck(ScenarioLoiteringType* loiteringPlanck)
+ScenarioLoiteringType MissionsDefaults_Planck()
 {
 }
 
-void MissionsDefaults_LISA(ScenarioLoiteringType* loiteringLISA)
+ScenarioLoiteringType MissionsDefaults_LISA()
 {
 }
 
-void MissionsDefaults_BepiColombo(ScenarioLoiteringType* loiteringBepiColombo)
+ScenarioLoiteringType MissionsDefaults_BepiColombo()
 {
 }
 
-void MissionsDefaults_ExoMars(ScenarioLoiteringType* loiteringExoMars)
+ScenarioLoiteringType MissionsDefaults_ExoMars()
 {
 }
 
 
 //////////////////////////////////////// Observation of the Earth /////////////////////////////
-void MissionsDefaults_Meteosat6(ScenarioLoiteringType* loiteringMeteosat6)
+ScenarioLoiteringType MissionsDefaults_Meteosat6()
 {
 }
 
-void MissionsDefaults_ERS2(ScenarioLoiteringType* loiteringERS2)
+ScenarioLoiteringType MissionsDefaults_ERS2()
 {
 }
 
-void MissionsDefaults_ENVISAT(ScenarioLoiteringType* loiteringENVISAT)
+ScenarioLoiteringType MissionsDefaults_ENVISAT()
 {
 }
 
-void MissionsDefaults_MSG(ScenarioLoiteringType* loiteringMSG)
+ScenarioLoiteringType MissionsDefaults_MSG()
 {
 }
 
-void MissionsDefaults_MTG(ScenarioLoiteringType* loiteringMTG)
+ScenarioLoiteringType MissionsDefaults_MTG()
 {
 }
 
-void MissionsDefaults_METOP(ScenarioLoiteringType* loiteringMETOP)
+ScenarioLoiteringType MissionsDefaults_METOP()
 {
 }
 
-void MissionsDefaults_Cryosat(ScenarioLoiteringType* loiteringCryosat)
+ScenarioLoiteringType MissionsDefaults_Cryosat()
 {
 }
 
-void MissionsDefaults_GOCE(ScenarioLoiteringType* loiteringGOCE)
+ScenarioLoiteringType MissionsDefaults_GOCE()
 {
 }
 
-void MissionsDefaults_SMOS(ScenarioLoiteringType* loiteringSMOS)
+ScenarioLoiteringType MissionsDefaults_SMOS()
 {
 }
 
-void MissionsDefaults_Aeolus(ScenarioLoiteringType* loiteringAeolus)
+ScenarioLoiteringType MissionsDefaults_Aeolus()
 {
 }
 
-void MissionsDefaults_EarthCare(ScenarioLoiteringType* loiteringEarthCare)
+ScenarioLoiteringType MissionsDefaults_EarthCare()
 {
 }
 
-void MissionsDefaults_Sentinel1(ScenarioLoiteringType* loiteringSentine1)
+ScenarioLoiteringType MissionsDefaults_Sentinel1()
 {
 }
 
-void MissionsDefaults_Sentinel2(ScenarioLoiteringType* loiteringSentine2)
+ScenarioLoiteringType MissionsDefaults_Sentinel2()
 {
 }
 
-void MissionsDefaults_Sentinel3(ScenarioLoiteringType* loiteringSentine3)
+ScenarioLoiteringType MissionsDefaults_Sentinel3()
 {
 }
 
-void MissionsDefaults_Sentinel5(ScenarioLoiteringType* loiteringSentine5)
+ScenarioLoiteringType MissionsDefaults_Sentinel5()
 {
 }
 
 
 ////////////////////////////////////// Tecommunications //////////////////////////////
-void MissionsDefaults_Artemis(ScenarioLoiteringType* loiteringArtemis)
+ScenarioLoiteringType MissionsDefaults_Artemis()
 {
 }
 
-void MissionsDefaults_Alphasat(ScenarioLoiteringType* loiteringAlphasat)
+ScenarioLoiteringType MissionsDefaults_Alphasat()
 {
 }
 
-void MissionsDefaults_SmallGEO(ScenarioLoiteringType* loiteringSmallGEO)
+ScenarioLoiteringType MissionsDefaults_SmallGEO()
 {
 }
 
 
 // TEC
-void MissionsDefaults_PROBA1(ScenarioLoiteringType* loiteringPROBA1)
+ScenarioLoiteringType MissionsDefaults_PROBA1()
 {
 }
 
-void MissionsDefaults_PROBA2(ScenarioLoiteringType* loiteringPROBA2)
+ScenarioLoiteringType MissionsDefaults_PROBA2()
 {
 }
 
-void MissionsDefaults_PROBA3(ScenarioLoiteringType* loiteringPROBA3)
+ScenarioLoiteringType MissionsDefaults_PROBA3()
 {
 }
 
@@ -318,25 +322,25 @@ void MissionsDefaults_PROBA3(ScenarioLoiteringType* loiteringPROBA3)
 
 }
 
-void MissionsDefaults_ATV(ScenarioLoiteringType* loiteringATV)
+ScenarioLoiteringType MissionsDefaults_ATV()
 {
 }
 
 
 // Launchers
-void MissionsDefaults_VEGA(ScenarioLoiteringType* loiteringVEGA)
+ScenarioLoiteringType MissionsDefaults_VEGA()
 {
 }
 
-void MissionsDefaults_Soyuz(ScenarioLoiteringType* loiteringSoyuz)
+ScenarioLoiteringType MissionsDefaults_Soyuz()
 {
 }
 
-void MissionsDefaults_Ariane5(ScenarioLoiteringType* loiteringAriane5)
+ScenarioLoiteringType MissionsDefaults_Ariane5()
 {
 }
 
-void MissionsDefaults_IXV(ScenarioLoiteringType* loiteringIXV)
+ScenarioLoiteringType MissionsDefaults_IXV()
 {
 }
 

@@ -38,61 +38,61 @@ class MissionsDefaults
 public:
     ~MissionsDefaults();
 
-    void MissionsDefaults_GenericPlatform(ScenarioSCSystemType* genericPlatform);
-    void MissionsDefaults_GenericTransmitter(ScenarioTransmitterPayloadType* genericTransmitter);
-    void MissionsDefaults_GenericReceiver(ScenarioReceiverPayloadType* genericReceiver);
-    void MissionsDefaults_GenericOpticalPayload(ScenarioOpticalPayloadType* genericOpticalPayload);
-    void MissionsDefaults_GenericRadarPayload(ScenarioRadarPayloadType* genericRadarPayload);
+     ScenarioSCSystemType MissionsDefaults_GenericPlatform();
+     ScenarioTransmitterPayloadType MissionsDefaults_GenericTransmitter();
+     ScenarioReceiverPayloadType MissionsDefaults_GenericReceiver();
+     ScenarioOpticalPayloadType MissionsDefaults_GenericOpticalPayload();
+     ScenarioRadarPayloadType MissionsDefaults_GenericRadarPayload();
 
 
     // Science
-    void MissionsDefaults_XMM(ScenarioLoiteringType* loiteringXMM);
-    void MissionsDefaults_INTEGRAL(ScenarioLoiteringType* loiteringINTEGRAL);
-    void MissionsDefaults_MEX(ScenarioLoiteringType* loiteringMEX);
-    void MissionsDefaults_Rosetta(ScenarioLoiteringType* loiteringRosetta);
-    void MissionsDefaults_VEX(ScenarioLoiteringType* loiteringVEX);
-    void MissionsDefaults_Herschel(ScenarioLoiteringType* loiteringHerschel);
-    void MissionsDefaults_Planck(ScenarioLoiteringType* loiteringPlanck);
-    void MissionsDefaults_LISA(ScenarioLoiteringType* loiteringLISA);
-    void MissionsDefaults_BepiColombo(ScenarioLoiteringType* loiteringBepiColombo);
-    void MissionsDefaults_ExoMars(ScenarioLoiteringType* loiteringExoMars);
+    ScenarioLoiteringType MissionsDefaults_XMM();
+    ScenarioLoiteringType MissionsDefaults_INTEGRAL();
+    ScenarioLoiteringType MissionsDefaults_MEX();
+    ScenarioLoiteringType MissionsDefaults_Rosetta();
+    ScenarioLoiteringType MissionsDefaults_VEX();
+    ScenarioLoiteringType MissionsDefaults_Herschel();
+    ScenarioLoiteringType MissionsDefaults_Planck();
+    ScenarioLoiteringType MissionsDefaults_LISA();
+    ScenarioLoiteringType MissionsDefaults_BepiColombo();
+    ScenarioLoiteringType MissionsDefaults_ExoMars();
 
     // Observation of the Earth
-    void MissionsDefaults_Meteosat6(ScenarioLoiteringType* loiteringMeteosat6);
-    void MissionsDefaults_ERS2(ScenarioLoiteringType* loiteringERS2);
-    void MissionsDefaults_ENVISAT(ScenarioLoiteringType* loiteringENVISAT);
-    void MissionsDefaults_MSG(ScenarioLoiteringType* loiteringMSG);
-    void MissionsDefaults_MTG(ScenarioLoiteringType* loiteringMTG);
-    void MissionsDefaults_METOP(ScenarioLoiteringType* loiteringMETOP);
-    void MissionsDefaults_Cryosat(ScenarioLoiteringType* loiteringCryosat);
-    void MissionsDefaults_GOCE(ScenarioLoiteringType* loiteringGOCE);
-    void MissionsDefaults_SMOS(ScenarioLoiteringType* loiteringSMOS);
-    void MissionsDefaults_Aeolus(ScenarioLoiteringType* loiteringAeolus);
-    void MissionsDefaults_EarthCare(ScenarioLoiteringType* loiteringEarthCare);
-    void MissionsDefaults_Sentinel1(ScenarioLoiteringType* loiteringSentine1);
-    void MissionsDefaults_Sentinel2(ScenarioLoiteringType* loiteringSentine2);
-    void MissionsDefaults_Sentinel3(ScenarioLoiteringType* loiteringSentine3);
-    void MissionsDefaults_Sentinel5(ScenarioLoiteringType* loiteringSentine5);
+    ScenarioLoiteringType MissionsDefaults_Meteosat6();
+    ScenarioLoiteringType MissionsDefaults_ERS2();
+    ScenarioLoiteringType MissionsDefaults_ENVISAT();
+    ScenarioLoiteringType MissionsDefaults_MSG();
+    ScenarioLoiteringType MissionsDefaults_MTG();
+    ScenarioLoiteringType MissionsDefaults_METOP();
+    ScenarioLoiteringType MissionsDefaults_Cryosat();
+    ScenarioLoiteringType MissionsDefaults_GOCE();
+    ScenarioLoiteringType MissionsDefaults_SMOS();
+    ScenarioLoiteringType MissionsDefaults_Aeolus();
+    ScenarioLoiteringType MissionsDefaults_EarthCare();
+    ScenarioLoiteringType MissionsDefaults_Sentinel1();
+    ScenarioLoiteringType MissionsDefaults_Sentinel2();
+    ScenarioLoiteringType MissionsDefaults_Sentinel3();
+    ScenarioLoiteringType MissionsDefaults_Sentinel5();
 
     // Tecommunications
-    void MissionsDefaults_Artemis(ScenarioLoiteringType* loiteringArtemis);
-    void MissionsDefaults_Alphasat(ScenarioLoiteringType* loiteringAlphasat);
-    void MissionsDefaults_SmallGEO(ScenarioLoiteringType* loiteringSmallGEO);
+    ScenarioLoiteringType MissionsDefaults_Artemis();
+    ScenarioLoiteringType MissionsDefaults_Alphasat();
+    ScenarioLoiteringType MissionsDefaults_SmallGEO();
 
     // TEC
-    void MissionsDefaults_PROBA1(ScenarioLoiteringType* loiteringPROBA1);
-    void MissionsDefaults_PROBA2(ScenarioLoiteringType* loiteringPROBA2);
-    void MissionsDefaults_PROBA3(ScenarioLoiteringType* loiteringPROBA3);
+    ScenarioLoiteringType MissionsDefaults_PROBA1();
+    ScenarioLoiteringType MissionsDefaults_PROBA2();
+    ScenarioLoiteringType MissionsDefaults_PROBA3();
 
     // Human space flight
     ScenarioLoiteringType MissionsDefaults_ISS();
-    void MissionsDefaults_ATV(ScenarioLoiteringType* loiteringATV);
+    ScenarioLoiteringType MissionsDefaults_ATV();
 
     // Launchers
-    void MissionsDefaults_VEGA(ScenarioLoiteringType* loiteringVEGA);
-    void MissionsDefaults_Soyuz(ScenarioLoiteringType* loiteringSoyuz);
-    void MissionsDefaults_Ariane5(ScenarioLoiteringType* loiteringAriane5);
-    void MissionsDefaults_IXV(ScenarioLoiteringType* loiteringIXV);
+    ScenarioLoiteringType MissionsDefaults_VEGA();
+    ScenarioLoiteringType MissionsDefaults_Soyuz();
+    ScenarioLoiteringType MissionsDefaults_Ariane5();
+    ScenarioLoiteringType MissionsDefaults_IXV();
 
 };
 

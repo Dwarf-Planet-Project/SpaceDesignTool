@@ -437,7 +437,7 @@ static QByteArray spaceVehicleWithTrajectoryFragment(const char* name, const cha
     MissionsDefaults myMissionDefaults;
     ScenarioLoiteringType loiteringDefault;
     loiteringDefault = myMissionDefaults.MissionsDefaults_ISS();
-    spacecraft.SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(&loiteringDefault));
+    //spacecraft.SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(&loiteringDefault));
 
     QDomDocument doc;
     return fragmentText(CreateSCElement(&spacecraft, doc)).toUtf8();
@@ -583,43 +583,6 @@ addESASatelliteItem(QTreeWidgetItem* parent, const char* name)
                        ScenarioElementBox::PARTICIPANT_MIME_TYPE,
 		       spaceVehicleWithTrajectoryFragment(name, "Satellite"));
 
-    /*
-    QTreeWidgetItem* myMission = new QTreeWidgetItem(myESASatelliteItem->child(0));
-    QTreeWidgetItem* myTrajectoryPlan = new QTreeWidgetItem(myMission->child(0));
-    QTreeWidgetItem* loiteringItem = new QTreeWidgetItem(myTrajectoryPlan);
-    myTrajectoryPlan->addChild(loiteringItem);
-    */
-
-    /*
-
-    QTreeWidgetItem* myIdentifier = new QTreeWidgetItem(myESASatelliteItem);
-    myESASatelliteItem->insertChild(1, myIdentifier);
-    myIdentifier->setText(0, "Identifier");
-
-    QTreeWidgetItem* myMission = new QTreeWidgetItem(myESASatelliteItem);
-    myESASatelliteItem->insertChild(2, myMission);
-    myMission->setText(0, "Mission");
-
-    QTreeWidgetItem* myTrajectoryPlan = new QTreeWidgetItem(myMission);
-    myMission->insertChild(1, myTrajectoryPlan);
-    myTrajectoryPlan->setText(0, "Trajectory plan:");
-
-    QTreeWidgetItem* loiteringItem = new QTreeWidgetItem(myTrajectoryPlan);
-    myTrajectoryPlan->insertChild(1, loiteringItem);
-    loiteringItem->setText(0, "Loitering");
-    loiteringItem->setIcon(0, QIcon(":/icons/mission-arcs-loitering.png"));
-
-    loiteringItem->setData(0, ScenarioFragmentTypeRole, ScenarioElementBox::MISSION_ARC_MIME_TYPE);
-    loiteringItem->setData(0, ScenarioFragmentRole, loiteringFragment("ISS"));
-
-    */
-
-   /*
-    setDragAndDropInfo(loiteringItem,
-		       ScenarioElementBox::PARTICIPANT_MIME_TYPE,
-		       loiteringFragment(name));
-		       */
-		       
 }
 
 
