@@ -1,5 +1,5 @@
 /*
- * $Revision: 417 $ $Date: 2010-08-09 20:21:33 -0700 (Mon, 09 Aug 2010) $
+ * $Revision: 420 $ $Date: 2010-08-10 17:01:21 -0700 (Tue, 10 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -82,6 +82,8 @@ static const char* CameraDistanceFragmentShaderSource =
 ;
 
 
+bool RenderContext::m_glInitialized = false;
+
 
 RenderContext::Environment::Environment() :
     m_activeLightCount(0),
@@ -93,10 +95,100 @@ RenderContext::Environment::Environment() :
 }
 
 
+static bool InitGL()
+{
+    // Intialize all OpenGL extensions
+    if (glewInit() != GLEW_OK)
+    {
+        VESTA_WARNING("OpenGL extension initialization failed. RenderContext created without an OpenGL context?");
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+
+/** Create a new RenderContext using with the best capability level supported
+  * by the hardware.
+  *
+  * \return a valid RenderContext, or null if there was an error.
+  */
+RenderContext*
+RenderContext::Create()
+{
+    return Create(GetHardwareCapability());
+}
+
+
+/** Create a new RenderContext using with specified capability level.
+  *
+  * \return a valid RenderContext, or null if there was an error (such
+  * as requesting an unsupported hardware capability level.)
+  */
+RenderContext*
+RenderContext::Create(ShaderCapability capability)
+{
+    if (!m_glInitialized)
+    {
+        if (!InitGL())
+        {
+            return NULL;
+        }
+        m_glInitialized = true;
+    }
+
+    if (capability == FixedFunction)
+    {
+        VESTA_LOG("Creating fixed function RenderContext");
+    }
+    else
+    {
+        VESTA_LOG("Creating GLSL RenderContext");
+    }
+
+    return new RenderContext(capability);
+}
+
+
+RenderContext::ShaderCapability
+RenderContext::GetHardwareCapability()
+{
+    if (!m_glInitialized)
+    {
+        if (InitGL())
+        {
+            m_glInitialized = true;
+        }
+    }
+
+    if (m_glInitialized)
+    {
+        if (GLEW_ARB_shading_language_100 && GLEW_ARB_shader_objects)
+        {
+            // TODO: query and parse GL_SHADING_LANGUAGE_VERSION to discover
+            // additional GLSL capabilities.
+            return GLSL1;
+        }
+        else
+        {
+            return FixedFunction;
+        }
+    }
+    else
+    {
+        return FixedFunction;
+    }
+}
+
+
+// This constructor is private. Render contexts should be created via
+// one of the Create() factory methods.
 // A RenderContext should only be constructed *after* an OpenGL context
 // has been created. Otherwise, information about OpenGL capabilities will
 // not be available.
-RenderContext::RenderContext() :
+RenderContext::RenderContext(ShaderCapability capability) :
     m_cameraOrientation(Quaterniond::Identity()),
     m_pixelSize(0.0f),
     m_renderPass(OpaquePass),
@@ -105,8 +197,8 @@ RenderContext::RenderContext() :
     m_modelTranslation(Vector3d::Zero()),
     m_particleBuffer(NULL),
     m_vertexStream(NULL),
-    m_vertexStreamFloats(NULL),
-    m_shaderCapability(FixedFunction),
+    m_vertexStreamFloats(0),
+    m_shaderCapability(capability),
     m_shaderStateCurrent(false),
     m_modelViewMatrixCurrent(false),
     m_rendererOutput(FragmentColor)
@@ -120,24 +212,6 @@ RenderContext::RenderContext() :
     // Make the vertex stream buffer larger enough to hold a complete particle buffer
     m_vertexStreamFloats = 4 * MaxParticles * 10;
     m_vertexStream = new float[m_vertexStreamFloats];
-
-    // Intialize all OpenGL extensions.
-    if (glewInit() != GLEW_OK)
-    {
-        VESTA_WARNING("OpenGL extension initialization failed. RenderContext created without an OpenGL context?");
-    }
-
-    if (GLEW_ARB_shading_language_100 && GLEW_ARB_shader_objects)
-    {
-        m_shaderCapability = GLSL1;
-        // TODO: query and parse GL_SHADING_LANGUAGE_VERSION to discover
-        // additional GLSL capabilities.
-        VESTA_LOG("Creating GLSL RenderContext");
-    }
-    else
-    {
-        VESTA_LOG("Creating fixed function RenderContext");
-    }
 
     if (m_shaderCapability != FixedFunction)
     {

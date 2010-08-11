@@ -1,5 +1,5 @@
 /*
- * $Revision: 414 $ $Date: 2010-08-09 13:35:00 -0700 (Mon, 09 Aug 2010) $
+ * $Revision: 420 $ $Date: 2010-08-10 17:01:21 -0700 (Tue, 10 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -35,11 +35,14 @@ public:
     UniverseRenderer();
     ~UniverseRenderer();
 
+    bool initializeGraphics();
+
     enum RenderStatus
     {
         RenderOk,
         RenderNoViewSet,
-        RenderViewSetAlreadyStarted
+        RenderViewSetAlreadyStarted,
+        RendererUninitialized,
     };
 
     RenderStatus beginViewSet(const Universe& universe, double t);

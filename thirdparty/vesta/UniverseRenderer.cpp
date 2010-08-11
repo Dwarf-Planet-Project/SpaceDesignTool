@@ -1,5 +1,5 @@
 /*
- * $Revision: 418 $ $Date: 2010-08-10 09:07:36 -0700 (Tue, 10 Aug 2010) $
+ * $Revision: 420 $ $Date: 2010-08-10 17:01:21 -0700 (Tue, 10 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -34,6 +34,12 @@ static const float MinimumNearFarRatio = 0.001f;
 static const float PreferredNearFarRatio = 0.002f;
 
 
+/** Construct a new UniverseRenderer. The renderer may not be used for drawing
+  * until its initializeGrahics method has been called. Initialization is not
+  * performed in the constructor: a UniverseRenderer can be created at any time,
+  * but the graphics state can only be initialized once an OpenGL context is
+  * available.
+  */
 UniverseRenderer::UniverseRenderer() :
     m_renderContext(NULL),
     m_universe(NULL),
@@ -43,7 +49,6 @@ UniverseRenderer::UniverseRenderer() :
     m_skyLayersEnabled(true),
     m_renderViewport(1, 1)
 {
-    m_renderContext = new RenderContext();
 }
 
 
@@ -59,7 +64,7 @@ UniverseRenderer::~UniverseRenderer()
 bool
 UniverseRenderer::shadowsSupported() const
 {
-    return Framebuffer::supported() && m_renderContext->shaderCapability() != RenderContext::FixedFunction;
+    return Framebuffer::supported() && m_renderContext && m_renderContext->shaderCapability() != RenderContext::FixedFunction;
 }
 
 
@@ -97,6 +102,27 @@ UniverseRenderer::setSkyLayersEnabled(bool enable)
 }
 
 
+/** Initialize all graphics resources. This method must only be called once OpenGL has
+  * been initialized and a GL context has been set. The renderer cannot be used for
+  * drawing until initializeGraphics is called successfully.
+  *
+  * \return true if the graphics system was successfully initialized, false otherwise
+  */
+bool
+UniverseRenderer::initializeGraphics()
+{
+    if (m_renderContext)
+    {
+        // The renderer has already been successfully initialized.
+        return true;
+    }
+
+    m_renderContext = RenderContext::Create();
+
+    return m_renderContext != NULL;
+}
+
+
 /** Initialize shadows for this renderer.
   *
   * @param shadowMapSize dimension of the square shadow map. A higher value will produce
@@ -109,6 +135,12 @@ UniverseRenderer::setSkyLayersEnabled(bool enable)
 bool
 UniverseRenderer::initializeShadowMaps(unsigned int shadowMapSize, unsigned int maxShadowMaps)
 {
+    if (!m_renderContext)
+    {
+        VESTA_WARNING("UniverseRenderer::initializeShadowMaps() called before initializeGraphics()");
+        return false;
+    }
+
     if (!shadowsSupported())
     {
         VESTA_LOG("Shadows not supported by graphic hardware and/or drivers.");
@@ -137,6 +169,11 @@ UniverseRenderer::initializeShadowMaps(unsigned int shadowMapSize, unsigned int 
 UniverseRenderer::RenderStatus
 UniverseRenderer::beginViewSet(const Universe& universe, double t)
 {
+    if (!m_renderContext)
+    {
+        return RendererUninitialized;
+    }
+
     if (m_universe)
     {
         return RenderViewSetAlreadyStarted;

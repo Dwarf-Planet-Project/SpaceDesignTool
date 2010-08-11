@@ -1,5 +1,5 @@
 /*
- * $Revision: 417 $ $Date: 2010-08-09 20:21:33 -0700 (Mon, 09 Aug 2010) $
+ * $Revision: 420 $ $Date: 2010-08-10 17:01:21 -0700 (Tue, 10 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -41,7 +41,24 @@ class RenderContext
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-    RenderContext();
+    /** Graphics shader capability levels:
+      *   FixedFunction: legacy mode, no shaders
+      *   GLSL1: OpenGL Shading Language version 1
+      *   GLSL2: OpenGL Shading Language version 2
+      */
+    enum ShaderCapability
+    {
+        FixedFunction = 0,
+        GLSL1         = 1,
+        GLSL2         = 2,
+    };
+
+private:
+    // Private constructor; RenderContexts should be created via one
+    // of the Create() factory methods.
+    RenderContext(ShaderCapability capability);
+
+public:
     ~RenderContext();
 
     enum RenderPass
@@ -307,18 +324,6 @@ public:
     RendererOutput rendererOutput() const;
     void setRendererOutput(RendererOutput output);
             
-    /** Graphics shader capability levels:
-      *   FixedFunction: legacy mode, no shaders
-      *   GLSL1: OpenGL Shading Language version 1
-      *   GLSL2: OpenGL Shading Language version 2
-      */
-    enum ShaderCapability
-    {
-        FixedFunction = 0,
-        GLSL1         = 1,
-        GLSL2         = 2,
-    };
-
     ShaderCapability shaderCapability() const
     {
         return m_shaderCapability;
@@ -339,6 +344,10 @@ public:
         bool hasTangents;
         bool hasColors;
     };
+
+    static RenderContext* Create();
+    static RenderContext* Create(ShaderCapability capability);
+    static ShaderCapability GetHardwareCapability();
 
 private:
     void setFixedFunctionMaterial(const Material* material);
@@ -383,6 +392,8 @@ private:
     bool m_shaderStateCurrent;
     bool m_modelViewMatrixCurrent;
     RendererOutput m_rendererOutput;
+
+    static bool m_glInitialized;
 };
 
 }

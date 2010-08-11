@@ -1,5 +1,5 @@
 //
-// $Revision: 405 $ $Date: 2010-08-03 13:05:54 -0700 (Tue, 03 Aug 2010) $
+// $Revision: 420 $ $Date: 2010-08-10 17:01:21 -0700 (Tue, 10 Aug 2010) $
 //
 // Copyright by Astos Solutions GmbH, Germany
 //  
@@ -1408,7 +1408,8 @@ public:
     {
         RenderOk,
         RenderNoViewSet,
-        RenderViewSetAlreadyStarted
+        RenderViewSetAlreadyStarted,
+        RendererUninitialized,
     };
 
     RenderStatus beginViewSet(const Universe& universe, double t);
@@ -1430,6 +1431,7 @@ public:
     bool skyLayersEnabled() const;
     void setSkyLayersEnabled(bool enable);
 
+    bool initializeGraphics();
     bool initializeShadowMaps(unsigned int shadowMapSize = 1024,
                               unsigned int maxShadowMaps = 1);
     bool shadowsEnabled() const;
