@@ -432,15 +432,16 @@ static QByteArray externalFragment(const char* name)
 /////////////////////// Creating vehicle with trajectories ///////////////////////////
 static QByteArray spaceVehicleWithTrajectoryFragment(const char* name, const char* vehicleType)
 {
-    ScenarioSC spacecraft;
-    spacecraft.ElementIdentifier()->setName(name);
+    ScenarioSC* sc = new ScenarioSC();
+    sc->ElementIdentifier()->setName(name);
+
     MissionsDefaults myMissionDefaults;
-    ScenarioLoiteringType loiteringDefault;
-    loiteringDefault = myMissionDefaults.MissionsDefaults_ISS();
-    //spacecraft.SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(&loiteringDefault));
+    ScenarioLoiteringType loiteringDefault = myMissionDefaults.MissionsDefaults_ISS();
+
+    sc->SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(&loiteringDefault));
 
     QDomDocument doc;
-    return fragmentText(CreateSCElement(&spacecraft, doc)).toUtf8();
+    return fragmentText(CreateSCElement(sc, doc)).toUtf8();
 }
 
 
