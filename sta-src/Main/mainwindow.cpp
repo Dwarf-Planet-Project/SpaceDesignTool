@@ -625,7 +625,11 @@ void MainWindow::preferencesSTA()
 {
     Preferences* staPreferencesWidget = new Preferences(this, Qt::Window);  // Creating the widget as a Window
     staPreferencesWidget->connectViewActions(m_viewActions);
-    staPreferencesWidget->exec();  // Modal window
+    //staPreferencesWidget->exec();  // Modal window
+    staPreferencesWidget->show(); // Creating the window modeless. This requires the declaration of the variable on the *.h file
+    staPreferencesWidget->raise(); // Required to keep the modeless window alive
+    staPreferencesWidget->activateWindow(); // Required to keep the modeless window alive
+
 
 }
 
