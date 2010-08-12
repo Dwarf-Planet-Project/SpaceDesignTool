@@ -287,6 +287,9 @@ MainWindow::MainWindow(QWidget *parent)	:
         connect(m_viewActions->starsAction(), SIGNAL(toggled(bool)), view, SLOT(setStars(bool)));
         connect(m_viewActions->equatorialGridAction(), SIGNAL(toggled(bool)), view, SLOT(setEquatorialGrid(bool)));
         connect(m_viewActions->cloudsAction(), SIGNAL(toggled(bool)), view, SLOT(setClouds(bool)));
+        connect(m_viewActions->shadowsAction(), SIGNAL(toggled(bool)), view, SLOT(setShadows(bool)));
+        connect(m_viewActions->satelliteTrajectoriesAction(), SIGNAL(toggled(bool)), view, SLOT(setSatelliteTrajectories(bool)));
+
     }
 
     // Read saved window preferences
@@ -1409,9 +1412,17 @@ void MainWindow::clearViews()
 {
     m_scenarioView->m_scenarioTree->clear();
     if (m_groundTrackPlotTool)
+    {
         m_groundTrackPlotTool->view()->setScenario(NULL);
+    }
+    if (m_threeDViewWidget)
+    {
+        m_threeDViewWidget->view()->setScenario(NULL);
+    }
     if (m_timelineWidget)
+    {
         m_timelineWidget->timelineView()->clearMission();
+    }
 
     m_scenarioView->update();  // Lined added by Guillermo as suggested by Chris to update the view of STA
     m_scenarioView->m_scenarioTree->update();
