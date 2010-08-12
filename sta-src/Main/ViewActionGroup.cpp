@@ -107,7 +107,6 @@ ViewActionGroup::setAmbientLight(float lightLevel)
 {
     if (lightLevel != m_ambientLight)
     {
-        qDebug("ambient light: %f, %f", lightLevel, m_ambientLight);
         m_ambientLight = lightLevel;
         emit ambientLightChanged(m_ambientLight);
     }
