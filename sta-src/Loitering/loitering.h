@@ -64,6 +64,11 @@ public slots:
     void removePerturbingPlanet();
     void setTesserals(int i);
     void disableIntegratorComboBox(int i);
+
+protected slots:
+        void on_pushButtonAspect_clicked();
+
+
 };
 
 /**

@@ -35,8 +35,6 @@
 #include "Astro-Core/stabody.h"
 #include "Astro-Core/stamath.h"
 #include "Astro-Core/trueAnomalyTOmeanAnomaly.h"
-
-
 #include "Scenario/propagationfeedback.h"
 #include "Astro-Core/cartesianTOorbital.h"
 #include "Astro-Core/orbitalTOcartesian.h"
@@ -44,6 +42,7 @@
 #include "Astro-Core/propagateCOWELL.h"
 #include "Astro-Core/propagateENCKE.h"
 #include "Astro-Core/propagateGAUSS.h"
+#include "Scenario/missionAspectDialog.h"
 
 #include <QTextStream>
 #include <QDebug>
@@ -1182,3 +1181,15 @@ PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
 
     return true;
 }
+
+
+
+
+void LoiteringDialog::on_pushButtonAspect_clicked()
+{
+    missionAspectDialog *myMissionAspectDialog = new missionAspectDialog(this, Qt::Tool);
+    myMissionAspectDialog->show();
+    myMissionAspectDialog->setFocus();
+    myMissionAspectDialog->activateWindow(); // Required to keep the modeless window alive
+}
+
