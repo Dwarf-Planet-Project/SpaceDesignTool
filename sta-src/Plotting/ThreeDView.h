@@ -108,6 +108,7 @@ protected:
 private:
     void initializeUniverse();
     void initializeLayers();
+    void initializeStandardResources();
     void initializeStarCatalog(const QString& fileName);
     vesta::Body* addSolarSystemBody(const StaBody* body, vesta::Entity* center);
     vesta::Entity* findSolarSystemBody(const StaBody* body);
@@ -141,6 +142,10 @@ private:
 
     int m_viewChanged;
     SpaceObject* m_selectedSpacecraft;
+
+    bool m_satelliteTrajectoriesEnabled;
+    bool m_shadowsEnabled;
+    bool m_shadowsInitialized;
 };
 
 #endif // _THREED_VIEW_H_

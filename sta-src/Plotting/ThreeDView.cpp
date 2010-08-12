@@ -311,7 +311,10 @@ ThreeDView::ThreeDView(const QGLFormat& format, QWidget* parent) :
     m_renderer(NULL),
     m_fov(sta::degToRad(50.0)),
     m_viewChanged(1),
-    m_selectedSpacecraft(NULL)
+    m_selectedSpacecraft(NULL),
+    m_satelliteTrajectoriesEnabled(false),
+    m_shadowsEnabled(false),
+    m_shadowsInitialized(false)
 {
     m_textureLoader = counted_ptr<TextureMapLoader>(new QtTextureLoader());
 
@@ -327,6 +330,8 @@ ThreeDView::ThreeDView(const QGLFormat& format, QWidget* parent) :
     m_observer = counted_ptr<Observer>(new Observer(*earth));
     m_controller = counted_ptr<ObserverController>(new ObserverController());
     m_controller->setObserver(m_observer.ptr());
+
+    initializeStandardResources();
 
     gotoBody(STA_SOLAR_SYSTEM->earth());
 }
@@ -380,25 +385,14 @@ ThreeDView::initializeGL()
 {
     if (!m_renderer->initializeGraphics())
     {
-
     }
 
     m_labelFont = LoadTextureFont("vis3d/sans12.txf");
-
-    // Create icon textures
-    m_spacecraftIcon = m_textureLoader->loadTexture(":/icons/Icon3DViewSpacecraft", TextureProperties(TextureProperties::Clamp));
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     glEnable(GL_CULL_FACE);
-
-    // Load the default spacecraft model
-    m_defaultSpacecraftMesh = MeshGeometry::loadFromFile(DefaultSpacecraftMeshFile, m_textureLoader.ptr());
-    if (m_defaultSpacecraftMesh.isValid())
-    {
-        m_defaultSpacecraftMesh->setMeshScale(0.002f / m_defaultSpacecraftMesh->boundingSphereRadius());
-    }
 }
 
 
@@ -414,6 +408,17 @@ ThreeDView::paintGL()
     {
         // Mark the view up to date
         m_viewChanged--;
+    }
+
+    // Shadow setup is deferred until they are actually enabled
+    if (m_shadowsEnabled && !m_shadowsInitialized)
+    {
+        m_shadowsInitialized = true;
+        if (m_renderer->shadowsSupported())
+        {
+            m_renderer->initializeShadowMaps(2048);
+            m_renderer->setShadowsEnabled(true);
+        }
     }
 
     glDepthMask(GL_TRUE);
@@ -734,9 +739,24 @@ ThreeDView::initializeLayers()
 
     // Layer 1 is an equatorial grid
     CelestialCoordinateGrid* equatorialGrid = new CelestialCoordinateGrid();
-    //equatorialGrid->setVisibility(true);
     equatorialGrid->setColor(Spectrum(0.0f, 0.0f, 1.0f));
     m_renderer->addSkyLayer(equatorialGrid);
+}
+
+
+// Create the standard set textures and models required for visualization of any scenario
+void
+ThreeDView::initializeStandardResources()
+{
+    // Create icon textures
+    m_spacecraftIcon = m_textureLoader->loadTexture(":/icons/Icon3DViewSpacecraft", TextureProperties(TextureProperties::Clamp));
+
+    // Load the default spacecraft model
+    m_defaultSpacecraftMesh = MeshGeometry::loadFromFile(DefaultSpacecraftMeshFile, m_textureLoader.ptr());
+    if (m_defaultSpacecraftMesh.isValid())
+    {
+        m_defaultSpacecraftMesh->setMeshScale(0.002f / m_defaultSpacecraftMesh->boundingSphereRadius());
+    }
 }
 
 
@@ -957,7 +977,9 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
     trajGeom->computeSamples(firstArc->trajectory(),
                              body->chronology()->beginning(),
                              body->chronology()->beginning() + firstArc->duration(), 1000);
-    firstArc->center()->setVisualizer(TrajectoryVisualizerTag(body), new Visualizer(trajGeom));
+    Visualizer* trajVisualizer = new Visualizer(trajGeom);
+    trajVisualizer->setVisibility(m_satelliteTrajectoriesEnabled);
+    firstArc->center()->setVisualizer(TrajectoryVisualizerTag(body), trajVisualizer);
 
     return body;
 }
@@ -1105,6 +1127,13 @@ void ThreeDView::setClouds(bool enabled)
 
 void ThreeDView::setShadows(bool enabled)
 {
+    m_shadowsEnabled = enabled;
+    if (m_shadowsInitialized && m_renderer->shadowsSupported())
+    {
+        // Only enable shadows if we've already initialized the shadow maps
+        m_renderer->setShadowsEnabled(m_shadowsEnabled);
+    }
+    setViewChanged();
 }
 
 
@@ -1129,6 +1158,18 @@ ThreeDView::setEquatorialGrid(bool enabled)
 void
 ThreeDView::setSatelliteTrajectories(bool enabled)
 {
+    m_satelliteTrajectoriesEnabled = enabled;
+    foreach (Entity* e, m_scenarioSpaceObjects.values())
+    {
+        // Remove trajectory visualizers from central body
+        Visualizer* vis = e->chronology()->firstArc()->center()->visualizer(TrajectoryVisualizerTag(e));
+        if (vis)
+        {
+            vis->setVisibility(m_satelliteTrajectoriesEnabled);
+        }
+    }
+
+    setViewChanged();
 }
 
 
