@@ -48,6 +48,7 @@
 #include <vesta/PlaneVisualizer.h>
 #include <vesta/Units.h>
 #include <vesta/MeshGeometry.h>
+#include <vesta/Atmosphere.h>
 #include <vesta/interaction/ObserverController.h>
 
 #include "ThreeDView.h"
@@ -314,6 +315,7 @@ ThreeDView::ThreeDView(const QGLFormat& format, QWidget* parent) :
     m_selectedSpacecraft(NULL),
     m_satelliteTrajectoriesEnabled(false),
     m_shadowsEnabled(false),
+    m_glInitialized(false),
     m_shadowsInitialized(false)
 {
     m_textureLoader = counted_ptr<TextureMapLoader>(new QtTextureLoader());
@@ -393,6 +395,8 @@ ThreeDView::initializeGL()
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     glEnable(GL_CULL_FACE);
+
+    m_glInitialized = true;
 }
 
 
@@ -421,6 +425,16 @@ ThreeDView::paintGL()
         }
     }
 
+    // Process atmospheres that were just loaded
+    if (!m_newAtmospheres.isEmpty())
+    {
+        foreach (Atmosphere* atmosphere, m_newAtmospheres)
+        {
+            atmosphere->generateTextures();
+        }
+        m_newAtmospheres.clear();
+    }
+
     glDepthMask(GL_TRUE);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -446,6 +460,7 @@ ThreeDView::drawOverlay()
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_LIGHTING);
     glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     if (GLEW_ARB_multisample)
     {
         glDisable(GL_MULTISAMPLE_ARB);
@@ -460,6 +475,8 @@ ThreeDView::drawOverlay()
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
+
+    // Offset by a fraction of a pixel in order to avoid blurring of the text
     glTranslatef(0.125f, 0.125f, 0);
 
     glEnable(GL_TEXTURE_2D);
@@ -1099,6 +1116,45 @@ ThreeDView::setStars(bool enabled)
 
 void ThreeDView::setAtmospheres(bool enabled)
 {
+    Entity* e = findSolarSystemBody(STA_EARTH);
+    if (e)
+    {
+        WorldGeometry* globe = dynamic_cast<WorldGeometry*>(e->geometry());
+        if (globe)
+        {
+            if (enabled)
+            {
+                Atmosphere* atmosphere = NULL;
+                if (!m_atmospheres.contains(e))
+                {
+                    QFile atmosphereFile("vis3d/earth.atmscat");
+                    if (atmosphereFile.open(QIODevice::ReadOnly))
+                    {
+                        QByteArray data = atmosphereFile.readAll();
+                        DataChunk chunk(data.data(), data.size());
+                        atmosphere = Atmosphere::LoadAtmScat(&chunk);
+                    }
+                    m_atmospheres[e] = atmosphere;
+                    if (atmosphere)
+                    {
+                        m_newAtmospheres << atmosphere;
+                    }
+                }
+                else
+                {
+                    atmosphere = m_atmospheres[e].ptr();
+                }
+
+                globe->setAtmosphere(atmosphere);
+            }
+            else
+            {
+                globe->setAtmosphere(NULL);
+            }
+        }
+    }
+    setViewChanged();
+
 }
 
 

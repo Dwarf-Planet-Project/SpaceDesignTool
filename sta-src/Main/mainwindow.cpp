@@ -288,6 +288,7 @@ MainWindow::MainWindow(QWidget *parent)	:
         connect(m_viewActions->equatorialGridAction(), SIGNAL(toggled(bool)), view, SLOT(setEquatorialGrid(bool)));
         connect(m_viewActions->cloudsAction(), SIGNAL(toggled(bool)), view, SLOT(setClouds(bool)));
         connect(m_viewActions->shadowsAction(), SIGNAL(toggled(bool)), view, SLOT(setShadows(bool)));
+        connect(m_viewActions->atmospheresAction(), SIGNAL(toggled(bool)), view, SLOT(setAtmospheres(bool)));
         connect(m_viewActions->satelliteTrajectoriesAction(), SIGNAL(toggled(bool)), view, SLOT(setSatelliteTrajectories(bool)));
         connect(m_viewActions, SIGNAL(ambientLightChanged(float)), view, SLOT(setAmbientLight(float)));
     }

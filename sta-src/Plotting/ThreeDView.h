@@ -45,6 +45,7 @@ namespace vesta
     class TextureMapLoader;
     class TextureFont;
     class MeshGeometry;
+    class Atmosphere;
 }
 
 class StaBody;
@@ -141,12 +142,15 @@ private:
 
     QHash<SpaceObject*, vesta::Entity*> m_scenarioSpaceObjects;
     QHash<GroundObject*, vesta::Entity*> m_scenarioGroundObjects;
+    QHash<vesta::Entity*, vesta::counted_ptr<vesta::Atmosphere> > m_atmospheres;
+    QList<vesta::Atmosphere*> m_newAtmospheres;
 
     int m_viewChanged;
     SpaceObject* m_selectedSpacecraft;
 
     bool m_satelliteTrajectoriesEnabled;
     bool m_shadowsEnabled;
+    bool m_glInitialized;
     bool m_shadowsInitialized;
 };
 
