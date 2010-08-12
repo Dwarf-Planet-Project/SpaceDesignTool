@@ -63,7 +63,6 @@ ScenarioElementWidget::ScenarioElementWidget(QWidget* parent) :
 {
     setHeaderHidden(true);
     setRootIsDecorated(false);
-    //setIconSize(QSize(32, 32));
     setIconSize(QSize(25, 25)); // Smaller icons are a bit better
     //QFont font("Helvetica", 10); setFont(font);
     setItemDelegate(new SheetDelegate(this));
@@ -333,13 +332,7 @@ static QByteArray groundElementFragment(const char* name,
 static QByteArray loiteringFragment(const char* name)
 {
     MissionsDefaults myMissionDefaults;
-    ScenarioLoiteringType loiteringDefault;
-
-
-    if (name == "Loitering 1")
-	loiteringDefault = myMissionDefaults.MissionsDefaults_ISS();
-    else if (name == "ISS")
-	loiteringDefault = myMissionDefaults.MissionsDefaults_ISS();
+    ScenarioLoiteringType loiteringDefault = myMissionDefaults.MissionsDefaults_GENERIC();
 
     QDomDocument doc;
     return fragmentText(CreateLoiteringElement(&loiteringDefault, doc)).toUtf8();
@@ -436,7 +429,18 @@ static QByteArray spaceVehicleWithTrajectoryFragment(const char* name, const cha
     sc->ElementIdentifier()->setName(name);
 
     MissionsDefaults myMissionDefaults;
-    ScenarioLoiteringType loiteringDefault = myMissionDefaults.MissionsDefaults_ISS();
+    ScenarioLoiteringType loiteringDefault;
+
+    if (name == "XMM")
+	loiteringDefault = myMissionDefaults.MissionsDefaults_XMM();
+    else if (name == "MEX")
+	loiteringDefault = myMissionDefaults.MissionsDefaults_MEX();
+    else if (name == "Aeolus")
+	loiteringDefault = myMissionDefaults.MissionsDefaults_Aeolus();
+    else if (name == "Artemis")
+	loiteringDefault = myMissionDefaults.MissionsDefaults_Artemis();
+    else if (name == "ISS")
+	loiteringDefault = myMissionDefaults.MissionsDefaults_ISS();
 
     sc->SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(&loiteringDefault));
 
@@ -814,6 +818,10 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
 
     // Some  ESA Satellites
     // See the list of available satellites in the file "missionsDefaults.cpp"
+    addESASatelliteItem(ESASatellitesItem, "XMM");
+    addESASatelliteItem(ESASatellitesItem, "MEX");
+    addESASatelliteItem(ESASatellitesItem, "Aeolus");
+    addESASatelliteItem(ESASatellitesItem, "Artemis");
     addESASatelliteItem(ESASatellitesItem, "ISS");
 
     // The ESTRACK ground stations (LAT, LON, ALT)
@@ -855,7 +863,7 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
 
 
     // Contracting now some elements that should not be shown to the user at a first sight.
-    //ESASatellitesItem->setExpanded(false);
+    ESASatellitesItem->setExpanded(false);
     ESAgroundStationsItem->setExpanded(false);
     NASAgroundStationsItem->setExpanded(false);
 

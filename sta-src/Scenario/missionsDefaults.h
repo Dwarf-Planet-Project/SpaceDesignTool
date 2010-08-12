@@ -38,11 +38,15 @@ class MissionsDefaults
 public:
     ~MissionsDefaults();
 
+     // Default platform and payloads for a generic mission
      ScenarioSCSystemType MissionsDefaults_GenericPlatform();
      ScenarioTransmitterPayloadType MissionsDefaults_GenericTransmitter();
      ScenarioReceiverPayloadType MissionsDefaults_GenericReceiver();
      ScenarioOpticalPayloadType MissionsDefaults_GenericOpticalPayload();
      ScenarioRadarPayloadType MissionsDefaults_GenericRadarPayload();
+
+     // Generric loitering satellite
+     ScenarioLoiteringType MissionsDefaults_GENERIC();
 
 
     // Science
@@ -86,13 +90,41 @@ public:
 
     // Human space flight
     ScenarioLoiteringType MissionsDefaults_ISS();
-    ScenarioLoiteringType MissionsDefaults_ATV();
+    ScenarioEntryArcType MissionsDefaults_ATV();
 
     // Launchers
-    ScenarioLoiteringType MissionsDefaults_VEGA();
-    ScenarioLoiteringType MissionsDefaults_Soyuz();
-    ScenarioLoiteringType MissionsDefaults_Ariane5();
-    ScenarioLoiteringType MissionsDefaults_IXV();
+    //ScenarioLoiteringType MissionsDefaults_VEGA();
+    //ScenarioLoiteringType MissionsDefaults_Soyuz();
+    //ScenarioLoiteringType MissionsDefaults_Ariane5();
+    ScenarioEntryArcType MissionsDefaults_IXV();
+
+
+    // List of allowable missions
+    QList<QString> esaDefaultLoiteringMissions();
+    QList<QString> nasaDefaultLoiteringMissions();
+    // ... and so on with CNES, DLR, JAXA
+
+    // List of allowable colors for mission arcs
+    // Notice that those are already provided by Qt
+    /*
+    Qt::white;		// 3	 White (#ffffff)
+    Qt::black;		//2	 Black (#000000)
+    Qt::red;		//7	 Red (#ff0000)
+    Qt::darkRed;	//13	 Dark red (#800000)
+    Qt::green;		//8	 Green (#00ff00)
+    Qt::darkGreen;	//14	 Dark green (#008000)
+    Qt::blue;		//9	 Blue (#0000ff)
+    Qt::darkBlue;	//15	 Dark blue (#000080)
+    Qt::cyan;		//10	 Cyan (#00ffff)
+    Qt::darkCyan;	//16	 Dark cyan (#008080)
+    Qt::magenta;	//11	 Magenta (#ff00ff)
+    Qt::darkMagenta;	//17	 Dark magenta (#800080)
+    Qt::yellow;		//12	 Yellow (#ffff00)
+    Qt::darkYellow;;	//18	 Dark yellow (#808000)
+    Qt::gray;		//5	 Gray (#a0a0a4)
+    Qt::darkGray;	//4	 Dark gray (#808080)
+    Qt::lightGray;	//6	 Light gray (#c0c0c0)
+    */
 
 };
 

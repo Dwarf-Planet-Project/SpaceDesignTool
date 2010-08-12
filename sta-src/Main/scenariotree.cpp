@@ -413,7 +413,7 @@ void ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scena
     }
 
     // Guillermo: expand items by default or not
-    item->setExpanded(true);
+    //item->setExpanded(true);
 
     if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject))
     {

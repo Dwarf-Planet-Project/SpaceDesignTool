@@ -32,6 +32,7 @@
 
 
 
+
 MissionsDefaults::~MissionsDefaults()
 {
 
@@ -116,182 +117,46 @@ ScenarioSCSystemType MissionsDefaults::MissionsDefaults_GenericPlatform()
 
 }
 
-ScenarioTransmitterPayloadType MissionsDefaults_GenericTransmitter()
+
+ScenarioTransmitterPayloadType MissionsDefaults::MissionsDefaults_GenericTransmitter()
 {
 
 }
 
-ScenarioReceiverPayloadType MissionsDefaults_GenericReceiver()
+ScenarioReceiverPayloadType MissionsDefaults::MissionsDefaults_GenericReceiver()
 {
 
 }
 
-ScenarioOpticalPayloadType MissionsDefaults_GenericOpticalPayload()
+ScenarioOpticalPayloadType MissionsDefaults::MissionsDefaults_GenericOpticalPayload()
 {
 
 }
 
-ScenarioRadarPayloadType MissionsDefaults_GenericRadarPayload()
-{
-
-}
-
-
-//////////////////////////////////////// Science /////////////////////////////////////////////////
-
-ScenarioLoiteringType MissionsDefaults::MissionsDefaults_XMM()
+ScenarioRadarPayloadType MissionsDefaults::MissionsDefaults_GenericRadarPayload()
 {
 
 }
 
 
-ScenarioLoiteringType MissionsDefaults_INTEGRAL()
+
+//////////////////////////////////////// Generic Loitering /////////////////////////////////////////////////
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_GENERIC()
 {
+    ScenarioLoiteringType loitering;
 
-}
-
-ScenarioLoiteringType MissionsDefaults_MEX()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_Rosetta()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_VEX()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_Herschel()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_Planck()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_LISA()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_BepiColombo()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_ExoMars()
-{
-}
-
-
-//////////////////////////////////////// Observation of the Earth /////////////////////////////
-ScenarioLoiteringType MissionsDefaults_Meteosat6()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_ERS2()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_ENVISAT()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_MSG()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_MTG()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_METOP()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_Cryosat()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_GOCE()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_SMOS()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_Aeolus()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_EarthCare()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_Sentinel1()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_Sentinel2()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_Sentinel3()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_Sentinel5()
-{
-}
-
-
-////////////////////////////////////// Tecommunications //////////////////////////////
-ScenarioLoiteringType MissionsDefaults_Artemis()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_Alphasat()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_SmallGEO()
-{
-}
-
-
-// TEC
-ScenarioLoiteringType MissionsDefaults_PROBA1()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_PROBA2()
-{
-}
-
-ScenarioLoiteringType MissionsDefaults_PROBA3()
-{
-}
-
-
-///////////////////////////////////////////// Human space flight ////////////////////////////////////////
- ScenarioLoiteringType MissionsDefaults::MissionsDefaults_ISS()
-{
-
-     ScenarioLoiteringType loitering;
-
-    /*** fill in defaults ***/
-    loitering.Environment()->CentralBody()->setName("Earth");
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
-    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
-
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
-    initPos->setSemiMajorAxis(6378.0 + 450.1365);
-    initPos->setInclination(51.6651);
-    initPos->setEccentricity(0.0006);
-    initPos->setRAAN(12.4829);
-    initPos->setArgumentOfPeriapsis(45.0278);
-    initPos->setTrueAnomaly(87.3523);
+    initPos->setSemiMajorAxis(7100.0);
+    initPos->setInclination(31.2);
+    initPos->setEccentricity(0.1);
+    initPos->setRAAN(123.45);
+    initPos->setArgumentOfPeriapsis(10.23);
+    initPos->setTrueAnomaly(0.0);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
+
+    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
     QSharedPointer<ScenarioEulerBIType> initAtt(new ScenarioEulerBIType());
     initAtt->setPhi(0.00000);
     initAtt->setTheta(0.00000);
@@ -307,27 +172,427 @@ ScenarioLoiteringType MissionsDefaults_PROBA3()
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
+    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
+    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setTimeStep(60.0);
+
+    loitering.Environment()->CentralBody()->setName("Earth");
     loitering.Environment()->CentralBody()->GravityModel()->setModelName("EGM2008");
     loitering.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(1);
     loitering.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(1);
 
     loitering.ElementIdentifier()->setName("loitering");
     loitering.ElementIdentifier()->setTheOrder(1);
-    loitering.ElementIdentifier()->setModelName("iss.3ds");
+    loitering.ElementIdentifier()->setModelName("default.3ds");
     loitering.ElementIdentifier()->setColorName("yellow");
 
     return loitering;
+} /////////////////////// end of GENERIC
+
+
+
+
+//////////////////////////////////////// Science /////////////////////////////////////////////////
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_XMM()
+{
+    ScenarioLoiteringType loitering;
+
+    loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
+    QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
+    initPos->setSemiMajorAxis(133930);
+    initPos->setInclination(60.6);
+    initPos->setEccentricity(0.6);
+    initPos->setRAAN(93.6);
+    initPos->setArgumentOfPeriapsis(112.6);
+    initPos->setTrueAnomaly(0.0);
+    loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
+
+    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    QSharedPointer<ScenarioEulerBIType> initAtt(new ScenarioEulerBIType());
+    initAtt->setPhi(0.00000);
+    initAtt->setTheta(0.00000);
+    initAtt->setPsi(0.00000);
+    initAtt->setPhiDot(0.00000);
+    initAtt->setThetaDot(0.00000);
+    initAtt->setPsiDot(0.00000);
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+
+    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
+    loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
+    loitering.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(8));
+    loitering.TimeLine()->setStepTime(60.0);
+
+    loitering.PropagationPosition()->setPropagator("TWO BODY");
+    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setTimeStep(60.0);
+
+    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setTimeStep(60.0);
+
+    loitering.Environment()->CentralBody()->setName("Earth");
+    loitering.Environment()->CentralBody()->GravityModel()->setModelName("EGM2008");
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(1);
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(1);
+
+    loitering.ElementIdentifier()->setName("XMM loitering");
+    loitering.ElementIdentifier()->setTheOrder(1);
+    loitering.ElementIdentifier()->setModelName("xmm.3ds");
+    loitering.ElementIdentifier()->setColorName("yellow");
+
+    return loitering;
+} /////////////////////// end of XMM
+
+
+
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_INTEGRAL()
+{
 
 }
 
-ScenarioLoiteringType MissionsDefaults_ATV()
+
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_MEX()
+{
+    ScenarioLoiteringType loitering;
+
+    loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
+    QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
+    initPos->setSemiMajorAxis(9354.09);
+    initPos->setInclination(86.583);
+    initPos->setEccentricity(0.606960);
+    initPos->setRAAN(228.774);
+    initPos->setArgumentOfPeriapsis(357.981);
+    initPos->setTrueAnomaly(0.001);
+    loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
+
+    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    QSharedPointer<ScenarioEulerBIType> initAtt(new ScenarioEulerBIType());
+    initAtt->setPhi(0.00000);
+    initAtt->setTheta(0.00000);
+    initAtt->setPsi(0.00000);
+    initAtt->setPhiDot(0.00000);
+    initAtt->setThetaDot(0.00000);
+    initAtt->setPsiDot(0.00000);
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+
+    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
+    loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
+    loitering.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
+    loitering.TimeLine()->setStepTime(60.0);
+
+    loitering.PropagationPosition()->setPropagator("TWO BODY");
+    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setTimeStep(60.0);
+
+    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setTimeStep(60.0);
+
+    loitering.Environment()->CentralBody()->setName("Mars");
+    loitering.Environment()->CentralBody()->GravityModel()->setModelName("EGM2008");
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(1);
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(1);
+
+    loitering.ElementIdentifier()->setName("MEX loitering");
+    loitering.ElementIdentifier()->setTheOrder(1);
+    loitering.ElementIdentifier()->setModelName("default.3ds");
+    loitering.ElementIdentifier()->setColorName("red");
+
+    return loitering;
+}  ///////////////// End of MEX
+
+
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Rosetta()
+{
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_VEX()
+{
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Herschel()
+{
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Planck()
+{
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_LISA()
+{
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_BepiColombo()
+{
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_ExoMars()
 {
 }
 
 
+//////////////////////////////////////// Observation of the Earth /////////////////////////////
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Meteosat6()
+{
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_ERS2()
+{
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_ENVISAT()
+{
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_MSG()
+{
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_MTG()
+{
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_METOP()
+{
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Cryosat()
+{
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_GOCE()
+{
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_SMOS()
+{
+}
+
+
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Aeolus()
+{
+    ScenarioLoiteringType loitering;
+
+    loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
+    QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
+    initPos->setSemiMajorAxis(6786.13);
+    initPos->setInclination(97.0638);
+    initPos->setEccentricity(0.0006);
+    initPos->setRAAN(100.651);
+    initPos->setArgumentOfPeriapsis(0.0);
+    initPos->setTrueAnomaly(0.0);
+    loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
+
+    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    QSharedPointer<ScenarioEulerBIType> initAtt(new ScenarioEulerBIType());
+    initAtt->setPhi(0.00000);
+    initAtt->setTheta(0.00000);
+    initAtt->setPsi(0.00000);
+    initAtt->setPhiDot(0.00000);
+    initAtt->setThetaDot(0.00000);
+    initAtt->setPsiDot(0.00000);
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+
+    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
+    loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
+    loitering.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
+    loitering.TimeLine()->setStepTime(60.0);
+
+    loitering.PropagationPosition()->setPropagator("TWO BODY");
+    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setTimeStep(60.0);
+
+    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setTimeStep(60.0);
+
+    loitering.Environment()->CentralBody()->setName("Earth");
+    loitering.Environment()->CentralBody()->GravityModel()->setModelName("EGM2008");
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(1);
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(1);
+
+    loitering.ElementIdentifier()->setName("Aeolus loitering");
+    loitering.ElementIdentifier()->setTheOrder(1);
+    loitering.ElementIdentifier()->setModelName("default.3ds");
+    loitering.ElementIdentifier()->setColorName("green");
+
+    return loitering;
+} /////////// End of Aeolus
+
+
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_EarthCare()
+{
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Sentinel1()
+{
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Sentinel2()
+{
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Sentinel3()
+{
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Sentinel5()
+{
+}
+
+
+////////////////////////////////////// Tecommunications //////////////////////////////
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Artemis()
+{
+    ScenarioLoiteringType loitering;
+
+    loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
+    QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
+    initPos->setSemiMajorAxis(42164.1);
+    initPos->setInclination(8.0);
+    initPos->setEccentricity(0.0);
+    initPos->setRAAN(100.35);
+    initPos->setArgumentOfPeriapsis(201.76);
+    initPos->setTrueAnomaly(0.0);
+    loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
+
+    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    QSharedPointer<ScenarioEulerBIType> initAtt(new ScenarioEulerBIType());
+    initAtt->setPhi(0.00000);
+    initAtt->setTheta(0.00000);
+    initAtt->setPsi(0.00000);
+    initAtt->setPhiDot(0.00000);
+    initAtt->setThetaDot(0.00000);
+    initAtt->setPsiDot(0.00000);
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+
+    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
+    loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
+    loitering.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
+    loitering.TimeLine()->setStepTime(60.0);
+
+    loitering.PropagationPosition()->setPropagator("TWO BODY");
+    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setTimeStep(60.0);
+
+    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setTimeStep(60.0);
+
+    loitering.Environment()->CentralBody()->setName("Earth");
+    loitering.Environment()->CentralBody()->GravityModel()->setModelName("EGM2008");
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(1);
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(1);
+
+    /*
+    // Perturbations not required
+    loitering.Environment()->PerturbationsToCentralBody()->setAtmosphereDrag(false);
+    loitering.Environment()->PerturbationsToCentralBody()->setAlbedo(false);
+    loitering.Environment()->PerturbationsToCentralBody()->setSolarPressure(false);
+    loitering.Environment()->PerturbationsToCentralBody()->setCr(1.0);
+    loitering.Environment()->PerturbationsToCentralBody()->setIR(false);
+    loitering.Environment()->PerturbationsToCentralBody()->setMicrometeoroids(false);
+    loitering.Environment()->PerturbationsToCentralBody()->setThirdBody(false);
+    loitering.Environment()->PerturbationsToCentralBody()->setUserDefined(false);
+    loitering.Environment()->PerturbationsToCentralBody()->setThirdBody(false);
+    */
+
+    loitering.ElementIdentifier()->setName("Artemis loitering");
+    loitering.ElementIdentifier()->setTheOrder(1);
+    loitering.ElementIdentifier()->setModelName("default.3ds");
+    loitering.ElementIdentifier()->setColorName("red");
+
+    return loitering;
+}  ////////// Edn of Artemis
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Alphasat()
+{
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_SmallGEO()
+{
+}
+
+
+// TEC
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_PROBA1()
+{
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_PROBA2()
+{
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_PROBA3()
+{
+}
+
+
+///////////////////////////////////////////// Human space flight ////////////////////////////////////////
+ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_ISS()
+{
+    ScenarioLoiteringType loitering;
+
+    loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
+    QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
+    initPos->setSemiMajorAxis(6378.0 + 450.1365);
+    initPos->setInclination(51.6651);
+    initPos->setEccentricity(0.0006);
+    initPos->setRAAN(12.4829);
+    initPos->setArgumentOfPeriapsis(45.0278);
+    initPos->setTrueAnomaly(87.3523);
+    loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
+
+    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    QSharedPointer<ScenarioEulerBIType> initAtt(new ScenarioEulerBIType());
+    initAtt->setPhi(0.00000);
+    initAtt->setTheta(0.00000);
+    initAtt->setPsi(0.00000);
+    initAtt->setPhiDot(0.00000);
+    initAtt->setThetaDot(0.00000);
+    initAtt->setPsiDot(0.00000);
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+
+    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
+    loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
+    loitering.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
+    loitering.TimeLine()->setStepTime(60.0);
+
+    loitering.PropagationPosition()->setPropagator("TWO BODY");
+    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setTimeStep(60.0);
+
+    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setTimeStep(60.0);
+
+    loitering.Environment()->CentralBody()->setName("Earth");
+    loitering.Environment()->CentralBody()->GravityModel()->setModelName("EGM2008");
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(1);
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(1);
+
+    loitering.ElementIdentifier()->setName("ISS loitering");
+    loitering.ElementIdentifier()->setTheOrder(1);
+    loitering.ElementIdentifier()->setModelName("iss.3ds");
+    loitering.ElementIdentifier()->setColorName("yellow");
+
+    return loitering;
+}
+
+
+
+
+ ScenarioEntryArcType MissionsDefaults::MissionsDefaults_ATV()
+{
+}
+
+
+
 // Launchers
+/*
 ScenarioLoiteringType MissionsDefaults_VEGA()
 {
 }
@@ -339,9 +604,34 @@ ScenarioLoiteringType MissionsDefaults_Soyuz()
 ScenarioLoiteringType MissionsDefaults_Ariane5()
 {
 }
+*/
 
-ScenarioLoiteringType MissionsDefaults_IXV()
+
+ ScenarioEntryArcType MissionsDefaults::MissionsDefaults_IXV()
 {
 }
 
 
+
+
+// List of allowable missions
+QList<QString> MissionsDefaults::esaDefaultLoiteringMissions()
+{
+    QList<QString> myMissionsList;
+    myMissionsList <<
+	    "XMM" <<
+	    "MEX" <<
+	    "Aeolus" <<
+	    "Artemis" <<
+	    "ISS";
+    return myMissionsList;
+}
+
+
+QList<QString> MissionsDefaults::nasaDefaultLoiteringMissions()
+{
+    QList<QString> myMissionsList;
+    myMissionsList << "";
+    return myMissionsList;
+
+}
