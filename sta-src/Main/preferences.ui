@@ -245,6 +245,55 @@
       </item>
      </layout>
     </widget>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="geometry">
+      <rect>
+       <x>316</x>
+       <y>148</y>
+       <width>293</width>
+       <height>133</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>General</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_10">
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="gridLayout_9">
+        <item row="1" column="1">
+         <widget class="QFontComboBox" name="fontComboBox"/>
+        </item>
+        <item row="0" column="1">
+         <widget class="QDateTimeEdit" name="dateTimeEdit">
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="displayFormat">
+           <string>dd/MMMM/yyyy HH:mm:ss</string>
+          </property>
+          <property name="calendarPopup">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Epoch:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Fonts:</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
    </widget>
    <widget class="QWidget" name="renderingPreferences">
     <attribute name="title">
@@ -380,17 +429,17 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
-         <widget class="QCheckBox" name="dataLayers">
-          <property name="text">
-           <string>Data layers</string>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="2">
          <widget class="QCheckBox" name="coverageAreas">
           <property name="text">
            <string>Coverage areas</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QCheckBox" name="dataLayers">
+          <property name="text">
+           <string>Data layers</string>
           </property>
          </widget>
         </item>
