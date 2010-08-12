@@ -98,5 +98,21 @@
         <file>Icon3DViewSpacecraft.png</file>
         <file>mission-arcs-loiteringTLE.png</file>
         <file>IconEQUATOR.png</file>
+        <file>colorBLACK.png</file>
+        <file>colorBLUE.png</file>
+        <file>colorCYAN.png</file>
+        <file>colorDARKBLUE.png</file>
+        <file>colorDARKCYAN.png</file>
+        <file>colorDARKGRAY.png</file>
+        <file>colorDARKMAGENTA.png</file>
+        <file>colorDARKRED.png</file>
+        <file>colorDARKYELLOW.png</file>
+        <file>colorGRAY.png</file>
+        <file>colorGREEN.png</file>
+        <file>colorLIGHTGRAY.png</file>
+        <file>colorMAGENTA.png</file>
+        <file>colorRED.png</file>
+        <file>colorWHITE.png</file>
+        <file>colorYELLOW.png</file>
     </qresource>
 </RCC>

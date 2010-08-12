@@ -402,13 +402,16 @@ SCENARIO_SOURCES = sta-src/Scenario/staschema.cpp \
     sta-src/Scenario/stascenarioutil.cpp \
     sta-src/Scenario/scenario.cpp \
     sta-src/Scenario/scenarioPropagator.cpp \
-    sta-src/Scenario/missionsDefaults.cpp
+    sta-src/Scenario/missionsDefaults.cpp \
+    sta-src/Scenario/missionAspectDialog.cpp
 SCENARIO_HEADERS = sta-src/Scenario/staschema.h \
     sta-src/Scenario/stascenarioutil.h \
     sta-src/Scenario/propagationfeedback.h \
     sta-src/Scenario/scenario.h \
     sta-src/Scenario/scenarioPropagator.h \
-    sta-src/Scenario/missionsDefaults.h
+    sta-src/Scenario/missionsDefaults.h \
+    sta-src/Scenario/missionAspectDialog.h
+SCENARIO_FORMS = sta-src/Scenario/missionAspectDialog.ui
 
 # ############# Constellations Module ##############
 CONSTELLATIONS_SOURCES = sta-src/Constellations/cwizard.cpp \
@@ -562,6 +565,7 @@ FORMS = $$MAIN_FORMS \
     $$ASTROCORE_FORMS \
     $$SEM_FORMS \
     $$PLOT_FORMS \
+    $$SCENARIO_FORMS \
     $$RAM_FORMS \
     $$ENTRY_FORMS \
     $$LOCATIONS_FORMS \
