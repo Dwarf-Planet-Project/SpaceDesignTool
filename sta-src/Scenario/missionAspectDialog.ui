@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>missionAspectDialog</class>
+ <widget class="QDialog" name="missionAspectDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>283</width>
+    <height>234</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>283</width>
+    <height>234</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>283</width>
+    <height>234</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Arc aspect</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="1" column="0">
+      <widget class="QLabel" name="labelArcName">
+       <property name="text">
+        <string>Arc name: </string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="lineEditArcName">
+       <property name="text">
+        <string>loitering</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="labelColor">
+       <property name="text">
+        <string>Color: </string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QComboBox" name="comboBoxColorPicker">
+       <item>
+        <property name="text">
+         <string>  Yellow</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/colorYELLOW.png</normaloff>:/icons/colorYELLOW.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Red</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/colorRED.png</normaloff>:/icons/colorRED.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Green</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/colorGREEN.png</normaloff>:/icons/colorGREEN.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Blue</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/colorBLUE.png</normaloff>:/icons/colorBLUE.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Magenta</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/colorMAGENTA.png</normaloff>:/icons/colorMAGENTA.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  White</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/colorWHITE.png</normaloff>:/icons/colorWHITE.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Cyan</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/colorCYAN.png</normaloff>:/icons/colorCYAN.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Gray</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/colorGRAY.png</normaloff>:/icons/colorGRAY.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Dark Red</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/colorDARKRED.png</normaloff>:/icons/colorDARKRED.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Dark Yellow</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/colorDARKYELLOW.png</normaloff>:/icons/colorDARKYELLOW.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Dark Blue</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/colorDARKBLUE.png</normaloff>:/icons/colorDARKBLUE.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Dark Magenta</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/colorDARKMAGENTA.png</normaloff>:/icons/colorDARKMAGENTA.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Dark Gray</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/colorLIGHTGRAY.png</normaloff>:/icons/colorLIGHTGRAY.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Light Gray</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/colorDARKGRAY.png</normaloff>:/icons/colorDARKGRAY.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Dark Cyan</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/colorDARKCYAN.png</normaloff>:/icons/colorDARKCYAN.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Black</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/colorBLACK.png</normaloff>:/icons/colorBLACK.png</iconset>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="labelCentralBody">
+       <property name="text">
+        <string>Central body:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="comboBoxCentralBody">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <item>
+        <property name="text">
+         <string>  Earth</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/ComboEarth.png</normaloff>:/icons/ComboEarth.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Moon</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/ComboMoon.png</normaloff>:/icons/ComboMoon.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Mercury</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/ComboMercury.png</normaloff>:/icons/ComboMercury.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Venus</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/ComboVenus.png</normaloff>:/icons/ComboVenus.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Mars</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/ComboMars.png</normaloff>:/icons/ComboMars.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Jupiter</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/ComboJupiter.png</normaloff>:/icons/ComboJupiter.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Saturn</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/ComboSaturn.png</normaloff>:/icons/ComboSaturn.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Uranus</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/ComboUranus.png</normaloff>:/icons/ComboUranus.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Neptune</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/ComboNeptune.png</normaloff>:/icons/ComboNeptune.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Pluto</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/ComboPluto.png</normaloff>:/icons/ComboPluto.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Sun</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/ComboSun.png</normaloff>:/icons/ComboSun.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Titan</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/ComboTitan.png</normaloff>:/icons/ComboTitan.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Europa</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/ComboEuropa.png</normaloff>:/icons/ComboEuropa.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Triton</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/ComboTriton.png</normaloff>:/icons/ComboTriton.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>  Enceladus</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/ComboEnceladus.png</normaloff>:/icons/ComboEnceladus.png</iconset>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="labelModel">
+       <property name="text">
+        <string>Model:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QComboBox" name="comboBoxModel">
+       <item>
+        <property name="text">
+         <string>Default</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>XMM</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>ISS</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0">
+    <widget class="QDialogButtonBox" name="buttonBoxMissionAspect">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="2" column="0">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../../iconary/sta-icons.qrc"/>
+  <include location="../../iconary/sta-icons.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBoxMissionAspect</sender>
+   <signal>accepted()</signal>
+   <receiver>missionAspectDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBoxMissionAspect</sender>
+   <signal>rejected()</signal>
+   <receiver>missionAspectDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
