@@ -1179,3 +1179,10 @@ ThreeDView::setReentryTrajectories(bool enabled)
 }
 
 
+void
+ThreeDView::setAmbientLight(float lightLevel)
+{
+    m_renderer->setAmbientLight(Spectrum::Flat(max(0.0f, min(1.0f, lightLevel))));
+    setViewChanged();
+}
+

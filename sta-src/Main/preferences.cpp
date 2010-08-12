@@ -64,6 +64,7 @@ void Preferences::connectViewActions(const ViewActionGroup* viewActions)
     connect(celestialGrid,          SIGNAL(clicked(bool)), viewActions->equatorialGridAction(),        SLOT(setChecked(bool)));
     connect(satellitesTrajectories, SIGNAL(clicked(bool)), viewActions->satelliteTrajectoriesAction(), SLOT(setChecked(bool)));
     connect(reentryTrajectories,    SIGNAL(clicked(bool)), viewActions->reentryTrajectoriesAction(),   SLOT(setChecked(bool)));
+    connect(this, SIGNAL(ambientLightChanged(float)), viewActions, SLOT(setAmbientLight(float)));
 
     // Connect from view actions to dialog widgets
     connect(viewActions->shadowsAction(),               SIGNAL(toggled(bool)), shadows,                SLOT(setChecked(bool)));
@@ -74,6 +75,7 @@ void Preferences::connectViewActions(const ViewActionGroup* viewActions)
     connect(viewActions->equatorialGridAction(),        SIGNAL(toggled(bool)), celestialGrid,          SLOT(setChecked(bool)));
     connect(viewActions->satelliteTrajectoriesAction(), SIGNAL(toggled(bool)), satellitesTrajectories, SLOT(setChecked(bool)));
     connect(viewActions->reentryTrajectoriesAction(),   SIGNAL(toggled(bool)), reentryTrajectories,    SLOT(setChecked(bool)));
+    connect(viewActions, SIGNAL(ambientLightChanged(float)), this, SLOT(setAmbientLight(float)));
 }
 
 
@@ -87,9 +89,25 @@ void Preferences::on_DialogPreferences_rejected()
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
-void Preferences::on_horizontalSliderAmbientLight_valueChanged(int)
+void Preferences::on_horizontalSliderAmbientLight_valueChanged(int value)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    float minValue = float(horizontalSliderAmbientLight->minimum());
+    float maxValue = float(horizontalSliderAmbientLight->maximum());
+    float lightLevel = (float(value) - minValue) / (maxValue - minValue);
+
+    emit ambientLightChanged(lightLevel);
+}
+
+void Preferences::setAmbientLight(float lightLevel)
+{
+    float minValue = float(horizontalSliderAmbientLight->minimum());
+    float maxValue = float(horizontalSliderAmbientLight->maximum());
+    int value = minValue + int((maxValue - minValue) * lightLevel);
+
+    if (value != horizontalSliderAmbientLight->value())
+    {
+        horizontalSliderAmbientLight->setValue(value);
+    }
 }
 
 void Preferences::on_shadows_clicked(bool)

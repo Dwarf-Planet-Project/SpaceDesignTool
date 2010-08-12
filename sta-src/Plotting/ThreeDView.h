@@ -94,6 +94,8 @@ public slots:
    void setSatelliteTrajectories(bool enabled);
    void setReentryTrajectories(bool enabled);
 
+   void setAmbientLight(float lightLevel);
+
 protected:
     void initializeGL();
     void paintGL();

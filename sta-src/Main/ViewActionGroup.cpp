@@ -32,7 +32,8 @@
   * toolbars to control view settings should be constructed using the actions from the
   * same ViewActionGroup (created once, in MainWindow.)
   */
-ViewActionGroup::ViewActionGroup()
+ViewActionGroup::ViewActionGroup() :
+    m_ambientLight(0.0f)
 {
     m_shadowsAction = new QAction(tr("Shadows"), this);
     m_shadowsAction->setCheckable(true);
@@ -74,7 +75,7 @@ ViewActionGroup::saveSettings()
     settings.setValue("EquatorialGrid", m_equatorialGridAction->isChecked());
     settings.setValue("ReentryTrajectories", m_reentryTrajectoriesAction->isChecked());
     settings.setValue("SatelliteTrajectories", m_satelliteTrajectoriesAction->isChecked());
-    qDebug("Saved settings...");
+    settings.setValue("AmbientLight", m_ambientLight);
     settings.endGroup();
 }
 
@@ -95,6 +96,19 @@ ViewActionGroup::restoreSettings()
     m_equatorialGridAction->setChecked(settings.value("EquatorialGrid", false).toBool());
     m_reentryTrajectoriesAction->setChecked(settings.value("ReentryTrajectories", true).toBool());
     m_satelliteTrajectoriesAction->setChecked(settings.value("SatelliteTrajectories", true).toBool());
+    setAmbientLight(settings.value("AmbientLight", 0.2f).toFloat());
 
     settings.endGroup();
+}
+
+
+void
+ViewActionGroup::setAmbientLight(float lightLevel)
+{
+    if (lightLevel != m_ambientLight)
+    {
+        qDebug("ambient light: %f, %f", lightLevel, m_ambientLight);
+        m_ambientLight = lightLevel;
+        emit ambientLightChanged(m_ambientLight);
+    }
 }

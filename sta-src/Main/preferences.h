@@ -40,6 +40,12 @@ public:
 
     void connectViewActions(const ViewActionGroup* viewActions);
 
+public slots:
+    void setAmbientLight(float lightLevel);
+
+signals:
+    void ambientLightChanged(float lightLevel);
+
 protected slots:
 	void on_DialogPreferences_accepted();
 	void on_DialogPreferences_rejected();

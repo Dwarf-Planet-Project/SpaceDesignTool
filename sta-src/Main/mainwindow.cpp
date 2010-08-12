@@ -289,7 +289,7 @@ MainWindow::MainWindow(QWidget *parent)	:
         connect(m_viewActions->cloudsAction(), SIGNAL(toggled(bool)), view, SLOT(setClouds(bool)));
         connect(m_viewActions->shadowsAction(), SIGNAL(toggled(bool)), view, SLOT(setShadows(bool)));
         connect(m_viewActions->satelliteTrajectoriesAction(), SIGNAL(toggled(bool)), view, SLOT(setSatelliteTrajectories(bool)));
-
+        connect(m_viewActions, SIGNAL(ambientLightChanged(float)), view, SLOT(setAmbientLight(float)));
     }
 
     // Read saved window preferences
@@ -632,8 +632,7 @@ void MainWindow::preferencesSTA()
     staPreferencesWidget->show(); // Creating the window modeless. This requires the declaration of the variable on the *.h file
     staPreferencesWidget->raise(); // Required to keep the modeless window alive
     staPreferencesWidget->activateWindow(); // Required to keep the modeless window alive
-
-
+    staPreferencesWidget->setAmbientLight(m_viewActions->ambientLight());
 }
 
 // Next lines created by Guillermo to handle the spawning of web browsers and e-mail clients, etc.

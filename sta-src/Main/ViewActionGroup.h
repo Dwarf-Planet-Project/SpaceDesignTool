@@ -79,6 +79,17 @@ public:
         return m_satelliteTrajectoriesAction;
     }
 
+    float ambientLight() const
+    {
+        return m_ambientLight;
+    }
+
+public slots:
+    void setAmbientLight(float lightLevel);
+
+signals:
+    float ambientLightChanged(float lightLevel);
+
 private:
     QAction* m_shadowsAction;
     QAction* m_atmospheresAction;
@@ -88,5 +99,6 @@ private:
     QAction* m_equatorialGridAction;
     QAction* m_reentryTrajectoriesAction;
     QAction* m_satelliteTrajectoriesAction;
+    float m_ambientLight;
 };
 #endif // VIEW_ACTION_GROUP_H_
