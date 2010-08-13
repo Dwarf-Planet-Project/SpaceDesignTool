@@ -183,10 +183,10 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_GENERIC()
     loitering.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(1);
     loitering.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(1);
 
-    loitering.ElementIdentifier()->setName("loitering");
+    loitering.ElementIdentifier()->setName("loitering arc");
     loitering.ElementIdentifier()->setTheOrder(1);
-    loitering.ElementIdentifier()->setModelName("default.3ds");
-    loitering.ElementIdentifier()->setColorName("yellow");
+    loitering.ElementIdentifier()->setModelName("Default");
+    loitering.ElementIdentifier()->setColorName("Yellow");
 
     return loitering;
 } /////////////////////// end of GENERIC
@@ -239,8 +239,8 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_XMM()
 
     loitering.ElementIdentifier()->setName("XMM loitering");
     loitering.ElementIdentifier()->setTheOrder(1);
-    loitering.ElementIdentifier()->setModelName("xmm.3ds");
-    loitering.ElementIdentifier()->setColorName("yellow");
+    loitering.ElementIdentifier()->setModelName("XMM");
+    loitering.ElementIdentifier()->setColorName("Yellow");
 
     return loitering;
 } /////////////////////// end of XMM
@@ -298,8 +298,8 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_MEX()
 
     loitering.ElementIdentifier()->setName("MEX loitering");
     loitering.ElementIdentifier()->setTheOrder(1);
-    loitering.ElementIdentifier()->setModelName("default.3ds");
-    loitering.ElementIdentifier()->setColorName("red");
+    loitering.ElementIdentifier()->setModelName("Default");
+    loitering.ElementIdentifier()->setColorName("Red");
 
     return loitering;
 }  ///////////////// End of MEX
@@ -417,8 +417,8 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Aeolus()
 
     loitering.ElementIdentifier()->setName("Aeolus loitering");
     loitering.ElementIdentifier()->setTheOrder(1);
-    loitering.ElementIdentifier()->setModelName("default.3ds");
-    loitering.ElementIdentifier()->setColorName("green");
+    loitering.ElementIdentifier()->setModelName("Default");
+    loitering.ElementIdentifier()->setColorName("Green");
 
     return loitering;
 } /////////// End of Aeolus
@@ -503,8 +503,8 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Artemis()
 
     loitering.ElementIdentifier()->setName("Artemis loitering");
     loitering.ElementIdentifier()->setTheOrder(1);
-    loitering.ElementIdentifier()->setModelName("default.3ds");
-    loitering.ElementIdentifier()->setColorName("red");
+    loitering.ElementIdentifier()->setModelName("Default");
+    loitering.ElementIdentifier()->setColorName("Red");
 
     return loitering;
 }  ////////// Edn of Artemis
@@ -576,8 +576,8 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_PROBA3()
 
     loitering.ElementIdentifier()->setName("ISS loitering");
     loitering.ElementIdentifier()->setTheOrder(1);
-    loitering.ElementIdentifier()->setModelName("iss.3ds");
-    loitering.ElementIdentifier()->setColorName("yellow");
+    loitering.ElementIdentifier()->setModelName("ISS");
+    loitering.ElementIdentifier()->setColorName("Yellow");
 
     return loitering;
 }

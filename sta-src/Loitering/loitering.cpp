@@ -74,28 +74,6 @@ LoiteringDialog::LoiteringDialog(ScenarioTree* parent) :
     IntegratorComboBox->addItem(tr("Runge-Kutta 3-4"), "RK4");
     IntegratorComboBox->addItem(tr("Runge-Kutta-Fehlberg"), "RKF");
 
-    /*
-    CentralBodyComboBox->addItem(QIcon(":/icons/ComboEarth.png"), tr("Earth"), (int)STA_EARTH);
-    CentralBodyComboBox->addItem(QIcon(":/icons/ComboMoon.png"), tr("Moon"),(int)STA_MOON);
-    CentralBodyComboBox->addItem(QIcon(":/icons/ComboMercury.png"), tr("Mercury"),(int)STA_MERCURY);
-    CentralBodyComboBox->addItem(QIcon(":/icons/ComboVenus.png"), tr("Venus"),(int)STA_VENUS);
-    CentralBodyComboBox->addItem(QIcon(":/icons/ComboMars.png"), tr("Mars"),(int)STA_MARS);
-    CentralBodyComboBox->addItem(QIcon(":/icons/ComboJupiter.png"), tr("Jupiter"),(int)STA_JUPITER);
-    CentralBodyComboBox->addItem(QIcon(":/icons/ComboSaturn.png"), tr("Saturn"),(int)STA_SATURN);
-    CentralBodyComboBox->addItem(QIcon(":/icons/ComboUranus.png"), tr("Uranus"),(int)STA_URANUS);
-    CentralBodyComboBox->addItem(QIcon(":/icons/ComboNeptune.png"), tr("Neptune"),(int)STA_NEPTUNE);
-    CentralBodyComboBox->addItem(QIcon(":/icons/ComboPluto.png"), tr("Pluto"),(int)STA_PLUTO);
-    CentralBodyComboBox->addItem(QIcon(":/icons/ComboDeimos.png"), tr("Deimos"),(int)STA_DEIMOS);
-    CentralBodyComboBox->addItem(QIcon(":/icons/ComboTitan.png"), tr("Titan"),(int)STA_TITAN);
-
-    CentralBodyComboBox->addItem(QIcon(":/icons/ComboEuropa.png"), tr("Europa"),(int)STA_EUROPA);
-    CentralBodyComboBox->addItem(QIcon(":/icons/ComboEnceladus.png"), tr("Enceladus"),(int)STA_ENCELADUS);
-    CentralBodyComboBox->addItem(QIcon(":/icons/ComboTriton.png"), tr("Triton"),(int)STA_TRITON);
-
-    CentralBodyComboBox->addItem(QIcon(":/icons/ComboSun.png"), tr("Sun"),(int)STA_SUN);
-    // Moons of the solar system at http://www.windows.ucar.edu/tour/link=/our_solar_system/moons_table.html
-    */
-
     // Set up the input validators
     QDoubleValidator* doubleValidator = new QDoubleValidator(this);
     QDoubleValidator* angleValidator = new QDoubleValidator(this);
@@ -265,11 +243,14 @@ bool LoiteringDialog::loadValues(ScenarioLoiteringType* loitering)
 
 bool LoiteringDialog::loadValues(ScenarioElementIdentifierType* arcIdentifier)
 {
-    ScenarioElementIdentifierType miIdentifier;
-    miIdentifier.elementName() = arcIdentifier->elementName();
-    miIdentifier.colorName() = arcIdentifier->colorName();
-    miIdentifier.modelName() = arcIdentifier->modelName();
-    loiteringAspect.loadValues(miIdentifier);
+    QString theArcName = arcIdentifier->Name();
+    loiteringAspect.loadValueArcName(theArcName);
+
+    QString theArcColor = arcIdentifier->colorName();
+    loiteringAspect.loadValueArcColor(theArcColor);
+
+    QString theArcModel = arcIdentifier->modelName();
+    loiteringAspect.loadValueArcModel(theArcModel);
 }
 
 
@@ -557,13 +538,14 @@ bool LoiteringDialog::loadValues(ScenarioInitialPositionType* initPosition)
 
 bool LoiteringDialog::saveValues(ScenarioLoiteringType* loitering)
 {
-    ScenarioEnvironmentType* environment	 = loitering->Environment().data();
-    ScenarioTimeLine* parameters		 = loitering->TimeLine().data();
+    ScenarioEnvironmentType* environment	     = loitering->Environment().data();
+    ScenarioTimeLine* parameters		         = loitering->TimeLine().data();
     ScenarioPropagationPositionType* propagation = loitering->PropagationPosition().data();
+    ScenarioElementIdentifierType* identifier    = loitering->ElementIdentifier().data();
     ScenarioInitialPositionType* initPosition    = loitering->InitialPosition().data();//Modified by Dominic to reflect chages in XML schema (initial position now in sharedelements)
 
 
-    if (saveValues(environment) && saveValues(parameters) && saveValues(propagation) && saveValues(initPosition))
+    if (saveValues(identifier) && saveValues(environment) && saveValues(parameters) && saveValues(propagation) && saveValues(initPosition))
     {
         return true;
     }
@@ -578,37 +560,26 @@ bool LoiteringDialog::saveValues(ScenarioLoiteringType* loitering)
 
 bool LoiteringDialog::saveValues(ScenarioElementIdentifierType* arcIdentifier)
 {
-
-    ScenarioElementIdentifierType miIdentifier = loiteringAspect.saveValues();
-
-    arcIdentifier = &miIdentifier;
-
     // The arc name
-    //QString theArcName = loiteringAspect.on_lineEditArcName_editingFinished();
-    //arcIdentifier->setName(theArcName);
-
-    // The model
-    //QString theModelName = loiteringAspect.on_comboBoxModel_currentText();
-    //arcIdentifier->setModelName(theModelName);
+    QString theArcName = loiteringAspect.saveValueArcName();
+    arcIdentifier->setName(theArcName);
 
     // The color
-    //QString theColorName = loiteringAspect.on_comboBoxColorPicker_currentText();
-    //arcIdentifier->setColorName(theColorName);
+    QString theColorName = loiteringAspect.saveValueArcColor();
+    arcIdentifier->setColorName(theColorName);
 
+    // The model
+    QString theModelName = loiteringAspect.saveValueArcModel();
+    arcIdentifier->setModelName(theModelName);
 }
 
 
 bool LoiteringDialog::saveValues(ScenarioEnvironmentType* environment)
 {
-
     // The central body
-    //QString miCentralBodyName = loiteringAspect.on_comboBoxCentralBody_currentText();
-
     QString myCentralBody = loiteringAspect.saveValueCentralBody();
 
-
-    //QString myCentralBody = loiteringAspect.on_comboBoxCentralBody_currentText();
-    qDebug() << "outside save :" << myCentralBody << endl;
+    //qDebug() << "outside save :" << myCentralBody << endl;
 
     StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(myCentralBody);
     if (centralBody)
@@ -617,7 +588,7 @@ bool LoiteringDialog::saveValues(ScenarioEnvironmentType* environment)
     }
     else
     {
-        qWarning("Hola: Unknown central body");
+        qWarning("Unknown central body");
         return false;
     }
 

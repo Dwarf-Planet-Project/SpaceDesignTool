@@ -40,61 +40,82 @@ missionAspectDialog::~missionAspectDialog()
 
 
 
-
-
-bool missionAspectDialog::loadValues(const ScenarioElementIdentifierType identifier)
+bool missionAspectDialog::loadValueArcName(const QString arcName)
 {
-
-	// The arc name
-    qDebug() << identifier.elementName() << endl;
-	lineEditArcName->setText(identifier.elementName());
-
-	// The arc color
-	if (identifier.colorName() == "Yellow")
-		comboBoxColorPicker->setCurrentIndex(0);
-	else if (identifier.colorName() == "Red")
-        comboBoxColorPicker->setCurrentIndex(1);
-	else if (identifier.colorName() == "Green")
-        comboBoxColorPicker->setCurrentIndex(2);
-	else if (identifier.colorName() == "Blue")
-        comboBoxColorPicker->setCurrentIndex(3);
-	else if (identifier.colorName() == "Magenta")
-        comboBoxColorPicker->setCurrentIndex(4);
-	else if (identifier.colorName() == "White")
-        comboBoxColorPicker->setCurrentIndex(5);
-	else if (identifier.colorName() == "Cyan")
-        comboBoxColorPicker->setCurrentIndex(6);
-	else if (identifier.colorName() == "Gray")
-        comboBoxColorPicker->setCurrentIndex(7);
-	else if (identifier.colorName() == "Dark Red")
-        comboBoxColorPicker->setCurrentIndex(8);
-	else if (identifier.colorName() == "Dark Yellow")
-        comboBoxColorPicker->setCurrentIndex(9);
-	else if (identifier.colorName() == "Dark Blue")
-        comboBoxColorPicker->setCurrentIndex(10);
-	else if (identifier.colorName() == "Dark Magenta")
-        comboBoxColorPicker->setCurrentIndex(11);
-	else if (identifier.colorName() == "Light Gray")
-        comboBoxColorPicker->setCurrentIndex(12);
-	else if (identifier.colorName() == "Drak Gray")
-        comboBoxColorPicker->setCurrentIndex(13);
-	else if (identifier.colorName() == "Dark Cyan")
-        comboBoxColorPicker->setCurrentIndex(14);
-	else if (identifier.colorName() == "Black")
-        comboBoxColorPicker->setCurrentIndex(15);
-
-    // The model name
-    if (identifier.modelName() == "Default")
-        comboBoxModel->setCurrentIndex(0);
-    else if (identifier.modelName() == "XMM")
-        comboBoxModel->setCurrentIndex(1);
-    else if (identifier.modelName() == "ISS")
-        comboBoxModel->setCurrentIndex(2);
+    lineEditArcName->setText(arcName);
+    theArcName = lineEditArcName->text();
+    //qDebug() << "name internal ;" << arcName << endl;
 }
+
+
+
+bool missionAspectDialog::loadValueArcColor(const QString arcColor)
+{
+    //qDebug() << "color internal ;" << arcColor << endl;
+    if (arcColor == "Yellow")
+        comboBoxColorPicker->setCurrentIndex(0);
+    else if (arcColor == "Red")
+        comboBoxColorPicker->setCurrentIndex(1);
+    else if (arcColor == "Green")
+        comboBoxColorPicker->setCurrentIndex(2);
+    else if (arcColor == "Blue")
+        comboBoxColorPicker->setCurrentIndex(3);
+    else if (arcColor == "Magenta")
+        comboBoxColorPicker->setCurrentIndex(4);
+    else if (arcColor == "White")
+        comboBoxColorPicker->setCurrentIndex(5);
+    else if (arcColor == "Cyan")
+        comboBoxColorPicker->setCurrentIndex(6);
+    else if (arcColor == "Gray")
+        comboBoxColorPicker->setCurrentIndex(7);
+    else if (arcColor == "Dark Red")
+        comboBoxColorPicker->setCurrentIndex(8);
+    else if (arcColor == "Dark Yellow")
+        comboBoxColorPicker->setCurrentIndex(9);
+    else if (arcColor == "Dark Blue")
+        comboBoxColorPicker->setCurrentIndex(10);
+    else if (arcColor == "Dark Magenta")
+        comboBoxColorPicker->setCurrentIndex(11);
+    else if (arcColor == "Light Gray")
+        comboBoxColorPicker->setCurrentIndex(12);
+    else if (arcColor == "Drak Gray")
+        comboBoxColorPicker->setCurrentIndex(13);
+    else if (arcColor == "Dark Cyan")
+        comboBoxColorPicker->setCurrentIndex(14);
+    else if (arcColor == "Black")
+        comboBoxColorPicker->setCurrentIndex(15);
+    else
+        return false;
+
+    theArcColor = arcColor;
+    return true;
+}
+
+
+
+
+bool missionAspectDialog::loadValueArcModel(const QString arcModel)
+{
+    //qDebug() << "model internal" << arcModel << endl;
+    if (arcModel == "Default")
+        comboBoxModel->setCurrentIndex(0);
+    else if (arcModel == "XMM")
+        comboBoxModel->setCurrentIndex(1);
+    else if (arcModel == "ISS")
+        comboBoxModel->setCurrentIndex(2);
+    else
+        return false;
+
+    theArcModel = arcModel;
+    return true;
+}
+
+
 
 
 bool missionAspectDialog::loadValueCentralBody(const QString centralBody)
 {
+    // Moons of the solar system at http://www.windows.ucar.edu/tour/link=/our_solar_system/moons_table.html
     if (centralBody == "Earth")
         comboBoxCentralBody->setCurrentIndex(0);
     else if (centralBody == "Moon")
@@ -134,26 +155,37 @@ bool missionAspectDialog::loadValueCentralBody(const QString centralBody)
 
 
 
-ScenarioElementIdentifierType missionAspectDialog::saveValues()
-{
-    ScenarioElementIdentifierType miIdentifier;   
-    // the arc name
-    miIdentifier.elementName() = lineEditArcName->text();   
-    // the color name
-    miIdentifier.colorName() = comboBoxColorPicker->currentText();   
-    // The model name
-    miIdentifier.modelName() = comboBoxModel->currentText();   
-    return miIdentifier;
-}
-
-
-
 
 QString missionAspectDialog::saveValueCentralBody()
 {
     theCentralBody = comboBoxCentralBody->currentText();
     return theCentralBody;
 }
+
+
+QString missionAspectDialog::saveValueArcName()
+{
+    theArcName = lineEditArcName->text();
+    return theArcName;
+}
+
+
+
+QString missionAspectDialog::saveValueArcColor()
+{
+    theArcColor = comboBoxColorPicker->currentText();
+    return theArcColor;
+}
+
+
+QString missionAspectDialog::saveValueArcModel()
+{
+    theArcModel = comboBoxModel->currentText();
+    return theArcModel;
+}
+
+
+
 
 
 

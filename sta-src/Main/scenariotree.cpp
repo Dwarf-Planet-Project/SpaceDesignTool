@@ -415,6 +415,7 @@ void ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scena
     // Guillermo: expand items by default or not
     item->setExpanded(true);
 
+    // This part labels the tree with the proper identifiers
     if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject))
     {
         item->setFlags(item->flags() | (Qt::ItemIsEditable));
@@ -424,11 +425,10 @@ void ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scena
     {
         item->setText(1, dynamic_cast<ScenarioParticipantType*>(scenarioObject)->Name());
     }
-    else if (dynamic_cast<ScenarioGravityModel*>(scenarioObject))
-    {
-
-        item->setText(1, dynamic_cast<ScenarioGravityModel*>(scenarioObject)->modelName());
-    }
+    //else if (dynamic_cast<ScenarioGravityModel*>(scenarioObject))
+    //{
+    //    item->setText(1, dynamic_cast<ScenarioGravityModel*>(scenarioObject)->modelName());
+    //}
 
     changeLabels(item, scenarioObject);
 
@@ -687,6 +687,7 @@ void ScenarioTree::updateTreeItems(QTreeWidgetItem* parentItem,
         QTreeWidgetItem* child = parentItem->takeChild(i);
         delete child;
     }
+
     
 #if OLDSCENARIO
     scenarioObject->createItemContents(parentItem);
@@ -722,6 +723,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
         Lagrmode=-1;    // Guillermo: to remove this from here !!!!!!!!!!!!
         ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(scenarioObject);
         LoiteringDialog editDialog(this);
+
         if (!editDialog.loadValues(loitering))
         {
             QMessageBox::information(this, tr("Bad Loitering element"), tr("Error in Loitering element"));
@@ -731,6 +733,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(loitering);
+                //qDebug() << "==> arc name :" << loitering->ElementIdentifier()->Name()  << endl;
                 //updateTreeItems(editItem, scenarioObject);
             }
         }
@@ -1299,11 +1302,13 @@ void ScenarioTree::editItem(QTreeWidgetItem* item, int column)
     {
         if (dynamic_cast<SpaceScenario*>(scenarioObject))
         {
-            item->setFlags(item->flags() & (~Qt::ItemIsEditable));   // Guillermo says: do not allow editing in line on 1st column and for the space scenario row
+            item->setFlags(item->flags() & (~Qt::ItemIsEditable));
+            // Guillermo says: do not allow editing in line on 1st column and for the space scenario row
         }
         else if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject))
         {
-            item->setFlags(item->flags() & (~Qt::ItemIsEditable)); // Guillermo says: do not allow editing in line on 1st column and for the element identifier
+            item->setFlags(item->flags() & (~Qt::ItemIsEditable));
+            // Guillermo says: do not allow editing in line on 1st column and for the element identifier
         }
         else
         {

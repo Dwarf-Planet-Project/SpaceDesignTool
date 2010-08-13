@@ -38,13 +38,28 @@ class missionAspectDialog : public QDialog , private Ui::missionAspectDialog
 public:
     missionAspectDialog( QWidget * parent = 0, Qt::WindowFlags f = 0);
     ~missionAspectDialog();
-    bool loadValues(const ScenarioElementIdentifierType identifier);
+
+    //bool loadValues(const ScenarioElementIdentifierType* identifier);
+    //ScenarioElementIdentifierType* saveValues();
+
+    bool loadValueArcName(const QString arcName);
+    QString saveValueArcName();
+
+    bool loadValueArcColor(const QString arcColor);
+    QString saveValueArcColor();
+
+    bool loadValueArcModel(const QString arcModel);
+    QString saveValueArcModel();
+
     bool loadValueCentralBody(const QString centralBody);
-    ScenarioElementIdentifierType saveValues();
     QString saveValueCentralBody();
 
 private:
     QString theCentralBody;
+    QString theArcName;
+    QString theArcColor;
+    QString theArcModel;
+
 
 	
 };

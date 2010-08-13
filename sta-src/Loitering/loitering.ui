@@ -2168,19 +2168,6 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
       </widget>
      </widget>
     </widget>
-    <widget class="QComboBox" name="CentralBodyComboBox">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>305</x>
-       <y>5</y>
-       <width>166</width>
-       <height>26</height>
-      </rect>
-     </property>
-    </widget>
     <widget class="QPushButton" name="pushButtonAspect">
      <property name="geometry">
       <rect>
@@ -2678,7 +2665,6 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
   <tabstop>AngularVelocityYEdit_2</tabstop>
   <tabstop>AngularVelocityZEdit_2</tabstop>
   <tabstop>argOfPeriapsisEdit_6</tabstop>
-  <tabstop>CentralBodyComboBox</tabstop>
   <tabstop>GravityFieldRadioButton</tabstop>
   <tabstop>GravityComboBox</tabstop>
   <tabstop>ZonalsSpinBox</tabstop>
