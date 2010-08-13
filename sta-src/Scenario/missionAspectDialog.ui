@@ -62,7 +62,7 @@
       <widget class="QComboBox" name="comboBoxColorPicker">
        <item>
         <property name="text">
-         <string>  Yellow</string>
+         <string>Yellow</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -71,7 +71,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Red</string>
+         <string>Red</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -80,7 +80,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Green</string>
+         <string>Green</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -89,7 +89,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Blue</string>
+         <string>Blue</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -98,7 +98,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Magenta</string>
+         <string>Magenta</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -107,7 +107,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  White</string>
+         <string>White</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -116,7 +116,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Cyan</string>
+         <string>Cyan</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -125,7 +125,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Gray</string>
+         <string>Gray</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -134,7 +134,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Dark Red</string>
+         <string>Dark Red</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -143,7 +143,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Dark Yellow</string>
+         <string> Dark Yellow</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -152,7 +152,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Dark Blue</string>
+         <string>Dark Blue</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -161,7 +161,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Dark Magenta</string>
+         <string>Dark Magenta</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -170,7 +170,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Dark Gray</string>
+         <string>Dark Gray</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -179,7 +179,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Light Gray</string>
+         <string>Light Gray</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -188,7 +188,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Dark Cyan</string>
+         <string>Dark Cyan</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -197,7 +197,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Black</string>
+         <string>Black</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -223,7 +223,7 @@
        </property>
        <item>
         <property name="text">
-         <string>  Earth</string>
+         <string>Earth</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -232,7 +232,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Moon</string>
+         <string>Moon</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -241,7 +241,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Mercury</string>
+         <string>Mercury</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -250,7 +250,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Venus</string>
+         <string>Venus</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -259,7 +259,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Mars</string>
+         <string>Mars</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -268,7 +268,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Jupiter</string>
+         <string>Jupiter</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -277,7 +277,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Saturn</string>
+         <string>Saturn</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -286,7 +286,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Uranus</string>
+         <string>Uranus</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -295,7 +295,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Neptune</string>
+         <string>Neptune</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -304,7 +304,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Pluto</string>
+         <string>Pluto</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -313,7 +313,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Sun</string>
+         <string>Sun</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -322,7 +322,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Titan</string>
+         <string>Titan</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -331,7 +331,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Europa</string>
+         <string>Europa</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -340,7 +340,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Triton</string>
+         <string>Triton</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">
@@ -349,7 +349,7 @@
        </item>
        <item>
         <property name="text">
-         <string>  Enceladus</string>
+         <string>Enceladus</string>
         </property>
         <property name="icon">
          <iconset resource="../../iconary/sta-icons.qrc">

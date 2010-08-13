@@ -44,6 +44,8 @@
 #include "Astro-Core/propagateGAUSS.h"
 #include "Scenario/missionAspectDialog.h"
 
+#include "ui_missionAspectDialog.h"
+
 #include <QTextStream>
 #include <QDebug>
 #include <QFile>
@@ -72,6 +74,7 @@ LoiteringDialog::LoiteringDialog(ScenarioTree* parent) :
     IntegratorComboBox->addItem(tr("Runge-Kutta 3-4"), "RK4");
     IntegratorComboBox->addItem(tr("Runge-Kutta-Fehlberg"), "RKF");
 
+    /*
     CentralBodyComboBox->addItem(QIcon(":/icons/ComboEarth.png"), tr("Earth"), (int)STA_EARTH);
     CentralBodyComboBox->addItem(QIcon(":/icons/ComboMoon.png"), tr("Moon"),(int)STA_MOON);
     CentralBodyComboBox->addItem(QIcon(":/icons/ComboMercury.png"), tr("Mercury"),(int)STA_MERCURY);
@@ -91,6 +94,7 @@ LoiteringDialog::LoiteringDialog(ScenarioTree* parent) :
 
     CentralBodyComboBox->addItem(QIcon(":/icons/ComboSun.png"), tr("Sun"),(int)STA_SUN);
     // Moons of the solar system at http://www.windows.ucar.edu/tour/link=/our_solar_system/moons_table.html
+    */
 
     // Set up the input validators
     QDoubleValidator* doubleValidator = new QDoubleValidator(this);
@@ -191,6 +195,7 @@ LoiteringDialog::LoiteringDialog(ScenarioTree* parent) :
     connect(ZonalsSpinBox, SIGNAL(valueChanged(int)), TesseralSpinBox, SLOT(setVariableMaximum(int)));
 
     connect(PropagatorComboBox, SIGNAL(activated(int)), this, SLOT(disableIntegratorComboBox(int)));
+
 }
 
 LoiteringDialog::~LoiteringDialog()
@@ -239,13 +244,13 @@ void LoiteringDialog::disableIntegratorComboBox(int i)
 
 bool LoiteringDialog::loadValues(ScenarioLoiteringType* loitering)
 {
-    //ScenarioSCEnvironmentType* environment	    = loitering->Environment().data();
+    ScenarioElementIdentifierType* arcIdentifier    = loitering->ElementIdentifier().data();
     ScenarioEnvironmentType* environment	    = loitering->Environment().data();
     ScenarioTimeLine* parameters		    = loitering->TimeLine().data();
     ScenarioPropagationPositionType* propagation    = loitering->PropagationPosition().data();
     ScenarioInitialPositionType* initPosition	    = loitering->InitialPosition().data();  //Modified by Dominic to reflect chages in XML schema (initial position now in sharedelements)
 
-    if (loadValues(environment) && loadValues(parameters) && loadValues(propagation) && loadValues(initPosition))
+    if (loadValues(arcIdentifier) && loadValues(environment) && loadValues(parameters) && loadValues(propagation) && loadValues(initPosition))
     {
         return true;
     }
@@ -254,6 +259,20 @@ bool LoiteringDialog::loadValues(ScenarioLoiteringType* loitering)
         return false;
     }
 }
+
+
+
+
+bool LoiteringDialog::loadValues(ScenarioElementIdentifierType* arcIdentifier)
+{
+    ScenarioElementIdentifierType miIdentifier;
+    miIdentifier.elementName() = arcIdentifier->elementName();
+    miIdentifier.colorName() = arcIdentifier->colorName();
+    miIdentifier.modelName() = arcIdentifier->modelName();
+    loiteringAspect.loadValues(miIdentifier);
+}
+
+
 
 bool LoiteringDialog::loadValues(ScenarioEnvironmentType* environment)
 {
@@ -266,17 +285,10 @@ bool LoiteringDialog::loadValues(ScenarioEnvironmentType* environment)
         {
             qDebug() << "Bad central body '" << centralBodyName << "' in loitering trajectory.";
             return false;
-        }
+        }      
 
-        // Set the central body combo box
-        for (int i = 0; i < CentralBodyComboBox->count(); i++)
-        {
-            if (CentralBodyComboBox->itemData(i) == body->id())
-            {
-                CentralBodyComboBox->setCurrentIndex(i);
-                break;
-            }
-        }
+        loiteringAspect.loadValueCentralBody(centralBodyName);
+
     }
     else
     {
@@ -562,9 +574,56 @@ bool LoiteringDialog::saveValues(ScenarioLoiteringType* loitering)
 }
 
 
+
+
+bool LoiteringDialog::saveValues(ScenarioElementIdentifierType* arcIdentifier)
+{
+
+    ScenarioElementIdentifierType miIdentifier = loiteringAspect.saveValues();
+
+    arcIdentifier = &miIdentifier;
+
+    // The arc name
+    //QString theArcName = loiteringAspect.on_lineEditArcName_editingFinished();
+    //arcIdentifier->setName(theArcName);
+
+    // The model
+    //QString theModelName = loiteringAspect.on_comboBoxModel_currentText();
+    //arcIdentifier->setModelName(theModelName);
+
+    // The color
+    //QString theColorName = loiteringAspect.on_comboBoxColorPicker_currentText();
+    //arcIdentifier->setColorName(theColorName);
+
+}
+
+
 bool LoiteringDialog::saveValues(ScenarioEnvironmentType* environment)
 {
-    StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(CentralBodyComboBox->currentText());
+
+    // The central body
+    //QString miCentralBodyName = loiteringAspect.on_comboBoxCentralBody_currentText();
+
+    QString myCentralBody = loiteringAspect.saveValueCentralBody();
+
+
+    //QString myCentralBody = loiteringAspect.on_comboBoxCentralBody_currentText();
+    qDebug() << "outside save :" << myCentralBody << endl;
+
+    StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(myCentralBody);
+    if (centralBody)
+    {
+        environment->CentralBody()->setName(myCentralBody);
+    }
+    else
+    {
+        qWarning("Hola: Unknown central body");
+        return false;
+    }
+
+
+    /*
+    StaBody* centralBody =  STA_SOLAR_SYSTEM->lookup(CentralBodyComboBox->currentText());
     if (centralBody)
     {
         environment->CentralBody()->setName(centralBody->name());
@@ -574,6 +633,8 @@ bool LoiteringDialog::saveValues(ScenarioEnvironmentType* environment)
         qWarning("Unknown central body %s", CentralBodyComboBox->currentText().toAscii().data());
         return false;
     }
+
+
 
 #if OLDSCENARIO
     if (GravityFieldRadioButton->isChecked())
@@ -653,6 +714,8 @@ bool LoiteringDialog::saveValues(ScenarioEnvironmentType* environment)
         environment->addPerturbation(debrisPerturbation);
     }
 #endif
+
+    */
 
     return true;
 }
@@ -1187,9 +1250,6 @@ PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
 
 void LoiteringDialog::on_pushButtonAspect_clicked()
 {
-    missionAspectDialog *myMissionAspectDialog = new missionAspectDialog(this, Qt::Tool);
-    myMissionAspectDialog->show();
-    myMissionAspectDialog->setFocus();
-    myMissionAspectDialog->activateWindow(); // Required to keep the modeless window alive
+    loiteringAspect.exec();
 }
 

@@ -27,22 +27,25 @@
 #define MISSIONASPECTDIALOG_H
 
 #include "ui_missionAspectDialog.h"
+
 #include <QDialog>
+
+#include "Scenario/staschema.h"
 
 class missionAspectDialog : public QDialog , private Ui::missionAspectDialog
 {
-Q_OBJECT
+    Q_OBJECT
 public:
-	missionAspectDialog( QWidget * parent = 0, Qt::WindowFlags f = 0 );
-	~missionAspectDialog();
-protected slots:
-	void on_lineEditArcName_returnPressed();
-	void on_lineEditArcName_editingFinished();
-	void on_comboBoxColorPicker_currentIndexChanged(int);
-	void on_missionAspectDialog_rejected();
-	void on_missionAspectDialog_accepted();
-	void on_comboBoxCentralBody_currentIndexChanged(int);
-	void on_comboBoxModel_currentIndexChanged(int);
+    missionAspectDialog( QWidget * parent = 0, Qt::WindowFlags f = 0);
+    ~missionAspectDialog();
+    bool loadValues(const ScenarioElementIdentifierType identifier);
+    bool loadValueCentralBody(const QString centralBody);
+    ScenarioElementIdentifierType saveValues();
+    QString saveValueCentralBody();
+
+private:
+    QString theCentralBody;
+
 	
 };
 #endif //MISSIONASPECTDIALOG_H

@@ -23,7 +23,10 @@
 ------------------ Author: Guillermo Ortega  -------------------------------------------
 */
 
-#include "missionAspectDialog.h"
+#include "Scenario/missionAspectDialog.h"
+#include "Astro-Core/stabody.h"
+
+#include <QDebug>
 
 missionAspectDialog::missionAspectDialog( QWidget * parent, Qt::WindowFlags f) : QDialog(parent,f)
 {
@@ -34,38 +37,136 @@ missionAspectDialog::~missionAspectDialog()
 {
 }
 
-void missionAspectDialog::on_lineEditArcName_returnPressed()
+
+
+
+
+
+bool missionAspectDialog::loadValues(const ScenarioElementIdentifierType identifier)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+
+	// The arc name
+    qDebug() << identifier.elementName() << endl;
+	lineEditArcName->setText(identifier.elementName());
+
+	// The arc color
+	if (identifier.colorName() == "Yellow")
+		comboBoxColorPicker->setCurrentIndex(0);
+	else if (identifier.colorName() == "Red")
+        comboBoxColorPicker->setCurrentIndex(1);
+	else if (identifier.colorName() == "Green")
+        comboBoxColorPicker->setCurrentIndex(2);
+	else if (identifier.colorName() == "Blue")
+        comboBoxColorPicker->setCurrentIndex(3);
+	else if (identifier.colorName() == "Magenta")
+        comboBoxColorPicker->setCurrentIndex(4);
+	else if (identifier.colorName() == "White")
+        comboBoxColorPicker->setCurrentIndex(5);
+	else if (identifier.colorName() == "Cyan")
+        comboBoxColorPicker->setCurrentIndex(6);
+	else if (identifier.colorName() == "Gray")
+        comboBoxColorPicker->setCurrentIndex(7);
+	else if (identifier.colorName() == "Dark Red")
+        comboBoxColorPicker->setCurrentIndex(8);
+	else if (identifier.colorName() == "Dark Yellow")
+        comboBoxColorPicker->setCurrentIndex(9);
+	else if (identifier.colorName() == "Dark Blue")
+        comboBoxColorPicker->setCurrentIndex(10);
+	else if (identifier.colorName() == "Dark Magenta")
+        comboBoxColorPicker->setCurrentIndex(11);
+	else if (identifier.colorName() == "Light Gray")
+        comboBoxColorPicker->setCurrentIndex(12);
+	else if (identifier.colorName() == "Drak Gray")
+        comboBoxColorPicker->setCurrentIndex(13);
+	else if (identifier.colorName() == "Dark Cyan")
+        comboBoxColorPicker->setCurrentIndex(14);
+	else if (identifier.colorName() == "Black")
+        comboBoxColorPicker->setCurrentIndex(15);
+
+    // The model name
+    if (identifier.modelName() == "Default")
+        comboBoxModel->setCurrentIndex(0);
+    else if (identifier.modelName() == "XMM")
+        comboBoxModel->setCurrentIndex(1);
+    else if (identifier.modelName() == "ISS")
+        comboBoxModel->setCurrentIndex(2);
 }
 
-void missionAspectDialog::on_lineEditArcName_editingFinished()
+
+bool missionAspectDialog::loadValueCentralBody(const QString centralBody)
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    if (centralBody == "Earth")
+        comboBoxCentralBody->setCurrentIndex(0);
+    else if (centralBody == "Moon")
+        comboBoxCentralBody->setCurrentIndex(1);
+    else if (centralBody == "Mercury")
+        comboBoxCentralBody->setCurrentIndex(2);
+    else if (centralBody == "Venus")
+        comboBoxCentralBody->setCurrentIndex(3);
+    else if (centralBody == "Mars")
+        comboBoxCentralBody->setCurrentIndex(4);
+    else if (centralBody == "Jupiter")
+        comboBoxCentralBody->setCurrentIndex(5);
+    else if (centralBody == "Saturn")
+        comboBoxCentralBody->setCurrentIndex(6);
+    else if (centralBody == "Uranus")
+        comboBoxCentralBody->setCurrentIndex(7);
+    else if (centralBody == "Neptune")
+        comboBoxCentralBody->setCurrentIndex(8);
+    else if (centralBody == "Pluto")
+        comboBoxCentralBody->setCurrentIndex(9);
+    else if (centralBody == "Sun")
+        comboBoxCentralBody->setCurrentIndex(10);
+    else if (centralBody == "Titan")
+        comboBoxCentralBody->setCurrentIndex(11);
+    else if (centralBody == "Europa")
+        comboBoxCentralBody->setCurrentIndex(12);
+    else if (centralBody == "Triton")
+        comboBoxCentralBody->setCurrentIndex(13);
+    else if (centralBody == "Enceladus")
+        comboBoxCentralBody->setCurrentIndex(14);
+    else
+        return false;
+
+    theCentralBody = centralBody;
+    return true;
 }
 
-void missionAspectDialog::on_comboBoxColorPicker_currentIndexChanged(int)
+
+
+ScenarioElementIdentifierType missionAspectDialog::saveValues()
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    ScenarioElementIdentifierType miIdentifier;   
+    // the arc name
+    miIdentifier.elementName() = lineEditArcName->text();   
+    // the color name
+    miIdentifier.colorName() = comboBoxColorPicker->currentText();   
+    // The model name
+    miIdentifier.modelName() = comboBoxModel->currentText();   
+    return miIdentifier;
 }
 
+
+
+
+QString missionAspectDialog::saveValueCentralBody()
+{
+    theCentralBody = comboBoxCentralBody->currentText();
+    return theCentralBody;
+}
+
+
+
+/*
 void missionAspectDialog::on_missionAspectDialog_rejected()
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    theCentralBody = comboBoxCentralBody->currentText();
 }
 
 void missionAspectDialog::on_missionAspectDialog_accepted()
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    theCentralBody = comboBoxCentralBody->currentText();
 }
 
-void missionAspectDialog::on_comboBoxCentralBody_currentIndexChanged(int)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void missionAspectDialog::on_comboBoxModel_currentIndexChanged(int)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
+*/
 

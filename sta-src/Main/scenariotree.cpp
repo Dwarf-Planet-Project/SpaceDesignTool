@@ -106,252 +106,252 @@ void changeLabels(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
     // Guillermo says: renaming the labels of the first colum to make it compatible with the participants view
     if ((scenarioObject->elementName()) == "SC")
     {
-	item->setText(0, "Satellite");
-	item->setIcon(0, QIcon(":/icons/ParticipantSATELLITE.png"));
+        item->setText(0, "Satellite");
+        item->setIcon(0, QIcon(":/icons/ParticipantSATELLITE.png"));
     }
     else if ((scenarioObject->elementName()) == "LV")
     {
-	item->setText(0, "Launcher");
-	item->setIcon(0, QIcon(":/icons/ParticipantROCKET.png"));
+        item->setText(0, "Launcher");
+        item->setIcon(0, QIcon(":/icons/ParticipantROCKET.png"));
     }
     else if ((scenarioObject->elementName()) == "GroundStation")
     {
-	item->setText(0, "Ground Station");
-	item->setIcon(0, QIcon(":/icons/ParticipantSTATION.png"));
+        item->setText(0, "Ground Station");
+        item->setIcon(0, QIcon(":/icons/ParticipantSTATION.png"));
     }
     else if ((scenarioObject->elementName()) == "Point")
     {
-	item->setText(0, "Point");
-	item->setIcon(0, QIcon(":/icons/ParticipantPOINT.png"));
+        item->setText(0, "Point");
+        item->setIcon(0, QIcon(":/icons/ParticipantPOINT.png"));
     }
     else if ((scenarioObject->elementName()) == "REV")
     {
-	item->setText(0, "Re-entry vehicle");
-	item->setIcon(0, QIcon(":/icons/ParticipantENTRYVEHICLE.png"));
+        item->setText(0, "Re-entry vehicle");
+        item->setIcon(0, QIcon(":/icons/ParticipantENTRYVEHICLE.png"));
     }
     else if ((scenarioObject->elementName()) == "Transmitter")
-	item->setText(0, "Transmitter");
+        item->setText(0, "Transmitter");
     else if ((scenarioObject->elementName()) == "TransmitterPayload")
-	item->setText(0, "Transmitter");
+        item->setText(0, "Transmitter");
     else if ((scenarioObject->elementName()) == "TransmitterPayloadType")
     {
-	item->setText(0, "Transmitter");
-	item->setIcon(0, QIcon(":/icons/Payload.png"));
+        item->setText(0, "Transmitter");
+        item->setIcon(0, QIcon(":/icons/Payload.png"));
     }
     else if ((scenarioObject->elementName()) == "ReceiverPayload")
-	item->setText(0, "Receiver");
+        item->setText(0, "Receiver");
     else if ((scenarioObject->elementName()) == "ReceiverPayloadType")
     {
-	item->setText(0, "Receiver");
-	item->setIcon(0, QIcon(":/icons/Payload.png"));
+        item->setText(0, "Receiver");
+        item->setIcon(0, QIcon(":/icons/Payload.png"));
     }
     else if ((scenarioObject->elementName()) == "OpticalPayload")
-	item->setText(0, "Telescope");
+        item->setText(0, "Telescope");
     else if ((scenarioObject->elementName()) == "OpticalPayloadType")
     {
-	item->setText(0, "Telescope");
-	item->setIcon(0, QIcon(":/icons/Payload.png"));
+        item->setText(0, "Telescope");
+        item->setIcon(0, QIcon(":/icons/Payload.png"));
     }
     else if ((scenarioObject->elementName()) == "RadarPayload")
-	item->setText(0, "Radar");
+        item->setText(0, "Radar");
     else if ((scenarioObject->elementName()) == "RadarPayloadType")
     {
-	item->setText(0, "Radar");
-	item->setIcon(0, QIcon(":/icons/Payload.png"));
+        item->setText(0, "Radar");
+        item->setIcon(0, QIcon(":/icons/Payload.png"));
     }
     else if ((scenarioObject->elementName()) == "RadarProperties")
-	item->setText(0, "Radar properties");
+        item->setText(0, "Radar properties");
     else if ((scenarioObject->elementName()) == "RadarType")
-	item->setText(0, "Radar type");
+        item->setText(0, "Radar type");
     else if ((scenarioObject->elementName()) == "Loitering")
-	item->setText(0, "Loitering");
+        item->setText(0, "Loitering");
     else if ((scenarioObject->elementName()) == "LoiteringType")
     {
-	item->setText(0, "Loitering");
-	item->setIcon(0, QIcon(":/icons/mission-arcs-loitering.png"));
+        item->setText(0, "Loitering");
+        item->setIcon(0, QIcon(":/icons/mission-arcs-loitering.png"));
     }
     else if ((scenarioObject->elementName()) == "Lagrangian")
-	item->setText(0, "Lagrangian");
+        item->setText(0, "Lagrangian");
     else if ((scenarioObject->elementName()) == "LagrangianType")
     {
-	item->setText(0, "Lagrangian");
-	item->setIcon(0, QIcon(":/icons/mission-arcs-loitering.png"));
+        item->setText(0, "Lagrangian");
+        item->setIcon(0, QIcon(":/icons/mission-arcs-loitering.png"));
     }
     else if ((scenarioObject->elementName()) == "Rendezvous")
-	item->setText(0, "Rendezvous");
+        item->setText(0, "Rendezvous");
     else if ((scenarioObject->elementName()) == "FlyBy")
-	item->setText(0, "Fly By");
+        item->setText(0, "Fly By");
     else if ((scenarioObject->elementName()) == "LoiteringTLE")
-	item->setText(0, "TLE");
+        item->setText(0, "TLE");
     else if ((scenarioObject->elementName()) == "LoiteringTLEType")
     {
-	item->setText(0, "TLE");
-	item->setIcon(0, QIcon(":/icons/mission-arcs-loiteringTLE.png"));
+        item->setText(0, "TLE");
+        item->setIcon(0, QIcon(":/icons/mission-arcs-loiteringTLE.png"));
     }
     else if ((scenarioObject->elementName()) == "EntryArc")
-	item->setText(0, "Entry");
+        item->setText(0, "Entry");
     else if ((scenarioObject->elementName()) == "ElementIdentifierType")
-	item->setText(0, "Identifier");
+        item->setText(0, "Identifier");
     else if ((scenarioObject->elementName()) == "SCProgram")
-	item->setText(0, "Program");
+        item->setText(0, "Program");
     else if ((scenarioObject->elementName()) == "SCMission")
-	item->setText(0, "Mission");
+        item->setText(0, "Mission");
     else if ((scenarioObject->elementName()) == "TrajectoryPlan")
-	item->setText(0, "Trajectory plan:");
+        item->setText(0, "Trajectory plan:");
     else if ((scenarioObject->elementName()) == "PayloadSet")
-	item->setText(0, "Payload set:");
+        item->setText(0, "Payload set:");
     else if ((scenarioObject->elementName()) == "SCSystemType")
-	item->setText(0, "Platform");
+        item->setText(0, "Platform");
     else if ((scenarioObject->elementName()) == "SystemBudgets")
-	item->setText(0, "Budgets");
+        item->setText(0, "Budgets");
     else if ((scenarioObject->elementName()) == "MassOfSystem")
-	item->setText(0, "Mass");
+        item->setText(0, "Mass");
     else if ((scenarioObject->elementName()) == "PowerOfSystem")
-	item->setText(0, "Power");
+        item->setText(0, "Power");
     else if ((scenarioObject->elementName()) == "Link")
-	item->setText(0, "Link");
+        item->setText(0, "Link");
     else if ((scenarioObject->elementName()) == "SCAerodynamics")
-	item->setText(0, "Aerodynamics");
+        item->setText(0, "Aerodynamics");
     else if ((scenarioObject->elementName()) == "Propulsion")
-	item->setText(0, "Propulsion");
+        item->setText(0, "Propulsion");
     else if ((scenarioObject->elementName()) == "Structure")
-	item->setText(0, "Structure");
+        item->setText(0, "Structure");
     else if ((scenarioObject->elementName()) == "Sizing")
-	item->setText(0, "Size");
+        item->setText(0, "Size");
     else if ((scenarioObject->elementName()) == "MomentsOfInertia")
-	item->setText(0, "Inertia");
+        item->setText(0, "Inertia");
     else if ((scenarioObject->elementName()) == "SecondMomentsOfArea")
-	item->setText(0, "More inertia");
+        item->setText(0, "More inertia");
     else if ((scenarioObject->elementName()) == "NaturalFrequency")
-	item->setText(0, "Natural frquency");
+        item->setText(0, "Natural frquency");
     else if ((scenarioObject->elementName()) == "TCS")
-	item->setText(0, "Thermal control");
+        item->setText(0, "Thermal control");
     else if ((scenarioObject->elementName()) == "Temperature")
-	item->setText(0, "Temperature");
+        item->setText(0, "Temperature");
     else if ((scenarioObject->elementName()) == "CoatingArea")
-	item->setText(0, "Coating Area");
+        item->setText(0, "Coating Area");
     else if ((scenarioObject->elementName()) == "ColdSurface")
-	item->setText(0, "Cold surface");
+        item->setText(0, "Cold surface");
     else if ((scenarioObject->elementName()) == "ColdCoating")
-	item->setText(0, "Cold surface coating");
+        item->setText(0, "Cold surface coating");
     else if ((scenarioObject->elementName()) == "HotSurface")
-	item->setText(0, "Hot surface");
+        item->setText(0, "Hot surface");
     else if ((scenarioObject->elementName()) == "HotCoating")
-	item->setText(0, "Hot surface coating");
+        item->setText(0, "Hot surface coating");
     else if ((scenarioObject->elementName()) == "EPS")
-	item->setText(0, "EPS");
+        item->setText(0, "EPS");
     else if ((scenarioObject->elementName()) == "SolarArray")
-	item->setText(0, "Solar array type");
+        item->setText(0, "Solar array type");
     else if ((scenarioObject->elementName()) == "BatteryType")
-	item->setText(0, "Battery type");
+        item->setText(0, "Battery type");
     else if ((scenarioObject->elementName()) == "TTC")
-	item->setText(0, "TTC");
+        item->setText(0, "TTC");
     else if ((scenarioObject->elementName()) == "TTCAntenna")
-	item->setText(0, "TTC antenna");
+        item->setText(0, "TTC antenna");
     else if ((scenarioObject->elementName()) == "AOCS")
-	item->setText(0, "AOCS");
+        item->setText(0, "AOCS");
     else if ((scenarioObject->elementName()) == "OBDH")
-	item->setText(0, "OBDH");
+        item->setText(0, "OBDH");
     else if ((scenarioObject->elementName()) == "Optimization")
-	item->setText(0, "Optimization");
+        item->setText(0, "Optimization");
     else if ((scenarioObject->elementName()) == "OutputFiles")
-	item->setText(0, "Output Files");
+        item->setText(0, "Output Files");
     else if ((scenarioObject->elementName()) == "REVProgramType")
-	item->setText(0, "Program");
+        item->setText(0, "Program");
     else if ((scenarioObject->elementName()) == "REVMissionType")
-	item->setText(0, "Mission");
+        item->setText(0, "Mission");
     else if ((scenarioObject->elementName()) == "REVPayloadType")
-	item->setText(0, "Payload");
+        item->setText(0, "Payload");
     else if ((scenarioObject->elementName()) == "REVTrajectoryPlanType")
-	item->setText(0, "Trajectory plan");
+        item->setText(0, "Trajectory plan");
     else if ((scenarioObject->elementName()) == "REVSystemType")
-	item->setText(0, "System");
+        item->setText(0, "System");
     else if ((scenarioObject->elementName()) == "REVWeights")
-	item->setText(0, "Mass");
+        item->setText(0, "Mass");
     else if ((scenarioObject->elementName()) == "InertialMatrix")
-	item->setText(0, "Inertia");
+        item->setText(0, "Inertia");
     else if ((scenarioObject->elementName()) == "OptVarString")
-	item->setText(0, "Optimization");
+        item->setText(0, "Optimization");
     else if ((scenarioObject->elementName()) == "OptVarInt")
         item->setText(0, "Optimization");
     else if ((scenarioObject->elementName()) == "REVComponentsType")
-	item->setText(0, "Components");
+        item->setText(0, "Components");
     else if ((scenarioObject->elementName()) == "REVComponentsMassType")
-	item->setText(0, "Mass");
+        item->setText(0, "Mass");
     else if ((scenarioObject->elementName()) == "CoGLongPosition")
-	item->setText(0, "CoG position (L)");
+        item->setText(0, "CoG position (L)");
     else if ((scenarioObject->elementName()) == "REVGeometryType")
-	item->setText(0, "Geometry");
+        item->setText(0, "Geometry");
     else if ((scenarioObject->elementName()) == "REVTPS")
 	    item->setText(0, "Thermal protection");
     else if ((scenarioObject->elementName()) == "OptVarDouble")
-	item->setText(0, "Optimization");
+        item->setText(0, "Optimization");
     else if ((scenarioObject->elementName()) == "OptVarBool")
-	item->setText(0, "Optimization");
+        item->setText(0, "Optimization");
     else if ((scenarioObject->elementName()) == "REVAeroThermodynamicsType")
         item->setText(0, "Aerothermodynamics");
     else if ((scenarioObject->elementName()) == "AeroCoefFileType")
-	item->setText(0, "Aerodynamics coefficients");
+        item->setText(0, "Aerodynamics coefficients");
     else if ((scenarioObject->elementName()) == "Parachutes")
-	item->setText(0, "Parachutes");
+        item->setText(0, "Parachutes");
     else if ((scenarioObject->elementName()) == "REVStructureType")
-	item->setText(0, "Structure");
+        item->setText(0, "Structure");
     else if ((scenarioObject->elementName()) == "REVSecondaryPropulsionType")
-	item->setText(0, "Propulsion (secondary)");
+        item->setText(0, "Propulsion (secondary)");
     else if ((scenarioObject->elementName()) == "REVRCSType")
-	item->setText(0, "Propulsion (primary)");
+        item->setText(0, "Propulsion (primary)");
     else if ((scenarioObject->elementName()) == "REVCostsType")
-	item->setText(0, "Cost");
+        item->setText(0, "Cost");
     else if ((scenarioObject->elementName()) == "REVSystemCostsType")
-	item->setText(0, "Cost (system)");
+        item->setText(0, "Cost (system)");
     else if ((scenarioObject->elementName()) == "REVSubsystemsDevelopCostsType")
-	item->setText(0, "Cost (subsystem)");
+        item->setText(0, "Cost (subsystem)");
     else if ((scenarioObject->elementName()) == "REVSubsystemsProductionCostsType")
-	item->setText(0, "Cost of production (subsystem");
+        item->setText(0, "Cost of production (subsystem");
     else if ((scenarioObject->elementName()) == "REVReliabilityType")
-	item->setText(0, "Reliability (system)");
+        item->setText(0, "Reliability (system)");
     else if ((scenarioObject->elementName()) == "REVSubsystemsReliablityType")
-	item->setText(0, "Reliability (subsystem)");
+        item->setText(0, "Reliability (subsystem)");
     else if ((scenarioObject->elementName()) == "LocationType")
-	item->setText(0, "Location");
+        item->setText(0, "Location");
     else if ((scenarioObject->elementName()) == "GroundPositionType")
-	item->setText(0, "Position");
+        item->setText(0, "Position");
     else if ((scenarioObject->elementName()) == "GroundStationEnvironment")
-	item->setText(0, "Environment");
+        item->setText(0, "Environment");
     else if ((scenarioObject->elementName()) == "Rain")
-	item->setText(0, "Rain");
+        item->setText(0, "Rain");
     else if ((scenarioObject->elementName()) == "Modulation")
-	item->setText(0, "Modulation");
+        item->setText(0, "Modulation");
     else if ((scenarioObject->elementName()) == "SystemTemperature")
-	item->setText(0, "Temperature");
+        item->setText(0, "Temperature");
     else if ((scenarioObject->elementName()) == "TelescopeType")
-	item->setText(0, "Telescope");
+        item->setText(0, "Telescope");
     else if ((scenarioObject->elementName()) == "OpticalProperties")
-	item->setText(0, "Optical properties");
+        item->setText(0, "Optical properties");
     else if ((scenarioObject->elementName()) == "SystemTemperature")
-	item->setText(0, "Temperature");
+        item->setText(0, "Temperature");
     else if ((scenarioObject->elementName()) == "SCEnvironmentType")
-	item->setText(0, "Environment type");
+        item->setText(0, "Environment type");
     else if ((scenarioObject->elementName()) == "TimeLine")
-	item->setText(0, "Time line");
+        item->setText(0, "Time line");
     else if ((scenarioObject->elementName()) == "InitialPositionType")
-	item->setText(0, "Initial position");
+        item->setText(0, "Initial position");
     else if ((scenarioObject->elementName()) == "KeplerianElementsType")
-	item->setText(0, "Keplerian elements");
+        item->setText(0, "Keplerian elements");
     else if ((scenarioObject->elementName()) == "InitialAttitudeType")
-	item->setText(0, "Initial attitude");
+        item->setText(0, "Initial attitude");
     else if ((scenarioObject->elementName()) == "EulerBIType")
-	item->setText(0, "Euler angles");
+        item->setText(0, "Euler angles");
     else if ((scenarioObject->elementName()) == "PropagationPositionType")
-	item->setText(0, "Propagation of position");
+        item->setText(0, "Propagation of position");
     else if ((scenarioObject->elementName()) == "PropagationAttitudeType")
-	item->setText(0, "Propagation of attitude");
+        item->setText(0, "Propagation of attitude");
     else if ((scenarioObject->elementName()) == "SystemTemperature")
-	item->setText(0, "Temperature");
+        item->setText(0, "Temperature");
     else if ((scenarioObject->elementName()) == "EntryArcType")  //Next lines added by Dominic to remove empty lines in scenario tree
     {
         item->setText(0, "Re-entry Arc");
-	item->setIcon(0, QIcon(":/icons/mission-arcs-reentry.png"));
+        item->setIcon(0, QIcon(":/icons/mission-arcs-reentry.png"));
     }
     else if ((scenarioObject->elementName()) == "EnvironmentType")
         item->setText(0, "Environment");
@@ -395,9 +395,9 @@ void ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scena
 
     // Allow dropping into scenarios, trajectory plans, and payload sets (and nothing else for now)
     if (dynamic_cast<SpaceScenario*>(scenarioObject) ||
-	dynamic_cast<ScenarioTrajectoryPlan*>(scenarioObject) ||
-	dynamic_cast<ScenarioPayloadSet*>(scenarioObject) ||  // Patched by Guillermo to allow drops into Payload plan
-	dynamic_cast<ScenarioREVTrajectoryPlanType*>(scenarioObject))  //Modified by Dominic and Ricardo Noriega to allow dropping of EntryArc and Payloads over SC and GS
+        dynamic_cast<ScenarioTrajectoryPlan*>(scenarioObject) ||
+        dynamic_cast<ScenarioPayloadSet*>(scenarioObject) ||  // Patched by Guillermo to allow drops into Payload plan
+        dynamic_cast<ScenarioREVTrajectoryPlanType*>(scenarioObject))  //Modified by Dominic and Ricardo Noriega to allow dropping of EntryArc and Payloads over SC and GS
     {
         item->setFlags(item->flags() | Qt::ItemIsDropEnabled);
     }
@@ -405,7 +405,7 @@ void ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scena
     QList<QSharedPointer<ScenarioObject> > children = scenarioObject->children();
     foreach (QSharedPointer<ScenarioObject> child, children)
     {
-	if (!child.isNull())
+        if (!child.isNull())
         {
             QTreeWidgetItem* childItem = new QTreeWidgetItem(item);
             addScenarioItems(childItem, child.data());
@@ -413,21 +413,21 @@ void ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scena
     }
 
     // Guillermo: expand items by default or not
-    //item->setExpanded(true);
+    item->setExpanded(true);
 
     if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject))
     {
-	item->setFlags(item->flags() | (Qt::ItemIsEditable));
-	item->setText(1, dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject)->Name());
+        item->setFlags(item->flags() | (Qt::ItemIsEditable));
+        item->setText(1, dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject)->Name());
     }
     else if (dynamic_cast<ScenarioParticipantType*>(scenarioObject))
     {
-	item->setText(1, dynamic_cast<ScenarioParticipantType*>(scenarioObject)->Name());
+        item->setText(1, dynamic_cast<ScenarioParticipantType*>(scenarioObject)->Name());
     }
     else if (dynamic_cast<ScenarioGravityModel*>(scenarioObject))
     {
 
-	item->setText(1, dynamic_cast<ScenarioGravityModel*>(scenarioObject)->modelName());
+        item->setText(1, dynamic_cast<ScenarioGravityModel*>(scenarioObject)->modelName());
     }
 
     changeLabels(item, scenarioObject);
@@ -442,9 +442,9 @@ QStringList ScenarioTree::mimeTypes() const
 {
     QStringList types;
     types << ScenarioElementBox::PARTICIPANT_MIME_TYPE
-          << ScenarioElementBox::MISSION_ARC_MIME_TYPE
-          << ScenarioElementBox::PAYLOAD_MIME_TYPE //Line added by Ricardo Noriega to create a new MIME TYPE. Comm, optical, xray and radar shall be payloads of this type.
-          << ScenarioElementBox::MANEUVER_MIME_TYPE;
+            << ScenarioElementBox::MISSION_ARC_MIME_TYPE
+            << ScenarioElementBox::PAYLOAD_MIME_TYPE //Line added by Ricardo Noriega to create a new MIME TYPE. Comm, optical, xray and radar shall be payloads of this type.
+            << ScenarioElementBox::MANEUVER_MIME_TYPE;
     return types;
 }
 
@@ -494,7 +494,7 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
     ScenarioAbstractPayloadType* payload = NULL; //Line added by Ricardo to create an item to be dropped of payload type
 
     if (elementName == "tns:GroundStation")
-	participant = ScenarioGroundStation::create(element);
+        participant = ScenarioGroundStation::create(element);
     else if (elementName == "tns:LaunchPad")
         participant = ScenarioLaunchPad::create(element);
     else if (elementName == "tns:Point")
@@ -507,13 +507,13 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
         participant = ScenarioREV::create(element);
 
     if (elementName == "tns:TransmitterPayload")
-	payload = ScenarioTransmitterPayloadType::create(element); //Ricardo edit this line to let the CommPayload element to be added to the scenario
+        payload = ScenarioTransmitterPayloadType::create(element); //Ricardo edit this line to let the CommPayload element to be added to the scenario
     if (elementName == "tns:ReceiverPayload")
-	payload = ScenarioReceiverPayloadType::create(element); //Guillermo
+        payload = ScenarioReceiverPayloadType::create(element); //Guillermo
     if (elementName == "tns:OpticalPayload")
-	payload = ScenarioOpticalPayloadType::create(element);  // Guillermo: optical
+        payload = ScenarioOpticalPayloadType::create(element);  // Guillermo: optical
     if (elementName == "tns:RadarPayload")
-	payload = ScenarioRadarPayloadType::create(element); // Guillermo radar
+        payload = ScenarioRadarPayloadType::create(element); // Guillermo radar
 
     if (elementName == "tns:Loitering")
         trajectory = ScenarioLoiteringType::create(element);
@@ -536,8 +536,8 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
         {
             scenario->AbstractParticipant().append(QSharedPointer<ScenarioParticipantType>(participant));
             QTreeWidgetItem* participantItem = new QTreeWidgetItem(parent);
-	    // Guillermo says: finally adding the item
-	    addScenarioItems(participantItem, participant);
+            // Guillermo says: finally adding the item
+            addScenarioItems(participantItem, participant);
         }
         else
         {
@@ -554,7 +554,7 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
         {
             trajectoryPlan->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
             QTreeWidgetItem* trajectoryItem = new QTreeWidgetItem(parent);
-	    addScenarioItems(trajectoryItem, trajectory);
+            addScenarioItems(trajectoryItem, trajectory);
             return true;
         }
         else
@@ -564,13 +564,13 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
     }
     else if (trajectory && elementName=="tns:EntryArc") // Added by Dominic to drop entry trajectory
     {
-	ScenarioObject* parentObject = objectForItem(parent);
+        ScenarioObject* parentObject = objectForItem(parent);
         ScenarioREVTrajectoryPlanType* trajectoryPlan = dynamic_cast<ScenarioREVTrajectoryPlanType*>(parentObject);
         if (trajectoryPlan)
         {
             trajectoryPlan->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
             QTreeWidgetItem* trajectoryItem = new QTreeWidgetItem(parent);
-	    // Adding the item to the scenario
+            // Adding the item to the scenario
             addScenarioItems(trajectoryItem, trajectory);
             return true;
         }
@@ -582,12 +582,12 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
     else if (payload)
     {
         ScenarioObject* parentObject = objectForItem(parent);
-	ScenarioPayloadSet* scPayload = dynamic_cast<ScenarioPayloadSet*>(parentObject);
-	if (scPayload) //if the draggable element is over the payload of the spacecraft, the payload could be attached
+        ScenarioPayloadSet* scPayload = dynamic_cast<ScenarioPayloadSet*>(parentObject);
+        if (scPayload) //if the draggable element is over the payload of the spacecraft, the payload could be attached
         {
             scPayload->AbstractPayload().append(QSharedPointer<ScenarioAbstractPayloadType>(payload));
             QTreeWidgetItem* payloadItem = new QTreeWidgetItem(parent);
-	    addScenarioItems(payloadItem, payload);
+            addScenarioItems(payloadItem, payload);
             return true;
         }
         else
@@ -629,7 +629,7 @@ QMimeData* ScenarioTree::mimeData(const QList<QTreeWidgetItem*> items) const
     mimeData->setData(ScenarioElementBox::PARTICIPANT_MIME_TYPE, encodedData);
     return mimeData;
 
-//    return QTreeWidget::mimeData(items);
+    //    return QTreeWidget::mimeData(items);
     
 #if 0
     // Code to allow dragging scenario objects out of the view
@@ -676,7 +676,7 @@ void ScenarioTree::removeChildren(QTreeWidgetItem* parentItem)
         delete child;
     }
 }
- 
+
 
 void ScenarioTree::updateTreeItems(QTreeWidgetItem* parentItem,
                                    ScenarioObject* scenarioObject)
@@ -712,14 +712,14 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
 
     if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject) != NULL)
     {
-	ScenarioElementIdentifierType* myIdentifier = dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject);
-	editItem->setFlags(editItem->flags() | (Qt::ItemIsEditable));
-	myIdentifier->Name() = editItem->text(1);
-	updateTreeItems(editItem, scenarioObject);
-     }
+        ScenarioElementIdentifierType* myIdentifier = dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject);
+        editItem->setFlags(editItem->flags() | (Qt::ItemIsEditable));
+        myIdentifier->Name() = editItem->text(1);
+        updateTreeItems(editItem, scenarioObject);
+    }
     else if (dynamic_cast<ScenarioLoiteringType*>(scenarioObject) != NULL)
     {
-	Lagrmode=-1;    // Guillermo: to remove this from here !!!!!!!!!!!!
+        Lagrmode=-1;    // Guillermo: to remove this from here !!!!!!!!!!!!
         ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(scenarioObject);
         LoiteringDialog editDialog(this);
         if (!editDialog.loadValues(loitering))
@@ -731,7 +731,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(loitering);
-		//updateTreeItems(editItem, scenarioObject);
+                //updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -750,7 +750,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             {
                 editDialog.saveValues(loiteringTLE);
                 // TODO Change the name of the participant using the TLE line 0
-		//updateTreeItems(editItem, scenarioObject);
+                //updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -762,7 +762,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
         if (editDialog.exec() == QDialog::Accepted)
         {
             editDialog.saveValues(location);
-	    //updateTreeItems(editItem, scenarioObject);
+            //updateTreeItems(editItem, scenarioObject);
         }
     }
     else if (dynamic_cast<ScenarioGroundStationEnvironment*>(scenarioObject) != NULL)
@@ -773,16 +773,16 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
         if (editDialog.exec() == QDialog::Accepted)
         {
             editDialog.saveValues(environment);
-	    //updateTreeItems(editItem, scenarioObject);
+            //updateTreeItems(editItem, scenarioObject);
         }
     }
     else if (dynamic_cast<ScenarioTransmitterPayloadType*>(scenarioObject) != NULL)   // Guillermo: patching Ricardo's code
     {
-	ScenarioTransmitterPayloadType* payload = dynamic_cast<ScenarioTransmitterPayloadType*>(scenarioObject);
-	transmitterPayloadDialog editDialog(this);
+        ScenarioTransmitterPayloadType* payload = dynamic_cast<ScenarioTransmitterPayloadType*>(scenarioObject);
+        transmitterPayloadDialog editDialog(this);
         if (!editDialog.loadValues(payload))
         {
-	    QMessageBox::information(this, tr("Bad Tx Payload element"), tr("Error in Tx Payload element"));
+            QMessageBox::information(this, tr("Bad Tx Payload element"), tr("Error in Tx Payload element"));
         }
 
         else
@@ -790,66 +790,66 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(payload);
-		//updateTreeItems(editItem, scenarioObject);
+                //updateTreeItems(editItem, scenarioObject);
             }
         }
 
     }
     else if (dynamic_cast<ScenarioReceiverPayloadType*>(scenarioObject) != NULL)   // Guillermo: patching Ricardo's code
     {
-	ScenarioReceiverPayloadType* payload = dynamic_cast<ScenarioReceiverPayloadType*>(scenarioObject);
-	receiverPayloadDialog editDialog(this);
-	if (!editDialog.loadValues(payload))
-	{
-	    QMessageBox::information(this, tr("Bad Rx Payload element"), tr("Error in Rx Payload element"));
-	}
+        ScenarioReceiverPayloadType* payload = dynamic_cast<ScenarioReceiverPayloadType*>(scenarioObject);
+        receiverPayloadDialog editDialog(this);
+        if (!editDialog.loadValues(payload))
+        {
+            QMessageBox::information(this, tr("Bad Rx Payload element"), tr("Error in Rx Payload element"));
+        }
 
-	else
-	{
-	    if (editDialog.exec() == QDialog::Accepted)
-	    {
-		editDialog.saveValues(payload);
-		//updateTreeItems(editItem, scenarioObject);
-	    }
-	}
+        else
+        {
+            if (editDialog.exec() == QDialog::Accepted)
+            {
+                editDialog.saveValues(payload);
+                //updateTreeItems(editItem, scenarioObject);
+            }
+        }
 
     }
     else if (dynamic_cast<ScenarioOpticalPayloadType*>(scenarioObject) != NULL)   // Guillermo: patching Ricardo's code
     {
-	ScenarioOpticalPayloadType* payload = dynamic_cast<ScenarioOpticalPayloadType*>(scenarioObject);
-	opticalPayloadDialog editDialog(this);
-	if (!editDialog.loadValues(payload))
-	{
-	    QMessageBox::information(this, tr("Bad Optical Payload element"), tr("Error in Optical Payload element"));
-	}
+        ScenarioOpticalPayloadType* payload = dynamic_cast<ScenarioOpticalPayloadType*>(scenarioObject);
+        opticalPayloadDialog editDialog(this);
+        if (!editDialog.loadValues(payload))
+        {
+            QMessageBox::information(this, tr("Bad Optical Payload element"), tr("Error in Optical Payload element"));
+        }
 
-	else
-	{
-	    if (editDialog.exec() == QDialog::Accepted)
-	    {
-		editDialog.saveValues(payload);
-		//updateTreeItems(editItem, scenarioObject);
-	    }
-	}
+        else
+        {
+            if (editDialog.exec() == QDialog::Accepted)
+            {
+                editDialog.saveValues(payload);
+                //updateTreeItems(editItem, scenarioObject);
+            }
+        }
 
     }
     else if (dynamic_cast<ScenarioRadarPayloadType*>(scenarioObject) != NULL)   // Guillermo: patching Ricardo's code
     {
-	ScenarioRadarPayloadType* payload = dynamic_cast<ScenarioRadarPayloadType*>(scenarioObject);
-	radarPayloadDialog editDialog(this);
-	if (!editDialog.loadValues(payload))
-	{
-	    QMessageBox::information(this, tr("Bad Radar Payload element"), tr("Error in Radar Payload element"));
-	}
+        ScenarioRadarPayloadType* payload = dynamic_cast<ScenarioRadarPayloadType*>(scenarioObject);
+        radarPayloadDialog editDialog(this);
+        if (!editDialog.loadValues(payload))
+        {
+            QMessageBox::information(this, tr("Bad Radar Payload element"), tr("Error in Radar Payload element"));
+        }
 
-	else
-	{
-	    if (editDialog.exec() == QDialog::Accepted)
-	    {
-		editDialog.saveValues(payload);
-		//updateTreeItems(editItem, scenarioObject);
-	    }
-	}
+        else
+        {
+            if (editDialog.exec() == QDialog::Accepted)
+            {
+                editDialog.saveValues(payload);
+                //updateTreeItems(editItem, scenarioObject);
+            }
+        }
 
     }
     else if(dynamic_cast<ScenarioEntryArcType*>(scenarioObject) != NULL)//Added by Dominic to allow opening of re-entry GUI
@@ -867,7 +867,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(entry);
-		//updateTreeItems(editItem, scenarioObject);
+                //updateTreeItems(editItem, scenarioObject);
             }
         }
 
@@ -898,7 +898,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(geometry,aerothermo);
-		//updateTreeItems(editItem, scenarioObject);
+                //updateTreeItems(editItem, scenarioObject);
             }
         }
 
@@ -928,7 +928,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(aerothermo,geometry);
-		//updateTreeItems(editItem, scenarioObject);
+                //updateTreeItems(editItem, scenarioObject);
             }
         }
 
@@ -950,7 +950,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(weights);
-		//updateTreeItems(editItem, scenarioObject);
+                //updateTreeItems(editItem, scenarioObject);
             }
         }
 
@@ -970,7 +970,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(prop);
-		//updateTreeItems(editItem, scenarioObject);
+                //updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -991,7 +991,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
                 if (editDialog.exec() == QDialog::Accepted)
                 {
                     editDialog.saveValues(initialStatePos);
-		    //updateTreeItems(editItem, scenarioObject);
+                    //updateTreeItems(editItem, scenarioObject);
                 }
             }
         }
@@ -1002,14 +1002,14 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             {
                 QMessageBox::information(this, tr("Bad InitialStatePosition element"), tr("Error in InitialStatePosition element"));
             }
-        else
-        {
-            if (editDialog.exec() == QDialog::Accepted)
+            else
             {
-                editDialog.saveValues(initialStatePos);
-		//updateTreeItems(editItem, scenarioObject);
+                if (editDialog.exec() == QDialog::Accepted)
+                {
+                    editDialog.saveValues(initialStatePos);
+                    //updateTreeItems(editItem, scenarioObject);
+                }
             }
-        }
         }
     }
     else if (dynamic_cast<ScenarioLocation*>(scenarioObject) != NULL)
@@ -1020,7 +1020,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
         if (editDialog.exec() == QDialog::Accepted)
         {
             editDialog.saveValues(location);
-	    //updateTreeItems(editItem, scenarioObject);
+            //updateTreeItems(editItem, scenarioObject);
         }
     }
     else if (dynamic_cast<ScenarioRendezvousTrajectory*>(scenarioObject) != NULL)
@@ -1036,7 +1036,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(rendezvous);
-		//updateTreeItems(editItem, scenarioObject);
+                //updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -1044,23 +1044,23 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
     {Lagrmode=0;
         ScenarioLagrangianTrajectory* lagrangian = dynamic_cast<ScenarioLagrangianTrajectory*>(scenarioObject);
         LagrangianDialog editDialog(this);
-         if (!editDialog.loadValues(lagrangian))
+        if (!editDialog.loadValues(lagrangian))
         {
             QMessageBox::information(this, tr("Bad Lagrangian element"), tr("Error in Lagrangian element"));
         }
-          else
+        else
         {
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(lagrangian);
-		//updateTreeItems(editItem, scenarioObject);
+                //updateTreeItems(editItem, scenarioObject);
             }
         }
     }
 
     else if (dynamic_cast<ScenarioLoiteringTrajectory*>(scenarioObject) != NULL)
     {
-	Lagrmode=-1;  // Guillermo says: take this away
+        Lagrmode=-1;  // Guillermo says: take this away
         ScenarioLoiteringTrajectory* loitering = dynamic_cast<ScenarioLoiteringTrajectory*>(scenarioObject);
         LoiteringDialog editDialog(this);
         if (!editDialog.loadValues(loitering))
@@ -1072,7 +1072,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(loitering);
-		//updateTreeItems(editItem, scenarioObject);
+                //updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -1092,7 +1092,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             {
                 editDialog.saveValues(loiteringTLE);
                 // TODO Change the name of the participant using the TLE line 0
-		//updateTreeItems(editItem, scenarioObject);
+                //updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -1110,7 +1110,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(externalTrajectory);
-		//updateTreeItems(editItem, scenarioObject);
+                //updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -1128,7 +1128,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(physicalProperties);
-		//updateTreeItems(editItem, scenarioObject);
+                //updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -1146,7 +1146,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(aerodynamicProperties);
-		//updateTreeItems(editItem, scenarioObject);
+                //updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -1164,7 +1164,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(propulsionProperties);
-		//updateTreeItems(editItem, scenarioObject);
+                //updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -1197,14 +1197,14 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
 
         if (!editDialog.loadValues(reentry))
         {
-             QMessageBox::information(this, tr("Bad ReEntry element"), tr("Error in ReEntry element"));
+            QMessageBox::information(this, tr("Bad ReEntry element"), tr("Error in ReEntry element"));
         }
         else
         {
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(reentry);
-		//updateTreeItems(editItem, scenarioObject);
+                //updateTreeItems(editItem, scenarioObject);
             }
         }
     }
@@ -1222,7 +1222,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
                 modelFileName.remove(0, modelFileName.lastIndexOf('/') + 1);
             
             appearance->setModel(modelFileName);
-	    //updateTreeItems(editItem, scenarioObject);
+            //updateTreeItems(editItem, scenarioObject);
         }
     }
     else
@@ -1238,7 +1238,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
                 void* pointer = qVariantValue<void*>(data);
                 parentObject = reinterpret_cast<ScenarioObject*>(pointer);
             }
-        
+
             editScenarioObject(parentObject, editItem);
         }
     }    
@@ -1292,23 +1292,23 @@ void ScenarioTree::editItem(QTreeWidgetItem* item, int column)
 
     if (scenarioObject != NULL && item != NULL && column == 1)
     {
-	editItemInline(item, 1);    // Guillermo says: we allow editing in line only on the second column
-	//out << "Editing column 1 " << endl;
+        editItemInline(item, 1);    // Guillermo says: we allow editing in line only on the second column
+        //out << "Editing column 1 " << endl;
     }
     else if (scenarioObject != NULL && item != NULL && column == 0)
     {
-	if (dynamic_cast<SpaceScenario*>(scenarioObject))
-	{
-	    item->setFlags(item->flags() & (~Qt::ItemIsEditable));   // Guillermo says: do not allow editing in line on 1st column and for the space scenario row
-	}
-	else if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject))
-	{
-	    item->setFlags(item->flags() & (~Qt::ItemIsEditable)); // Guillermo says: do not allow editing in line on 1st column and for the element identifier
-	}
-	else
-	{
-	    editScenarioObject(scenarioObject, item); // Guillermo says: allow editing the rest
-	}
+        if (dynamic_cast<SpaceScenario*>(scenarioObject))
+        {
+            item->setFlags(item->flags() & (~Qt::ItemIsEditable));   // Guillermo says: do not allow editing in line on 1st column and for the space scenario row
+        }
+        else if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject))
+        {
+            item->setFlags(item->flags() & (~Qt::ItemIsEditable)); // Guillermo says: do not allow editing in line on 1st column and for the element identifier
+        }
+        else
+        {
+            editScenarioObject(scenarioObject, item); // Guillermo says: allow editing the rest
+        }
     }
 
 }
@@ -1325,7 +1325,7 @@ void ScenarioTree::editItemInline(QTreeWidgetItem* item, int column)
     ScenarioObject* object = objectForItem(item);
     SpaceScenario* scenario = dynamic_cast<SpaceScenario*>(object);
     if (object == NULL)
-	return;
+        return;
 
     if (dynamic_cast<SpaceScenario*>(object) && column == 1)	// Guillermo says: the name of the scenario
 	{
@@ -1344,17 +1344,17 @@ void ScenarioTree::editItemInline(QTreeWidgetItem* item, int column)
     else if (dynamic_cast<ScenarioElementIdentifierType*>(object) && column == 1)   // Guillermo says: the name of the arcs, payloads, etc.
 	{
 	    item->setFlags(item->flags() | (Qt::ItemIsEditable));
-            dynamic_cast<ScenarioElementIdentifierType*>(object)->setName(item->text(1));
+        dynamic_cast<ScenarioElementIdentifierType*>(object)->setName(item->text(1));
 
-            //Getting now to know the parent of this item
-            QTreeWidgetItem* parentItem = item->parent();
-            ScenarioObject* parentObject = objectForItem(parentItem);
+        //Getting now to know the parent of this item
+        QTreeWidgetItem* parentItem = item->parent();
+        ScenarioObject* parentObject = objectForItem(parentItem);
 
 	    if (dynamic_cast<ScenarioParticipantType*>(parentObject))
 	    {
-		ScenarioParticipantType* myPartipant = dynamic_cast<ScenarioParticipantType*>(parentObject);
-		dynamic_cast<ScenarioParticipantType*>(myPartipant)->setName(item->text(1));
-		parentItem->setText(1, item->text(1));
+            ScenarioParticipantType* myPartipant = dynamic_cast<ScenarioParticipantType*>(parentObject);
+            dynamic_cast<ScenarioParticipantType*>(myPartipant)->setName(item->text(1));
+            parentItem->setText(1, item->text(1));
 	    }
 
 	    updateTreeItems(item, scenario);
