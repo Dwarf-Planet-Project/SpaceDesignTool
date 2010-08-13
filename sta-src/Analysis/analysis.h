@@ -65,8 +65,7 @@ public:
     QString ReadParameter(QTreeWidgetItem*Item);
     QString ReadUnits(QTreeWidget*Tree,QTreeWidgetItem*Item);
     QString ReadCoordinateSys(QTreeWidget*Tree,QTreeWidgetItem*Item);
-    QList<int> calcAccessTime(double MJDdate,int AccessNumber,int AccessStep,int CovIndex,QStringList LineOfCoverageReport);
-
+    QList< QList<double> >  calcAccessTime(int countStop,int countStart, int AccessNumber, int AccessStep, int AccessNow,int CovIndex,QStringList LineOfCoverageReport,MissionArc*arc);
     PlotView* plotView2D;
     PlotView3D* plotView3D;
 

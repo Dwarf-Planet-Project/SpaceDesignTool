@@ -1126,7 +1126,7 @@ int analysis::InputsControl(QList<QTreeWidget*>tree)
 	{
 	    QTreeWidgetItem*ShowInReport=treeWidgetShowInReport->topLevelItem(i);
 	    QString ToReport=ShowInReport->text(0);
-	    if((ToReport=="Azimuth")||(ToReport=="Elevation")||(ToReport=="Range")||(ToReport=="Equivalent Isotropical Radiated Power")||(ToReport=="Received Frequency")||(ToReport=="Doppler Shift")||(ToReport=="Received Power")||(ToReport=="Flux Density")||(ToReport=="Overlap Bandwidth Factor")||(ToReport=="Free Space Loss")||(ToReport=="Oxygen Loss")||(ToReport=="Water Vapour Loss")||(ToReport=="Rain Loss")||(ToReport=="Atmospheric Loss")||(ToReport=="Propagation Loss")||(ToReport=="G/T")||(ToReport=="C/No")||(ToReport=="C/N")||(ToReport=="Eb/No")||(ToReport=="BER"))
+            if((ToReport=="Azimuth")||(ToReport=="Elevation")||(ToReport=="Range")||(ToReport=="Access Time")||(ToReport=="Equivalent Isotropical Radiated Power")||(ToReport=="Received Frequency")||(ToReport=="Doppler Shift")||(ToReport=="Received Power")||(ToReport=="Flux Density")||(ToReport=="Overlap Bandwidth Factor")||(ToReport=="Free Space Loss")||(ToReport=="Oxygen Loss")||(ToReport=="Water Vapour Loss")||(ToReport=="Rain Loss")||(ToReport=="Atmospheric Loss")||(ToReport=="Propagation Loss")||(ToReport=="G/T")||(ToReport=="C/No")||(ToReport=="C/N")||(ToReport=="Eb/No")||(ToReport=="BER"))
 	    {
 
 		CovCommCount++;
@@ -1303,6 +1303,7 @@ some warning messages can de displayed if:
     int numberOfParameters=0;
     if(AnalysisFormat=="Report")
     {
+
         numberOfParameters=treeWidgetShowInReport->topLevelItemCount();
         tree.append(treeWidgetShowInReport);
     }
@@ -1611,8 +1612,9 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 	QTreeWidgetItem*parameter=treeWidgetShowInReport->topLevelItem(i);
 	QString name=parameter->text(0);
 
-	if(name=="Azimuth"||name=="Elevation"||name=="Range")
+        if(name=="Azimuth"||name=="Elevation"||name=="Range"||name=="Access Time")
 	{
+
 	    ReadCoverage=true;
 	}
 	if((name=="Equivalent Isotropical Radiated Power")||(name=="Received Frequency")||(name=="Doppler Shift")||(name=="Received Power")||(name=="Flux Density")||(name=="Overlap Bandwidth Factor"))
@@ -1646,7 +1648,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
 	SpaceObject*spaceObj=m_propagatedScenario->spaceObjects().at(MParentIndex.at(z));
 
-	{
+        {
 	    int indMissionArc=MObjectsIndex.at(z);
 	    MissionArc*arc=spaceObj->mission().at(MObjectsIndex.at(z));
 
@@ -1661,7 +1663,9 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 	    ReadTime(1,StopTime); //in MJD
 
 	    double StartEpoch=arc->trajectorySampleTime(0);
+
 	    int totalTime=(arc->trajectorySampleCount())-1; //position of the last sample time
+
 	    double StopEpoch=arc->trajectorySampleTime(totalTime);
 
             int CovIndex[4]; //line of Coverage Report for each parameter
@@ -1680,15 +1684,20 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 	    QStringList LineOfComm1Report;
 	    QStringList LineOfComm2Report;
 	    QStringList LineOfComm3Report;
+
 	    if(ReadCoverage==true)
 	    {
+
 		CoverageAnalysis covAna=CoverageAnalysis(m_propagatedScenario, indSC, indGS, indMissionArc);
 		covAna.reportAER();
-
-		QFile Coverage("reportCov1.txt");
+                QString Path = QDir::currentPath ();
+                QString CoverageFile = Path + "/" + "reportCov1.txt";
+                //QFile file(analysisFile);
+                QFile Coverage(CoverageFile);
 
 		if(Coverage.open(QIODevice::ReadOnly ))
 		{
+
 		    QTextStream text(&Coverage);
 		    while(!text.atEnd())
 		    {
@@ -1696,15 +1705,17 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			LineOfCoverageReport.append(CoverageLine);
 		    }
 		    Coverage.close();
-		}
+                }
 	    }
 	    if(ReadCommunication1==true)
 	    {
 
 		CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
 		commAnalysis.CommReports();
+                QString Path = QDir::currentPath ();
+                QString Comm1File = Path + "/" + "reportComm1.txt";
 
-		QFile Communication1("reportComm1.txt");
+                QFile Communication1(Comm1File);
 
 		if(Communication1.open(QIODevice::ReadOnly ))
 		{
@@ -1721,7 +1732,10 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 	    {
 		CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
 		commAnalysis.CommReports();
-		QFile Communication2("reportComm2.txt");
+                QString Path = QDir::currentPath ();
+                QString Comm2File = Path + "/" + "reportComm2.txt";
+
+                QFile Communication2(Comm2File);
 
 		if(Communication2.open(QIODevice::ReadOnly ))
 		{
@@ -1738,7 +1752,10 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 	    {
 		CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
 		commAnalysis.CommReports();
-		QFile Communication3("reportComm3.txt");
+                QString Path = QDir::currentPath ();
+                QString Comm3File = Path + "/" + "reportComm3.txt";
+
+                QFile Communication3(Comm3File);
 
 		if(Communication3.open(QIODevice::ReadOnly ))
 		{
@@ -1751,14 +1768,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 		    Communication3.close();
 		}
 	    }
-	    for (int k=0;k<selectedTimes.size();k++)
-	    {
 
+            for (int k=0;k<selectedTimes.size();k++)
+	    {
 		int ControlStart=0;
 		int ControlStop=0;
                 if ((StartTime[k]>(StopEpoch+2*pow(10,-5)))||(StartTime[k]<=(StartEpoch-2*pow(10,-5))))
 		{
-
 		    ControlStart++;
 		}
 		if ((StopTime[k]>(StopEpoch+2*pow(10,-5)))||(StopTime[k]<=(StartEpoch-2*pow(10,-5))))
@@ -1768,11 +1784,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 		}
                 CStart=ControlStart;
                 CStop=ControlStop;
+                int AccessStep=0;
+                int AccessNow=0;
+                int AccessNumber=0;
 
                 if((ControlStart==0)&&(ControlStop==0))
 
 		{
-
 		    int i=0;
 		    while(( (arc->trajectorySampleTime(i)))<(StartTime[k]))
 		    {
@@ -1799,6 +1817,8 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 		    for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++)
 		    {
 			QString name=analysis::ReadParameter(treeWidgetShowInReport->topLevelItem(i));
+                        if(name!="Access Time")
+                        {
 			QString Unit=analysis::ReadUnits(treeWidgetShowInReport,treeWidgetShowInReport->topLevelItem(i));
 			// Guillermo patched the following line
 			//stream<<"\t"<<name<<"("<<Unit<<")"<<"\t";
@@ -1809,8 +1829,17 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			{
 			    stream<<"\r\n";
 			}
-
-
+                    }
+                        else
+                        {
+                            //stream<<name<<"\r\n";
+                            //stream<<"Access Number"<<"\t"<<"Start Time"<<"\t"<<"Stop Time"<<"\t"<<"Duration of each access (seconds)"<<"\r\n";
+                            numberOfColumns=4;
+                            if(i==((treeWidgetShowInReport->topLevelItemCount())-1))
+                            {
+                                stream<<"\r\n";
+                            }
+                        }
 		    }
 
 		    double MJDdate[inumber];
@@ -1821,8 +1850,35 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 		    QDateTime TimeDateVector[inumber];
 		    double DayOfYear[inumber];
 
+                    //Access Time calculation
+                    for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++)
+                    {
 
-		    for(int j=countStart[k];j<=countStop[k];j++)
+                        QTreeWidgetItem*parameter=treeWidgetShowInReport->topLevelItem(i);
+                        QString name=parameter->text(0);
+                        if(name=="Access Time")
+                        {
+
+                            QList< QList<double> > AccessTime= analysis::calcAccessTime(countStop[k],countStart[k], AccessNumber, AccessStep, AccessNow,CovIndex[3],LineOfCoverageReport,arc);
+
+                          /* for(int l=0;l<AccessTime.size();l++)
+                            {
+                               QList <double> List=AccessTime.at(l);
+                               qDebug()<<List;
+                               for(int n=0;n<List.size();n++)
+                               {
+                               stream<<List.at(n)<<"\t";
+                               if(n==List.size()-1)
+                               {
+                                  stream <<"\r\n";
+                               }
+                            }
+                           }
+                            */numberOfRows=AccessTime.size();
+                        }
+                    }
+                    //other parameters
+                    for(int j=countStart[k];j<=countStop[k];j++)
 		    {
 			int index=j-countStart[k];
 
@@ -2396,20 +2452,6 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                 }
                             }
 
-                            if(name=="Access Time")
-                            {
-                                /*
-                                QList<int>AccessData=analysis::calcAccessTime(MJDdate[index],AccessNumber,AccessStep,CovIndex[3],LineOfCoverageReport);
-                                if(AccessData.size()==1 && AccessData[0]==0)
-                                {
-                                    stream<<"No visibility"<<"\t";
-                                }
-                                if(AccessData.size()==2)
-                                {
-                                    stream<<AccessNumber<<"."<<AccessStep<<"\t";
-                                    */
-                                }
-
 
                             if((name=="Azimuth")||(name=="Elevation")||(name=="Range"))
                             {
@@ -2423,9 +2465,10 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 					QString Line=LineOfCoverageReport.at(CovIndex[0]);
 
 					double TimeCovReport=(Line.section("\t",0,0)).toDouble();
+
 					double Azimuth=(Line.section("\t",3,3)).toDouble();
 
-					if(abs(MJDdate[index]-TimeCovReport)<10e-6)
+                                        if(fabs(MJDdate[index]-TimeCovReport)<10e-6)
 					{
 
 					    stream<<sta::ConvertUnits(ToUnit,Azimuth,"deg")<<"\t";
@@ -2434,7 +2477,9 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
 					else
 					{
+
                                             stream<<"No visibility"<<"\t";
+                                            //CovIndex[0]++;
 					}
 
 				    }
@@ -2446,14 +2491,14 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 				if(name=="Elevation")
 				{
 
-				    if(CovIndex[1]<LineOfCoverageReport.length())
+                                    if(CovIndex[1]<LineOfCoverageReport.size())
 				    {
 					QString Line=LineOfCoverageReport.at(CovIndex[1]);
 
 					double TimeCovReport=(Line.section("\t",0,0)).toDouble();
 					double Elevation=(Line.section("\t",2,2)).toDouble();
 
-					if(abs(MJDdate[index]-TimeCovReport)<10e-6)
+                                        if(fabs(MJDdate[index]-TimeCovReport)<10e-6)
 					{
 					    stream<<sta::ConvertUnits(ToUnit,Elevation,"deg")<<"\t";
 					    CovIndex[1]++;
@@ -2472,14 +2517,14 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 				}
 				if(name=="Range")
 				{
-				    if(CovIndex[2]<LineOfCoverageReport.length())
+                                    if(CovIndex[2]<LineOfCoverageReport.size())
 				    {
 					QString Line=LineOfCoverageReport.at(CovIndex[2]);
 
 					double TimeCovReport=(Line.section("\t",0,0)).toDouble();
 					double Range=(Line.section("\t",1,1)).toDouble();
 
-					if(abs(MJDdate[index]-TimeCovReport)<10e-6)
+                                        if(fabs(MJDdate[index]-TimeCovReport)<10e-6)
 					{
 					    stream<<sta::ConvertUnits(ToUnit,Range,"km")<<"\t";
 					    CovIndex[2]++;
@@ -2502,14 +2547,14 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			    if(name=="Equivalent Isotropical Radiated Power")
 			    {
 
-				if(Comm1Index[0]<LineOfComm1Report.length())
+                                if(Comm1Index[0]<LineOfComm1Report.size())
 				{
 				    QString Line=LineOfComm1Report.at(Comm1Index[0]);
 
 				    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
 				    double EIRP=(Line.section("\t",1,1)).toDouble();
 
-				    if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
 				    {
 					stream<<EIRP<<"\t";
 					Comm1Index[0]++;
@@ -2529,14 +2574,14 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			    if(name=="Received Frequency")
 			    {
 
-				if(Comm1Index[1]<LineOfComm1Report.length())
+                                if(Comm1Index[1]<LineOfComm1Report.size())
 				{
 				    QString Line=LineOfComm1Report.at(Comm1Index[1]);
 
 				    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
 				    double RcvFreq=(Line.section("\t",2,2)).toDouble();
 
-				    if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
 				    {
 					stream<<RcvFreq<<"\t";
 					Comm1Index[1]++;
@@ -2556,14 +2601,14 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			    if(name=="Doppler Shift")
 			    {
 
-				if(Comm1Index[2]<LineOfComm1Report.length())
+                                if(Comm1Index[2]<LineOfComm1Report.size())
 				{
 				    QString Line=LineOfComm1Report.at(Comm1Index[2]);
 
 				    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
 				    double RcvFreq=(Line.section("\t",3,3)).toDouble();
 
-				    if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
 				    {
 					stream<<RcvFreq<<"\t";
 					Comm1Index[2]++;
@@ -2583,14 +2628,14 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			    if(name=="Received Power")
 			    {
 
-				if(Comm1Index[3]<LineOfComm1Report.length())
+                                if(Comm1Index[3]<LineOfComm1Report.size())
 				{
 				    QString Line=LineOfComm1Report.at(Comm1Index[3]);
 
 				    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
 				    double RcvFreq=(Line.section("\t",4,4)).toDouble();
 
-				    if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
 				    {
 					stream<<RcvFreq<<"\t";
 					Comm1Index[3]++;
@@ -2610,13 +2655,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			    if(name=="Flux Density")
 			    {
 
-				if(Comm1Index[4]<LineOfComm1Report.length())
+                                if(Comm1Index[4]<LineOfComm1Report.size())
 				{
 				    QString Line=LineOfComm1Report.at(Comm1Index[4]);
 
 				    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
 				    double FluxDensity=(Line.section("\t",5,5)).toDouble();
-				    if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
 				    {
 					stream<<FluxDensity<<"\t";
 					Comm1Index[4]++;
@@ -2636,13 +2681,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			    if(name=="Overlap Bandwidth Factor")
 			    {
 
-				if(Comm1Index[5]<LineOfComm1Report.length())
+                                if(Comm1Index[5]<LineOfComm1Report.size())
 				{
 				    QString Line=LineOfComm1Report.at(Comm1Index[5]);
 				    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
 				    double OvBWF=(Line.section("\t",6,6)).toDouble();
 
-				    if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
 				    {
 					stream<<OvBWF<<"\t";
 					Comm1Index[5]++;
@@ -2661,7 +2706,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			    if(name=="Free Space Loss")
 			    {
 
-				if(Comm2Index[0]<LineOfComm2Report.length())
+                                if(Comm2Index[0]<LineOfComm2Report.size())
 				{
 				    QString Line=LineOfComm2Report.at(Comm2Index[0]);
 
@@ -2670,7 +2715,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 				    double FSL=(Line.section("\t",1,1)).toDouble();
 
 
-				    if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
 				    {
 					stream<<FSL<<"\t";
 					Comm2Index[0]++;
@@ -2689,13 +2734,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			    }
 			    if(name=="Oxygen Loss")
 			    {
-				if(Comm2Index[1]<LineOfComm2Report.length())
+                                if(Comm2Index[1]<LineOfComm2Report.size())
 				{
 				    QString Line=LineOfComm2Report.at(Comm2Index[1]);
 				    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
 				    double OxLoss=(Line.section("\t",2,2)).toDouble();
 
-				    if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
 				    {
 					stream<<OxLoss<<"\t";
 					Comm2Index[1]++;
@@ -2713,13 +2758,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			    }
 			    if(name=="Water Vapour Loss")
 			    {
-				if(Comm2Index[2]<LineOfComm2Report.length())
+                                if(Comm2Index[2]<LineOfComm2Report.size())
 				{
 				    QString Line=LineOfComm2Report.at(Comm2Index[2]);
 				    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
 				    double WVLoss=(Line.section("\t",3,3)).toDouble();
 
-				    if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
 				    {
 					stream<<WVLoss<<"\t";
 					Comm2Index[2]++;
@@ -2737,13 +2782,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			    }
 			    if(name=="Rain Loss")
 			    {
-				if(Comm2Index[3]<LineOfComm2Report.length())
+                                if(Comm2Index[3]<LineOfComm2Report.size())
 				{
 				    QString Line=LineOfComm2Report.at(Comm2Index[3]);
 				    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
 				    double RainLoss=(Line.section("\t",4,4)).toDouble();
 
-				    if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
 				    {
 					stream<<RainLoss<<"\t";
 					Comm2Index[3]++;
@@ -2761,13 +2806,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			    }
 			    if(name=="Atmospheric Loss")
 			    {
-				if(Comm2Index[4]<LineOfComm2Report.length())
+                                if(Comm2Index[4]<LineOfComm2Report.size())
 				{
 				    QString Line=LineOfComm2Report.at(Comm2Index[4]);
 				    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
 				    double AtmLoss=(Line.section("\t",5,5)).toDouble();
 
-				    if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
 				    {
 					stream<<AtmLoss<<"\t";
 					Comm2Index[4]++;
@@ -2785,13 +2830,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			    }
 			    if(name=="Propagation Loss")
 			    {
-				if(Comm2Index[5]<LineOfComm2Report.length())
+                                if(Comm2Index[5]<LineOfComm2Report.size())
 				{
 				    QString Line=LineOfComm2Report.at(Comm2Index[5]);
 				    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
 				    double PropLoss=(Line.section("\t",6,6)).toDouble();
 
-				    if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
 				    {
 					stream<<PropLoss<<"\t";
 					Comm2Index[5]++;
@@ -2809,13 +2854,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			    }
 			    if (name=="G/T")
 			    {
-				if(Comm3Index[0]<LineOfComm3Report.length())
+                                if(Comm3Index[0]<LineOfComm3Report.size())
 				{
 				    QString Line=LineOfComm3Report.at(Comm3Index[0]);
 				    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
 				    double GT=(Line.section("\t",1,1)).toDouble();
 
-				    if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
 				    {
 					stream<<GT<<"\t";
 					Comm3Index[0]++;
@@ -2833,13 +2878,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			    }
 			    if(name=="C/No")
 			    {
-				if(Comm3Index[1]<LineOfComm3Report.length())
+                                if(Comm3Index[1]<LineOfComm3Report.size())
 				{
 				    QString Line=LineOfComm3Report.at(Comm3Index[1]);
 				    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
 				    double CNo=(Line.section("\t",2,2)).toDouble();
 
-				    if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
 				    {
 					stream<<CNo<<"\t";
 					Comm3Index[1]++;
@@ -2857,13 +2902,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			    }
 			    if(name=="C/N")
 			    {
-				if(Comm3Index[2]<LineOfComm3Report.length())
+                                if(Comm3Index[2]<LineOfComm3Report.size())
 				{
 				    QString Line=LineOfComm3Report.at(Comm3Index[2]);
 				    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
 				    double CN=(Line.section("\t",3,3)).toDouble();
 
-				    if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
 				    {
 					stream<<CN<<"\t";
 					Comm3Index[2]++;
@@ -2881,13 +2926,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			    }
 			    if(name=="Eb/No")
 			    {
-				if(Comm3Index[3]<LineOfComm3Report.length())
+                                if(Comm3Index[3]<LineOfComm3Report.size())
 				{
 				    QString Line=LineOfComm3Report.at(Comm3Index[3]);
 				    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
 				    double EbNo=(Line.section("\t",4,4)).toDouble();
 
-				    if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
 				    {
 					stream<<EbNo<<"\t";
 					Comm3Index[3]++;
@@ -2905,13 +2950,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 			    }
 			    if(name=="BER")
 			    {
-				if(Comm3Index[4]<LineOfComm3Report.length())
+                                if(Comm3Index[4]<LineOfComm3Report.size())
 				{
 				    QString Line=LineOfComm3Report.at(Comm3Index[4]);
 				    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
 				    double BER=(Line.section("\t",5,5)).toDouble();
 
-				    if(abs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
 				    {
 					stream<<BER<<"\t";
 					Comm3Index[4]++;
@@ -3169,13 +3214,19 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
                  }
                 }
-	    } //
+            }
 
 	    stream<<"\r\n";
 	}
     }
 
     file.close();
+    if(CStart!=0||CStop!=0)
+    {
+        QMessageBox Warning;
+        Warning.setText("No data available for the selected time interval");
+        Warning.exec();
+    }
 if(CStart==0&&CStop==0) //added by Ana to prevent crashing in report
     {
     // Patched by Guillermo to allow read of files in MAC and Linux
@@ -3384,8 +3435,10 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 		{
 		    CoverageAnalysis covAna=CoverageAnalysis(m_propagatedScenario, indSC, indGS, indMissionArc);
 		    covAna.reportAER();
+                    QString Path = QDir::currentPath ();
+                    QString CoverageFile = Path + "/" + "reportCov1.txt";
 
-		    QFile Coverage("reportCov1.txt");
+                    QFile Coverage(CoverageFile);
 
 		    if(Coverage.open(QIODevice::ReadOnly ))
 		    {
@@ -3402,8 +3455,10 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 		{
 		    CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
 		    commAnalysis.CommReports();
+                    QString Path = QDir::currentPath ();
+                    QString Comm1File = Path + "/" + "reportComm1.txt";
 
-		    QFile Communication1("reportComm1.txt");
+                    QFile Communication1(Comm1File);
 
 		    if(Communication1.open(QIODevice::ReadOnly ))
 		    {
@@ -3420,7 +3475,10 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 		{
 		    CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
 		    commAnalysis.CommReports();
-		    QFile Communication2("reportComm2.txt");
+                    QString Path = QDir::currentPath ();
+                    QString Comm2File = Path + "/" + "reportComm2.txt";
+
+                    QFile Communication2(Comm2File);
 
 		    if(Communication2.open(QIODevice::ReadOnly ))
 		    {
@@ -3437,7 +3495,10 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 		{
 		    CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
 		    commAnalysis.CommReports();
-		    QFile Communication3("reportComm3.txt");
+                    QString Path = QDir::currentPath ();
+                    QString Comm3File = Path + "/" + "reportComm3.txt";
+
+                    QFile Communication3(Comm3File);
 
 		    if(Communication3.open(QIODevice::ReadOnly ))
 		    {
@@ -5131,42 +5192,111 @@ Calculates the Equinoctial Elements of a certain orbit
     return Element;
 }
 
-QList<int>  analysis::calcAccessTime(double MissionTime, int AccessNumber, int AccessStep, int CovIndex,QStringList LineOfCoverageReport)
+QList< QList<double> >  analysis::calcAccessTime(int countStop,int countStart, int AccessNumber, int AccessStep, int AccessNow,int CovIndex,QStringList LineOfCoverageReport,MissionArc*arc)
 {
-    QList<int>AccessTime;  // AccessTime[0]=number of Access, AccessTime[1]=number of step within the Access
+    QList< QList<double> >AccessTime;
+    QList <double> AccessList;
+    // for each list, AccessTime[0]=number of Access, AccessTime[1]=start time(mjd), AccessTime[2]=stop time(MJD), AccessTime[3]=duration (seconds)
 
-    if(CovIndex<LineOfCoverageReport.size())
+    int totalStepsIndex=countStop-countStart;
+    QList<double> MJDaccess;
+    double StartTime,StopTime;
+    for(int j=countStart;j<=countStop;j++)
     {
-        QString Line=LineOfCoverageReport.at(CovIndex);
-        double TimeCovReport=(Line.section("\t",0,0)).toDouble();
+        int index=j-countStart;
 
-        if(abs(MissionTime-TimeCovReport)<10e-6)
+        MJDaccess.append(arc->trajectorySampleTime(j));
+
+int readTime=CovIndex;
+        if(CovIndex<LineOfCoverageReport.size())
         {
-            if(AccessStep==0)
+
+            QString Line=LineOfCoverageReport.at(readTime);
+            double TimeCovReport=(Line.section("\t",0,0)).toDouble();
+
+            if(fabs(MJDaccess[index]-TimeCovReport)<10e-6)
             {
-                AccessNumber++;
+
+                if(AccessStep==0)
+                {
+                    AccessNumber++;
+                }
+            }
+        }
+        readTime++;
+    }
+
+
+    int Size=AccessNumber;
+    AccessNumber=0;
+
+    //for(int i=0;i<Size;i++)
+    {
+
+        for(int j=countStart;j<=countStop;j++)
+        {
+
+            int index=j-countStart;
+
+            MJDaccess.append(arc->trajectorySampleTime(j));
+
+
+           if(CovIndex<LineOfCoverageReport.size())
+            {
+
+                QString Line=LineOfCoverageReport.at(CovIndex);
+                double TimeCovReport=(Line.section("\t",0,0)).toDouble();
+
+                if(fabs(MJDaccess[index]-TimeCovReport)<10e-6)
+                {
+
+                    if(AccessStep==0)
+                    {
+                        AccessNumber++;
+                        AccessList.append(AccessNumber);
+                        StartTime=MJDaccess[index];
+                        AccessList.append(StartTime); //start time of the access
+                    }
+
+                    //CovIndex++;
+                    AccessStep++;
+                    AccessNow=1;
+                    if(index==totalStepsIndex)
+                    {
+                        AccessList.append(StopTime);; //access time stop time
+                        double duration=sta::MjdToFromEpoch(StartTime, StopTime, "Seconds");
+                        AccessList.append(duration);
+                    }
+                    CovIndex++;
+                }
+               else
+                {
+
+                    AccessStep=0;
+                    if(AccessNow==1)
+                    {
+                        StopTime=MJDaccess[index-1];
+
+                        AccessList.append(StopTime);; //access time stop time
+                        double duration=sta::MjdToFromEpoch(StartTime, StopTime, "Seconds");
+                        AccessList.append(duration);
+                    }
+                    AccessNow=0;
+                }
+           //CovIndex++;
+           }
+            else
+            {
+
             }
 
-            CovIndex++;
-            AccessTime.append(AccessNumber);
-            AccessTime.append(AccessStep);
-            AccessStep++;
-            return AccessTime;
-
+            //double duration=sta::MjdToFromEpoch(StartTime, StopTime, "Seconds");
+           // AccessList.append(duration);
         }
-        else
-        {
-            AccessStep=0;
-            AccessTime.append(0);
-            return AccessTime;
-        }
-
+        AccessTime.append(AccessList);
+        //qDebug()<<AccessTime;
     }
-    else
-    {
-        AccessTime.append(0);
-        return AccessTime;
-    }
+    return AccessTime;
 }
 
 void analysis::addParameter()
