@@ -85,6 +85,8 @@
 
 #include "ui_mainwindow.h"
 
+#include "Scenario/missionsDefaults.h"
+
 #ifdef TARGET_OS_MAC
 #include <Carbon/Carbon.h>
 #endif
@@ -921,6 +923,7 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
     // Process each participant
     foreach (QSharedPointer<ScenarioParticipantType> participant, scenario()->AbstractParticipant())
     {
+        MissionsDefaults thisMissionDefaults;
         // Hack to set different visual properties for each participant, so
         // that they can be distinguished in the 3D and ground track views.
         // The user should have control over this.
@@ -940,7 +943,21 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
         if (dynamic_cast<ScenarioSC*>(participant.data()))
         {
             ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
-            scenarioPropagatorSatellite(vehicle,  trajectoryColor, feedback, propScenario);
+
+            const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList =
+                    vehicle->SCMission()->TrajectoryPlan()->AbstractTrajectory();
+            int MissionInd=0;
+            foreach (QSharedPointer<ScenarioAbstractTrajectoryType> trajectory,trajectoryList)
+            {
+                ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
+                QString arcColorName = loitering->ElementIdentifier()->colorName();
+                qDebug() << arcColorName << endl;
+                trajectoryColor = thisMissionDefaults.missionArcColorFromQt(arcColorName);
+
+                scenarioPropagatorSatellite(vehicle,  trajectoryColor, feedback, propScenario);
+                MissionInd++;
+            }
+
         }
 
         else if (dynamic_cast<ScenarioREV*>(participant.data()))//Added by Dominic to allow propagation of re-entry vehicle trajectories

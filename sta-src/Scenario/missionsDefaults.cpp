@@ -635,3 +635,46 @@ QList<QString> MissionsDefaults::nasaDefaultLoiteringMissions()
     return myMissionsList;
 
 }
+
+
+
+
+QColor MissionsDefaults::missionArcColorFromQt(QString colorLabel)
+{
+    if (colorLabel == "Yellow")
+        return Qt::yellow;
+    else if (colorLabel == "Red")
+        return Qt::red;
+    else if (colorLabel == "Green")
+        return Qt::green;
+    else if (colorLabel == "Blue")
+        return Qt::blue;
+    else if (colorLabel == "Magenta")
+        return Qt::magenta;
+    else if (colorLabel == "White")
+        return Qt::white;
+    else if (colorLabel == "Cyan")
+        return Qt::cyan;
+    else if (colorLabel == "Gray")
+        return Qt::gray;
+    else if (colorLabel == "Dark Red")
+        return Qt::darkRed;
+    else if (colorLabel == "Dark Yellow")
+        return Qt::darkYellow;
+    else if (colorLabel == "Dark Blue")
+        return Qt::darkBlue;
+    else if (colorLabel == "Dark Magenta")
+        return Qt::darkMagenta;
+    else if (colorLabel == "Light Gray")
+        return Qt::lightGray;
+    else if (colorLabel == "Drak Gray")
+        return Qt::darkGray;
+    else if (colorLabel == "Dark Cyan")
+        return Qt::darkCyan;
+    else if (colorLabel == "Black")
+        return Qt::black;
+}
+
+
+
+

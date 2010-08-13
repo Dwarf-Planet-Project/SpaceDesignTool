@@ -28,6 +28,8 @@
 
 #include "Scenario/staschema.h"
 
+#include <QColor>
+
 /**
  * Class to create a spacecraft defaults for some ESA and NASA missions and
  * some generic payloads
@@ -125,6 +127,8 @@ public:
     Qt::darkGray;	//4	 Dark gray (#808080)
     Qt::lightGray;	//6	 Light gray (#c0c0c0)
     */
+
+    QColor missionArcColorFromQt(QString colorLabel);
 
 };
 
