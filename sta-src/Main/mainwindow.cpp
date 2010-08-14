@@ -942,6 +942,7 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
         // For space vehicles, we need to propagate trajectories
         if (dynamic_cast<ScenarioSC*>(participant.data()))
         {
+            // Guillermo says: this part has been modified to accomodate mission arcs colors
             ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
 
             const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList =
@@ -951,7 +952,6 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
             {
                 ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
                 QString arcColorName = loitering->ElementIdentifier()->colorName();
-                qDebug() << arcColorName << endl;
                 trajectoryColor = thisMissionDefaults.missionArcColorFromQt(arcColorName);
 
                 scenarioPropagatorSatellite(vehicle,  trajectoryColor, feedback, propScenario);

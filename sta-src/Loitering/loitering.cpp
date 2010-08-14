@@ -25,6 +25,7 @@
  ------------------ Affiliation:  European Space Agency (ESA)    -------------------
  -----------------------------------------------------------------------------------
  Modified by Tiziana Sabatini on July 2009 to support the new perturbations layer
+ Extensively modified by Guillermo on August 2010 to comply with the new schema v2.0
 */
 
 #include "Loitering/loitering.h"
@@ -56,8 +57,8 @@ static const unsigned int MAX_OUTPUT_STEPS = 1000000;
 
 
 LoiteringDialog::LoiteringDialog(ScenarioTree* parent) :
-    QDialog(parent),
-    m_tesserals(0)
+        QDialog(parent),
+        m_tesserals(0)
 {
     setupUi(this);
     // Set up the combo boxes
@@ -155,13 +156,22 @@ LoiteringDialog::LoiteringDialog(ScenarioTree* parent) :
 
     gridLayout_4->addWidget(TesseralSpinBox, 2, 1, 1, 1);
 
+	SolarPressureRadioButton->setCheckable(true);
+	SolarPressureRadioButton->setChecked(false);
+	AlbedoCheckBox->setCheckable(true);
+	AlbedoCheckBox->setChecked(false);
+	IRCheckBox->setCheckable(true);
+	IRCheckBox->setChecked(false);
+
     connect(GravityFieldRadioButton, SIGNAL(toggled(bool)), GravityComboBox, SLOT(setEnabled(bool)));
     connect(GravityFieldRadioButton, SIGNAL(toggled(bool)), ZonalsSpinBox, SLOT(setEnabled(bool)));
     connect(GravityFieldRadioButton, SIGNAL(toggled(bool)), TesseralSpinBox, SLOT(setEnabled(bool)));
     connect(AtmDragRadioButton, SIGNAL(toggled(bool)), AtmosphereComboBox, SLOT(setEnabled(bool)));
     connect(SolarPressureRadioButton, SIGNAL(toggled(bool)), CrSpinBox, SLOT(setEnabled(bool)));
-    connect(SolarPressureRadioButton, SIGNAL(toggled(bool)), AlbedoCheckBox, SLOT(setEnabled(bool)));
-    connect(SolarPressureRadioButton, SIGNAL(toggled(bool)), IRCheckBox, SLOT(setEnabled(bool)));
+	connect(SolarPressureRadioButton, SIGNAL(toggled(bool)), AlbedoCheckBox, SLOT(setEnabled(bool)));
+	connect(SolarPressureRadioButton, SIGNAL(toggled(bool)), IRCheckBox, SLOT(setEnabled(bool)));
+	connect(SolarPressureRadioButton, SIGNAL(clicked(bool)), AlbedoCheckBox, SLOT(setChecked(bool)));
+	connect(SolarPressureRadioButton, SIGNAL(clicked(bool)), IRCheckBox, SLOT(setChecked(bool)));
     connect(PertBodyRadioButton, SIGNAL(toggled(bool)), BodyListWidget, SLOT(setEnabled(bool)));
     connect(PertBodyRadioButton, SIGNAL(toggled(bool)), PertBodyListWidget, SLOT(setEnabled(bool)));
     connect(PertBodyRadioButton, SIGNAL(toggled(bool)), AddPushButton, SLOT(setEnabled(bool)));
@@ -192,9 +202,9 @@ void LoiteringDialog::addPerturbingPlanet()
 
 void LoiteringDialog::addPerturbingPlanet(QListWidgetItem* item)
 {
-        QString text = item->text();
-        if(PertBodyListWidget->findItems(text,Qt::MatchExactly).isEmpty())
-                PertBodyListWidget->addItem(text);
+    QString text = item->text();
+    if(PertBodyListWidget->findItems(text,Qt::MatchExactly).isEmpty())
+        PertBodyListWidget->addItem(text);
 }
 
 void LoiteringDialog::removePerturbingPlanet()
@@ -218,13 +228,12 @@ void LoiteringDialog::disableIntegratorComboBox(int i)
     else IntegratorComboBox->setEnabled(true);
 }
 
-// FUNCTIONS
 
 bool LoiteringDialog::loadValues(ScenarioLoiteringType* loitering)
 {
     ScenarioElementIdentifierType* arcIdentifier    = loitering->ElementIdentifier().data();
-    ScenarioEnvironmentType* environment	    = loitering->Environment().data();
-    ScenarioTimeLine* parameters		    = loitering->TimeLine().data();
+    ScenarioEnvironmentType* environment	        = loitering->Environment().data();
+    ScenarioTimeLine* parameters		            = loitering->TimeLine().data();
     ScenarioPropagationPositionType* propagation    = loitering->PropagationPosition().data();
     ScenarioInitialPositionType* initPosition	    = loitering->InitialPosition().data();  //Modified by Dominic to reflect chages in XML schema (initial position now in sharedelements)
 
@@ -257,6 +266,7 @@ bool LoiteringDialog::loadValues(ScenarioElementIdentifierType* arcIdentifier)
 
 bool LoiteringDialog::loadValues(ScenarioEnvironmentType* environment)
 {
+    // The cntral body
     QSharedPointer<ScenarioCentralBodyType> centralBody = environment->CentralBody();
     if (!centralBody.isNull())
     {
@@ -267,110 +277,113 @@ bool LoiteringDialog::loadValues(ScenarioEnvironmentType* environment)
             qDebug() << "Bad central body '" << centralBodyName << "' in loitering trajectory.";
             return false;
         }      
-
         loiteringAspect.loadValueCentralBody(centralBodyName);
-
     }
     else
-    {
         return false;
-    }
 
-    return true;
-#if OLDSCENARIO
-    QList<ScenarioPerturbations*> perturbationsList = environment->perturbationsList();
-
+    // The perturbations
+    QSharedPointer<ScenarioPerturbationsType> perturbationsToCentralBody = environment->PerturbationsToCentralBody();
+	DebrisRadioButton->setChecked(false);
     GravityFieldRadioButton->setChecked(false);
     SolarPressureRadioButton->setChecked(false);
     AtmDragRadioButton->setChecked(false);
     PertBodyRadioButton->setChecked(false);
-    DebrisRadioButton->setChecked(false);
 
-    if (!perturbationsList.isEmpty())
+    if (!perturbationsToCentralBody.isNull())
     {
-        foreach (ScenarioPerturbations* perturbation, perturbationsList)
-        {
-            if (dynamic_cast<ScenarioGravityPerturbations*>(perturbation))
-            {
-                ScenarioGravityPerturbations* gravity = dynamic_cast<ScenarioGravityPerturbations*>(perturbation);
-                GravityFieldRadioButton->setChecked(true);
-                if(!gravity->modelName().isEmpty())
-                {
-                    QString gravitymodel = gravity->modelName();
-                    gravitymodel.remove(".stad");
+		//qDebug() << "Not null" << endl;
+        bool theAlbedo = perturbationsToCentralBody->albedo();
+        bool theAtmosphericDrag = perturbationsToCentralBody->atmosphereDrag();
+        bool theSolarPressure = perturbationsToCentralBody->solarPressure();
+        bool theGravityEffects = perturbationsToCentralBody->gravityEffets();
+        bool theDebris = perturbationsToCentralBody->micrometeoroids();
+		bool the3rdBody =perturbationsToCentralBody->thirdBody();
+		bool theIR =perturbationsToCentralBody->IR();
 
-                    for (int i = 0; i < GravityComboBox->count(); i++)
-                    {
-                        if (GravityComboBox->itemData(i) == gravitymodel)
-                        {
-                            GravityComboBox->setCurrentIndex(i);
-                            break;
-                        }
-                    }
-                }
-                else return false;
+        if (theDebris)
+            DebrisRadioButton->setChecked(true);
+		else
+			DebrisRadioButton->setChecked(false);
 
-                ZonalsSpinBox->setValue(gravity->zonalCount());
-                m_tesserals = gravity->tesseralCount();
-                TesseralSpinBox->setValue(m_tesserals);
-            }
+		if (theGravityEffects)
+		{
+			GravityFieldRadioButton->setChecked(true);
+			if(!centralBody->GravityModel()->modelName().isEmpty())
+			{
+				QString gravitymodel = centralBody->GravityModel()->modelName();
+				gravitymodel.remove(".stad");
+				for (int i = 0; i < GravityComboBox->count(); i++)
+				{
+					if (GravityComboBox->itemData(i) == gravitymodel)
+					{
+						GravityComboBox->setCurrentIndex(i);
+						break;
+					}
+				}
+			}
+			ZonalsSpinBox->setValue(centralBody->GravityModel()->numberOfZonals());
+			m_tesserals = centralBody->GravityModel()->numberOfTesserals();
+			TesseralSpinBox->setValue(m_tesserals);
+		} // ---- Gravity
+		else
+			GravityFieldRadioButton->setChecked(false);
 
-            else if (dynamic_cast<ScenarioAtmosphericDragPerturbations*>(perturbation))
-            {
-                ScenarioAtmosphericDragPerturbations* drag = dynamic_cast<ScenarioAtmosphericDragPerturbations*>(perturbation);
-                AtmDragRadioButton->setChecked(true);
-                if(!drag->atmosphericModel().isEmpty())
-                {
-                    QString atmospheremodel = drag->atmosphericModel();
-                    atmospheremodel.remove(".stad");
 
-                    for (int i = 0; i < AtmosphereComboBox->count(); i++)
-                    {
-                        if (AtmosphereComboBox->itemData(i) == atmospheremodel)
-                        {
-                            AtmosphereComboBox->setCurrentIndex(i);
-                            break;
-                        }
-                    }
-                }
-                else return false;
-            }
+		if (theSolarPressure)
+			SolarPressureRadioButton->setChecked(true);
+		else
+			SolarPressureRadioButton->setChecked(false);
 
-            else if (dynamic_cast<ScenarioSolarPressurePerturbations*>(perturbation))
-            {
-                ScenarioSolarPressurePerturbations* pressure = dynamic_cast<ScenarioSolarPressurePerturbations*>(perturbation);
-                SolarPressureRadioButton->setChecked(true);
-                CrSpinBox->setValue(pressure->reflectivity());
-                AlbedoCheckBox->setChecked(pressure->albedo());
-                IRCheckBox->setChecked(pressure->ir());
-            }
-            else if (dynamic_cast<ScenarioExternalBodyPerturbations*>(perturbation))
-            {
-                ScenarioExternalBodyPerturbations* bodies = dynamic_cast<ScenarioExternalBodyPerturbations*>(perturbation);
-                PertBodyRadioButton->setChecked(true);
+		if (theAtmosphericDrag)
+		{
+			AtmDragRadioButton->setChecked(true);
+			if(!centralBody->AtmosphereModel().isEmpty())
+			{
+				QString atmospheremodel = centralBody->AtmosphereModel();
+				atmospheremodel.remove(".stad");
+				for (int i = 0; i < AtmosphereComboBox->count(); i++)
+				{
+					if (AtmosphereComboBox->itemData(i) == atmospheremodel)
+					{
+						AtmosphereComboBox->setCurrentIndex(i);
+						break;
+					}
+				}
+			}
+		} // ---- Atmopsheric drag
+		else
+			AtmDragRadioButton->setChecked(false);
 
-                QString nameBody;
 
-                for (int j=0; j<bodies->perturbingBodyList().size(); j++)
-                {
-                    nameBody = bodies->perturbingBodyList().at(j)->body()->name();
-                    QList<QListWidgetItem*> items = BodyListWidget->findItems(nameBody ,Qt::MatchFixedString);
-                    if(!items.isEmpty() && nameBody != environment->centralBody()->body()->name())
-                    {
-                        PertBodyListWidget->addItem(nameBody.toUpper());
-                    }
-                    else return false;
-                }
-            }
-            else if (dynamic_cast<ScenarioDebrisPerturbations*>(perturbation))
-            {
-                DebrisRadioButton->setChecked(true);
-            }
-        }
-    }
+		if (theAlbedo)
+			AlbedoCheckBox->setChecked(true);
+		else
+			AlbedoCheckBox->setChecked(false);
 
+		if (theIR)
+			IRCheckBox->setChecked(true);
+		else
+			IRCheckBox->setChecked(false);
+
+		if (the3rdBody)
+		{
+			PertBodyRadioButton->setChecked(true);
+			QList<QString> perturbingBodyList = environment->PerturbationsToCentralBody()->perturbingBody();
+			QString nameBody;
+			for (int j=0; j<perturbingBodyList.size(); j++)
+			{
+				nameBody = perturbingBodyList.at(j);
+				QList<QListWidgetItem*> items = BodyListWidget->findItems(nameBody ,Qt::MatchFixedString);
+				if(!items.isEmpty() && nameBody != environment->CentralBody()->Name())
+					PertBodyListWidget->addItem(nameBody.toUpper());
+			}
+		} // --- the 3rd Bodies
+		else
+			PertBodyRadioButton->setChecked(true);
+	}
+	// Finally returning
     return true;
-#endif
 }
 
 
@@ -444,10 +457,10 @@ bool LoiteringDialog::loadValues(ScenarioInitialPositionType* initPosition)
 
         semimajorAxisEdit->setText(QString::number(elements->semiMajorAxis()));
         eccentricityEdit->setText(QString::number(elements->eccentricity()));
-	inclinationEdit->setText(QString::number(elements->inclination()));
-	raanEdit->setText(QString::number(elements->RAAN())); //*180/Pi()));
-	argOfPeriapsisEdit->setText(QString::number(elements->argumentOfPeriapsis())); //*180/Pi()));
-	trueAnomalyEdit->setText(QString::number(elements->trueAnomaly())); //*180/Pi()));
+        inclinationEdit->setText(QString::number(elements->inclination()));
+        raanEdit->setText(QString::number(elements->RAAN())); //*180/Pi()));
+        argOfPeriapsisEdit->setText(QString::number(elements->argumentOfPeriapsis())); //*180/Pi()));
+        trueAnomalyEdit->setText(QString::number(elements->trueAnomaly())); //*180/Pi()));
     }
     else if (stateVector)
     {
@@ -578,9 +591,6 @@ bool LoiteringDialog::saveValues(ScenarioEnvironmentType* environment)
 {
     // The central body
     QString myCentralBody = loiteringAspect.saveValueCentralBody();
-
-    //qDebug() << "outside save :" << myCentralBody << endl;
-
     StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(myCentralBody);
     if (centralBody)
     {
@@ -592,103 +602,87 @@ bool LoiteringDialog::saveValues(ScenarioEnvironmentType* environment)
         return false;
     }
 
+    // The preturbations
+    QSharedPointer<ScenarioPerturbationsType> perturbationsToCentralBody = environment->PerturbationsToCentralBody();
+	if (perturbationsToCentralBody.isNull())
+	{
+		ScenarioPerturbationsType* perturbationsToCentralBody = new ScenarioPerturbationsType();
+		environment->setPerturbationsToCentralBody(QSharedPointer<ScenarioPerturbationsType>(perturbationsToCentralBody));
+	}
 
-    /*
-    StaBody* centralBody =  STA_SOLAR_SYSTEM->lookup(CentralBodyComboBox->currentText());
-    if (centralBody)
-    {
-        environment->CentralBody()->setName(centralBody->name());
-    }
-    else
-    {
-        qWarning("Unknown central body %s", CentralBodyComboBox->currentText().toAscii().data());
-        return false;
-    }
-
-
-
-#if OLDSCENARIO
-    if (GravityFieldRadioButton->isChecked())
-    {
-        ScenarioGravityPerturbations* gravityPerturbation = new ScenarioGravityPerturbations();
-
-        QString gravitymodel = GravityComboBox->itemData(GravityComboBox->currentIndex()).toString();
-        gravitymodel.append(".stad");
-        gravityPerturbation->setCentralBody(environment->centralBody()->body());
-        gravityPerturbation->setModelName(gravitymodel);
-        gravityPerturbation->setZonalCount(ZonalsSpinBox->value());
-        gravityPerturbation->setTesseralCount(m_tesserals);
-
-        environment->addPerturbation(gravityPerturbation);
-    }
-#endif
-
-    //environment->setAtmosphericDrag(AtmDragRadioButton->isChecked());
-    environment->PerturbationsToCentralBody()->setAtmosphereDrag(AtmDragRadioButton->isChecked());
-
-    // TODO: Is the code below still necessary with the new schema? -cjl
-#if OLDSCENARIO
-    if (AtmDragRadioButton->isChecked())
-    {
-        ScenarioAtmosphericDragPerturbations* dragPerturbation = new ScenarioAtmosphericDragPerturbations();
-
-        QString atmospheremodel = AtmosphereComboBox->itemData(AtmosphereComboBox->currentIndex()).toString();
-        atmospheremodel.append(".stad");
-        dragPerturbation->setAtmosphericModel(atmospheremodel);
-        dragPerturbation->setCentralBody(environment->centralBody()->body());
-        environment->addPerturbation(dragPerturbation);
-    }
-#endif
-
-    //environment->setSolarPressure(SolarPressureRadioButton->isChecked());
-    environment->PerturbationsToCentralBody()->setSolarPressure(SolarPressureRadioButton->isChecked());
-
-    // TODO: Is the code below still necessary with the new schema? -cjl
-#if OLDSCENARIO
-    if (SolarPressureRadioButton->isChecked())
-    {
-        ScenarioSolarPressurePerturbations* solarPerturbation = new ScenarioSolarPressurePerturbations();
-        solarPerturbation->setCentralBody(environment->centralBody()->body());
-        solarPerturbation->setReflectivity(CrSpinBox->value());
-        solarPerturbation->setAlbedo(AlbedoCheckBox->isChecked());
-        solarPerturbation->setIr(IRCheckBox->isChecked());
-        environment->addPerturbation(solarPerturbation);
-    }
-#endif
-
-    // Reset the perturbing bodies list
-    //environment->perturbingBody().clear();
-    environment->PerturbationsToCentralBody()->perturbingBody().clear();
-
-    // Add selected perturbers
-    if (PertBodyRadioButton->isChecked() && PertBodyListWidget->count() != 0)
-    {
-        for (int j = 0; j < PertBodyListWidget->count(); j++)
-        {
-            StaBody* body = STA_SOLAR_SYSTEM->lookup(PertBodyListWidget->item(j)->text());
-            if (body && body != centralBody)
-            {
-		//environment->perturbingBody().append(body->name());
-		environment->PerturbationsToCentralBody()->perturbingBody().append(body->name());
-            }
-        }
-    }
-
-
-    // TODO: debris perturbations not available in schema -cjl
-#if OLDSCENARIO
     if (DebrisRadioButton->isChecked())
-    {
-        ScenarioDebrisPerturbations* debrisPerturbation = new ScenarioDebrisPerturbations();
-        debrisPerturbation->setCentralBody(environment->centralBody()->body());
+		environment->PerturbationsToCentralBody()->setMicrometeoroids(true);
+	else
+		environment->PerturbationsToCentralBody()->setMicrometeoroids(false);
 
-        environment->addPerturbation(debrisPerturbation);
-    }
-#endif
+	if (GravityFieldRadioButton->isChecked())
+	{
+		environment->PerturbationsToCentralBody()->setGravityEffets(true);
+		QString gravitymodel = GravityComboBox->itemData(GravityComboBox->currentIndex()).toString();
+		gravitymodel.append(".stad");
+		environment->CentralBody()->GravityModel()->setModelName(gravitymodel);
+		environment->CentralBody()->GravityModel()->setNumberOfZonals(ZonalsSpinBox->value());
+		environment->CentralBody()->GravityModel()->setNumberOfTesserals(m_tesserals);
+	}
+	else
+		environment->PerturbationsToCentralBody()->setGravityEffets(false);
 
-    */
+	if (AtmDragRadioButton->isChecked())
+	{
+		environment->PerturbationsToCentralBody()->setAtmosphereDrag(true);
+		QString atmospheremodel = AtmosphereComboBox->itemData(AtmosphereComboBox->currentIndex()).toString();
+		atmospheremodel.append(".stad");
+		environment->CentralBody()->setAtmosphereModel(atmospheremodel);
+	}
+	else
+		environment->PerturbationsToCentralBody()->setAtmosphereDrag(false);
 
-    return true;
+	if (SolarPressureRadioButton->isChecked())
+	{
+		environment->PerturbationsToCentralBody()->setSolarPressure(true);
+		if (AlbedoCheckBox->isChecked())
+			environment->PerturbationsToCentralBody()->setAlbedo(true);
+		else
+		{
+			environment->PerturbationsToCentralBody()->setAlbedo(false);
+			AlbedoCheckBox->setChecked(false);
+		}
+		if (IRCheckBox->isChecked())
+			environment->PerturbationsToCentralBody()->setIR(true);
+		else
+		{
+			environment->PerturbationsToCentralBody()->setIR(false);
+			IRCheckBox->setChecked(false);
+		}
+	}
+	else
+	{
+		AlbedoCheckBox->setChecked(false);
+		IRCheckBox->setChecked(false);
+		environment->PerturbationsToCentralBody()->setSolarPressure(false);
+		environment->PerturbationsToCentralBody()->setIR(false);
+		environment->PerturbationsToCentralBody()->setAlbedo(false);
+	}
+
+	if (PertBodyRadioButton->isChecked())
+	{
+		environment->PerturbationsToCentralBody()->setThirdBody(true);
+		QList<QString> perturbingBodyList = environment->PerturbationsToCentralBody()->perturbingBody();
+		perturbingBodyList.clear(); // Reset the perturbing bodies list
+		if (PertBodyRadioButton->isChecked() && PertBodyListWidget->count() != 0) // Add selected perturbers
+		{
+			for (int j = 0; j < PertBodyListWidget->count(); j++)
+			{
+				StaBody* body = STA_SOLAR_SYSTEM->lookup(PertBodyListWidget->item(j)->text());
+				if (body && body != centralBody)
+					environment->PerturbationsToCentralBody()->perturbingBody().append(body->name());
+			}
+		}
+	}
+	else
+		environment->PerturbationsToCentralBody()->setThirdBody(false);
+	// Finally returning
+	return true;
 }
 
 
@@ -711,16 +705,16 @@ bool LoiteringDialog::saveValues(ScenarioInitialPositionType* initPos)
     {
     case 0:
         {
-	    // Guillermo April 23 2010 patching the mess of Dominic
-	    ScenarioKeplerianElementsType* elements_deg = new ScenarioKeplerianElementsType;
-	    elements_deg->setSemiMajorAxis(semimajorAxisEdit->text().toDouble());
-	    elements_deg->setEccentricity(eccentricityEdit->text().toDouble());
-	    elements_deg->setInclination(inclinationEdit->text().toDouble());  //Modified by Dominic save values in scenario in radians
-	    elements_deg->setRAAN(raanEdit->text().toDouble());
-	    elements_deg->setArgumentOfPeriapsis(argOfPeriapsisEdit->text().toDouble());
-	    elements_deg->setTrueAnomaly(trueAnomalyEdit->text().toDouble());
+            // Guillermo April 23 2010 patching the mess of Dominic
+            ScenarioKeplerianElementsType* elements_deg = new ScenarioKeplerianElementsType;
+            elements_deg->setSemiMajorAxis(semimajorAxisEdit->text().toDouble());
+            elements_deg->setEccentricity(eccentricityEdit->text().toDouble());
+            elements_deg->setInclination(inclinationEdit->text().toDouble());  //Modified by Dominic save values in scenario in radians
+            elements_deg->setRAAN(raanEdit->text().toDouble());
+            elements_deg->setArgumentOfPeriapsis(argOfPeriapsisEdit->text().toDouble());
+            elements_deg->setTrueAnomaly(trueAnomalyEdit->text().toDouble());
 
-	    initPos->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(elements_deg));
+            initPos->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(elements_deg));
         }
         return true;
 
@@ -769,8 +763,8 @@ bool LoiteringDialog::saveValues(ScenarioSimulationParameters* parameters)
 
         initialStatePos->setInitialState(elements);
 
-	//QTextStream out (stdout);
-	//out << "a: " << elements->semimajorAxis() << endl;
+        //QTextStream out (stdout);
+        //out << "a: " << elements->semimajorAxis() << endl;
 
 
         return true;
@@ -833,10 +827,10 @@ void TesseralBox::setVariableMaximum(int i)
 
 /////////////////////////////////////// PropagateLoiteringTrajectory /////////////////////////////
 bool
-PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
-                             QList<double>& sampleTimes,
-                             QList<sta::StateVector>& samples,
-                             PropagationFeedback& propFeedback)
+        PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
+                                     QList<double>& sampleTimes,
+                                     QList<sta::StateVector>& samples,
+                                     PropagationFeedback& propFeedback)
 {
 
     //QTextStream out (stdout);
@@ -947,12 +941,12 @@ PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
 
         double sma            = initialStateKeplerian.SemimajorAxis;
         double e              = initialStateKeplerian.Eccentricity;
-	double inclination    = initialStateKeplerian.Inclination*Pi()/180.0;
-	double raan           = initialStateKeplerian.AscendingNode*Pi()/180.0;
-	double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis*Pi()/180.0;
-	double trueAnomaly    = initialStateKeplerian.TrueAnomaly*Pi()/180.0;
-	double meanAnomaly    = trueAnomalyTOmeanAnomaly(trueAnomaly, e);
-	/*
+        double inclination    = initialStateKeplerian.Inclination*Pi()/180.0;
+        double raan           = initialStateKeplerian.AscendingNode*Pi()/180.0;
+        double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis*Pi()/180.0;
+        double trueAnomaly    = initialStateKeplerian.TrueAnomaly*Pi()/180.0;
+        double meanAnomaly    = trueAnomalyTOmeanAnomaly(trueAnomaly, e);
+        /*
 	QTextStream out (stdout);
 	out << "sma: " << sma << endl;
 	out << "e: " << e << endl;
@@ -963,48 +957,48 @@ PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
 	out << "meanAnomaly: " << meanAnomaly << endl;
 	*/
 
-	// Next lines patched by Guillermo on April 23 2010 to speed up calculations outside the for loop
-	double argOfPeriapsisUpdated      = 0.0;
-	double meanAnomalyUpdated         = 0.0;
-	double raanUpdated                = 0.0;
+        // Next lines patched by Guillermo on April 23 2010 to speed up calculations outside the for loop
+        double argOfPeriapsisUpdated      = 0.0;
+        double meanAnomalyUpdated         = 0.0;
+        double raanUpdated                = 0.0;
 
-	double perigee = sma * (1 - e);
-	if (perigee < centralBody->meanRadius())
-	{
-	    propFeedback.raiseError(QObject::tr("The perigee distance is smaller than the main body radius."));
-	    return false;
-	}
-	else
-	{
+        double perigee = sma * (1 - e);
+        if (perigee < centralBody->meanRadius())
+        {
+            propFeedback.raiseError(QObject::tr("The perigee distance is smaller than the main body radius."));
+            return false;
+        }
+        else
+        {
 
-	  for (double t = dt; t < timelineDuration + dt; t += dt)
-	  {
-            JulianDate jd = startTime + sta::secsToDays(t);
+            for (double t = dt; t < timelineDuration + dt; t += dt)
+            {
+                JulianDate jd = startTime + sta::secsToDays(t);
 
-            stateVector = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
-                                           dt,
-                                           raanUpdated, argOfPeriapsisUpdated, meanAnomalyUpdated);
+                stateVector = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
+                                               dt,
+                                               raanUpdated, argOfPeriapsisUpdated, meanAnomalyUpdated);
 
-            argOfPeriapsis = argOfPeriapsisUpdated;
-            meanAnomaly    = meanAnomalyUpdated;
-            raan           = raanUpdated;
+                argOfPeriapsis = argOfPeriapsisUpdated;
+                meanAnomaly    = meanAnomalyUpdated;
+                raan           = raanUpdated;
 
-	    /*
+                /*
 	    out << "argOfPeriapsis: " << argOfPeriapsis << endl;
 	    out << "meanAnomaly: " << meanAnomaly << endl;
 	    out << "raan: " << raan << endl;
 	    */
 
-            // Append a trajectory sample every outputRate integration steps (and
-            // always at the last step.)
-            if (steps % outputRate == 0 || t >= timelineDuration)
-            {
-                sampleTimes << jd;
-                samples << stateVector;
+                // Append a trajectory sample every outputRate integration steps (and
+                // always at the last step.)
+                if (steps % outputRate == 0 || t >= timelineDuration)
+                {
+                    sampleTimes << jd;
+                    samples << stateVector;
+                }
+                ++steps;
             }
-            ++steps;
-	  }
-	}
+        }
     }
     else if (propagator == "COWELL")
     {
@@ -1056,18 +1050,18 @@ PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
             // Rectification of the reference trajectory, when the deviation is too large.
             if (q > 0.01)
             {
-               sta::KeplerianElements keplerian = cartesianTOorbital(mu, stateVector);
+                sta::KeplerianElements keplerian = cartesianTOorbital(mu, stateVector);
 
-               sma = keplerian.SemimajorAxis;
-               e = keplerian.Eccentricity;
-               inclination = keplerian.Inclination;
-               argOfPeriapsis = keplerian.ArgumentOfPeriapsis;
-               raan = keplerian.AscendingNode;
-               meanAnomaly = keplerian.MeanAnomaly;
+                sma = keplerian.SemimajorAxis;
+                e = keplerian.Eccentricity;
+                inclination = keplerian.Inclination;
+                argOfPeriapsis = keplerian.ArgumentOfPeriapsis;
+                raan = keplerian.AscendingNode;
+                meanAnomaly = keplerian.MeanAnomaly;
 
-               q = 0;
-               reference = stateVector;
-               deviation = sta::StateVector(null, null);
+                q = 0;
+                reference = stateVector;
+                deviation = sta::StateVector(null, null);
             }
 #endif
             // Append a trajectory sample every outputRate integration steps (and
@@ -1116,8 +1110,8 @@ PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
             if (perigee<centralBody()->meanRadius())
             {
                 QMessageBox::warning(NULL,
-                              QObject::tr("The trajectory has been not propagated"),
-                              QObject::tr("The perigee distance is smaller than the main body radius."));
+                                     QObject::tr("The trajectory has been not propagated"),
+                                     QObject::tr("The perigee distance is smaller than the main body radius."));
                 return stateVector.zero();
             }
 
@@ -1125,8 +1119,8 @@ PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
             double meanAnomalyUpdated         = 0.0;
             double raanUpdated                = 0.0;
             stateVector = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
-                                      trajectoryPropagation()->timeStep(), raanUpdated, argOfPeriapsisUpdated,
-                                      meanAnomalyUpdated);
+                                           trajectoryPropagation()->timeStep(), raanUpdated, argOfPeriapsisUpdated,
+                                           meanAnomalyUpdated);
 
             argOfPeriapsis = argOfPeriapsisUpdated;
             meanAnomaly    = meanAnomalyUpdated;
@@ -1147,8 +1141,8 @@ PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
             double meanAnomalyUpdated         = 0.0;
             double raanUpdated                = 0.0;
             reference = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
-                                      trajectoryPropagation()->timeStep(), raanUpdated, argOfPeriapsisUpdated,
-                                      meanAnomalyUpdated);
+                                         trajectoryPropagation()->timeStep(), raanUpdated, argOfPeriapsisUpdated,
+                                         meanAnomalyUpdated);
 
             argOfPeriapsis = argOfPeriapsisUpdated;
             meanAnomaly    = meanAnomalyUpdated;
@@ -1158,22 +1152,22 @@ PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
             stateVector = reference + deviation;
             q = deviation.position.dot(reference.position + 0.5 * deviation.position) / pow(reference.position.norm(), 2.0);
 
-//            // Rectification of the reference trajectory, when the deviation is too large.
-//            if (q > 0.01)
-//            {
-//               sta::KeplerianElements keplerian = cartesianTOorbital(mu, stateVector);
-//
-//               sma = keplerian.SemimajorAxis;
-//               e = keplerian.Eccentricity;
-//               inclination = keplerian.Inclination;
-//               argOfPeriapsis = keplerian.ArgumentOfPeriapsis;
-//               raan = keplerian.AscendingNode;
-//               meanAnomaly = keplerian.MeanAnomaly;
-//
-//               q = 0;
-//               reference = stateVector;
-//               deviation = sta::StateVector(null, null);
-//            }
+            //            // Rectification of the reference trajectory, when the deviation is too large.
+            //            if (q > 0.01)
+            //            {
+            //               sta::KeplerianElements keplerian = cartesianTOorbital(mu, stateVector);
+            //
+            //               sma = keplerian.SemimajorAxis;
+            //               e = keplerian.Eccentricity;
+            //               inclination = keplerian.Inclination;
+            //               argOfPeriapsis = keplerian.ArgumentOfPeriapsis;
+            //               raan = keplerian.AscendingNode;
+            //               meanAnomaly = keplerian.MeanAnomaly;
+            //
+            //               q = 0;
+            //               reference = stateVector;
+            //               deviation = sta::StateVector(null, null);
+            //            }
         }
 
         else if (trajectoryPropagation()->propagator() == "GAUSS")
@@ -1191,14 +1185,14 @@ PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
         //cicciostream << kep.AscendingNode << "      ";
         //cicciostream << kep.TrueAnomaly << "      ";
 
-//        //Treat the debris perturbation if selected by the user
-//        foreach (Perturbations* perturbation, perturbationsList)
-//        if (dynamic_cast<DebrisPerturbations*>(perturbation))
-//        {
-//            DebrisPerturbations* debris = dynamic_cast<DebrisPerturbations*>(perturbation);
-//            double gravityAcceleration = (-pow(initialState.position.norm(),-3.0) * mu * initialState.position).norm();
-//            double perturbedAcceleration = gravityAcceleration + debris->calculatePerturbingEffect(initialState, sta::daysToSecs(jd));
-//        }
+        //        //Treat the debris perturbation if selected by the user
+        //        foreach (Perturbations* perturbation, perturbationsList)
+        //        if (dynamic_cast<DebrisPerturbations*>(perturbation))
+        //        {
+        //            DebrisPerturbations* debris = dynamic_cast<DebrisPerturbations*>(perturbation);
+        //            double gravityAcceleration = (-pow(initialState.position.norm(),-3.0) * mu * initialState.position).norm();
+        //            double perturbedAcceleration = gravityAcceleration + debris->calculatePerturbingEffect(initialState, sta::daysToSecs(jd));
+        //        }
 
         // Append a trajectory sample every outputRate integration steps (and
         // always at the last step.)
@@ -1223,4 +1217,3 @@ void LoiteringDialog::on_pushButtonAspect_clicked()
 {
     loiteringAspect.exec();
 }
-
