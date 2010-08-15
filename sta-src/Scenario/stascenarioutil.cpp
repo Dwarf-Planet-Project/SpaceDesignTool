@@ -24,6 +24,7 @@
 
 #include "stascenarioutil.h"
 #include <QTextStream>
+#include <QStringList>
 
 
 bool parseBoolean(const QString& s)
@@ -127,13 +128,7 @@ QString convertToString(const QDateTime& d)
 
 QString convertToString(const QList<QString>& l)
 {
-    QString s;
-    foreach (QString s, l)
-    {
-        s += s + " ";
-    }
-
-    return s;
+    return QStringList(l).join(" ");
 }
 
 QString convertToString(const QList<double>& l)
