@@ -588,6 +588,8 @@ bool LoiteringDialog::saveValues(ScenarioElementIdentifierType* arcIdentifier)
     // The model
     QString theModelName = loiteringAspect.saveValueArcModel();
 	arcIdentifier->setModelName(theModelName);
+
+    return true;
 }
 
 
