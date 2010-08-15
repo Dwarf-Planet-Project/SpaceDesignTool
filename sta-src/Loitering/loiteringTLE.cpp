@@ -33,7 +33,6 @@
 #include "Astro-Core/date.h"
 #include "Astro-Core/stacoordsys.h"
 #include "Astro-Core/calendarTOjulian.h"
-
 #include "thirdparty/noradtle/norad.h"
 
 #include <QtGui>
@@ -41,6 +40,7 @@
 #include <QTextStream>
 
 #include "ui_loiteringTLE.h"
+
 
 
 
@@ -74,7 +74,6 @@ LoiteringTLEDialog::LoiteringTLEDialog(ScenarioTree* parent) :
     TimeStepLineEdit->setValidator(positiveDoubleValidator);
 
     // This creates the drop area inside a QFormLayout called "DropTLEhere" in the UI file
-    //DropArea *dropArea;
     dropArea = new DropArea;
     dropArea->setMaximumSize(106, 55); dropArea->setMinimumSize(106, 55); // Set the size
     DropTLEhere->addWidget(dropArea); //Add the widget into the desired area
@@ -108,6 +107,11 @@ bool LoiteringTLEDialog::loadValues(ScenarioLoiteringTLEType* loiteringTLE)
     TLEline1Edit->setText(loiteringTLE->tleLine1());
     TLEline2Edit->setText(loiteringTLE->tleLine2());
 
+	loiteringAspectTLE.loadValueCentralBody("Earth");
+
+	ScenarioElementIdentifierType* arcIdentifier = loiteringTLE->ElementIdentifier().data();
+	LoiteringTLEDialog::loadValues(arcIdentifier);
+
     return true;
 } // End of LoiteringTLEDialog::loadValues
 
@@ -139,11 +143,8 @@ void LoiteringTLEDialog::on_LoadTLEpushButton_clicked()
 	TLEfile.open(QIODevice::ReadOnly);
 	QTextStream StreamWithTLEs(&TLEfile);
 	QString NameOfParticipant = StreamWithTLEs.readLine();
-	//out << "NameOfParticipant: " << NameOfParticipant << endl;
 	TLE_line_1 = StreamWithTLEs.readLine();
-	//out << "TLE_line_1: " << TLE_line_1 << endl;
 	TLE_line_2 = StreamWithTLEs.readLine();
-	//out << "TLE_line_2: " << TLE_line_2 << endl;
 	TLEfile.close();
 
 	//Updating the GUI
@@ -169,6 +170,9 @@ bool LoiteringTLEDialog::saveValues(ScenarioLoiteringTLEType* loiteringTLE)
     loiteringTLE->setTleLine0(TLEline0Edit->text()); //The name of the vehicle
     loiteringTLE->setTleLine1(TLEline1Edit->text()); //The first TLE line
     loiteringTLE->setTleLine2(TLEline2Edit->text()); //The second TLE line
+
+	ScenarioElementIdentifierType* identifier = loiteringTLE->ElementIdentifier().data();
+	LoiteringTLEDialog::saveValues(identifier);
 
     return true;
 }
@@ -196,11 +200,8 @@ void LoiteringTLEDialog::on_TLE_dropped(const QMimeData *mimeData)
 	TLEfile.open(QIODevice::ReadOnly);
 	QTextStream StreamWithTLEs(&TLEfile);
 	TLE_line_0 = StreamWithTLEs.readLine();
-	//out << "TLE_line_0: " << TLE_line_0 << endl;
 	TLE_line_1 = StreamWithTLEs.readLine();
-	//out << "TLE_line_1: " << TLE_line_1 << endl;
 	TLE_line_2 = StreamWithTLEs.readLine();
-	//out << "TLE_line_2: " << TLE_line_2 << endl;
 	TLEfile.close();
 
 	LoiteringTLEDialog::TLEline0Edit->setText(TLE_line_0);
@@ -256,29 +257,6 @@ void DropArea::dropEvent(QDropEvent *event)
 
     const QMimeData *mimeData = event->mimeData();
 
-    /*
-    if (mimeData->hasText())
-    {
-	//setText(mimeData->text());
-	//setTextFormat(Qt::PlainText);
-	QMessageBox::information(this, tr("Good TLE file"), tr("This is a TLE file"));
-    }
-    else if (mimeData->hasUrls())
-    {
-	QList<QUrl> urlList = mimeData->urls();
-	QString text;
-	for (int i = 0; i < urlList.size() && i < 32; ++i) {
-	    QString url = urlList.at(i).path();
-	    text += url + QString("\n");
-	}
-	setText(text);
-    }
-    else
-    {
-	QMessageBox::information(this, tr("Bad TLE file"), tr("This is not a TLE file: \nError loading TLEs"));
-    }
-    */
-
     QList<QUrl> urlList = mimeData->urls();
     for (int i = 0; i < urlList.size() && i < 32; ++i)
     {
@@ -327,19 +305,6 @@ PropagateLoiteringTLETrajectory(ScenarioLoiteringTLEType* loiteringTLE,
 			     QList<sta::StateVector>& samples,
 			     PropagationFeedback& propFeedback)
 {
-
-    //QTextStream out (stdout);
-
-    //loiteringTLE ->ElementIdentifier()
-    //loiteringTLE->tleLine0()
-
-
-    //if (!timeline())
-    //	return sta::StateVector::zero();
-
-    //double timelineDuration = sta::daysToSecs(m_timeline->endTime() - m_timeline->startTime());
-    //double dt = m_timeline->timeStep();
-
     double timelineDuration = loiteringTLE->TimeLine()->StartTime().secsTo(loiteringTLE->TimeLine()->EndTime());
 
     if (timelineDuration < 0)
@@ -349,9 +314,6 @@ PropagateLoiteringTLETrajectory(ScenarioLoiteringTLEType* loiteringTLE,
     }
 
     double dt = loiteringTLE->TimeLine()->StepTime();
-
-    //out << "timelineDuration: " << timelineDuration << "   dt :" << dt << endl;
-
     tle_t tle;
 
     int tleError = parse_elements(loiteringTLE->tleLine1().toAscii().data(), loiteringTLE->tleLine2().toAscii().data(), &tle);
@@ -469,4 +431,45 @@ PropagateLoiteringTLETrajectory(ScenarioLoiteringTLEType* loiteringTLE,
 
 
     return true;
+}
+
+
+
+bool LoiteringTLEDialog::loadValues(ScenarioElementIdentifierType* arcIdentifier)
+{
+	QString theArcName = arcIdentifier->Name();
+	loiteringAspectTLE.loadValueArcName(theArcName);
+
+	QString theArcColor = arcIdentifier->colorName();
+	loiteringAspectTLE.loadValueArcColor(theArcColor);
+
+	QString theArcModel = arcIdentifier->modelName();
+	loiteringAspectTLE.loadValueArcModel(theArcModel);
+}
+
+
+
+
+bool LoiteringTLEDialog::saveValues(ScenarioElementIdentifierType* arcIdentifier)
+{
+	// The arc name
+	QString theArcName = loiteringAspectTLE.saveValueArcName();
+	arcIdentifier->setName(theArcName);
+
+	// The color
+	QString theColorName = loiteringAspectTLE.saveValueArcColor();
+	arcIdentifier->setColorName(theColorName);
+
+	// The model
+	QString theModelName = loiteringAspectTLE.saveValueArcModel();
+	arcIdentifier->setModelName(theModelName);
+}
+
+
+
+
+void LoiteringTLEDialog::on_pushButtonAspectTLE_clicked()
+{
+	loiteringAspectTLE.removePlanetsFromComboBoxForTLEs();
+	loiteringAspectTLE.exec();
 }

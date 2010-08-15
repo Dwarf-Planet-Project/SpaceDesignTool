@@ -44,14 +44,12 @@ bool missionAspectDialog::loadValueArcName(const QString arcName)
 {
     lineEditArcName->setText(arcName);
     theArcName = lineEditArcName->text();
-    //qDebug() << "name internal ;" << arcName << endl;
 }
 
 
 
 bool missionAspectDialog::loadValueArcColor(const QString arcColor)
 {
-    //qDebug() << "color internal ;" << arcColor << endl;
     if (arcColor == "Yellow")
         comboBoxColorPicker->setCurrentIndex(0);
     else if (arcColor == "Red")
@@ -96,7 +94,6 @@ bool missionAspectDialog::loadValueArcColor(const QString arcColor)
 
 bool missionAspectDialog::loadValueArcModel(const QString arcModel)
 {
-    //qDebug() << "model internal" << arcModel << endl;
     if (arcModel == "Default")
         comboBoxModel->setCurrentIndex(0);
     else if (arcModel == "XMM")
@@ -186,6 +183,25 @@ QString missionAspectDialog::saveValueArcModel()
 
 
 
+bool missionAspectDialog::removePlanetsFromComboBoxForTLEs()
+{
+	// Just left the Earth
+	comboBoxCentralBody->removeItem(1);
+	comboBoxCentralBody->removeItem(2);
+	comboBoxCentralBody->removeItem(3);
+	comboBoxCentralBody->removeItem(4);
+	comboBoxCentralBody->removeItem(5);
+	comboBoxCentralBody->removeItem(6);
+	comboBoxCentralBody->removeItem(7);
+	comboBoxCentralBody->removeItem(8);
+	comboBoxCentralBody->removeItem(9);
+	comboBoxCentralBody->removeItem(10);
+	comboBoxCentralBody->removeItem(11);
+	comboBoxCentralBody->removeItem(12);
+	comboBoxCentralBody->removeItem(13);
+	comboBoxCentralBody->removeItem(14);
+	return true;
+}
 
 
 

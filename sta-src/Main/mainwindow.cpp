@@ -942,23 +942,30 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
         // For space vehicles, we need to propagate trajectories
         if (dynamic_cast<ScenarioSC*>(participant.data()))
         {
-            // Guillermo says: this part has been modified to accomodate mission arcs colors
-            ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
-
-			const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList =
-					vehicle->SCMission()->TrajectoryPlan()->AbstractTrajectory();
-			int MissionInd=0;
-			foreach (QSharedPointer<ScenarioAbstractTrajectoryType> trajectory,trajectoryList)
+			ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
+			// Guillermo says: this part has been modified to accomodate mission arcs colors
+			const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList = vehicle->SCMission()->TrajectoryPlan()->AbstractTrajectory();
+			int arcIterator=0;
+			foreach (QSharedPointer<ScenarioAbstractTrajectoryType> trajectory, trajectoryList)
 			{
-				ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
-				QString arcColorName = loitering->ElementIdentifier()->colorName();
-				trajectoryColor = thisMissionDefaults.missionArcColorFromQt(arcColorName);
-
+				ScenarioAbstractTrajectoryType* myAbstractTrajectory = dynamic_cast<ScenarioAbstractTrajectoryType*>(trajectory.data());
+				QString trajectoryType = myAbstractTrajectory->elementName();
+				if (trajectoryType == "LoiteringType")
+				{
+					ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
+					QString arcColorName = loitering->ElementIdentifier()->colorName();
+					trajectoryColor = thisMissionDefaults.missionArcColorFromQt(arcColorName);
+				}
+				else if (trajectoryType == "LoiteringTLEType")
+				{
+					ScenarioLoiteringTLEType* loiteringTLE = dynamic_cast<ScenarioLoiteringTLEType*>(trajectory.data());
+					QString arcColorName = loiteringTLE->ElementIdentifier()->colorName();
+					trajectoryColor = thisMissionDefaults.missionArcColorFromQt(arcColorName);
+				}
                 scenarioPropagatorSatellite(vehicle,  trajectoryColor, feedback, propScenario);
-				MissionInd++;
+				arcIterator++;
 			}
         }
-
         else if (dynamic_cast<ScenarioREV*>(participant.data()))//Added by Dominic to allow propagation of re-entry vehicle trajectories
         {
             ScenarioREV* entryVehicle = dynamic_cast<ScenarioREV*>(participant.data());

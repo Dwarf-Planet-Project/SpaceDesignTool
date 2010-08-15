@@ -583,7 +583,7 @@ bool LoiteringDialog::saveValues(ScenarioElementIdentifierType* arcIdentifier)
 
     // The model
     QString theModelName = loiteringAspect.saveValueArcModel();
-    arcIdentifier->setModelName(theModelName);
+	arcIdentifier->setModelName(theModelName);
 }
 
 
@@ -708,9 +708,9 @@ bool LoiteringDialog::saveValues(ScenarioInitialPositionType* initPos)
 
     switch (InitialStateComboBox->currentIndex())
     {
-    case 0:
+	case 0: // --- KEPLERIAN
         {
-            // Guillermo April 23 2010 patching the mess of Dominic
+			// Guillermo April 23 2010
             ScenarioKeplerianElementsType* elements_deg = new ScenarioKeplerianElementsType;
             elements_deg->setSemiMajorAxis(semimajorAxisEdit->text().toDouble());
             elements_deg->setEccentricity(eccentricityEdit->text().toDouble());
@@ -722,8 +722,7 @@ bool LoiteringDialog::saveValues(ScenarioInitialPositionType* initPos)
             initPos->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(elements_deg));
         }
         return true;
-
-    case 1:
+	case 1:  // --- STATE VECTOR
         {
             ScenarioStateVectorType* stateVector = new ScenarioStateVectorType();
             stateVector->setX(positionXEdit->text().toDouble());
@@ -743,71 +742,7 @@ bool LoiteringDialog::saveValues(ScenarioInitialPositionType* initPos)
 }
 
 
-#if OLDSCENARIO
-bool LoiteringDialog::saveValues(ScenarioSimulationParameters* parameters)
-{
-    ScenarioExtendedTimeline* timeline = parameters->timeline();;
-    ScenarioInitialStatePosition*  initialStatePos = parameters->initialStatePosition();
-    timeline->setStartTime(sta::JdToMjd(sta::CalendarToJd(dateTimeEdit->dateTime())));
-    timeline->setEndTime(sta::JdToMjd(sta::CalendarToJd(dateTimeEdit_2->dateTime())));
-    timeline->setTimeStep(TimeStepLineEdit->text().toDouble());
 
-    int coordSysIndex = CoordSystemComboBox->currentIndex();
-    initialStatePos->setCoordinateSystem((sta::CoordinateSystemType) CoordSystemComboBox->itemData(coordSysIndex).toInt());
-
-    if (InitialStateComboBox->currentIndex() == 0)
-    {
-
-        ScenarioKeplerianElements* elements = new ScenarioKeplerianElements();
-        elements->m_semimajorAxis       = semimajorAxisEdit->text().toDouble();
-        elements->m_eccentricity        = eccentricityEdit->text().toDouble();
-        elements->m_inclination         = inclinationEdit->text().toDouble();
-        elements->m_raan                = raanEdit->text().toDouble();
-        elements->m_argumentOfPeriapsis = argOfPeriapsisEdit->text().toDouble();
-        elements->m_trueAnomaly         = trueAnomalyEdit->text().toDouble();
-
-        initialStatePos->setInitialState(elements);
-
-        //QTextStream out (stdout);
-        //out << "a: " << elements->semimajorAxis() << endl;
-
-
-        return true;
-
-    }
-
-    else  if (InitialStateComboBox->currentIndex() == 1)
-    {
-
-        ScenarioStateVector* stateVector = new ScenarioStateVector();
-        stateVector->setPosition(Vector3d(positionXEdit->text().toDouble(),
-                                          positionYEdit->text().toDouble(),
-                                          positionZEdit->text().toDouble()));
-        stateVector->setVelocity(Vector3d(velocityXEdit->text().toDouble(),
-                                          velocityYEdit->text().toDouble(),
-                                          velocityZEdit->text().toDouble()));
-
-        initialStatePos->setInitialState(stateVector);
-        return true;
-    }
-
-    /* else (InitialStateComboBox->currentIndex() == 2)
-    {
-        ScenarioTLEs* elements          = new ScenarioTLEs();
-        elements->m_semimajorAxis       = semimajorAxisEdit->text().toDouble();
-        elements->m_eccentricity        = eccentricityEdit->text().toDouble();
-        elements->m_inclination         = inclinationEdit->text().toDouble();
-        elements->m_raan                = raanEdit->text().toDouble();
-        elements->m_argumentOfPeriapsis = argOfPeriapsisEdit->text().toDouble();
-        elements->m_trueAnomaly         = trueAnomalyEdit->text().toDouble();
-
-        initialStatePos->setInitialState(elements);
-    }*/
-
-    else return false;
-
-}
-#endif
 
 
 bool LoiteringDialog::saveValues(ScenarioPropagationPositionType* propagation)
@@ -837,11 +772,7 @@ bool
                                      QList<sta::StateVector>& samples,
                                      PropagationFeedback& propFeedback)
 {
-
-    //QTextStream out (stdout);
-
     QString loiteringLabel = loitering->ElementIdentifier()->Name();
-    //out << "PropagateLoiteringTrajectory called with ARC name: " << loiteringLabel << endl;
 
     QString centralBodyName = loitering->Environment()->CentralBody()->Name();
     StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
@@ -903,14 +834,7 @@ bool
         return false;
     }
 
-#if OLDSCENARIO
-    // Create the list of perturbations that will influence the propagation
-    ScenarioSpaceVehicle* spacevehicle = dynamic_cast<ScenarioSpaceVehicle*>(this->parent()->parent());
-    ScenarioProperties* vehicleproperties = spacevehicle->properties();
-
-    QList<Perturbations*> perturbationsList = environment()->createListPerturbations(vehicleproperties);
-#endif
-    QList<Perturbations*> perturbationsList;
+	QList<Perturbations*> perturbationsList; // Create the list of perturbations that will influence the propagation
 
     sta::StateVector stateVector = initialState;
 
@@ -919,14 +843,7 @@ bool
     sta::StateVector reference = initialState;
     double q = 0.0;
 
-    // Next lines cretaed by Guillermo for trace purposes. To delete in future
-    //double MyJulianDate = sta::CalendarToJd(timeline->StartTime());
-    //QTextStream out (stdout);
-    //out << "MyJulianDate: " << MyJulianDate << endl;
-
     double startTime = sta::JdToMjd(sta::CalendarToJd(timeline->StartTime()));
-    //out << "MyModifiedJulianDate: " << startTime << endl;
-
 
     sampleTimes << startTime;
     samples << stateVector;
@@ -951,16 +868,6 @@ bool
         double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis*Pi()/180.0;
         double trueAnomaly    = initialStateKeplerian.TrueAnomaly*Pi()/180.0;
         double meanAnomaly    = trueAnomalyTOmeanAnomaly(trueAnomaly, e);
-        /*
-	QTextStream out (stdout);
-	out << "sma: " << sma << endl;
-	out << "e: " << e << endl;
-	out << "inclination: " << inclination << endl;
-	out << "raan: " << raan << endl;
-	out << "argOfPeriapsis: " << argOfPeriapsis << endl;
-	out << "trueAnomaly: " << trueAnomaly << endl;
-	out << "meanAnomaly: " << meanAnomaly << endl;
-	*/
 
         // Next lines patched by Guillermo on April 23 2010 to speed up calculations outside the for loop
         double argOfPeriapsisUpdated      = 0.0;
@@ -975,7 +882,6 @@ bool
         }
         else
         {
-
             for (double t = dt; t < timelineDuration + dt; t += dt)
             {
                 JulianDate jd = startTime + sta::secsToDays(t);
@@ -988,14 +894,7 @@ bool
                 meanAnomaly    = meanAnomalyUpdated;
                 raan           = raanUpdated;
 
-                /*
-	    out << "argOfPeriapsis: " << argOfPeriapsis << endl;
-	    out << "meanAnomaly: " << meanAnomaly << endl;
-	    out << "raan: " << raan << endl;
-	    */
-
-                // Append a trajectory sample every outputRate integration steps (and
-                // always at the last step.)
+				// Append a trajectory sample every outputRate integration steps (and always at the last step.)
                 if (steps % outputRate == 0 || t >= timelineDuration)
                 {
                     sampleTimes << jd;
@@ -1011,8 +910,7 @@ bool
         {
             JulianDate jd = startTime + sta::secsToDays(t);
             stateVector = propagateCOWELL(mu, stateVector, dt, perturbationsList, jd, integrator, propFeedback);
-            // Append a trajectory sample every outputRate integration steps (and
-            // always at the last step.)
+			// Append a trajectory sample every outputRate integration steps (and always at the last step.)
             if (steps % outputRate == 0 || t >= timelineDuration)
             {
                 sampleTimes << jd;
@@ -1069,8 +967,7 @@ bool
                 deviation = sta::StateVector(null, null);
             }
 #endif
-            // Append a trajectory sample every outputRate integration steps (and
-            // always at the last step.)
+			// Append a trajectory sample every outputRate integration steps (and always at the last step.)
             if (steps % outputRate == 0 || t >= timelineDuration)
             {
                 sampleTimes << jd;
@@ -1084,9 +981,7 @@ bool
         for (double t = dt; t < timelineDuration + dt; t += dt)
         {
             JulianDate jd = startTime + sta::secsToDays(t);
-
-            // Append a trajectory sample every outputRate integration steps (and
-            // always at the last step.)
+			// Append a trajectory sample every outputRate integration steps (and always at the last step.)
             if (steps % outputRate == 0 || t >= timelineDuration)
             {
                 sampleTimes << jd;
@@ -1103,117 +998,8 @@ bool
         return false;
     }
 
-#if OLDSCENARIO
-    for (double t = dt; t < timelineDuration + dt; t += dt)
-    {
-        JulianDate jd = startTime + sta::secsToDays(t);
-
-        // Choosing the propagator and propagating the trajectory
-        if (trajectoryPropagation()->propagator() == "TWO BODY")
-        {
-            double perigee=sma*(1-e);
-            if (perigee<centralBody()->meanRadius())
-            {
-                QMessageBox::warning(NULL,
-                                     QObject::tr("The trajectory has been not propagated"),
-                                     QObject::tr("The perigee distance is smaller than the main body radius."));
-                return stateVector.zero();
-            }
-
-            double argOfPeriapsisUpdated      = 0.0;
-            double meanAnomalyUpdated         = 0.0;
-            double raanUpdated                = 0.0;
-            stateVector = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
-                                           trajectoryPropagation()->timeStep(), raanUpdated, argOfPeriapsisUpdated,
-                                           meanAnomalyUpdated);
-
-            argOfPeriapsis = argOfPeriapsisUpdated;
-            meanAnomaly    = meanAnomalyUpdated;
-            raan           = raanUpdated;
-        }
-
-        else if (trajectoryPropagation()->propagator() == "COWELL")
-        {
-            stateVector = propagateCOWELL(mu, stateVector, trajectoryPropagation()->timeStep(), perturbationsList, time, trajectoryPropagation()->integrator(), propFeedback);
-        }
-
-        else if (trajectoryPropagation()->propagator() == "ENCKE")
-        {
-            deviation = propagateENCKE(mu, reference, trajectoryPropagation()->timeStep(),perturbationsList, time, stateVector, deviation,  q, trajectoryPropagation()->integrator(), propFeedback);
-
-            // PropagateTWObody is used to propagate the reference trajectory
-            double argOfPeriapsisUpdated      = 0.0;
-            double meanAnomalyUpdated         = 0.0;
-            double raanUpdated                = 0.0;
-            reference = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
-                                         trajectoryPropagation()->timeStep(), raanUpdated, argOfPeriapsisUpdated,
-                                         meanAnomalyUpdated);
-
-            argOfPeriapsis = argOfPeriapsisUpdated;
-            meanAnomaly    = meanAnomalyUpdated;
-            raan           = raanUpdated;
-
-            // Calculating the perturbed trajectory
-            stateVector = reference + deviation;
-            q = deviation.position.dot(reference.position + 0.5 * deviation.position) / pow(reference.position.norm(), 2.0);
-
-            //            // Rectification of the reference trajectory, when the deviation is too large.
-            //            if (q > 0.01)
-            //            {
-            //               sta::KeplerianElements keplerian = cartesianTOorbital(mu, stateVector);
-            //
-            //               sma = keplerian.SemimajorAxis;
-            //               e = keplerian.Eccentricity;
-            //               inclination = keplerian.Inclination;
-            //               argOfPeriapsis = keplerian.ArgumentOfPeriapsis;
-            //               raan = keplerian.AscendingNode;
-            //               meanAnomaly = keplerian.MeanAnomaly;
-            //
-            //               q = 0;
-            //               reference = stateVector;
-            //               deviation = sta::StateVector(null, null);
-            //            }
-        }
-
-        else if (trajectoryPropagation()->propagator() == "GAUSS")
-        {
-            stateVector = propagateGAUSS(mu, stateVector, trajectoryPropagation()->timeStep(), perturbationsList, time, trajectoryPropagation()->integrator());
-        }
-
-        KeplerianElements kep = cartesianTOorbital(mu, stateVector);
-
-        cicciostream.setRealNumberPrecision(8);
-        //cicciostream << kep.SemimajorAxis << "      ";
-        //cicciostream << kep.Eccentricity << "      ";
-        cicciostream << kep.Inclination << "      ";
-        //cicciostream << kep.ArgumentOfPeriapsis << "      ";
-        //cicciostream << kep.AscendingNode << "      ";
-        //cicciostream << kep.TrueAnomaly << "      ";
-
-        //        //Treat the debris perturbation if selected by the user
-        //        foreach (Perturbations* perturbation, perturbationsList)
-        //        if (dynamic_cast<DebrisPerturbations*>(perturbation))
-        //        {
-        //            DebrisPerturbations* debris = dynamic_cast<DebrisPerturbations*>(perturbation);
-        //            double gravityAcceleration = (-pow(initialState.position.norm(),-3.0) * mu * initialState.position).norm();
-        //            double perturbedAcceleration = gravityAcceleration + debris->calculatePerturbingEffect(initialState, sta::daysToSecs(jd));
-        //        }
-
-        // Append a trajectory sample every outputRate integration steps (and
-        // always at the last step.)
-        if (steps % outputRate == 0 || t >= timelineDuration)
-        {
-            sampleTimes << jd;
-            samples << stateVector;
-        }
-        ++steps;
-
-        time += sta::secsToDays(dt);
-    };
-#endif
-
     return true;
-}
+} // ------------------------------- End o the propagation method -----------------------
 
 
 

@@ -279,6 +279,19 @@
     </item>
    </layout>
   </widget>
+  <widget class="QPushButton" name="pushButtonAspectTLE">
+   <property name="geometry">
+    <rect>
+     <x>445</x>
+     <y>185</y>
+     <width>113</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Aspect</string>
+   </property>
+  </widget>
  </widget>
  <tabstops>
   <tabstop>StartDateTimeEdit</tabstop>

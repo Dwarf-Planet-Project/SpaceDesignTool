@@ -28,10 +28,12 @@
 
 
 #include "ui_loiteringTLE.h"
+#include "ui_missionAspectDialog.h"
 
 #include "Scenario/scenario.h"
 #include "Scenario/propagationfeedback.h"
 #include "Astro-Core/statevector.h"
+#include "Scenario/missionAspectDialog.h"
 
 #include <QDialog>
 
@@ -57,11 +59,18 @@ public:
     bool loadValues(ScenarioLoiteringTLEType* loiteringTLE);
     bool saveValues(ScenarioLoiteringTLEType* loiteringTLE);
 
+	bool loadValues(ScenarioElementIdentifierType* arcIdentifier);
+	bool saveValues(ScenarioElementIdentifierType* arcIdentifier);
+
+	missionAspectDialog loiteringAspectTLE;
+
 public slots:
     void on_TLE_dropped(const QMimeData *mimeData);
 
 protected slots:
     void on_LoadTLEpushButton_clicked();
+	void on_pushButtonAspectTLE_clicked();
+
 
 private:
     DropArea *dropArea;

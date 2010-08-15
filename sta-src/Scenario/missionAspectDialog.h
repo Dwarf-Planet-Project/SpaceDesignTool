@@ -39,9 +39,6 @@ public:
     missionAspectDialog( QWidget * parent = 0, Qt::WindowFlags f = 0);
     ~missionAspectDialog();
 
-    //bool loadValues(const ScenarioElementIdentifierType* identifier);
-    //ScenarioElementIdentifierType* saveValues();
-
     bool loadValueArcName(const QString arcName);
     QString saveValueArcName();
 
@@ -53,6 +50,8 @@ public:
 
     bool loadValueCentralBody(const QString centralBody);
     QString saveValueCentralBody();
+
+	bool removePlanetsFromComboBoxForTLEs();
 
 private:
     QString theCentralBody;
