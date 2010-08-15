@@ -1118,20 +1118,31 @@ int analysis::InputsControl(QList<QTreeWidget*>tree)
  return 2-invalid Tx and Rx location
  return 3-not enought number of parameters selected
  return 4-not only loiterings belonging to the space object with the payload
+ return 5-the access time is not available in a multi parameter report
       */
     int CovCommCount=0;
+    int AccessControl=0;
     if(tree[0]==treeWidgetShowInReport)
     {
-	for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++)
-	{
+        for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++)
+        {
 	    QTreeWidgetItem*ShowInReport=treeWidgetShowInReport->topLevelItem(i);
 	    QString ToReport=ShowInReport->text(0);
-            if((ToReport=="Azimuth")||(ToReport=="Elevation")||(ToReport=="Range")||(ToReport=="Access Time")||(ToReport=="Equivalent Isotropical Radiated Power")||(ToReport=="Received Frequency")||(ToReport=="Doppler Shift")||(ToReport=="Received Power")||(ToReport=="Flux Density")||(ToReport=="Overlap Bandwidth Factor")||(ToReport=="Free Space Loss")||(ToReport=="Oxygen Loss")||(ToReport=="Water Vapour Loss")||(ToReport=="Rain Loss")||(ToReport=="Atmospheric Loss")||(ToReport=="Propagation Loss")||(ToReport=="G/T")||(ToReport=="C/No")||(ToReport=="C/N")||(ToReport=="Eb/No")||(ToReport=="BER"))
+
+            if((ToReport=="Azimuth")||(ToReport=="Elevation")||(ToReport=="Range")||(ToReport=="Equivalent Isotropical Radiated Power")||(ToReport=="Received Frequency")||(ToReport=="Doppler Shift")||(ToReport=="Received Power")||(ToReport=="Flux Density")||(ToReport=="Overlap Bandwidth Factor")||(ToReport=="Free Space Loss")||(ToReport=="Oxygen Loss")||(ToReport=="Water Vapour Loss")||(ToReport=="Rain Loss")||(ToReport=="Atmospheric Loss")||(ToReport=="Propagation Loss")||(ToReport=="G/T")||(ToReport=="C/No")||(ToReport=="C/N")||(ToReport=="Eb/No")||(ToReport=="BER"))
 	    {
 
 		CovCommCount++;
 	    }
+            if((ToReport=="Access Time")&&treeWidgetShowInReport->topLevelItemCount()!=1)
+            {
+
+                CovCommCount++;
+                AccessControl++;
+            }
+
 	}
+
     }
     else
     {
@@ -1159,89 +1170,99 @@ int analysis::InputsControl(QList<QTreeWidget*>tree)
     QList<int>MissionIndexParent;
     QList<int>SpaceIndex;
 
-    if(CovCommCount!=0)
+    if(CovCommCount!=0&&AccessControl==0)
     {
-
-        if(Selected.size()<3)
+        if(CovCommCount!=0)
         {
-
-            return 3; //not enough number of parameters selected
-        }
-        else
-        {
-            for(int j=0;j<Selected.length();j++)
+            if(Selected.size()<3)
             {
-                int childnumber=Selected.at(j)->childCount();
-                if(childnumber==5)
-                {
-                    if(Selected.at(j)->child(3)->text(0)=="loiter")
-                    {
-                        MissionIndexParent.append(Selected.at(j)->child(1)->text(0).toInt());
 
+                return 3; //not enough number of parameters selected
+            }
+            else
+            {
+                for(int j=0;j<Selected.length();j++)
+                {
+                    int childnumber=Selected.at(j)->childCount();
+                    if(childnumber==5)
+                    {
+                        if(Selected.at(j)->child(3)->text(0)=="loiter")
+                        {
+                            MissionIndexParent.append(Selected.at(j)->child(1)->text(0).toInt());
+
+                        }
                     }
+
+                    if(childnumber==4)//Tx and Rx
+                    {
+
+                        if((Selected.at(j)->child(3)->text(0)=="Tx"))
+                        {
+                            TxCount++;
+                        }
+                        if((Selected.at(j)->child(3)->text(0)=="Rx"))
+                        {
+                            RxCount++;
+                        }
+                        //
+                        if((Selected.at(j)->child(0)->text(0)=="1"))
+                        {
+                            spaceObjCount++;
+                            SpaceIndex.append(Selected.at(j)->child(1)->text(0).toInt());
+
+                        }
+                        if((Selected.at(j)->child(0)->text(0)=="0"))
+                        {
+
+                            groundObjCount++;
+
+                        }
+                    }
+
                 }
 
-                if(childnumber==4)//Tx and Rx
+                if((RxCount!=1)||(TxCount!=1))
                 {
-
-                    if((Selected.at(j)->child(3)->text(0)=="Tx"))
+                    return 1; //invalid number of Tx and Rx
+                }
+                if((spaceObjCount!=1)||(groundObjCount!=1))
+                {
+                    return 2; //invalid Tx and Rx location
+                }
+                if((TxCount==1) && (RxCount==1)&&(spaceObjCount==1)&&(groundObjCount==1))
+                {
+                    for(int i=0;i<MissionIndexParent.size();i++)
                     {
-                        TxCount++;
-                    }
-                    if((Selected.at(j)->child(3)->text(0)=="Rx"))
-                    {
-                        RxCount++;
-                    }
-                    //
-                    if((Selected.at(j)->child(0)->text(0)=="1"))
-                    {
-                        spaceObjCount++;
-                        SpaceIndex.append(Selected.at(j)->child(1)->text(0).toInt());
-
-                    }
-                    if((Selected.at(j)->child(0)->text(0)=="0"))
-                    {
-
-                        groundObjCount++;
-
+                        ////qDebug()<<"m parent index"<<MissionIndexParent.at(i);
+                        ////qDebug()<<"space index"<<SpaceIndex.at(0);
+                        if(MissionIndexParent.at(i)!=SpaceIndex.at(0))
+                        {
+                            loiterCountCheck++;
+                        }
                     }
                 }
-
-            }
-
-            if((RxCount!=1)||(TxCount!=1))
-            {
-                return 1; //invalid number of Tx and Rx
-            }
-            if((spaceObjCount!=1)||(groundObjCount!=1))
-            {
-                return 2; //invalid Tx and Rx location
-            }
-            if((TxCount==1) && (RxCount==1)&&(spaceObjCount==1)&&(groundObjCount==1))
-            {
-                for(int i=0;i<MissionIndexParent.size();i++)
+                if (loiterCountCheck!=0)
                 {
-                    ////qDebug()<<"m parent index"<<MissionIndexParent.at(i);
-                    ////qDebug()<<"space index"<<SpaceIndex.at(0);
-                    if(MissionIndexParent.at(i)!=SpaceIndex.at(0))
-                    {
-                        loiterCountCheck++;
-                    }
+                    return 4; //invalid loitering selection: not only loiterings belonging to the space object with the payload
                 }
-            }
-            if (loiterCountCheck!=0)
-            {
-                return 4; //invalid loitering selection: not only loiterings belonging to the space object with the payload
-            }
-            ////qDebug()<<loiterCountCheck<<"loiter count";
-            if((RxCount==1)&&(TxCount==1)&&(spaceObjCount==1)&&(groundObjCount==1)&&(loiterCountCheck==0))
-            {
-                return 0; //correct inputs, proceed
+                ////qDebug()<<loiterCountCheck<<"loiter count";
+                if((RxCount==1)&&(TxCount==1)&&(spaceObjCount==1)&&(groundObjCount==1)&&(loiterCountCheck==0))
+                {
+                    return 0; //correct inputs, proceed
+                }
             }
         }
 
     }
-    else
+    if (tree[0]==treeWidgetShowInReport)
+    {
+    if( AccessControl!=0)
+    {
+
+        return 5;
+    }
+}
+    //else
     {
         return 0; //no cov or comm calculations, allow the rest of the program to run
     }
@@ -1280,6 +1301,13 @@ void analysis::Warnings(int i)
         QMessageBox CovCommParentWarning;
         CovCommParentWarning.setText("Please choose Loiterings belonging exclusively to the SC with the defined Payload");
         CovCommParentWarning.exec();
+        return;
+    }
+    if(i==5)
+    {
+        QMessageBox AccessWarning;
+        AccessWarning.setText("The Access Time is not available in a multi parameter report");
+        AccessWarning.exec();
         return;
     }
 }
@@ -1832,8 +1860,8 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                     }
                         else
                         {
-                            //stream<<name<<"\r\n";
-                            //stream<<"Access Number"<<"\t"<<"Start Time"<<"\t"<<"Stop Time"<<"\t"<<"Duration of each access (seconds)"<<"\r\n";
+                            stream<<name<<"\r\n";
+                            stream<<"Access Number"<<"\t"<<"Start Time (MJD)"<<"\t"<<"Stop Time (MJD)"<<"\t"<<"Duration of each access (seconds)"<<"\r\n";
                             numberOfColumns=4;
                             if(i==((treeWidgetShowInReport->topLevelItemCount())-1))
                             {
@@ -1861,20 +1889,24 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
                             QList< QList<double> > AccessTime= analysis::calcAccessTime(countStop[k],countStart[k], AccessNumber, AccessStep, AccessNow,CovIndex[3],LineOfCoverageReport,arc);
 
-                          /* for(int l=0;l<AccessTime.size();l++)
+                           for(int l=0;l<AccessTime.size();l++)
                             {
                                QList <double> List=AccessTime.at(l);
-                               qDebug()<<List;
+
+                               int j=0;
                                for(int n=0;n<List.size();n++)
                                {
+                               j=j+1;
                                stream<<List.at(n)<<"\t";
-                               if(n==List.size()-1)
+
+                               //if(n==List.size()-1)
+                               if(j%4==0)
                                {
                                   stream <<"\r\n";
                                }
                             }
                            }
-                            */numberOfRows=AccessTime.size();
+                            numberOfRows=AccessTime.size();
                         }
                     }
                     //other parameters
@@ -5294,7 +5326,7 @@ int readTime=CovIndex;
            // AccessList.append(duration);
         }
         AccessTime.append(AccessList);
-        //qDebug()<<AccessTime;
+
     }
     return AccessTime;
 }
