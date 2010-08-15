@@ -260,6 +260,8 @@ bool LoiteringDialog::loadValues(ScenarioElementIdentifierType* arcIdentifier)
 
     QString theArcModel = arcIdentifier->modelName();
     loiteringAspect.loadValueArcModel(theArcModel);
+
+    return true;
 }
 
 
@@ -280,7 +282,9 @@ bool LoiteringDialog::loadValues(ScenarioEnvironmentType* environment)
         loiteringAspect.loadValueCentralBody(centralBodyName);
     }
     else
+    {
         return false;
+    }
 
     // The perturbations
     QSharedPointer<ScenarioPerturbationsType> perturbationsToCentralBody = environment->PerturbationsToCentralBody();
