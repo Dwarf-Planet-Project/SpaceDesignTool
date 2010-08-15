@@ -3266,7 +3266,8 @@ if(CStart==0&&CStop==0) //added by Ana to prevent crashing in report
     QString analysisFileOutput = ResourcesPathOutput + "/" + "analysisReport.txt";
     QString analysisFileOutputURL = "file:///" + analysisFileOutput;
 
-    SpreadSheet* resultsSheet = new SpreadSheet(numberOfRows + 5, numberOfColumns);
+	//SpreadSheet* resultsSheet = new SpreadSheet(numberOfRows + 5, numberOfColumns);
+	SpreadSheet* resultsSheet = new SpreadSheet(numberOfRows, numberOfColumns);
     resultsSheet->setupContents(analysisFileOutput);
     resultsSheet->setWindowIcon(QPixmap(":/icons/CoordinateSystemBody.png"));
     resultsSheet->setWindowTitle("Analsyis report");

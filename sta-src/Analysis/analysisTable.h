@@ -133,6 +133,8 @@ public slots:
 
     void setupContents(QString analysisFileOutput);
 
+	void exportMyTable();
+
 
 protected:
     void setupContextMenu();
@@ -166,4 +168,7 @@ private:
     QLabel *cellLabel;
     QTableWidget *table;
     QLineEdit *formulaInput;
+
+	int numberOfRows, numberOfColumns;
+
 };

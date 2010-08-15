@@ -262,10 +262,12 @@ SpreadSheet::SpreadSheet(int rows, int cols, QWidget *parent)
 #if !defined(QT_NO_DBUS) && defined(Q_OS_UNIX)
     new SpreadSheetAdaptor(table);
 #endif
+
     createActions();
 
     updateColor(0);
-    setupMenuBar();
+	//setupMenuBar();  // Not good for MAC. It is better to create an "Export" button
+
     setupContextMenu();
     //setupContents();
     setCentralWidget(table);
@@ -283,6 +285,26 @@ SpreadSheet::SpreadSheet(int rows, int cols, QWidget *parent)
     connect(table, SIGNAL(itemChanged(QTableWidgetItem*)),
 	    this, SLOT(updateLineEdit(QTableWidgetItem*)));
     //setWindowTitle(tr("Spreadsheet"));
+
+	// Guillermo: added butons to close and export the tabel
+	QWidget *myWidget = new QWidget(this);
+	toolBar->addWidget(myWidget);
+
+	QHBoxLayout *buttonLayout = new QHBoxLayout;
+	buttonLayout->addStretch();
+	QPushButton *exportButton = new QPushButton(tr("Export"));
+	buttonLayout->addWidget(exportButton);
+	connect(exportButton, SIGNAL(clicked()), this, SLOT(exportMyTable()));
+	exportButton->setAutoDefault(true);	
+
+	QPushButton *closeButton = new QPushButton(tr("Close"));
+	buttonLayout->addWidget(closeButton);
+	connect(closeButton, SIGNAL(clicked()), this, SLOT(close()));
+	myWidget->setLayout(buttonLayout);
+
+	numberOfRows = rows;
+	numberOfColumns = cols;
+
 }
 
 void SpreadSheet::createActions()
@@ -335,7 +357,6 @@ void SpreadSheet::setupMenuBar()
 {
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(exitAction);
-
     QMenu *cellMenu = menuBar()->addMenu(tr("&Cell"));
     cellMenu->addAction(cell_addAction);
     cellMenu->addAction(cell_subAction);
@@ -719,3 +740,44 @@ void SpreadSheet::showAbout()
 {
     QMessageBox::about(this, "About ANALYSIS table", htmlText);
 }
+
+
+
+
+
+
+void SpreadSheet::exportMyTable()
+{
+	QString fileName = QFileDialog::getSaveFileName(this,
+													tr("Save table"),
+													"",
+													"STA table Files (*.txt)");
+
+
+	if (!fileName.isEmpty())
+	{
+		QFile file(fileName);
+		if (!file.open(QIODevice::WriteOnly))
+			QMessageBox::critical(this, tr("Error"), tr("Error opening file %1").arg(fileName));
+		else
+		{
+			QTextStream stream(&file);
+			//file.open(QIODevice::WriteOnly);
+			QSize tableSize = table->size();
+			qDebug() << tableSize << endl;
+
+			for (int i=0; i<numberOfRows; i++)  //-- rows
+			{
+				for (int j=0; j<numberOfColumns; j++)  //--columns
+				{
+					stream << (table->item(i, j))->text();
+					stream << " ";
+				}
+				stream << "\n";
+			}
+			stream << "\n";
+			file.close();
+		}
+	}
+}
+
