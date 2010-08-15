@@ -368,16 +368,17 @@ bool LoiteringDialog::loadValues(ScenarioEnvironmentType* environment)
 
 		if (the3rdBody)
 		{
-			PertBodyRadioButton->setChecked(true);
 			QList<QString> perturbingBodyList = environment->PerturbationsToCentralBody()->perturbingBody();
 			QString nameBody;
 			for (int j=0; j<perturbingBodyList.size(); j++)
 			{
 				nameBody = perturbingBodyList.at(j);
-				QList<QListWidgetItem*> items = BodyListWidget->findItems(nameBody ,Qt::MatchFixedString);
-				if(!items.isEmpty() && nameBody != environment->CentralBody()->Name())
-					PertBodyListWidget->addItem(nameBody.toUpper());
+				QList<QListWidgetItem*> items = BodyListWidget->findItems(nameBody, Qt::MatchFixedString);
+				//if(!items.isEmpty() && nameBody != environment->CentralBody()->Name())
+				if(nameBody != environment->CentralBody()->Name())
+					PertBodyListWidget->addItem(nameBody);
 			}
+			PertBodyRadioButton->setChecked(true);
 		} // --- the 3rd Bodies
 		else
 			PertBodyRadioButton->setChecked(true);
@@ -556,9 +557,8 @@ bool LoiteringDialog::saveValues(ScenarioLoiteringType* loitering)
     ScenarioPropagationPositionType* propagation = loitering->PropagationPosition().data();
     ScenarioElementIdentifierType* identifier    = loitering->ElementIdentifier().data();
     ScenarioInitialPositionType* initPosition    = loitering->InitialPosition().data();//Modified by Dominic to reflect chages in XML schema (initial position now in sharedelements)
-
-
-    if (saveValues(identifier) && saveValues(environment) && saveValues(parameters) && saveValues(propagation) && saveValues(initPosition))
+    
+	if (saveValues(identifier) && saveValues(environment) && saveValues(parameters) && saveValues(propagation) && saveValues(initPosition))
     {
         return true;
     }
@@ -604,11 +604,13 @@ bool LoiteringDialog::saveValues(ScenarioEnvironmentType* environment)
 
     // The preturbations
     QSharedPointer<ScenarioPerturbationsType> perturbationsToCentralBody = environment->PerturbationsToCentralBody();
+
 	if (perturbationsToCentralBody.isNull())
 	{
 		ScenarioPerturbationsType* perturbationsToCentralBody = new ScenarioPerturbationsType();
 		environment->setPerturbationsToCentralBody(QSharedPointer<ScenarioPerturbationsType>(perturbationsToCentralBody));
 	}
+
 
     if (DebrisRadioButton->isChecked())
 		environment->PerturbationsToCentralBody()->setMicrometeoroids(true);
@@ -667,20 +669,23 @@ bool LoiteringDialog::saveValues(ScenarioEnvironmentType* environment)
 	if (PertBodyRadioButton->isChecked())
 	{
 		environment->PerturbationsToCentralBody()->setThirdBody(true);
-		QList<QString> perturbingBodyList = environment->PerturbationsToCentralBody()->perturbingBody();
-		perturbingBodyList.clear(); // Reset the perturbing bodies list
-		if (PertBodyRadioButton->isChecked() && PertBodyListWidget->count() != 0) // Add selected perturbers
+		QList<QString> myPerturbingBodyList = environment->PerturbationsToCentralBody()->perturbingBody();
+		myPerturbingBodyList.clear(); // Reset the perturbing bodies list
+		for (int j = 0; j < PertBodyListWidget->count(); j++)
 		{
-			for (int j = 0; j < PertBodyListWidget->count(); j++)
-			{
-				StaBody* body = STA_SOLAR_SYSTEM->lookup(PertBodyListWidget->item(j)->text());
-				if (body && body != centralBody)
-					environment->PerturbationsToCentralBody()->perturbingBody().append(body->name());
-			}
+			StaBody* body = STA_SOLAR_SYSTEM->lookup(PertBodyListWidget->item(j)->text());
+			if (body && body != centralBody)
+				myPerturbingBodyList.append(body->name());
 		}
+		qDebug() << myPerturbingBodyList << endl;
+		environment->PerturbationsToCentralBody()->setPerturbingBody(myPerturbingBodyList);
+		qDebug() << environment->PerturbationsToCentralBody()->perturbingBody() << endl;
 	}
 	else
 		environment->PerturbationsToCentralBody()->setThirdBody(false);
+
+	environment->PerturbationsToCentralBody()->setUserDefined(false); // nothing for the moment
+
 	// Finally returning
 	return true;
 }
