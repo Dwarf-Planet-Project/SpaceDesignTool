@@ -44,12 +44,12 @@ static const float MissionSegmentBarSpacing = 8.0f;  // pixels
 
 
 TimelineView::TimelineView(QWidget* parent) :
-    QAbstractScrollArea(parent),
-    m_currentTime(0.0),
-    m_startTime(0.0),
-    m_endTime(1.0),
-    m_visibleSpan(1.0 / 24.0),
-    m_participantCount(0)
+		QAbstractScrollArea(parent),
+		m_currentTime(0.0),
+		m_startTime(0.0),
+		m_endTime(1.0),
+		m_visibleSpan(1.0 / 24.0),
+		m_participantCount(0)
 {
     updateScrollBars();
 }
@@ -61,7 +61,7 @@ TimelineView::~TimelineView()
 
 
 void
-TimelineView::setTimeRange(double startTime, double endTime)
+		TimelineView::setTimeRange(double startTime, double endTime)
 {
     m_startTime = startTime;
     m_endTime = endTime;
@@ -71,7 +71,7 @@ TimelineView::setTimeRange(double startTime, double endTime)
 
 
 void
-TimelineView::setVisibleSpan(double duration)
+		TimelineView::setVisibleSpan(double duration)
 {
     m_visibleSpan = duration;
     updateScrollBars();
@@ -80,7 +80,7 @@ TimelineView::setVisibleSpan(double duration)
 
 
 void
-TimelineView::setCurrentTime(double mjd)
+		TimelineView::setCurrentTime(double mjd)
 {
     if (mjd != m_currentTime)
     {
@@ -91,8 +91,7 @@ TimelineView::setCurrentTime(double mjd)
 }
 
 
-void
-TimelineView::paintEvent(QPaintEvent* /* event */)
+void TimelineView::paintEvent(QPaintEvent* /* event */)
 {
     QPainter painter(viewport());
     int viewWidth = viewport()->size().width();
@@ -100,7 +99,7 @@ TimelineView::paintEvent(QPaintEvent* /* event */)
     
     //QFont font("Helvetica", 9);
     //painter.setFont(font);
-        
+
     painter.fillRect(0, 0, viewWidth, viewHeight, QBrush(Qt::white));
     
     int top = verticalScrollBar()->value();
@@ -181,34 +180,27 @@ TimelineView::paintEvent(QPaintEvent* /* event */)
     // Draw a line indicating the current time
     {
         float x = (float) (viewWidth * (m_currentTime - viewStartTime) / m_visibleSpan);
-        //painter.setPen(Qt::red);
-	QPen guillermosPen(Qt::red, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+		QPen guillermosPen(Qt::red, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
         painter.setPen(guillermosPen);
         painter.drawLine(QPointF(x, 0), QPointF(x, viewHeight));
     }
 
 
     // Draw the starting epoch
-    {
-	painter.setPen(Qt::black);
-	double decimalTime = t0 - std::floor(t0);
-	decimalTime += 0.01 / 86400.0; // Adjust for rounding errors
-	int hour = (int) (std::floor(decimalTime * 24) + 12) % 24;
-	int minute = (int) std::floor(decimalTime * 1440) % 60;
-	int second = (int) std::floor(decimalTime * 86400) % 60;
 
-    QDateTime dateTime = sta::JdToCalendar(sta::MjdToJd(t0));
-	//float x = (float) (viewWidth * (t0 - viewStartTime) / m_visibleSpan);
-	float x = 45;
-	//float x = (float) (viewWidth * (m_currentTime - viewStartTime) / m_visibleSpan);
-	painter.drawText(QRectF(x - 30.0f, 0.0f, 60.0f, TimeHeaderHeight),
-			 Qt::AlignHCenter | Qt::AlignTop,
-			 dateTime.toString("\ndd MMM"));
-    }
+    {
+		painter.setPen(Qt::darkGray);
+		QDateTime dateTime = sta::JdToCalendar(sta::MjdToJd(t0));
+		float x = 0;
+		painter.drawText(QRectF(x, 23.0f, 60.0f, TimeHeaderHeight),
+						 Qt::AlignHCenter | Qt::AlignTop,
+						 dateTime.toString("\ndd MMM"));
+	}
+
 
     // Draw the time labels
-    painter.setPen(Qt::black);
-    for (double t = t0; t < viewEndTime; t += subdiv)
+	painter.setPen(Qt::black);
+	for (double t = t0; t < viewEndTime; t += subdiv)
     {
         double decimalTime = t - std::floor(t);
         decimalTime += 0.01 / 86400.0; // Adjust for rounding errors
@@ -223,9 +215,9 @@ TimelineView::paintEvent(QPaintEvent* /* event */)
             QDateTime dateTime = sta::JdToCalendar(sta::MjdToJd(t));
             
             float x = (float) (viewWidth * (t - viewStartTime) / m_visibleSpan);
-            painter.drawText(QRectF(x - 30.0f, 0.0f, 60.0f, TimeHeaderHeight),
+			painter.drawText(QRectF(x - 30.0f, 0.0f, 60.0f, TimeHeaderHeight),
                              Qt::AlignHCenter | Qt::AlignTop,
-			     dateTime.toString("hh:mm\ndd MMM"));
+							 dateTime.toString("hh:mm\ndd MMM"));
         }
         else
         {
@@ -234,7 +226,7 @@ TimelineView::paintEvent(QPaintEvent* /* event */)
             float x = (float) (viewWidth * (t - viewStartTime) / m_visibleSpan);
             painter.drawText(QRectF(x - 20.0f, 0.0f, 40.0f, TimeHeaderHeight),
                              Qt::AlignHCenter | Qt::AlignTop,
-			     tm.toString("hh:mm"));
+							 tm.toString("hh:mm"));
         }
     }
 
@@ -243,14 +235,14 @@ TimelineView::paintEvent(QPaintEvent* /* event */)
 
 
 void 
-TimelineView::mouseReleaseEvent(QMouseEvent* event)
+		TimelineView::mouseReleaseEvent(QMouseEvent* event)
 {
     int viewWidth = viewport()->size().width();
     double viewStartTime = horizontalScrollBar()->value() / 86400.0 + m_startTime;
 
     double mjd = viewStartTime + m_visibleSpan * (double) event->x() / (double) viewWidth;
     setCurrentTime(mjd);
- 
+
     // Emit a signal if one of the mission segment bars was clicked
     int participantIndex = -1;
     int y = event->y() - TimeHeaderHeight + verticalScrollBar()->value();
@@ -272,7 +264,7 @@ TimelineView::mouseReleaseEvent(QMouseEvent* event)
 
 
 void 
-TimelineView::mouseMoveEvent(QMouseEvent* event)
+		TimelineView::mouseMoveEvent(QMouseEvent* event)
 {
     int viewWidth = viewport()->size().width();
     double viewStartTime = horizontalScrollBar()->value() / 86400.0 + m_startTime;
@@ -284,14 +276,14 @@ TimelineView::mouseMoveEvent(QMouseEvent* event)
 
 
 void
-TimelineView::resizeEvent(QResizeEvent* event)
+		TimelineView::resizeEvent(QResizeEvent* event)
 {
     updateScrollBars();
 }
 
 
 void
-TimelineView::updateScrollBars()
+		TimelineView::updateScrollBars()
 {
     horizontalScrollBar()->setRange(0, (int) ((m_endTime - m_startTime) * 86400));
     horizontalScrollBar()->setPageStep((int) (m_visibleSpan * 86400));
@@ -309,7 +301,7 @@ TimelineView::updateScrollBars()
 
 
 void
-TimelineView::clearMission()
+		TimelineView::clearMission()
 {
     mission.clear();
     viewport()->update();
@@ -318,10 +310,10 @@ TimelineView::clearMission()
 
 
 void
-TimelineView::addMissionSegment(int participantIndex,
-                                double startTime,
-                                double endTime,
-                                QColor color)
+		TimelineView::addMissionSegment(int participantIndex,
+										double startTime,
+										double endTime,
+										QColor color)
 {
     MissionSegment segment;
     segment.participantIndex = participantIndex;
