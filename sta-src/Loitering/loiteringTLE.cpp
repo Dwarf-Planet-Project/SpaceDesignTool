@@ -54,7 +54,7 @@ QT_END_NAMESPACE
 class DropArea;
 
 LoiteringTLEDialog::LoiteringTLEDialog(ScenarioTree* parent) :
-    QDialog(parent)
+		QDialog(parent)
 {
     setupUi(this);
 
@@ -126,33 +126,32 @@ void LoiteringTLEDialog::on_LoadTLEpushButton_clicked()
 
     // Loading now the TLE file
     QString CompleteTLEFileName = QFileDialog::getOpenFileName(this, tr("Select TLE File"),
-							     QString("./TLEs/"),
-							     tr("TLEs (*.tle *.TLE)"));
+															   QString("./TLEs/"),
+															   tr("TLEs (*.tle *.TLE)"));
 
     if (!CompleteTLEFileName.isEmpty())
     {
-	// Strip away the path--we just want the filename
-	if (CompleteTLEFileName.contains('/'))
-	{
-	    TLEFileName = CompleteTLEFileName.remove(0, TLEFileName.lastIndexOf('/') + 1);
-	    //out << "TLEFileName: " << TLEFileName << endl;
-	};
+		// Strip away the path--we just want the filename
+		if (CompleteTLEFileName.contains('/'))
+		{
+			TLEFileName = CompleteTLEFileName.remove(0, TLEFileName.lastIndexOf('/') + 1);
+			//out << "TLEFileName: " << TLEFileName << endl;
+		};
 
-	// Reading the TLE file
-	QFile TLEfile(CompleteTLEFileName);
-	TLEfile.open(QIODevice::ReadOnly);
-	QTextStream StreamWithTLEs(&TLEfile);
-	QString NameOfParticipant = StreamWithTLEs.readLine();
-	TLE_line_1 = StreamWithTLEs.readLine();
-	TLE_line_2 = StreamWithTLEs.readLine();
-	TLEfile.close();
+		// Reading the TLE file
+		QFile TLEfile(CompleteTLEFileName);
+		TLEfile.open(QIODevice::ReadOnly);
+		QTextStream StreamWithTLEs(&TLEfile);
+		QString NameOfParticipant = StreamWithTLEs.readLine();
+		TLE_line_1 = StreamWithTLEs.readLine();
+		TLE_line_2 = StreamWithTLEs.readLine();
+		TLEfile.close();
 
-	//Updating the GUI
-	LoiteringTLEDialog::TLEline0Edit->setText(NameOfParticipant);
-	LoiteringTLEDialog::TLEline1Edit->setText(TLE_line_1);
-	LoiteringTLEDialog::TLEline2Edit->setText(TLE_line_2);
-
-     }
+		//Updating the GUI
+		LoiteringTLEDialog::TLEline0Edit->setText(NameOfParticipant);
+		LoiteringTLEDialog::TLEline1Edit->setText(TLE_line_1);
+		LoiteringTLEDialog::TLEline2Edit->setText(TLE_line_2);
+	}
 }
 
 
@@ -189,25 +188,25 @@ void LoiteringTLEDialog::on_TLE_dropped(const QMimeData *mimeData)
     QList<QUrl> urlList = mimeData->urls();
     for (int i = 0; i < urlList.size() && i < 32; ++i)
     {
-	QString url = urlList.at(i).path();
-	DroppedTLEFileName += url;
+		QString url = urlList.at(i).path();
+		DroppedTLEFileName += url;
     }
 
     if (!DroppedTLEFileName.isEmpty())
     {
-	// Reading the TLE file
-	QFile TLEfile(DroppedTLEFileName);
-	TLEfile.open(QIODevice::ReadOnly);
-	QTextStream StreamWithTLEs(&TLEfile);
-	TLE_line_0 = StreamWithTLEs.readLine();
-	TLE_line_1 = StreamWithTLEs.readLine();
-	TLE_line_2 = StreamWithTLEs.readLine();
-	TLEfile.close();
+		// Reading the TLE file
+		QFile TLEfile(DroppedTLEFileName);
+		TLEfile.open(QIODevice::ReadOnly);
+		QTextStream StreamWithTLEs(&TLEfile);
+		TLE_line_0 = StreamWithTLEs.readLine();
+		TLE_line_1 = StreamWithTLEs.readLine();
+		TLE_line_2 = StreamWithTLEs.readLine();
+		TLEfile.close();
 
-	LoiteringTLEDialog::TLEline0Edit->setText(TLE_line_0);
-	LoiteringTLEDialog::TLEline1Edit->setText(TLE_line_1);
-	LoiteringTLEDialog::TLEline2Edit->setText(TLE_line_2);
-     }
+		LoiteringTLEDialog::TLEline0Edit->setText(TLE_line_0);
+		LoiteringTLEDialog::TLEline1Edit->setText(TLE_line_1);
+		LoiteringTLEDialog::TLEline2Edit->setText(TLE_line_2);
+	}
 
 }
 
@@ -260,16 +259,16 @@ void DropArea::dropEvent(QDropEvent *event)
     QList<QUrl> urlList = mimeData->urls();
     for (int i = 0; i < urlList.size() && i < 32; ++i)
     {
-	QString url = urlList.at(i).path();
-	DroppedTLEFileName += url;
+		QString url = urlList.at(i).path();
+		DroppedTLEFileName += url;
     }
 
 
     // Strip away the path--we just want the filename
     if (DroppedTLEFileName.contains('/'))
     {
-	TLEFileName = DroppedTLEFileName.remove(0, DroppedTLEFileName.lastIndexOf('/') + 1);
-	//out << "TLEFileName: " << TLEFileName << endl;
+		TLEFileName = DroppedTLEFileName.remove(0, DroppedTLEFileName.lastIndexOf('/') + 1);
+		//out << "TLEFileName: " << TLEFileName << endl;
     };
     setText(TLEFileName);
 
@@ -300,17 +299,17 @@ void DropArea::clear()
 
 /////////////////////////////////////// PropagateLoiteringTLETrajectory /////////////////////////////
 bool
-PropagateLoiteringTLETrajectory(ScenarioLoiteringTLEType* loiteringTLE,
-			     QList<double>& sampleTimes,
-			     QList<sta::StateVector>& samples,
-			     PropagationFeedback& propFeedback)
+		PropagateLoiteringTLETrajectory(ScenarioLoiteringTLEType* loiteringTLE,
+										QList<double>& sampleTimes,
+										QList<sta::StateVector>& samples,
+										PropagationFeedback& propFeedback)
 {
     double timelineDuration = loiteringTLE->TimeLine()->StartTime().secsTo(loiteringTLE->TimeLine()->EndTime());
 
     if (timelineDuration < 0)
     {
-	propFeedback.raiseError(QObject::tr("End time before initial time"));
-	return true;
+		propFeedback.raiseError(QObject::tr("End time before initial time"));
+		return true;
     }
 
     double dt = loiteringTLE->TimeLine()->StepTime();
@@ -320,37 +319,37 @@ PropagateLoiteringTLETrajectory(ScenarioLoiteringTLEType* loiteringTLE,
 
     if (tleError != 0)
     {
-	if (tleError == 3)
-	    propFeedback.raiseError(QObject::tr("TLE is not parseable."));
-	else
-	    propFeedback.raiseError(QObject::tr("Checksum error in TLE.\n"));
-	//return initialState;
-	return true;
+		if (tleError == 3)
+			propFeedback.raiseError(QObject::tr("TLE is not parseable."));
+		else
+			propFeedback.raiseError(QObject::tr("Checksum error in TLE.\n"));
+		//return initialState;
+		return true;
     }
 
     if (dt == 0.0)
     {
-	propFeedback.raiseError(QObject::tr("Time step is zero!"));
-	//return initialState;
-	return true;
+		propFeedback.raiseError(QObject::tr("Time step is zero!"));
+		//return initialState;
+		return true;
     }
 
     if (timelineDuration / dt > MAX_OUTPUT_STEPS)
     {
-	propFeedback.raiseError(QObject::tr("Number of propagation steps exceeds %1. Try increasing the simulation time step.").arg(MAX_OUTPUT_STEPS));
-	//return initialState;
-	return true;
+		propFeedback.raiseError(QObject::tr("Number of propagation steps exceeds %1. Try increasing the simulation time step.").arg(MAX_OUTPUT_STEPS));
+		//return initialState;
+		return true;
     }
 
     int ephemeris = TLE_EPHEMERIS_TYPE_SGP4;
     bool isDeep = select_ephemeris(&tle) != 0;
     if (isDeep)
     {
-	ephemeris = TLE_EPHEMERIS_TYPE_SDP4;
+		ephemeris = TLE_EPHEMERIS_TYPE_SDP4;
     }
     else
     {
-	ephemeris = TLE_EPHEMERIS_TYPE_SGP4;
+		ephemeris = TLE_EPHEMERIS_TYPE_SGP4;
     }
 
     double satelliteParams[N_SAT_PARAMS];
@@ -358,20 +357,20 @@ PropagateLoiteringTLETrajectory(ScenarioLoiteringTLEType* loiteringTLE,
     switch (ephemeris)
     {
     case TLE_EPHEMERIS_TYPE_SGP:
-       SGP_init(satelliteParams, &tle);
-       break;
+		SGP_init(satelliteParams, &tle);
+		break;
     case TLE_EPHEMERIS_TYPE_SGP4:
-       SGP4_init(satelliteParams, &tle);
-       break;
+		SGP4_init(satelliteParams, &tle);
+		break;
     case TLE_EPHEMERIS_TYPE_SGP8:
-       SGP8_init(satelliteParams, &tle);
-       break;
+		SGP8_init(satelliteParams, &tle);
+		break;
     case TLE_EPHEMERIS_TYPE_SDP4:
-       SDP4_init(satelliteParams, &tle);
-       break;
+		SDP4_init(satelliteParams, &tle);
+		break;
     case TLE_EPHEMERIS_TYPE_SDP8:
-       SDP8_init(satelliteParams, &tle);
-       break;
+		SDP8_init(satelliteParams, &tle);
+		break;
     }
 
     // Time variable for SGP is in minutes
@@ -397,36 +396,36 @@ PropagateLoiteringTLETrajectory(ScenarioLoiteringTLEType* loiteringTLE,
     // requested span.
     for (double t = 0.0; t < timelineDuration + dt; t += dt)
     {
-	double tclamp = std::min(t, timelineDuration);
+		double tclamp = std::min(t, timelineDuration);
 
-	// Time since epoch
-	double t1 = timeBase + tclamp / 60.0;
+		// Time since epoch
+		double t1 = timeBase + tclamp / 60.0;
 
-	switch (ephemeris)
-	{
-	case TLE_EPHEMERIS_TYPE_SGP:
-	   SGP(t1, &tle, satelliteParams, state.position.data(), state.velocity.data());
-	   break;
-	case TLE_EPHEMERIS_TYPE_SGP4:
-	   SGP4(t1, &tle, satelliteParams, state.position.data(), state.velocity.data());
-	   break;
-	case TLE_EPHEMERIS_TYPE_SGP8:
-	   SGP8(t1, &tle, satelliteParams, state.position.data(), state.velocity.data());
-	   break;
-	case TLE_EPHEMERIS_TYPE_SDP4:
-	   SDP4(t1, &tle, satelliteParams, state.position.data(), state.velocity.data());
-	   break;
-	case TLE_EPHEMERIS_TYPE_SDP8:
-	   SDP8(t1, &tle, satelliteParams, state.position.data(), state.velocity.data());
-	   break;
-	}
+		switch (ephemeris)
+		{
+		case TLE_EPHEMERIS_TYPE_SGP:
+			SGP(t1, &tle, satelliteParams, state.position.data(), state.velocity.data());
+			break;
+		case TLE_EPHEMERIS_TYPE_SGP4:
+			SGP4(t1, &tle, satelliteParams, state.position.data(), state.velocity.data());
+			break;
+		case TLE_EPHEMERIS_TYPE_SGP8:
+			SGP8(t1, &tle, satelliteParams, state.position.data(), state.velocity.data());
+			break;
+		case TLE_EPHEMERIS_TYPE_SDP4:
+			SDP4(t1, &tle, satelliteParams, state.position.data(), state.velocity.data());
+			break;
+		case TLE_EPHEMERIS_TYPE_SDP8:
+			SDP8(t1, &tle, satelliteParams, state.position.data(), state.velocity.data());
+			break;
+		}
 
-	// SGP output velocities are in km/minute; convert to km/sec.
-	state.velocity /= 60.0;
+		// SGP output velocities are in km/minute; convert to km/sec.
+		state.velocity /= 60.0;
 
-	//sampleTimes << m_timeline->startTime() + sta::secsToDays(tclamp);
+		//sampleTimes << m_timeline->startTime() + sta::secsToDays(tclamp);
         sampleTimes << sta::JdToMjd(startTimeJd) + sta::secsToDays(tclamp);
-	samples << state;
+		samples << state;
     }
 
 
@@ -470,6 +469,9 @@ bool LoiteringTLEDialog::saveValues(ScenarioElementIdentifierType* arcIdentifier
 
 void LoiteringTLEDialog::on_pushButtonAspectTLE_clicked()
 {
+	loiteringAspectTLE.removePlanetsFromComboBoxForTLEs();
+	loiteringAspectTLE.removePlanetsFromComboBoxForTLEs();
+	loiteringAspectTLE.removePlanetsFromComboBoxForTLEs();
 	loiteringAspectTLE.removePlanetsFromComboBoxForTLEs();
 	loiteringAspectTLE.exec();
 }

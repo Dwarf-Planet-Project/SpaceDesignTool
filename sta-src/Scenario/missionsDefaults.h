@@ -50,6 +50,9 @@ public:
      // Generric loitering satellite
      ScenarioLoiteringType MissionsDefaults_GENERIC();
 
+	 // Generric loitering satellite
+	 ScenarioLoiteringTLEType MissionsDefaults_GENERIC_TLE();
+
 
     // Science
     ScenarioLoiteringType MissionsDefaults_XMM();

@@ -340,6 +340,20 @@ static QByteArray loiteringFragment(const char* name)
 
 
 
+
+// Loitering for TLE elemennts fragment
+static QByteArray loiteringTLEFragment(const char* name)
+{
+	MissionsDefaults myMissionDefaults;
+	ScenarioLoiteringTLEType loiteringTLEDefault = myMissionDefaults.MissionsDefaults_GENERIC_TLE();
+
+	QDomDocument doc;
+	return fragmentText(CreateLoiteringTLEElement(&loiteringTLEDefault, doc)).toUtf8();
+}
+
+
+
+
 // Re-entry misison arc fragment
 static QByteArray reentryFragment(const char* name) //Modified by Dominic to allow dragging of entry Arc
 {
@@ -375,26 +389,6 @@ static QByteArray reentryFragment(const char* name) //Modified by Dominic to all
 }
 
 
-
-// Loitering for TLE elemennts fragment
-static QByteArray loiteringTLEFragment(const char* name)
-{
-    ScenarioLoiteringTLEType loiteringTLE;
-
-    /*** fill in defaults ***/
-    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
-    loiteringTLE.TimeLine()->setStartTime(TheCurrentDateAndTime);
-    loiteringTLE.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
-    loiteringTLE.TimeLine()->setStepTime(60.0);
-    loiteringTLE.setTleLine0("ISS (ZARYA)");
-    loiteringTLE.setTleLine1("1 25544U 98067A   09282.91732946  .00013034  00000-0  90850-4 0  7559");
-    loiteringTLE.setTleLine2("2 25544  51.6398  77.7469 0007731 180.0753 317.5762 15.74717336624025");
-
-    loiteringTLE.ElementIdentifier()->setName("TLE");
-
-    QDomDocument doc;
-    return fragmentText(CreateLoiteringTLEElement(&loiteringTLE, doc)).toUtf8();
-}
 
 
 
