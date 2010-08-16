@@ -923,11 +923,11 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
     // Process each participant
     foreach (QSharedPointer<ScenarioParticipantType> participant, scenario()->AbstractParticipant())
     {
-        MissionsDefaults thisMissionDefaults;
         // Hack to set different visual properties for each participant, so
         // that they can be distinguished in the 3D and ground track views.
         // The user should have control over this.
-        QColor trajectoryColor;
+		QColor trajectoryColor;
+
         switch (colorIndex % 6)
         {
         case 0: trajectoryColor = Qt::yellow; break;
@@ -939,32 +939,13 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
         }
         ++colorIndex;
 
+
         // For space vehicles, we need to propagate trajectories
         if (dynamic_cast<ScenarioSC*>(participant.data()))
         {
 			ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
-			// Guillermo says: this part has been modified to accomodate mission arcs colors
-			const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList = vehicle->SCMission()->TrajectoryPlan()->AbstractTrajectory();
-			int arcIterator=0;
-			foreach (QSharedPointer<ScenarioAbstractTrajectoryType> trajectory, trajectoryList)
-			{
-				ScenarioAbstractTrajectoryType* myAbstractTrajectory = dynamic_cast<ScenarioAbstractTrajectoryType*>(trajectory.data());
-				QString trajectoryType = myAbstractTrajectory->elementName();
-				if (trajectoryType == "LoiteringType")
-				{
-					ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
-					QString arcColorName = loitering->ElementIdentifier()->colorName();
-					trajectoryColor = thisMissionDefaults.missionArcColorFromQt(arcColorName);
-				}
-				else if (trajectoryType == "LoiteringTLEType")
-				{
-					ScenarioLoiteringTLEType* loiteringTLE = dynamic_cast<ScenarioLoiteringTLEType*>(trajectory.data());
-					QString arcColorName = loiteringTLE->ElementIdentifier()->colorName();
-					trajectoryColor = thisMissionDefaults.missionArcColorFromQt(arcColorName);
-				}
-                scenarioPropagatorSatellite(vehicle,  trajectoryColor, feedback, propScenario);
-				arcIterator++;
-			}
+
+			scenarioPropagatorSatellite(vehicle, feedback, propScenario);
         }
         else if (dynamic_cast<ScenarioREV*>(participant.data()))//Added by Dominic to allow propagation of re-entry vehicle trajectories
         {
@@ -1128,8 +1109,7 @@ void MainWindow::configureTimeline(PropagatedScenario* scenario)
 
 // Set the propagated scenario and notify all view widgets so they can show
 // the results of the new propagation.
-void
-		MainWindow::setPropagatedScenario(PropagatedScenario* scenario)
+void MainWindow::setPropagatedScenario(PropagatedScenario* scenario)
 {
     if (scenario != m_propagatedScenario)
     {

@@ -251,11 +251,12 @@ void GroundTrackView::setScenario(PropagatedScenario* scenario)
     viewport()->update();
 }
 
-
+/*
 bool GroundTrackView::addGroundTrack(SpaceObject* vehicle)
 {
     GroundTrack* track = new GroundTrack();
-    track->color = vehicle->trajectoryColor();
+	track->color = vehicle->trajectoryColor();
+
     track->vehicle = vehicle;
 
     // Skip empty ground tracks
@@ -268,35 +269,61 @@ bool GroundTrackView::addGroundTrack(SpaceObject* vehicle)
 
     m_groundTrackList.append(track);
 
-    return true;
+	return true;
+}
+*/
+
+
+bool GroundTrackView::addGroundTrack(SpaceObject* vehicle)
+{
+	GroundTrack* track = new GroundTrack();
+	track->vehicle = vehicle;
+
+	foreach (MissionArc* arc, vehicle->mission())
+	{
+		track->color = arc->arcTrajectoryColor();
+	}
+
+	// Skip empty ground tracks
+	computeGroundTrack(*track);
+	if (track->samples.size() == 0)
+	{
+		delete track;
+		return false;
+	}
+
+	m_groundTrackList.append(track);
+
+	return true;
 }
 
 
 
 void GroundTrackView::computeGroundTrack(GroundTrack& track)
 {
-    track.samples.clear();
+	track.samples.clear();
 
-    foreach (MissionArc* arc, track.vehicle->mission())
-    {
-        for (int i = 0; i < arc->trajectorySampleCount(); ++i)
-        {
-            double mjd = arc->trajectorySampleTime(i);
-            sta::StateVector v;
+	foreach (MissionArc* arc, track.vehicle->mission())
+	{
+		for (int i = 0; i < arc->trajectorySampleCount(); ++i)
+		{
+			double mjd = arc->trajectorySampleTime(i);
+			sta::StateVector v;
 
-            if (track.vehicle->getStateVector(mjd, *m_body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v))
-            {
-                GroundTrackSample sample;
-                sample.mjd = mjd;
-                planetographicCoords(v.position, m_body, &sample.longitude, &sample.latitude, &sample.altitude);
+			if (track.vehicle->getStateVector(mjd, *m_body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v))
+			{
+				GroundTrackSample sample;
+				sample.mjd = mjd;
+				planetographicCoords(v.position, m_body, &sample.longitude, &sample.latitude, &sample.altitude);
 
-                track.samples << sample;
-            }
-        }
-    }
+				track.samples << sample;
+			}
+		}
+	}
 
-    computeTicks(track, sta::secsToDays(m_tickInterval));
+	computeTicks(track, sta::secsToDays(m_tickInterval));
 }
+
 
 
 // Calculate ticks at regular time intervals on the ground track
@@ -1871,7 +1898,7 @@ void GroundTrackView::paint2DView(QPainter& painter)
             }
         }
 
-        painter.setPen(track->color);
+		painter.setPen(track->color);
         painter.drawLines(m_trackPoints);
 
         // Draw an indicator at the current spacecraft subpoint

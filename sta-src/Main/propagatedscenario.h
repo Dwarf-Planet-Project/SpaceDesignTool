@@ -50,6 +50,13 @@ public:
                QList<double> sampleTimes,
                QList<sta::StateVector> samples);
     ~MissionArc();
+
+	QString arcName() const { return m_ArcName; }
+	void setArcName(const QString& name) { m_ArcName = name; }
+	QString modelName() const { return m_ArcModelName; }
+	void setModelName(const QString& modelFile) { m_ArcModelName = modelFile; }
+	QColor arcTrajectoryColor() const { return m_ArcTrajectoryColor; }
+	void setArcTrajectoryColor(QColor color) { m_ArcTrajectoryColor = color; }
     
     const StaBody* centralBody() const { return m_centralBody; }
     sta::CoordinateSystem coordinateSystem() const { return m_coordSys; }
@@ -78,6 +85,10 @@ private:
     
     // Cached value of last sample accessed when calling getStateVector
     mutable int m_lastSample; 
+
+	QString m_ArcName;
+	QString m_ArcModelName;
+	QColor m_ArcTrajectoryColor;
 };
 
 
@@ -110,11 +121,13 @@ public:
                         sta::StateVector* result) const;
     
     bool generateEphemerisFiles();
+
+
     
 private:
     double m_missionStartTime;
     double m_missionEndTime;
-    QList<MissionArc*> m_missionArcs;
+	QList<MissionArc*> m_missionArcs;
     
     QString m_name;
     QString m_modelFile;
