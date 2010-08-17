@@ -206,9 +206,9 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback feedba
 				}
 
 			}  /////////////////////////// end of the big IF for all arcs
+        }
 
-			propScenario->addSpaceObject(spaceObject);
-		}
+        propScenario->addSpaceObject(spaceObject);
 	}
 }
 
@@ -426,10 +426,8 @@ void scenarioPropagatorReEntryVehicle(ScenarioREV* entryVehicle,  QColor traject
 					spaceObject->addMissionArc(arc);
 
 				}
-				propScenario->addSpaceObject(spaceObject);
-
 			}
-
+            propScenario->addSpaceObject(spaceObject);
 		}
 
 
