@@ -1099,7 +1099,7 @@ void MainWindow::configureTimeline(PropagatedScenario* scenario)
             m_timelineWidget->timelineView()->addMissionSegment(objectIndex,
                                                                 arc->beginning(),
                                                                 arc->ending(),
-                                                                spaceObject->trajectoryColor());
+                                                                arc->arcTrajectoryColor());
         }
 
         ++objectIndex;
