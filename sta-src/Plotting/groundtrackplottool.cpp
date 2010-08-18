@@ -153,6 +153,14 @@ static const double GroundStationElevationAngle = 5.0;
 static const QColor GroundStationColor(255, 64, 20);
 
 
+GroundTrack::~GroundTrack()
+{
+    foreach (GroundTrackSegment* segment, segments)
+    {
+        delete segment;
+    }
+}
+
 GroundTrackView::GroundTrackView(QWidget* parent) :
 	QGraphicsView(parent),
 	m_scenario(NULL),
@@ -279,14 +287,9 @@ bool GroundTrackView::addGroundTrack(SpaceObject* vehicle)
 	GroundTrack* track = new GroundTrack();
 	track->vehicle = vehicle;
 
-	foreach (MissionArc* arc, vehicle->mission())
-	{
-		track->color = arc->arcTrajectoryColor();
-	}
-
 	// Skip empty ground tracks
 	computeGroundTrack(*track);
-	if (track->samples.size() == 0)
+    if (track->segments.size() == 0)
 	{
 		delete track;
 		return false;
@@ -301,24 +304,30 @@ bool GroundTrackView::addGroundTrack(SpaceObject* vehicle)
 
 void GroundTrackView::computeGroundTrack(GroundTrack& track)
 {
-	track.samples.clear();
+    track.segments.clear();
 
-	foreach (MissionArc* arc, track.vehicle->mission())
-	{
-		for (int i = 0; i < arc->trajectorySampleCount(); ++i)
-		{
-			double mjd = arc->trajectorySampleTime(i);
-			sta::StateVector v;
+    foreach (MissionArc* arc, track.vehicle->mission())
+    {
+        GroundTrackSegment* segment = new GroundTrackSegment();
+
+        segment->color = arc->arcTrajectoryColor();
+
+        for (int i = 0; i < arc->trajectorySampleCount(); ++i)
+        {
+            double mjd = arc->trajectorySampleTime(i);
+            sta::StateVector v;
 
 			if (track.vehicle->getStateVector(mjd, *m_body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v))
 			{
-				GroundTrackSample sample;
-				sample.mjd = mjd;
-				planetographicCoords(v.position, m_body, &sample.longitude, &sample.latitude, &sample.altitude);
+                GroundTrackSample sample;
+                sample.mjd = mjd;
+                planetographicCoords(v.position, m_body, &sample.longitude, &sample.latitude, &sample.altitude);
 
-				track.samples << sample;
+                segment->samples << sample;
 			}
 		}
+
+        track.segments << segment;
 	}
 
 	computeTicks(track, sta::secsToDays(m_tickInterval));
@@ -329,11 +338,15 @@ void GroundTrackView::computeGroundTrack(GroundTrack& track)
 // Calculate ticks at regular time intervals on the ground track
 void GroundTrackView::computeTicks(GroundTrack& track, double interval)
 {
-    track.ticks.clear();
+    unsigned int arcIndex = 0;
 
     foreach (MissionArc* arc, track.vehicle->mission())
     {
         int nSamples = arc->trajectorySampleCount();
+        GroundTrackSegment* segment = track.segments.at(arcIndex);
+
+        segment->ticks.clear();
+
         if (nSamples > 1)
         {
             double startTime = arc->trajectorySampleTime(0);
@@ -379,10 +392,11 @@ void GroundTrackView::computeTicks(GroundTrack& track, double interval)
                     tick.dx = (float) -diffLat;
                     tick.dy = (float) diffLong;
 
-                    track.ticks << tick;
+                    segment->ticks << tick;
                 }
             }
         }
+        ++arcIndex;
     }
 }
 
@@ -1340,139 +1354,142 @@ void GroundTrackView::paintObliqueView(QPainter& painter)
             activeNow = true;
         }
 
-        // Calculate the ground track
-        m_trackPoints.clear();
-
-        bool trackVisible = false;
-        if (track->samples.empty() || (m_currentTime <= track->samples[0].mjd && !m_showEntireTracks))
+        foreach (GroundTrackSegment* segment, track->segments)
         {
-            trackVisible = true;
-        }
+            // Calculate the ground track
+            m_trackPoints.clear();
 
-        double endTime = std::numeric_limits<double>::infinity();
-        if (!m_showEntireTracks)
-        {
-            endTime = m_currentTime;
-        }
-
-        bool complete = trackVisible;
-
-        // Draw the ground track
-        for (int i = 1; i < track->samples.size() && !complete; i++)
-        {
-            double long0 = track->samples[i - 1].longitude;
-            double lat0  = track->samples[i - 1].latitude;
-            double long1 = track->samples[i].longitude;
-            double lat1  = track->samples[i].latitude;
-
-            // Only draw the track up to the specified endTime
-            if (track->samples[i].mjd >= endTime)
+            bool trackVisible = false;
+            if (segment->samples.empty() || (m_currentTime <= segment->samples[0].mjd && !m_showEntireTracks))
             {
-                long1 = longNow;
-                lat1  = latNow;
-                complete = true;
+                trackVisible = true;
             }
 
-            clippedWrappedLine(clipBox, (float) long0, (float) lat0, (float) long1, (float) lat1, m_trackPoints);
-        }
-
-        painter.setPen(track->color);
-        painter.drawLines(m_trackPoints);
-        m_trackPoints.clear();
-        complete = trackVisible;
-
-        // Draw the track through space
-        for (int i = 1; i < track->samples.size() && !complete; i++)
-        {
-            float long0 = (float) track->samples[i - 1].longitude;
-            float lat0  = (float) track->samples[i - 1].latitude;
-            float alt0  = (float) track->samples[i - 1].altitude;
-            float long1 = (float) track->samples[i].longitude;
-            float lat1  = (float) track->samples[i].latitude;
-            float alt1  = (float) track->samples[i].altitude;
-
-            // Only draw the track up to the specified endTime
-            if (track->samples[i].mjd >= endTime)
+            double endTime = std::numeric_limits<double>::infinity();
+            if (!m_showEntireTracks)
             {
-                long1 = (float) longNow;
-                lat1  = (float) latNow;
-                alt1  = (float) altNow;
-                complete = true;
+                endTime = m_currentTime;
             }
 
-            if (long0 < m_west)
-                long0 += 360.0f;
-            if (long1 < m_west)
-                long1 += 360.0f;
+            bool complete = trackVisible;
 
-            if (std::abs(long0 - long1) > 180.0f)
+            // Draw the ground track
+            for (int i = 1; i < segment->samples.size() && !complete; i++)
             {
-                // Handle segments that wrap across the edges of the map.
-                if (long0 > long1)
+                double long0 = segment->samples[i - 1].longitude;
+                double lat0  = segment->samples[i - 1].latitude;
+                double long1 = segment->samples[i].longitude;
+                double lat1  = segment->samples[i].latitude;
+
+                // Only draw the track up to the specified endTime
+                if (segment->samples[i].mjd >= endTime)
                 {
-                    clippedLine(clipBox, proj,
-                                long0, lat0, alt0, long1 + 360, lat1, alt1,
-                                m_trackPoints);
-                    clippedLine(clipBox, proj,
-                                long0 - 360, lat0, alt0, long1, lat1, alt1,
-                                m_trackPoints);
+                    long1 = longNow;
+                    lat1  = latNow;
+                    complete = true;
+                }
+
+                clippedWrappedLine(clipBox, (float) long0, (float) lat0, (float) long1, (float) lat1, m_trackPoints);
+            }
+
+            painter.setPen(segment->color);
+            painter.drawLines(m_trackPoints);
+            m_trackPoints.clear();
+            complete = trackVisible;
+
+            // Draw the track through space
+            for (int i = 1; i < segment->samples.size() && !complete; i++)
+            {
+                float long0 = (float) segment->samples[i - 1].longitude;
+                float lat0  = (float) segment->samples[i - 1].latitude;
+                float alt0  = (float) segment->samples[i - 1].altitude;
+                float long1 = (float) segment->samples[i].longitude;
+                float lat1  = (float) segment->samples[i].latitude;
+                float alt1  = (float) segment->samples[i].altitude;
+
+                // Only draw the track up to the specified endTime
+                if (segment->samples[i].mjd >= endTime)
+                {
+                    long1 = (float) longNow;
+                    lat1  = (float) latNow;
+                    alt1  = (float) altNow;
+                    complete = true;
+                }
+
+                if (long0 < m_west)
+                    long0 += 360.0f;
+                if (long1 < m_west)
+                    long1 += 360.0f;
+
+                if (std::abs(long0 - long1) > 180.0f)
+                {
+                    // Handle segments that wrap across the edges of the map.
+                    if (long0 > long1)
+                    {
+                        clippedLine(clipBox, proj,
+                                    long0, lat0, alt0, long1 + 360, lat1, alt1,
+                                    m_trackPoints);
+                        clippedLine(clipBox, proj,
+                                    long0 - 360, lat0, alt0, long1, lat1, alt1,
+                                    m_trackPoints);
+                    }
+                    else
+                    {
+                        clippedLine(clipBox, proj,
+                                    long1, lat1, alt1, long0 + 360, lat0, alt0,
+                                    m_trackPoints);
+                        clippedLine(clipBox, proj,
+                                    long1 - 360, lat1, alt1, long0, lat0, alt0,
+                                    m_trackPoints);
+                    }
                 }
                 else
                 {
-                    clippedLine(clipBox, proj,
-                                long1, lat1, alt1, long0 + 360, lat0, alt0,
-                                m_trackPoints);
-                    clippedLine(clipBox, proj,
-                                long1 - 360, lat1, alt1, long0, lat0, alt0,
-                                m_trackPoints);
+                    clippedLine(clipBox, proj, long0, lat0, alt0, long1, lat1, alt1, m_trackPoints);
                 }
             }
-            else
+
+            QPen trackPen(segment->color);
+            trackPen.setWidthF(3.0f / xform.m11());
+            painter.setPen(trackPen);
+            painter.drawLines(m_trackPoints);
+            m_trackPoints.clear();
+
+            // Draw ticks on the ground tracks
+            if (m_showTicks)
             {
-                clippedLine(clipBox, proj, long0, lat0, alt0, long1, lat1, alt1, m_trackPoints);
-            }
-        }
-
-        QPen trackPen(track->color);
-        trackPen.setWidthF(3.0f / xform.m11());
-        painter.setPen(trackPen);
-        painter.drawLines(m_trackPoints);
-        m_trackPoints.clear();
-
-        // Draw ticks on the ground tracks
-        if (m_showTicks)
-        {
-            double startTime = 0.0;
-            if (track->samples.size() > 0)
-                startTime = track->samples.first().mjd;
-            int lastTick = track->ticks.size();
-            if (!m_showEntireTracks)
-            {
-                lastTick = std::min(lastTick,
-                                    (int) std::ceil((endTime - startTime) / sta::secsToDays(m_tickInterval)));
-            }
-
-            for (int i = 0; i < lastTick; i++)
-            {
-                GroundTrackTick& tick = track->ticks[i];
-                float tickLongitude = tick.longitude;
-                if (tickLongitude < m_west)
-                    tickLongitude += 360.0f;
-                unsigned int outcode0 = computeOutcode(clipBox, tickLongitude, tick.latitude);
-
-                if (outcode0 == 0 && tick.altitude > 0.0f)
+                double startTime = 0.0;
+                if (segment->samples.size() > 0)
+                    startTime = segment->samples.first().mjd;
+                int lastTick = segment->ticks.size();
+                if (!m_showEntireTracks)
                 {
-                    Vector3f groundPoint = proj * Vector3f(tickLongitude, tick.latitude, 0.0f);
-                    Vector3f skyPoint    = proj * Vector3f(tickLongitude, tick.latitude, std::min(m_maxHeight, tick.altitude));
+                    lastTick = std::min(lastTick,
+                                        (int) std::ceil((endTime - startTime) / sta::secsToDays(m_tickInterval)));
+                }
 
-                    m_trackPoints << QPointF(groundPoint.x(), groundPoint.y())
-			    << QPointF(skyPoint.x(), skyPoint.y());
+                for (int i = 0; i < lastTick; i++)
+                {
+                    GroundTrackTick& tick = segment->ticks[i];
+                    float tickLongitude = tick.longitude;
+                    if (tickLongitude < m_west)
+                        tickLongitude += 360.0f;
+                    unsigned int outcode0 = computeOutcode(clipBox, tickLongitude, tick.latitude);
+
+                    if (outcode0 == 0 && tick.altitude > 0.0f)
+                    {
+                        Vector3f groundPoint = proj * Vector3f(tickLongitude, tick.latitude, 0.0f);
+                        Vector3f skyPoint    = proj * Vector3f(tickLongitude, tick.latitude, std::min(m_maxHeight, tick.altitude));
+
+                        m_trackPoints << QPointF(groundPoint.x(), groundPoint.y())
+                                      << QPointF(skyPoint.x(), skyPoint.y());
+                    }
                 }
             }
-        }
 
-        painter.setPen(track->color);
-        painter.drawLines(m_trackPoints);
+            painter.setPen(segment->color);
+            painter.drawLines(m_trackPoints);
+        }
 
         // Draw an indicator at the current spacecraft subpoint
         if (activeNow && inView(longNow, latNow, 0.0f))
@@ -1781,125 +1798,127 @@ void GroundTrackView::paint2DView(QPainter& painter)
                 longNow += 360.0;
         }
 
-        // Calculate the ground track
-        m_trackPoints.clear();
-
-        double endTime = std::numeric_limits<double>::infinity();
-        bool complete = false;
-
-        if (!m_showEntireTracks)
+        foreach (GroundTrackSegment* segment, track->segments)
         {
-            endTime = m_currentTime;
-            if (track->samples.size() > 0 &&
-                m_currentTime <= track->samples[0].mjd)
+            // Calculate the ground track
+            double endTime = std::numeric_limits<double>::infinity();
+            bool complete = false;
+
+            m_trackPoints.clear();
+
+            if (!m_showEntireTracks)
             {
-                complete = true;
-            }
-        }
-
-        for (int i = 1; i < track->samples.size() && !complete; i++)
-        {
-            double long0 = track->samples[i - 1].longitude;
-            double lat0  = track->samples[i - 1].latitude;
-            double long1 = track->samples[i].longitude;
-            double lat1  = track->samples[i].latitude;
-
-            // Only draw the track up to the specified endTime
-            if (track->samples[i].mjd >= endTime)
-            {
-                long1 = longNow;
-                lat1  = latNow;
-                complete = true;
-            }
-
-            if (long0 < m_west)
-                long0 += 360.0f;
-            if (long1 < m_west)
-                long1 += 360.0f;
-
-            double longDiff = std::abs(long0 - long1);
-            if (longDiff > 90.0)
-            {
-                // Adjacent ground track points have very different longitudes. This
-                // can arise from three things:
-                //   1. The two points straddle longitude 180 degrees. In this case, the
-                //      difference will be around 360 degrees.
-                //   2. The orbit crosses near a pole. The difference will be approximately
-                //      180 degrees.
-                //   3. The ground track doesn't have enough samples. Nothing we can do
-                //      about this--the user should have specified a smaller output interval.
-                //
-                // We will treat differences of 90 - 270 degrees as polar crossings, and
-                // differences > 270 degrees as crossings of the prime meridian. This is
-                // effective except in the case where there are far too few ground track
-                // samples.
-                if (longDiff > 270.0)
+                endTime = m_currentTime;
+                if (segment->samples.size() > 0 &&
+                    m_currentTime <= segment->samples[0].mjd)
                 {
-                    // Handle segments that wrap across the edges of the map.
-                    if (long0 > long1)
+                    complete = true;
+                }
+            }
+
+            for (int i = 1; i < segment->samples.size() && !complete; i++)
+            {
+                double long0 = segment->samples[i - 1].longitude;
+                double lat0  = segment->samples[i - 1].latitude;
+                double long1 = segment->samples[i].longitude;
+                double lat1  = segment->samples[i].latitude;
+
+                // Only draw the track up to the specified endTime
+                if (segment->samples[i].mjd >= endTime)
+                {
+                    long1 = longNow;
+                    lat1  = latNow;
+                    complete = true;
+                }
+
+                if (long0 < m_west)
+                    long0 += 360.0f;
+                if (long1 < m_west)
+                    long1 += 360.0f;
+
+                double longDiff = std::abs(long0 - long1);
+                if (longDiff > 90.0)
+                {
+                    // Adjacent ground track points have very different longitudes. This
+                    // can arise from three things:
+                    //   1. The two points straddle longitude 180 degrees. In this case, the
+                    //      difference will be around 360 degrees.
+                    //   2. The orbit crosses near a pole. The difference will be approximately
+                    //      180 degrees.
+                    //   3. The ground track doesn't have enough samples. Nothing we can do
+                    //      about this--the user should have specified a smaller output interval.
+                    //
+                    // We will treat differences of 90 - 270 degrees as polar crossings, and
+                    // differences > 270 degrees as crossings of the prime meridian. This is
+                    // effective except in the case where there are far too few ground track
+                    // samples.
+                    if (longDiff > 270.0)
                     {
-                        m_trackPoints << QPointF(long0, lat0) << QPointF(long1 + 360, lat1);
-                        m_trackPoints << QPointF(long0 - 360, lat0) << QPointF(long1, lat1);
+                        // Handle segments that wrap across the edges of the map.
+                        if (long0 > long1)
+                        {
+                            m_trackPoints << QPointF(long0, lat0) << QPointF(long1 + 360, lat1);
+                            m_trackPoints << QPointF(long0 - 360, lat0) << QPointF(long1, lat1);
+                        }
+                        else
+                        {
+                            m_trackPoints << QPointF(long1, lat1) << QPointF(long0 + 360, lat0);
+                            m_trackPoints << QPointF(long1 - 360, lat1) << QPointF(long0, lat0);
+                        }
                     }
                     else
                     {
-                        m_trackPoints << QPointF(long1, lat1) << QPointF(long0 + 360, lat0);
-                        m_trackPoints << QPointF(long1 - 360, lat1) << QPointF(long0, lat0);
+                        double sign = long0 - long1 < 0.0 ? -1.0 : 0.0;
+                        if (lat0 > 0)
+                        {
+                            // Crossing the north pole
+                            m_trackPoints << QPointF(long0, lat0) << QPointF(long0 + sign * (180.0 - longDiff), 180.0 - lat1);
+                            m_trackPoints << QPointF(long1, lat1) << QPointF(long1 + sign * (180.0 - longDiff), 180.0 - lat0);
+                        }
+                        else
+                        {
+                            // Crossing the south pole
+                            m_trackPoints << QPointF(long0, lat0) << QPointF(long0 - sign * (180.0 - longDiff), lat1 - 180.0);
+                            m_trackPoints << QPointF(long1, lat1) << QPointF(long1 - sign * (180.0 - longDiff), lat0 - 180.0);
+                        }
                     }
                 }
                 else
                 {
-                    double sign = long0 - long1 < 0.0 ? -1.0 : 0.0;
-                    if (lat0 > 0)
-                    {
-                        // Crossing the north pole
-                        m_trackPoints << QPointF(long0, lat0) << QPointF(long0 + sign * (180.0 - longDiff), 180.0 - lat1);
-                        m_trackPoints << QPointF(long1, lat1) << QPointF(long1 + sign * (180.0 - longDiff), 180.0 - lat0);
-                    }
-                    else
-                    {
-                        // Crossing the south pole
-                        m_trackPoints << QPointF(long0, lat0) << QPointF(long0 - sign * (180.0 - longDiff), lat1 - 180.0);
-                        m_trackPoints << QPointF(long1, lat1) << QPointF(long1 - sign * (180.0 - longDiff), lat0 - 180.0);
-                    }
+                    m_trackPoints << QPointF(long0, lat0) << QPointF(long1, lat1);
                 }
             }
-            else
+
+            // Draw ticks on the ground tracks
+            if (m_showTicks)
             {
-                m_trackPoints << QPointF(long0, lat0)
-			<< QPointF(long1, lat1);
+                float tickScale = 2.5f / xscale / m_zoomFactor;
+                double startTime = 0.0;
+                if (segment->samples.size() > 0)
+                    startTime = segment->samples.first().mjd;
+                int lastTick = segment->ticks.size();
+                if (!m_showEntireTracks)
+                {
+                    lastTick = std::min(lastTick,
+                                        (int) std::ceil((endTime - startTime) / sta::secsToDays(m_tickInterval)));
+                }
+
+                for (int i = 0; i < lastTick; i++)
+                {
+                    GroundTrackTick& tick = segment->ticks[i];
+                    float tickLongitude = tick.longitude;
+                    if (tickLongitude < m_west)
+                        tickLongitude += 360.0f;
+                    m_trackPoints << QPointF(tickLongitude - tick.dx * tickScale,
+                                             tick.latitude  - tick.dy * tickScale)
+                                  << QPointF(tickLongitude + tick.dx * tickScale,
+                   tick.latitude  + tick.dy * tickScale);
+                }
             }
+
+            painter.setPen(segment->color);
+            painter.drawLines(m_trackPoints);
         }
-
-        // Draw ticks on the ground tracks
-        if (m_showTicks)
-        {
-            float tickScale = 2.5f / xscale / m_zoomFactor;
-            double startTime = 0.0;
-            if (track->samples.size() > 0)
-                startTime = track->samples.first().mjd;
-            int lastTick = track->ticks.size();
-            if (!m_showEntireTracks)
-            {
-                lastTick = std::min(lastTick,
-                                    (int) std::ceil((endTime - startTime) / sta::secsToDays(m_tickInterval)));
-            }
-
-            for (int i = 0; i < lastTick; i++)
-            {
-                GroundTrackTick& tick = track->ticks[i];
-                float tickLongitude = tick.longitude;
-                if (tickLongitude < m_west)
-                    tickLongitude += 360.0f;
-                m_trackPoints << QPointF(tickLongitude - tick.dx * tickScale,
-                                         tick.latitude  - tick.dy * tickScale)
-		<< QPointF(tickLongitude + tick.dx * tickScale,
-			   tick.latitude  + tick.dy * tickScale);
-            }
-        }
-
-		painter.setPen(track->color);
-        painter.drawLines(m_trackPoints);
 
         // Draw an indicator at the current spacecraft subpoint
         if (activeNow)

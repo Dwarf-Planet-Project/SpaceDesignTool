@@ -67,13 +67,24 @@ public:
     float dy;
 };
 
-class GroundTrack
+// A GroundTrackSegment corresponds to a mission arc
+class GroundTrackSegment
 {
 public:
-    SpaceObject* vehicle;
     QColor color;
     QList<GroundTrackSample> samples;
     QList<GroundTrackTick> ticks;
+
+};
+
+// There's one ground track per SpaceObject
+class GroundTrack
+{
+public:
+    GroundTrack() {}
+    ~GroundTrack();
+    SpaceObject* vehicle;
+    QList<GroundTrackSegment*> segments;
 };
 
 
