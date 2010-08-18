@@ -696,6 +696,8 @@ QColor MissionsDefaults::missionArcColorFromQt(QString colorLabel)
         return Qt::darkCyan;
     else if (colorLabel == "Black")
         return Qt::black;
+    else if (colorLabel == "Hide")
+        return Qt::transparent;
 }
 
 

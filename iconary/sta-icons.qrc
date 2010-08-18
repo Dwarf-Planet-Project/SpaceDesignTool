@@ -114,5 +114,6 @@
         <file>colorRED.png</file>
         <file>colorWHITE.png</file>
         <file>colorYELLOW.png</file>
+        <file>colorTRANSPARENT.png</file>
     </qresource>
 </RCC>

@@ -204,6 +204,15 @@
           <normaloff>:/icons/colorBLACK.png</normaloff>:/icons/colorBLACK.png</iconset>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Hide</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/colorTRANSPARENT.png</normaloff>:/icons/colorTRANSPARENT.png</iconset>
+        </property>
+       </item>
       </widget>
      </item>
      <item row="0" column="0">
