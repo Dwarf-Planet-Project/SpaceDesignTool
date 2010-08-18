@@ -315,16 +315,17 @@ void GroundTrackView::computeGroundTrack(GroundTrack& track)
         for (int i = 0; i < arc->trajectorySampleCount(); ++i)
         {
             double mjd = arc->trajectorySampleTime(i);
-            sta::StateVector v;
+            sta::StateVector v = arc->trajectorySample(i);
 
-			if (track.vehicle->getStateVector(mjd, *m_body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v))
-			{
-                GroundTrackSample sample;
-                sample.mjd = mjd;
-                planetographicCoords(v.position, m_body, &sample.longitude, &sample.latitude, &sample.altitude);
+            // Convert the state vector to the planet centered - planet fixed coordinates
+            v = sta::CoordinateSystem::convert(v, mjd,
+                                               arc->centralBody(), arc->coordinateSystem(),
+                                               m_body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED));
 
-                segment->samples << sample;
-			}
+            GroundTrackSample sample;
+            sample.mjd = mjd;
+            planetographicCoords(v.position, m_body, &sample.longitude, &sample.latitude, &sample.altitude);
+            segment->samples << sample;
 		}
 
         track.segments << segment;
