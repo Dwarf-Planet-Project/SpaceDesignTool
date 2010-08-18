@@ -945,17 +945,17 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
         {
 			ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
 
-			scenarioPropagatorSatellite(vehicle, feedback, propScenario);
+            scenarioPropagatorSatellite(vehicle, feedback, propScenario, this);
         }
         else if (dynamic_cast<ScenarioREV*>(participant.data()))//Added by Dominic to allow propagation of re-entry vehicle trajectories
         {
             ScenarioREV* entryVehicle = dynamic_cast<ScenarioREV*>(participant.data());
-            scenarioPropagatorReEntryVehicle(entryVehicle,  trajectoryColor, feedback, propScenario);
+            scenarioPropagatorReEntryVehicle(entryVehicle, feedback, propScenario, this);
         }
         else if (dynamic_cast<ScenarioGroundStation*>(participant.data()))
         {
             ScenarioGroundStation* groundElement = dynamic_cast<ScenarioGroundStation*>(participant.data());
-            scenarioPropagatorGroundElement(groundElement, trajectoryColor, feedback, propScenario);
+            scenarioPropagatorGroundElement(groundElement, feedback, propScenario, this);
         }
         else if (dynamic_cast<ScenarioPoint*>(participant.data()))
         {

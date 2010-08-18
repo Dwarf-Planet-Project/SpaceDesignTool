@@ -35,7 +35,11 @@
 #include <QColor>
 
 
-void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback feedback, PropagatedScenario* propScenario);
+void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback feedback, PropagatedScenario* propScenario, QWidget* parent);
+void scenarioPropagatorReEntryVehicle(ScenarioREV* vehicle, PropagationFeedback feedback, PropagatedScenario* propScenario, QWidget* parent);
+void scenarioPropagatorGroundElement(ScenarioGroundStation* groundElement, PropagationFeedback feedback, PropagatedScenario* propScenario, QWidget* parent);
+
+
 
 void scenarioPropagatorSatellite(ScenarioSC* vehicle,  QColor trajectoryColor, PropagationFeedback feedback, PropagatedScenario* propScenario);
 
@@ -47,7 +51,6 @@ void scenarioPropagatorGroundElement(ScenarioGroundStation* groundElement,  QCol
 
 void scenarioPropagatorPoint(ScenarioPoint* aPoint,  QColor trajectoryColor, PropagationFeedback feedback, PropagatedScenario* propScenario);
 
-QColor missionArcColorFromQtLocal(QString colorLabel);
 
 #endif // _STA_SCENARIO_H_
 
