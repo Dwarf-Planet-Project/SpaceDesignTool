@@ -155,12 +155,6 @@ Framebuffer::CreateColorOnlyFramebuffer(unsigned int width,
         return NULL;
     }
 
-    if (!fb->isValid())
-    {
-        delete fb;
-        return NULL;
-    }
-
     TextureProperties texProps;
     texProps.addressS = TextureProperties::Clamp;
     texProps.addressT = TextureProperties::Clamp;
@@ -177,6 +171,12 @@ Framebuffer::CreateColorOnlyFramebuffer(unsigned int width,
     else
     {
         fb->m_fb->attachColorTarget2D(fb->m_colorTexture->id());
+    }
+
+    if (!fb->isValid())
+    {
+        delete fb;
+        return NULL;
     }
 
     return fb;

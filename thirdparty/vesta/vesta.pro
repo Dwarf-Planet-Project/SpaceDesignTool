@@ -43,6 +43,7 @@ VESTA_SOURCES = \
     $$VESTA_PATH/Observer.cpp \
     $$VESTA_PATH/OrbitalElements.cpp \
     $$VESTA_PATH/ParticleSystemGeometry.cpp \
+    $$VESTA_PATH/PlanarProjection.cpp \
     $$VESTA_PATH/PlaneGeometry.cpp \
     $$VESTA_PATH/PlanetaryRings.cpp \
     $$VESTA_PATH/PlaneVisualizer.cpp \
@@ -70,7 +71,8 @@ VESTA_SOURCES = \
     $$VESTA_PATH/Visualizer.cpp \
     $$VESTA_PATH/WorldGeometry.cpp \
     $$VESTA_PATH/interaction/ObserverController.cpp \
-    $$VESTA_PATH/internal/InputDataStream.cpp
+    $$VESTA_PATH/internal/InputDataStream.cpp \
+    $$VESTA_PATH/internal/ObjLoader.cpp
 
 VESTA_HEADERS = \
     $$VESTA_PATH/Arc.h \
@@ -94,6 +96,7 @@ VESTA_HEADERS = \
     $$VESTA_PATH/Entity.h \
     $$VESTA_PATH/Frame.h \
     $$VESTA_PATH/Framebuffer.h \
+    $$VESTA_PATH/Frustum.h \
     $$VESTA_PATH/FixedPointTrajectory.h \
     $$VESTA_PATH/FixedRotationModel.h \
     $$VESTA_PATH/Geometry.h \
@@ -115,6 +118,7 @@ VESTA_HEADERS = \
     $$VESTA_PATH/OrbitalElements.h \
     $$VESTA_PATH/ParticleSystemGeometry.h \
     $$VESTA_PATH/PickResult.h \
+    $$VESTA_PATH/PlanarProjection.h \
     $$VESTA_PATH/PlaneGeometry.h \
     $$VESTA_PATH/PlanetaryRings.h \
     $$VESTA_PATH/PlaneVisualizer.h \
@@ -152,7 +156,8 @@ VESTA_HEADERS = \
     $$VESTA_PATH/Visualizer.h \
     $$VESTA_PATH/WorldGeometry.h \
     $$VESTA_PATH/interaction/ObserverController.h \
-    $$VESTA_PATH/internal/InputDataStream.h
+    $$VESTA_PATH/internal/InputDataStream.h \
+    $$VESTA_PATH/internal/ObjLoader.h
 
 
 ### particle system module ###

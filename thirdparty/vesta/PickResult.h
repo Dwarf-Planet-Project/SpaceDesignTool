@@ -1,5 +1,5 @@
 /*
- * $Revision: 223 $ $Date: 2010-03-30 05:44:44 -0700 (Tue, 30 Mar 2010) $
+ * $Revision: 421 $ $Date: 2010-08-11 14:35:48 -0700 (Wed, 11 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -8,8 +8,8 @@
  * http://www.astos.de/Astos_Solutions_Free_Public_License.html
  */
 
-#ifndef _ASTROVIS_PICK_RESULT_H_
-#define _ASTROVIS_PICK_RESULT_H_
+#ifndef _VESTA_PICK_RESULT_H_
+#define _VESTA_PICK_RESULT_H_
 
 #include "Entity.h"
 #include <Eigen/Core>
@@ -100,4 +100,4 @@ private:
 
 }
 
-#endif // _ASTROVIS_PICK_RESULT_H_
+#endif // _VESTA_PICK_RESULT_H_

@@ -1,5 +1,5 @@
 /*
- * $Revision: 420 $ $Date: 2010-08-10 17:01:21 -0700 (Tue, 10 Aug 2010) $
+ * $Revision: 434 $ $Date: 2010-08-16 12:24:38 -0700 (Mon, 16 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -55,6 +55,7 @@ static const unsigned int NormalTextureUnit        = 1;
 static const unsigned int SpecularTextureUnit      = 2;
 static const unsigned int EmissiveTextureUnit      = 3;
 static const unsigned int ShadowTextureUnit        = 4;
+static const unsigned int OmniShadowTextureUnit    = 5;
 static const unsigned int TransmittanceTextureUnit = 6;
 static const unsigned int ScatterTextureUnit       = 7;
 static const unsigned int ReflectionTextureUnit    = 8;
@@ -88,7 +89,8 @@ bool RenderContext::m_glInitialized = false;
 RenderContext::Environment::Environment() :
     m_activeLightCount(0),
     m_ambientLight(0.0f, 0.0f, 0.0f),
-    m_shadowMapCount(0.0f),
+    m_shadowMapCount(0),
+    m_omniShadowMapCount(0),
     m_scatteringEnabled(false)
 {
 
@@ -384,89 +386,17 @@ RenderContext::popProjection()
 }
 
 
-/** Set a perspective projection matrix. This is equivalent to OpenGL's gluPerspective()
-  * function, except that he matrix is not multiplied with the current projection matrix.
-  *
-  * @param fieldOfView the vertical field of view in radians
-  * @param aspectRatio the ratio of the viewport's width to its height
-  * @param nearDistance distance from the camera to the near plane (always a positive value)
-  * @param farDistance distance from the camera to the far plane (always a positive value)
+/** Set the current projection.
   */
 void
-RenderContext::perspectiveProjection(float fieldOfView, float aspectRatio, float nearDistance, float farDistance)
+RenderContext::setProjection(const PlanarProjection& projection)
 {
-    float f = 1.0f / std::tan(fieldOfView / 2.0f);
-    float span = farDistance - nearDistance;
-    m_projectionStack[m_projectionStackDepth].matrix() <<
-        f / aspectRatio, 0.0f, 0.0f, 0.0f,
-        0.0f, f, 0.0f, 0.0f,
-        0.0f, 0.0f, (farDistance + nearDistance) / -span, (2.0f * farDistance * nearDistance) / -span,
-        0.0f, 0.0f, -1.0f, 0.0f;
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    // gluPerspective(toDegrees(fieldOfView), aspectRatio, nearDistance, farDistance);
-    glMultMatrixf(m_projectionStack[m_projectionStackDepth].matrix().data());
-    glMatrixMode(GL_MODELVIEW);
-
-    Frustum frustum;
-    frustum.nearZ = nearDistance;
-    frustum.farZ = farDistance;
-    double h = 1.0 / f;
-    double w = h * abs(aspectRatio);
-    frustum.planeNormals[0] = Vector3d( 1.0, 0.0, -w).normalized();
-    frustum.planeNormals[1] = Vector3d(-1.0, 0.0, -w).normalized();
-    frustum.planeNormals[2] = Vector3d(0.0,  1.0, -h).normalized();
-    frustum.planeNormals[3] = Vector3d(0.0, -1.0, -h).normalized();
-    m_frustumStack[m_projectionStackDepth] = frustum;
-}
-
-
-/** Set an orthographic projection matrix. This function is equivalent to OpenGL's glOrtho(),
-  * except that the matrix is not multiplied with the current projection matrix.
-  *
-  * @param left the coordinate of the left vertical clip plane
-  * @param right the coordinate of the right vertical clip plane
-  * @param bottom the coordinate of the bottom horizontal clip plane
-  * @param top the coordinate of the top horizontal clip plane
-  * @param zNear the coordinate of the near clip plane
-  * @param zFar the coordinate of the far clip plane
-  */
-void
-RenderContext::orthographicProjection(float left, float right, float bottom, float top, float zNear, float zFar)
-{
-    // Same matrix as the one produced by glOrtho(left, right, bottom, top, zNear, zFar);
-    m_projectionStack[m_projectionStackDepth].matrix() <<
-        2.0f / (right - left), 0.0f, 0.0f, -(right + left) / (right - left),
-        0.0f, 2.0f / (top - bottom), 0.0f, -(top + bottom) / (top - bottom),
-        0.0f, 0.0f, -2.0f / (zFar - zNear), -(zFar + zNear) / (zFar - zNear),
-        0.0f, 0.0f, 0.0f, 1.0f;
+    m_projectionStack[m_projectionStackDepth].matrix() = projection.matrix();
 
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixf(m_projectionStack[m_projectionStackDepth].matrix().data());
     glMatrixMode(GL_MODELVIEW);
-}
-
-
-/** Set an orthographic projection appropriate for 2D rendering. Equivalent to
-  * calling orthographicProjection() with zNear = -1 and zFar = 1
-  */
-void
-RenderContext::orthographicProjection2D(float left, float right, float bottom, float top)
-{
-    orthographicProjection(left, right, bottom, top, -1.0f, 1.0f);
-}
-
-
-/** Set the projection matrix to m.
-  */
-void
-RenderContext::setProjection(const Matrix4f& m)
-{
-    m_projectionStack[m_projectionStackDepth] = m;
-    glMatrixMode(GL_PROJECTION);
-    glLoadMatrixf(m.data());
-    glMatrixMode(GL_MODELVIEW);
+    m_frustumStack[m_projectionStackDepth] = projection.frustum();
 }
 
 
@@ -870,6 +800,7 @@ computeShaderInfo(const Material* material,
     {
         shaderInfo.setLightCount(environment.m_activeLightCount);
         shaderInfo.setShadowCount(std::min(environment.m_activeLightCount, environment.m_shadowMapCount));
+        shaderInfo.setOmniShadowCount(std::min(environment.m_activeLightCount, environment.m_omniShadowMapCount));
     }
 
     // Set the texture properties for the shader. All textures
@@ -1082,6 +1013,26 @@ RenderContext::setShaderMaterial(const Material* material)
         // Note: shadow transform is set in updateShaderTransformConstants
     }
 
+    if (shaderInfo.hasOmniShadows())
+    {
+        // TODO: support multiple omnidirectional shadows
+        if (!m_environment.m_omniShadowMaps[0].isNull())
+        {
+            glActiveTexture(GL_TEXTURE0 + OmniShadowTextureUnit);
+            glBindTexture(GL_TEXTURE_CUBE_MAP_ARB, m_environment.m_omniShadowMaps[0]->id());
+            glActiveTexture(GL_TEXTURE0);
+            shader->setSampler("shadowCubeMap0", OmniShadowTextureUnit);
+
+#if 0
+            // We want the model to world transformation; get it by multiplying the modelview
+            // matrix by the inverse of the camera transformation.
+            // TODO: do lighting in world space so that this is unnecessary
+            Matrix3f objToWorldMat = m_cameraOrientation.toRotationMatrix() * modelview().linear();
+            shader->setConstant("objToWorldMat", objToWorldMat);
+#endif
+        }
+    }
+
     if (shaderInfo.hasScattering())
     {
         Vector3f Br = m_environment.m_scattering.rayleighCoeff;
@@ -1170,6 +1121,18 @@ RenderContext::updateShaderTransformConstants()
                 }
                 m_currentShader->setConstantArray("shadowMatrix", shadowMatrices, 1);
             }
+
+            // No special handling required for omnidirectional shadows; they're stored in
+            // a world space cube map, so no transformation is necessary.
+        }
+
+        if (m_currentShaderInfo.hasOmniShadows())
+        {
+            // We want the model to world transformation; get it by multiplying the modelview
+            // matrix by the inverse of the camera transformation.
+            // TODO: do lighting in world space so that this is unnecessary
+            Matrix3f objToWorldMat = (m_cameraOrientation.toRotationMatrix() * modelview().linear());
+            m_currentShader->setConstant("objToWorldMat", objToWorldMat);
         }
     }
 }
@@ -1333,6 +1296,30 @@ RenderContext::setShadowMap(unsigned int index, GLFramebuffer* shadowMap)
 
 
 void
+RenderContext::setOmniShadowMapCount(unsigned int count)
+{
+    if (count < MaxLights)
+    {
+        if (count != m_environment.m_omniShadowMapCount)
+        {
+            m_environment.m_omniShadowMapCount = count;
+            invalidateShaderState();
+        }
+    }
+}
+
+
+void
+RenderContext::setOmniShadowMap(unsigned int index, TextureMap* shadowCubeMap)
+{
+    if (index < MaxLights)
+    {
+        m_environment.m_omniShadowMaps[index] = shadowCubeMap;
+    }
+}
+
+
+void
 RenderContext::setScattering(bool enabled)
 {
     if (enabled != m_environment.m_scatteringEnabled)
@@ -1432,7 +1419,7 @@ RenderContext::drawText(const Vector3f& position, const std::string& text, const
     Vector3f p = (ndc + Vector3f::Ones()) * 0.5f;
 
     pushProjection();
-    orthographicProjection2D(0.0f, float(m_viewportWidth), 0.0f, float(m_viewportHeight));
+    setProjection(PlanarProjection::CreateOrthographic2D(0.0f, float(m_viewportWidth), 0.0f, float(m_viewportHeight)));
     pushModelView();
     identityModelView();
 
@@ -1720,6 +1707,11 @@ RenderContext::setRendererOutput(RendererOutput output)
             m_rendererOutput = output;
             invalidateShaderState();
             invalidateModelViewMatrix();
+        }
+
+        if (output == CameraDistance && m_cameraDistanceShader.isValid())
+        {
+            m_cameraDistanceShader->bind();
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * $Revision: 389 $ $Date: 2010-07-26 19:34:58 -0700 (Mon, 26 Jul 2010) $
+ * $Revision: 435 $ $Date: 2010-08-16 16:32:45 -0700 (Mon, 16 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -104,6 +104,11 @@ public:
         RG16F    = 13,
         RG32F    = 14,
         Depth24  = 15,
+        R8G8B8_sRGB   = 16,
+        R8G8B8A8_sRGB = 17,
+        DXT1_sRGB     = 18,
+        DXT3_sRGB     = 19,
+        DXT5_sRGB     = 20,
         InvalidFormat = -1,
     };
 

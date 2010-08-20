@@ -1,5 +1,5 @@
 //
-// $Revision: 420 $ $Date: 2010-08-10 17:01:21 -0700 (Tue, 10 Aug 2010) $
+// $Revision: 447 $ $Date: 2010-08-20 15:36:47 -0700 (Fri, 20 Aug 2010) $
 //
 // Copyright by Astos Solutions GmbH, Germany
 //  
@@ -521,6 +521,8 @@ public:
     Arc* activeArc(double t) const;
     Arc* firstArc() const;
     Arc* lastArc() const;
+    Arc* arc(unsigned int index) const;
+    unsigned int arcCount() const;
 
     void addArc(Arc* arc);
     bool empty() const;
@@ -1145,13 +1147,27 @@ public:
 
     enum ImageFormat
     {
-        R8G8B8A8 = 0,
-        B8G8R8A8 = 1,
-        R8G8B8   = 2,
-        B8G8R8   = 3,
-        DXT1     = 4,
-        DXT3     = 5,
-        DXT5     = 6,
+        R8G8B8A8 =  0,
+        B8G8R8A8 =  1,
+        R8G8B8   =  2,
+        B8G8R8   =  3,
+        DXT1     =  4,
+        DXT3     =  5,
+        DXT5     =  6,
+        RGB16F   =  7,
+        RGBA16F  =  8,
+        RGB32F   =  9,
+        RGBA32F  = 10,
+        R16F     = 11,
+        R32F     = 12,
+        RG16F    = 13,
+        RG32F    = 14,
+        Depth24  = 15,
+        R8G8B8_sRGB   = 16,
+        R8G8B8A8_sRGB = 17,
+        DXT1_sRGB     = 18,
+        DXT3_sRGB     = 19,
+        DXT5_sRGB     = 20,
         InvalidFormat = -1,
     };
 

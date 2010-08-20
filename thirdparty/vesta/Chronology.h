@@ -1,5 +1,5 @@
 /*
- * $Revision: 223 $ $Date: 2010-03-30 05:44:44 -0700 (Tue, 30 Mar 2010) $
+ * $Revision: 447 $ $Date: 2010-08-20 15:36:47 -0700 (Fri, 20 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -12,7 +12,7 @@
 #define _VESTA_CHRONOLOGY_H_
 
 #include "Object.h"
-#include <list>
+#include <vector>
 
 
 namespace vesta
@@ -46,6 +46,8 @@ public:
     Arc* activeArc(double t) const;
     Arc* firstArc() const;
     Arc* lastArc() const;
+    Arc* arc(unsigned int index) const;
+    unsigned int arcCount() const;
 
     void addArc(Arc* arc);
 
@@ -66,7 +68,7 @@ public:
     }
 
 private:
-    std::list<counted_ptr<Arc> > m_arcSequence;
+    std::vector<counted_ptr<Arc> > m_arcSequence;
     double m_beginning;
     double m_duration;
 };

@@ -35,8 +35,8 @@ PlanetaryRings::~PlanetaryRings()
 
 void
 PlanetaryRings::render(RenderContext& rc,
-                       float cameraDistance,
-                       double animationClock) const
+                       float /* cameraDistance */,
+                       double /* animationClock */) const
 {
     Material material;
     material.setBrdf(Material::ParticulateVolume);

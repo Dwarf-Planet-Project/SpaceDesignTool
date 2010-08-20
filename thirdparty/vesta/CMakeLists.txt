@@ -1,5 +1,5 @@
 #
-# $Revision: 413 $ $Date: 2010-08-06 16:16:26 -0700 (Fri, 06 Aug 2010) $
+# $Revision: 445 $ $Date: 2010-08-20 12:32:00 -0700 (Fri, 20 Aug 2010) $
 #
 # Copyright by Astos Solutions GmbH, Germany
 #
@@ -61,6 +61,7 @@ set (SRCS
     Observer.cpp
     OrbitalElements.cpp
     ParticleSystemGeometry.cpp
+    PlanarProjection.cpp
     PlaneGeometry.cpp
     PlanetaryRings.cpp
     PlaneVisualizer.cpp
@@ -87,6 +88,7 @@ set (SRCS
     Visualizer.cpp
     WorldGeometry.cpp
     internal/InputDataStream.cpp
+    internal/ObjLoader.cpp
     particlesys/ParticleEmitter.cpp
     interaction/ObserverController.cpp
     glhelp/GLShader.cpp

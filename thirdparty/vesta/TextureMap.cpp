@@ -1,5 +1,5 @@
 /*
- * $Revision: 416 $ $Date: 2010-08-09 17:19:13 -0700 (Mon, 09 Aug 2010) $
+ * $Revision: 435 $ $Date: 2010-08-16 16:32:45 -0700 (Mon, 16 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -18,96 +18,68 @@ using namespace vesta;
 using namespace std;
 
 
+struct VestaFormatInfo
+{
+    TextureMap::ImageFormat format;
+    GLenum glFormat;
+    GLenum glInternalFormat;
+    GLenum bytesPerPixel;
+};
+
+
+// Table containing mappings from VESTA formats to OpenGL formats
+static struct VestaFormatInfo FormatInfo[] =
+{
+    { TextureMap::R8G8B8A8,      GL_RGBA,     GL_RGBA8,            4 },
+    { TextureMap::B8G8R8A8,      GL_BGRA_EXT, GL_RGBA8,            4 },
+    { TextureMap::R8G8B8,        GL_RGB,      GL_RGB8,             3 },
+    { TextureMap::B8G8R8,        GL_BGR_EXT,  GL_RGB8,             3 },
+    { TextureMap::DXT1,          GL_COMPRESSED_RGBA_S3TC_DXT1_EXT, GL_COMPRESSED_RGBA_S3TC_DXT1_EXT, 8 },
+    { TextureMap::DXT3,          GL_COMPRESSED_RGBA_S3TC_DXT3_EXT, GL_COMPRESSED_RGBA_S3TC_DXT3_EXT, 16 },
+    { TextureMap::DXT5,          GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 16 },
+    { TextureMap::RGB16F,        GL_RGB,      GL_RGB16F_ARB,       6 },
+    { TextureMap::RGBA16F,       GL_RGBA,     GL_RGBA16F_ARB,      8 },
+    { TextureMap::RGB32F,        GL_RGB,      GL_RGB32F_ARB,      12 },
+    { TextureMap::RGBA32F,       GL_RGBA,     GL_RGBA32F_ARB,     16 },
+    { TextureMap::R16F,          GL_RED,      GL_R16F,             2 },
+    { TextureMap::R32F,          GL_RED,      GL_R32F,             4 },
+    { TextureMap::RG16F,         GL_RG,       GL_RG16F,            4 },
+    { TextureMap::RG32F,         GL_RG,       GL_RG32F,            8 },
+    { TextureMap::Depth24,       GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, 3 },
+    { TextureMap::R8G8B8_sRGB,   GL_RGB,      GL_SRGB8_EXT,        3 },
+    { TextureMap::R8G8B8A8_sRGB, GL_RGBA,     GL_SRGB8_ALPHA8_EXT, 4 },
+    { TextureMap::DXT1_sRGB,     GL_COMPRESSED_SRGB_S3TC_DXT1_EXT, GL_COMPRESSED_SRGB_S3TC_DXT1_EXT, 8 },
+    { TextureMap::DXT3_sRGB,     GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT, GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT, 16 },
+    { TextureMap::DXT5_sRGB,     GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT, GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT, 16 },
+};
+
+
 static GLenum
 ToGlFormat(TextureMap::ImageFormat format)
 {
-    switch (format)
+    int formatIndex = int(format);
+    if (format == TextureMap::InvalidFormat)
     {
-    case TextureMap::R8G8B8A8:
-        return GL_RGBA;
-    case TextureMap::R8G8B8:
-        return GL_RGB;
-    case TextureMap::B8G8R8A8:
-        return GL_BGRA_EXT;
-    case TextureMap::B8G8R8:
-        return GL_BGR_EXT;
-
-    // Compressed formats
-    case TextureMap::DXT1:
-        return GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-    case TextureMap::DXT3:
-        return GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-    case TextureMap::DXT5:
-        return GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-
-    // Floating point formats
-    case TextureMap::RGB16F:
-    case TextureMap::RGB32F:
-        return GL_RGB;
-    case TextureMap::RGBA16F:
-    case TextureMap::RGBA32F:
-        return GL_RGBA;
-    case TextureMap::R16F:
-    case TextureMap::R32F:
-        return GL_RED;
-    case TextureMap::RG16F:
-    case TextureMap::RG32F:
-        return GL_RG;
-
-    case TextureMap::Depth24:
-        return GL_DEPTH_COMPONENT;
-
-    default:
         return 0;
     }
+    else
+    {
+        return FormatInfo[formatIndex].glFormat;
+    }
 }
+
 
 static GLenum
 ToGlInternalFormat(TextureMap::ImageFormat format)
 {
-    switch (format)
+    int formatIndex = int(format);
+    if (format == TextureMap::InvalidFormat)
     {
-    case TextureMap::R8G8B8A8:
-    case TextureMap::B8G8R8A8:
-        return GL_RGBA8;
-    case TextureMap::R8G8B8:
-    case TextureMap::B8G8R8:
-        return GL_RGB8;
-
-    // Compressed formats are identical to their internal formats
-    case TextureMap::DXT1:
-        return GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-    case TextureMap::DXT3:
-        return GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-    case TextureMap::DXT5:
-        return GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-
-    // Half-precision (16-bit / channel) floating point formats
-    case TextureMap::RGB16F:
-        return GL_RGB16F_ARB;
-    case TextureMap::RGBA16F:
-        return GL_RGBA16F_ARB;
-    case TextureMap::R16F:
-        return GL_R16F;
-    case TextureMap::RG16F:
-        return GL_RG16F;
-
-    // Single precision (32-bit / channel) floating point formats
-    case TextureMap::RGB32F:
-        return GL_RGB32F_ARB;
-    case TextureMap::RGBA32F:
-        return GL_RGBA32F_ARB;
-    case TextureMap::R32F:
-        return GL_R32F;
-    case TextureMap::RG32F:
-        return GL_RG32F;
-
-    case TextureMap::Depth24:
-        return GL_DEPTH_COMPONENT;
-
-    default:
-        assert(0);
         return 0;
+    }
+    else
+    {
+        return FormatInfo[formatIndex].glInternalFormat;
     }
 }
 
@@ -118,47 +90,14 @@ ToGlInternalFormat(TextureMap::ImageFormat format)
 static unsigned int
 BytesPerPixel(TextureMap::ImageFormat format)
 {
-    switch (format)
+    int formatIndex = int(format);
+    if (format == TextureMap::InvalidFormat)
     {
-    case TextureMap::R8G8B8:
-    case TextureMap::B8G8R8:
-        return 3;
-
-    case TextureMap::R8G8B8A8:
-    case TextureMap::B8G8R8A8:
-        return 4;
-
-    // Compressed formats
-    case TextureMap::DXT1:
-        return 8;
-
-    case TextureMap::DXT3:
-    case TextureMap::DXT5:
-        return 16;
-
-    // Floating point formats
-    case TextureMap::RGBA32F:
-        return 16;
-
-    case TextureMap::RGB32F:
-        return 12;
-
-    case TextureMap::RG32F:
-    case TextureMap::RGBA16F:
-        return 8;
-
-    case TextureMap::RGB16F:
-        return 6;
-
-    case TextureMap::R32F:
-    case TextureMap::RG16F:
-        return 4;
-
-    case TextureMap::R16F:
-        return 2;
-
-    default:
         return 0;
+    }
+    else
+    {
+        return FormatInfo[formatIndex].bytesPerPixel;
     }
 }
 

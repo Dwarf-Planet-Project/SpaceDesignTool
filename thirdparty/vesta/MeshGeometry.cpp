@@ -1,5 +1,5 @@
 /*
- * $Revision: 404 $ $Date: 2010-08-03 13:04:00 -0700 (Tue, 03 Aug 2010) $
+ * $Revision: 445 $ $Date: 2010-08-20 12:32:00 -0700 (Fri, 20 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -17,10 +17,13 @@
 #include <algorithm>
 #include <cassert>
 #include <limits>
+#include <fstream>
+#include <cctype>
 
 // 3D file format support
 #include "VertexPool.h"
 #include "lib3ds/lib3ds.h"
+#include "internal/ObjLoader.h"
 
 using namespace vesta;
 using namespace Eigen;
@@ -532,32 +535,128 @@ Convert3DSMesh(Lib3dsFile* meshfile, TextureMapLoader* textureLoader)
 }
 
 
+
+static MeshGeometry*
+ConvertObjMesh(istream& in, TextureMapLoader* textureLoader, const std::string& pathName)
+{
+    ObjLoader loader;
+    ObjMaterialLibrary* materialLibrary = NULL;
+
+    MeshGeometry* mesh = loader.loadModel(in);
+    if (mesh)
+    {
+        if (!loader.materialLibrary().empty())
+        {
+            string materialLibraryFileName = pathName + loader.materialLibrary();
+            ifstream matStream(materialLibraryFileName.c_str(), ios::in);
+            if (!matStream.good())
+            {
+                VESTA_LOG("Can't find material library file '%s' for OBJ format mesh", materialLibraryFileName.c_str());
+            }
+            else
+            {
+                ObjMaterialLibraryLoader matLoader(textureLoader);
+                materialLibrary = matLoader.loadMaterials(matStream);
+            }
+        }
+
+        if (materialLibrary)
+        {
+            const vector<string>& materials = loader.materials();
+            for (unsigned int i = 0; i < materials.size(); ++i)
+            {
+                string materialName = materials[i];
+                if (!materialName.empty())
+                {
+                    Material* material = materialLibrary->material(materialName);
+                    if (material)
+                    {
+                        Material* meshMaterial = mesh->material(i);
+                        if (meshMaterial)
+                        {
+                            *meshMaterial = *material;
+                        }
+                    }
+                    else
+                    {
+                        VESTA_LOG("Missing material in OBJ file: '%s'", materialName.c_str());
+                    }
+                }
+            }
+
+            delete materialLibrary;
+        }
+    }
+
+    return mesh;
+}
+
+
 /** Load a mesh from the specified file. Returns null if the
   * file was not found or if it is in an unrecognized format.
-  * Currently, only 3ds files are supported.
+  * Currently, only 3ds and Wavefront obj files are supported.
   *
   * All textures used by the mesh will be loaded with the
   * specified TextureLoader. The TextureLoader may be null, in
   * which case no textures will be loaded for the mesh.
   */
 MeshGeometry*
-MeshGeometry::loadFromFile(const std::string& fileName, TextureMapLoader* textureLoader)
+MeshGeometry::loadFromFile(const string& fileName, TextureMapLoader* textureLoader)
 {
     // TODO: There will be more 3D formats supported eventually. Develop
     // a plugin architecture for them to keep the code organized.
 
     MeshGeometry* meshGeometry = NULL;
 
-    // Only 3DS supported right now
-    Lib3dsFile* meshfile = lib3ds_file_open(fileName.c_str());
-    if (!meshfile)
+    // Get the file extension (in lower case)
+    string extension;
+    string::size_type dotPos = fileName.find_last_of('.');
+    if (dotPos != string::npos)
     {
-        cerr << "MeshGeometry::loadFromFile() : Can't find mesh file " << fileName << endl;
+        extension = fileName.substr(dotPos + 1);
+    }
+    transform(extension.begin(), extension.end(), extension.begin(), (int(*)(int)) std::tolower);
+
+    // Get the path of the directory containing the mesh file
+    string pathName;
+    string::size_type pathSepPos = fileName.find_last_of('/');
+    if (pathSepPos != string::npos)
+    {
+        pathName = fileName.substr(0, pathSepPos);
+    }
+
+
+    if (extension == "3ds")
+    {
+        // Only 3DS and Wavefront OBJ are supported right now
+        Lib3dsFile* meshfile = lib3ds_file_open(fileName.c_str());
+        if (!meshfile)
+        {
+            VESTA_LOG("MeshGeometry::loadFromFile() : Can't find mesh file '%s'", fileName.c_str());
+        }
+        else
+        {
+            meshGeometry = Convert3DSMesh(meshfile, textureLoader);
+        }
+    }
+    else if (extension == "obj")
+    {
+        ifstream meshStream(fileName.c_str(), ios::in);
+        if (!meshStream.good())
+        {
+            VESTA_LOG("MeshGeometry::loadFromFile() : Can't find mesh file '%s'", fileName.c_str());
+        }
+        else
+        {
+            meshGeometry = ConvertObjMesh(meshStream, textureLoader, pathName);
+        }
     }
     else
     {
-        meshGeometry = Convert3DSMesh(meshfile, textureLoader);
+        VESTA_LOG("Unrecognized 3D mesh file extension %s", extension.c_str());
     }
 
     return meshGeometry;
 }
+
+

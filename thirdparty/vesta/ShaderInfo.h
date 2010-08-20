@@ -1,5 +1,5 @@
 /*
- * $Revision: 416 $ $Date: 2010-08-09 17:19:13 -0700 (Mon, 09 Aug 2010) $
+ * $Revision: 428 $ $Date: 2010-08-13 18:33:28 -0700 (Fri, 13 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -120,6 +120,25 @@ public:
         m_data |= ((count << ShadowCountMaskShift) & ShadowCountMask);
     }
 
+    /** Get the number of omnidirectional shadows.
+      */
+    unsigned int omniShadowCount() const
+    {
+        return (m_data & OmniShadowCountMask) >> OmniShadowCountMaskShift;
+    }
+
+    /** Returns true if there are any omnidirectional shadows.
+      */
+    bool hasOmniShadows() const
+    {
+        return omniShadowCount() > 0;
+    }
+
+    void setOmniShadowCount(unsigned int count)
+    {
+        m_data |= ((count << OmniShadowCountMaskShift) & OmniShadowCountMask);
+    }
+
     bool hasVertexColors() const
     {
         return (m_data & VertexColorMask) != 0;
@@ -186,7 +205,8 @@ private:
         ReflectanceModelMask  = 0x00000f,
         TextureUsageMask      = 0x0001f0,
         LightCountMask        = 0x000e00,
-        ShadowCountMask       = 0x00f000,
+        ShadowCountMask       = 0x003000,
+        OmniShadowCountMask   = 0x00c000,
         VertexColorMask       = 0x010000,
         AlphaTextureMask      = 0x020000,
         ScatteringMask        = 0x040000,
@@ -197,9 +217,10 @@ private:
 
     enum
     {
-        TextureUsageMaskShift =  4,
-        LightCountMaskShift   =  9,
-        ShadowCountMaskShift  = 12,
+        TextureUsageMaskShift     =  4,
+        LightCountMaskShift       =  9,
+        ShadowCountMaskShift      = 12,
+        OmniShadowCountMaskShift  = 14,
     };
 
 private:

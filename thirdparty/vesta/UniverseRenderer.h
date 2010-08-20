@@ -1,5 +1,5 @@
 /*
- * $Revision: 420 $ $Date: 2010-08-10 17:01:21 -0700 (Tue, 10 Aug 2010) $
+ * $Revision: 439 $ $Date: 2010-08-17 13:25:59 -0700 (Tue, 17 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -15,7 +15,9 @@
 #include "SkyLayer.h"
 #include "Spectrum.h"
 #include "Viewport.h"
+#include "Frustum.h"
 #include "LightingEnvironment.h"
+#include "PlanarProjection.h"
 #include <Eigen/StdVector>
 #include <vector>
 
@@ -60,12 +62,16 @@ public:
     RenderStatus renderView(const LightingEnvironment* lighting,
                             const Eigen::Vector3d& cameraPosition,
                             const Eigen::Quaterniond& cameraOrientation,
-                            double fieldOfView,
+                            const PlanarProjection& projection,
                             const Viewport& viewport,
                             Framebuffer* renderSurface = 0);
     RenderStatus renderCubeMap(const LightingEnvironment* lighting,
                                const Eigen::Vector3d& cameraPosition,
-                               CubeMapFramebuffer* cubeMap);
+                               CubeMapFramebuffer* cubeMap,
+                               const Eigen::Quaterniond& rotation = Eigen::Quaterniond::Identity());
+    RenderStatus renderShadowCubeMap(const LightingEnvironment* lighting,
+                                     const Eigen::Vector3d& cameraPosition,
+                                     CubeMapFramebuffer* cubeMap);
 
     Spectrum ambientLight() const
     {
@@ -81,6 +87,9 @@ public:
 
     bool initializeShadowMaps(unsigned int shadowMapSize = 1024,
                               unsigned int maxShadowMaps = 1);
+    bool initializeOmniShadowMaps(unsigned int shadowMapSize = 1024,
+                                  unsigned int maxShadowMaps = 1);
+
 
     /** Return true if this renderer has shadows enabled.
       */
@@ -90,6 +99,7 @@ public:
     }
     void setShadowsEnabled(bool enable);
     bool shadowsSupported() const;
+    bool omniShadowsSupported() const;
 
     /** Return true if visualizers will be drawn. Visualizers are on by default.
      */
@@ -120,6 +130,7 @@ public:
         float nearDistance;    // signed distance to the camera plane
         float farDistance;     // signed distance to the camera plane
         float boundingRadius;
+        bool outsideFrustum;
     };
 
     struct LightSourceItem
@@ -149,11 +160,12 @@ private:
     void buildVisibleLightSourceList(const Eigen::Vector3d& cameraPosition);
     void splitDepthBuffer();
     void coalesceDepthBuffer();
-    void renderDepthBufferSpan(const DepthBufferSpan& span,
-                               float fieldOfView,
-                               float aspectRatio);
+    void renderDepthBufferSpan(const DepthBufferSpan& span, const PlanarProjection& projection);
     bool renderDepthBufferSpanShadows(const DepthBufferSpan& span,
                                       const Eigen::Vector3d& lightPosition);
+    bool renderDepthBufferSpanOmniShadows(const DepthBufferSpan& span,
+                                          const LightSource* light,
+                                          const Eigen::Vector3d& lightPosition);
     void addVisibleItem(const Entity* entity,
                         const Geometry* geometry,
                         const Eigen::Vector3d& position,
@@ -185,6 +197,7 @@ private:
     std::vector<counted_ptr<SkyLayer> > m_skyLayers;
 
     counted_ptr<Framebuffer> m_shadowMap;
+    counted_ptr<CubeMapFramebuffer> m_omniShadowMap;
 
     bool m_shadowsEnabled;
     bool m_visualizersEnabled;
@@ -194,6 +207,8 @@ private:
 
     counted_ptr<Framebuffer> m_renderSurface;
     Viewport m_renderViewport;
+
+    Frustum m_viewFrustum;
 
     const LightingEnvironment* m_lighting;
 };

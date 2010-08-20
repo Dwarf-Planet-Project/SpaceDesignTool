@@ -1,5 +1,5 @@
 /*
- * $Revision: 355 $ $Date: 2010-07-14 16:47:38 -0700 (Wed, 14 Jul 2010) $
+ * $Revision: 432 $ $Date: 2010-08-16 09:05:19 -0700 (Mon, 16 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -43,9 +43,12 @@ public:
         if (m_refCount == 0)
         {
             delete this;
+            return 0;
         }
-
-        return m_refCount;
+        else
+        {
+            return m_refCount;
+        }
     }
 
     int refCount() const

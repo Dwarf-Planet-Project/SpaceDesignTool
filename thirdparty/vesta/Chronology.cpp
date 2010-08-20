@@ -1,5 +1,5 @@
 /*
- * $Revision: 223 $ $Date: 2010-03-30 05:44:44 -0700 (Tue, 30 Mar 2010) $
+ * $Revision: 447 $ $Date: 2010-08-20 15:36:47 -0700 (Fri, 20 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -52,7 +52,7 @@ Chronology::activeArc(double t) const
     else
     {
         double m_arcBeginning = m_beginning;
-        for (list<counted_ptr<Arc> >::const_iterator iter = m_arcSequence.begin(); iter != m_arcSequence.end(); iter++)
+        for (vector<counted_ptr<Arc> >::const_iterator iter = m_arcSequence.begin(); iter != m_arcSequence.end(); iter++)
         {
             counted_ptr<Arc> arc = *iter;
             if (t - m_arcBeginning < arc->duration())
@@ -77,7 +77,7 @@ Chronology::firstArc() const
     if (m_arcSequence.empty())
         return NULL;
     else
-        return &*m_arcSequence.front();
+        return m_arcSequence.front().ptr();
 }
 
 
@@ -89,7 +89,32 @@ Chronology::lastArc() const
     if (m_arcSequence.empty())
         return NULL;
     else
-        return &*m_arcSequence.back();
+        return m_arcSequence.back().ptr();
+}
+
+
+/** Return the arc at the specified index (or null if the index is out of range.)
+  */
+Arc*
+Chronology::arc(unsigned int index) const
+{
+    if (index < m_arcSequence.size())
+    {
+        return m_arcSequence.at(index).ptr();
+    }
+    else
+    {
+        return NULL;
+    }
+}
+
+
+/** Get the number of arcs in the trajectory.
+  */
+unsigned int
+Chronology::arcCount() const
+{
+    return m_arcSequence.size();
 }
 
 

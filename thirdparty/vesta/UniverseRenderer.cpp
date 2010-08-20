@@ -1,5 +1,5 @@
 /*
- * $Revision: 420 $ $Date: 2010-08-10 17:01:21 -0700 (Tue, 10 Aug 2010) $
+ * $Revision: 439 $ $Date: 2010-08-17 13:25:59 -0700 (Tue, 17 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -14,6 +14,7 @@
 #include "Geometry.h"
 #include "Debug.h"
 #include "BoundingSphere.h"
+#include "PlanarProjection.h"
 #include "Visualizer.h"
 #include "OGLHeaders.h"
 #include "Framebuffer.h"
@@ -27,15 +28,33 @@ using namespace vesta;
 using namespace Eigen;
 using namespace std;
 
-#define DEBUG_SHADOW_MAP 0
+
+// Renderer debug settings
+#define DEBUG_SHADOW_MAP      0
+#define DEBUG_OMNI_SHADOW_MAP 0
+#define DEBUG_DEPTH_SPANS     0
+
 
 static const float MinimumNearPlaneDistance = 0.00001f;  // 1 centimeter
+static const float MaximumFarPlaneDistance = 1.0e12; // one trillion km (~6700 AU)
 static const float MinimumNearFarRatio = 0.001f;
 static const float PreferredNearFarRatio = 0.002f;
 
+// Camera rotations used for drawing to the faces of a cube map
+static const Quaterniond Z180 = Quaterniond(AngleAxisd(toRadians(180.0), Vector3d::UnitZ()));
+static const Quaterniond CubeFaceCameraRotations[6] =
+{
+    Quaterniond(AngleAxisd(toRadians(-90.0), Vector3d::UnitY())) * Z180,
+    Quaterniond(AngleAxisd(toRadians( 90.0), Vector3d::UnitY())) * Z180,
+    Quaterniond(AngleAxisd(toRadians( 90.0), Vector3d::UnitX())) * Z180,
+    Quaterniond(AngleAxisd(toRadians(-90.0), Vector3d::UnitX())) * Z180,
+    Quaterniond(AngleAxisd(toRadians(  0.0), Vector3d::UnitY())) * Z180,
+    Quaterniond(AngleAxisd(toRadians(180.0), Vector3d::UnitY())) * Z180,
+};
+
 
 /** Construct a new UniverseRenderer. The renderer may not be used for drawing
-  * until its initializeGrahics method has been called. Initialization is not
+  * until its initializeGraphics method has been called. Initialization is not
   * performed in the constructor: a UniverseRenderer can be created at any time,
   * but the graphics state can only be initialized once an OpenGL context is
   * available.
@@ -65,6 +84,17 @@ bool
 UniverseRenderer::shadowsSupported() const
 {
     return Framebuffer::supported() && m_renderContext && m_renderContext->shaderCapability() != RenderContext::FixedFunction;
+}
+
+
+/** Return true if omnidirectinoal shadows are supported for this renderer. In order to
+ *  support shadows the OpenGL implementation must support shaders, framebuffer objects,
+ *  cube maps, and floating point textures.
+ */
+bool
+UniverseRenderer::omniShadowsSupported() const
+{
+    return shadowsSupported() && GLEW_ARB_texture_cube_map == GL_TRUE && GLEW_ARB_texture_rg;
 }
 
 
@@ -131,6 +161,8 @@ UniverseRenderer::initializeGraphics()
   *
   * @param maxShadowMaps number of shadow maps to allocate. The number of shadows cast on
   *                      any one body is limited by this value.
+  *
+  * \return true if the shadow map resources were successfully created
   */
 bool
 UniverseRenderer::initializeShadowMaps(unsigned int shadowMapSize, unsigned int maxShadowMaps)
@@ -161,6 +193,51 @@ UniverseRenderer::initializeShadowMaps(unsigned int shadowMapSize, unsigned int 
     }
 
     VESTA_LOG("Created %d %dx%d shadow buffer(s) for UniverseRenderer.", maxShadowMaps, shadowMapSize, shadowMapSize);
+
+    return true;
+}
+
+
+/** Initialize omnidirectional shadow map resources for this renderer.
+  *
+  * \param shadowMapSize dimension of the shadow map. A higher value will produce
+  * better shadows but consume more memory. A smaller map may be allocated if the requested
+  * size is larger than the maximum texture size supported by hardware
+  *
+  * \param maxShadowMaps number of shadow maps to allocate. The number of shadows cast on
+  *                      any one body is limited by this value.
+  *
+  * \return true if the shadow map resources were successfully created
+  */
+bool
+UniverseRenderer::initializeOmniShadowMaps(unsigned int shadowMapSize, unsigned int maxShadowMaps)
+{
+    if (!m_renderContext)
+    {
+        VESTA_WARNING("UniverseRenderer::initializeOmniShadowMaps() called before initializeGraphics()");
+        return false;
+    }
+
+    if (!omniShadowsSupported())
+    {
+        VESTA_LOG("Omnidirectional shadows not supported by graphic hardware and/or drivers.");
+        return false;
+    }
+
+    // Constrain the shadow map size to the maximum size permitted by the hardware
+    GLint maxTexSize = 0;
+    glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE_ARB, &maxTexSize);
+    shadowMapSize = min((unsigned int) maxTexSize, shadowMapSize);
+
+    // Omnidirectional shadows are implemented as cube maps with the camera to fragment distance
+    // stored in the red channel. We require 32-bit floating point precision for storing distances.
+    m_omniShadowMap = CubeMapFramebuffer::CreateCubicReflectionMap(shadowMapSize, TextureMap::R32F);
+    if (m_omniShadowMap.isNull())
+    {
+        return false;
+    }
+
+    VESTA_LOG("Created %d %dx%d cube map shadow buffer(s) for UniverseRenderer.", maxShadowMaps, shadowMapSize, shadowMapSize);
 
     return true;
 }
@@ -276,13 +353,53 @@ showShadowMap(Framebuffer* shadowMap,
 #endif // DEBUG_SHADOW_MAP
 
 
-/** Render visible bodies in the universe using the specified camera position
-  * and orientation.
+#if DEBUG_OMNI_SHADOW_MAP
+// Debugging code for omnidirectional shadows
+static void
+showOmniShadowMap(CubeMapFramebuffer* shadowMap,
+                  float quadSize,
+                  float viewportWidth, float viewportHeight)
+{
+    if (shadowMap->colorTexture())
+    {
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        gluOrtho2D(0, viewportWidth, 0, viewportHeight);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        glDisable(GL_LIGHTING);
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        glDisable(GL_DEPTH_TEST);
+
+        glEnable(GL_TEXTURE_CUBE_MAP);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, shadowMap->colorTexture()->id());
+
+        float halfAngle = toRadians(60.0f);
+        glBegin(GL_QUADS);
+        glTexCoord3f(cos(-halfAngle), sin(-halfAngle), -1.0f);
+        glVertex2f(0.0f, 0.0f);
+        glTexCoord3f(cos(halfAngle), sin(-halfAngle), 1.0f);
+        glVertex2f(quadSize, 0.0f);
+        glTexCoord3f(cos(halfAngle), sin(halfAngle), 1.0f);
+        glVertex2f(quadSize, quadSize);
+        glTexCoord3f(cos(-halfAngle), sin(halfAngle), -1.0f);
+        glVertex2f(0.0f, quadSize);
+        glEnd();
+
+        glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+        glDisable(GL_TEXTURE_CUBE_MAP);
+    }
+}
+#endif // DEBUG_OMNI_SHADOW_MAP
+
+
+/** Render visible bodies in the universe using the specified camera position,
+  * orientation, and projection.
   *
   * @param lighting information about lights and shadows that could affect objects in view
   * @param cameraPosition the camera position
   * @param cameraOrientation the camera orientation
-  * @param fieldOfView the horizontal field of view in radians
+  * @param projection the camera projection
   * @param viewport rectangular region of the rendering surface to draw into
   * @param renderSurface target framebuffer; the default value of NULL means that the default back buffer will be used.
   */
@@ -290,7 +407,7 @@ UniverseRenderer::RenderStatus
 UniverseRenderer::renderView(const LightingEnvironment* lighting,
                              const Vector3d& cameraPosition,
                              const Quaterniond& cameraOrientation,
-                             double fieldOfView,
+                             const PlanarProjection& projection,
                              const Viewport& viewport,
                              Framebuffer* renderSurface)
 {
@@ -308,15 +425,12 @@ UniverseRenderer::renderView(const LightingEnvironment* lighting,
 
     Matrix3f toCameraSpace = cameraOrientation.conjugate().cast<float>().toRotationMatrix();
     float aspectRatio = viewport.aspectRatio();
+    float fieldOfView = projection.fovY();
 
-    // A negative field of view indicates that a left-handed perspective projection
-    // should be used.
-    // TODO: replace this with a mechanism for specifying a general projection
-    // matrix.
-    if (fieldOfView < 0.0)
+    // Reverse the vertex winding order if we have a left-handed projection matrix
+    // (because all geometry assumes a right-handed projection.)
+    if (projection.chirality() == PlanarProjection::LeftHanded)
     {
-        fieldOfView = -fieldOfView;
-        aspectRatio = -aspectRatio;
         glFrontFace(GL_CW);
     }
 
@@ -332,9 +446,10 @@ UniverseRenderer::renderView(const LightingEnvironment* lighting,
 
     // Draw sky layers grids
     glDepthMask(GL_FALSE);
+    glDisable(GL_DEPTH_TEST);
     glDisable(GL_TEXTURE_2D);
 
-    m_renderContext->perspectiveProjection((float) fieldOfView, aspectRatio, 0.1f, 10.0f);
+    m_renderContext->setProjection(projection.slice(0.1f, 1.0f));
 
     if (m_skyLayersEnabled)
     {
@@ -348,8 +463,8 @@ UniverseRenderer::renderView(const LightingEnvironment* lighting,
             }
         }
     }
-    glEnable(GL_LIGHTING);
 
+    glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
 
     // Fixed function state setup
@@ -358,6 +473,8 @@ UniverseRenderer::renderView(const LightingEnvironment* lighting,
 
     m_renderContext->setActiveLightCount(1);
     m_renderContext->setAmbientLight(m_ambientLight);
+
+    m_viewFrustum = projection.frustum();
 
     // This adjustment factor will ensure that the view frustum near plane
     // doesn't intersect the geometry of a body.
@@ -513,7 +630,7 @@ UniverseRenderer::renderView(const LightingEnvironment* lighting,
          iter != m_mergedDepthBufferSpans.end(); ++iter, --spanIndex)
     {
         setDepthRange(spanIndex * spanRange, (spanIndex + 1) * spanRange);
-        renderDepthBufferSpan(*iter, (float) fieldOfView, aspectRatio);
+        renderDepthBufferSpan(*iter, projection);
     }
     setDepthRange(0.0f, 1.0f);
 
@@ -525,9 +642,16 @@ UniverseRenderer::renderView(const LightingEnvironment* lighting,
     glFrontFace(GL_CCW);
 
 #if DEBUG_SHADOW_MAP
-    if (m_shadowsEnabled && !m_shadowMap.isNull())
+    if (m_shadowsEnabled && m_shadowMap.isValid())
     {
-        showShadowMap(m_shadowMap.ptr(), 320.0f, viewportWidth, viewportHeight);
+        showShadowMap(m_shadowMap.ptr(), 320.0f, viewport.width(), viewport.height());
+    }
+#endif
+
+#if DEBUG_OMNI_SHADOW_MAP
+    if (m_shadowsEnabled && m_omniShadowMap.isValid())
+    {
+        showOmniShadowMap(m_omniShadowMap.ptr(), 320.0f, viewport.width(), viewport.height());
     }
 #endif
 
@@ -557,7 +681,7 @@ UniverseRenderer::renderView(const LightingEnvironment* lighting,
     return renderView(lighting,
                       observer->absolutePosition(m_currentTime),
                       observer->absoluteOrientation(m_currentTime),
-                      fieldOfView,
+                      PlanarProjection::CreatePerspective(fieldOfView, viewport.aspectRatio(), MinimumNearPlaneDistance, MaximumFarPlaneDistance),
                       viewport,
                       renderSurface);
 }
@@ -588,6 +712,8 @@ UniverseRenderer::renderView(const Observer* observer,
 void
 UniverseRenderer::buildVisibleLightSourceList(const Vector3d& cameraPosition)
 {
+    Matrix3f toCameraSpace = m_renderContext->cameraOrientation().conjugate().toRotationMatrix();
+
     // Create the list of visible light sources. We filter the list of all light sources
     // and only keep the ones that interact with objects in the view frustum.
     m_visibleLightSources.clear();
@@ -605,6 +731,15 @@ UniverseRenderer::buildVisibleLightSourceList(const Vector3d& cameraPosition)
                 // Light might be in the view frustum, but it affects a region that occupies less than
                 // a pixel on screen.
                 cull = true;
+            }
+            else
+            {
+                // Check whether the light lies outside the view frustum. We can disregard it if it does.
+                Vector3f cameraSpacePosition = toCameraSpace * cameraRelativePosition.cast<float>();
+                if (!m_viewFrustum.intersects(BoundingSphere<float>(cameraSpacePosition, lsi.lightSource->range())))
+                {
+                    cull = true;
+                }
             }
         }
         else
@@ -673,6 +808,10 @@ UniverseRenderer::addVisibleItem(const Entity* entity,
     // farDistance, it means that the object lies outside the view frustum.
     nearDistance *= nearAdjust;
 
+    if (!m_viewFrustum.intersects(BoundingSphere<float>(cameraSpacePosition, boundingRadius)))
+    {
+    }
+
     // Add entities in front of the camera to the list of visible items
     if (farDistance > 0 && nearDistance < farDistance)
     {
@@ -698,23 +837,22 @@ UniverseRenderer::addVisibleItem(const Entity* entity,
 }
 
 
-/** Render six views into the faces of a cube map.
+/** Render six views into the faces of a cube map from the specified position. The views are pointed
+  * along the universal coordinate system axes, though this can be modified by passing something
+  * other than identity for the rotation.
+  *
+  * \param lighting the lighting environment for rendering
+  * \param position position of the camera
+  * \param cubeMap the target cube map framebuffer to draw into
+  * \param rotation optional rotation (defaults to identity)
   */
 UniverseRenderer::RenderStatus
-UniverseRenderer::renderCubeMap(const LightingEnvironment* lighting, const Vector3d& position, CubeMapFramebuffer* cubeMap)
+UniverseRenderer::renderCubeMap(const LightingEnvironment* lighting, const Vector3d& position, CubeMapFramebuffer* cubeMap, const Quaterniond& rotation)
 {
-    Quaterniond z180 = Quaterniond(AngleAxisd(toRadians(180.0), Vector3d::UnitZ()));
-    Quaterniond rotations[6] =
-    {
-        Quaterniond(AngleAxisd(toRadians(-90.0), Vector3d::UnitY())) * z180,
-        Quaterniond(AngleAxisd(toRadians( 90.0), Vector3d::UnitY())) * z180,
-        Quaterniond(AngleAxisd(toRadians( 90.0), Vector3d::UnitX())) * z180,
-        Quaterniond(AngleAxisd(toRadians(-90.0), Vector3d::UnitX())) * z180,
-        Quaterniond(AngleAxisd(toRadians(  0.0), Vector3d::UnitY())) * z180,
-        Quaterniond(AngleAxisd(toRadians(180.0), Vector3d::UnitY())) * z180,
-    };
-
     Viewport viewport(cubeMap->size(), cubeMap->size());
+    PlanarProjection cubeFaceProjection = PlanarProjection::CreatePerspectiveLH(float(toRadians(90.0)),
+                                                                                1.0f,
+                                                                                MinimumNearPlaneDistance, MaximumFarPlaneDistance);
 
     for (int face = 0; face < 6; ++face)
     {
@@ -724,7 +862,7 @@ UniverseRenderer::renderCubeMap(const LightingEnvironment* lighting, const Vecto
             fb->bind();
             glDepthMask(GL_TRUE);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            RenderStatus status = renderView(lighting, position, rotations[face], toRadians(-90.0), viewport, fb);
+            RenderStatus status = renderView(lighting, position, rotation * CubeFaceCameraRotations[face], cubeFaceProjection, viewport, fb);
             if (status != RenderOk)
             {
                 Framebuffer::unbind();
@@ -736,6 +874,43 @@ UniverseRenderer::renderCubeMap(const LightingEnvironment* lighting, const Vecto
     Framebuffer::unbind();
 
     return RenderOk;
+}
+
+
+/** Render six views into the faces of a shadow cube map.
+  */
+UniverseRenderer::RenderStatus
+UniverseRenderer::renderShadowCubeMap(const LightingEnvironment* lighting, const Vector3d& position, CubeMapFramebuffer* cubeMap)
+{
+    RenderStatus status = RenderOk;
+
+    Viewport viewport(cubeMap->size(), cubeMap->size());
+    PlanarProjection cubeFaceProjection = PlanarProjection::CreatePerspectiveLH(float(toRadians(90.0)),
+                                                                                1.0f,
+                                                                                MinimumNearPlaneDistance, MaximumFarPlaneDistance);
+
+    m_renderContext->setRendererOutput(RenderContext::CameraDistance);
+
+    for (int face = 0; face < 6; ++face)
+    {
+        Framebuffer* fb = cubeMap->face(CubeMapFramebuffer::Face(face));
+        if (fb)
+        {
+            fb->bind();
+            glDepthMask(GL_TRUE);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            status = renderView(lighting, position, CubeFaceCameraRotations[face], cubeFaceProjection, viewport, fb);
+            if (status != RenderOk)
+            {
+                break;
+            }
+        }
+    }
+
+    Framebuffer::unbind();
+    m_renderContext->setRendererOutput(RenderContext::FragmentColor);
+
+    return status;
 }
 
 
@@ -858,6 +1033,21 @@ beginShadowRendering()
 }
 
 
+static void
+beginCubicShadowRendering()
+{
+    // Render only the red channel
+    glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE);
+    glDepthMask(GL_TRUE);
+    glEnable(GL_DEPTH_TEST);
+
+    // Reduce 'shadow acne' by rendering the backfaces. This doesn't
+    // eliminate the artifacts, but moves them to the unilluminated
+    // side of the object, where they're less visible.
+    glCullFace(GL_FRONT);
+}
+
+
 void
 finishShadowRendering(Framebuffer* renderSurface)
 {
@@ -877,9 +1067,7 @@ finishShadowRendering(Framebuffer* renderSurface)
 
 
 // Render all of the items in a depth buffer span
-void UniverseRenderer::renderDepthBufferSpan(const DepthBufferSpan& span,
-                                             float fieldOfView,
-                                             float aspectRatio)
+void UniverseRenderer::renderDepthBufferSpan(const DepthBufferSpan& span, const PlanarProjection& projection)
 {
     if (span.itemCount == 0 && m_splittableItems.empty())
     {
@@ -887,15 +1075,34 @@ void UniverseRenderer::renderDepthBufferSpan(const DepthBufferSpan& span,
     }
 
     bool shadowsOn = false;
-    if (m_shadowsEnabled && !m_lightSources.empty())
+    bool omniShadowsOn = false;
+    if (m_shadowsEnabled && !m_visibleLightSources.empty())
     {
+        // Render shadows from the Sun (currently always the first light source)
         shadowsOn = renderDepthBufferSpanShadows(span, m_visibleLightSources[0].cameraRelativePosition);
+
+        // See if there are additional light sources casting shadows. We'll only handle
+        // one additional shadow.
+        for (unsigned int i = 1; i < m_visibleLightSources.size(); ++i)
+        {
+            if (m_visibleLightSources[i].lightSource->isShadowCaster())
+            {
+                omniShadowsOn = renderDepthBufferSpanOmniShadows(span,
+                                                                 m_visibleLightSources[i].lightSource,
+                                                                 m_visibleLightSources[i].cameraRelativePosition);
+                if (omniShadowsOn)
+                {
+                    break;
+                }
+            }
+        }
     }
 
     // Enforce the minimum near plane distance
     float nearDistance = std::max(MinimumNearPlaneDistance, span.nearDistance);
 
-    m_renderContext->perspectiveProjection(fieldOfView, aspectRatio, nearDistance, span.farDistance);
+    m_renderContext->setProjection(projection.slice(nearDistance, span.farDistance));
+    Frustum viewFrustum = m_renderContext->frustum();
 
     // Rendering of some translucent objects is order dependent. We can eliminate the
     // worst artifacts by drawing opaque items first and translucent items second.
@@ -910,13 +1117,22 @@ void UniverseRenderer::renderDepthBufferSpan(const DepthBufferSpan& span,
 
             if (pass == 0 || !item.geometry->isOpaque())
             {
-                if (shadowsOn && item.entity->geometry()->isShadowReceiver())
+                if (shadowsOn && item.geometry->isShadowReceiver())
                 {
                     m_renderContext->setShadowMapCount(1);
                 }
                 else
                 {
                     m_renderContext->setShadowMapCount(0);
+                }
+
+                if (omniShadowsOn && item.geometry->isShadowReceiver())
+                {
+                    m_renderContext->setOmniShadowMapCount(1);
+                }
+                else
+                {
+                    m_renderContext->setOmniShadowMapCount(0);
                 }
 
                 if (m_lighting && !m_lighting->reflectionRegions().empty())
@@ -1024,7 +1240,7 @@ UniverseRenderer::renderDepthBufferSpanShadows(const DepthBufferSpan& span,
     for (unsigned int i = 0; i < span.itemCount; ++i)
     {
         const VisibleItem& item = m_visibleItems[span.backItemIndex - i];
-        const Geometry* geometry = item.entity->geometry();
+        const Geometry* geometry = item.geometry;
 
         if (geometry->isShadowCaster())
         {
@@ -1050,7 +1266,148 @@ UniverseRenderer::renderDepthBufferSpanShadows(const DepthBufferSpan& span,
     // Set shadow state in the render context
     m_renderContext->setShadowMapMatrix(0, shadowTransform);
     m_renderContext->setShadowMap(0, m_shadowMap->glFramebuffer());
-    m_renderContext->setShadowMapCount(1);
+
+    return true;
+}
+
+
+// Render all shadow casters in a depth buffer span into the cubic shadow map.
+// Return true if any shadows were actually drawn.
+//
+// Parameters:
+//   span - the depth buffer span for which to draw shadows
+//   lightPosition - the position of the light source relative to the camera
+bool
+UniverseRenderer::renderDepthBufferSpanOmniShadows(const DepthBufferSpan& span,
+                                                   const LightSource* light,
+                                                   const Vector3d& lightPosition)
+{
+    // Check for shadow support
+    if (!Framebuffer::supported() || !m_shadowsEnabled)
+    {
+        return false;
+    }
+
+    if (m_omniShadowMap.isNull())
+    {
+        // No shadow map created
+        return false;
+    }
+
+    BoundingSphere<float> shadowReceiverBounds;
+    bool shadowCastersPresent = false;
+
+    // Find the minimum radius bounding sphere that contains all of the
+    // shadow receivers in this span. Also, determine whether there are
+    // any shadow casters in the span.
+    for (unsigned int i = 0; i < span.itemCount; ++i)
+    {
+        const VisibleItem& item = m_visibleItems[span.backItemIndex - i];
+        const Geometry* geometry = item.geometry;
+
+        if (geometry->isShadowReceiver())
+        {
+            shadowReceiverBounds.merge(BoundingSphere<float>(item.cameraRelativePosition.cast<float>(), item.boundingRadius));
+        }
+
+        if (geometry->isShadowCaster())
+        {
+            shadowCastersPresent = true;
+        }
+    }
+
+    // Don't draw shadows if there are no receivers or no casters
+    if (!shadowCastersPresent || shadowReceiverBounds.isEmpty())
+    {
+        return false;
+    }
+
+    // Set up the view port (same for all faces)
+    glViewport(0, 0, m_omniShadowMap->size(), m_omniShadowMap->size());
+    glDepthRange(0.0f, 1.0f);
+
+    // Set up cube map shadow rendering
+    // When rendering to cube faces, we use a left-handed projection, so reverse the triangles (GL_CW)
+    // Also, tell the renderer to output camera distance instead of color
+    beginCubicShadowRendering();
+    glFrontFace(GL_CW);
+    m_renderContext->setRendererOutput(RenderContext::CameraDistance);
+
+    // Pixel distance is stored in the red channel; clear it to a very large value
+    glClearColor(1.0e15f, 0.0f, 0.0f, 0.0f);
+
+    m_renderContext->pushProjection();
+
+    // Draw each face of the cube map. Frustum cull objects to avoid unnecessary
+    // redrawing.
+    for (int face = 0; face < 6; ++face)
+    {
+        Framebuffer* fb = m_omniShadowMap->face(CubeMapFramebuffer::Face(face));
+        if (fb)
+        {
+            fb->bind();
+            glDepthMask(GL_TRUE);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            Quaternionf cameraOrientation = CubeFaceCameraRotations[face].cast<float>();
+            Matrix3f toCameraSpace = cameraOrientation.conjugate().toRotationMatrix();
+
+            // Set the camera transformation
+            m_renderContext->pushModelView();
+            m_renderContext->setModelView(Matrix4f::Identity());
+            m_renderContext->rotateModelView(cameraOrientation.conjugate().cast<float>());
+
+            // The camera orientation is stored separately; save it so that we can restore
+            // it after rendering all faces.
+            Quaternionf savedCamera = m_renderContext->cameraOrientation();
+            m_renderContext->setCameraOrientation(cameraOrientation);
+
+            PlanarProjection faceProjection = PlanarProjection::CreatePerspectiveLH(float(toRadians(90.0)), 1.0f, light->range() * 0.0001f, light->range());
+            Frustum faceFrustum = faceProjection.frustum();
+
+            m_renderContext->setProjection(faceProjection);
+
+            // Render shadows for all casters
+            for (unsigned int i = 0; i < span.itemCount; ++i)
+            {
+                const VisibleItem& item = m_visibleItems[span.backItemIndex - i];
+                const Geometry* geometry = item.geometry;
+
+                if (geometry->isShadowCaster())
+                {
+                    Vector3f itemPosition = (item.cameraRelativePosition - lightPosition).cast<float>();
+                    Vector3f cameraSpacePosition = toCameraSpace * itemPosition;
+
+                    // Test object bounding sphere against cube face frustum
+                    if (faceFrustum.intersects(BoundingSphere<float>(cameraSpacePosition, light->range())))
+                    {
+                        m_renderContext->pushModelView();
+                        m_renderContext->translateModelView(itemPosition);
+                        m_renderContext->rotateModelView(item.orientation);
+                        item.geometry->renderShadow(*m_renderContext, itemPosition.norm() - item.boundingRadius, m_currentTime);
+                        m_renderContext->popModelView();
+                    }
+                }
+            }
+
+            m_renderContext->popModelView();
+            m_renderContext->setCameraOrientation(savedCamera);
+        }
+    }
+
+    m_renderContext->popProjection();
+
+    // Restore normal renderer operation
+    m_renderContext->setRendererOutput(RenderContext::FragmentColor);
+    finishShadowRendering(m_renderSurface.ptr());
+    glFrontFace(GL_CCW);
+
+    // Reset the viewport
+    glDepthRange(m_depthRangeFront, m_depthRangeBack);
+    glViewport(m_renderViewport.x(), m_renderViewport.y(), m_renderViewport.width(), m_renderViewport.height());
+
+    // Set shadow state in the render context
+    m_renderContext->setOmniShadowMap(0, m_omniShadowMap->colorTexture());
 
     return true;
 }
@@ -1189,23 +1546,6 @@ shadowBias()
 }
 
 
-static Matrix4f
-orthoProjectionMatrix(float left, float right,
-                      float bottom, float top,
-                      float zNear, float zFar)
-{
-    Vector3f extents(right - left, top - bottom, zFar - zNear);
-    Matrix4f ortho;
-
-    ortho << 2.0f / extents.x(), 0.0f, 0.0f,  (right + left) / -extents.x(),
-             0.0f, 2.0f / extents.y(), 0.0f,  (top + bottom) / -extents.y(),
-             0.0f, 0.0f, -2.0f / extents.z(), (zFar + zNear) / -extents.z(),
-             0.0f, 0.0f, 0.0f,                1.0f;
-
-    return ortho;
-}
-
-
 // Set up graphics state for rendering shadows. Return the matrix that
 // should be used for drawing geometry with this shadow map.
 Matrix4f
@@ -1228,22 +1568,22 @@ UniverseRenderer::setupShadowRendering(const Framebuffer* shadowMap,
     }
 #endif
 
-    Matrix4f projection = orthoProjectionMatrix(-shadowGroupSize, shadowGroupSize,
-                                                -shadowGroupSize, shadowGroupSize,
-                                                -shadowGroupSize, shadowGroupSize);
+    PlanarProjection shadowProjection = PlanarProjection::CreateOrthographic(-shadowGroupSize, shadowGroupSize,
+                                                                             -shadowGroupSize, shadowGroupSize,
+                                                                             -shadowGroupSize, shadowGroupSize);
     Matrix4f modelView = shadowView(lightDirection);
 
     glClear(GL_DEPTH_BUFFER_BIT);
 
     m_renderContext->pushProjection();
-    m_renderContext->setProjection(projection);
+    m_renderContext->setProjection(shadowProjection);
     m_renderContext->pushModelView();
     m_renderContext->setModelView(modelView);
 
     glViewport(0, 0, shadowMap->width(), shadowMap->height());
     glDepthRange(0.0f, 1.0f);
 
-    return shadowBias() * projection * modelView;
+    return shadowBias() * shadowProjection.matrix() * modelView;
 }
 
 

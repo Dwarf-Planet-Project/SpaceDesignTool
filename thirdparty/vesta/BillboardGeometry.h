@@ -1,5 +1,5 @@
 /*
- * $Revision: 223 $ $Date: 2010-03-30 05:44:44 -0700 (Tue, 30 Mar 2010) $
+ * $Revision: 429 $ $Date: 2010-08-15 18:40:51 -0700 (Sun, 15 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -40,20 +40,33 @@ public:
         return m_size;
     }
 
-    void setSize(float size)
-    {
-        m_size = size;
-    }
+    void setSize(float size);
 
     TextureMap* texture() const;
     void setTexture(TextureMap* texture);
+    Spectrum color() const;
+    void setColor(const Spectrum& color);
     float opacity() const;
     void setOpacity(float opacity);
+    bool hasFixedScreenSize() const
+    {
+        return m_fixedScreenSize;
+    }
+
+    void setFixedScreenSize(bool enable)
+    {
+        m_fixedScreenSize = enable;
+    }
+
+    Material::BlendMode blendMode() const;
+    void setBlendMode(Material::BlendMode blendMode);
 
     bool isOpaque() const;
 
 private:
-    float m_size;
+    float m_size;    
+    bool m_fixedScreenSize;
+    Material::BlendMode m_blendMode;
     Material m_material;
 };
 

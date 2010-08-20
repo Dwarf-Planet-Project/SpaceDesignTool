@@ -1,5 +1,5 @@
 /*
- * $Revision: 416 $ $Date: 2010-08-09 17:19:13 -0700 (Mon, 09 Aug 2010) $
+ * $Revision: 445 $ $Date: 2010-08-20 12:32:00 -0700 (Fri, 20 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -117,7 +117,7 @@ public:
         return m_phongExponent;
     }
 
-    /** Set the reflectance at normal incidence. For conductive materials like metals,
+    /** Get the reflectance at normal incidence. For conductive materials like metals,
       * this should be near 1.0. For dielectrics, a lower value is appropriate:
       * ((n1 - n2) / (n1 + n2))^2, where n1 is the index of refraction of the medium
       * containing the material, and n2 is the index of refraction of the material.

@@ -1,5 +1,5 @@
 /*
- * $Revision: 223 $ $Date: 2010-03-30 05:44:44 -0700 (Tue, 30 Mar 2010) $
+ * $Revision: 421 $ $Date: 2010-08-11 14:35:48 -0700 (Wed, 11 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -7,8 +7,8 @@
  * For details on copyright and terms of use see 
  * http://www.astos.de/Astos_Solutions_Free_Public_License.html
  */
-#ifndef _ASTROVIS_OBSERVER_H_
-#define _ASTROVIS_OBSERVER_H_
+#ifndef _VESTA_OBSERVER_H_
+#define _VESTA_OBSERVER_H_
 
 #include "Entity.h"
 #include "Frame.h"
@@ -93,4 +93,4 @@ private:
 
 }
 
-#endif // _ASTROVIS_OBSERVER_H_
+#endif // _VESTA_OBSERVER_H_

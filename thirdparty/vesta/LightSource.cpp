@@ -16,7 +16,8 @@ using namespace vesta;
 LightSource::LightSource() :
     m_luminosity(0.0f),
     m_spectrum(Spectrum::White()),
-    m_range(1.0f)
+    m_range(1.0f),
+    m_shadowCaster(false)
 {
 }
 

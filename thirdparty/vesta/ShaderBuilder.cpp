@@ -1,5 +1,5 @@
 /*
- * $Revision: 416 $ $Date: 2010-08-09 17:19:13 -0700 (Mon, 09 Aug 2010) $
+ * $Revision: 444 $ $Date: 2010-08-19 23:05:09 -0700 (Thu, 19 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -97,11 +97,16 @@ static void declareSamplers(ostream& out, unsigned int textureMask)
 }
 
 
-static void declareShadowSamplers(ostream& out, unsigned int shadowCount)
+static void declareShadowSamplers(ostream& out, const ShaderInfo& shaderInfo)
 {
-    for (unsigned int i = 0; i < shadowCount; ++i)
+    for (unsigned int i = 0; i < shaderInfo.shadowCount(); ++i)
     {
         out << "uniform sampler2DShadow shadowTex" << i << ";\n";
+    }
+
+    for (unsigned int i = 0; i < shaderInfo.omniShadowCount(); ++i)
+    {
+        out << "uniform samplerCube shadowCubeMap" << i << ";\n";
     }
 }
 
@@ -144,6 +149,18 @@ static void declarePCFShadowFunc(ostream& out)
     out << "        for (float x = " << firstSample << "; x <= " << lastSample << "; x += 1.0)" << endl;
     out << "            light += shadow2D(shadowTex, shadowCoord.xyz + vec3(x * shadowTexelSize, y * shadowTexelSize, 0.0005)).z;" << endl;
     out << "    return light * " << weight << ";" << endl;
+    out << "}" << endl;
+    out << endl;
+}
+
+static void declareCubeMapShadowFunc(ostream& out)
+{
+    out << "float omniShadow(samplerCube shadowTex, vec3 lightPos)" << endl;
+    out << "{" << endl;
+    out << "    lightPos.z = -lightPos.z;" << endl;
+    out << "    float lightShadowDistance = textureCube(shadowTex, -lightPos).r;" << endl;
+    out << "    float lightFragDistance = length(lightPos);" << endl;
+    out << "    return lightFragDistance < lightShadowDistance ? 1.0 : 0.0;" << endl;
     out << "}" << endl;
     out << endl;
 }
@@ -342,6 +359,11 @@ static void declareHelperFunctions(ostream& fragment, const ShaderInfo& shaderIn
         declarePCFShadowFunc(fragment);
     }
 
+    if (shaderInfo.hasOmniShadows())
+    {
+        declareCubeMapShadowFunc(fragment);
+    }
+
     if (shaderInfo.hasScattering())
     {
         declareScatteringFunc(fragment);
@@ -438,7 +460,7 @@ static void generateBlinnPhongShader(ostream& vertex, ostream& fragment, const S
         unsigned int count = shaderInfo.shadowCount();
         declareUniformArray(vertex, "mat4", "shadowMatrix", count);
         declareVaryingArray(vertex, fragment, "vec4", "shadowCoord", count);
-        declareShadowSamplers(fragment, count);
+        declareShadowSamplers(fragment, shaderInfo);
     }
 
     if (shaderInfo.hasScattering())
@@ -475,7 +497,7 @@ static void generateBlinnPhongShader(ostream& vertex, ostream& fragment, const S
     declareUniformArray(fragment, "vec3", "lightPosition", shaderInfo.lightCount());
     declareUniformArray(fragment, "vec3", "lightColor", shaderInfo.lightCount());
 
-    if (hasEnvironmentMap)
+    if (hasEnvironmentMap || shaderInfo.hasOmniShadows())
     {
         declareUniform(fragment, "mat3", "objToWorldMat");
     }
@@ -566,24 +588,36 @@ static void generateBlinnPhongShader(ostream& vertex, ostream& fragment, const S
     for (unsigned int light = 0; light < shaderInfo.lightCount(); ++light)
     {
         fragment << "    {" << endl;
+        string lightDirection;
         string lightPosition;
         if (light == 0)
         {
             // Light source zero is directional (i.e. effectively an infinite distance from the object)
-            lightPosition = arrayIndex("lightPosition", light);
+            lightDirection = arrayIndex("lightPosition", light);
+            lightPosition = lightDirection;
         }
         else
         {
             // Light source is a point source
-            lightPosition = "lightPos";
             fragment << "        vec3 lightPos = " << arrayIndex("lightPosition", light) << " - " << position(shaderInfo) << ";" << endl;
-            fragment << "        lightPos = normalize(lightPos);" << endl;
+            fragment << "        vec3 lightDir = normalize(lightPos);" << endl;
+            lightDirection = "lightDir";
+            lightPosition = "lightPos";
         }
 
-        fragment << "        float d = max(0.0, dot(N, " << lightPosition << "));" << endl;
-        if (shaderInfo.shadowCount() > light)
+        fragment << "        float d = max(0.0, dot(N, " << lightDirection << "));" << endl;
+
+        // Presently, a maximum of one directional and one omnidirectional (cube) shadow map
+        // is supported.
+        if (light == 0 && shaderInfo.shadowCount() != 0)
         {
-             fragment << "        float shadow = shadowPCF(shadowTex" << light << ", shadowCoord[" << light << "]);" << endl;
+            unsigned int shadowIndex = 0;
+            fragment << "        float shadow = shadowPCF(shadowTex" << shadowIndex << ", shadowCoord[" << shadowIndex << "]);" << endl;
+        }
+        else if (light == 1 && shaderInfo.omniShadowCount() != 0)
+        {
+            unsigned int shadowIndex = 0;
+            fragment << "        float shadow = omniShadow(shadowCubeMap" << shadowIndex << ", objToWorldMat * " << lightPosition << ");" << endl;
         }
         else if (hasTangents)
         {
@@ -591,7 +625,7 @@ static void generateBlinnPhongShader(ostream& vertex, ostream& fragment, const S
             // a normal map from being lit when they should be shadowed by
             // the geometry. If shadows are enabled, this is handled by the
             // shadow map.
-            fragment << "        float shadow = clamp(dot(Ngeom, " << lightPosition << ") * 8.0, 0.0, 1.0);\n";
+            fragment << "        float shadow = clamp(dot(Ngeom, " << lightDirection << ") * 8.0, 0.0, 1.0);\n";
         }
         else
         {
@@ -609,12 +643,15 @@ static void generateBlinnPhongShader(ostream& vertex, ostream& fragment, const S
         if (phong)
         {
             // Compute the half angle vector
-            fragment << "       vec3 H = normalize(" << lightPosition << " + V);" << endl;
+            fragment << "       vec3 H = normalize(" << lightDirection << " + V);" << endl;
             fragment << "       float s = pow(max(0.0, dot(H, N)), phongExponent);" << endl;
 
             // Self-shadowing term necessary to prevent the Phong highlight from bleeding
             // onto geometry that's facing away from the light source.
-            fragment << "       s *= clamp(d * 8.0, 0.0, 1.0);" << endl;
+            if (!hasTangents)
+            {
+                fragment << "       s *= clamp(d * 8.0, 0.0, 1.0);" << endl;
+            }
 
             if (shaderInfo.hasFresnelFalloff())
             {
@@ -687,9 +724,9 @@ static void generateBlinnPhongShader(ostream& vertex, ostream& fragment, const S
         // instead of object coordinates.
         fragment << "    vec3 R = objToWorldMat * reflect(-V, N); R.z = -R.z;" << endl;
         colorSum += " + textureCube(reflectionTex, R).rgb";
-        if (hasSpecularModifier)
+        if (phong)
         {
-            colorSum += " * specularModifier";
+            colorSum += " * specular";
         }
 
         if (shaderInfo.hasFresnelFalloff())
@@ -730,7 +767,7 @@ static void generateParticulateShader(ostream& vertex, ostream& fragment, const 
         unsigned int count = shaderInfo.shadowCount();
         declareUniformArray(vertex, "mat4", "shadowMatrix", count);
         declareVaryingArray(vertex, fragment, "vec4", "shadowCoord", count);
-        declareShadowSamplers(fragment, count);
+        declareShadowSamplers(fragment, shaderInfo);
     }
 
     if (shaderInfo.hasScattering())
@@ -906,11 +943,11 @@ ShaderBuilder::generateShader(const ShaderInfo& shaderInfo) const
         generateBlinnPhongShader(vertex, fragment, shaderInfo);
     }
 
-    VESTA_LOG("Creating shader:  model: %u, textures 0x%x, lights: %u, shadows: %u, scattering: %d, fresnel: %d, vertexColors: %d",
+    VESTA_LOG("Creating shader:  model: %u, textures 0x%x, lights: %u, shadows: %u/%u, scattering: %d, fresnel: %d, vertexColors: %d",
               (int) shaderInfo.reflectanceModel(),
               shaderInfo.textures(),
               shaderInfo.lightCount(),
-              shaderInfo.shadowCount(),
+              shaderInfo.shadowCount(), shaderInfo.omniShadowCount(),
               shaderInfo.hasScattering() ? 1 : 0,
               shaderInfo.hasFresnelFalloff() ? 1 : 0,
               shaderInfo.hasVertexColors() ? 1 : 0);

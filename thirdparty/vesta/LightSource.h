@@ -76,10 +76,26 @@ public:
         m_range = range;
     }
 
+    /** Return true if this light casts shadows. By default lights do not
+      * cast shadows.
+      */
+    bool isShadowCaster() const
+    {
+        return m_shadowCaster;
+    }
+
+    /** Set whether this light should cast shadows onto other objects.
+      */
+    void setShadowCaster(bool castsShadows)
+    {
+        m_shadowCaster = castsShadows;
+    }
+
 private:
     float m_luminosity;
     Spectrum m_spectrum;
     float m_range;
+    bool m_shadowCaster;
 };
 
 }

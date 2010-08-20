@@ -1,5 +1,5 @@
 /*
- * $Revision: 420 $ $Date: 2010-08-10 17:01:21 -0700 (Tue, 10 Aug 2010) $
+ * $Revision: 434 $ $Date: 2010-08-16 12:24:38 -0700 (Mon, 16 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -15,6 +15,7 @@
 #include "PrimitiveBatch.h"
 #include "Material.h"
 #include "ShaderInfo.h"
+#include "PlanarProjection.h"
 #include "glhelp/GLVertexBuffer.h"
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -65,13 +66,6 @@ public:
     {
         OpaquePass,
         TranslucentPass
-    };
-
-    struct Frustum
-    {
-        float nearZ;
-        float farZ;
-        Eigen::Vector3d planeNormals[4];
     };
 
     enum LightType
@@ -169,6 +163,8 @@ public:
         unsigned int m_shadowMapCount;
         Eigen::Matrix4f m_shadowMapMatrices[MaxLights];
         counted_ptr<GLFramebuffer> m_shadowMaps[MaxLights];
+        unsigned int m_omniShadowMapCount;
+        counted_ptr<TextureMap> m_omniShadowMaps[MaxLights];
 
         bool m_scatteringEnabled;
         ScatteringParameters m_scattering;
@@ -274,10 +270,7 @@ public:
 
     void pushProjection();
     void popProjection();
-    void perspectiveProjection(float fieldOfView, float aspectRatio, float nearDistance, float farDistance);
-    void orthographicProjection(float left, float right, float bottom, float top, float zNear, float zFar);
-    void orthographicProjection2D(float left, float right, float bottom, float top);
-    void setProjection(const Eigen::Matrix4f& m);
+    void setProjection(const PlanarProjection& projection);
 
     void bindVertexArray(const VertexArray* vertexArray);
     void bindVertexArray(const VertexSpec& spec, const void* vertexData, unsigned int stride);
@@ -296,6 +289,8 @@ public:
     void setShadowMapCount(unsigned int shadowCount);
     void setShadowMapMatrix(unsigned int index, const Eigen::Matrix4f& shadowMatrix);
     void setShadowMap(unsigned int index, GLFramebuffer* shadowMap);
+    void setOmniShadowMapCount(unsigned int shadowCount);
+    void setOmniShadowMap(unsigned int index, TextureMap* shadowCubeMap);
 
     void setScattering(bool enabled);
     void setScatteringParameters(const ScatteringParameters& scatteringParams);

@@ -1,5 +1,5 @@
 /*
- * $Revision: 413 $ $Date: 2010-08-06 16:16:26 -0700 (Fri, 06 Aug 2010) $
+ * $Revision: 423 $ $Date: 2010-08-11 21:30:49 -0700 (Wed, 11 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -1059,7 +1059,7 @@ WorldGeometry::render(RenderContext& rc,
 
     // Compute the culling planes. Use the horizon distance for the far plane in order
     // to cull as many surface patches as possible.
-    RenderContext::Frustum viewFrustum = rc.frustum();
+    Frustum viewFrustum = rc.frustum();
     float farDistance = max(viewFrustum.nearZ, min(horizonDistance, viewFrustum.farZ));
     Matrix4f modelviewTranspose = rc.modelview().matrix().transpose();
     CullingPlaneSet cullingPlanes;

@@ -1,5 +1,5 @@
 /*
- * $Revision: 400 $ $Date: 2010-08-02 17:39:12 -0700 (Mon, 02 Aug 2010) $
+ * $Revision: 423 $ $Date: 2010-08-11 21:30:49 -0700 (Wed, 11 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -51,7 +51,7 @@ TrajectoryGeometry::render(RenderContext& rc, float /* cameraDistance */, double
 
     rc.setVertexInfo(VertexSpec::Position);
 
-    const RenderContext::Frustum& frustum = rc.frustum();
+    const Frustum& frustum = rc.frustum();
 
     // Get a high precision modelview matrix; the full transformation is stored at single precision,
     // but the camera space position is stored at double precision.
