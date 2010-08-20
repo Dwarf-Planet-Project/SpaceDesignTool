@@ -211,9 +211,32 @@ ScenarioLoiteringTLEType MissionsDefaults::MissionsDefaults_GENERIC_TLE()
 	loiteringTLE.ElementIdentifier()->setTheOrder(2);
 
 	return loiteringTLE;
-
 }
 
+
+
+
+//////////////////////////////////////// Generic Maneuvers /////////////////////////////////////////////////
+ScenarioDeltaVType MissionsDefaults::MissionsDefaults_GENERIC_DELTAV()
+{
+    ScenarioDeltaVType deltaV;
+
+    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
+    deltaV.TimeLine()->setStartTime(TheCurrentDateAndTime);
+    deltaV.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
+
+    deltaV.ElementIdentifier()->setName("Delta V");
+    deltaV.ElementIdentifier()->setColorName("Dark red");
+    deltaV.ElementIdentifier()->setModelName("Default");
+    deltaV.ElementIdentifier()->setTheOrder(2);
+
+    deltaV.setDeltaVx(0.0);
+    deltaV.setDeltaVy(0.0);
+    deltaV.setDeltaVz(0.0);
+    deltaV.setMagnitude(3.0);
+
+    return deltaV;
+}
 
 
 

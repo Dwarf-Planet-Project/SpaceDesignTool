@@ -52,6 +52,7 @@
 #include "Payloads/opticalPayloadDialog.h"
 #include "Payloads/radarPayloadDialog.h"
 #include "Locations/environmentdialog.h"
+#include "Maneuvers/deltaVDialog.h"
 
 #include <QtGui>
 #include <iostream>
@@ -190,6 +191,11 @@ void changeLabels(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
     }
     else if ((scenarioObject->elementName()) == "EntryArc")
         item->setText(0, "Entry");
+    else if ((scenarioObject->elementName()) == "DeltaVType")
+    {
+        item->setText(0, "Delta V");
+        item->setIcon(0, QIcon(":/icons/engine.png"));
+    }
     else if ((scenarioObject->elementName()) == "ElementIdentifierType")
         item->setText(0, "Identifier");
     else if ((scenarioObject->elementName()) == "SCProgram")
@@ -425,10 +431,6 @@ void ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scena
     {
         item->setText(1, dynamic_cast<ScenarioParticipantType*>(scenarioObject)->Name());
     }
-    //else if (dynamic_cast<ScenarioGravityModel*>(scenarioObject))
-    //{
-    //    item->setText(1, dynamic_cast<ScenarioGravityModel*>(scenarioObject)->modelName());
-    //}
 
     changeLabels(item, scenarioObject);
 
@@ -443,8 +445,7 @@ QStringList ScenarioTree::mimeTypes() const
     QStringList types;
     types << ScenarioElementBox::PARTICIPANT_MIME_TYPE
             << ScenarioElementBox::MISSION_ARC_MIME_TYPE
-            << ScenarioElementBox::PAYLOAD_MIME_TYPE //Line added by Ricardo Noriega to create a new MIME TYPE. Comm, optical, xray and radar shall be payloads of this type.
-            << ScenarioElementBox::MANEUVER_MIME_TYPE;
+            << ScenarioElementBox::PAYLOAD_MIME_TYPE;
     return types;
 }
 
@@ -519,14 +520,15 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
         trajectory = ScenarioLoiteringType::create(element);
     else if (elementName == "tns:Lagrangian")
         trajectory = ScenarioLagrangianType::create(element);
-    else if (elementName == "tns:Rendezvous")
-        trajectory = ScenarioRendezvousType::create(element);
     else if (elementName == "tns:FlyBy")
         trajectory = ScenarioFlyByType::create(element);
     else if (elementName == "tns:LoiteringTLE")
         trajectory = ScenarioLoiteringTLEType::create(element);
     else if (elementName == "tns:EntryArc")
         trajectory = ScenarioEntryArcType::create(element);
+
+    if (elementName == "tns:DeltaV")
+        trajectory = ScenarioDeltaVType::create(element);  // Guillermo says: creating the maneuver as a trajectory arc
 
     if (participant)
     {
@@ -595,7 +597,6 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
             return false;
         }
     }
-
     // Report drag and drop not handled (because item was unrecognized or dragged to the
     // wrong place in the tree view.)
     return false;
@@ -753,6 +754,24 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             {
                 editDialog.saveValues(loiteringTLE);
                 // TODO Change the name of the participant using the TLE line 0
+                //updateTreeItems(editItem, scenarioObject);
+            }
+        }
+    }
+    else if (dynamic_cast<ScenarioDeltaVType*>(scenarioObject) != NULL)
+    {
+        ScenarioDeltaVType* deltaV = dynamic_cast<ScenarioDeltaVType*>(scenarioObject);
+        deltaVDialog editDialog(this);
+
+        if (!editDialog.loadValues(deltaV))
+        {
+            QMessageBox::information(this, tr("Bad delta V element"), tr("Error in delta V element"));
+        }
+        else
+        {
+            if (editDialog.exec() == QDialog::Accepted)
+            {
+                editDialog.saveValues(deltaV);
                 //updateTreeItems(editItem, scenarioObject);
             }
         }

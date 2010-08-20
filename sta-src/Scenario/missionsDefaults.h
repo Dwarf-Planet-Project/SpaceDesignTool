@@ -47,11 +47,14 @@ public:
      ScenarioOpticalPayloadType MissionsDefaults_GenericOpticalPayload();
      ScenarioRadarPayloadType MissionsDefaults_GenericRadarPayload();
 
-     // Generric loitering satellite
+     // Generic loitering satellite
      ScenarioLoiteringType MissionsDefaults_GENERIC();
 
-	 // Generric loitering satellite
+     // Generic loitering satellite
 	 ScenarioLoiteringTLEType MissionsDefaults_GENERIC_TLE();
+
+     // Generic deltaV maneuver
+     ScenarioDeltaVType MissionsDefaults_GENERIC_DELTAV();
 
 
     // Science

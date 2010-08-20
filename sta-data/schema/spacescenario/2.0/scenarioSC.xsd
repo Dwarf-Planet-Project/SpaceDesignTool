@@ -47,7 +47,6 @@
 
 
 	<!-- Payloads -->
-
 	<element name="TransmitterPayload" substitutionGroup="tns:AbstractPayload"
 		type="tns:TransmitterPayloadType"></element>
 
@@ -62,13 +61,10 @@
 
 
 	<!-- Trajectories -->
-
 	<element name="Loitering" substitutionGroup="tns:AbstractTrajectory"
 		type="tns:LoiteringType"></element>
 	<element name="Lagrangian" substitutionGroup="tns:AbstractTrajectory"
 		type="tns:LagrangianType"></element>
-	<element name="Rendezvous" substitutionGroup="tns:AbstractTrajectory"
-		type="tns:RendezvousType"></element>
 	<element name="FlyBy" substitutionGroup="tns:AbstractTrajectory"
 		type="tns:FlyByType"></element>
 	<element name="LoiteringTLE" substitutionGroup="tns:AbstractTrajectory"
@@ -91,33 +87,6 @@
 		</complexContent>
 	</complexType>
 
-	<complexType name="RendezvousType">
-		<complexContent>
-			<extension base="tns:AbstractTrajectoryType">
-				<sequence>
-					<element name="Environment" type="tns:EnvironmentType"></element>
-					<element name="Parameters">
-						<complexType>
-							<sequence>
-								<element ref="tns:TimeLine" />
-								<element ref="tns:InitialPosition" />
-							</sequence>
-						</complexType>
-					</element>
-					<element name="Target" type="string"></element>
-					<element name="ManoeuvrePlan">
-						<complexType>
-							<sequence>
-								<element ref="tns:AbstractManoeuvre" minOccurs="0"
-									maxOccurs="unbounded"></element>
-							</sequence>
-						</complexType>
-					</element>
-				</sequence>
-			</extension>
-		</complexContent>
-	</complexType>
-
 	<complexType name="LoiteringTLEType">
 		<complexContent>
 			<extension base="tns:AbstractTrajectoryType">
@@ -127,110 +96,6 @@
 					<element name="tleLine0" type="string"></element>
 					<element name="tleLine1" type="string"></element>
 					<element name="tleLine2" type="string"></element>
-				</sequence>
-			</extension>
-		</complexContent>
-	</complexType>
-
-	<element name="AbstractManoeuvre" abstract="true" type="tns:ManoeuvreType"></element>
-
-	<element name="FreeDrift" substitutionGroup="tns:AbstractManoeuvre"
-		type="tns:STA_MANOEUVRE_DURATION"></element>
-	<element name="StationKeeping" substitutionGroup="tns:AbstractManoeuvre"
-		type="tns:STA_MANOEUVRE_DURATION"></element>
-	<element name="DeltaV" substitutionGroup="tns:AbstractManoeuvre"
-		type="tns:STA_MANOEUVRE_DELTAV"></element>
-	<element name="HomannTransfer" substitutionGroup="tns:AbstractManoeuvre"
-		type="tns:STA_MANOEUVRE_R_POSITION"></element>
-	<element name="Imp2PointTransfer" substitutionGroup="tns:AbstractManoeuvre"
-		type="tns:STA_MANOEUVRE_V_R_DURATION"></element>
-	<element name="ImpHoppVbarRadial" substitutionGroup="tns:AbstractManoeuvre"
-		type="tns:STA_MANOEUVRE_V_POSITION"></element>
-	<element name="ImpHoppVbarTg" substitutionGroup="tns:AbstractManoeuvre"
-		type="tns:STA_MANOEUVRE_V_POSITION"></element>
-	<element name="ImpHoppNoVbar" substitutionGroup="tns:AbstractManoeuvre"
-		type="tns:STA_MANOEUVRE_V_POSITION"></element>
-	<element name="XThrustTransfer" substitutionGroup="tns:AbstractManoeuvre"
-		type="tns:STA_MANOEUVRE_R_POSITION"></element>
-	<element name="ForcedVbar" substitutionGroup="tns:AbstractManoeuvre"
-		type="tns:STA_MANOEUVRE_V_POSITION"></element>
-	<element name="ForcedRbar" substitutionGroup="tns:AbstractManoeuvre"
-		type="tns:STA_MANOEUVRE_R_POSITION"></element>
-	<element name="ContHoppVbar" substitutionGroup="tns:AbstractManoeuvre"
-		type="tns:STA_MANOEUVRE_V_POSITION"></element>
-
-	<complexType name="ManoeuvreType" abstract="true">
-		<attribute name="status" use="required">
-			<simpleType>
-				<restriction base="string">
-					<enumeration value="active"></enumeration>
-					<enumeration value="inactive"></enumeration>
-				</restriction>
-			</simpleType>
-		</attribute>
-	</complexType>
-
-	<complexType name="STA_MANOEUVRE_DURATION">
-		<complexContent>
-			<extension base="tns:ManoeuvreType">
-				<sequence>
-					<element name="Duration" type="double"></element>
-				</sequence>
-			</extension>
-		</complexContent>
-	</complexType>
-
-	<complexType name="STA_MANOEUVRE_DELTAV">
-		<complexContent>
-			<extension base="tns:ManoeuvreType">
-				<sequence>
-					<element name="DeltaVx" type="double"></element>
-					<element name="DeltaVy" type="double"></element>
-					<element name="DeltaVz" type="double"></element>
-					<element name="Duration" type="double"></element>
-				</sequence>
-			</extension>
-		</complexContent>
-	</complexType>
-
-	<complexType name="STA_MANOEUVRE_V_POSITION">
-		<complexContent>
-			<extension base="tns:ManoeuvreType">
-				<sequence>
-					<element name="DisplacementVbar" type="double"></element>
-				</sequence>
-			</extension>
-		</complexContent>
-	</complexType>
-
-	<complexType name="STA_MANOEUVRE_R_POSITION">
-		<complexContent>
-			<extension base="tns:ManoeuvreType">
-				<sequence>
-					<element name="DisplacementRbar" type="double"></element>
-				</sequence>
-			</extension>
-		</complexContent>
-	</complexType>
-
-	<complexType name="STA_MANOEUVRE_V_R_POSITION">
-		<complexContent>
-			<extension base="tns:ManoeuvreType">
-				<sequence>
-					<element name="DisplacementVbar" type="double"></element>
-					<element name="DisplacementRbar" type="double"></element>
-				</sequence>
-			</extension>
-		</complexContent>
-	</complexType>
-
-	<complexType name="STA_MANOEUVRE_V_R_DURATION">
-		<complexContent>
-			<extension base="tns:ManoeuvreType">
-				<sequence>
-					<element name="DisplacementVbar" type="double"></element>
-					<element name="DisplacementRbar" type="double"></element>
-					<element name="Duration" type="double"></element>
 				</sequence>
 			</extension>
 		</complexContent>
@@ -252,6 +117,32 @@
 		</complexContent>
 	</complexType>
 
+
+
+	<!-- Maneuvers -->
+	<element name="DeltaV" substitutionGroup="tns:AbstractTrajectory"
+		type="tns:DeltaVType"></element>
+
+ 	<complexType name="DeltaVType">
+		<complexContent>
+			<extension base="tns:AbstractTrajectoryType">
+				<sequence>
+					<element ref="tns:ElementIdentifier"></element>
+					<element ref="tns:Environment"></element>
+					<element ref="tns:TimeLine"></element>
+					<element ref="tns:InitialPosition"></element>
+					<element ref="tns:InitialAttitude"></element>
+					<element name="DeltaVx" type="double"></element>
+					<element name="DeltaVy" type="double"></element>
+					<element name="DeltaVz" type="double"></element>
+					<element name="Magnitude" type="double"></element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+
+	<!-- System's engineering -->
 	<complexType name="SCSystemType">
 		<sequence>
 			<element name="SystemBudgets">

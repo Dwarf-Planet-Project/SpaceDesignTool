@@ -443,11 +443,19 @@ static QByteArray spaceVehicleWithTrajectoryFragment(const char* name, const cha
 }
 
 
+////////////////////////  Creating MANOEUVRES fragments /////////////////////////////////
+static QByteArray deltaVFragment(const char* name)
+{    
+    MissionsDefaults myMissionDefaults;
+    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
+
+    QDomDocument doc;
+    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+}
 
 
 
 ////////////////////////  Creating PAYLOADS fragments /////////////////////////////////
-
 // These lines added by Ricardo Noriega. Creates a Tx payload fragment representing a single payload and initialized the default values.
 static QByteArray transmitterPayloadFragment(const char* name)
 {
@@ -593,14 +601,6 @@ addESASatelliteItem(QTreeWidgetItem* parent, const char* name)
 ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
     QWidget(parent)
 {
-
-    /*
-    // Changing the standard font of this box
-    QFont font("Helvetica", 10);  //QFont font("Helvetica",10,QFont::Condensed);
-    setFont(font);
-    */
-
-
 #if 0
     setupUi(this);
 
@@ -733,6 +733,15 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
 		       radarPayloadFragment("Radar 1"));
 
 
+    /////////// Creating the widgets for the different manoeuvres
+
+    QTreeWidgetItem* deltaVItem      = new QTreeWidgetItem(maneuversItem);
+    deltaVItem->setText(0, tr("deltaV"));
+    deltaVItem->setIcon(0, QIcon(":/icons/engine.png"));
+    setDragAndDropInfo(deltaVItem,
+               MISSION_ARC_MIME_TYPE,
+               deltaVFragment("deltaV 1"));
+
 
     ///////////////////// Creating now the mission arcs: ascent, loitering, fly-by, re-entry, rendezvous
 
@@ -779,8 +788,6 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
     //setDragAndDropInfo(rendezvousItem,
     //                   MISSION_ARC_MIME_TYPE,
     //                   rendezvousFragment("Rendezvous 1"));
-
-
 
 
 #ifdef OLDSCENARIO

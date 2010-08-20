@@ -173,19 +173,10 @@ class ScenarioSCProgram;
 class ScenarioSCMission;
 class ScenarioTrajectoryPlan;
 class ScenarioLoiteringType;
-class ScenarioRendezvousType;
-class ScenarioParameters;
-class ScenarioManoeuvrePlan;
 class ScenarioLoiteringTLEType;
-class ScenarioManoeuvreType;
-class ScenarioSTA_MANOEUVRE_DURATION;
-class ScenarioSTA_MANOEUVRE_DELTAV;
-class ScenarioSTA_MANOEUVRE_V_POSITION;
-class ScenarioSTA_MANOEUVRE_R_POSITION;
-class ScenarioSTA_MANOEUVRE_V_R_POSITION;
-class ScenarioSTA_MANOEUVRE_V_R_DURATION;
 class ScenarioLagrangianType;
 class ScenarioFlyByType;
+class ScenarioDeltaVType;
 class ScenarioSCSystemType;
 class ScenarioSystemBudgets;
 class ScenarioMassOfSystem;
@@ -6576,94 +6567,6 @@ private:
 };
 
 
-// ScenarioRendezvousType
-class ScenarioRendezvousType : public ScenarioAbstractTrajectoryType
-{
-public:
-    ScenarioRendezvousType();
-    static ScenarioRendezvousType* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "RendezvousType"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioEnvironmentType> Environment() const
-    { return m_Environment; }
-    void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
-    { m_Environment = Environment; }
-    QSharedPointer<ScenarioParameters> Parameters() const
-    { return m_Parameters; }
-    void setParameters(QSharedPointer<ScenarioParameters> Parameters)
-    { m_Parameters = Parameters; }
-    QString Target() const
-    { return m_Target; }
-    void setTarget(QString Target)
-    { m_Target = Target; }
-    QSharedPointer<ScenarioManoeuvrePlan> ManoeuvrePlan() const
-    { return m_ManoeuvrePlan; }
-    void setManoeuvrePlan(QSharedPointer<ScenarioManoeuvrePlan> ManoeuvrePlan)
-    { m_ManoeuvrePlan = ManoeuvrePlan; }
-
-private:
-    QSharedPointer<ScenarioEnvironmentType> m_Environment;
-    QSharedPointer<ScenarioParameters> m_Parameters;
-    QString m_Target;
-    QSharedPointer<ScenarioManoeuvrePlan> m_ManoeuvrePlan;
-};
-
-
-// ScenarioParameters
-class ScenarioParameters : public ScenarioObject
-{
-public:
-    ScenarioParameters();
-    static ScenarioParameters* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "Parameters"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioTimeLine> TimeLine() const
-    { return m_TimeLine; }
-    void setTimeLine(QSharedPointer<ScenarioTimeLine> TimeLine)
-    { m_TimeLine = TimeLine; }
-    QSharedPointer<ScenarioInitialPositionType> InitialPosition() const
-    { return m_InitialPosition; }
-    void setInitialPosition(QSharedPointer<ScenarioInitialPositionType> InitialPosition)
-    { m_InitialPosition = InitialPosition; }
-
-private:
-    QSharedPointer<ScenarioTimeLine> m_TimeLine;
-    QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
-};
-
-
-// ScenarioManoeuvrePlan
-class ScenarioManoeuvrePlan : public ScenarioObject
-{
-public:
-    ScenarioManoeuvrePlan();
-    static ScenarioManoeuvrePlan* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "ManoeuvrePlan"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    const QList<QSharedPointer<ScenarioManoeuvreType> >& AbstractManoeuvre() const
-    { return m_AbstractManoeuvre; }
-    QList<QSharedPointer<ScenarioManoeuvreType> >& AbstractManoeuvre()
-    { return m_AbstractManoeuvre; }
-    void setAbstractManoeuvre(QList<QSharedPointer<ScenarioManoeuvreType> > AbstractManoeuvre)
-    { m_AbstractManoeuvre = AbstractManoeuvre; }
-
-private:
-    QList<QSharedPointer<ScenarioManoeuvreType> > m_AbstractManoeuvre;
-};
-
-
 // ScenarioLoiteringTLEType
 class ScenarioLoiteringTLEType : public ScenarioAbstractTrajectoryType
 {
@@ -6706,185 +6609,6 @@ private:
 };
 
 
-// ScenarioManoeuvreType
-class ScenarioManoeuvreType : public ScenarioObject
-{
-public:
-    ScenarioManoeuvreType();
-    static ScenarioManoeuvreType* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "ManoeuvreType"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-
-private:
-};
-
-
-// ScenarioSTA_MANOEUVRE_DURATION
-class ScenarioSTA_MANOEUVRE_DURATION : public ScenarioManoeuvreType
-{
-public:
-    ScenarioSTA_MANOEUVRE_DURATION();
-    static ScenarioSTA_MANOEUVRE_DURATION* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "STA_MANOEUVRE_DURATION"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    double Duration() const
-    { return m_Duration; }
-    void setDuration(double Duration)
-    { m_Duration = Duration; }
-
-private:
-    double m_Duration;
-};
-
-
-// ScenarioSTA_MANOEUVRE_DELTAV
-class ScenarioSTA_MANOEUVRE_DELTAV : public ScenarioManoeuvreType
-{
-public:
-    ScenarioSTA_MANOEUVRE_DELTAV();
-    static ScenarioSTA_MANOEUVRE_DELTAV* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "STA_MANOEUVRE_DELTAV"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    double DeltaVx() const
-    { return m_DeltaVx; }
-    void setDeltaVx(double DeltaVx)
-    { m_DeltaVx = DeltaVx; }
-    double DeltaVy() const
-    { return m_DeltaVy; }
-    void setDeltaVy(double DeltaVy)
-    { m_DeltaVy = DeltaVy; }
-    double DeltaVz() const
-    { return m_DeltaVz; }
-    void setDeltaVz(double DeltaVz)
-    { m_DeltaVz = DeltaVz; }
-    double Duration() const
-    { return m_Duration; }
-    void setDuration(double Duration)
-    { m_Duration = Duration; }
-
-private:
-    double m_DeltaVx;
-    double m_DeltaVy;
-    double m_DeltaVz;
-    double m_Duration;
-};
-
-
-// ScenarioSTA_MANOEUVRE_V_POSITION
-class ScenarioSTA_MANOEUVRE_V_POSITION : public ScenarioManoeuvreType
-{
-public:
-    ScenarioSTA_MANOEUVRE_V_POSITION();
-    static ScenarioSTA_MANOEUVRE_V_POSITION* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "STA_MANOEUVRE_V_POSITION"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    double DisplacementVbar() const
-    { return m_DisplacementVbar; }
-    void setDisplacementVbar(double DisplacementVbar)
-    { m_DisplacementVbar = DisplacementVbar; }
-
-private:
-    double m_DisplacementVbar;
-};
-
-
-// ScenarioSTA_MANOEUVRE_R_POSITION
-class ScenarioSTA_MANOEUVRE_R_POSITION : public ScenarioManoeuvreType
-{
-public:
-    ScenarioSTA_MANOEUVRE_R_POSITION();
-    static ScenarioSTA_MANOEUVRE_R_POSITION* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "STA_MANOEUVRE_R_POSITION"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    double DisplacementRbar() const
-    { return m_DisplacementRbar; }
-    void setDisplacementRbar(double DisplacementRbar)
-    { m_DisplacementRbar = DisplacementRbar; }
-
-private:
-    double m_DisplacementRbar;
-};
-
-
-// ScenarioSTA_MANOEUVRE_V_R_POSITION
-class ScenarioSTA_MANOEUVRE_V_R_POSITION : public ScenarioManoeuvreType
-{
-public:
-    ScenarioSTA_MANOEUVRE_V_R_POSITION();
-    static ScenarioSTA_MANOEUVRE_V_R_POSITION* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "STA_MANOEUVRE_V_R_POSITION"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    double DisplacementVbar() const
-    { return m_DisplacementVbar; }
-    void setDisplacementVbar(double DisplacementVbar)
-    { m_DisplacementVbar = DisplacementVbar; }
-    double DisplacementRbar() const
-    { return m_DisplacementRbar; }
-    void setDisplacementRbar(double DisplacementRbar)
-    { m_DisplacementRbar = DisplacementRbar; }
-
-private:
-    double m_DisplacementVbar;
-    double m_DisplacementRbar;
-};
-
-
-// ScenarioSTA_MANOEUVRE_V_R_DURATION
-class ScenarioSTA_MANOEUVRE_V_R_DURATION : public ScenarioManoeuvreType
-{
-public:
-    ScenarioSTA_MANOEUVRE_V_R_DURATION();
-    static ScenarioSTA_MANOEUVRE_V_R_DURATION* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "STA_MANOEUVRE_V_R_DURATION"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    double DisplacementVbar() const
-    { return m_DisplacementVbar; }
-    void setDisplacementVbar(double DisplacementVbar)
-    { m_DisplacementVbar = DisplacementVbar; }
-    double DisplacementRbar() const
-    { return m_DisplacementRbar; }
-    void setDisplacementRbar(double DisplacementRbar)
-    { m_DisplacementRbar = DisplacementRbar; }
-    double Duration() const
-    { return m_Duration; }
-    void setDuration(double Duration)
-    { m_Duration = Duration; }
-
-private:
-    double m_DisplacementVbar;
-    double m_DisplacementRbar;
-    double m_Duration;
-};
-
-
 // ScenarioLagrangianType
 class ScenarioLagrangianType : public ScenarioAbstractTrajectoryType
 {
@@ -6916,6 +6640,68 @@ public:
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
 
 private:
+};
+
+
+// ScenarioDeltaVType
+class ScenarioDeltaVType : public ScenarioAbstractTrajectoryType
+{
+public:
+    ScenarioDeltaVType();
+    static ScenarioDeltaVType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "DeltaVType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
+    { return m_ElementIdentifier; }
+    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
+    { m_ElementIdentifier = ElementIdentifier; }
+    QSharedPointer<ScenarioEnvironmentType> Environment() const
+    { return m_Environment; }
+    void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
+    { m_Environment = Environment; }
+    QSharedPointer<ScenarioTimeLine> TimeLine() const
+    { return m_TimeLine; }
+    void setTimeLine(QSharedPointer<ScenarioTimeLine> TimeLine)
+    { m_TimeLine = TimeLine; }
+    QSharedPointer<ScenarioInitialPositionType> InitialPosition() const
+    { return m_InitialPosition; }
+    void setInitialPosition(QSharedPointer<ScenarioInitialPositionType> InitialPosition)
+    { m_InitialPosition = InitialPosition; }
+    QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude() const
+    { return m_InitialAttitude; }
+    void setInitialAttitude(QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude)
+    { m_InitialAttitude = InitialAttitude; }
+    double DeltaVx() const
+    { return m_DeltaVx; }
+    void setDeltaVx(double DeltaVx)
+    { m_DeltaVx = DeltaVx; }
+    double DeltaVy() const
+    { return m_DeltaVy; }
+    void setDeltaVy(double DeltaVy)
+    { m_DeltaVy = DeltaVy; }
+    double DeltaVz() const
+    { return m_DeltaVz; }
+    void setDeltaVz(double DeltaVz)
+    { m_DeltaVz = DeltaVz; }
+    double Magnitude() const
+    { return m_Magnitude; }
+    void setMagnitude(double Magnitude)
+    { m_Magnitude = Magnitude; }
+
+private:
+    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
+    QSharedPointer<ScenarioEnvironmentType> m_Environment;
+    QSharedPointer<ScenarioTimeLine> m_TimeLine;
+    QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
+    QSharedPointer<ScenarioInitialAttitudeType> m_InitialAttitude;
+    double m_DeltaVx;
+    double m_DeltaVy;
+    double m_DeltaVz;
+    double m_Magnitude;
 };
 
 
@@ -7924,11 +7710,7 @@ private:
 
 
 QDomElement CreatePayloadSetElement(ScenarioPayloadSet* e, QDomDocument& doc);
-QDomElement CreateForcedVbarElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc);
-QDomElement CreateFreeDriftElement(ScenarioSTA_MANOEUVRE_DURATION* e, QDomDocument& doc);
-QDomElement CreateXThrustTransferElement(ScenarioSTA_MANOEUVRE_R_POSITION* e, QDomDocument& doc);
 QDomElement CreatePointElement(ScenarioPoint* e, QDomDocument& doc);
-QDomElement CreateHomannTransferElement(ScenarioSTA_MANOEUVRE_R_POSITION* e, QDomDocument& doc);
 QDomElement CreateOptimizationElement(ScenarioOptimization* e, QDomDocument& doc);
 QDomElement CreateREVElement(ScenarioREV* e, QDomDocument& doc);
 QDomElement CreateLoiteringTLEElement(ScenarioLoiteringTLEType* e, QDomDocument& doc);
@@ -7941,9 +7723,7 @@ QDomElement CreateRadarElement(ScenarioRadarType* e, QDomDocument& doc);
 QDomElement CreateReceiverElement(ScenarioReceiver* e, QDomDocument& doc);
 QDomElement CreateSphericalCoordinatesElement(ScenarioSphericalCoordinatesType* e, QDomDocument& doc);
 QDomElement CreateTimeLineElement(ScenarioTimeLine* e, QDomDocument& doc);
-QDomElement CreateStationKeepingElement(ScenarioSTA_MANOEUVRE_DURATION* e, QDomDocument& doc);
 QDomElement CreateEntryArcElement(ScenarioEntryArcType* e, QDomDocument& doc);
-QDomElement CreateImp2PointTransferElement(ScenarioSTA_MANOEUVRE_V_R_DURATION* e, QDomDocument& doc);
 QDomElement CreateKeplerianElementsElement(ScenarioKeplerianElementsType* e, QDomDocument& doc);
 QDomElement CreatePropagationAttitudeElement(ScenarioPropagationAttitudeType* e, QDomDocument& doc);
 QDomElement CreateRadarPayloadElement(ScenarioRadarPayloadType* e, QDomDocument& doc);
@@ -7952,30 +7732,24 @@ QDomElement CreateTransmitterElement(ScenarioTransmitter* e, QDomDocument& doc);
 QDomElement CreateGroundPositionElement(ScenarioGroundPositionType* e, QDomDocument& doc);
 QDomElement CreateLVElement(ScenarioLV* e, QDomDocument& doc);
 QDomElement CreateInitialPositionElement(ScenarioInitialPositionType* e, QDomDocument& doc);
-QDomElement CreateContHoppVbarElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc);
 QDomElement CreateOutputFilesElement(ScenarioOutputFiles* e, QDomDocument& doc);
-QDomElement CreateForcedRbarElement(ScenarioSTA_MANOEUVRE_R_POSITION* e, QDomDocument& doc);
 QDomElement CreateEulerBIElement(ScenarioEulerBIType* e, QDomDocument& doc);
 QDomElement CreateState12DOFElement(ScenarioState12DOF* e, QDomDocument& doc);
 QDomElement CreateEulerBLVLHElement(ScenarioEulerBLVLHType* e, QDomDocument& doc);
 QDomElement CreateLaunchPadElement(ScenarioLaunchPad* e, QDomDocument& doc);
 QDomElement CreateGroundStationElement(ScenarioGroundStation* e, QDomDocument& doc);
-QDomElement CreateImpHoppVbarRadialElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc);
 QDomElement CreateSCMissionElement(ScenarioSCMission* e, QDomDocument& doc);
 QDomElement CreateqBIElement(ScenarioqBIType* e, QDomDocument& doc);
 QDomElement CreateEnvironmentElement(ScenarioEnvironmentType* e, QDomDocument& doc);
 QDomElement CreateStateVectorElement(ScenarioStateVectorType* e, QDomDocument& doc);
-QDomElement CreateDeltaVElement(ScenarioSTA_MANOEUVRE_DELTAV* e, QDomDocument& doc);
+QDomElement CreateDeltaVElement(ScenarioDeltaVType* e, QDomDocument& doc);
 QDomElement CreateSpaceScenarioElement(SpaceScenario* e, QDomDocument& doc);
 QDomElement CreateqBLVLHElement(ScenarioqBLVLHType* e, QDomDocument& doc);
-QDomElement CreateRendezvousElement(ScenarioRendezvousType* e, QDomDocument& doc);
 QDomElement CreatePropagationPositionElement(ScenarioPropagationPositionType* e, QDomDocument& doc);
 QDomElement CreateSCElement(ScenarioSC* e, QDomDocument& doc);
 QDomElement CreateSCProgramElement(ScenarioSCProgram* e, QDomDocument& doc);
 QDomElement CreateFlyByElement(ScenarioFlyByType* e, QDomDocument& doc);
-QDomElement CreateImpHoppVbarTgElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc);
 QDomElement CreateLagrangianElement(ScenarioLagrangianType* e, QDomDocument& doc);
-QDomElement CreateImpHoppNoVbarElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc);
 QDomElement CreatePropagationElement(ScenarioPropagation* e, QDomDocument& doc);
 QDomElement CreateTelescopeElement(ScenarioTelescopeType* e, QDomDocument& doc);
 

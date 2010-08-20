@@ -7230,12 +7230,12 @@ bool ScenarioREVTrajectoryPlanType::load(const QDomElement& e, QDomElement* next
             v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioLoiteringType::create(*next));
         else if (next->tagName() == "tns:Lagrangian")
             v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioLagrangianType::create(*next));
-        else if (next->tagName() == "tns:Rendezvous")
-            v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioRendezvousType::create(*next));
         else if (next->tagName() == "tns:FlyBy")
             v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioFlyByType::create(*next));
         else if (next->tagName() == "tns:LoiteringTLE")
             v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioLoiteringTLEType::create(*next));
+        else if (next->tagName() == "tns:DeltaV")
+            v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioDeltaVType::create(*next));
         if (v.isNull()) break; else {
             m_AbstractTrajectory << v;
             *next = next->nextSiblingElement();
@@ -7256,12 +7256,12 @@ QDomElement ScenarioREVTrajectoryPlanType::toDomElement(QDomDocument& doc, const
             tagName = "Loitering";
         else if (dynamic_cast<ScenarioLagrangianType*>(p.data()))
             tagName = "Lagrangian";
-        else if (dynamic_cast<ScenarioRendezvousType*>(p.data()))
-            tagName = "Rendezvous";
         else if (dynamic_cast<ScenarioFlyByType*>(p.data()))
             tagName = "FlyBy";
         else if (dynamic_cast<ScenarioLoiteringTLEType*>(p.data()))
             tagName = "LoiteringTLE";
+        else if (dynamic_cast<ScenarioDeltaVType*>(p.data()))
+            tagName = "DeltaV";
         QDomElement child = p->toDomElement(doc, tagName);
         e.appendChild(child);
     }
@@ -10318,12 +10318,12 @@ bool ScenarioTrajectoryPlan::load(const QDomElement& e, QDomElement* next)
             v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioLoiteringType::create(*next));
         else if (next->tagName() == "tns:Lagrangian")
             v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioLagrangianType::create(*next));
-        else if (next->tagName() == "tns:Rendezvous")
-            v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioRendezvousType::create(*next));
         else if (next->tagName() == "tns:FlyBy")
             v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioFlyByType::create(*next));
         else if (next->tagName() == "tns:LoiteringTLE")
             v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioLoiteringTLEType::create(*next));
+        else if (next->tagName() == "tns:DeltaV")
+            v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioDeltaVType::create(*next));
         if (v.isNull()) break; else {
             m_AbstractTrajectory << v;
             *next = next->nextSiblingElement();
@@ -10344,12 +10344,12 @@ QDomElement ScenarioTrajectoryPlan::toDomElement(QDomDocument& doc, const QStrin
             tagName = "Loitering";
         else if (dynamic_cast<ScenarioLagrangianType*>(p.data()))
             tagName = "Lagrangian";
-        else if (dynamic_cast<ScenarioRendezvousType*>(p.data()))
-            tagName = "Rendezvous";
         else if (dynamic_cast<ScenarioFlyByType*>(p.data()))
             tagName = "FlyBy";
         else if (dynamic_cast<ScenarioLoiteringTLEType*>(p.data()))
             tagName = "LoiteringTLE";
+        else if (dynamic_cast<ScenarioDeltaVType*>(p.data()))
+            tagName = "DeltaV";
         QDomElement child = p->toDomElement(doc, tagName);
         e.appendChild(child);
     }
@@ -10481,241 +10481,6 @@ QList<QSharedPointer<ScenarioObject> >ScenarioLoiteringType::children() const
 
 
 
-// ScenarioRendezvousType
-ScenarioRendezvousType::ScenarioRendezvousType()
-{
-    m_Environment = QSharedPointer<ScenarioEnvironmentType>(new ScenarioEnvironmentType());
-    m_Parameters = QSharedPointer<ScenarioParameters>(new ScenarioParameters());
-    m_ManoeuvrePlan = QSharedPointer<ScenarioManoeuvrePlan>(new ScenarioManoeuvrePlan());
-}
-
-ScenarioRendezvousType* ScenarioRendezvousType::create(const QDomElement& e)
-{
-    ScenarioRendezvousType* v;
-    {
-        v = new ScenarioRendezvousType;
-        QDomElement nextElement = e.firstChildElement();
-        v->load(e, &nextElement);
-        return v;
-    }
-    return NULL;
-}
-
-bool ScenarioRendezvousType::load(const QDomElement& e, QDomElement* next)
-{
-    ScenarioAbstractTrajectoryType::load(e, next);
-    if (next->tagName() == "tns:Environment")
-        m_Environment = QSharedPointer<ScenarioEnvironmentType>(ScenarioEnvironmentType::create(*next));
-    *next = next->nextSiblingElement();
-    if (next->tagName() == "tns:Parameters")
-        m_Parameters = QSharedPointer<ScenarioParameters>(ScenarioParameters::create(*next));
-    *next = next->nextSiblingElement();
-        m_Target = (next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-    if (next->tagName() == "tns:ManoeuvrePlan")
-        m_ManoeuvrePlan = QSharedPointer<ScenarioManoeuvrePlan>(ScenarioManoeuvrePlan::create(*next));
-    *next = next->nextSiblingElement();
-    return true;
-}
-
-QDomElement ScenarioRendezvousType::toDomElement(QDomDocument& doc, const QString& elementName) const
-{
-    QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc, elementName);
-    if (!m_Environment.isNull())
-    {
-        QString tagName = "Environment";
-        QDomElement child = m_Environment->toDomElement(doc, tagName);
-        e.appendChild(child);
-    }
-    if (!m_Parameters.isNull())
-    {
-        QString tagName = "Parameters";
-        QDomElement child = m_Parameters->toDomElement(doc, tagName);
-        e.appendChild(child);
-    }
-    e.appendChild(createSimpleElement(doc, "tns:Target", m_Target));
-    if (!m_ManoeuvrePlan.isNull())
-    {
-        QString tagName = "ManoeuvrePlan";
-        QDomElement child = m_ManoeuvrePlan->toDomElement(doc, tagName);
-        e.appendChild(child);
-    }
-    return e;
-}
-
-QList<QSharedPointer<ScenarioObject> >ScenarioRendezvousType::children() const
-{
-    QList<QSharedPointer<ScenarioObject> > children;
-    if (!m_Environment.isNull()) children << m_Environment;
-    if (!m_Parameters.isNull()) children << m_Parameters;
-    if (!m_ManoeuvrePlan.isNull()) children << m_ManoeuvrePlan;
-    return children;
-}
-
-
-
-
-// ScenarioParameters
-ScenarioParameters::ScenarioParameters()
-{
-    m_TimeLine = QSharedPointer<ScenarioTimeLine>(new ScenarioTimeLine());
-    m_InitialPosition = QSharedPointer<ScenarioInitialPositionType>(new ScenarioInitialPositionType());
-}
-
-ScenarioParameters* ScenarioParameters::create(const QDomElement& e)
-{
-    ScenarioParameters* v;
-    {
-        v = new ScenarioParameters;
-        QDomElement nextElement = e.firstChildElement();
-        v->load(e, &nextElement);
-        return v;
-    }
-    return NULL;
-}
-
-bool ScenarioParameters::load(const QDomElement& e, QDomElement* next)
-{
-    ScenarioObject::load(e, next);
-    if (next->tagName() == "tns:TimeLine")
-        m_TimeLine = QSharedPointer<ScenarioTimeLine>(ScenarioTimeLine::create(*next));
-    *next = next->nextSiblingElement();
-    if (next->tagName() == "tns:InitialPosition")
-        m_InitialPosition = QSharedPointer<ScenarioInitialPositionType>(ScenarioInitialPositionType::create(*next));
-    *next = next->nextSiblingElement();
-    return true;
-}
-
-QDomElement ScenarioParameters::toDomElement(QDomDocument& doc, const QString& elementName) const
-{
-    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
-    if (!m_TimeLine.isNull())
-    {
-        QString tagName = "TimeLine";
-        QDomElement child = m_TimeLine->toDomElement(doc, tagName);
-        e.appendChild(child);
-    }
-    if (!m_InitialPosition.isNull())
-    {
-        QString tagName = "InitialPosition";
-        QDomElement child = m_InitialPosition->toDomElement(doc, tagName);
-        e.appendChild(child);
-    }
-    return e;
-}
-
-QList<QSharedPointer<ScenarioObject> >ScenarioParameters::children() const
-{
-    QList<QSharedPointer<ScenarioObject> > children;
-    if (!m_TimeLine.isNull()) children << m_TimeLine;
-    if (!m_InitialPosition.isNull()) children << m_InitialPosition;
-    return children;
-}
-
-
-
-
-// ScenarioManoeuvrePlan
-ScenarioManoeuvrePlan::ScenarioManoeuvrePlan()
-{
-}
-
-ScenarioManoeuvrePlan* ScenarioManoeuvrePlan::create(const QDomElement& e)
-{
-    ScenarioManoeuvrePlan* v;
-    {
-        v = new ScenarioManoeuvrePlan;
-        QDomElement nextElement = e.firstChildElement();
-        v->load(e, &nextElement);
-        return v;
-    }
-    return NULL;
-}
-
-bool ScenarioManoeuvrePlan::load(const QDomElement& e, QDomElement* next)
-{
-    ScenarioObject::load(e, next);
-    for (;;)
-    {
-        QSharedPointer<ScenarioManoeuvreType> v;
-        if (next->tagName() == "tns:FreeDrift")
-            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_DURATION::create(*next));
-        else if (next->tagName() == "tns:StationKeeping")
-            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_DURATION::create(*next));
-        else if (next->tagName() == "tns:DeltaV")
-            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_DELTAV::create(*next));
-        else if (next->tagName() == "tns:HomannTransfer")
-            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_R_POSITION::create(*next));
-        else if (next->tagName() == "tns:Imp2PointTransfer")
-            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_V_R_DURATION::create(*next));
-        else if (next->tagName() == "tns:ImpHoppVbarRadial")
-            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_V_POSITION::create(*next));
-        else if (next->tagName() == "tns:ImpHoppVbarTg")
-            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_V_POSITION::create(*next));
-        else if (next->tagName() == "tns:ImpHoppNoVbar")
-            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_V_POSITION::create(*next));
-        else if (next->tagName() == "tns:XThrustTransfer")
-            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_R_POSITION::create(*next));
-        else if (next->tagName() == "tns:ForcedVbar")
-            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_V_POSITION::create(*next));
-        else if (next->tagName() == "tns:ForcedRbar")
-            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_R_POSITION::create(*next));
-        else if (next->tagName() == "tns:ContHoppVbar")
-            v = QSharedPointer<ScenarioManoeuvreType>((ScenarioManoeuvreType*)ScenarioSTA_MANOEUVRE_V_POSITION::create(*next));
-        if (v.isNull()) break; else {
-            m_AbstractManoeuvre << v;
-            *next = next->nextSiblingElement();
-        }
-    }
-    return true;
-}
-
-QDomElement ScenarioManoeuvrePlan::toDomElement(QDomDocument& doc, const QString& elementName) const
-{
-    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
-    foreach (QSharedPointer<ScenarioManoeuvreType> p, m_AbstractManoeuvre)
-    {
-        QString tagName = "AbstractManoeuvre";
-        if (dynamic_cast<ScenarioSTA_MANOEUVRE_DURATION*>(p.data()))
-            tagName = "FreeDrift";
-        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_DURATION*>(p.data()))
-            tagName = "StationKeeping";
-        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_DELTAV*>(p.data()))
-            tagName = "DeltaV";
-        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_R_POSITION*>(p.data()))
-            tagName = "HomannTransfer";
-        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_V_R_DURATION*>(p.data()))
-            tagName = "Imp2PointTransfer";
-        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_V_POSITION*>(p.data()))
-            tagName = "ImpHoppVbarRadial";
-        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_V_POSITION*>(p.data()))
-            tagName = "ImpHoppVbarTg";
-        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_V_POSITION*>(p.data()))
-            tagName = "ImpHoppNoVbar";
-        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_R_POSITION*>(p.data()))
-            tagName = "XThrustTransfer";
-        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_V_POSITION*>(p.data()))
-            tagName = "ForcedVbar";
-        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_R_POSITION*>(p.data()))
-            tagName = "ForcedRbar";
-        else if (dynamic_cast<ScenarioSTA_MANOEUVRE_V_POSITION*>(p.data()))
-            tagName = "ContHoppVbar";
-        QDomElement child = p->toDomElement(doc, tagName);
-        e.appendChild(child);
-    }
-    return e;
-}
-
-QList<QSharedPointer<ScenarioObject> >ScenarioManoeuvrePlan::children() const
-{
-    QList<QSharedPointer<ScenarioObject> > children;
-    foreach (QSharedPointer<ScenarioObject> child, m_AbstractManoeuvre) { children << child; }
-    return children;
-}
-
-
-
-
 // ScenarioLoiteringTLEType
 ScenarioLoiteringTLEType::ScenarioLoiteringTLEType()
 {
@@ -10779,320 +10544,6 @@ QList<QSharedPointer<ScenarioObject> >ScenarioLoiteringTLEType::children() const
     QList<QSharedPointer<ScenarioObject> > children;
     if (!m_ElementIdentifier.isNull()) children << m_ElementIdentifier;
     if (!m_TimeLine.isNull()) children << m_TimeLine;
-    return children;
-}
-
-
-
-
-// ScenarioManoeuvreType
-ScenarioManoeuvreType::ScenarioManoeuvreType()
-{
-}
-
-ScenarioManoeuvreType* ScenarioManoeuvreType::create(const QDomElement& e)
-{
-    ScenarioManoeuvreType* v;
-    {
-        v = new ScenarioManoeuvreType;
-        QDomElement nextElement = e.firstChildElement();
-        v->load(e, &nextElement);
-        return v;
-    }
-    return NULL;
-}
-
-bool ScenarioManoeuvreType::load(const QDomElement& e, QDomElement* next)
-{
-    ScenarioObject::load(e, next);
-    return true;
-}
-
-QDomElement ScenarioManoeuvreType::toDomElement(QDomDocument& doc, const QString& elementName) const
-{
-    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
-    return e;
-}
-
-QList<QSharedPointer<ScenarioObject> >ScenarioManoeuvreType::children() const
-{
-    QList<QSharedPointer<ScenarioObject> > children;
-    return children;
-}
-
-
-
-
-// ScenarioSTA_MANOEUVRE_DURATION
-ScenarioSTA_MANOEUVRE_DURATION::ScenarioSTA_MANOEUVRE_DURATION() :
-    m_Duration(0.0)
-{
-}
-
-ScenarioSTA_MANOEUVRE_DURATION* ScenarioSTA_MANOEUVRE_DURATION::create(const QDomElement& e)
-{
-    ScenarioSTA_MANOEUVRE_DURATION* v;
-    {
-        v = new ScenarioSTA_MANOEUVRE_DURATION;
-        QDomElement nextElement = e.firstChildElement();
-        v->load(e, &nextElement);
-        return v;
-    }
-    return NULL;
-}
-
-bool ScenarioSTA_MANOEUVRE_DURATION::load(const QDomElement& e, QDomElement* next)
-{
-    ScenarioManoeuvreType::load(e, next);
-        m_Duration = parseDouble(next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-    return true;
-}
-
-QDomElement ScenarioSTA_MANOEUVRE_DURATION::toDomElement(QDomDocument& doc, const QString& elementName) const
-{
-    QDomElement e = ScenarioManoeuvreType::toDomElement(doc, elementName);
-    e.appendChild(createSimpleElement(doc, "tns:Duration", m_Duration));
-    return e;
-}
-
-QList<QSharedPointer<ScenarioObject> >ScenarioSTA_MANOEUVRE_DURATION::children() const
-{
-    QList<QSharedPointer<ScenarioObject> > children;
-    return children;
-}
-
-
-
-
-// ScenarioSTA_MANOEUVRE_DELTAV
-ScenarioSTA_MANOEUVRE_DELTAV::ScenarioSTA_MANOEUVRE_DELTAV() :
-    m_DeltaVx(0.0),
-    m_DeltaVy(0.0),
-    m_DeltaVz(0.0),
-    m_Duration(0.0)
-{
-}
-
-ScenarioSTA_MANOEUVRE_DELTAV* ScenarioSTA_MANOEUVRE_DELTAV::create(const QDomElement& e)
-{
-    ScenarioSTA_MANOEUVRE_DELTAV* v;
-    {
-        v = new ScenarioSTA_MANOEUVRE_DELTAV;
-        QDomElement nextElement = e.firstChildElement();
-        v->load(e, &nextElement);
-        return v;
-    }
-    return NULL;
-}
-
-bool ScenarioSTA_MANOEUVRE_DELTAV::load(const QDomElement& e, QDomElement* next)
-{
-    ScenarioManoeuvreType::load(e, next);
-        m_DeltaVx = parseDouble(next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-        m_DeltaVy = parseDouble(next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-        m_DeltaVz = parseDouble(next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-        m_Duration = parseDouble(next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-    return true;
-}
-
-QDomElement ScenarioSTA_MANOEUVRE_DELTAV::toDomElement(QDomDocument& doc, const QString& elementName) const
-{
-    QDomElement e = ScenarioManoeuvreType::toDomElement(doc, elementName);
-    e.appendChild(createSimpleElement(doc, "tns:DeltaVx", m_DeltaVx));
-    e.appendChild(createSimpleElement(doc, "tns:DeltaVy", m_DeltaVy));
-    e.appendChild(createSimpleElement(doc, "tns:DeltaVz", m_DeltaVz));
-    e.appendChild(createSimpleElement(doc, "tns:Duration", m_Duration));
-    return e;
-}
-
-QList<QSharedPointer<ScenarioObject> >ScenarioSTA_MANOEUVRE_DELTAV::children() const
-{
-    QList<QSharedPointer<ScenarioObject> > children;
-    return children;
-}
-
-
-
-
-// ScenarioSTA_MANOEUVRE_V_POSITION
-ScenarioSTA_MANOEUVRE_V_POSITION::ScenarioSTA_MANOEUVRE_V_POSITION() :
-    m_DisplacementVbar(0.0)
-{
-}
-
-ScenarioSTA_MANOEUVRE_V_POSITION* ScenarioSTA_MANOEUVRE_V_POSITION::create(const QDomElement& e)
-{
-    ScenarioSTA_MANOEUVRE_V_POSITION* v;
-    {
-        v = new ScenarioSTA_MANOEUVRE_V_POSITION;
-        QDomElement nextElement = e.firstChildElement();
-        v->load(e, &nextElement);
-        return v;
-    }
-    return NULL;
-}
-
-bool ScenarioSTA_MANOEUVRE_V_POSITION::load(const QDomElement& e, QDomElement* next)
-{
-    ScenarioManoeuvreType::load(e, next);
-        m_DisplacementVbar = parseDouble(next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-    return true;
-}
-
-QDomElement ScenarioSTA_MANOEUVRE_V_POSITION::toDomElement(QDomDocument& doc, const QString& elementName) const
-{
-    QDomElement e = ScenarioManoeuvreType::toDomElement(doc, elementName);
-    e.appendChild(createSimpleElement(doc, "tns:DisplacementVbar", m_DisplacementVbar));
-    return e;
-}
-
-QList<QSharedPointer<ScenarioObject> >ScenarioSTA_MANOEUVRE_V_POSITION::children() const
-{
-    QList<QSharedPointer<ScenarioObject> > children;
-    return children;
-}
-
-
-
-
-// ScenarioSTA_MANOEUVRE_R_POSITION
-ScenarioSTA_MANOEUVRE_R_POSITION::ScenarioSTA_MANOEUVRE_R_POSITION() :
-    m_DisplacementRbar(0.0)
-{
-}
-
-ScenarioSTA_MANOEUVRE_R_POSITION* ScenarioSTA_MANOEUVRE_R_POSITION::create(const QDomElement& e)
-{
-    ScenarioSTA_MANOEUVRE_R_POSITION* v;
-    {
-        v = new ScenarioSTA_MANOEUVRE_R_POSITION;
-        QDomElement nextElement = e.firstChildElement();
-        v->load(e, &nextElement);
-        return v;
-    }
-    return NULL;
-}
-
-bool ScenarioSTA_MANOEUVRE_R_POSITION::load(const QDomElement& e, QDomElement* next)
-{
-    ScenarioManoeuvreType::load(e, next);
-        m_DisplacementRbar = parseDouble(next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-    return true;
-}
-
-QDomElement ScenarioSTA_MANOEUVRE_R_POSITION::toDomElement(QDomDocument& doc, const QString& elementName) const
-{
-    QDomElement e = ScenarioManoeuvreType::toDomElement(doc, elementName);
-    e.appendChild(createSimpleElement(doc, "tns:DisplacementRbar", m_DisplacementRbar));
-    return e;
-}
-
-QList<QSharedPointer<ScenarioObject> >ScenarioSTA_MANOEUVRE_R_POSITION::children() const
-{
-    QList<QSharedPointer<ScenarioObject> > children;
-    return children;
-}
-
-
-
-
-// ScenarioSTA_MANOEUVRE_V_R_POSITION
-ScenarioSTA_MANOEUVRE_V_R_POSITION::ScenarioSTA_MANOEUVRE_V_R_POSITION() :
-    m_DisplacementVbar(0.0),
-    m_DisplacementRbar(0.0)
-{
-}
-
-ScenarioSTA_MANOEUVRE_V_R_POSITION* ScenarioSTA_MANOEUVRE_V_R_POSITION::create(const QDomElement& e)
-{
-    ScenarioSTA_MANOEUVRE_V_R_POSITION* v;
-    {
-        v = new ScenarioSTA_MANOEUVRE_V_R_POSITION;
-        QDomElement nextElement = e.firstChildElement();
-        v->load(e, &nextElement);
-        return v;
-    }
-    return NULL;
-}
-
-bool ScenarioSTA_MANOEUVRE_V_R_POSITION::load(const QDomElement& e, QDomElement* next)
-{
-    ScenarioManoeuvreType::load(e, next);
-        m_DisplacementVbar = parseDouble(next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-        m_DisplacementRbar = parseDouble(next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-    return true;
-}
-
-QDomElement ScenarioSTA_MANOEUVRE_V_R_POSITION::toDomElement(QDomDocument& doc, const QString& elementName) const
-{
-    QDomElement e = ScenarioManoeuvreType::toDomElement(doc, elementName);
-    e.appendChild(createSimpleElement(doc, "tns:DisplacementVbar", m_DisplacementVbar));
-    e.appendChild(createSimpleElement(doc, "tns:DisplacementRbar", m_DisplacementRbar));
-    return e;
-}
-
-QList<QSharedPointer<ScenarioObject> >ScenarioSTA_MANOEUVRE_V_R_POSITION::children() const
-{
-    QList<QSharedPointer<ScenarioObject> > children;
-    return children;
-}
-
-
-
-
-// ScenarioSTA_MANOEUVRE_V_R_DURATION
-ScenarioSTA_MANOEUVRE_V_R_DURATION::ScenarioSTA_MANOEUVRE_V_R_DURATION() :
-    m_DisplacementVbar(0.0),
-    m_DisplacementRbar(0.0),
-    m_Duration(0.0)
-{
-}
-
-ScenarioSTA_MANOEUVRE_V_R_DURATION* ScenarioSTA_MANOEUVRE_V_R_DURATION::create(const QDomElement& e)
-{
-    ScenarioSTA_MANOEUVRE_V_R_DURATION* v;
-    {
-        v = new ScenarioSTA_MANOEUVRE_V_R_DURATION;
-        QDomElement nextElement = e.firstChildElement();
-        v->load(e, &nextElement);
-        return v;
-    }
-    return NULL;
-}
-
-bool ScenarioSTA_MANOEUVRE_V_R_DURATION::load(const QDomElement& e, QDomElement* next)
-{
-    ScenarioManoeuvreType::load(e, next);
-        m_DisplacementVbar = parseDouble(next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-        m_DisplacementRbar = parseDouble(next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-        m_Duration = parseDouble(next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-    return true;
-}
-
-QDomElement ScenarioSTA_MANOEUVRE_V_R_DURATION::toDomElement(QDomDocument& doc, const QString& elementName) const
-{
-    QDomElement e = ScenarioManoeuvreType::toDomElement(doc, elementName);
-    e.appendChild(createSimpleElement(doc, "tns:DisplacementVbar", m_DisplacementVbar));
-    e.appendChild(createSimpleElement(doc, "tns:DisplacementRbar", m_DisplacementRbar));
-    e.appendChild(createSimpleElement(doc, "tns:Duration", m_Duration));
-    return e;
-}
-
-QList<QSharedPointer<ScenarioObject> >ScenarioSTA_MANOEUVRE_V_R_DURATION::children() const
-{
-    QList<QSharedPointer<ScenarioObject> > children;
     return children;
 }
 
@@ -11169,6 +10620,115 @@ QDomElement ScenarioFlyByType::toDomElement(QDomDocument& doc, const QString& el
 QList<QSharedPointer<ScenarioObject> >ScenarioFlyByType::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
+// ScenarioDeltaVType
+ScenarioDeltaVType::ScenarioDeltaVType() :
+    m_DeltaVx(0.0),
+    m_DeltaVy(0.0),
+    m_DeltaVz(0.0),
+    m_Magnitude(0.0)
+{
+    m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(new ScenarioElementIdentifierType());
+    m_Environment = QSharedPointer<ScenarioEnvironmentType>(new ScenarioEnvironmentType());
+    m_TimeLine = QSharedPointer<ScenarioTimeLine>(new ScenarioTimeLine());
+    m_InitialPosition = QSharedPointer<ScenarioInitialPositionType>(new ScenarioInitialPositionType());
+    m_InitialAttitude = QSharedPointer<ScenarioInitialAttitudeType>(new ScenarioInitialAttitudeType());
+}
+
+ScenarioDeltaVType* ScenarioDeltaVType::create(const QDomElement& e)
+{
+    ScenarioDeltaVType* v;
+    {
+        v = new ScenarioDeltaVType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioDeltaVType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioAbstractTrajectoryType::load(e, next);
+    if (next->tagName() == "tns:ElementIdentifier")
+        m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(ScenarioElementIdentifierType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:Environment")
+        m_Environment = QSharedPointer<ScenarioEnvironmentType>(ScenarioEnvironmentType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:TimeLine")
+        m_TimeLine = QSharedPointer<ScenarioTimeLine>(ScenarioTimeLine::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:InitialPosition")
+        m_InitialPosition = QSharedPointer<ScenarioInitialPositionType>(ScenarioInitialPositionType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:InitialAttitude")
+        m_InitialAttitude = QSharedPointer<ScenarioInitialAttitudeType>(ScenarioInitialAttitudeType::create(*next));
+    *next = next->nextSiblingElement();
+        m_DeltaVx = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_DeltaVy = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_DeltaVz = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_Magnitude = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioDeltaVType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc, elementName);
+    if (!m_ElementIdentifier.isNull())
+    {
+        QString tagName = "ElementIdentifier";
+        QDomElement child = m_ElementIdentifier->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_Environment.isNull())
+    {
+        QString tagName = "Environment";
+        QDomElement child = m_Environment->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_TimeLine.isNull())
+    {
+        QString tagName = "TimeLine";
+        QDomElement child = m_TimeLine->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_InitialPosition.isNull())
+    {
+        QString tagName = "InitialPosition";
+        QDomElement child = m_InitialPosition->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_InitialAttitude.isNull())
+    {
+        QString tagName = "InitialAttitude";
+        QDomElement child = m_InitialAttitude->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    e.appendChild(createSimpleElement(doc, "tns:DeltaVx", m_DeltaVx));
+    e.appendChild(createSimpleElement(doc, "tns:DeltaVy", m_DeltaVy));
+    e.appendChild(createSimpleElement(doc, "tns:DeltaVz", m_DeltaVz));
+    e.appendChild(createSimpleElement(doc, "tns:Magnitude", m_Magnitude));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioDeltaVType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_ElementIdentifier.isNull()) children << m_ElementIdentifier;
+    if (!m_Environment.isNull()) children << m_Environment;
+    if (!m_TimeLine.isNull()) children << m_TimeLine;
+    if (!m_InitialPosition.isNull()) children << m_InitialPosition;
+    if (!m_InitialAttitude.isNull()) children << m_InitialAttitude;
     return children;
 }
 
@@ -13013,29 +12573,9 @@ QDomElement CreatePayloadSetElement(ScenarioPayloadSet* e, QDomDocument& doc)
     return e->toDomElement(doc, "PayloadSet");
 }
 
-QDomElement CreateForcedVbarElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc)
-{
-    return e->toDomElement(doc, "ForcedVbar");
-}
-
-QDomElement CreateFreeDriftElement(ScenarioSTA_MANOEUVRE_DURATION* e, QDomDocument& doc)
-{
-    return e->toDomElement(doc, "FreeDrift");
-}
-
-QDomElement CreateXThrustTransferElement(ScenarioSTA_MANOEUVRE_R_POSITION* e, QDomDocument& doc)
-{
-    return e->toDomElement(doc, "XThrustTransfer");
-}
-
 QDomElement CreatePointElement(ScenarioPoint* e, QDomDocument& doc)
 {
     return e->toDomElement(doc, "Point");
-}
-
-QDomElement CreateHomannTransferElement(ScenarioSTA_MANOEUVRE_R_POSITION* e, QDomDocument& doc)
-{
-    return e->toDomElement(doc, "HomannTransfer");
 }
 
 QDomElement CreateOptimizationElement(ScenarioOptimization* e, QDomDocument& doc)
@@ -13098,19 +12638,9 @@ QDomElement CreateTimeLineElement(ScenarioTimeLine* e, QDomDocument& doc)
     return e->toDomElement(doc, "TimeLine");
 }
 
-QDomElement CreateStationKeepingElement(ScenarioSTA_MANOEUVRE_DURATION* e, QDomDocument& doc)
-{
-    return e->toDomElement(doc, "StationKeeping");
-}
-
 QDomElement CreateEntryArcElement(ScenarioEntryArcType* e, QDomDocument& doc)
 {
     return e->toDomElement(doc, "EntryArc");
-}
-
-QDomElement CreateImp2PointTransferElement(ScenarioSTA_MANOEUVRE_V_R_DURATION* e, QDomDocument& doc)
-{
-    return e->toDomElement(doc, "Imp2PointTransfer");
 }
 
 QDomElement CreateKeplerianElementsElement(ScenarioKeplerianElementsType* e, QDomDocument& doc)
@@ -13153,19 +12683,9 @@ QDomElement CreateInitialPositionElement(ScenarioInitialPositionType* e, QDomDoc
     return e->toDomElement(doc, "InitialPosition");
 }
 
-QDomElement CreateContHoppVbarElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc)
-{
-    return e->toDomElement(doc, "ContHoppVbar");
-}
-
 QDomElement CreateOutputFilesElement(ScenarioOutputFiles* e, QDomDocument& doc)
 {
     return e->toDomElement(doc, "OutputFiles");
-}
-
-QDomElement CreateForcedRbarElement(ScenarioSTA_MANOEUVRE_R_POSITION* e, QDomDocument& doc)
-{
-    return e->toDomElement(doc, "ForcedRbar");
 }
 
 QDomElement CreateEulerBIElement(ScenarioEulerBIType* e, QDomDocument& doc)
@@ -13193,11 +12713,6 @@ QDomElement CreateGroundStationElement(ScenarioGroundStation* e, QDomDocument& d
     return e->toDomElement(doc, "GroundStation");
 }
 
-QDomElement CreateImpHoppVbarRadialElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc)
-{
-    return e->toDomElement(doc, "ImpHoppVbarRadial");
-}
-
 QDomElement CreateSCMissionElement(ScenarioSCMission* e, QDomDocument& doc)
 {
     return e->toDomElement(doc, "SCMission");
@@ -13218,7 +12733,7 @@ QDomElement CreateStateVectorElement(ScenarioStateVectorType* e, QDomDocument& d
     return e->toDomElement(doc, "StateVector");
 }
 
-QDomElement CreateDeltaVElement(ScenarioSTA_MANOEUVRE_DELTAV* e, QDomDocument& doc)
+QDomElement CreateDeltaVElement(ScenarioDeltaVType* e, QDomDocument& doc)
 {
     return e->toDomElement(doc, "DeltaV");
 }
@@ -13231,11 +12746,6 @@ QDomElement CreateSpaceScenarioElement(SpaceScenario* e, QDomDocument& doc)
 QDomElement CreateqBLVLHElement(ScenarioqBLVLHType* e, QDomDocument& doc)
 {
     return e->toDomElement(doc, "qBLVLH");
-}
-
-QDomElement CreateRendezvousElement(ScenarioRendezvousType* e, QDomDocument& doc)
-{
-    return e->toDomElement(doc, "Rendezvous");
 }
 
 QDomElement CreatePropagationPositionElement(ScenarioPropagationPositionType* e, QDomDocument& doc)
@@ -13258,19 +12768,9 @@ QDomElement CreateFlyByElement(ScenarioFlyByType* e, QDomDocument& doc)
     return e->toDomElement(doc, "FlyBy");
 }
 
-QDomElement CreateImpHoppVbarTgElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc)
-{
-    return e->toDomElement(doc, "ImpHoppVbarTg");
-}
-
 QDomElement CreateLagrangianElement(ScenarioLagrangianType* e, QDomDocument& doc)
 {
     return e->toDomElement(doc, "Lagrangian");
-}
-
-QDomElement CreateImpHoppNoVbarElement(ScenarioSTA_MANOEUVRE_V_POSITION* e, QDomDocument& doc)
-{
-    return e->toDomElement(doc, "ImpHoppNoVbar");
 }
 
 QDomElement CreatePropagationElement(ScenarioPropagation* e, QDomDocument& doc)

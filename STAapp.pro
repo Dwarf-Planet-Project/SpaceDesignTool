@@ -435,6 +435,11 @@ HELPBROWSER_SOURCES = sta-src/Help/HelpBrowser.cpp
 HELPBROWSER_HEADERS = sta-src/Help/HelpBrowser.h
 HELPBROWSER_FORMS = 
 
+# ############# Maneuvers module ##############
+MANEUVERS_SOURCES = sta-src/Maneuvers/deltaVDialog.cpp
+MANEUVERS_HEADERS = sta-src/Maneuvers/deltaVDialog.h
+MANEUVERS_FORMS = sta-src/Maneuvers/deltaVDialog.ui
+
 
 # ########### GL extension wrangler ################
 GLEW_SOURCES = thirdparty/glew/src/glew.c
@@ -538,7 +543,8 @@ SOURCES = $$MAIN_SOURCES \
     $$PAYLOAD_SOURCES \
     $$ANALYSIS_SOURCES \
     $$COVERAGE_SOURCES \
-    $$CONSTELLATIONS_SOURCES
+    $$CONSTELLATIONS_SOURCES \
+    $$MANEUVERS_SOURCES
 HEADERS = $$MAIN_HEADERS \
     $$ASTROCORE_HEADERS \
     $$SEM_HEADERS \
@@ -560,7 +566,8 @@ HEADERS = $$MAIN_HEADERS \
     $$PAYLOAD_HEADERS \
     $$ANALYSIS_HEADERS \
     $$COVERAGE_HEADERS \
-    $$CONSTELLATIONS_HEADERS
+    $$CONSTELLATIONS_HEADERS \
+    $$MANEUVERS_HEADERS
 FORMS = $$MAIN_FORMS \
     $$ASTROCORE_FORMS \
     $$SEM_FORMS \
@@ -581,7 +588,8 @@ FORMS = $$MAIN_FORMS \
     $$PAYLOAD_FORMS \
     $$ANALYSIS_FORMS \
     $$COVERAGE_FORMS \
-    $$CONSTELLATIONS_FORMS
+    $$CONSTELLATIONS_FORMS \
+    $$MANEUVERS_FORMS
 RESOURCES = \
     iconary/sta-icons.qrc
 UI_HEADERS_DIR = sta-src/ui/include
