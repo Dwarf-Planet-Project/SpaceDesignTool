@@ -933,9 +933,9 @@ ThreeDView::createFrame(const MissionArc* arc)
 }
 
 
-static string TrajectoryVisualizerTag(const Entity* spaceObj)
+static string TrajectoryVisualizerTag(const Entity* spaceObj, unsigned int arcIndex)
 {
-    return string(QString("%1 trajectory").arg(qHash(spaceObj)).toUtf8().data());
+    return string(QString("%1 - %2 trajectory").arg(qHash(spaceObj)).arg(arcIndex).toUtf8().data());
 }
 
 
@@ -975,9 +975,9 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
 
     body->setGeometry(m_defaultSpacecraftMesh.ptr());
 
-    Spectrum spaceObjColor(spaceObj->trajectoryColor().redF(),
-                           spaceObj->trajectoryColor().greenF(),
-                           spaceObj->trajectoryColor().blueF());
+    Spectrum spaceObjColor(spaceObj->mission().front()->arcTrajectoryColor().redF(),
+                           spaceObj->mission().front()->arcTrajectoryColor().greenF(),
+                           spaceObj->mission().front()->arcTrajectoryColor().blueF());
 
     LabelGeometry* label = new LabelGeometry(spaceObj->name().toUtf8().data(), m_labelFont.ptr(), spaceObjColor, 7.0f);
     label->setIcon(m_spacecraftIcon.ptr());
@@ -986,17 +986,24 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
     visualizer->setDepthAdjustment(Visualizer::AdjustToFront);
     body->setVisualizer("label", visualizer);
 
-    // Add a trajectory visualizer for the first arc
-    vesta::Arc* firstArc = body->chronology()->firstArc();
-    TrajectoryGeometry* trajGeom = new TrajectoryGeometry();
-    trajGeom->setDisplayedPortion(TrajectoryGeometry::StartToCurrentTime);
-    trajGeom->setColor(spaceObjColor);
-    trajGeom->computeSamples(firstArc->trajectory(),
-                             body->chronology()->beginning(),
-                             body->chronology()->beginning() + firstArc->duration(), 1000);
-    Visualizer* trajVisualizer = new Visualizer(trajGeom);
-    trajVisualizer->setVisibility(m_satelliteTrajectoriesEnabled);
-    firstArc->center()->setVisualizer(TrajectoryVisualizerTag(body), trajVisualizer);
+    // Add a trajectory visualizer for each arc
+    double arcStartTime = body->chronology()->beginning();
+    for (unsigned int arcIndex = 0; arcIndex < body->chronology()->arcCount(); ++arcIndex)
+    {
+        vesta::Arc* arc = body->chronology()->arc(arcIndex);
+        MissionArc* missionArc = spaceObj->mission().at(arcIndex);
+        QColor arcColor = missionArc->arcTrajectoryColor();
+
+        TrajectoryGeometry* trajGeom = new TrajectoryGeometry();
+        trajGeom->setDisplayedPortion(TrajectoryGeometry::StartToCurrentTime);
+        trajGeom->setColor(Spectrum(arcColor.redF(), arcColor.greenF(), arcColor.blueF()));
+        trajGeom->computeSamples(arc->trajectory(), arcStartTime, arcStartTime + arc->duration(), 1000);
+        Visualizer* trajVisualizer = new Visualizer(trajGeom);
+        trajVisualizer->setVisibility(m_satelliteTrajectoriesEnabled);
+        arc->center()->setVisualizer(TrajectoryVisualizerTag(body, arcIndex), trajVisualizer);
+
+        arcStartTime += arc->duration();
+    }
 
     return body;
 }
@@ -1057,7 +1064,10 @@ ThreeDView::clearScenarioObjects()
     foreach (Entity* e, m_scenarioSpaceObjects.values())
     {
         // Remove trajectory visualizers from central body
-        e->chronology()->firstArc()->center()->removeVisualizer(TrajectoryVisualizerTag(e));
+        for (unsigned int arcIndex = 0; arcIndex < e->chronology()->arcCount(); ++arcIndex)
+        {
+            e->chronology()->arc(arcIndex)->center()->removeVisualizer(TrajectoryVisualizerTag(e, arcIndex));
+        }
 
         m_universe->removeEntity(e);
     }
@@ -1083,7 +1093,13 @@ setSpacecraftView(Observer* observer, Entity* e, double t)
         distance = 3.0f * geom->boundingSphereRadius();
     }
 
-    Vector3d toCenter = e->chronology()->firstArc()->center()->position(t) - e->position(t);
+    vesta::Arc* activeArc = e->chronology()->activeArc(t);
+    if (!activeArc)
+    {
+        activeArc = e->chronology()->firstArc();
+    }
+
+    Vector3d toCenter = activeArc->center()->position(t) - e->position(t);
     observer->setPosition(-toCenter.normalized() * distance);
     observer->setOrientation(LookAt(Vector3d::Zero(), -toCenter, Vector3d::UnitZ()));
 }
@@ -1217,11 +1233,14 @@ ThreeDView::setSatelliteTrajectories(bool enabled)
     m_satelliteTrajectoriesEnabled = enabled;
     foreach (Entity* e, m_scenarioSpaceObjects.values())
     {
-        // Remove trajectory visualizers from central body
-        Visualizer* vis = e->chronology()->firstArc()->center()->visualizer(TrajectoryVisualizerTag(e));
-        if (vis)
+        // Set visibility of trajectory visualizers for all arcs
+        for (unsigned int arcIndex = 0; arcIndex < e->chronology()->arcCount(); ++arcIndex)
         {
-            vis->setVisibility(m_satelliteTrajectoriesEnabled);
+            Visualizer* vis = e->chronology()->arc(arcIndex)->center()->visualizer(TrajectoryVisualizerTag(e, arcIndex));
+            if (vis)
+            {
+                vis->setVisibility(m_satelliteTrajectoriesEnabled);
+            }
         }
     }
 
