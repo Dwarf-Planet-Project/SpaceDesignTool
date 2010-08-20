@@ -1,6 +1,6 @@
 // curveplot.h
 //
-// Copyright (C) 2009 Chris Laurel <claurel@gmail.com>.
+// Copyright (C) 2009-2010 Chris Laurel <claurel@gmail.com>.
 //
 // curveplot is a module for rendering curves in OpenGL at high precision. A
 // plot is a series of cubic curves. The curves are transformed
@@ -79,6 +79,16 @@ class CurvePlot
                 double subdivisionThreshold,
                 double startTime,
                 double endTime) const;
+    void renderFaded(const Eigen::Transform3d& modelview,
+                     double nearZ,
+                     double farZ,
+                     const Eigen::Vector3d viewFrustumPlaneNormals[],
+                     double subdivisionThreshold,
+                     double startTime,
+                     double endTime,
+                     const Eigen::Vector4f& color,
+                     double fadeStartTime,
+                     double fadeEndTime) const;
 
     unsigned int lastUsed() const { return m_lastUsed; }
     void setLastUsed(unsigned int lastUsed) { m_lastUsed = lastUsed; }
@@ -88,6 +98,8 @@ class CurvePlot
     void removeSamplesAfter(double t);
 
     bool empty() const { return m_samples.empty(); }
+
+    unsigned int sampleCount() const { return m_samples.size(); }
 
  private:
     std::deque<CurvePlotSample> m_samples;
