@@ -60,6 +60,8 @@ public:
 
 protected slots:
         void on_pushButtonAspect_clicked();
+        void on_endDateTimeEdit_dateTimeChanged(const QDateTime&);
+        void on_durationLineEdit_textChanged(const QString&);
 };
 
 

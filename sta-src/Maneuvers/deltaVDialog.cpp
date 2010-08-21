@@ -38,17 +38,23 @@
 #include "Scenario/propagationfeedback.h"
 #include "Astro-Core/cartesianTOorbital.h"
 #include "Astro-Core/orbitalTOcartesian.h"
+
 #include "Astro-Core/propagateTWObody.h"
 #include "Astro-Core/propagateCOWELL.h"
 #include "Astro-Core/propagateENCKE.h"
 #include "Astro-Core/propagateGAUSS.h"
 #include "Scenario/missionAspectDialog.h"
 
+#include "Astro-Core/cartesianTOspherical.h"
+#include "Astro-Core/sphericalTOcartesian.h"
+
 #include "ui_missionAspectDialog.h"
 
 #include <QTextStream>
 #include <QDebug>
 #include <QFile>
+
+#include <math.h>
 
 using namespace Eigen;
 
@@ -61,8 +67,9 @@ deltaVDialog::deltaVDialog(ScenarioTree* parent) :
 
     // Set up the input validators
     QDoubleValidator* doubleValidator = new QDoubleValidator(this);
+    QIntValidator* integerValidator = new QIntValidator(this);
     QDoubleValidator* angleValidator = new QDoubleValidator(this);
-    angleValidator->setBottom(0.0);
+    angleValidator->setBottom(-360.0);
     angleValidator->setTop(360.0);
     QDoubleValidator* positiveDoubleValidator = new QDoubleValidator(this);
     positiveDoubleValidator->setBottom(0.0);
@@ -73,30 +80,10 @@ deltaVDialog::deltaVDialog(ScenarioTree* parent) :
     minusOneToOneValidator->setBottom(-1.0);
     minusOneToOneValidator->setTop(1.0);
 
-    durationLineEdit->setValidator(positiveDoubleValidator);
-
-    /*
-    connect(GravityFieldRadioButton, SIGNAL(toggled(bool)), GravityComboBox, SLOT(setEnabled(bool)));
-    connect(GravityFieldRadioButton, SIGNAL(toggled(bool)), ZonalsSpinBox, SLOT(setEnabled(bool)));
-    connect(GravityFieldRadioButton, SIGNAL(toggled(bool)), TesseralSpinBox, SLOT(setEnabled(bool)));
-    connect(AtmDragRadioButton, SIGNAL(toggled(bool)), AtmosphereComboBox, SLOT(setEnabled(bool)));
-    connect(SolarPressureRadioButton, SIGNAL(toggled(bool)), CrSpinBox, SLOT(setEnabled(bool)));
-	connect(SolarPressureRadioButton, SIGNAL(toggled(bool)), AlbedoCheckBox, SLOT(setEnabled(bool)));
-	connect(SolarPressureRadioButton, SIGNAL(toggled(bool)), IRCheckBox, SLOT(setEnabled(bool)));
-	connect(SolarPressureRadioButton, SIGNAL(clicked(bool)), AlbedoCheckBox, SLOT(setChecked(bool)));
-	connect(SolarPressureRadioButton, SIGNAL(clicked(bool)), IRCheckBox, SLOT(setChecked(bool)));
-    connect(PertBodyRadioButton, SIGNAL(toggled(bool)), BodyListWidget, SLOT(setEnabled(bool)));
-    connect(PertBodyRadioButton, SIGNAL(toggled(bool)), PertBodyListWidget, SLOT(setEnabled(bool)));
-    connect(PertBodyRadioButton, SIGNAL(toggled(bool)), AddPushButton, SLOT(setEnabled(bool)));
-    connect(PertBodyRadioButton, SIGNAL(toggled(bool)), RemovePushButton, SLOT(setEnabled(bool)));
-    connect(BodyListWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(addPerturbingPlanet(QListWidgetItem*)));
-    connect(AddPushButton, SIGNAL(pressed()), this, SLOT(addPerturbingPlanet()));
-    connect(RemovePushButton, SIGNAL(pressed()), this, SLOT(removePerturbingPlanet()));
-    connect(TesseralSpinBox, SIGNAL(valueChanged(int)), this, SLOT(setTesserals(int)));
-    connect(ZonalsSpinBox, SIGNAL(valueChanged(int)), TesseralSpinBox, SLOT(setVariableMaximum(int)));
-    connect(PropagatorComboBox, SIGNAL(activated(int)), this, SLOT(disableIntegratorComboBox(int)));
-    */
-
+    durationLineEdit->setValidator(integerValidator);
+    azimuthLineEdit->setValidator(angleValidator);
+    elevationLineEdit->setValidator(angleValidator);
+    magnitudeLineEdit->setValidator(positiveDoubleValidator);
 }
 
 deltaVDialog::~deltaVDialog()
@@ -110,14 +97,30 @@ deltaVDialog::~deltaVDialog()
 
 bool deltaVDialog::loadValues(ScenarioDeltaVType* deltaV)
 {
-    /*
-    ScenarioElementIdentifierType* arcIdentifier    = loitering->ElementIdentifier().data();
-    ScenarioEnvironmentType* environment	        = loitering->Environment().data();
-    ScenarioTimeLine* parameters		            = loitering->TimeLine().data();
-    ScenarioPropagationPositionType* propagation    = loitering->PropagationPosition().data();
-    ScenarioInitialPositionType* initPosition	    = loitering->InitialPosition().data();  //Modified by Dominic to reflect chages in XML schema (initial position now in sharedelements)
+    ScenarioElementIdentifierType* arcIdentifier    = deltaV->ElementIdentifier().data();
+    ScenarioTimeLine* parameters		            = deltaV->TimeLine().data();
+    double myDeltaVx                                = deltaV->DeltaVx();
+    double myDeltaVy                                = deltaV->DeltaVy();
+    double myDeltaVz                                = deltaV->DeltaVz();
+    double myMagnitude                              = deltaV->Magnitude();
 
-    if (loadValues(arcIdentifier) && loadValues(environment) && loadValues(parameters) && loadValues(propagation) && loadValues(initPosition))
+    double myAzimuth = 0.0;
+    double myElevation = 0.0;
+    double range = 0.0;
+
+    // Conversion of the direction of the impulse from cartesian into polar
+    myElevation = atan2(myDeltaVz, myDeltaVx);
+    myAzimuth = atan2(myDeltaVy, myDeltaVx);
+
+    // Conversion from radians to deg
+    myAzimuth = sta::radToDeg(myAzimuth);
+    myElevation = sta::radToDeg(myElevation);
+
+    magnitudeLineEdit->setText(QString::number(myMagnitude));
+    azimuthLineEdit->setText(QString::number(myAzimuth));
+    elevationLineEdit->setText(QString::number(myElevation));
+
+    if (loadValues(arcIdentifier) && loadValues(parameters))
     {
         return true;
     }
@@ -125,7 +128,6 @@ bool deltaVDialog::loadValues(ScenarioDeltaVType* deltaV)
     {
         return false;
     }
-    */
 }
 
 
@@ -147,13 +149,13 @@ bool deltaVDialog::loadValues(ScenarioElementIdentifierType* arcIdentifier)
 
 
 
-
-
 bool deltaVDialog::loadValues(ScenarioTimeLine* timeLine)
 {
-    startDateTimeEdit->setDateTime(timeLine->StartTime());
-    endDateTimeEdit->setDateTime(timeLine->EndTime());
-    //durationLineEdit->setText(QString::number(timeLine->StepTime()));
+    QDateTime myStartTime = timeLine->StartTime();
+    QDateTime myEndTime   = timeLine->EndTime();
+    startDateTimeEdit->setDateTime(myStartTime);
+    endDateTimeEdit->setDateTime(myEndTime);
+    durationLineEdit->setText(QString::number(myStartTime.secsTo(myEndTime)));
 
     return true;
 }
@@ -163,22 +165,35 @@ bool deltaVDialog::loadValues(ScenarioTimeLine* timeLine)
 
 bool deltaVDialog::saveValues(ScenarioDeltaVType* deltaV)
 {
-    /*
-    ScenarioEnvironmentType* environment	     = loitering->Environment().data();
-    ScenarioTimeLine* parameters		         = loitering->TimeLine().data();
-    ScenarioPropagationPositionType* propagation = loitering->PropagationPosition().data();
-    ScenarioElementIdentifierType* identifier    = loitering->ElementIdentifier().data();
-    ScenarioInitialPositionType* initPosition    = loitering->InitialPosition().data();//Modified by Dominic to reflect chages in XML schema (initial position now in sharedelements)
-    
-	if (saveValues(identifier) && saveValues(environment) && saveValues(parameters) && saveValues(propagation) && saveValues(initPosition))
+    ScenarioElementIdentifierType* arcIdentifier    = deltaV->ElementIdentifier().data();
+    ScenarioTimeLine* parameters		            = deltaV->TimeLine().data();
+
+    double myMagnitude = magnitudeLineEdit->text().toDouble();
+    double myAzimuth    = azimuthLineEdit->text().toDouble();
+    double myElevation  = elevationLineEdit->text().toDouble();
+
+    // From degrees to radians
+    myAzimuth = sta::degToRad(myAzimuth);
+    myElevation = sta::degToRad(myElevation);
+
+    // Conversion of the direction of the impulse from polar into cartesian
+    double r = 1;
+    double myDeltaVx = r * cos(myAzimuth);
+    double myDeltaVy = r * sin(myAzimuth);
+    double myDeltaVz = r * sin(myElevation);
+
+    deltaV->setDeltaVx(myDeltaVx);
+    deltaV->setDeltaVy(myDeltaVy);
+    deltaV->setDeltaVz(myDeltaVz);
+    deltaV->setMagnitude(myMagnitude);
+
+    if (saveValues(arcIdentifier) && saveValues(parameters))
     {
         return true;
     }
     else
-    {
         return false;
-    }
-    */
+
 }
 
 
@@ -203,16 +218,18 @@ bool deltaVDialog::saveValues(ScenarioElementIdentifierType* arcIdentifier)
 
 
 
-
-
 bool deltaVDialog::saveValues(ScenarioTimeLine* timeline)
 {
-    timeline->setStartTime(startDateTimeEdit->dateTime());
-    timeline->setEndTime(endDateTimeEdit->dateTime());
-    //timeline->setStepTime(TimeStepLineEdit->text().toDouble());
+    QDateTime myStartTime = startDateTimeEdit->dateTime();
+    QDateTime myEndTime   = endDateTimeEdit->dateTime();
+    timeline->setStartTime(myStartTime);
+    timeline->setEndTime(myEndTime);
+    double duration = myStartTime.secsTo(myEndTime);
+    duration = durationLineEdit->text().toDouble();
 
     return true;
 }
+
 
 
 
@@ -454,6 +471,28 @@ bool PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
 } // ------------------------------- End o the propagation method -----------------------
 
 */
+
+
+
+
+void deltaVDialog::on_endDateTimeEdit_dateTimeChanged(const QDateTime&)
+{
+    QDateTime myStartTime = startDateTimeEdit->dateTime();
+    QDateTime myEndTime   = endDateTimeEdit->dateTime();
+    durationLineEdit->setText(QString::number(myStartTime.secsTo(myEndTime)));
+}
+
+void deltaVDialog::on_durationLineEdit_textChanged(const QString&)
+{
+    QDateTime myStartTime = startDateTimeEdit->dateTime();
+    double myDuration = durationLineEdit->text().toDouble();
+    QDateTime myEndTime = myStartTime.addSecs(myDuration);
+    endDateTimeEdit->setDateTime(myEndTime);
+ }
+
+
+
+
 
 
 void deltaVDialog::on_pushButtonAspect_clicked()

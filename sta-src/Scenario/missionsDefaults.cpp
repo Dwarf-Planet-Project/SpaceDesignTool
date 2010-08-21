@@ -226,7 +226,7 @@ ScenarioDeltaVType MissionsDefaults::MissionsDefaults_GENERIC_DELTAV()
     deltaV.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
 
     deltaV.ElementIdentifier()->setName("Delta V");
-    deltaV.ElementIdentifier()->setColorName("Dark red");
+    deltaV.ElementIdentifier()->setColorName("Dark Red");
     deltaV.ElementIdentifier()->setModelName("Default");
     deltaV.ElementIdentifier()->setTheOrder(2);
 
