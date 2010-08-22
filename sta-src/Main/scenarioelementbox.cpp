@@ -30,6 +30,7 @@
   Modified by Guillermo May 2010 to change the big integers of Ricardo into floats
   Modified by Guillermo to add labels to identify the scenario elements
   Modified by Guillermo July 2010 to adjust Earth labels to the XML schema
+  Modified by Guillermo August 2010 to add maneuvers
  */
 
 #include "scenarioelementbox.h"
@@ -52,14 +53,14 @@ static const QString SCENARIO_MIME_TYPE("application/sta.scenario.xml");
 
 const QString ScenarioElementBox::PARTICIPANT_MIME_TYPE("application/sta.participant.xml");
 const QString ScenarioElementBox::MISSION_ARC_MIME_TYPE("application/sta.missionarc.xml");
-const QString ScenarioElementBox::MANEUVER_MIME_TYPE("application/sta.maneuver.xml");
+//const QString ScenarioElementBox::MANEUVER_MIME_TYPE("application/sta.maneuver.xml");  // Non needed anymore
 const QString ScenarioElementBox::PAYLOAD_MIME_TYPE("application/sta.payload.xml"); //Line added by Ricardo Noriega
 
 static const int ScenarioFragmentRole     = Qt::UserRole + 1;
 static const int ScenarioFragmentTypeRole = Qt::UserRole + 2;
 
 ScenarioElementWidget::ScenarioElementWidget(QWidget* parent) :
-    QTreeWidget(parent)
+        QTreeWidget(parent)
 {
     setHeaderHidden(true);
     setRootIsDecorated(false);
@@ -129,8 +130,8 @@ static QString fragmentText(QDomElement e)
 
 // Set the mime type and data for drag and drop
 static void setDragAndDropInfo(QTreeWidgetItem* item,
-			       const QString& mimeType,
-			       const QByteArray& mimeData)
+                               const QString& mimeType,
+                               const QByteArray& mimeData)
 {
     item->setData(0, ScenarioFragmentTypeRole, mimeType);
     item->setData(0, ScenarioFragmentRole, mimeData);
@@ -201,17 +202,17 @@ static QByteArray REVFragment(const char* name, const char* vehicleType)
     coef6->setCoefName("Cn");
     entryVehicle.REVSystem()->AeroThermodynamics()->AeroCoefFile().append(QSharedPointer<ScenarioAeroCoefFileType>(coef6));
 
-     QDomDocument doc;
+    QDomDocument doc;
     return fragmentText(CreateREVElement(&entryVehicle, doc)).toUtf8();
 }
 
 
 
 static QByteArray groundStationFragment(const char* name,
-					const char* centralBody,
-					double latitude = 0.0,
-					double longitude = 0.0,
-					double altitude = 0.0)
+                                        const char* centralBody,
+                                        double latitude = 0.0,
+                                        double longitude = 0.0,
+                                        double altitude = 0.0)
 {
     ScenarioGroundStation groundStation;
     /*** fill in defaults ***/
@@ -235,10 +236,10 @@ static QByteArray groundStationFragment(const char* name,
 
 
 static QByteArray launchPadFragment(const char* name,
-				    const char* centralBody,
-				    double latitude = 0.0,
-				    double longitude = 0.0,
-				    double altitude = 0.0)
+                                    const char* centralBody,
+                                    double latitude = 0.0,
+                                    double longitude = 0.0,
+                                    double altitude = 0.0)
 {
     ScenarioLaunchPad launchPad;
     /*** fill in defaults ***/
@@ -257,10 +258,10 @@ static QByteArray launchPadFragment(const char* name,
 }
 
 static QByteArray pointFragment(const char* name,
-				const char* centralBody,
-				double latitude = 0.0,
-				double longitude = 0.0,
-				double altitude = 0.0)
+                                const char* centralBody,
+                                double latitude = 0.0,
+                                double longitude = 0.0,
+                                double altitude = 0.0)
 {
     ScenarioPoint myPoint;
     /*** fill in defaults ***/
@@ -282,35 +283,35 @@ static QByteArray pointFragment(const char* name,
 
 // Create a scenario fragment representing a ground element.
 static QByteArray groundElementFragment(const char* name,
-					const char* groundElementType,
-					const char* centralBody,
-					double latitude = 0.0,
-					double longitude = 0.0,
-					double altitude = 0.0)
+                                        const char* groundElementType,
+                                        const char* centralBody,
+                                        double latitude = 0.0,
+                                        double longitude = 0.0,
+                                        double altitude = 0.0)
 {
     QByteArray encodedData;
 
     encodedData +=
-    "<";
+            "<";
     encodedData += groundElementType;
     encodedData += " Name=\"";
     encodedData += name;
     encodedData += "\">"
-    "<Location>"
-    "<GroundPosition>"
-    "<Latitude>" + QString::number(latitude) + "</Latitude>"
-    "<Longitude>" + QString::number(longitude) + "</Longitude>"
-    "<Altitude>" + QString::number(altitude) + "</Altitude>"
-    "</GroundPosition>";
+                   "<Location>"
+                   "<GroundPosition>"
+                   "<Latitude>" + QString::number(latitude) + "</Latitude>"
+                   "<Longitude>" + QString::number(longitude) + "</Longitude>"
+                   "<Altitude>" + QString::number(altitude) + "</Altitude>"
+                   "</GroundPosition>";
     encodedData += "<CentralBody>";
     encodedData += centralBody;
     encodedData += "</CentralBody>"
-    "</Location>";
+                   "</Location>";
 
     // Clearing altitude is a required element for launch pads.
     if (QString(groundElementType) == "LaunchPad")
     {
-	encodedData += "<LaunchPadClearingAltitude>10</LaunchPadClearingAltitude>";
+        encodedData += "<LaunchPadClearingAltitude>10</LaunchPadClearingAltitude>";
     }
 
     encodedData += "</";
@@ -402,14 +403,14 @@ static QByteArray externalFragment(const char* name)
     data += name;
     data += "\">";
     data +=
-    "<Timeline>"
-    "  <StartTime>2010-01-01T00:00:00</StartTime>"
-    "  <StepTime unit=\"s\">60.0</StepTime>"
-    "  <EndTime>2010-01-01T01:01:00</EndTime>"
-    "</Timeline>"
-    "<StateVector1>2455563, 6778, 0, 0, 0, 4.76335586717, 6.00985940331</StateVector1>"
-    "<StateVector2>2455563.0006944, 6762.38865439, 285.581895497, 360.314678963, -0.520178335644, 4.75238472603, 5.99601726814</StateVector2>"
-    "</External>";
+            "<Timeline>"
+            "  <StartTime>2010-01-01T00:00:00</StartTime>"
+            "  <StepTime unit=\"s\">60.0</StepTime>"
+            "  <EndTime>2010-01-01T01:01:00</EndTime>"
+            "</Timeline>"
+            "<StateVector1>2455563, 6778, 0, 0, 0, 4.76335586717, 6.00985940331</StateVector1>"
+            "<StateVector2>2455563.0006944, 6762.38865439, 285.581895497, 360.314678963, -0.520178335644, 4.75238472603, 5.99601726814</StateVector2>"
+            "</External>";
 
     return data;
 }
@@ -426,15 +427,15 @@ static QByteArray spaceVehicleWithTrajectoryFragment(const char* name, const cha
     ScenarioLoiteringType loiteringDefault;
 
     if (name == "XMM")
-	loiteringDefault = myMissionDefaults.MissionsDefaults_XMM();
+        loiteringDefault = myMissionDefaults.MissionsDefaults_XMM();
     else if (name == "MEX")
-	loiteringDefault = myMissionDefaults.MissionsDefaults_MEX();
+        loiteringDefault = myMissionDefaults.MissionsDefaults_MEX();
     else if (name == "Aeolus")
-	loiteringDefault = myMissionDefaults.MissionsDefaults_Aeolus();
+        loiteringDefault = myMissionDefaults.MissionsDefaults_Aeolus();
     else if (name == "Artemis")
-	loiteringDefault = myMissionDefaults.MissionsDefaults_Artemis();
+        loiteringDefault = myMissionDefaults.MissionsDefaults_Artemis();
     else if (name == "ISS")
-	loiteringDefault = myMissionDefaults.MissionsDefaults_ISS();
+        loiteringDefault = myMissionDefaults.MissionsDefaults_ISS();
 
     sc->SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(&loiteringDefault));
 
@@ -562,12 +563,12 @@ static QByteArray radarPayloadFragment(const char* name)
 
 ////  Guillermo: Ground stations (ESA, NASA, etc)
 static void
-addGroundStationItem(QTreeWidgetItem* parent,
-                     const char* name,
-                     const char* centralBody,
-                     double latitude,
-                     double longitude,
-                     double altitude)
+        addGroundStationItem(QTreeWidgetItem* parent,
+                             const char* name,
+                             const char* centralBody,
+                             double latitude,
+                             double longitude,
+                             double altitude)
 {
     QTreeWidgetItem* groundStationItem   = new QTreeWidgetItem(parent);
     groundStationItem->setText(0, name);
@@ -581,14 +582,14 @@ addGroundStationItem(QTreeWidgetItem* parent,
 
 // New method by Guillermo to handle special satellites from ESA
 static void
-addESASatelliteItem(QTreeWidgetItem* parent, const char* name)
+        addESASatelliteItem(QTreeWidgetItem* parent, const char* name)
 {
     QTreeWidgetItem* myESASatelliteItem   = new QTreeWidgetItem(parent);
     myESASatelliteItem->setText(0, name);
     myESASatelliteItem->setIcon(0, QIcon(":/icons/ParticipantSATELLITE.png"));
     setDragAndDropInfo(myESASatelliteItem,
                        ScenarioElementBox::PARTICIPANT_MIME_TYPE,
-		       spaceVehicleWithTrajectoryFragment(name, "Satellite"));
+                       spaceVehicleWithTrajectoryFragment(name, "Satellite"));
 
 }
 
@@ -599,7 +600,7 @@ addESASatelliteItem(QTreeWidgetItem* parent, const char* name)
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
-    QWidget(parent)
+        QWidget(parent)
 {
 #if 0
     setupUi(this);
@@ -673,22 +674,22 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
     reentryVehicleItem->setText(0, tr("Reentry vehicle"));
     reentryVehicleItem->setIcon(0, QIcon(":/icons/ParticipantENTRYVEHICLE.png"));
     setDragAndDropInfo(reentryVehicleItem,
-		       PARTICIPANT_MIME_TYPE,
-		       REVFragment("New Reentry Vehicle", "Reentry Vehicle"));
+                       PARTICIPANT_MIME_TYPE,
+                       REVFragment("New Reentry Vehicle", "Reentry Vehicle"));
 
     QTreeWidgetItem* groundStationItem   = new QTreeWidgetItem(participantsItem);
     groundStationItem->setText(0, tr("Station"));
     groundStationItem->setIcon(0, QIcon(":/icons/ParticipantSTATION.png"));
     setDragAndDropInfo(groundStationItem,
-		       PARTICIPANT_MIME_TYPE,
-		       groundStationFragment("New Ground Station", "Earth", 0.0, 0.0, 0.0));
+                       PARTICIPANT_MIME_TYPE,
+                       groundStationFragment("New Ground Station", "Earth", 0.0, 0.0, 0.0));
 
     QTreeWidgetItem* targetItem          = new QTreeWidgetItem(participantsItem);
     targetItem->setText(0, tr("Point"));
     targetItem->setIcon(0, QIcon(":/icons/ParticipantPOINT.png"));
     setDragAndDropInfo(targetItem,
                        PARTICIPANT_MIME_TYPE,
-		       pointFragment("New Point", "Earth", 0.0, 0.0, 0.0));
+                       pointFragment("New Point", "Earth", 0.0, 0.0, 0.0));
 
     // Diabling the complete function for the time being. Patched by Guillermo
     //QTreeWidgetItem* launchPadItem       = new QTreeWidgetItem(participantsItem);
@@ -709,28 +710,28 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
     transmitterPayloadItem->setIcon(0, QIcon(":/icons/ParticipantCOMMUNICATIONS.png"));
     setDragAndDropInfo(transmitterPayloadItem,
                        PAYLOAD_MIME_TYPE,
-		       transmitterPayloadFragment("Tx 1"));
+                       transmitterPayloadFragment("Tx 1"));
 
     QTreeWidgetItem* receiverPayloadItem  = new QTreeWidgetItem(payloadsItem);
     receiverPayloadItem->setText(0, tr("Receiver"));
     receiverPayloadItem->setIcon(0, QIcon(":/icons/ParticipantCOMMUNICATIONS.png"));
     setDragAndDropInfo(receiverPayloadItem,
-		       PAYLOAD_MIME_TYPE,
-		       receiverPayloadFragment("Rx 1"));
+                       PAYLOAD_MIME_TYPE,
+                       receiverPayloadFragment("Rx 1"));
 
     QTreeWidgetItem* opticalPayloadItem  = new QTreeWidgetItem(payloadsItem);
     opticalPayloadItem->setText(0, tr("Telescope"));
     opticalPayloadItem->setIcon(0, QIcon(":/icons/ParticipantTELESCOPE.png"));
     setDragAndDropInfo(opticalPayloadItem,
-		       PAYLOAD_MIME_TYPE,
-		       opticalPayloadFragment("Optical 1"));
+                       PAYLOAD_MIME_TYPE,
+                       opticalPayloadFragment("Optical 1"));
 
     QTreeWidgetItem* radarPayloadItem  = new QTreeWidgetItem(payloadsItem);
     radarPayloadItem->setText(0, tr("Radar"));
     radarPayloadItem->setIcon(0, QIcon(":/icons/ParticipantRADAR.png"));
     setDragAndDropInfo(radarPayloadItem,
-		       PAYLOAD_MIME_TYPE,
-		       radarPayloadFragment("Radar 1"));
+                       PAYLOAD_MIME_TYPE,
+                       radarPayloadFragment("Radar 1"));
 
 
     /////////// Creating the widgets for the different manoeuvres
@@ -739,8 +740,8 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
     deltaVItem->setText(0, tr("deltaV"));
     deltaVItem->setIcon(0, QIcon(":/icons/engine.png"));
     setDragAndDropInfo(deltaVItem,
-               MISSION_ARC_MIME_TYPE,
-               deltaVFragment("deltaV 1"));
+                       MISSION_ARC_MIME_TYPE,
+                       deltaVFragment("deltaV 1"));
 
 
     ///////////////////// Creating now the mission arcs: ascent, loitering, fly-by, re-entry, rendezvous
@@ -755,15 +756,15 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
     loiteringItem->setText(0, tr("Loitering"));
     loiteringItem->setIcon(0, QIcon(":/icons/mission-arcs-loitering.png"));
     setDragAndDropInfo(loiteringItem,
-		       MISSION_ARC_MIME_TYPE,
-		       loiteringFragment("Loitering 1"));
+                       MISSION_ARC_MIME_TYPE,
+                       loiteringFragment("Loitering 1"));
 
     QTreeWidgetItem* loiteringTLEItem    = new QTreeWidgetItem(missionArcsItem);
     loiteringTLEItem->setText(0, tr("TLE"));
     loiteringTLEItem->setIcon(0, QIcon(":/icons/TLE-icon-small.png"));
     setDragAndDropInfo(loiteringTLEItem,
-		       MISSION_ARC_MIME_TYPE,
-		       loiteringTLEFragment("LoiteringTLE 1"));
+                       MISSION_ARC_MIME_TYPE,
+                       loiteringTLEFragment("LoiteringTLE 1"));
 
     // Diabling the complete function for the time being. Patched by Guillermo
     //QTreeWidgetItem* flybyItem        = new QTreeWidgetItem(missionArcsItem);
@@ -795,8 +796,8 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
     externalItem->setText(0, tr("External"));
     externalItem->setIcon(0, QIcon(":/icons/external.png"));
     setDragAndDropInfo(externalItem,
-		       MISSION_ARC_MIME_TYPE,
-		       externalFragment("External 1"));
+                       MISSION_ARC_MIME_TYPE,
+                       externalFragment("External 1"));
 
     QTreeWidgetItem* lagrangianItem    = new QTreeWidgetItem(missionArcsItem);
     lagrangianItem->setText(0, tr("Lagrangian"));
@@ -811,8 +812,8 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
     impulseItem->setText(0, tr("Single impulse"));
     impulseItem->setIcon(0, QIcon(":/icons/engine.png"));
     setDragAndDropInfo(impulseItem,
-		       MISSION_ARC_MIME_TYPE,
-		       impulseFragment("Single-impulse 1"));
+                       MISSION_ARC_MIME_TYPE,
+                       impulseFragment("Single-impulse 1"));
 #endif
 
     //////////////// Adding now concrete widgets into the scenario
@@ -895,7 +896,7 @@ static QByteArray interplanetaryFragment(const char* name)
     data += name;
     data += "\">";
     data +=
-    "<Mode>1</Mode>";
+            "<Mode>1</Mode>";
 
     return data;
 }
@@ -910,139 +911,139 @@ static QByteArray lagrangianFragment(const char* name)
     data += "\">";
 
     data +=
-    "<Threebodyenvironment>"
-    "<FirstBody Name=\"SUN\">"
-    "</FirstBody>"
-    "<SecondBody Name=\"EARTH\">"
-    "</SecondBody>"
-    "</Threebodyenvironment>"
-    "<SimulationParameters>"
-    "  <Timeline>"
-    "  <StartTime>2011-01-01T00:00:00</StartTime>"
-    "  <StepTime unit=\"s\">60.0</StepTime>"
-    "  <EndTime>2011-01-02T12:00:00</EndTime>"
-    "  </Timeline>"
-    "  <InitialStatePosition>"
-    "  <CoordinateSystem>INERTIAL J2000</CoordinateSystem>"
-    "  <KeplerianElements>"
-    "    <SemiMajorAxis>6772</SemiMajorAxis>"
-    "    <Eccentricity>0</Eccentricity>"
-    "    <Inclination>0</Inclination>"
-    "    <RAAN>0</RAAN>"
-    "    <ArgumentOfPeriapsis>0</ArgumentOfPeriapsis>"
-    "    <TrueAnomaly>0</TrueAnomaly>"
-    "  </KeplerianElements>"
-        "   <CentralsystemBody Name=\"EARTH\"></CentralsystemBody>"
-    "  </InitialStatePosition>"
-    "  <Deltav>"
-    "    <Time>0.5</Time>"
-    "    <X-Deltav unit=\"km/s\">1</X-Deltav>"
-    "    <Y-Deltav unit=\"km/s\">1</Y-Deltav>"
-    "    <Z-Deltav unit=\"km/s\">2</Z-Deltav>"
-    "  </Deltav>"
-    "</SimulationParameters>"
-    "<HaloOrbit>"
-    "<Lpoint>L1</Lpoint>"
-    "<InitialStatePosition>"
-    "<CoordinateSystem>INERTIAL J2000</CoordinateSystem>"
-    "<StateVector>"
-    "<x>0</x>"
-    "<y>0</y>"
-    "<z>0</z>"
-    "<vx>0</vx>"
-    "<vy>0</vy>"
-    "<vz>0</vz>"
-    "</StateVector>"
-    "<CentralsystemBody Name=\"EARTH\"></CentralsystemBody>"
-    "</InitialStatePosition>"
-    "<Amplitudes>"
-    "<xAmplitude>550000</xAmplitude>"
-    "<zAmplitude>-250000</zAmplitude>"
-    "</Amplitudes>"
-    "<Manifolds>"
-    "<Branch>"
-    "<State>true</State>"
-    "<Parameters>"
-    "<Deviation>0</Deviation>"
-    "<EndCondition>"
-    "<intersection>1</intersection>"
-    "<integrationTime>0</integrationTime>"
-    "<numPositions>0</numPositions>"
-    "</EndCondition>"
-    "</Parameters>"
-    "</Branch>"
-    "<Branch>"
-    "<State>false</State>"
-    "<Parameters>"
-    "<Deviation>0</Deviation>"
-    "<EndCondition>"
-    "<intersection>0</intersection>"
-    "<integrationTime>1</integrationTime>"
-    "<numPositions>30</numPositions>"
-    "</EndCondition>"
-    "</Parameters>"
-    "</Branch>"
-    "<Branch>"
-    "<State>false</State>"
-    "<Parameters>"
-    "<Deviation>0</Deviation>"
-    "<EndCondition>"
-    "<intersection>1</intersection>"
-    "<integrationTime>0</integrationTime>"
-    "<numPositions>0</numPositions>"
-    "</EndCondition>"
-    "</Parameters>"
-    "</Branch>"
-    "<Branch>"
-    "<State>false</State>"
-    "<Parameters>"
-    "<Deviation>0</Deviation>"
-    "<EndCondition>"
-    "<intersection>1</intersection>"
-    "<integrationTime>0</integrationTime>"
-    "<numPositions>0</numPositions>"
-    "</EndCondition>"
-    "</Parameters>"
-    "</Branch>"
-    "</Manifolds>"
-    "</HaloOrbit>"
-    "<ThreebodyTransfer>"
-    "<StartingEpoch>2011-01-02T12:00:00</StartingEpoch>"
-    "<ParkingOrbit>"
-    "<InitialStatePosition>"
-    "  <CoordinateSystem>INERTIAL J2000</CoordinateSystem>"
-    "  <KeplerianElements>"
-    "    <SemiMajorAxis>6672</SemiMajorAxis>"
-    "    <Eccentricity>0</Eccentricity>"
-    "    <Inclination>5</Inclination>"
-    "    <RAAN>0</RAAN>"
-    "    <ArgumentOfPeriapsis>0</ArgumentOfPeriapsis>"
-    "    <TrueAnomaly>0</TrueAnomaly>"
-    "  </KeplerianElements>"
-    "   <CentralsystemBody Name=\"EARTH\"></CentralsystemBody>"
-    "  </InitialStatePosition>"
-    "</ParkingOrbit>"
-    "<HaloOrbit>"
-    "<InitialStatePosition>"
-    "<CoordinateSystem>INERTIAL J2000</CoordinateSystem>"
-    "<StateVector>"
-    "<x>1.0081748644</x>"
-    "<y>0</y>"
-    "<z>0.0013593836</z>"
-    "<vx>0</vx>"
-    "<vy>0.0104429106</vy>"
-    "<vz>0</vz>"
-    "</StateVector>"
-    "<CentralsystemBody Name=\"EARTH\"></CentralsystemBody>"
-    "</InitialStatePosition>"
-    "</HaloOrbit>"
-    "<OptimizationParameters>"
-    "<timeofFlight>0</timeofFlight>"
-    "<maximumToF units=\"days\">100</maximumToF>"
-    "<propellant>1</propellant>"
-    "</OptimizationParameters>"
-    "</ThreebodyTransfer>"
-    "</Lagrangian>";
+            "<Threebodyenvironment>"
+            "<FirstBody Name=\"SUN\">"
+            "</FirstBody>"
+            "<SecondBody Name=\"EARTH\">"
+            "</SecondBody>"
+            "</Threebodyenvironment>"
+            "<SimulationParameters>"
+            "  <Timeline>"
+            "  <StartTime>2011-01-01T00:00:00</StartTime>"
+            "  <StepTime unit=\"s\">60.0</StepTime>"
+            "  <EndTime>2011-01-02T12:00:00</EndTime>"
+            "  </Timeline>"
+            "  <InitialStatePosition>"
+            "  <CoordinateSystem>INERTIAL J2000</CoordinateSystem>"
+            "  <KeplerianElements>"
+            "    <SemiMajorAxis>6772</SemiMajorAxis>"
+            "    <Eccentricity>0</Eccentricity>"
+            "    <Inclination>0</Inclination>"
+            "    <RAAN>0</RAAN>"
+            "    <ArgumentOfPeriapsis>0</ArgumentOfPeriapsis>"
+            "    <TrueAnomaly>0</TrueAnomaly>"
+            "  </KeplerianElements>"
+            "   <CentralsystemBody Name=\"EARTH\"></CentralsystemBody>"
+            "  </InitialStatePosition>"
+            "  <Deltav>"
+            "    <Time>0.5</Time>"
+            "    <X-Deltav unit=\"km/s\">1</X-Deltav>"
+            "    <Y-Deltav unit=\"km/s\">1</Y-Deltav>"
+            "    <Z-Deltav unit=\"km/s\">2</Z-Deltav>"
+            "  </Deltav>"
+            "</SimulationParameters>"
+            "<HaloOrbit>"
+            "<Lpoint>L1</Lpoint>"
+            "<InitialStatePosition>"
+            "<CoordinateSystem>INERTIAL J2000</CoordinateSystem>"
+            "<StateVector>"
+            "<x>0</x>"
+            "<y>0</y>"
+            "<z>0</z>"
+            "<vx>0</vx>"
+            "<vy>0</vy>"
+            "<vz>0</vz>"
+            "</StateVector>"
+            "<CentralsystemBody Name=\"EARTH\"></CentralsystemBody>"
+            "</InitialStatePosition>"
+            "<Amplitudes>"
+            "<xAmplitude>550000</xAmplitude>"
+            "<zAmplitude>-250000</zAmplitude>"
+            "</Amplitudes>"
+            "<Manifolds>"
+            "<Branch>"
+            "<State>true</State>"
+            "<Parameters>"
+            "<Deviation>0</Deviation>"
+            "<EndCondition>"
+            "<intersection>1</intersection>"
+            "<integrationTime>0</integrationTime>"
+            "<numPositions>0</numPositions>"
+            "</EndCondition>"
+            "</Parameters>"
+            "</Branch>"
+            "<Branch>"
+            "<State>false</State>"
+            "<Parameters>"
+            "<Deviation>0</Deviation>"
+            "<EndCondition>"
+            "<intersection>0</intersection>"
+            "<integrationTime>1</integrationTime>"
+            "<numPositions>30</numPositions>"
+            "</EndCondition>"
+            "</Parameters>"
+            "</Branch>"
+            "<Branch>"
+            "<State>false</State>"
+            "<Parameters>"
+            "<Deviation>0</Deviation>"
+            "<EndCondition>"
+            "<intersection>1</intersection>"
+            "<integrationTime>0</integrationTime>"
+            "<numPositions>0</numPositions>"
+            "</EndCondition>"
+            "</Parameters>"
+            "</Branch>"
+            "<Branch>"
+            "<State>false</State>"
+            "<Parameters>"
+            "<Deviation>0</Deviation>"
+            "<EndCondition>"
+            "<intersection>1</intersection>"
+            "<integrationTime>0</integrationTime>"
+            "<numPositions>0</numPositions>"
+            "</EndCondition>"
+            "</Parameters>"
+            "</Branch>"
+            "</Manifolds>"
+            "</HaloOrbit>"
+            "<ThreebodyTransfer>"
+            "<StartingEpoch>2011-01-02T12:00:00</StartingEpoch>"
+            "<ParkingOrbit>"
+            "<InitialStatePosition>"
+            "  <CoordinateSystem>INERTIAL J2000</CoordinateSystem>"
+            "  <KeplerianElements>"
+            "    <SemiMajorAxis>6672</SemiMajorAxis>"
+            "    <Eccentricity>0</Eccentricity>"
+            "    <Inclination>5</Inclination>"
+            "    <RAAN>0</RAAN>"
+            "    <ArgumentOfPeriapsis>0</ArgumentOfPeriapsis>"
+            "    <TrueAnomaly>0</TrueAnomaly>"
+            "  </KeplerianElements>"
+            "   <CentralsystemBody Name=\"EARTH\"></CentralsystemBody>"
+            "  </InitialStatePosition>"
+            "</ParkingOrbit>"
+            "<HaloOrbit>"
+            "<InitialStatePosition>"
+            "<CoordinateSystem>INERTIAL J2000</CoordinateSystem>"
+            "<StateVector>"
+            "<x>1.0081748644</x>"
+            "<y>0</y>"
+            "<z>0.0013593836</z>"
+            "<vx>0</vx>"
+            "<vy>0.0104429106</vy>"
+            "<vz>0</vz>"
+            "</StateVector>"
+            "<CentralsystemBody Name=\"EARTH\"></CentralsystemBody>"
+            "</InitialStatePosition>"
+            "</HaloOrbit>"
+            "<OptimizationParameters>"
+            "<timeofFlight>0</timeofFlight>"
+            "<maximumToF units=\"days\">100</maximumToF>"
+            "<propellant>1</propellant>"
+            "</OptimizationParameters>"
+            "</ThreebodyTransfer>"
+            "</Lagrangian>";
 
     return data;
 }
@@ -1053,43 +1054,43 @@ static QByteArray reentryFragment(const char* name)
     QByteArray data;
 
     QString xmlTemplate = QString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-    "<ReEntry Name=\"%1\">"
-    "<Environment>"
-    "<CentralBody Name=\"EARTH\"></CentralBody>"
-    "</Environment>"
-    "<SimulationMode>"
-    " <SimulationParameters>"
-    "  <Timeline>"
-    "  <StartTime>2011-01-01T12:00:00</StartTime>"
-    "  <StepTime unit=\"s\">60.0</StepTime>"
-    "  </Timeline>"
-    "  <InitialStatePosition>"
-    "  <CoordinateSystem>INERTIAL J2000</CoordinateSystem>"
-    "  <SphericalCoordinates>"
-    "    <Altitude>120</Altitude>"
-    "    <Longitude>20</Longitude>"
-    "    <Latitude>30</Latitude>"
-    "    <InertialVelocity>12</InertialVelocity>"
-    "    <InertialFlightPathAngle>-8</InertialFlightPathAngle>"
-    "    <InertialHeading>90</InertialHeading>"
-    "  </SphericalCoordinates>"
-    "   <CentralsystemBody Name=\"EARTH\"></CentralsystemBody>"
-    "  </InitialStatePosition>"
-    " </SimulationParameters>"
-    "</SimulationMode>"
-    "<TrajectoryPropagation>"
-    "  <IntegratorType>RK4</IntegratorType>"
-    "  <Timestep unit=\"s\">60.0</Timestep>"
-    "  <PropagatorType>TWO BODY</PropagatorType>"
-    "</TrajectoryPropagation>"
-    "<AttitudePropagation>"
-    "  <IntegratorType>RK4</IntegratorType>"
-    "  <Timestep unit=\"s\">60.0</Timestep>"
-    "  <ExternCouples>NONE</ExternCouples>"
-    "</AttitudePropagation>"
-    "</ReEntry>"
-    );
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+            "<ReEntry Name=\"%1\">"
+            "<Environment>"
+            "<CentralBody Name=\"EARTH\"></CentralBody>"
+            "</Environment>"
+            "<SimulationMode>"
+            " <SimulationParameters>"
+            "  <Timeline>"
+            "  <StartTime>2011-01-01T12:00:00</StartTime>"
+            "  <StepTime unit=\"s\">60.0</StepTime>"
+            "  </Timeline>"
+            "  <InitialStatePosition>"
+            "  <CoordinateSystem>INERTIAL J2000</CoordinateSystem>"
+            "  <SphericalCoordinates>"
+            "    <Altitude>120</Altitude>"
+            "    <Longitude>20</Longitude>"
+            "    <Latitude>30</Latitude>"
+            "    <InertialVelocity>12</InertialVelocity>"
+            "    <InertialFlightPathAngle>-8</InertialFlightPathAngle>"
+            "    <InertialHeading>90</InertialHeading>"
+            "  </SphericalCoordinates>"
+            "   <CentralsystemBody Name=\"EARTH\"></CentralsystemBody>"
+            "  </InitialStatePosition>"
+            " </SimulationParameters>"
+            "</SimulationMode>"
+            "<TrajectoryPropagation>"
+            "  <IntegratorType>RK4</IntegratorType>"
+            "  <Timestep unit=\"s\">60.0</Timestep>"
+            "  <PropagatorType>TWO BODY</PropagatorType>"
+            "</TrajectoryPropagation>"
+            "<AttitudePropagation>"
+            "  <IntegratorType>RK4</IntegratorType>"
+            "  <Timestep unit=\"s\">60.0</Timestep>"
+            "  <ExternCouples>NONE</ExternCouples>"
+            "</AttitudePropagation>"
+            "</ReEntry>"
+            );
 
     return xmlTemplate.arg(QString(name)).toUtf8();
 }
@@ -1100,41 +1101,41 @@ static QByteArray impulseFragment(const char* name)
     QByteArray data;
 
     QString xmlTemplate = QString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-    "<Impulse Name=\"%1\">"
-    "<Environment>"
-    "<CentralBody Name=\"Earth\">"
-    "<GravityModel>"
-    "<ModelName>ModelName</ModelName>"
-    "<NumberOfZonals>0</NumberOfZonals>"
-    "<NumberOfTesserals>0</NumberOfTesserals>"
-    "</GravityModel>"
-    "<AtmosphereModel>AtmosphereModel</AtmosphereModel>"
-    "</CentralBody>"
-    "<AtmosphericDrag>0</AtmosphericDrag>"
-    "<SolarPressure>0</SolarPressure>"
-    "</Environment>"
-    "<SimulationParameters>"
-    "<Timeline>"
-    "<StartTime>2011-00-00T00:00:00</StartTime>"
-    "<StepTime units=\"s\">60</StepTime>"
-    "</Timeline>"
-    "<InitialStatePosition>"
-    "<CoordinateSystem>INERTIAL J2000</CoordinateSystem>"
-    "<StateVector>"
-    "<x>0</x>"
-    "<y>0</y>"
-    "<z>0</z>"
-    "<vx>0</vx>"
-    "<vy>0</vy>"
-    "<vz>0</vz>"
-    "</StateVector>"
-    "</InitialStatePosition>"
-    "</SimulationParameters>"
-    "<Point></Point>"
-    "<ManoeuvrePlan></ManoeuvrePlan>"
-    "</Rendezvous>"
-    );
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+            "<Impulse Name=\"%1\">"
+            "<Environment>"
+            "<CentralBody Name=\"Earth\">"
+            "<GravityModel>"
+            "<ModelName>ModelName</ModelName>"
+            "<NumberOfZonals>0</NumberOfZonals>"
+            "<NumberOfTesserals>0</NumberOfTesserals>"
+            "</GravityModel>"
+            "<AtmosphereModel>AtmosphereModel</AtmosphereModel>"
+            "</CentralBody>"
+            "<AtmosphericDrag>0</AtmosphericDrag>"
+            "<SolarPressure>0</SolarPressure>"
+            "</Environment>"
+            "<SimulationParameters>"
+            "<Timeline>"
+            "<StartTime>2011-00-00T00:00:00</StartTime>"
+            "<StepTime units=\"s\">60</StepTime>"
+            "</Timeline>"
+            "<InitialStatePosition>"
+            "<CoordinateSystem>INERTIAL J2000</CoordinateSystem>"
+            "<StateVector>"
+            "<x>0</x>"
+            "<y>0</y>"
+            "<z>0</z>"
+            "<vx>0</vx>"
+            "<vy>0</vy>"
+            "<vz>0</vz>"
+            "</StateVector>"
+            "</InitialStatePosition>"
+            "</SimulationParameters>"
+            "<Point></Point>"
+            "<ManoeuvrePlan></ManoeuvrePlan>"
+            "</Rendezvous>"
+            );
 
     return xmlTemplate.arg(QString(name)).toUtf8();
 }
@@ -1145,41 +1146,41 @@ static QByteArray rendezvousFragment(const char* name)
     QByteArray data;
 
     QString xmlTemplate = QString(
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-    "<Rendezvous Name=\"%1\">"
-    "<Environment>"
-    "<CentralBody Name=\"Earth\">"
-    "<GravityModel>"
-    "<ModelName>ModelName</ModelName>"
-    "<NumberOfZonals>0</NumberOfZonals>"
-    "<NumberOfTesserals>0</NumberOfTesserals>"
-    "</GravityModel>"
-    "<AtmosphereModel>AtmosphereModel</AtmosphereModel>"
-    "</CentralBody>"
-    "<AtmosphericDrag>0</AtmosphericDrag>"
-    "<SolarPressure>0</SolarPressure>"
-    "</Environment>"
-    "<SimulationParameters>"
-    "<Timeline>"
-    "<StartTime>2011-00-00T00:00:00</StartTime>"
-    "<StepTime units=\"s\">60</StepTime>"
-    "</Timeline>"
-    "<InitialStatePosition>"
-    "<CoordinateSystem>INERTIAL J2000</CoordinateSystem>"
-    "<StateVector>"
-    "<x>0</x>"
-    "<y>0</y>"
-    "<z>0</z>"
-    "<vx>0</vx>"
-    "<vy>0</vy>"
-    "<vz>0</vz>"
-    "</StateVector>"
-    "</InitialStatePosition>"
-    "</SimulationParameters>"
-    "<Target></Target>"
-    "<ManoeuvrePlan></ManoeuvrePlan>"
-    "</Rendezvous>"
-    );
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+            "<Rendezvous Name=\"%1\">"
+            "<Environment>"
+            "<CentralBody Name=\"Earth\">"
+            "<GravityModel>"
+            "<ModelName>ModelName</ModelName>"
+            "<NumberOfZonals>0</NumberOfZonals>"
+            "<NumberOfTesserals>0</NumberOfTesserals>"
+            "</GravityModel>"
+            "<AtmosphereModel>AtmosphereModel</AtmosphereModel>"
+            "</CentralBody>"
+            "<AtmosphericDrag>0</AtmosphericDrag>"
+            "<SolarPressure>0</SolarPressure>"
+            "</Environment>"
+            "<SimulationParameters>"
+            "<Timeline>"
+            "<StartTime>2011-00-00T00:00:00</StartTime>"
+            "<StepTime units=\"s\">60</StepTime>"
+            "</Timeline>"
+            "<InitialStatePosition>"
+            "<CoordinateSystem>INERTIAL J2000</CoordinateSystem>"
+            "<StateVector>"
+            "<x>0</x>"
+            "<y>0</y>"
+            "<z>0</z>"
+            "<vx>0</vx>"
+            "<vy>0</vy>"
+            "<vz>0</vz>"
+            "</StateVector>"
+            "</InitialStatePosition>"
+            "</SimulationParameters>"
+            "<Target></Target>"
+            "<ManoeuvrePlan></ManoeuvrePlan>"
+            "</Rendezvous>"
+            );
 
     return xmlTemplate.arg(QString(name)).toUtf8();
 }

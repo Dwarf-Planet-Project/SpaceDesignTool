@@ -25,6 +25,7 @@
  Modified by Valentino Zuccarelli on 14th June 2009
  Extensively modified by Guillermo to hold TLEs on October 2009
  Extensively modified by Guillermo to accomodate payloads April 2010
+ Modified by Guillermo August 2010 to add maneuvers
  */
 
 
@@ -530,6 +531,10 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
     if (elementName == "tns:DeltaV")
         trajectory = ScenarioDeltaVType::create(element);  // Guillermo says: creating the maneuver as a trajectory arc
 
+
+
+
+
     if (participant)
     {
         ScenarioObject* parentObject = objectForItem(parent);
@@ -548,7 +553,7 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
 
         return true;
     }
-    else if (trajectory && elementName != "tns:EntryArc")
+    else if (trajectory && elementName != "tns:EntryArc" && elementName != "tns:DeltaV")
     {
         ScenarioObject* parentObject = objectForItem(parent);
         ScenarioTrajectoryPlan* trajectoryPlan = dynamic_cast<ScenarioTrajectoryPlan*>(parentObject);
@@ -564,7 +569,40 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
             return false;
         }
     }
-    else if (trajectory && elementName=="tns:EntryArc") // Added by Dominic to drop entry trajectory
+    else if (trajectory && elementName == "tns:DeltaV")
+    {
+        ScenarioObject* parentObject = objectForItem(parent);
+        ScenarioTrajectoryPlan* trajectoryPlan = dynamic_cast<ScenarioTrajectoryPlan*>(parentObject);
+        if (trajectoryPlan)
+        {
+            int numberOfArcs = trajectoryPlan->children().size();
+            if (numberOfArcs > 0)
+            {
+                const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList = trajectoryPlan->AbstractTrajectory();
+                QSharedPointer<ScenarioAbstractTrajectoryType> thePreviousTrajectory = trajectoryList.at(numberOfArcs - 1);
+                if (dynamic_cast<ScenarioLoiteringType*>(thePreviousTrajectory.data()))
+                {
+                    // Adding the delta V into the trajectory plan (todo: add if after the loitering arc)
+                    trajectoryPlan->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
+                    QTreeWidgetItem* trajectoryItem = new QTreeWidgetItem(parent);
+                    addScenarioItems(trajectoryItem, trajectory);
+
+                    // Passing information from the previous arc into the current deltaV
+                    ScenarioLoiteringType* thePreviousLoiteringArc = dynamic_cast<ScenarioLoiteringType*>(thePreviousTrajectory.data());
+                    QSharedPointer<ScenarioAbstractTrajectoryType> theCurrentManeuver = trajectoryList.at(numberOfArcs);
+                    ScenarioDeltaVType* theCurrentDeltaV = dynamic_cast<ScenarioDeltaVType*>(theCurrentManeuver.data());
+                    theCurrentDeltaV->TimeLine()->setStartTime(thePreviousLoiteringArc->TimeLine()->EndTime()); // concatenating the times for the mission arcs
+
+                    return true;
+                }
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else if (trajectory && elementName == "tns:EntryArc") // Added by Dominic to drop entry trajectory
     {
         ScenarioObject* parentObject = objectForItem(parent);
         ScenarioREVTrajectoryPlanType* trajectoryPlan = dynamic_cast<ScenarioREVTrajectoryPlanType*>(parentObject);
