@@ -225,6 +225,66 @@ private:
 };
 
 
+// Special version of VESTA's label geometry that changes color according
+// to the currently active mission arc.
+//
+// TODO: VESTA will eventually have a TimeSwitchedGeometry class which will
+// make this special case unnecessary.
+class MulticolorLabelGeometry : public LabelGeometry
+{
+public:
+    MulticolorLabelGeometry(const SpaceObject* spaceObj, LabelGeometry* label) :
+        m_spaceObject(spaceObj),
+        m_label(label)
+    {
+    }
+
+    LabelGeometry* label() const
+    {
+        return m_label.ptr();
+    }
+
+    virtual void render(RenderContext& rc,
+                        float cameraDistance,
+                        double t) const
+    {
+        double mjd = secsSinceJ2000ToMjd(t);
+
+        // Linear search for the current arc
+        Spectrum color;
+        foreach (MissionArc* arc, m_spaceObject->mission())
+        {
+            if (mjd >= arc->beginning() && mjd < arc->ending())
+            {
+                QColor arcColor = arc->arcTrajectoryColor();
+                color = Spectrum(arcColor.redF(), arcColor.greenF(), arcColor.blueF());
+            }
+        }
+
+        // Set the label and icon to the same color
+        m_label->setColor(color);
+        m_label->setIconColor(color);
+
+        m_label->render(rc, cameraDistance, t);
+    }
+
+    virtual float boundingSphereRadius() const
+    {
+        return m_label->boundingSphereRadius();
+    }
+
+    virtual bool isOpaque() const
+    {
+        return m_label->isOpaque();
+    }
+
+
+private:
+    const SpaceObject* m_spaceObject;
+    counted_ptr<LabelGeometry> m_label;
+};
+
+
 // QImage based TextureLoader implementation
 class QtTextureLoader : public TextureMapLoader
 {
@@ -982,7 +1042,7 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
     LabelGeometry* label = new LabelGeometry(spaceObj->name().toUtf8().data(), m_labelFont.ptr(), spaceObjColor, 7.0f);
     label->setIcon(m_spacecraftIcon.ptr());
     label->setIconColor(spaceObjColor);
-    Visualizer* visualizer = new Visualizer(label);
+    Visualizer* visualizer = new Visualizer(new MulticolorLabelGeometry(spaceObj, label));
     visualizer->setDepthAdjustment(Visualizer::AdjustToFront);
     body->setVisualizer("label", visualizer);
 
