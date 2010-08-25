@@ -24,6 +24,8 @@ namespace vesta
 class ConstellationsLayer : public SkyLayer
 {
 public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
     explicit ConstellationsLayer(StarCatalog* starCatalog);
     ~ConstellationsLayer();
 

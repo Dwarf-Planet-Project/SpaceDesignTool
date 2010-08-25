@@ -53,10 +53,10 @@ public:
     }
 
     const void* mapReadOnly();
-    void* mapWriteOnly();
+    void* mapWriteOnly(bool discardContents = true);
     void* mapReadWrite();
 
-    void unmap();
+    bool unmap();
     bool isMapped() const
     {
         return m_isMapped;
@@ -73,6 +73,8 @@ private:
 private:
     GLenum m_target;
     GLuint m_handle;
+    unsigned int m_size;
+    GLenum m_usage;
     bool m_valid;
     bool m_isMapped;
 };

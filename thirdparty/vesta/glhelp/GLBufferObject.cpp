@@ -35,6 +35,8 @@ using namespace vesta;
 GLBufferObject::GLBufferObject(GLuint target, unsigned int size, GLenum usage, const void* data) :
     m_target(target),
     m_handle(0),
+    m_size(size),
+    m_usage(usage),
     m_valid(false),
     m_isMapped(false)
 {
@@ -135,20 +137,25 @@ GLBufferObject::map(GLenum access)
 }
 
 
-/** Unmap the buffer.
+/** Unmap the buffer. Returns false if the buffer data was lost while the
+  * buffer was mapped (which means that the buffer shouldn't be drawn, since
+  * it contains undefined data.)
   */
-void
+bool
 GLBufferObject::unmap()
 {
     if (!m_isMapped)
     {
         VESTA_WARNING("Attempted to unmap a buffer that isn't mapped.");
+        return true;
     }
     else
     {
         bind();
-        glUnmapBuffer(m_target);
+        bool lost = glUnmapBuffer(m_target) == GL_FALSE;
         m_isMapped = false;
+
+        return !lost;
     }
 }
 
@@ -164,13 +171,27 @@ GLBufferObject::mapReadOnly()
 }
 
 
-/** Map a vertex buffer for write-only access. Returns a pointer to the
+/** Map a buffer for write-only access. Returns a pointer to the
   *  buffer contents mapped into memory or null if there was an error.
   *  map() returns null if the buffer is already mapped.
+  *
+  * The discardContents flag specifies whether the contents should be
+  * preserved (discardContents = false) or thrown away. Better performance
+  * is possible when contents are discarded, as this allows the driver
+  * to optimize GPU/CPU parallelism through buffer renaming.
   */
 void*
-GLBufferObject::mapWriteOnly()
+GLBufferObject::mapWriteOnly(bool discardContents)
 {
+    if (discardContents)
+    {
+        bind();
+
+        // The ARB_vertex_buffer_object spec says specifying NULL data is a
+        // hint to the GL driver that the buffer data doesn't need to be
+        // preserved.
+        glBufferData(m_target, m_size, NULL, m_usage);
+    }
     return map(GL_WRITE_ONLY);
 }
 

@@ -1,5 +1,5 @@
 /*
- * $Revision: 444 $ $Date: 2010-08-19 23:05:09 -0700 (Thu, 19 Aug 2010) $
+ * $Revision: 451 $ $Date: 2010-08-23 09:33:46 -0700 (Mon, 23 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -375,7 +375,7 @@ static void generateUnlitShader(ostream& vertex, ostream& fragment, const Shader
 {
     vertex << "void main()" << endl;
     vertex << "{" << endl;
-    if (shaderInfo.textures() != 0)
+    if (shaderInfo.hasTextureCoord())
     {
         vertex << "    texCoord = gl_MultiTexCoord0.xy;" << endl;
     }
@@ -506,7 +506,7 @@ static void generateBlinnPhongShader(ostream& vertex, ostream& fragment, const S
 
     vertex << "void main()" << endl;
     vertex << "{" << endl;
-    if (shaderInfo.textures() != 0)
+    if (shaderInfo.hasTextureCoord())
     {
         vertex << "    texCoord = gl_MultiTexCoord0.xy;" << endl;
     }
@@ -793,7 +793,7 @@ static void generateParticulateShader(ostream& vertex, ostream& fragment, const 
 
     vertex << "void main()" << endl;
     vertex << "{" << endl;
-    if (shaderInfo.textures() != 0)
+    if (shaderInfo.hasTextureCoord())
     {
         vertex << "    texCoord = gl_MultiTexCoord0.xy;" << endl;
     }
@@ -920,7 +920,7 @@ ShaderBuilder::generateShader(const ShaderInfo& shaderInfo) const
     // Version header (disabled for now)
     // fragment << "#version 120" << endl;
 
-    if (shaderInfo.textures() != 0)
+    if (shaderInfo.hasTextureCoord())
     {
         declareVarying(vertex, fragment, "vec2", "texCoord");
     }

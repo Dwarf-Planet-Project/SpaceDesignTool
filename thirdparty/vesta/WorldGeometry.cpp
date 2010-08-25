@@ -1,5 +1,5 @@
 /*
- * $Revision: 423 $ $Date: 2010-08-11 21:30:49 -0700 (Wed, 11 Aug 2010) $
+ * $Revision: 461 $ $Date: 2010-08-25 09:19:13 -0700 (Wed, 25 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -17,6 +17,7 @@
 #include "ShaderBuilder.h"
 #include "Atmosphere.h"
 #include "PlanetaryRings.h"
+//#include "VertexBuffer.h"
 #include "Debug.h"
 #include <Eigen/LU>
 #include <algorithm>
@@ -27,7 +28,11 @@ using namespace Eigen;
 using namespace std;
 
 
+// TODO: Quadtree code is mature; old rendering code should be removed, as it is
+// considerably slower and doesn't support high levels of detail.
 #define USE_QUADTREE 1
+#define QUADTREE_ATMOSPHERE 1
+
 #define DEBUG_QUADTREE 0
 
 
@@ -71,6 +76,7 @@ class QuadtreeTileAllocator;
 
 struct CullingPlaneSet
 {
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     Hyperplane<float, 3> planes[6];
 };
 
@@ -302,7 +308,7 @@ QuadtreeTile::tessellate(const Vector3f& eyePosition,
 
     // Compute the approximate altitude of the eye point. This is the exact altitude when the
     // world is a sphere, but larger than the actual altitude for other ellipsoids.
-    float approxAltitude = eyePosition.norm() - (eyePosition.normalized().cwise() * globeSemiAxes).norm();
+    float approxAltitude = abs(eyePosition.norm() - (eyePosition.normalized().cwise() * globeSemiAxes).norm());
 
     // Compute the approximate projected size of the tile.
     float distanceToTile = max(approxAltitude, (eyePosition - m_center).norm() - m_boundingSphereRadius);
@@ -517,6 +523,7 @@ QuadtreeTile::render(RenderContext& rc, const MapLayer& layer) const
 void
 QuadtreeTile::drawPatch(RenderContext& rc, unsigned int features) const
 {
+    const unsigned int MaxVertexSize = 11;
     unsigned int vertexStride = 8;
     if ((features & NormalMap) != 0)
     {
@@ -526,8 +533,7 @@ QuadtreeTile::drawPatch(RenderContext& rc, unsigned int features) const
     const unsigned int vertexCount = (TileSubdivision + 1) * (TileSubdivision + 1);
     const unsigned int triangleCount = TileSubdivision * TileSubdivision * 2;
 	
-    float *vertexData;
-	vertexData = (float *) malloc(sizeof(float)*vertexCount*vertexStride);
+    float vertexData[vertexCount * MaxVertexSize];
 
     v_uint16 indexData[triangleCount * 3];
 
@@ -641,8 +647,6 @@ QuadtreeTile::drawPatch(RenderContext& rc, unsigned int features) const
     glDrawElements(GL_TRIANGLES, triangleCount * 3, GL_UNSIGNED_SHORT, indexData);
 
     s_TilesDrawn++;
-	
-	free(vertexData);
 }
 
 
@@ -1030,6 +1034,108 @@ WorldGeometry::~WorldGeometry()
 }
 
 
+// Calculate the horizon distance; we'll just approximate this for non-spherical
+// bodies, using an estimate that will always be greater than or equal to the
+// actual horizon distance (thus ensuring that we don't clip anything that should
+// be visible.
+static float
+HorizonDistance(const Vector3f& eyePosition, const Vector3f& ellipsoidAxes)
+{
+    float approxAltitude = eyePosition.norm() - ellipsoidAxes.minCoeff() * 0.5f;
+    float horizonDistance = 0.0f;
+    if (approxAltitude > 0.0f)
+    {
+        float r = ellipsoidAxes.maxCoeff() * 0.5f;
+        horizonDistance = sqrt((2 * r + approxAltitude) * approxAltitude);
+    }
+
+    return horizonDistance;
+}
+
+
+// Calculate the distance between an observer and the most distant point of the
+// atmosphere geometry that will be visible (i.e. not below the horizon)
+static float
+CloudShellDistance(const Vector3f& eyePosition, const Vector3f& ellipsoidAxes, float cloudHeight)
+{
+    float planetRadius = ellipsoidAxes.maxCoeff() * 0.5f;
+    float shellRadius = planetRadius + cloudHeight;
+    float cloudScale = shellRadius / planetRadius;
+
+    Vector3f shellEllipsoidAxes = ellipsoidAxes * cloudScale;
+
+    // Altitude above the planet
+    float approxAltitudePlanet = eyePosition.norm() - ellipsoidAxes.minCoeff() * 0.5f;
+    float approxAltitudeCloud = eyePosition.norm() - shellEllipsoidAxes.minCoeff() * 0.5f;
+
+    float maxCloudDistance = 0.0f;
+    if (approxAltitudeCloud > 0.0f)
+    {
+        // Observer is above cloud layer
+        float r = shellEllipsoidAxes.maxCoeff() * 0.5f;
+        maxCloudDistance = sqrt((2 * r + approxAltitudeCloud) * approxAltitudeCloud);
+    }
+    else if (approxAltitudePlanet > 0.0f)
+    {
+        // Observer is in between planet surface and cloud layer
+        float r = ellipsoidAxes.maxCoeff() * 0.5f;
+        float horizonDistance = sqrt((2 * r + approxAltitudePlanet) * approxAltitudePlanet);
+        maxCloudDistance = horizonDistance + sqrt(max(0.0f, shellRadius * shellRadius - planetRadius * planetRadius));
+    }
+    else
+    {
+        // Observer is inside the planet--hide the clouds
+        maxCloudDistance = 0.0f;
+    }
+
+    return maxCloudDistance;
+}
+
+
+// Calculate the distance between an observer and the most distant point of the
+// atmosphere geometry that will be visible (i.e. not below the horizon)
+static void
+AtmosphereShellDistance(const Vector3f& eyePosition, const Vector3f& ellipsoidAxes, float atmHeight,
+                        float *minAtmDistance, float* maxAtmDistance)
+{
+    float planetRadius = ellipsoidAxes.maxCoeff() * 0.5f;
+    float shellRadius = planetRadius + atmHeight;
+    float atmScale = shellRadius / planetRadius;
+
+    Vector3f shellEllipsoidAxes = ellipsoidAxes * atmScale;
+
+    // Altitude above the planet
+    float approxAltitudePlanet = eyePosition.norm() - ellipsoidAxes.minCoeff() * 0.5f;
+    float approxAltitudeShell = eyePosition.norm() - shellEllipsoidAxes.minCoeff() * 0.5f;
+
+    if (approxAltitudePlanet > 0.0f)
+    {
+        // Observer is above the planet
+        float r = ellipsoidAxes.maxCoeff() * 0.5f;
+        float horizonDistance = sqrt((2 * r + approxAltitudePlanet) * approxAltitudePlanet);
+        *maxAtmDistance = horizonDistance + sqrt(max(0.0f, shellRadius * shellRadius - planetRadius * planetRadius));
+    }
+    else
+    {
+        // Observer is inside the planet--hide the atmosphere
+        *maxAtmDistance = 0.0f;
+    }
+
+    // Since we're rendering just the back of the atmosphere shell, we can cull the front
+    // patches. If the observer is outside the atmosphere, the near plane distance can be
+    // set to the horizon distance for the atmosphere shell.
+    if (approxAltitudeShell > 0.0f && 0)
+    {
+        float r = shellEllipsoidAxes.maxCoeff() * 0.5f;
+        *minAtmDistance = sqrt((2 * r + approxAltitudeShell) * approxAltitudeShell);
+    }
+    else
+    {
+        *minAtmDistance = 0.0f;
+    }
+}
+
+
 void
 WorldGeometry::render(RenderContext& rc,
                       float cameraDistance,
@@ -1037,9 +1143,12 @@ WorldGeometry::render(RenderContext& rc,
 {
     // Determine the level of detail
     float radius = maxRadius();
+
+#if !QUADTREE_ATMOSPHERE
     float cameraAltitude = cameraDistance;
     float projectedSizeInPixels = (radius / rc.pixelSize()) / max(cameraAltitude, radius * 0.001f);
-    int subdivisions = (int) max(8.0f, min(50.0f, projectedSizeInPixels / 20));
+    int subdivisions = (int) max(8.0f, min(48.0f, projectedSizeInPixels / 20));
+#endif
 
     // Get the position of the eye in model coordinates *before* scaling
     Transform3f invModelView = Transform3f(rc.modelview().inverse());
@@ -1137,14 +1246,14 @@ WorldGeometry::render(RenderContext& rc,
         material.setNormalTexture(m_normalMap.ptr());
         rc.bindMaterial(&material);
 #if !USE_QUADTREE
-        renderNormalMappedSphere(subdivisions);
+        renderNormalMappedSphere(rc, subdivisions);
 #endif
     }
     else
     {
         rc.bindMaterial(&material);
 #if !USE_QUADTREE
-        renderSphere(subdivisions);
+        renderSphere(rc, subdivisions);
 #endif
     }
 
@@ -1262,7 +1371,37 @@ WorldGeometry::render(RenderContext& rc,
         m_cloudMap->makeResident();
         if (m_cloudMap->isResident())
         {
-            renderSphere(max(int(TileSubdivision * 2), subdivisions));
+#if QUADTREE_ATMOSPHERE
+            Vector3f cloudSemiAxes = m_ellipsoidAxes * 0.5f * scale;
+
+            m_tileAllocator->clear();
+            QuadtreeTile* westHemi = m_tileAllocator->newRootTile(0, 0, Vector2f(-1.0f, -0.5f), 1.0f, cloudSemiAxes);
+            QuadtreeTile* eastHemi = m_tileAllocator->newRootTile(0, 1, Vector2f( 0.0f, -0.5f), 1.0f, cloudSemiAxes);
+
+            // Set up the neighbor connections for the root nodes. Since the map wraps,
+            // the eastern hemisphere is both the east and west neighbor of the western
+            // hemisphere (and vice versa.) There are no north and south neighbors.
+            westHemi->setNeighbor(QuadtreeTile::West, eastHemi);
+            westHemi->setNeighbor(QuadtreeTile::East, eastHemi);
+            eastHemi->setNeighbor(QuadtreeTile::West, westHemi);
+            eastHemi->setNeighbor(QuadtreeTile::East, westHemi);
+
+            // Adjust the distance of the far plane.
+            float maxCloudDistance = CloudShellDistance(eyePosition, m_ellipsoidAxes, m_cloudAltitude);
+            farDistance = max(viewFrustum.nearZ, min(maxCloudDistance, viewFrustum.farZ));
+            cullingPlanes.planes[5].coeffs() = modelviewTranspose * Vector4f(0.0f, 0.0f,  1.0f, farDistance);
+
+            float splitThreshold = rc.pixelSize() * MaxTileSquareSize * TileSubdivision;
+            westHemi->tessellate(eyePosition, cullingPlanes, cloudSemiAxes, splitThreshold, rc.pixelSize());
+            eastHemi->tessellate(eyePosition, cullingPlanes, cloudSemiAxes, splitThreshold, rc.pixelSize());
+
+            s_TilesDrawn = 0;
+            rc.setVertexInfo(VertexSpec::PositionNormalTex);
+            westHemi->render(rc, 0);
+            eastHemi->render(rc, 0);
+#else
+            renderSphere(rc, max(int(TileSubdivision * 2), subdivisions));
+#endif
         }
         glCullFace(GL_BACK);
 
@@ -1292,7 +1431,44 @@ WorldGeometry::render(RenderContext& rc,
         atmosphereMaterial.setOpacity(0.0f);
         atmosphereMaterial.setBlendMode(Material::PremultipliedAlphaBlend);
         rc.bindMaterial(&atmosphereMaterial);
-        renderSphere(subdivisions);
+
+#if QUADTREE_ATMOSPHERE
+        Vector3f atmSemiAxes = m_ellipsoidAxes * 0.5f * scale;
+
+        m_tileAllocator->clear();
+        QuadtreeTile* westHemi = m_tileAllocator->newRootTile(0, 0, Vector2f(-1.0f, -0.5f), 1.0f, atmSemiAxes);
+        QuadtreeTile* eastHemi = m_tileAllocator->newRootTile(0, 1, Vector2f( 0.0f, -0.5f), 1.0f, atmSemiAxes);
+
+        // Set up the neighbor connections for the root nodes. Since the map wraps,
+        // the eastern hemisphere is both the east and west neighbor of the western
+        // hemisphere (and vice versa.) There are no north and south neighbors.
+        westHemi->setNeighbor(QuadtreeTile::West, eastHemi);
+        westHemi->setNeighbor(QuadtreeTile::East, eastHemi);
+        eastHemi->setNeighbor(QuadtreeTile::West, westHemi);
+        eastHemi->setNeighbor(QuadtreeTile::East, westHemi);
+
+        // Adjust the distance of the near and far planes so that as much of the atmosphere
+        // shell geometry as possible is culled.
+        float maxAtmosphereDistance = 0.0f;
+        float minAtmosphereDistance = 0.0f;
+        AtmosphereShellDistance(eyePosition, m_ellipsoidAxes, m_atmosphere->transparentHeight(),
+                                &minAtmosphereDistance, &maxAtmosphereDistance);
+        farDistance = max(viewFrustum.nearZ, min(maxAtmosphereDistance, viewFrustum.farZ));
+        cullingPlanes.planes[5].coeffs() = modelviewTranspose * Vector4f(0.0f, 0.0f,  1.0f, farDistance);
+        float nearDistance = max(viewFrustum.nearZ, min(minAtmosphereDistance, viewFrustum.nearZ));
+        cullingPlanes.planes[4].coeffs() = modelviewTranspose * Vector4f(0.0f, 0.0f, -1.0f, -nearDistance);
+
+        float splitThreshold = rc.pixelSize() * MaxTileSquareSize * TileSubdivision;
+        westHemi->tessellate(eyePosition, cullingPlanes, atmSemiAxes, splitThreshold, rc.pixelSize());
+        eastHemi->tessellate(eyePosition, cullingPlanes, atmSemiAxes, splitThreshold, rc.pixelSize());
+
+        s_TilesDrawn = 0;
+        rc.setVertexInfo(VertexSpec::PositionNormalTex);
+        westHemi->render(rc, 0);
+        eastHemi->render(rc, 0);
+#else
+        renderSphere(rc, subdivisions);
+#endif
 
         rc.popModelView();
         glCullFace(GL_BACK);
@@ -1359,14 +1535,332 @@ WorldGeometry::render(RenderContext& rc,
 }
 
 
-void
-WorldGeometry::renderSphere(int subdivisions) const
+#if USE_VBO
+class VertexWriter
 {
+public:
+    VertexWriter(RenderContext& rc, VertexBuffer* vb, const VertexSpec& spec, PrimitiveBatch::PrimitiveType primType) :
+        m_rc(rc),
+        m_vb(vb),
+        m_spec(spec),
+        m_primType(primType),
+        m_vbSize(vb->size() / spec.size()),
+        m_vertexSizeInFloats(spec.size() / sizeof(float)),
+        m_count(0),
+        m_limit(m_vbSize - 4),
+        m_buffer(NULL),
+        m_isMapped(false)
+    {
+        m_buffer = reinterpret_cast<float*>(vb->mapWriteOnly());
+        m_isMapped = true;
+    }
+
+    ~VertexWriter()
+    {
+        checkFlush();
+        if (m_isMapped)
+        {
+            m_vb->unmap();
+        }
+    }
+
+    inline void vertex(const Vector3f& position, const Vector3f& normal, const Vector2f& texCoord)
+    {
+        unsigned int offset = m_count * m_vertexSizeInFloats;
+        m_buffer[offset + 0] = position.x();
+        m_buffer[offset + 1] = position.y();
+        m_buffer[offset + 2] = position.z();
+        m_buffer[offset + 3] = normal.x();
+        m_buffer[offset + 4] = normal.y();
+        m_buffer[offset + 5] = normal.z();
+        m_buffer[offset + 6] = texCoord.x();
+        m_buffer[offset + 7] = texCoord.y();
+
+        ++m_count;
+        if (m_count >= m_limit)
+        {
+            checkFlush();
+        }
+    }
+
+    void checkFlush()
+    {
+        bool done = false;
+        unsigned int primCount = 0;
+
+        switch (m_primType)
+        {
+        case PrimitiveBatch::TriangleFan:
+        case PrimitiveBatch::TriangleStrip:
+            done = m_count > 2;
+            primCount = m_count - 2;
+            break;
+         case PrimitiveBatch::LineStrip:
+            done = m_count > 1;
+            primCount = m_count - 1;
+            break;
+         case PrimitiveBatch::Triangles:
+            done = m_count % 3 == 0;
+            primCount = m_count / 3;
+            break;
+         case PrimitiveBatch::Lines:
+            done = m_count & 0x1 == 0;
+            primCount = m_count / 2;
+            break;
+         default:
+            primCount = m_count;
+            done = true;
+        }
+
+        if (done)
+        {
+            flush(primCount);
+            m_buffer = reinterpret_cast<float*>(m_vb->mapWriteOnly());
+            m_isMapped = true;
+        }
+    }
+
+    void flush(unsigned int primCount)
+    {
+        if (m_vb->unmap())
+        {
+            if (primCount != 0)
+            {
+                m_rc.bindVertexBuffer(m_spec, m_vb, m_spec.size());
+                m_rc.drawPrimitives(PrimitiveBatch(m_primType, primCount));
+            }
+        }
+        m_isMapped = false;
+        m_count = 0;
+    }
+
+private:
+    RenderContext& m_rc;
+    VertexBuffer* m_vb;
+    const VertexSpec& m_spec;
+    PrimitiveBatch::PrimitiveType m_primType;
+
+    unsigned int m_vbSize;
+    unsigned int m_vertexSizeInFloats;
+    unsigned int m_count;
+    unsigned int m_limit;
+    float* m_buffer;
+
+    bool m_isMapped;
+};
+#endif
+
+
+#if RENDER_SPHERE_AS_PATCHES
+static v_uint16* PatchIndices = NULL;
+static void renderPatch(RenderContext& rc, const Vector2f& southwest, float extent, unsigned int features)
+{
+    const unsigned int MaxVertexSize = 11;
+    unsigned int vertexStride = 8;
+    if ((features & 0x1) != 0)
+    {
+        vertexStride = 11;
+    }
+
+    const unsigned int vertexCount = (TileSubdivision + 1) * (TileSubdivision + 1);
+    const unsigned int triangleCount = TileSubdivision * TileSubdivision * 2;
+
+    float vertexData[vertexCount * MaxVertexSize];
+    //VertexBuffer* vb = rc.vertexStreamBuffer();
+    //float* vertexData = reinterpret_cast<float*>(vb->mapWriteOnly(true));
+
+    unsigned int vertexIndex = 0;
+
+    float tileArc = float(PI) * extent;
+    float lonWest = float(PI) * southwest.x();
+    float latSouth = float(PI) * southwest.y();
+    float dlon = tileArc / float(TileSubdivision);
+    float dlat = tileArc / float(TileSubdivision);
+    float du = extent / float(TileSubdivision);
+    float dv = extent / float(TileSubdivision);
+
+
+    for (unsigned int i = 0; i <= TileSubdivision; ++i)
+    {
+        float v = southwest.y() + i * dv;
+        float lat = latSouth + i * dlat;
+        float cosLat = cos(lat);
+        float sinLat = sin(lat);
+
+        if ((features & 0x1) != 0)
+        {
+            for (unsigned int j = 0; j <= TileSubdivision; ++j)
+            {
+                unsigned int vertexStart = vertexStride * vertexIndex;
+
+                float lon = lonWest + j * dlon;
+                float u = southwest.x() + j * du;
+
+                float cosLon = cos(lon);
+                float sinLon = sin(lon);
+
+                Vector3f p(cosLat * cos(lon), cosLat * sin(lon), sinLat);
+
+                // Position
+                vertexData[vertexStart + 0]  = p.x();
+                vertexData[vertexStart + 1]  = p.y();
+                vertexData[vertexStart + 2]  = p.z();
+
+                // Vertex normal
+                vertexData[vertexStart + 3]  = p.x();
+                vertexData[vertexStart + 4]  = p.y();
+                vertexData[vertexStart + 5]  = p.z();
+
+                // Texture coordinate
+                vertexData[vertexStart + 6]  = u * 0.5f + 0.5f;
+                vertexData[vertexStart + 7]  = 0.5f - v;
+
+                // Tangent (we use dP/du), where P(u,v) is the sphere parametrization
+                vertexData[vertexStart + 8]  = -sinLon;
+                vertexData[vertexStart + 9]  = cosLon;
+                vertexData[vertexStart + 10] = 0.0f;
+
+                ++vertexIndex;
+            }
+        }
+        else
+        {
+            for (unsigned int j = 0; j <= TileSubdivision; ++j)
+            {
+                unsigned int vertexStart = vertexStride * vertexIndex;
+
+                float lon = lonWest + j * dlon;
+                float u = southwest.x() + j * du;
+
+                Vector3f p(cosLat * cos(lon), cosLat * sin(lon), sinLat);
+                vertexData[vertexStart + 0] = p.x();
+                vertexData[vertexStart + 1] = p.y();
+                vertexData[vertexStart + 2] = p.z();
+                vertexData[vertexStart + 3] = p.x();
+                vertexData[vertexStart + 4] = p.y();
+                vertexData[vertexStart + 5] = p.z();
+                vertexData[vertexStart + 6] = u * 0.5f + 0.5f;
+                vertexData[vertexStart + 7] = 0.5f - v;
+
+                ++vertexIndex;
+            }
+        }
+    }
+
+
+    unsigned int triangleIndex = 0;
+
+    if (PatchIndices == NULL)
+    {
+        PatchIndices = new v_uint16[triangleCount * 3];
+
+        for (unsigned int i = 0; i < TileSubdivision; ++i)
+        {
+            for (unsigned int j = 0; j < TileSubdivision; ++j)
+            {
+                v_uint16 i00 = v_uint16(i * (TileSubdivision + 1) + j);
+                v_uint16 i01 = i00 + 1;
+                v_uint16 i10 = i00 + v_uint16(TileSubdivision + 1);
+                v_uint16 i11 = i10 + 1;
+
+                PatchIndices[triangleIndex * 3 + 0] = i00;
+                PatchIndices[triangleIndex * 3 + 1] = i01;
+                PatchIndices[triangleIndex * 3 + 2] = i11;
+                ++triangleIndex;
+
+                PatchIndices[triangleIndex * 3 + 0] = i00;
+                PatchIndices[triangleIndex * 3 + 1] = i11;
+                PatchIndices[triangleIndex * 3 + 2] = i10;
+                ++triangleIndex;
+            }
+        }
+    }
+
+    //vb->unmap();
+
+    if ((features & 0x1) != 0)
+    {
+        //rc.bindVertexBuffer(PositionNormalTexTangent, vb, vertexStride * 4);
+        rc.bindVertexArray(PositionNormalTexTangent, vertexData, vertexStride * 4);
+    }
+    else
+    {
+        //rc.bindVertexBuffer(VertexSpec::PositionNormalTex, vb, vertexStride * 4);
+        rc.bindVertexArray(VertexSpec::PositionNormalTex, vertexData, vertexStride * 4);
+    }
+
+    glDrawElements(GL_TRIANGLES, triangleCount * 3, GL_UNSIGNED_SHORT, PatchIndices);
+
+    s_TilesDrawn++;
+}
+
+
+void
+WorldGeometry::renderSphere(RenderContext& rc, int subdivisions) const
+{
+    unsigned int latPatchCount = (subdivisions * 2 + TileSubdivision - 1) / TileSubdivision;
+    unsigned int lonPatchCount = 2 * latPatchCount;
+
+    float patchExtent = 1.0f / float(latPatchCount);
+    for (unsigned int latPatch = 0; latPatch < latPatchCount; ++latPatch)
+    {
+        for (unsigned int lonPatch = 0; lonPatch < lonPatchCount; ++lonPatch)
+        {
+            ::renderPatch(rc, Vector2f(-1.0f + lonPatch * patchExtent, -0.5f + latPatch * patchExtent), patchExtent, 0);
+        }
+    }
+}
+#endif
+
+
+void
+WorldGeometry::renderSphere(RenderContext& rc, int subdivisions) const
+{
+    //VertexBuffer* vb = rc.vertexStreamBuffer();
+
     float lastSinPhi = -1.0f;
     float lastCosPhi = 0.0f;
     float lastTexT = 1.0f;
 
+#if 0
+    VertexWriter writer(rc, vb, VertexSpec::PositionNormalTex, PrimitiveBatch::TriangleStrip);
+
     // Render latitudinal bands
+    for (int band = -subdivisions + 1; band <= subdivisions; band++)
+    {
+        float t = (float) (band) / (float) subdivisions;
+        float phi = t * (float) PI / 2;
+        float sinPhi = std::sin(phi);
+        float cosPhi = std::cos(phi);
+
+        float texT = (1.0f - t) * 0.5f;
+
+        for (int slice = 0; slice < subdivisions * 4; slice++)
+        {
+            float u = (float) slice / (float) (subdivisions * 4);
+            float theta = u * 2.0f * (float) PI;
+            float sinTheta = std::sin(theta);
+            float cosTheta = std::cos(theta);
+            float texS = u;
+
+            Vector3f v0(lastCosPhi * cosTheta, lastCosPhi * sinTheta, lastSinPhi);
+            Vector3f v1(cosPhi * cosTheta,     cosPhi * sinTheta, sinPhi);
+
+            writer.vertex(v1, v1, Vector2f(texS, texT));
+            writer.vertex(v0, v0, Vector2f(texS, lastTexT));
+        }
+
+        Vector3f v0(lastCosPhi, 0.0f, lastSinPhi);
+        Vector3f v1(cosPhi,     0.0f, sinPhi);
+
+        writer.vertex(v1, v1, Vector2f(1.0f, texT));
+        writer.vertex(v0, v0, Vector2f(1.0f, lastTexT));
+
+        lastSinPhi = sinPhi;
+        lastCosPhi = cosPhi;
+        lastTexT = texT;
+    }
+#else
     for (int band = -subdivisions + 1; band <= subdivisions; band++)
     {
         float t = (float) (band) / (float) subdivisions;
@@ -1412,11 +1906,12 @@ WorldGeometry::renderSphere(int subdivisions) const
         lastCosPhi = cosPhi;
         lastTexT = texT;
     }
+#endif
 }
 
 
 void
-WorldGeometry::renderNormalMappedSphere(int subdivisions) const
+WorldGeometry::renderNormalMappedSphere(RenderContext& /* rc */, int subdivisions) const
 {
     float lastSinPhi = -1.0f;
     float lastCosPhi = 0.0f;

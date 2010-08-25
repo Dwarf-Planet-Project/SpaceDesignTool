@@ -1,5 +1,5 @@
 #
-# $Revision: 445 $ $Date: 2010-08-20 12:32:00 -0700 (Fri, 20 Aug 2010) $
+# $Revision: 459 $ $Date: 2010-08-25 08:30:20 -0700 (Wed, 25 Aug 2010) $
 #
 # Copyright by Astos Solutions GmbH, Germany
 #
@@ -83,6 +83,7 @@ set (SRCS
     UniverseRenderer.cpp
     VelocityVisualizer.cpp
     VertexArray.cpp
+    VertexBuffer.cpp
     VertexPool.cpp
     VertexSpec.cpp
     Visualizer.cpp

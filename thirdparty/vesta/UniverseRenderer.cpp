@@ -1,5 +1,5 @@
 /*
- * $Revision: 439 $ $Date: 2010-08-17 13:25:59 -0700 (Tue, 17 Aug 2010) $
+ * $Revision: 451 $ $Date: 2010-08-23 09:33:46 -0700 (Mon, 23 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -1408,6 +1408,9 @@ UniverseRenderer::renderDepthBufferSpanOmniShadows(const DepthBufferSpan& span,
 
     // Set shadow state in the render context
     m_renderContext->setOmniShadowMap(0, m_omniShadowMap->colorTexture());
+
+    // Restore clear color to black
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
     return true;
 }

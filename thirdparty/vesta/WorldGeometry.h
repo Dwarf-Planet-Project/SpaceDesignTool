@@ -1,5 +1,5 @@
 /*
- * $Revision: 413 $ $Date: 2010-08-06 16:16:26 -0700 (Fri, 06 Aug 2010) $
+ * $Revision: 454 $ $Date: 2010-08-24 16:10:51 -0700 (Tue, 24 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -224,8 +224,8 @@ protected:
                                double* distance) const;
 
 private:
-    void renderSphere(int subdivisions) const;
-    void renderNormalMappedSphere(int subdivisions) const;
+    void renderSphere(RenderContext& rc, int subdivisions) const;
+    void renderNormalMappedSphere(RenderContext& rc, int subdivisions) const;
     void renderPatch(int subdivisions, const MapLayerBounds& box) const;
     void renderBand(int subdivisions,
                     double latStart,

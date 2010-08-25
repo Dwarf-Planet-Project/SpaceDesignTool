@@ -1,5 +1,5 @@
 /*
- * $Revision: 306 $ $Date: 2010-06-28 12:12:28 -0700 (Mon, 28 Jun 2010) $
+ * $Revision: 455 $ $Date: 2010-08-24 17:00:53 -0700 (Tue, 24 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -30,6 +30,8 @@ class DataChunk;
 class Atmosphere : public Object
 {
 public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
     Atmosphere();
     ~Atmosphere();
 
@@ -167,6 +169,8 @@ public:
     void computeScattering(unsigned int heightSamples,
                            unsigned int viewAngleSamples,
                            unsigned int sunAngleSamples);
+
+    void SaveAtmScat(char* filename);
 
     static const double IndexOfRefraction_Air_0;
     static const double IndexOfRefraction_Air_15;

@@ -1,5 +1,5 @@
 /*
- * $Revision: 401 $ $Date: 2010-08-02 17:41:13 -0700 (Mon, 02 Aug 2010) $
+ * $Revision: 437 $ $Date: 2010-08-17 05:04:14 -0700 (Tue, 17 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -15,9 +15,13 @@
 #include "Intersect.h"
 #include "DataChunk.h"
 #include "internal/InputDataStream.h"
+#include "internal/OutputDataStream.h"
 #include <GL/glew.h>
 #include <Eigen/Array>
 #include <cmath>
+
+#include <iostream>
+#include <fstream>
 
 using namespace vesta;
 using namespace Eigen;
@@ -819,4 +823,95 @@ Atmosphere::LoadAtmScat(const DataChunk* data)
     }
 
     return atmosphere;
+}
+
+/** Save an atmosphere to a .atmscat file.
+  *
+  * atmscat file header format:
+  *
+  * bytes          contents
+  * -------------------------------
+  * 0-7            header string ("atmscatr")
+  * 8-11           version identifier (uint32)
+  * 12-15          Rayleigh scale height (float)
+  * 16-27          Rayleigh scattering coefficients (3 floats)
+  * 28-31          Mie scale height (float)
+  * 32-35          Mie scattering coefficient (float)
+  * 36-39          Mie asymmetry parameter (float)
+  * 40-51          Absorption coefficients (3 floats)
+  * 52-55          Planet radius (float)
+  * 56-63          Transmittance table dimensions (2 uint32, width * height)
+  * 64-75          Scattering table dimensions (3 uint32, width * height * depth)
+  *
+  * transmittance table (width * height * 3 floats)
+  * scattering table (width * height * depth * 4 floats)
+  */
+void
+Atmosphere::SaveAtmScat(char* filename)
+{
+    filebuf fb;
+    fb.open (filename,ios::out | ios::binary);
+    ostream os(&fb);
+    OutputDataStream out(os);
+    out.setByteOrder(OutputDataStream::LittleEndian);
+
+    out.writeData("atmscatr", 8);
+
+    out.writeInt32(1);
+    if (out.status() != OutputDataStream::Good)
+    {
+        VESTA_LOG("Error writing header of atmscat file.");
+        return;
+    }
+
+    out.writeFloat(m_rayleighScaleHeight);
+    out.writeFloat(m_rayleighScatteringCoeff.x());
+    out.writeFloat(m_rayleighScatteringCoeff.y());
+    out.writeFloat(m_rayleighScatteringCoeff.z());
+    out.writeFloat(m_mieScaleHeight);
+    out.writeFloat(m_mieScatteringCoeff);
+    out.writeFloat(m_mieAsymmetry);
+    out.writeFloat(m_absorptionCoeff.x());
+    out.writeFloat(m_absorptionCoeff.y());
+    out.writeFloat(m_absorptionCoeff.z());
+    out.writeFloat(m_planetRadius);
+    out.writeUint32(m_transmittanceViewAngleSamples);
+    out.writeUint32(m_transmittanceHeightSamples);
+    out.writeUint32(m_scatterSunAngleSamples);
+    out.writeUint32(m_scatterViewAngleSamples);
+    out.writeUint32(m_scatterHeightSamples);
+
+    if (out.status() != OutputDataStream::Good)
+    {
+        VESTA_LOG("Error writing header of atmscat file.");
+        return;
+    }
+
+    for (unsigned int i = 0; i < m_transmittanceTable.size(); ++i)
+    {
+        out.writeFloat(m_transmittanceTable[i].x());
+        out.writeFloat(m_transmittanceTable[i].y());
+        out.writeFloat(m_transmittanceTable[i].z());
+    }
+
+    if (out.status() != OutputDataStream::Good)
+    {
+        VESTA_LOG("Error writing transmittance table in atmscat file.");
+        return;
+    }
+
+    for (unsigned int i = 0; i < m_inscatterTable.size(); ++i)
+    {
+        out.writeFloat(m_inscatterTable[i].x());
+        out.writeFloat(m_inscatterTable[i].y());
+        out.writeFloat(m_inscatterTable[i].z());
+        out.writeFloat(m_inscatterTable[i].w());
+    }
+    if (out.status() != OutputDataStream::Good)
+    {
+        VESTA_LOG("Error reading inscatter table in atmscat file.");
+        return;
+    }
+
+    fb.close();
 }

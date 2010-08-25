@@ -873,6 +873,7 @@ ObjMaterialLibrary::addMaterial(const string& materialName, Material* material)
   * call loadMaterials().
   */
 ObjMaterialLibraryLoader::ObjMaterialLibraryLoader(TextureMapLoader* textureLoader) :
+    m_materials(NULL),
     m_textureLoader(textureLoader),
     m_currentMaterial(NULL),
     m_lineNumber(1)

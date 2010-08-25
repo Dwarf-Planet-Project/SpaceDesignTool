@@ -1,5 +1,5 @@
 /*
- * $Revision: 434 $ $Date: 2010-08-16 12:24:38 -0700 (Mon, 16 Aug 2010) $
+ * $Revision: 459 $ $Date: 2010-08-25 08:30:20 -0700 (Wed, 25 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -28,6 +28,7 @@ class TextureMap;
 class TextureFont;
 class ParticleEmitter;
 class ParticleBuffer;
+class VertexBuffer;
 class GLShaderProgram;
 class GLFramebuffer;
 
@@ -58,6 +59,7 @@ private:
     // Private constructor; RenderContexts should be created via one
     // of the Create() factory methods.
     RenderContext(ShaderCapability capability);
+    bool createGLResources();
 
 public:
     ~RenderContext();
@@ -96,6 +98,8 @@ public:
 
     struct ScatteringParameters
     {
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
         ScatteringParameters()
         {
         }
@@ -154,6 +158,7 @@ public:
     struct Environment
     {
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
         Environment();
 
         Light m_lights[MaxLights];
@@ -275,6 +280,7 @@ public:
     void bindVertexArray(const VertexArray* vertexArray);
     void bindVertexArray(const VertexSpec& spec, const void* vertexData, unsigned int stride);
     void bindVertexBuffer(const VertexSpec& spec, const GLVertexBuffer* vertexBuffer, unsigned int stride);
+    void bindVertexBuffer(const VertexSpec& spec, const VertexBuffer* vertexBuffer, unsigned int stride);
     void unbindVertexArray();
     void setVertexInfo(const VertexSpec& spec);
 
@@ -313,6 +319,14 @@ public:
                     float opacity,
                     unsigned int subdivision);
     void drawParticles(ParticleEmitter* emitter, double clock);
+
+    /** Get the vertex stream buffer for the render context. This is useful
+      * for drawing dynamic geometry.
+      */
+    VertexBuffer* vertexStreamBuffer() const
+    {
+        return m_vertexStreamBuffer.ptr();
+    }
 
     void unbindShader();
 
@@ -372,6 +386,8 @@ private:
     ParticleBuffer* m_particleBuffer;
     float* m_vertexStream;
     unsigned int m_vertexStreamFloats;
+
+    counted_ptr<VertexBuffer> m_vertexStreamBuffer;
 
     ShaderCapability m_shaderCapability;
     VertexInfo m_vertexInfo;

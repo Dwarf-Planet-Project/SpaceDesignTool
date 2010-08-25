@@ -126,6 +126,8 @@ private:
 class ObjMaterial
 {
 public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
     ObjMaterial();
     ObjMaterial(const ObjMaterial& other);
     ObjMaterial& operator=(const ObjMaterial& other);

@@ -66,13 +66,15 @@ VESTA_SOURCES = \
     $$VESTA_PATH/UniverseRenderer.cpp \
     $$VESTA_PATH/VelocityVisualizer.cpp \
     $$VESTA_PATH/VertexArray.cpp \
+    $$VESTA_PATH/VertexBuffer.cpp \
     $$VESTA_PATH/VertexPool.cpp \
     $$VESTA_PATH/VertexSpec.cpp \
     $$VESTA_PATH/Visualizer.cpp \
     $$VESTA_PATH/WorldGeometry.cpp \
     $$VESTA_PATH/interaction/ObserverController.cpp \
     $$VESTA_PATH/internal/InputDataStream.cpp \
-    $$VESTA_PATH/internal/ObjLoader.cpp
+    $$VESTA_PATH/internal/ObjLoader.cpp \
+    $$VESTA_PATH/internal/OutputDataStream.cpp
 
 VESTA_HEADERS = \
     $$VESTA_PATH/Arc.h \
@@ -149,6 +151,7 @@ VESTA_HEADERS = \
     $$VESTA_PATH/UniverseRenderer.h \
     $$VESTA_PATH/VelocityVisualizer.h \
     $$VESTA_PATH/VertexArray.h \
+    $$VESTA_PATH/VertexBuffer.h \
     $$VESTA_PATH/VertexAttribute.h \
     $$VESTA_PATH/VertexPool.h \
     $$VESTA_PATH/VertexSpec.h \
@@ -156,8 +159,10 @@ VESTA_HEADERS = \
     $$VESTA_PATH/Visualizer.h \
     $$VESTA_PATH/WorldGeometry.h \
     $$VESTA_PATH/interaction/ObserverController.h \
+    $$VESTA_PATH/internal/AtomicInt.h \
     $$VESTA_PATH/internal/InputDataStream.h \
-    $$VESTA_PATH/internal/ObjLoader.h
+    $$VESTA_PATH/internal/ObjLoader.h \
+    $$VESTA_PATH/internal/OutputDataStream.h
 
 
 ### particle system module ###

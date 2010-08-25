@@ -1,5 +1,5 @@
 /*
- * $Revision: 434 $ $Date: 2010-08-16 12:24:38 -0700 (Mon, 16 Aug 2010) $
+ * $Revision: 459 $ $Date: 2010-08-25 08:30:20 -0700 (Wed, 25 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -15,6 +15,7 @@
 #include "TextureFont.h"
 #include "OGLHeaders.h"
 #include "ShaderBuilder.h"
+#include "VertexBuffer.h"
 #include "Debug.h"
 #include "glhelp/GLFramebuffer.h"
 #include "particlesys/ParticleEmitter.h"
@@ -93,7 +94,6 @@ RenderContext::Environment::Environment() :
     m_omniShadowMapCount(0),
     m_scatteringEnabled(false)
 {
-
 }
 
 
@@ -150,7 +150,14 @@ RenderContext::Create(ShaderCapability capability)
         VESTA_LOG("Creating GLSL RenderContext");
     }
 
-    return new RenderContext(capability);
+    RenderContext* rc = new RenderContext(capability);
+    if (!rc->createGLResources())
+    {
+        delete rc;
+        return NULL;
+    }
+
+    return rc;
 }
 
 
@@ -214,19 +221,6 @@ RenderContext::RenderContext(ShaderCapability capability) :
     // Make the vertex stream buffer larger enough to hold a complete particle buffer
     m_vertexStreamFloats = 4 * MaxParticles * 10;
     m_vertexStream = new float[m_vertexStreamFloats];
-
-    if (m_shaderCapability != FixedFunction)
-    {
-        // Create special purpose shaders.
-
-        // Camera distance shader is used for rendering cubic shadow maps
-        m_cameraDistanceShader = GLShaderProgram::CreateShaderProgram(CameraDistanceVertexShaderSource,
-                                                                      CameraDistanceFragmentShaderSource);
-        if (m_cameraDistanceShader.isNull())
-        {
-            VESTA_WARNING("Error creating camera distance shader for shadow mapping.");
-        }
-    }
 }
 
 
@@ -241,6 +235,33 @@ RenderContext::~RenderContext()
 
     delete m_particleBuffer;
     delete[] m_vertexStream;
+}
+
+
+bool
+RenderContext::createGLResources()
+{
+    if (m_shaderCapability != FixedFunction)
+    {
+        // Create special purpose shaders.
+
+        // Camera distance shader is used for rendering cubic shadow maps
+        m_cameraDistanceShader = GLShaderProgram::CreateShaderProgram(CameraDistanceVertexShaderSource,
+                                                                      CameraDistanceFragmentShaderSource);
+        if (m_cameraDistanceShader.isNull())
+        {
+            VESTA_WARNING("Error creating camera distance shader for shadow mapping.");
+        }
+    }
+
+    m_vertexStreamBuffer = VertexBuffer::Create(0x40000, VertexBuffer::StreamDraw, NULL);
+    if (m_vertexStreamBuffer.isNull())
+    {
+        VESTA_WARNING("Error creating vertex stream buffer for render context");
+        return false;
+    }
+
+    return true;
 }
 
 
@@ -537,6 +558,23 @@ RenderContext::bindVertexBuffer(const VertexSpec& spec, const GLVertexBuffer* ve
 {
     vertexBuffer->bind();
     bindVertexArray(spec, NULL, stride);
+}
+
+
+void
+RenderContext::bindVertexBuffer(const VertexSpec& spec, const VertexBuffer* vertexBuffer, unsigned int stride)
+{
+    GLVertexBuffer* vbo = vertexBuffer->vbo();
+
+    if (vbo)
+    {
+        vbo->bind();
+        bindVertexArray(spec, NULL, stride);
+    }
+    else
+    {
+        bindVertexArray(spec, vertexBuffer->data(), stride);
+    }
 }
 
 

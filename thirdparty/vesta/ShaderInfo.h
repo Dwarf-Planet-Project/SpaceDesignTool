@@ -1,5 +1,5 @@
 /*
- * $Revision: 428 $ $Date: 2010-08-13 18:33:28 -0700 (Fri, 13 Aug 2010) $
+ * $Revision: 451 $ $Date: 2010-08-23 09:33:46 -0700 (Mon, 23 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -83,6 +83,14 @@ public:
     bool hasTexture(unsigned int texture) const
     {
         return (m_data & (texture << TextureUsageMaskShift)) != 0;
+    }
+
+    bool hasTextureCoord() const
+    {
+        // We only need texture coordinates when there's a texture. Texture coordinates for the
+        // reflection map are generated in the fragment shader, so we don't need texCoord if there
+        // are no other textures.
+        return textures() != 0 && textures() != ReflectionTexture;
     }
 
     void setTextures(unsigned int textures)
