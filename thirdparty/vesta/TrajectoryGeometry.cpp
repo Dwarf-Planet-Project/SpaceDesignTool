@@ -1,5 +1,5 @@
 /*
- * $Revision: 423 $ $Date: 2010-08-11 21:30:49 -0700 (Wed, 11 Aug 2010) $
+ * $Revision: 462 $ $Date: 2010-08-25 16:37:15 -0700 (Wed, 25 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -91,6 +91,62 @@ TrajectoryGeometry::render(RenderContext& rc, float /* cameraDistance */, double
 }
 
 
+/** Add a new sample to the trajectory. If this is not the first sample, the time t must
+  * be greater than the time of the last added sample; if not, the sample is discarded.
+  *
+  * \param t time in seconds since J2000.0
+  * \param s state vector
+  */
+void
+TrajectoryGeometry::addSample(double t, const StateVector& s)
+{
+    if (!m_curvePlot)
+    {
+        m_curvePlot = new CurvePlot();
+    }
+
+    if (m_curvePlot->sampleCount() == 0)
+    {
+        m_startTime = t;
+        m_endTime = t;
+    }
+
+    if (m_curvePlot->sampleCount() == 0 || t > m_curvePlot->endTime())
+    {
+        CurvePlotSample sample;
+        sample.t = t;
+        sample.position = s.position();
+        sample.velocity = s.velocity();
+        m_curvePlot->addSample(sample);
+
+        m_boundingRadius = std::max(m_boundingRadius, s.position().norm());
+        m_endTime = t;
+    }
+}
+
+
+/** Remove all trajectory plot samples.
+  */
+void
+TrajectoryGeometry::clearSamples()
+{
+    // Throw out the previous trajectory
+    if (m_curvePlot)
+    {
+        delete m_curvePlot;
+        m_curvePlot = NULL;
+    }
+
+    m_boundingRadius = 0.0;
+    m_startTime = 0.0;
+    m_endTime = 0.0;
+}
+
+
+/** Automatically add samples to the trajectory plot. Samples of the specified trajectory
+  * are calculated at regular intervals between the startTime and endTime. Any existing samples
+  * in the trajectory plot are replaced.
+  */
 void
 TrajectoryGeometry::computeSamples(const Trajectory* trajectory, double startTime, double endTime, unsigned int steps)
 {
@@ -100,13 +156,7 @@ TrajectoryGeometry::computeSamples(const Trajectory* trajectory, double startTim
         return;
     }
 
-    // Throw out the previous trajectory
-    if (m_curvePlot)
-    {
-        delete m_curvePlot;
-    }
-
-    m_boundingRadius = 0.0;
+    clearSamples();
 
     // Nothing to plot if end is before start
     if (endTime <= startTime)
@@ -124,14 +174,7 @@ TrajectoryGeometry::computeSamples(const Trajectory* trajectory, double startTim
     {
         double t = m_startTime + i * dt;
         StateVector state = trajectory->state(t);
-
-        CurvePlotSample sample;
-        sample.t = t;
-        sample.position = state.position();
-        sample.velocity = state.velocity();
-        m_curvePlot->addSample(sample);
-
-        m_boundingRadius = std::max(m_boundingRadius, state.position().norm());
+        addSample(t, state);
     }
 
     // Adjust the bounding radius slightly to prevent culling when the

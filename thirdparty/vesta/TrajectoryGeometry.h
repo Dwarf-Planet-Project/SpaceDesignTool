@@ -1,5 +1,5 @@
 /*
- * $Revision: 400 $ $Date: 2010-08-02 17:39:12 -0700 (Mon, 02 Aug 2010) $
+ * $Revision: 462 $ $Date: 2010-08-25 16:37:15 -0700 (Wed, 25 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -73,6 +73,8 @@ public:
         m_opacity = opacity;
     }
 
+    void addSample(double t, const StateVector& s);
+    void clearSamples();
     void computeSamples(const Trajectory* trajectory, double startTime, double endTime, unsigned int steps);
 
     enum TrajectoryPortion
