@@ -94,9 +94,9 @@ MissionArc::getStateVector(double mjd,
     {
         int i = -1;
         if (m_lastSample > 0 &&
-            m_lastSample < m_sampleTimes.size() - 1&&
-            mjd >= m_sampleTimes[m_lastSample] &&
-            mjd <= m_sampleTimes[m_lastSample + 1])
+            m_lastSample < m_sampleTimes.size() &&
+            mjd >= m_sampleTimes[m_lastSample - 1] &&
+            mjd <= m_sampleTimes[m_lastSample])
         {
             i = m_lastSample;
         }
@@ -324,42 +324,6 @@ SpaceObject::generateEphemerisFiles()
 }
 
 
-#if USE_CELESTIA
-/*! Create a representation of this space object in the 3D view. Return true
- *  if a Celestia object was successfully created, false if not.
- */
-bool
-SpaceObject::realize3DViewRepresentation(CelestiaInterface* celestia)
-{
-    // Don't create a Celestia object if there are no mission arcs
-    if (mission().empty())
-    {
-        return false;
-    }
-
-    // Don't create a Celestia object if one already exists
-    if (m_celestiaBody)
-    {
-        return false;
-    }
-    m_celestiaBody = celestia->createSpacecraft(m_name, STA_SOLAR_SYSTEM->lookup(STA_SUN));
-
-    // Set the timeline and other properties of the body.
-    if (m_celestiaBody)
-    {
-        m_celestiaBody->setTimeline(mission());
-        m_celestiaBody->setGeometry(m_modelFile);
-        m_celestiaBody->setVisible(true);
-        m_celestiaBody->setOrbitAlwaysVisible(true);
-        m_celestiaBody->setOrbitColorOverridden(true);
-        m_celestiaBody->setOrbitColor(m_trajectoryColor);
-
-        m_celestiaBody->mark("diamond", m_trajectoryColor, 5.0f, "");
-    }
-    return m_celestiaBody != NULL;
-}
-#endif
-
 
 /****** GroundObject ******/
 
@@ -371,25 +335,6 @@ GroundObject::GroundObject()
 GroundObject::~GroundObject()
 {
 }
-
-
-#if USE_CELESTIA
-/*! Create a representation of this space object in the 3D view. Return true
- *  if a Celestia object was successfully created, false if not.
- */
-bool
-GroundObject::realize3DViewRepresentation(CelestiaInterface* celestia)
-{
-    // Don't create a Celestia object if one already exists
-    if (m_celestiaLocation)
-        return false;
-
-    m_celestiaLocation = celestia->createLocation(name, centralBody,
-                                                  latitude, longitude, altitude);
-
-    return true;
-}
-#endif
 
 
 /** Return the apparent angle of a spacecraft above a ground station's horizon.
