@@ -543,7 +543,6 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
         {
             scenario->AbstractParticipant().append(QSharedPointer<ScenarioParticipantType>(participant));
             QTreeWidgetItem* participantItem = new QTreeWidgetItem(parent);
-            // Guillermo says: finally adding the item
             addScenarioItems(participantItem, participant);
         }
         else
@@ -553,23 +552,55 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
 
         return true;
     }
-    else if (trajectory && elementName != "tns:EntryArc" && elementName != "tns:DeltaV")
+    else if (trajectory && elementName != "tns:EntryArc" && elementName != "tns:DeltaV")    // Loitering and Loitering TLEs
     {
         ScenarioObject* parentObject = objectForItem(parent);
         ScenarioTrajectoryPlan* trajectoryPlan = dynamic_cast<ScenarioTrajectoryPlan*>(parentObject);
         if (trajectoryPlan)
         {
-            trajectoryPlan->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
-            QTreeWidgetItem* trajectoryItem = new QTreeWidgetItem(parent);
-            addScenarioItems(trajectoryItem, trajectory);
-            return true;
+            int numberOfArcs = trajectoryPlan->children().size();
+            if (numberOfArcs > 0)  // The trajectory plan is not empty
+            {
+                const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList = trajectoryPlan->AbstractTrajectory();
+                QSharedPointer<ScenarioAbstractTrajectoryType> thePreviousTrajectory = trajectoryList.at(numberOfArcs - 1);
+                if (dynamic_cast<ScenarioDeltaVType*>(thePreviousTrajectory.data()))
+                // We do not allow to drop the arc except when the previous arc is a deltaV
+                {                    
+                    // Adding the current arc into the trajectory plan
+                    trajectoryPlan->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
+                    QTreeWidgetItem* trajectoryItem = new QTreeWidgetItem(parent);
+                    addScenarioItems(trajectoryItem, trajectory);
+
+                    ScenarioDeltaVType* thePreviousArc = dynamic_cast<ScenarioDeltaVType*>(thePreviousTrajectory.data());
+                    QSharedPointer<ScenarioAbstractTrajectoryType> theCurrentManeuver = trajectoryList.at(numberOfArcs);
+
+                    // Passing information from the previous arc into the current arc
+                    if (theCurrentManeuver->elementName() == "Loitering")
+                    {
+                        ScenarioLoiteringType* theCurrentLoitering = dynamic_cast<ScenarioLoiteringType*>(theCurrentManeuver.data());
+                        theCurrentLoitering->TimeLine()->setStartTime(thePreviousArc->TimeLine()->EndTime()); // concatenating the times for the mission arcs
+                    }
+                    else if (theCurrentManeuver->elementName() == "LoiteringTLE")
+                    {
+                        ScenarioLoiteringTLEType* theCurrentLoiteringTLE = dynamic_cast<ScenarioLoiteringTLEType*>(theCurrentManeuver.data());
+                        theCurrentLoiteringTLE->TimeLine()->setStartTime(thePreviousArc->TimeLine()->EndTime()); // concatenating the times for the mission arcs
+                    }
+                }
+            }
+            else  // Then the trajectory plan is emptly and we just simply drop the arc
+            {
+                trajectoryPlan->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
+                QTreeWidgetItem* trajectoryItem = new QTreeWidgetItem(parent);
+                addScenarioItems(trajectoryItem, trajectory);
+                return true;
+            }
         }
         else
         {
             return false;
         }
     }
-    else if (trajectory && elementName == "tns:DeltaV")
+    else if (trajectory && elementName == "tns:DeltaV")   // delta Vs
     {
         ScenarioObject* parentObject = objectForItem(parent);
         ScenarioTrajectoryPlan* trajectoryPlan = dynamic_cast<ScenarioTrajectoryPlan*>(parentObject);
@@ -582,7 +613,7 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
                 QSharedPointer<ScenarioAbstractTrajectoryType> thePreviousTrajectory = trajectoryList.at(numberOfArcs - 1);
                 if (dynamic_cast<ScenarioLoiteringType*>(thePreviousTrajectory.data()))
                 {
-                    // Adding the delta V into the trajectory plan (todo: add if after the loitering arc)
+                    // Adding the delta V into the trajectory plan
                     trajectoryPlan->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
                     QTreeWidgetItem* trajectoryItem = new QTreeWidgetItem(parent);
                     addScenarioItems(trajectoryItem, trajectory);
@@ -653,9 +684,9 @@ QMimeData* ScenarioTree::mimeData(const QList<QTreeWidgetItem*> items) const
 
     QMimeData *mimeData = new QMimeData();
     QByteArray encodedData;
-    
+
     QDataStream stream(&encodedData, QIODevice::WriteOnly);
-    
+
     foreach (QTreeWidgetItem* item, items)
     {
         if (item)
@@ -664,17 +695,17 @@ QMimeData* ScenarioTree::mimeData(const QList<QTreeWidgetItem*> items) const
             stream << text;
         }
     }
-    
+
     mimeData->setData(ScenarioElementBox::PARTICIPANT_MIME_TYPE, encodedData);
     return mimeData;
 
     //    return QTreeWidget::mimeData(items);
-    
+
 #if 0
     // Code to allow dragging scenario objects out of the view
     if (items.isEmpty())
         return NULL;
-    
+
     ScenarioObject* scenarioObject = objectForItem(items.first());
     if (scenarioObject == NULL)
         return NULL;
@@ -698,7 +729,7 @@ void ScenarioTree::removeChildren(QTreeWidgetItem* parentItem)
     int childCount = parentItem->childCount();
     QDomElement element = m_domElementForItem[parentItem];
     Q_ASSERT(!element.isNull());
-    
+
     for (int i = childCount - 1; i >= 0; i--)
     {
         QTreeWidgetItem* child = parentItem->takeChild(i);
@@ -706,12 +737,12 @@ void ScenarioTree::removeChildren(QTreeWidgetItem* parentItem)
         {
             removeChildren(child);
         }
-        
+
         QDomElement childElement = m_domElementForItem[child];
         Q_ASSERT(!childElement.isNull());
         m_domElementForItem.remove(child);
         element.removeChild(childElement);
-        
+
         delete child;
     }
 }
@@ -727,7 +758,7 @@ void ScenarioTree::updateTreeItems(QTreeWidgetItem* parentItem,
         delete child;
     }
 
-    
+
 #if OLDSCENARIO
     scenarioObject->createItemContents(parentItem);
 #endif
@@ -1034,7 +1065,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             }
         }
     }
-    
+
     else if (dynamic_cast<ScenarioInitialStatePosition*>(scenarioObject) != NULL)
     {
         ScenarioInitialStatePosition* initialStatePos = dynamic_cast<ScenarioInitialStatePosition*>(scenarioObject);
@@ -1280,7 +1311,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             // Strip away the path--we just want the filename
             if (modelFileName.contains('/'))
                 modelFileName.remove(0, modelFileName.lastIndexOf('/') + 1);
-            
+
             appearance->setModel(modelFileName);
             //updateTreeItems(editItem, scenarioObject);
         }
@@ -1292,7 +1323,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
         if (editItem != NULL)
         {
             QVariant data = editItem->data(0, ScenarioObjectRole);
-            
+
             if (qVariantCanConvert<void*>(data))
             {
                 void* pointer = qVariantValue<void*>(data);
@@ -1301,7 +1332,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
 
             editScenarioObject(parentObject, editItem);
         }
-    }    
+    }
 #endif
 
 }
@@ -1331,11 +1362,11 @@ void ScenarioTree::editItem(QTreeWidgetItem* item, int column)
 #ifdef OLDSCENARIO
     // Some items in the tree view are just data fields; if the user has
     // double clicked on one, we'll invoke the editor on the item's
-    // parent. This makes things a bit more convenient for the user.    
+    // parent. This makes things a bit more convenient for the user.
     if (scenarioObject == NULL)
     {
         item = item->parent();
-        
+
         if (item != NULL)
         {
             QVariant data = item->data(0, ScenarioObjectRole);
@@ -1390,12 +1421,12 @@ void ScenarioTree::editItemInline(QTreeWidgetItem* item, int column)
         return;
 
     if (dynamic_cast<SpaceScenario*>(object) && column == 1)	// Guillermo says: the name of the scenario
-	{
+    {
         // TODO: replace this special case with reflection/introspection methods for ScenarioObject
-	    item->setFlags(item->flags() | (Qt::ItemIsEditable));
-	    scenario->setName(item->text(1));
-	    //updateTreeItems(item, scenario);  // do not do that. The complete scenario will disapear
-	}
+        item->setFlags(item->flags() | (Qt::ItemIsEditable));
+        scenario->setName(item->text(1));
+        //updateTreeItems(item, scenario);  // do not do that. The complete scenario will disapear
+    }
     if (dynamic_cast<ScenarioParticipantType*>(object) && column == 1)  // Participant name
     {
         // TODO: replace this special case with reflection/introspection methods for ScenarioObject
@@ -1404,30 +1435,30 @@ void ScenarioTree::editItemInline(QTreeWidgetItem* item, int column)
         //dynamic_cast<ScenarioParticipantType*>(object)->setName(item->text(1));
     }
     else if (dynamic_cast<ScenarioElementIdentifierType*>(object) && column == 1)   // Guillermo says: the name of the arcs, payloads, etc.
-	{
-	    item->setFlags(item->flags() | (Qt::ItemIsEditable));
+    {
+        item->setFlags(item->flags() | (Qt::ItemIsEditable));
         dynamic_cast<ScenarioElementIdentifierType*>(object)->setName(item->text(1));
 
         //Getting now to know the parent of this item
         QTreeWidgetItem* parentItem = item->parent();
         ScenarioObject* parentObject = objectForItem(parentItem);
 
-	    if (dynamic_cast<ScenarioParticipantType*>(parentObject))
-	    {
+        if (dynamic_cast<ScenarioParticipantType*>(parentObject))
+        {
             ScenarioParticipantType* myPartipant = dynamic_cast<ScenarioParticipantType*>(parentObject);
             dynamic_cast<ScenarioParticipantType*>(myPartipant)->setName(item->text(1));
             parentItem->setText(1, item->text(1));
-	    }
+        }
 
-	    updateTreeItems(item, scenario);
+        updateTreeItems(item, scenario);
 
-	}
+    }
 
 #if OLDSCENARIO
     ScenarioObject* object = objectForItem(item);
     if (object == NULL)
         return;
-    
+
     // TODO: If we allow more objects to be editing in the scenario
     // tree view, we need to add an edit method.
     if (dynamic_cast<ScenarioParticipant*>(object) && column == 1)
@@ -1453,7 +1484,7 @@ ScenarioObject* ScenarioTree::objectForItem(QTreeWidgetItem* item) const
 {
     ScenarioObject* scenarioObject = NULL;
     QVariant data = item->data(0, ScenarioObjectRole);
-    
+
     if (qVariantCanConvert<void*>(data))
     {
         void* pointer = qVariantValue<void*>(data);
