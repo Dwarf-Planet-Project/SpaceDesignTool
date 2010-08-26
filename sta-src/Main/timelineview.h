@@ -57,12 +57,12 @@ Q_OBJECT
     void setCurrentTime(double mjd);
     
  signals:
-    void timelineClicked(double mjd);
     void participantClicked(int participantIndex);
     void currentTimeChanged(double currentTime);
 
  protected:
     void paintEvent(QPaintEvent* event);
+    void mousePressEvent(QMouseEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
     void mouseMoveEvent(QMouseEvent* event);
     void resizeEvent(QResizeEvent* event);
@@ -86,6 +86,9 @@ Q_OBJECT
     };
     
     QList<MissionSegment> mission;
+
+    float m_mouseMotion;
+    QPointF m_lastMousePosition;
 };
 
 #endif // _MAIN_TIMELINEVIEW_H_

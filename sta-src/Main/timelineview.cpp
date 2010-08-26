@@ -49,7 +49,8 @@ TimelineView::TimelineView(QWidget* parent) :
 		m_startTime(0.0),
 		m_endTime(1.0),
 		m_visibleSpan(1.0 / 24.0),
-		m_participantCount(0)
+        m_participantCount(0),
+        m_mouseMotion(0)
 {
     updateScrollBars();
 }
@@ -234,44 +235,60 @@ void TimelineView::paintEvent(QPaintEvent* /* event */)
 }
 
 
-void 
-		TimelineView::mouseReleaseEvent(QMouseEvent* event)
+void
+TimelineView::mousePressEvent(QMouseEvent* event)
 {
-    int viewWidth = viewport()->size().width();
-    double viewStartTime = horizontalScrollBar()->value() / 86400.0 + m_startTime;
-
-    double mjd = viewStartTime + m_visibleSpan * (double) event->x() / (double) viewWidth;
-    setCurrentTime(mjd);
-
-    // Emit a signal if one of the mission segment bars was clicked
-    int participantIndex = -1;
-    int y = event->y() - TimeHeaderHeight + verticalScrollBar()->value();
-    int h = (int) (MissionSegmentBarSpacing + MissionSegmentBarThickness);
-    if (y >= 0 && y % h < MissionSegmentBarThickness)
-        participantIndex = y / h;
-    
-    foreach (MissionSegment segment, mission)
-    {
-        if (mjd >= segment.startTime && mjd <= segment.endTime &&
-            participantIndex == segment.participantIndex)
-        {
-            emit participantClicked(participantIndex);
-        }
-    }
-    
-    emit timelineClicked(mjd);
+    m_mouseMotion = 0.0f;
+    m_lastMousePosition = event->posF();
 }
 
 
 void 
-		TimelineView::mouseMoveEvent(QMouseEvent* event)
+TimelineView::mouseReleaseEvent(QMouseEvent* event)
 {
+    int viewWidth = viewport()->size().width();
+    double viewStartTime = horizontalScrollBar()->value() / 86400.0 + m_startTime;
+
+    double mjd = viewStartTime + m_visibleSpan * (double) event->x() / (double) viewWidth;
+    setCurrentTime(mjd);
+
+    // Emit a signal if one of the mission segment bars was clicked and the mouse
+    // didn't move much since it was pressed.
+    bool mouseMoved = m_mouseMotion > 4;
+
+    if (!mouseMoved)
+    {
+        int participantIndex = -1;
+        int y = event->y() - TimeHeaderHeight + verticalScrollBar()->value();
+        int h = (int) (MissionSegmentBarSpacing + MissionSegmentBarThickness);
+        if (y >= 0 && y % h < MissionSegmentBarThickness)
+            participantIndex = y / h;
+
+        foreach (MissionSegment segment, mission)
+        {
+            if (mjd >= segment.startTime && mjd <= segment.endTime &&
+                participantIndex == segment.participantIndex)
+            {
+                emit participantClicked(participantIndex);
+            }
+        }
+    }
+}
+
+
+void
+TimelineView::mouseMoveEvent(QMouseEvent* event)
+{
+    // Track total mouse motion so that we can distinguish click/release from drags
+    m_mouseMotion += (m_lastMousePosition - event->posF()).manhattanLength();
+    m_lastMousePosition = event->posF();
+
+
     int viewWidth = viewport()->size().width();
     double viewStartTime = horizontalScrollBar()->value() / 86400.0 + m_startTime;
     
     double mjd = viewStartTime + m_visibleSpan * (double) event->x() / (double) viewWidth;
     setCurrentTime(mjd);
-    emit timelineClicked(mjd);
 }
 
 
