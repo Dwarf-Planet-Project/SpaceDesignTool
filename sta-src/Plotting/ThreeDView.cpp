@@ -48,6 +48,7 @@
 #include <vesta/PlaneVisualizer.h>
 #include <vesta/Units.h>
 #include <vesta/MeshGeometry.h>
+#include <vesta/PlanetaryRings.h>
 #include <vesta/Atmosphere.h>
 #include <vesta/interaction/ObserverController.h>
 
@@ -704,6 +705,14 @@ ThreeDView::initializeUniverse()
     addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_PLUTO),   sun);
 
     initializeStarCatalog("vis3d/tycho2.stars");
+
+    Entity* saturn = this->findSolarSystemBody(STA_SATURN);
+    if (saturn && dynamic_cast<WorldGeometry*>(saturn->geometry()))
+    {
+        PlanetaryRings* rings = new PlanetaryRings(74500.0f, 140220.0f);
+        rings->setTexture(m_textureLoader->loadTexture("textures/medres/saturn-rings.png", TextureProperties(TextureProperties::Clamp)));
+        dynamic_cast<WorldGeometry*>(saturn->geometry())->setRingSystem(rings);
+    }
 }
 
 
@@ -731,7 +740,15 @@ ThreeDView::addSolarSystemBody(const StaBody* body, Entity* center)
     b->chronology()->addArc(arc);
 
     WorldGeometry* globe = new WorldGeometry();
-    globe->setSphere(body->meanRadius());
+    if (body->id() < STA_JUPITER)
+    {
+        // For now, make the inner planets spherical
+        globe->setSphere(body->meanRadius());
+    }
+    else
+    {
+        globe->setEllipsoid(body->radii().cast<float>() * 2.0f);
+    }
     if (!body->baseTexture().isEmpty())
     {
         std::string textureName = body->baseTexture().toUtf8().data();
@@ -1057,7 +1074,13 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
         TrajectoryGeometry* trajGeom = new TrajectoryGeometry();
         trajGeom->setDisplayedPortion(TrajectoryGeometry::StartToCurrentTime);
         trajGeom->setColor(Spectrum(arcColor.redF(), arcColor.greenF(), arcColor.blueF()));
-        trajGeom->computeSamples(arc->trajectory(), arcStartTime, arcStartTime + arc->duration(), 1000);
+
+        for (unsigned int i = 0; i < missionArc->trajectorySampleCount(); ++i)
+        {
+            sta::StateVector state = missionArc->trajectorySample(i);
+            trajGeom->addSample(mjdToSecsSinceJ2000(missionArc->trajectorySampleTime(i)), StateVector(state.position, state.velocity));
+        }
+
         Visualizer* trajVisualizer = new Visualizer(trajGeom);
         trajVisualizer->setVisibility(m_satelliteTrajectoriesEnabled);
         arc->center()->setVisualizer(TrajectoryVisualizerTag(body, arcIndex), trajVisualizer);
