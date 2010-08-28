@@ -33,6 +33,7 @@
 #include <QBoxLayout>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QDesktopServices>
 
 
 ThreeDVisualizationTool::ThreeDVisualizationTool(QWidget* parent) :
@@ -95,9 +96,10 @@ void
 ThreeDVisualizationTool::saveImage()
 {
     QImage image = m_view->grabFrameBuffer(false);
+    QString defaultDir = QDesktopServices::storageLocation(QDesktopServices::PicturesLocation);
     QString fileName = QFileDialog::getSaveFileName(this,
                                                     tr("Save Image"),
-                                                    "",
+                                                    defaultDir + "/sta.png",
                                                     tr("Images (*.png *.jpg *.tif)"));
     if (!fileName.isEmpty())
     {

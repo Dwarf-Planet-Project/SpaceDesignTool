@@ -561,9 +561,10 @@ void GroundTrackView::saveImage()
     }
     */
     QPixmap image = QPixmap::grabWindow(this->winId());
+    QString defaultDir = QDesktopServices::storageLocation(QDesktopServices::PicturesLocation);
     QString fileName = QFileDialog::getSaveFileName(this,
                                                     tr("Save Image"),
-                                                    "",
+                                                    defaultDir + "/sta.png",
                                                     tr("Images (*.png  *.jpg *.tif)"));
     if (!fileName.isEmpty())
     {
