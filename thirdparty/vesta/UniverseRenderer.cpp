@@ -1,5 +1,5 @@
 /*
- * $Revision: 451 $ $Date: 2010-08-23 09:33:46 -0700 (Mon, 23 Aug 2010) $
+ * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -34,6 +34,9 @@ using namespace std;
 #define DEBUG_OMNI_SHADOW_MAP 0
 #define DEBUG_DEPTH_SPANS     0
 
+
+const float UniverseRenderer::MinimumNearDistance = 0.00001f;  // 1 centimeter
+const float UniverseRenderer::MaximumFarDistance = 1.0e12; // one trillion km (~6700 AU)
 
 static const float MinimumNearPlaneDistance = 0.00001f;  // 1 centimeter
 static const float MaximumFarPlaneDistance = 1.0e12; // one trillion km (~6700 AU)
@@ -580,7 +583,7 @@ UniverseRenderer::renderView(const LightingEnvironment* lighting,
         // Use a different near/far ratio for these extra spans
         const float MaxFarNearRatio = 10000.0f;
 
-        while (m_mergedDepthBufferSpans.back().nearDistance > MinimumNearPlaneDistance)
+        while (m_mergedDepthBufferSpans.back().nearDistance > projection.nearDistance())
         {
             // Some potentially confusing naming here: spans are stored in
             // reverse order, so that the foreground span is actually the
@@ -589,7 +592,7 @@ UniverseRenderer::renderView(const LightingEnvironment* lighting,
             front.backItemIndex = 0;
             front.itemCount = 0;
             front.farDistance = m_mergedDepthBufferSpans.back().nearDistance;
-            front.nearDistance = std::max(MinimumNearPlaneDistance, front.farDistance / MaxFarNearRatio);
+            front.nearDistance = std::max(projection.nearDistance(), front.farDistance / MaxFarNearRatio);
             m_mergedDepthBufferSpans.push_back(front);
         }
 
@@ -808,9 +811,18 @@ UniverseRenderer::addVisibleItem(const Entity* entity,
     // farDistance, it means that the object lies outside the view frustum.
     nearDistance *= nearAdjust;
 
-    if (!m_viewFrustum.intersects(BoundingSphere<float>(cameraSpacePosition, boundingRadius)))
+    bool intersectsFrustum = m_viewFrustum.intersects(BoundingSphere<float>(cameraSpacePosition, boundingRadius));
+
+    // Objects that lie outside the frustum and don't cast shadows don't contribute to the
+    // final scene. They'll be culled eventually, but we can take of them early here. However,
+    // enabling this test causes problems right now with disappearing visualizers when ordinary
+    // objects are in view.
+    /*
+    if (!intersectsFrustum && !geometry->isShadowCaster())
     {
+        return;
     }
+    */
 
     // Add entities in front of the camera to the list of visible items
     if (farDistance > 0 && nearDistance < farDistance)
@@ -824,6 +836,7 @@ UniverseRenderer::addVisibleItem(const Entity* entity,
         visibleItem.boundingRadius = boundingRadius;
         visibleItem.nearDistance = nearDistance;
         visibleItem.farDistance = farDistance;
+        visibleItem.outsideFrustum = !intersectsFrustum;
 
         if (geometry->clippingPolicy() == Geometry::SplitToPreventClipping)
         {
@@ -841,18 +854,32 @@ UniverseRenderer::addVisibleItem(const Entity* entity,
   * along the universal coordinate system axes, though this can be modified by passing something
   * other than identity for the rotation.
   *
+  * Reflection maps are expected to be in world coordinates. If the cube map is intended to be used
+  * for reflections, the rotation should be identity (the default value)
+  *
+  * In order to avoid obvious visual problems with reflection maps, they should only contain geometry that
+  * is 'distant', i.e. at a much farther away than the size of the reflecting geometry. The nearDistance
+  * can be set to a value greater than the minimum in order to automatically cull nearby objects.
+  *
   * \param lighting the lighting environment for rendering
   * \param position position of the camera
   * \param cubeMap the target cube map framebuffer to draw into
+  * \param nearDistance distance to the near clipping plane (defaults to MinimumNearDistance)
+  * \param farDistance distance to the far clipping plane (defaults to MaximumFarDistance)
   * \param rotation optional rotation (defaults to identity)
   */
 UniverseRenderer::RenderStatus
-UniverseRenderer::renderCubeMap(const LightingEnvironment* lighting, const Vector3d& position, CubeMapFramebuffer* cubeMap, const Quaterniond& rotation)
+UniverseRenderer::renderCubeMap(const LightingEnvironment* lighting,
+                                const Vector3d& position,
+                                CubeMapFramebuffer* cubeMap,
+                                double nearDistance,
+                                double farDistance,
+                                const Quaterniond& rotation)
 {
     Viewport viewport(cubeMap->size(), cubeMap->size());
     PlanarProjection cubeFaceProjection = PlanarProjection::CreatePerspectiveLH(float(toRadians(90.0)),
                                                                                 1.0f,
-                                                                                MinimumNearPlaneDistance, MaximumFarPlaneDistance);
+                                                                                nearDistance, farDistance);
 
     for (int face = 0; face < 6; ++face)
     {
@@ -1074,6 +1101,15 @@ void UniverseRenderer::renderDepthBufferSpan(const DepthBufferSpan& span, const 
         return;
     }
 
+    // Enforce the minimum near plane distance
+    float nearDistance = std::max(projection.nearDistance(), span.nearDistance);
+    float farDistance = std::min(projection.farDistance(), span.farDistance);
+    if (farDistance <= nearDistance)
+    {
+        // Entire span lies in front of or behind the view frustum, so skip it
+        return;
+    }
+
     bool shadowsOn = false;
     bool omniShadowsOn = false;
     if (m_shadowsEnabled && !m_visibleLightSources.empty())
@@ -1098,10 +1134,7 @@ void UniverseRenderer::renderDepthBufferSpan(const DepthBufferSpan& span, const 
         }
     }
 
-    // Enforce the minimum near plane distance
-    float nearDistance = std::max(MinimumNearPlaneDistance, span.nearDistance);
-
-    m_renderContext->setProjection(projection.slice(nearDistance, span.farDistance));
+    m_renderContext->setProjection(projection.slice(nearDistance, farDistance));
     Frustum viewFrustum = m_renderContext->frustum();
 
     // Rendering of some translucent objects is order dependent. We can eliminate the
@@ -1248,7 +1281,7 @@ UniverseRenderer::renderDepthBufferSpanShadows(const DepthBufferSpan& span,
             m_renderContext->pushModelView();
             m_renderContext->translateModelView(itemPosition - shadowGroupCenter);
             m_renderContext->rotateModelView(item.orientation);
-            item.geometry->renderShadow(*m_renderContext, item.cameraRelativePosition.norm() - item.boundingRadius, m_currentTime);
+            item.geometry->renderShadow(*m_renderContext, m_currentTime);
             m_renderContext->popModelView();
         }
     }
@@ -1384,7 +1417,7 @@ UniverseRenderer::renderDepthBufferSpanOmniShadows(const DepthBufferSpan& span,
                         m_renderContext->pushModelView();
                         m_renderContext->translateModelView(itemPosition);
                         m_renderContext->rotateModelView(item.orientation);
-                        item.geometry->renderShadow(*m_renderContext, itemPosition.norm() - item.boundingRadius, m_currentTime);
+                        item.geometry->renderShadow(*m_renderContext, m_currentTime);
                         m_renderContext->popModelView();
                     }
                 }
@@ -1457,7 +1490,10 @@ UniverseRenderer::drawItem(const VisibleItem& item)
     m_renderContext->translateModelView(item.cameraRelativePosition.cast<float>());
     m_renderContext->rotateModelView(item.orientation);
 
-    item.geometry->render(*m_renderContext, item.cameraRelativePosition.norm() - item.boundingRadius, m_currentTime);
+    if (!item.outsideFrustum)
+    {
+        item.geometry->render(*m_renderContext, m_currentTime);
+    }
 
     m_renderContext->popModelView();
 }

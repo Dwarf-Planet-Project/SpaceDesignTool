@@ -1,5 +1,5 @@
 #
-# $Revision: 459 $ $Date: 2010-08-25 08:30:20 -0700 (Wed, 25 Aug 2010) $
+# $Revision: 473 $ $Date: 2010-08-30 19:28:21 -0700 (Mon, 30 Aug 2010) $
 #
 # Copyright by Astos Solutions GmbH, Germany
 #
@@ -49,6 +49,7 @@ set (SRCS
     FixedRotationModel.cpp
     Framebuffer.cpp
     Geometry.cpp
+    GregorianDate.cpp
     HierarchicalTiledMap.cpp
     InertialFrame.cpp
     KeplerianTrajectory.cpp
@@ -89,6 +90,7 @@ set (SRCS
     Visualizer.cpp
     WorldGeometry.cpp
     internal/InputDataStream.cpp
+    internal/OutputDataStream.cpp
     internal/ObjLoader.cpp
     particlesys/ParticleEmitter.cpp
     interaction/ObserverController.cpp

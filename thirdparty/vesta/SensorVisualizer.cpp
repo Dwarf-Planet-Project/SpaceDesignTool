@@ -60,7 +60,6 @@ public:
     }
 
     virtual void render(RenderContext& rc,
-                        float cameraDistance,
                         double currentTime) const;
 
     float boundingSphereRadius() const
@@ -325,7 +324,6 @@ SensorVisualizer::orientation(const Entity* /* parent */, double /* t */) const
 // Implementation of Visualizer::render()
 void
 SensorFrustumGeometry::render(RenderContext& rc,
-                              float /* cameraDistance */,
                               double currentTime) const
 {
     Material material;

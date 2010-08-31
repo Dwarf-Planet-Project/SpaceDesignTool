@@ -1,5 +1,5 @@
 /*
- * $Revision: 454 $ $Date: 2010-08-24 16:10:51 -0700 (Tue, 24 Aug 2010) $
+ * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -42,8 +42,7 @@ public:
     virtual ~WorldGeometry();
 
     void render(RenderContext& rc,
-                float cameraDistance,
-                double animationClock) const;
+                double clock) const;
     
     float boundingSphereRadius() const;
 
@@ -221,6 +220,7 @@ public:
 protected:
     virtual bool handleRayPick(const Eigen::Vector3d& pickOrigin,
                                const Eigen::Vector3d& pickDirection,
+                               double clock,
                                double* distance) const;
 
 private:

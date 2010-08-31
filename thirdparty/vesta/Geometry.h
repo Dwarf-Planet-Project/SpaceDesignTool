@@ -1,5 +1,5 @@
 /*
- * $Revision: 410 $ $Date: 2010-08-06 11:45:36 -0700 (Fri, 06 Aug 2010) $
+ * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -69,12 +69,10 @@ public:
 
     /** Render this geometry object.
       * @param rc a valid render context
-      * @param distance in kilometers from the camera to the local origin
-      * @param animationClock is a time in seconds which can be used for time-driven animations
+      * @param clock is a time in seconds which can be used for time-driven animations
       */
     virtual void render(RenderContext& rc,
-                        float cameraDistance,
-                        double animationClock) const = 0;
+                        double clock) const = 0;
 
     /** The renderShadow method is called when geometry is being drawn into
       * a shadow map. By default, it just calls the regular render method. This
@@ -84,14 +82,12 @@ public:
       * a strategy for drawing transparent portions.
       *
       * @param rc a valid render context
-      * @param distance in kilometers from the camera to the local origin
-      * @param animationClock is a time in seconds which can be used for time-driven animations
+      * @param clock is a time in seconds which can be used for time-driven animations
       */
     virtual void renderShadow(RenderContext& rc,
-                              float cameraDistance,
-                              double animationClock) const
+                              double clock) const
     {
-        render(rc, cameraDistance, animationClock);
+        render(rc, clock);
     }
 
 
@@ -174,6 +170,7 @@ public:
 
     bool rayPick(const Eigen::Vector3d& pickOrigin,
                  const Eigen::Vector3d& pickDirection,
+                 double clock,
                  double* distance) const;
 
 protected:
@@ -185,6 +182,7 @@ protected:
       */
     virtual bool handleRayPick(const Eigen::Vector3d& /* pickOrigin */,
                                const Eigen::Vector3d& /* pickDirection */,
+                               double /* clock */,
                                double* /* distance */) const
     {
         return false;

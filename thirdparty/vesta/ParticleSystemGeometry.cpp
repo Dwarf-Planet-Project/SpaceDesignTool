@@ -1,5 +1,5 @@
 /*
- * $Revision: 223 $ $Date: 2010-03-30 05:44:44 -0700 (Tue, 30 Mar 2010) $
+ * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -28,7 +28,7 @@ ParticleSystemGeometry::~ParticleSystemGeometry()
 
 
 void
-ParticleSystemGeometry::render(RenderContext& rc, float /* cameraDistance */, double animationClock) const
+ParticleSystemGeometry::render(RenderContext& rc, double clock) const
 {
     Material material;
     material.setEmission(Spectrum(1.0f, 1.0f, 0.0f));
@@ -41,7 +41,7 @@ ParticleSystemGeometry::render(RenderContext& rc, float /* cameraDistance */, do
         rc.bindMaterial(&material);
 
         ParticleEmitter* emitter = m_emitters[i].ptr();
-        rc.drawParticles(emitter, animationClock);
+        rc.drawParticles(emitter, clock);
     }
 }
 

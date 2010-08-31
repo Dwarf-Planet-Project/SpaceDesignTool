@@ -1,5 +1,5 @@
 //
-// $Revision: 447 $ $Date: 2010-08-20 15:36:47 -0700 (Fri, 20 Aug 2010) $
+// $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
 //
 // Copyright by Astos Solutions GmbH, Germany
 //  
@@ -569,7 +569,7 @@ public:
 class Observer : public Object
 {
 public:
-    Observer(Entity& center);
+    Observer(Entity* center);
     virtual ~Observer();
 
     Entity* center() const;
@@ -923,9 +923,6 @@ public:
     LabelGeometry();
     virtual ~LabelGeometry();
 
-    void render(RenderContext& rc,
-                float cameraDistance,
-                double animationClock) const;
     float boundingSphereRadius();
     virtual bool isOpaque() const;
     virtual float apparentSize() const;
@@ -1045,7 +1042,7 @@ public:
 class BodyFixedFrame : public Frame
 {
 public:
-    BodyFixedFrame(Entity& body);
+    BodyFixedFrame(Entity* body);
     virtual ~BodyFixedFrame() {}
 
     virtual Eigen::Quaterniond orientation(double t) const;

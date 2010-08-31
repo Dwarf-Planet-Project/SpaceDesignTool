@@ -19,19 +19,21 @@ using namespace Eigen;
 /** Test whether this geometry is intersected by the given pick
   * ray. The pickOrigin and pickDirection are in the model space.
   *
-  * @param pickOrigin origin of the pick ray in model space
-  * @param pickDirection direction of the pick ray in model space (must be normalized)
-  * @param distance filled in with the distance to the geometry if the ray hits
+  * \param pickOrigin origin of the pick ray in model space
+  * \param pickDirection direction of the pick ray in model space (must be normalized)
+  * \param clock time in seconds used for time-driven animation
+  * \param distance filled in with the distance to the geometry if the ray hits
   */
 bool
 Geometry::rayPick(const Vector3d& pickOrigin,
                   const Vector3d& pickDirection,
+                  double clock,
                   double* distance) const
 {
     Vector3d c = Vector3d::Zero();
     if (TestRaySphereIntersection(pickOrigin, pickDirection, c, double(boundingSphereRadius())))
     {
-        return handleRayPick(pickOrigin, pickDirection, distance);
+        return handleRayPick(pickOrigin, pickDirection, clock, distance);
     }
     else
     {

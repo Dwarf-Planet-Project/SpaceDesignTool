@@ -1,5 +1,5 @@
 /*
- * $Revision: 445 $ $Date: 2010-08-20 12:32:00 -0700 (Fri, 20 Aug 2010) $
+ * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -49,8 +49,7 @@ MeshGeometry::~MeshGeometry()
 
 void
 MeshGeometry::render(RenderContext& rc,
-                     float /* cameraDistance */,
-                     double /* animationTime */) const
+                     double /* clock */) const
 {
     if (!m_hwBuffersCurrent)
     {
@@ -118,8 +117,7 @@ MeshGeometry::render(RenderContext& rc,
 
 void
 MeshGeometry::renderShadow(RenderContext& rc,
-                           float /* cameraDistance */,
-                           double /* animationTime */) const
+                           double /* clock */) const
 {
     if (!m_hwBuffersCurrent)
     {
@@ -193,9 +191,11 @@ MeshGeometry::boundingSphereRadius() const
 bool
 MeshGeometry::handleRayPick(const Eigen::Vector3d& pickOrigin,
                             const Eigen::Vector3d& pickDirection,
+                            double /* clock */,
                             double* distance) const
 {
-    Matrix3d invScale = m_meshScale.cast<double>().cwise().inverse().asDiagonal();
+    Vector3d meshScale = m_meshScale.cast<double>();
+    Matrix3d invScale = meshScale.cwise().inverse().asDiagonal();
     Vector3d origin = invScale * pickOrigin;
     Vector3d direction = (invScale * pickDirection).normalized();
 
@@ -206,7 +206,7 @@ MeshGeometry::handleRayPick(const Eigen::Vector3d& pickOrigin,
     {
         double submeshDistance = 0.0;
 
-        // TODO: Check the bounding box of the submesh before doing the actual mesh
+        // TODO: Check the bounding volume of the submesh before doing the actual mesh
         // intersection test.
         if ((*iter)->rayPick(origin, direction, &submeshDistance))
         {
@@ -219,7 +219,7 @@ MeshGeometry::handleRayPick(const Eigen::Vector3d& pickOrigin,
 
     if (closestHit < numeric_limits<double>::infinity())
     {
-        *distance = closestHit;
+        *distance = (meshScale.cwise() * direction).norm() * closestHit;
         return true;
     }
     else
@@ -622,7 +622,7 @@ MeshGeometry::loadFromFile(const string& fileName, TextureMapLoader* textureLoad
     string::size_type pathSepPos = fileName.find_last_of('/');
     if (pathSepPos != string::npos)
     {
-        pathName = fileName.substr(0, pathSepPos);
+        pathName = fileName.substr(0, pathSepPos + 1);
     }
 
 

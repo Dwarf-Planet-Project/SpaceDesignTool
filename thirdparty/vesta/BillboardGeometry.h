@@ -1,5 +1,5 @@
 /*
- * $Revision: 429 $ $Date: 2010-08-15 18:40:51 -0700 (Sun, 15 Aug 2010) $
+ * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -30,8 +30,7 @@ public:
     ~BillboardGeometry();
 
     void render(RenderContext& rc,
-                float cameraDistance,
-                double animationClock) const;
+                double clock) const;
 
     float boundingSphereRadius() const;
 

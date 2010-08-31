@@ -1,5 +1,5 @@
 /*
- * $Revision: 223 $ $Date: 2010-03-30 05:44:44 -0700 (Tue, 30 Mar 2010) $
+ * $Revision: 475 $ $Date: 2010-08-31 08:09:34 -0700 (Tue, 31 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -15,8 +15,13 @@ using namespace vesta;
 using namespace Eigen;
 
 
-Observer::Observer(Entity& center) :
-    m_center(&center),
+/** Create a new observer with the specified center object. The newly
+  * created observer is position exactly on the center object (i.e. with
+  * a zero offset vector. The EME J2000 frame is the default pointing
+  * and position frame for the observer.
+  */
+Observer::Observer(Entity* center) :
+    m_center(center),
     m_positionFrame(InertialFrame::equatorJ2000()),
     m_pointingFrame(InertialFrame::equatorJ2000()),
     m_position(Vector3d::Zero()),
@@ -30,6 +35,8 @@ Observer::~Observer()
 }
 
 
+/** Set a new center object for the observer.
+  */
 void
 Observer::setCenter(Entity* center)
 {
@@ -50,6 +57,9 @@ Observer::updateCenter(Entity* center, double t)
 }
 
 
+/** Set the observer's position frame. The observer's position relative to
+  * the center object is in this frame.
+  */
 void
 Observer::setPositionFrame(Frame* f)
 {
@@ -68,11 +78,15 @@ Observer::updatePositionFrame(Frame* f, double t)
 }
 
 
+/** Set the observer's pointing frame. The pointing frame is the
+  * frame of the observer's orientation.
+  */
 void
 Observer::setPointingFrame(Frame* f)
 {
     m_pointingFrame = f;
 }
+
 
 /** Change the pointing frame and update the orientation to maintain
   * the same orientation position in space at time t.
@@ -85,6 +99,8 @@ Observer::updatePointingFrame(Frame* f, double t)
 }
 
 
+/** Set the position of the observer with respect to the center body.
+  */
 void
 Observer::setPosition(const Vector3d& position)
 {
@@ -92,6 +108,8 @@ Observer::setPosition(const Vector3d& position)
 }
 
 
+/** Set the orientation of the observer.
+  */
 void
 Observer::setOrientation(const Quaterniond& orientation)
 {

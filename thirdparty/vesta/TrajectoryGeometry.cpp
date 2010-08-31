@@ -1,5 +1,5 @@
 /*
- * $Revision: 462 $ $Date: 2010-08-25 16:37:15 -0700 (Wed, 25 Aug 2010) $
+ * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -42,7 +42,7 @@ TrajectoryGeometry::~TrajectoryGeometry()
 
 
 void
-TrajectoryGeometry::render(RenderContext& rc, float /* cameraDistance */, double animationTime) const
+TrajectoryGeometry::render(RenderContext& rc, double clock) const
 {
     if (!m_curvePlot)
     {
@@ -73,10 +73,10 @@ TrajectoryGeometry::render(RenderContext& rc, float /* cameraDistance */, double
     switch (m_displayedPortion)
     {
     case StartToCurrentTime:
-        endTime = animationTime;
+        endTime = clock;
         break;
     case CurrentTimeToEnd:
-        startTime = animationTime;
+        startTime = clock;
         break;
     default:
         break;

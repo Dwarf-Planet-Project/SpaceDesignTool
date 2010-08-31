@@ -1,5 +1,5 @@
 /*
- * $Revision: 314 $ $Date: 2010-06-29 17:32:55 -0700 (Tue, 29 Jun 2010) $
+ * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -36,8 +36,7 @@ public:
 
     // Implementations of abstract methods for Geometry
     void render(RenderContext& rc,
-                float cameraDistance,
-                double animationClock) const;
+                double clock) const;
 
     float boundingSphereRadius() const;
 

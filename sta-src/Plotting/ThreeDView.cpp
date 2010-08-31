@@ -96,7 +96,7 @@ static double BeginningOfTime = -yearsToSecs(200.0);  // 1900 CE
 static double EndOfTime = yearsToSecs(100.0);         // 2100 CE
 static double ValidTimeSpan = EndOfTime - BeginningOfTime;
 
-const static string DefaultSpacecraftMeshFile = "models/acrimsat.3ds";
+const static string DefaultSpacecraftMeshFile = "models/sorce.obj";
 
 // Get texture properties appropriate for planet maps: the map should
 // wrap in longitude (so there's no seam on a meridian), but not in
@@ -246,7 +246,6 @@ public:
     }
 
     virtual void render(RenderContext& rc,
-                        float cameraDistance,
                         double t) const
     {
         double mjd = secsSinceJ2000ToMjd(t);
@@ -266,7 +265,7 @@ public:
         m_label->setColor(color);
         m_label->setIconColor(color);
 
-        m_label->render(rc, cameraDistance, t);
+        m_label->render(rc, t);
     }
 
     virtual float boundingSphereRadius() const
@@ -390,7 +389,7 @@ ThreeDView::ThreeDView(const QGLFormat& format, QWidget* parent) :
     m_renderer->setAmbientLight(Spectrum::Flat(0.2f));
 
     Entity* earth = findSolarSystemBody(STA_SOLAR_SYSTEM->earth());
-    m_observer = counted_ptr<Observer>(new Observer(*earth));
+    m_observer = counted_ptr<Observer>(new Observer(earth));
     m_controller = counted_ptr<ObserverController>(new ObserverController());
     m_controller->setObserver(m_observer.ptr());
 
@@ -996,7 +995,7 @@ ThreeDView::createFrame(const MissionArc* arc)
             Entity* e = findSolarSystemBody(arc->centralBody());
             if (e)
             {
-                f = new BodyFixedFrame(*e);
+                f = new BodyFixedFrame(e);
             }
         }
         break;
@@ -1115,7 +1114,7 @@ ThreeDView::createGroundObject(const GroundObject* groundObj)
         arc->setCenter(center);
         arc->setDuration(ValidTimeSpan);
         arc->setTrajectory(new FixedPointTrajectory(position));
-        arc->setTrajectoryFrame(new BodyFixedFrame(*center));
+        arc->setTrajectoryFrame(new BodyFixedFrame(center));
 
         body->chronology()->addArc(arc);
         body->chronology()->setBeginning(BeginningOfTime);

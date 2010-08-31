@@ -1,5 +1,5 @@
 /*
- * $Revision: 223 $ $Date: 2010-03-30 05:44:44 -0700 (Tue, 30 Mar 2010) $
+ * $Revision: 475 $ $Date: 2010-08-31 08:09:34 -0700 (Tue, 31 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -19,13 +19,18 @@ namespace vesta
 {
 
 /** A two-body rotating frame has the following axes:
-  *   +x points from the primary to the secondary body
-  *   +z is normal to both the velocity and x-axis
-  *   +y points in the direction of the velocity of the
+  * \list
+  * \li +x points from the primary to the secondary body
+  * \li +z is normal to both the velocity and x-axis
+  * \li +y points in the direction of the velocity of the
   *    secondary relative to the primary, and is
   *    orthogonal to both the x and z axes. Note that y
   *    will not in general point precisely in the direction
   *    of the velocity.
+  * \endlist
+  *
+  * +z is chosen so that the coordinate system is right-handed.
+  *
   */
 class TwoBodyRotatingFrame : public Frame
 {

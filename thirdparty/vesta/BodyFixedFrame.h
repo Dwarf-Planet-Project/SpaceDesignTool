@@ -1,5 +1,5 @@
 /*
- * $Revision: 223 $ $Date: 2010-03-30 05:44:44 -0700 (Tue, 30 Mar 2010) $
+ * $Revision: 475 $ $Date: 2010-08-31 08:09:34 -0700 (Tue, 31 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -21,13 +21,13 @@ namespace vesta
 class BodyFixedFrame : public Frame
 {
 public:
-    BodyFixedFrame(Entity& body);
+    BodyFixedFrame(Entity* body);
     virtual ~BodyFixedFrame();
 
     virtual Eigen::Quaterniond orientation(double t) const;
     virtual Eigen::Vector3d angularVelocity(double t) const;
 
-    Entity* body();
+    Entity* body() const;
 
 private:
     counted_ptr<Entity> m_body;

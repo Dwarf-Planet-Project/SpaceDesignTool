@@ -1,5 +1,5 @@
 /*
- * $Revision: 439 $ $Date: 2010-08-17 13:25:59 -0700 (Tue, 17 Aug 2010) $
+ * $Revision: 464 $ $Date: 2010-08-25 23:33:38 -0700 (Wed, 25 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -68,6 +68,8 @@ public:
     RenderStatus renderCubeMap(const LightingEnvironment* lighting,
                                const Eigen::Vector3d& cameraPosition,
                                CubeMapFramebuffer* cubeMap,
+                               double nearDistance = MinimumNearDistance,
+                               double farDistance = MaximumFarDistance,
                                const Eigen::Quaterniond& rotation = Eigen::Quaterniond::Identity());
     RenderStatus renderShadowCubeMap(const LightingEnvironment* lighting,
                                      const Eigen::Vector3d& cameraPosition,
@@ -155,6 +157,16 @@ public:
         unsigned int backItemIndex;
         unsigned int itemCount;
     };
+
+    /** Minimum distance to the near clipping plane; objects nearer to the observer than this distance
+      * will always be culled.
+      */
+    static const float MinimumNearDistance;
+
+    /** Maximum distance to the far clipping plane; objects further from the observer than this distance
+      * will always be culled.
+      */
+    static const float MaximumFarDistance;
 
 private:
     void buildVisibleLightSourceList(const Eigen::Vector3d& cameraPosition);

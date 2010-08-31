@@ -1,5 +1,5 @@
 /*
- * $Revision: 313 $ $Date: 2010-06-29 11:30:00 -0700 (Tue, 29 Jun 2010) $
+ * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -42,7 +42,7 @@ LabelGeometry::~LabelGeometry()
 
 
 void
-LabelGeometry::render(RenderContext& rc, float /* cameraDistance */, double /* animationTime */) const
+LabelGeometry::render(RenderContext& rc, double /* clock */) const
 {
     bool hasIcon = !m_icon.isNull();
 

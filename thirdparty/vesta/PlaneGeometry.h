@@ -1,5 +1,5 @@
 /*
- * $Revision: 253 $ $Date: 2010-04-30 04:31:38 -0700 (Fri, 30 Apr 2010) $
+ * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -33,8 +33,7 @@ public:
     virtual ~PlaneGeometry();
 
     virtual void render(RenderContext& rc,
-                        float cameraDistance,
-                        double animationClock) const;
+                        double clock) const;
 
     virtual float boundingSphereRadius() const;
 

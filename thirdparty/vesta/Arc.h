@@ -1,5 +1,5 @@
 /*
- * $Revision: 223 $ $Date: 2010-03-30 05:44:44 -0700 (Tue, 30 Mar 2010) $
+ * $Revision: 475 $ $Date: 2010-08-31 08:09:34 -0700 (Tue, 31 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -37,35 +37,35 @@ public:
 
     Entity* center() const
     {
-        return &*m_center;
+        return m_center.ptr();
     }
 
     void setCenter(Entity* center);
 
     Frame* trajectoryFrame() const
     {
-        return &*m_trajectoryFrame;
+        return m_trajectoryFrame.ptr();
     }
 
     void setTrajectoryFrame(Frame* f);
 
     Frame* bodyFrame() const
     {
-        return &*m_bodyFrame;
+        return m_bodyFrame.ptr();
     }
 
     void setBodyFrame(Frame* f);
 
     Trajectory* trajectory() const
     {
-        return &*m_trajectory;
+        return m_trajectory.ptr();
     }
 
     void setTrajectory(Trajectory* trajectory);
 
     RotationModel* rotationModel() const
     {
-        return &*m_rotationModel;
+        return m_rotationModel.ptr();
     }
 
     void setRotationModel(RotationModel* rm);

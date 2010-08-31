@@ -1,5 +1,5 @@
 /*
- * $Revision: 223 $ $Date: 2010-03-30 05:44:44 -0700 (Tue, 30 Mar 2010) $
+ * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -86,8 +86,7 @@ ArrowGeometry::setArrowColor(unsigned int which, const Spectrum& color)
 
 void
 ArrowGeometry::render(RenderContext& rc,
-                      float /* cameraDistance */,
-                      double /* animationTime */) const
+                      double /* clock */) const
 {
     Material materials[3];
     for (unsigned int i = 0; i < 3; i++)

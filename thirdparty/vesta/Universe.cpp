@@ -1,5 +1,5 @@
 /*
- * $Revision: 406 $ $Date: 2010-08-03 13:52:42 -0700 (Tue, 03 Aug 2010) $
+ * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -140,7 +140,7 @@ Universe::pickObject(double t,
                             Vector3d relativePickDirection = invRotation * pickDirection;
 
                             double distance = intersectionDistance;
-                            if (geometry->rayPick(relativePickOrigin, relativePickDirection, &distance))
+                            if (geometry->rayPick(relativePickOrigin, relativePickDirection, t, &distance))
                             {
                                 if (distance < closest)
                                 {

@@ -1,5 +1,5 @@
 /*
- * $Revision: 461 $ $Date: 2010-08-25 09:19:13 -0700 (Wed, 25 Aug 2010) $
+ * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -1138,14 +1138,13 @@ AtmosphereShellDistance(const Vector3f& eyePosition, const Vector3f& ellipsoidAx
 
 void
 WorldGeometry::render(RenderContext& rc,
-                      float cameraDistance,
-                      double t) const
+                      double clock) const
 {
     // Determine the level of detail
     float radius = maxRadius();
 
 #if !QUADTREE_ATMOSPHERE
-    float cameraAltitude = cameraDistance;
+    float cameraAltitude = rc.modelview().translation().norm() - radius;
     float projectedSizeInPixels = (radius / rc.pixelSize()) / max(cameraAltitude, radius * 0.001f);
     int subdivisions = (int) max(8.0f, min(48.0f, projectedSizeInPixels / 20));
 #endif
@@ -1530,7 +1529,7 @@ WorldGeometry::render(RenderContext& rc,
 
     if (m_ringSystem.isValid())
     {
-        m_ringSystem->render(rc, cameraDistance, t);
+        m_ringSystem->render(rc, clock);
     }
 }
 
@@ -1814,7 +1813,7 @@ WorldGeometry::renderSphere(RenderContext& rc, int subdivisions) const
 
 
 void
-WorldGeometry::renderSphere(RenderContext& rc, int subdivisions) const
+WorldGeometry::renderSphere(RenderContext& /* rc */, int subdivisions) const
 {
     //VertexBuffer* vb = rc.vertexStreamBuffer();
 
@@ -2298,6 +2297,7 @@ WorldGeometry::setRingSystem(PlanetaryRings* rings)
 bool
 WorldGeometry::handleRayPick(const Eigen::Vector3d& /* pickOrigin */,
                             const Eigen::Vector3d& /* pickDirection */,
+                            double /* clock */,
                             double* /* distance */) const
 {
     // TODO: handle ellipsoidal bodies

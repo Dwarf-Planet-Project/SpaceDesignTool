@@ -32,6 +32,7 @@ VESTA_SOURCES = \
     $$VESTA_PATH/FixedRotationModel.cpp \
     $$VESTA_PATH/Framebuffer.cpp \
     $$VESTA_PATH/Geometry.cpp \
+    $$VESTA_PATH/GregorianDate.cpp \
     $$VESTA_PATH/HierarchicalTiledMap.cpp \
     $$VESTA_PATH/InertialFrame.cpp \
     $$VESTA_PATH/KeplerianTrajectory.cpp \
@@ -102,6 +103,7 @@ VESTA_HEADERS = \
     $$VESTA_PATH/FixedPointTrajectory.h \
     $$VESTA_PATH/FixedRotationModel.h \
     $$VESTA_PATH/Geometry.h \
+    $$VESTA_PATH/GregorianDate.h \
     $$VESTA_PATH/HierarchicalTiledMap.h \
     $$VESTA_PATH/InertialFrame.h \
     $$VESTA_PATH/IntegerTypes.h \

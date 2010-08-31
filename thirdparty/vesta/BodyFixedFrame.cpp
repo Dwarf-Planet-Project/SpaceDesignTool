@@ -1,5 +1,5 @@
 /*
- * $Revision: 223 $ $Date: 2010-03-30 05:44:44 -0700 (Tue, 30 Mar 2010) $
+ * $Revision: 475 $ $Date: 2010-08-31 08:09:34 -0700 (Tue, 31 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -14,8 +14,11 @@ using namespace vesta;
 using namespace Eigen;
 
 
-BodyFixedFrame::BodyFixedFrame(Entity& body) :
-    m_body(&body)
+/** Construct a new frame fixed with respect to the orientation
+  * of the specified body.
+  */
+BodyFixedFrame::BodyFixedFrame(Entity* body) :
+    m_body(body)
 {
 }
 
@@ -25,15 +28,28 @@ BodyFixedFrame::~BodyFixedFrame()
 }
 
 
+/** Get the orientation of the body-fixed frame at time tdbSec.
+  */
 Quaterniond
-BodyFixedFrame::orientation(double t) const
+BodyFixedFrame::orientation(double tdbSec) const
 {
-    return m_body->orientation(t);
+    return m_body->orientation(tdbSec);
 }
 
 
+/** Get the angular velocity of the body-fixed frame at time tdbSec.
+  */
 Vector3d
-BodyFixedFrame::angularVelocity(double t) const
+BodyFixedFrame::angularVelocity(double tdbSec) const
 {
-    return m_body->angularVelocity(t);
+    return m_body->angularVelocity(tdbSec);
+}
+
+
+/** Get the body to which this frame is fixed.
+  */
+Entity*
+BodyFixedFrame::body() const
+{
+    return m_body.ptr();
 }

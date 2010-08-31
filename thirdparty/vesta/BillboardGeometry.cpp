@@ -1,5 +1,5 @@
 /*
- * $Revision: 429 $ $Date: 2010-08-15 18:40:51 -0700 (Sun, 15 Aug 2010) $
+ * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -48,7 +48,7 @@ BillboardGeometry::boundingSphereRadius() const
 
 
 void
-BillboardGeometry::render(RenderContext& rc, float cameraDistance, double /* animationTime */) const
+BillboardGeometry::render(RenderContext& rc, double /* clock */) const
 {
     // Render during the opaque pass if opaque or during the translucent pass if not.
     if ((rc.pass() == RenderContext::TranslucentPass) ^ isOpaque())
@@ -56,6 +56,7 @@ BillboardGeometry::render(RenderContext& rc, float cameraDistance, double /* ani
         float scale = m_size;
         if (m_fixedScreenSize)
         {
+            float cameraDistance = rc.modelview().translation().norm();
             scale *= rc.pixelSize() * cameraDistance;
         }
 

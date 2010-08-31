@@ -33,8 +33,7 @@ public:
     virtual ~PlanetaryRings();
 
     virtual void render(RenderContext& rc,
-                        float cameraDistance,
-                        double animationClock) const;
+                        double clock) const;
 
     virtual float boundingSphereRadius() const;
 
