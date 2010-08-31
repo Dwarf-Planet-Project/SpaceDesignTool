@@ -115,8 +115,9 @@ TextureProperties planetTextureProperties()
 class StaMissionArcTrajectory : public Trajectory
 {
 public:
-    StaMissionArcTrajectory(const MissionArc* missionArc) :
-        m_missionArc(missionArc)
+    StaMissionArcTrajectory(const MissionArc* missionArc, double boundingRadius) :
+        m_missionArc(missionArc),
+        m_boundingRadius(boundingRadius)
     {
     }
 
@@ -132,9 +133,7 @@ public:
 
     virtual double boundingSphereRadius() const
     {
-        // Just return a very large value. For better performance, we should eventually return
-        // a much tighter bounding sphere.
-        return 1.0e10;
+        return m_boundingRadius;
     }
 
     const MissionArc* missionArc()
@@ -144,7 +143,7 @@ public:
 
 private:
     const MissionArc* m_missionArc;
-
+    double m_boundingRadius;
 };
 
 
@@ -971,6 +970,37 @@ ThreeDView::setScenario(PropagatedScenario* scenario)
             m_scenarioGroundObjects.insert(groundObj, body);
         }
     }
+
+    Entity* earth = findSolarSystemBody(STA_EARTH);
+
+    // Set the size of the equatorial plane visualizer.
+    double maxDistanceFromCenter = 0.0;
+    foreach (Entity* body, m_scenarioSpaceObjects.values())
+    {
+        for (unsigned int i = 0; i < body->chronology()->arcCount(); ++i)
+        {
+            vesta::Arc* arc = body->chronology()->arc(i);
+            if (arc->center() == earth)
+            {
+                maxDistanceFromCenter = max(maxDistanceFromCenter, arc->trajectory()->boundingSphereRadius());
+                qDebug() << "max dist: " << maxDistanceFromCenter;
+            }
+        }
+    }
+
+    if (earth)
+    {
+        double planeSize = max(15000.0, min(200000.0, maxDistanceFromCenter * 1.5));
+        Visualizer* vis = earth->visualizer("equatorial plane");
+        bool visible = (vis && vis->isVisible());
+
+        PlaneVisualizer* planeVis = new PlaneVisualizer(planeSize);
+        planeVis->setFrame(InertialFrame::equatorJ2000());
+        planeVis->plane()->setGridLineSpacing(planeSize / 10.0);
+        planeVis->plane()->setOpacity(0.35f);
+        planeVis->setVisibility(visible);
+        earth->setVisualizer("equatorial plane", planeVis);
+    }
 }
 
 
@@ -1031,6 +1061,14 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
 
     foreach (MissionArc* missionArc, spaceObj->mission())
     {
+        // Calculate the radius of a sphere that contains all the points in the trajectory.
+        // We'll use this to optimize rendering and to set the size of some visualizers.
+        double boundingRadius = 0.0;
+        for (unsigned int i = 0; i < missionArc->trajectorySampleCount(); ++i)
+        {
+            boundingRadius = max(boundingRadius, missionArc->trajectorySample(i).position.norm());
+        }
+
         Entity* center = findSolarSystemBody(missionArc->centralBody());
         if (center)
         {
@@ -1041,7 +1079,7 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
                 arc->setCenter(center);
                 arc->setDuration(sta::daysToSecs(missionArc->ending() - missionArc->beginning()));
                 arc->setTrajectoryFrame(frame);
-                arc->setTrajectory(new StaMissionArcTrajectory(missionArc));
+                arc->setTrajectory(new StaMissionArcTrajectory(missionArc, boundingRadius * 1.1));
                 body->chronology()->addArc(arc);
             }
         }
