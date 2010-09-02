@@ -46,6 +46,7 @@
 #include <vesta/TrajectoryGeometry.h>
 #include <vesta/LabelGeometry.h>
 #include <vesta/PlaneVisualizer.h>
+#include <vesta/PlanetGridLayer.h>
 #include <vesta/Units.h>
 #include <vesta/MeshGeometry.h>
 #include <vesta/PlanetaryRings.h>
@@ -391,7 +392,6 @@ ThreeDView::ThreeDView(const QGLFormat& format, QWidget* parent) :
     m_observer = counted_ptr<Observer>(new Observer(earth));
     m_controller = counted_ptr<ObserverController>(new ObserverController());
     m_controller->setObserver(m_observer.ptr());
-
     initializeStandardResources();
 
     gotoBody(STA_SOLAR_SYSTEM->earth());
@@ -681,6 +681,9 @@ ThreeDView::keyReleaseEvent(QKeyEvent* event)
 void
 ThreeDView::initializeUniverse()
 {
+    // Initialize planet grid layer
+    m_planetGrid = new PlanetGridLayer();
+
     // Create the Solar System Barycenter
     Entity* ssb = new Entity();
     ssb->setName("SSB");
@@ -753,6 +756,12 @@ ThreeDView::addSolarSystemBody(const StaBody* body, Entity* center)
         globe->setBaseMap(m_textureLoader->loadTexture(textureName, planetTextureProperties()));
     }
     b->setGeometry(globe);
+
+    // Add planetographic grid for all bodies except for the Sun
+    if (body->id() != STA_SUN)
+    {
+        globe->setLayer("grid", m_planetGrid.ptr());
+    }
 
     m_universe->addEntity(b);
 
@@ -1344,6 +1353,14 @@ ThreeDView::setEquatorialGrid(bool enabled)
         grid->setVisibility(enabled);
         setViewChanged();
     }
+}
+
+
+void
+ThreeDView::setPlanetGrid(bool enabled)
+{
+    m_planetGrid->setVisibility(enabled);
+    setViewChanged();
 }
 
 

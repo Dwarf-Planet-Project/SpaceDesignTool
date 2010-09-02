@@ -46,6 +46,7 @@ namespace vesta
     class TextureFont;
     class MeshGeometry;
     class Atmosphere;
+    class PlanetGridLayer;
 }
 
 class StaBody;
@@ -91,6 +92,7 @@ public slots:
    void setShadows(bool enabled);
    void setReflections(bool enabled);
    void setEquatorialGrid(bool enabled);
+   void setPlanetGrid(bool enabled);
 
    void setSatelliteTrajectories(bool enabled);
    void setReentryTrajectories(bool enabled);
@@ -135,6 +137,8 @@ private:
     vesta::counted_ptr<vesta::MeshGeometry> m_defaultSpacecraftMesh;
 
     vesta::counted_ptr<vesta::TextureMap> m_spacecraftIcon;
+
+    vesta::counted_ptr<vesta::PlanetGridLayer> m_planetGrid;
 
     double m_fov;
 
