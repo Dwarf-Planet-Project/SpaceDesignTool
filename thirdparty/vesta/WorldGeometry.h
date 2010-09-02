@@ -1,5 +1,5 @@
 /*
- * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
+ * $Revision: 481 $ $Date: 2010-09-02 12:28:40 -0700 (Thu, 02 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -27,6 +27,7 @@ class Atmosphere;
 class QuadtreeTileAllocator;
 class TiledMap;
 class PlanetaryRings;
+class WorldLayer;
 
 /** WorldGeometry is a Geometry object specialized for rendering
   * spherical (or ellipsoidal) worlds. Optionally, a WorldGeometry
@@ -217,6 +218,18 @@ public:
         m_specularPower = specularPower;
     }
 
+    typedef std::map<std::string, counted_ptr<WorldLayer> > WorldLayerTable;
+    const WorldLayerTable* layers() const
+    {
+        return &m_layers;
+    }
+
+    void setLayer(const std::string& tag, WorldLayer* layer);
+    void removeLayer(const std::string& tag);
+    WorldLayer* layer(const std::string& tag) const;
+    bool hasLayers() const;
+    void clearLayers();
+
 protected:
     virtual bool handleRayPick(const Eigen::Vector3d& pickOrigin,
                                const Eigen::Vector3d& pickDirection,
@@ -243,7 +256,8 @@ private:
     counted_ptr<Material> m_material;
     counted_ptr<Atmosphere> m_atmosphere;
     counted_ptr<PlanetaryRings> m_ringSystem;
-    std::vector<counted_ptr<MapLayer> > m_layers;
+    WorldLayerTable m_layers;
+    std::vector<counted_ptr<MapLayer> > m_mapLayers;
     bool m_emissive;
     Spectrum m_specularReflectance;
     float m_specularPower;

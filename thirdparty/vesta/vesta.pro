@@ -46,9 +46,11 @@ VESTA_SOURCES = \
     $$VESTA_PATH/ParticleSystemGeometry.cpp \
     $$VESTA_PATH/PlanarProjection.cpp \
     $$VESTA_PATH/PlaneGeometry.cpp \
+    $$VESTA_PATH/PlanetGridLayer.cpp \
     $$VESTA_PATH/PlanetaryRings.cpp \
     $$VESTA_PATH/PlaneVisualizer.cpp \
     $$VESTA_PATH/PrimitiveBatch.cpp \
+    $$VESTA_PATH/QuadtreeTile.cpp \
     $$VESTA_PATH/RenderContext.cpp \
     $$VESTA_PATH/LightingEnvironment.cpp \
     $$VESTA_PATH/SensorVisualizer.cpp \
@@ -60,6 +62,7 @@ VESTA_SOURCES = \
     $$VESTA_PATH/TextureFont.cpp \
     $$VESTA_PATH/TextureMap.cpp \
     $$VESTA_PATH/TextureMapLoader.cpp \
+    $$VESTA_PATH/TileBorderLayer.cpp \
     $$VESTA_PATH/TrajectoryGeometry.cpp \
     $$VESTA_PATH/TwoBodyRotatingFrame.cpp \
     $$VESTA_PATH/UniformRotationModel.cpp \
@@ -124,9 +127,11 @@ VESTA_HEADERS = \
     $$VESTA_PATH/PickResult.h \
     $$VESTA_PATH/PlanarProjection.h \
     $$VESTA_PATH/PlaneGeometry.h \
+    $$VESTA_PATH/PlanetGridLayer.cpp \
     $$VESTA_PATH/PlanetaryRings.h \
     $$VESTA_PATH/PlaneVisualizer.h \
     $$VESTA_PATH/PrimitiveBatch.h \
+    $$VESTA_PATH/QuadtreeTile.h \
     $$VESTA_PATH/RenderContext.h \
     $$VESTA_PATH/LightingEnvironment.h \
     $$VESTA_PATH/RotationModel.h \
@@ -143,6 +148,7 @@ VESTA_HEADERS = \
     $$VESTA_PATH/TextureFont.h \
     $$VESTA_PATH/TextureMap.h \
     $$VESTA_PATH/TextureMapLoader.h \
+    $$VESTA_PATH/TileBorderLayer.h \
     $$VESTA_PATH/TiledMap.h \
     $$VESTA_PATH/Trajectory.h \
     $$VESTA_PATH/TrajectoryGeometry.h \
@@ -160,6 +166,7 @@ VESTA_HEADERS = \
     $$VESTA_PATH/Viewport.h \
     $$VESTA_PATH/Visualizer.h \
     $$VESTA_PATH/WorldGeometry.h \
+    $$VESTA_PATH/WorldLayer.h \
     $$VESTA_PATH/interaction/ObserverController.h \
     $$VESTA_PATH/internal/AtomicInt.h \
     $$VESTA_PATH/internal/InputDataStream.h \

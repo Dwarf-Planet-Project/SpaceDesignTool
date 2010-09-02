@@ -1,5 +1,5 @@
 #
-# $Revision: 473 $ $Date: 2010-08-30 19:28:21 -0700 (Mon, 30 Aug 2010) $
+# $Revision: 483 $ $Date: 2010-09-02 13:00:51 -0700 (Thu, 02 Sep 2010) $
 #
 # Copyright by Astos Solutions GmbH, Germany
 #
@@ -65,8 +65,10 @@ set (SRCS
     PlanarProjection.cpp
     PlaneGeometry.cpp
     PlanetaryRings.cpp
+    PlanetGridLayer.cpp
     PlaneVisualizer.cpp
     PrimitiveBatch.cpp
+    QuadtreeTile.cpp
     RenderContext.cpp
     SensorVisualizer.cpp
     ShaderBuilder.cpp
@@ -77,6 +79,7 @@ set (SRCS
     TextureFont.cpp
     TextureMap.cpp
     TextureMapLoader.cpp
+    TileBorderLayer.cpp
     TrajectoryGeometry.cpp
     TwoBodyRotatingFrame.cpp
     UniformRotationModel.cpp

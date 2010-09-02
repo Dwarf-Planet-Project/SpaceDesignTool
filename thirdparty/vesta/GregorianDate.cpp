@@ -658,7 +658,7 @@ GregorianDate::julianDay() const
 double
 GregorianDate::toTDBJD() const
 {
-    return convertTAItoTDB(toTAIJD());
+    return convertSecToJD(toTDBSec());
 }
 
 
@@ -687,7 +687,7 @@ GregorianDate::toTAIJD() const
 double
 GregorianDate::toTDBSec() const
 {
-    return convertJDToSec(toTDBJD());
+    return convertTAItoTDB(convertJDToSec(toTAIJD()));
 }
 
 
