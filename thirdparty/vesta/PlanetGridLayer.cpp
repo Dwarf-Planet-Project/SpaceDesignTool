@@ -14,6 +14,8 @@
 #include "Units.h"
 #include "WorldGeometry.h"
 #include "TextureFont.h"
+#include <Eigen/LU>
+
 #include <algorithm>
 
 using namespace vesta;
