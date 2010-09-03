@@ -47,6 +47,7 @@ namespace vesta
     class MeshGeometry;
     class Atmosphere;
     class PlanetGridLayer;
+    class CubeMapFramebuffer;
 }
 
 class StaBody;
@@ -137,6 +138,7 @@ private:
     vesta::counted_ptr<vesta::MeshGeometry> m_defaultSpacecraftMesh;
 
     vesta::counted_ptr<vesta::TextureMap> m_spacecraftIcon;
+    vesta::counted_ptr<vesta::CubeMapFramebuffer> m_reflectionMap;
 
     vesta::counted_ptr<vesta::PlanetGridLayer> m_planetGrid;
 
@@ -154,6 +156,7 @@ private:
 
     bool m_satelliteTrajectoriesEnabled;
     bool m_shadowsEnabled;
+    bool m_reflectionsEnabled;
     bool m_glInitialized;
     bool m_shadowsInitialized;
 };

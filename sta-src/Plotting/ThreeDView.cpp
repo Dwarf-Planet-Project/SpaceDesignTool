@@ -51,6 +51,7 @@
 #include <vesta/MeshGeometry.h>
 #include <vesta/PlanetaryRings.h>
 #include <vesta/Atmosphere.h>
+#include <vesta/CubeMapFramebuffer.h>
 #include <vesta/interaction/ObserverController.h>
 
 #include "ThreeDView.h"
@@ -97,7 +98,8 @@ static double BeginningOfTime = -yearsToSecs(200.0);  // 1900 CE
 static double EndOfTime = yearsToSecs(100.0);         // 2100 CE
 static double ValidTimeSpan = EndOfTime - BeginningOfTime;
 
-const static string DefaultSpacecraftMeshFile = "models/sorce.obj";
+static const int ReflectionMapSize = 512;
+static const string DefaultSpacecraftMeshFile = "models/sorce.obj";
 
 // Get texture properties appropriate for planet maps: the map should
 // wrap in longitude (so there's no seam on a meridian), but not in
@@ -375,6 +377,7 @@ ThreeDView::ThreeDView(const QGLFormat& format, QWidget* parent) :
     m_selectedSpacecraft(NULL),
     m_satelliteTrajectoriesEnabled(false),
     m_shadowsEnabled(false),
+    m_reflectionsEnabled(false),
     m_glInitialized(false),
     m_shadowsInitialized(false)
 {
@@ -484,6 +487,15 @@ ThreeDView::paintGL()
         }
     }
 
+    // Reflection map setup is deferred until they are actually enabled
+    if (m_reflectionsEnabled && m_reflectionMap.isNull())
+    {
+        if (CubeMapFramebuffer::supported())
+        {
+            m_reflectionMap = CubeMapFramebuffer::CreateCubicReflectionMap(ReflectionMapSize, TextureMap::R8G8B8A8);
+        }
+    }
+
     // Process atmospheres that were just loaded
     if (!m_newAtmospheres.isEmpty())
     {
@@ -499,9 +511,41 @@ ThreeDView::paintGL()
 
     m_renderer->beginViewSet(*m_universe, m_currentTime);
 
+    // Draw the reflection map if reflections are enabled
+    if (m_reflectionsEnabled && !m_reflectionMap.isNull())
+    {
+        // Render without visualizers or other non-physical geometry. Draw
+        // from the observer's position, which will produce approximately
+        // correct reflections for realistically sized spacecraft.
+        Vector3d reflectionCenter = m_observer->absolutePosition(m_currentTime);
+        m_renderer->setVisualizersEnabled(false);
+        m_renderer->setSkyLayersEnabled(false);
+
+        // Set the near clip distance to a large value so that only background
+        // objects (like planets) are shown.
+        m_renderer->renderCubeMap(NULL, reflectionCenter, m_reflectionMap.ptr(), 1.0f);
+
+        // TODO: worth generating mipmaps?
+
+        m_renderer->setVisualizersEnabled(true);
+        m_renderer->setSkyLayersEnabled(true);
+    }
+
     // Render a single view covering the entire widget
     Viewport viewport(size().width(), size().height());
-    m_renderer->renderView(NULL, m_observer.ptr(), m_fov, viewport);
+
+    LightingEnvironment lighting;
+    if (m_reflectionsEnabled && m_reflectionMap.isValid())
+    {
+        // Add reflection map info to the lighting evironment
+        lighting.reset();
+        ReflectionRegion cameraRegion;
+        cameraRegion.cubeMap = m_reflectionMap->colorTexture();
+        cameraRegion.region = BoundingSphere<float>(Vector3f::Zero(), 1.0f);
+        lighting.reflectionRegions().push_back(cameraRegion);
+    }
+
+    m_renderer->renderView(&lighting, m_observer.ptr(), m_fov, viewport);
 
     m_renderer->endViewSet();
 
@@ -1341,6 +1385,8 @@ void ThreeDView::setShadows(bool enabled)
 void
 ThreeDView::setReflections(bool enabled)
 {
+    m_reflectionsEnabled = enabled;
+    setViewChanged();
 }
 
 
