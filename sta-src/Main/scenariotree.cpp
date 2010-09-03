@@ -575,15 +575,17 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
                     QSharedPointer<ScenarioAbstractTrajectoryType> theCurrentManeuver = trajectoryList.at(numberOfArcs);
 
                     // Passing information from the previous arc into the current arc
-                    if (theCurrentManeuver->elementName() == "Loitering")
+                    if (theCurrentManeuver->elementName() == "LoiteringType")
                     {
                         ScenarioLoiteringType* theCurrentLoitering = dynamic_cast<ScenarioLoiteringType*>(theCurrentManeuver.data());
                         theCurrentLoitering->TimeLine()->setStartTime(thePreviousArc->TimeLine()->EndTime()); // concatenating the times for the mission arcs
+                        theCurrentLoitering->TimeLine()->setEndTime(thePreviousArc->TimeLine()->EndTime().addDays(1));
                     }
-                    else if (theCurrentManeuver->elementName() == "LoiteringTLE")
+                    else if (theCurrentManeuver->elementName() == "LoiteringTLEType")
                     {
                         ScenarioLoiteringTLEType* theCurrentLoiteringTLE = dynamic_cast<ScenarioLoiteringTLEType*>(theCurrentManeuver.data());
                         theCurrentLoiteringTLE->TimeLine()->setStartTime(thePreviousArc->TimeLine()->EndTime()); // concatenating the times for the mission arcs
+                        theCurrentLoiteringTLE->TimeLine()->setEndTime(thePreviousArc->TimeLine()->EndTime().addDays(1));
                     }
                 }
             }
