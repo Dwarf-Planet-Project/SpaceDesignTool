@@ -27,7 +27,7 @@
 
 */
 
-#include "Maneuvers/deltaVdialog.h"
+#include "Maneuvers/deltaVDialog.h"
 #include "Main/scenariotree.h"
 #include "Scenario/scenario.h"
 #include "Astro-Core/date.h"
