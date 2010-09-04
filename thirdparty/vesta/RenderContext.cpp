@@ -261,6 +261,13 @@ RenderContext::createGLResources()
         return false;
     }
 
+    // Setting the vertex buffer to null initially is necessary because VertexBuffer::Create()
+    // leaves the new vertex buffer bound.
+    if (GLVertexBuffer::supported())
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
     return true;
 }
 
