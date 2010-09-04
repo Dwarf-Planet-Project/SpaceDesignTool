@@ -89,7 +89,7 @@ ScenarioTree::ScenarioTree(QWidget *parent)
             this, SLOT(editItemInline(QTreeWidgetItem*, int)));
 
 
-    setExpandsOnDoubleClick(true);
+    setExpandsOnDoubleClick(false);
     setAnimated(true);	// Tree spands now slowly (nicer for the user)
     
     // Set drag and drop behavior
@@ -103,6 +103,7 @@ ScenarioTree::ScenarioTree(QWidget *parent)
 
 
 // Guillermo says: This method changes the XML schema labels by better readable labels in the scenario view
+// It also adds the icons to the left of teh widget and takes care of the expansion true/false of the initial creation
 void changeLabels(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
 {
     // Guillermo says: renaming the labels of the first colum to make it compatible with the participants view
@@ -202,11 +203,20 @@ void changeLabels(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
     else if ((scenarioObject->elementName()) == "SCProgram")
         item->setText(0, "Program");
     else if ((scenarioObject->elementName()) == "SCMission")
+    {
         item->setText(0, "Mission");
+        item->setExpanded(true);
+    }
     else if ((scenarioObject->elementName()) == "TrajectoryPlan")
+    {
         item->setText(0, "Trajectory plan:");
+        item->setExpanded(true);
+    }
     else if ((scenarioObject->elementName()) == "PayloadSet")
+    {
         item->setText(0, "Payload set:");
+        item->setExpanded(true);
+    }
     else if ((scenarioObject->elementName()) == "SCSystemType")
         item->setText(0, "Platform");
     else if ((scenarioObject->elementName()) == "SystemBudgets")
@@ -266,11 +276,20 @@ void changeLabels(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
     else if ((scenarioObject->elementName()) == "REVProgramType")
         item->setText(0, "Program");
     else if ((scenarioObject->elementName()) == "REVMissionType")
+    {
         item->setText(0, "Mission");
+        item->setExpanded(true);
+    }
     else if ((scenarioObject->elementName()) == "REVPayloadType")
-        item->setText(0, "Payload");
+    {
+        item->setText(0, "Payload set:");
+        item->setExpanded(true);
+    }
     else if ((scenarioObject->elementName()) == "REVTrajectoryPlanType")
-        item->setText(0, "Trajectory plan");
+    {
+        item->setText(0, "Trajectory plan:");
+        item->setExpanded(true);
+    }
     else if ((scenarioObject->elementName()) == "REVSystemType")
         item->setText(0, "System");
     else if ((scenarioObject->elementName()) == "REVWeights")
@@ -419,8 +438,8 @@ void ScenarioTree::addScenarioItems(QTreeWidgetItem* item, ScenarioObject* scena
         }
     }
 
-    // Guillermo: expand items by default or not
-    item->setExpanded(true);
+    // Guillermo: expand ALL items by default or not
+    //item->setExpanded(true);
 
     // This part labels the tree with the proper identifiers
     if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject))
