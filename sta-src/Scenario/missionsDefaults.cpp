@@ -237,7 +237,7 @@ ScenarioDeltaVType MissionsDefaults::MissionsDefaults_GENERIC_DELTAV()
     deltaV.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(0);
     deltaV.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(0);
 
-    deltaV.setDeltaVx(0.0);
+    deltaV.setDeltaVx(1.0);
     deltaV.setDeltaVy(0.0);
     deltaV.setDeltaVz(0.0);
     deltaV.setMagnitude(2.0);

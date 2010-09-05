@@ -177,7 +177,7 @@ bool deltaVDialog::saveValues(ScenarioDeltaVType* deltaV)
     myElevation = sta::degToRad(myElevation);
 
     // Conversion of the direction of the impulse from polar into cartesian
-    double r = 1;
+    double r = 1.0;
     double myDeltaVx = r * cos(myAzimuth);
     double myDeltaVy = r * sin(myAzimuth);
     double myDeltaVz = r * sin(myElevation);

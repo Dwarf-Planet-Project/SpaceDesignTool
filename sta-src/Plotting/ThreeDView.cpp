@@ -1036,7 +1036,7 @@ ThreeDView::setScenario(PropagatedScenario* scenario)
             if (arc->center() == earth)
             {
                 maxDistanceFromCenter = max(maxDistanceFromCenter, arc->trajectory()->boundingSphereRadius());
-                qDebug() << "max dist: " << maxDistanceFromCenter;
+                //qDebug() << "max dist: " << maxDistanceFromCenter;
             }
         }
     }

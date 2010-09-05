@@ -61,6 +61,9 @@
 #include <QMessageBox>
 
 
+USING_PART_OF_NAMESPACE_EIGEN;
+
+
 
 void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback feedback, PropagatedScenario* propScenario, QWidget* parent)
 {
@@ -255,6 +258,7 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback feedba
                 ScenarioDeltaVType* deltaV = dynamic_cast<ScenarioDeltaVType*>(trajectory.data());
                 // Calculating direction and magnitude
                 double theDeltaVMagnitude = deltaV->Magnitude();
+                //qDebug() << deltaV->DeltaVx() << deltaV->DeltaVy() << deltaV->DeltaVz() << endl;                
 
                 // Calculating duration
                 theLastSampleTime = sta::JdToMjd(sta::CalendarToJd(deltaV->TimeLine()->StartTime()));
@@ -265,9 +269,12 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback feedba
                 theDeltaVVector.position(0) = 0.0;
                 theDeltaVVector.position(1) = 0.0;
                 theDeltaVVector.position(2) = 0.0;
-                theDeltaVVector.velocity(0) = theDeltaVMagnitude * deltaV->DeltaVx();
-                theDeltaVVector.velocity(1) = theDeltaVMagnitude * deltaV->DeltaVy();
-                theDeltaVVector.velocity(2) = theDeltaVMagnitude * deltaV->DeltaVz();
+                //theDeltaVVector.velocity(0) = theDeltaVMagnitude * deltaV->DeltaVx();
+                //theDeltaVVector.velocity(1) = theDeltaVMagnitude * deltaV->DeltaVy();
+                //theDeltaVVector.velocity(2) = theDeltaVMagnitude * deltaV->DeltaVz();
+                theDeltaVVector.velocity(0) = theDeltaVMagnitude;
+                theDeltaVVector.velocity(1) = theDeltaVMagnitude;
+                theDeltaVVector.velocity(2) = 0.0;
                 theLastStateVector = theLastStateVector.operator +(theDeltaVVector);
 
                 theLastSampleTime = sta::JdToMjd(sta::CalendarToJd(deltaV->TimeLine()->EndTime()));
