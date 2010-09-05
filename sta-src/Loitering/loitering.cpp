@@ -486,70 +486,6 @@ bool LoiteringDialog::loadValues(ScenarioInitialPositionType* initPosition)
     }
 
     return true;
-#if OLDSCENARIO
-    ScenarioInitialStatePosition* initialStatePos = parameters->initialStatePosition();
-    ScenarioInitialStateAttitude* initialStateAtt = parameters->initialStateAttitude();
-
-    if (initialStatePos)
-    {
-        // Set the coordinate system combo box value
-        for (int i = 0; i < CoordSystemComboBox->count(); i++)
-        {
-            if (CoordSystemComboBox->itemData(i) == initialStatePos->coordinateSystem().type())
-            {
-                CoordSystemComboBox->setCurrentIndex(i);
-                break;
-            }
-        }
-
-
-        ScenarioAbstractInitialState* initialState = initialStatePos->initialState();
-        ScenarioKeplerianElements* elements = dynamic_cast<ScenarioKeplerianElements*>(initialState);
-        ScenarioStateVector* stateVector = dynamic_cast<ScenarioStateVector*>(initialState);
-        //ScenarioTLEs* TLEs = dynamic_cast<ScenarioTLEs*>(initialState);
-
-        Q_ASSERT(elements || stateVector);
-
-        if (elements != NULL)
-        {
-            InitialStateComboBox->setCurrentIndex(0);
-            InitialStateStackedWidget->setCurrentWidget(keplerianPage);
-
-            semimajorAxisEdit->setText(QString::number(elements->m_semimajorAxis));
-            eccentricityEdit->setText(QString::number(elements->m_eccentricity));
-            inclinationEdit->setText(QString::number(elements->m_inclination));
-            raanEdit->setText(QString::number(elements->m_raan));
-            argOfPeriapsisEdit->setText(QString::number(elements->m_argumentOfPeriapsis));
-            trueAnomalyEdit->setText(QString::number(elements->m_trueAnomaly));
-        }
-        else if (stateVector != NULL)
-        {
-            InitialStateComboBox->setCurrentIndex(1);
-            InitialStateStackedWidget->setCurrentWidget(stateVectorPage);
-            //TODO: check if it works
-            positionXEdit->setText(QString::number(stateVector->position().x()));
-            positionYEdit->setText(QString::number(stateVector->position().y()));
-            positionZEdit->setText(QString::number(stateVector->position().z()));
-            velocityXEdit->setText(QString::number(stateVector->velocity().x()));
-            velocityYEdit->setText(QString::number(stateVector->velocity().y()));
-            velocityZEdit->setText(QString::number(stateVector->velocity().z()));
-        }
-        else
-        {
-            // Unknown initial state type
-            return false;
-        }
-    }
-    else
-    {
-        return false;
-    }
-
-    if (initialStateAtt)
-    {
-        // TODO: the class has to be implemented
-    }
-#endif
 
 }
 
@@ -720,7 +656,7 @@ bool LoiteringDialog::saveValues(ScenarioInitialPositionType* initPos)
             ScenarioKeplerianElementsType* elements_deg = new ScenarioKeplerianElementsType;
             elements_deg->setSemiMajorAxis(semimajorAxisEdit->text().toDouble());
             elements_deg->setEccentricity(eccentricityEdit->text().toDouble());
-            elements_deg->setInclination(inclinationEdit->text().toDouble());  //Modified by Dominic save values in scenario in radians
+            elements_deg->setInclination(inclinationEdit->text().toDouble());
             elements_deg->setRAAN(raanEdit->text().toDouble());
             elements_deg->setArgumentOfPeriapsis(argOfPeriapsisEdit->text().toDouble());
             elements_deg->setTrueAnomaly(trueAnomalyEdit->text().toDouble());
@@ -772,8 +708,7 @@ void TesseralBox::setVariableMaximum(int i)
 
 
 /////////////////////////////////////// PropagateLoiteringTrajectory /////////////////////////////
-bool
-        PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
+bool PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
                                      QList<double>& sampleTimes,
                                      QList<sta::StateVector>& samples,
                                      PropagationFeedback& propFeedback)
@@ -1005,7 +940,7 @@ bool
     }
 
     return true;
-} // ------------------------------- End o the propagation method -----------------------
+} // ------------------------------- End of the propagation method -----------------------
 
 
 

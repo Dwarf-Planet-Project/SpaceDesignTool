@@ -111,26 +111,31 @@ void changeLabels(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
     {
         item->setText(0, "Satellite");
         item->setIcon(0, QIcon(":/icons/ParticipantSATELLITE.png"));
+        item->setExpanded(true);
     }
     else if ((scenarioObject->elementName()) == "LV")
     {
         item->setText(0, "Launcher");
         item->setIcon(0, QIcon(":/icons/ParticipantROCKET.png"));
+        item->setExpanded(true);
     }
     else if ((scenarioObject->elementName()) == "GroundStation")
     {
         item->setText(0, "Ground Station");
         item->setIcon(0, QIcon(":/icons/ParticipantSTATION.png"));
+        item->setExpanded(true);
     }
     else if ((scenarioObject->elementName()) == "Point")
     {
         item->setText(0, "Point");
         item->setIcon(0, QIcon(":/icons/ParticipantPOINT.png"));
+        item->setExpanded(true);
     }
     else if ((scenarioObject->elementName()) == "REV")
     {
         item->setText(0, "Re-entry vehicle");
         item->setIcon(0, QIcon(":/icons/ParticipantENTRYVEHICLE.png"));
+        item->setExpanded(true);
     }
     else if ((scenarioObject->elementName()) == "Transmitter")
         item->setText(0, "Transmitter");
@@ -571,7 +576,8 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
 
         return true;
     }
-    else if (trajectory && elementName != "tns:EntryArc" && elementName != "tns:DeltaV")    // Loitering and Loitering TLEs
+    // else if (trajectory && elementName != "tns:EntryArc" && elementName != "tns:DeltaV")   // Loitering and loiteirng TLEs
+    else if (trajectory && elementName != "tns:EntryArc" && elementName != "tns:DeltaV" && elementName != "tns:LoiteringTLE")    // Loitering
     {
         ScenarioObject* parentObject = objectForItem(parent);
         ScenarioTrajectoryPlan* trajectoryPlan = dynamic_cast<ScenarioTrajectoryPlan*>(parentObject);
@@ -582,6 +588,7 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
             {
                 const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList = trajectoryPlan->AbstractTrajectory();
                 QSharedPointer<ScenarioAbstractTrajectoryType> thePreviousTrajectory = trajectoryList.at(numberOfArcs - 1);
+
                 if (dynamic_cast<ScenarioDeltaVType*>(thePreviousTrajectory.data()))
                 // We do not allow to drop the arc except when the previous arc is a deltaV
                 {                    
@@ -597,15 +604,29 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
                     if (theCurrentManeuver->elementName() == "LoiteringType")
                     {
                         ScenarioLoiteringType* theCurrentLoitering = dynamic_cast<ScenarioLoiteringType*>(theCurrentManeuver.data());
-                        theCurrentLoitering->TimeLine()->setStartTime(thePreviousArc->TimeLine()->EndTime()); // concatenating the times for the mission arcs
+
+                        // concatenating the times for the mission arc
+                        theCurrentLoitering->TimeLine()->setStartTime(thePreviousArc->TimeLine()->EndTime());
                         theCurrentLoitering->TimeLine()->setEndTime(thePreviousArc->TimeLine()->EndTime().addDays(1));
+                        // TODO: to gray out the rest of the loitering GUI
+
+                        /*
+                        // concatenating the maneuver for the mission arc
+                        ScenarioInitialPositionType* initialPosition = dynamic_cast<ScenarioInitialPositionType*>(theCurrentLoitering->InitialPosition().data());
+                        ScenarioKeplerianElementsType* newKeplerianElements = new ScenarioKeplerianElementsType;
+                        initialPosition->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(newKeplerianElements));
+                        theCurrentLoitering->InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(newKeplerianElements));
+                        */
                     }
+                    /*
+                      // for the time being TLEs are not treated
                     else if (theCurrentManeuver->elementName() == "LoiteringTLEType")
                     {
                         ScenarioLoiteringTLEType* theCurrentLoiteringTLE = dynamic_cast<ScenarioLoiteringTLEType*>(theCurrentManeuver.data());
                         theCurrentLoiteringTLE->TimeLine()->setStartTime(thePreviousArc->TimeLine()->EndTime()); // concatenating the times for the mission arcs
                         theCurrentLoiteringTLE->TimeLine()->setEndTime(thePreviousArc->TimeLine()->EndTime().addDays(1));
                     }
+                    */
                 }
             }
             else  // Then the trajectory plan is emptly and we just simply drop the arc
@@ -628,6 +649,7 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
         if (trajectoryPlan)
         {
             int numberOfArcs = trajectoryPlan->children().size();
+            //qDebug() << numberOfArcs << endl;
             if (numberOfArcs > 0)
             {
                 const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList = trajectoryPlan->AbstractTrajectory();
@@ -644,6 +666,7 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
                     QSharedPointer<ScenarioAbstractTrajectoryType> theCurrentManeuver = trajectoryList.at(numberOfArcs);
                     ScenarioDeltaVType* theCurrentDeltaV = dynamic_cast<ScenarioDeltaVType*>(theCurrentManeuver.data());
                     theCurrentDeltaV->TimeLine()->setStartTime(thePreviousLoiteringArc->TimeLine()->EndTime()); // concatenating the times for the mission arcs
+                    theCurrentDeltaV->TimeLine()->setEndTime(thePreviousLoiteringArc->TimeLine()->EndTime().addSecs(1));
 
                     return true;
                 }

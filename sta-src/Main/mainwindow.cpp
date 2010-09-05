@@ -940,12 +940,10 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
         }
         ++colorIndex;
 
-
         // For space vehicles, we need to propagate trajectories
         if (dynamic_cast<ScenarioSC*>(participant.data()))
         {
 			ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
-
             scenarioPropagatorSatellite(vehicle, feedback, propScenario, this);
         }
         else if (dynamic_cast<ScenarioREV*>(participant.data()))//Added by Dominic to allow propagation of re-entry vehicle trajectories

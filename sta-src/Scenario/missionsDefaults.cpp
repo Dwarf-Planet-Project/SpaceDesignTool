@@ -148,11 +148,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_GENERIC()
 
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
-    initPos->setSemiMajorAxis(7100.0);
-    initPos->setInclination(31.2);
-    initPos->setEccentricity(0.1);
-    initPos->setRAAN(123.45);
-    initPos->setArgumentOfPeriapsis(10.23);
+    initPos->setSemiMajorAxis(8100.0);
+    initPos->setInclination(45.0);
+    initPos->setEccentricity(0.0);
+    initPos->setRAAN(0.0);
+    initPos->setArgumentOfPeriapsis(0.0);
     initPos->setTrueAnomaly(0.0);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
@@ -180,8 +180,8 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_GENERIC()
 
     loitering.Environment()->CentralBody()->setName("Earth");
     loitering.Environment()->CentralBody()->GravityModel()->setModelName("EGM2008");
-    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(1);
-    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(1);
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(0);
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(0);
 
     loitering.ElementIdentifier()->setName("loitering arc");
     loitering.ElementIdentifier()->setTheOrder(1);
@@ -223,17 +223,24 @@ ScenarioDeltaVType MissionsDefaults::MissionsDefaults_GENERIC_DELTAV()
 
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     deltaV.TimeLine()->setStartTime(TheCurrentDateAndTime);
-    deltaV.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
+    deltaV.TimeLine()->setEndTime(TheCurrentDateAndTime.addSecs(1));  // The deltaV duration is 1 second
 
     deltaV.ElementIdentifier()->setName("Delta V");
     deltaV.ElementIdentifier()->setColorName("Dark Red");
     deltaV.ElementIdentifier()->setModelName("Default");
     deltaV.ElementIdentifier()->setTheOrder(2);
 
+    deltaV.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
+
+    deltaV.Environment()->CentralBody()->setName("Earth");
+    deltaV.Environment()->CentralBody()->GravityModel()->setModelName("EGM2008");
+    deltaV.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(0);
+    deltaV.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(0);
+
     deltaV.setDeltaVx(0.0);
     deltaV.setDeltaVy(0.0);
     deltaV.setDeltaVz(0.0);
-    deltaV.setMagnitude(3.0);
+    deltaV.setMagnitude(2.0);
 
     return deltaV;
 }

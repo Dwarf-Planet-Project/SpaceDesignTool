@@ -65,6 +65,9 @@
 void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback feedback, PropagatedScenario* propScenario, QWidget* parent)
 {
 	const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList = vehicle->SCMission()->TrajectoryPlan()->AbstractTrajectory();
+    int numberOfArcs = trajectoryList.size();
+    sta::StateVector theLastStateVector = sta::StateVector::zero();
+    double theLastSampleTime = 0.0;
 
 	// Initial state is stored in the first trajectory (for now); so,
 	// the empty trajectory plan case has to be treated specially.
@@ -78,11 +81,55 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback feedba
 		{
 			QList<double> sampleTimes;
 			QList<sta::StateVector> samples;
+            int numberOFsamples;
 
 			if (dynamic_cast<ScenarioLoiteringType*>(trajectory.data()))    // Loitering
 			{
-				ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
-				PropagateLoiteringTrajectory(loitering, sampleTimes, samples, feedback);
+                ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
+                QString propagator = loitering->PropagationPosition()->propagator();
+
+                if (theLastSampleTime > 0.0)  // This arc is NOT the first one
+                {
+                    if (propagator == "TWO BODY")
+                    {
+                        ScenarioKeplerianElementsType* elements = new ScenarioKeplerianElementsType;
+                        QString centralBodyName = loitering->Environment()->CentralBody()->Name();
+                        StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+                        sta::KeplerianElements initialStateKeplerian = cartesianTOorbital(centralBody->mu(), theLastStateVector);
+                        //qDebug() << initialStateKeplerian.Inclination << endl;
+                        elements->setSemiMajorAxis(initialStateKeplerian.SemimajorAxis);
+                        elements->setEccentricity(initialStateKeplerian.Eccentricity);
+                        elements->setInclination(sta::radToDeg(initialStateKeplerian.Inclination));
+                        elements->setRAAN(sta::radToDeg(initialStateKeplerian.AscendingNode));
+                        elements->setArgumentOfPeriapsis(sta::radToDeg(initialStateKeplerian.ArgumentOfPeriapsis));
+                        elements->setTrueAnomaly(sta::radToDeg(initialStateKeplerian.TrueAnomaly));
+                        loitering->InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(elements));
+                        //QDateTime myStarDateTime = sta::JdToCalendar(sta::MjdToJd(theLastSampleTime));
+                        //loitering->TimeLine()->setStartTime(myStarDateTime);
+                    }
+                    else
+                    {
+                        ScenarioStateVectorType* stateVector = new ScenarioStateVectorType();
+                        stateVector->setX(theLastStateVector.position(0));
+                        stateVector->setY(theLastStateVector.position(1));
+                        stateVector->setZ(theLastStateVector.position(2));
+                        stateVector->setVx(theLastStateVector.velocity(0));
+                        stateVector->setVy(theLastStateVector.velocity(1));
+                        stateVector->setVz(theLastStateVector.velocity(2));
+                        //qDebug() << stateVector->x() << stateVector->y() << stateVector->z() << endl;
+                        //qDebug() << stateVector->vx() << stateVector->vy() << stateVector->vz() << endl;
+                        loitering->InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(stateVector));
+                        //QDateTime myStarDateTime = sta::JdToCalendar(sta::MjdToJd(theLastSampleTime));
+                        //loitering->TimeLine()->setStartTime(myStarDateTime);
+                    }
+                }
+
+                PropagateLoiteringTrajectory(loitering, sampleTimes, samples, feedback);
+
+                // Recovering the last state vector
+                numberOFsamples = sampleTimes.size();
+                theLastStateVector = samples.at(numberOFsamples - 1);
+                theLastSampleTime = sampleTimes.at(numberOFsamples - 1);
 
 				//******************************************************************** /OZGUN
 				// Eclipse function is called and the "data/EclipseStarLight.stad" is generated
@@ -128,8 +175,7 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback feedba
 					continue;
 				}
 
-
-				if (sampleTimes.size() > 1)
+                if (numberOFsamples > 1)
 				{
                     MissionArc* arc = new MissionArc(centralBody,
                                                      coordSys,
@@ -203,8 +249,51 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback feedba
 
 					spaceObject->addMissionArc(arc);
 				}
+            }
+            else if (dynamic_cast<ScenarioDeltaVType*>(trajectory.data()))    // DeltaVs
+            {
+                ScenarioDeltaVType* deltaV = dynamic_cast<ScenarioDeltaVType*>(trajectory.data());
+                // Calculating direction and magnitude
+                double theDeltaVMagnitude = deltaV->Magnitude();
 
-			}  /////////////////////////// end of the big IF for all arcs
+                // Calculating duration
+                theLastSampleTime = sta::JdToMjd(sta::CalendarToJd(deltaV->TimeLine()->StartTime()));
+                sampleTimes << theLastSampleTime;
+                samples << theLastStateVector;
+
+                sta::StateVector theDeltaVVector;
+                theDeltaVVector.position(0) = 0.0;
+                theDeltaVVector.position(1) = 0.0;
+                theDeltaVVector.position(2) = 0.0;
+                theDeltaVVector.velocity(0) = theDeltaVMagnitude * deltaV->DeltaVx();
+                theDeltaVVector.velocity(1) = theDeltaVMagnitude * deltaV->DeltaVy();
+                theDeltaVVector.velocity(2) = theDeltaVMagnitude * deltaV->DeltaVz();
+                theLastStateVector = theLastStateVector.operator +(theDeltaVVector);
+
+                theLastSampleTime = sta::JdToMjd(sta::CalendarToJd(deltaV->TimeLine()->EndTime()));
+                sampleTimes << theLastSampleTime;
+                samples << theLastStateVector;
+
+                QString centralBodyName = deltaV->Environment()->CentralBody()->Name();
+                StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+                QString coordSysName = deltaV->InitialPosition()->CoordinateSystem();
+                sta::CoordinateSystem coordSys(coordSysName);
+
+                MissionArc* arc = new MissionArc(centralBody,
+                                                 coordSys,
+                                                 sampleTimes,
+                                                 samples);
+
+                // Loading arc color, name, and model
+                arc->setArcName(deltaV->ElementIdentifier()->Name());
+                QString arcColorName = deltaV->ElementIdentifier()->colorName();
+                MissionsDefaults myMissionDefaults;
+                QColor trajectoryColor = myMissionDefaults.missionArcColorFromQt(arcColorName);
+                arc->setArcTrajectoryColor(trajectoryColor);
+                arc->setModelName(deltaV->ElementIdentifier()->modelName());
+                spaceObject->addMissionArc(arc);
+
+            }  /////////////////////////// end of the big IF for all arcs
         }
 
         propScenario->addSpaceObject(spaceObject);
