@@ -50,7 +50,9 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     const QList<StaBody*>& majorBodies = STA_SOLAR_SYSTEM->majorBodies();
     foreach (const StaBody* body, majorBodies)
     {
-        if (!body->baseTexture().isEmpty())
+        // Don't add the Sun to the combo box. However, it probably should be there
+        // for the 3D view.
+        if (!body->baseTexture().isEmpty() && body->id() != STA_SUN)
         {
             int SolarBody = body->id();
             QString MyIconWithPath;

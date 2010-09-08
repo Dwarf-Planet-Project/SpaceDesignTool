@@ -82,6 +82,8 @@ struct VisualAttributes
 
 struct VisualAttributes SSVisualAttributes[] =
 {
+    { STA_SUN,     "textures/medres/sun.jpg"         },
+
     { STA_MERCURY, "textures/medres/mercury.jpg"     },
     { STA_VENUS,   "textures/medres/venussurface.jpg"       },
     { STA_EARTH,   "textures/medres/earth.jpg"       },
