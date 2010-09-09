@@ -13,6 +13,7 @@
 #include "Material.h"
 #include "QuadtreeTile.h"
 #include "Debug.h"
+#include <Eigen/LU>
 #include <cmath>
 
 using namespace vesta;
