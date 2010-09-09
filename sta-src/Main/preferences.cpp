@@ -64,6 +64,7 @@ void Preferences::connectViewActions(const ViewActionGroup* viewActions)
     connect(celestialGrid,          SIGNAL(clicked(bool)), viewActions->equatorialGridAction(),        SLOT(setChecked(bool)));
     connect(satellitesTrajectories, SIGNAL(clicked(bool)), viewActions->satelliteTrajectoriesAction(), SLOT(setChecked(bool)));
     connect(reentryTrajectories,    SIGNAL(clicked(bool)), viewActions->reentryTrajectoriesAction(),   SLOT(setChecked(bool)));
+    connect(skyLayerCombo,          SIGNAL(currentIndexChanged(int)), viewActions,                     SLOT(setSkyLayer(int)));
     connect(this, SIGNAL(ambientLightChanged(float)), viewActions, SLOT(setAmbientLight(float)));
 
     // Connect from view actions to dialog widgets
@@ -75,6 +76,7 @@ void Preferences::connectViewActions(const ViewActionGroup* viewActions)
     connect(viewActions->equatorialGridAction(),        SIGNAL(toggled(bool)), celestialGrid,          SLOT(setChecked(bool)));
     connect(viewActions->satelliteTrajectoriesAction(), SIGNAL(toggled(bool)), satellitesTrajectories, SLOT(setChecked(bool)));
     connect(viewActions->reentryTrajectoriesAction(),   SIGNAL(toggled(bool)), reentryTrajectories,    SLOT(setChecked(bool)));
+    connect(viewActions, SIGNAL(skyLayerChanged(int)), this, SLOT(setSkyLayer(int)));
     connect(viewActions, SIGNAL(ambientLightChanged(float)), this, SLOT(setAmbientLight(float)));
 }
 
@@ -107,6 +109,14 @@ void Preferences::setAmbientLight(float lightLevel)
     if (value != horizontalSliderAmbientLight->value())
     {
         horizontalSliderAmbientLight->setValue(value);
+    }
+}
+
+void Preferences::setSkyLayer(int skyLayerIndex)
+{
+    if (skyLayerIndex >= 0 && skyLayerIndex < skyLayerCombo->count())
+    {
+        skyLayerCombo->setCurrentIndex(skyLayerIndex);
     }
 }
 

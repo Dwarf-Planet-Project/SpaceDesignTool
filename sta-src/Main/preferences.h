@@ -42,9 +42,11 @@ public:
 
 public slots:
     void setAmbientLight(float lightLevel);
+    void setSkyLayer(int skyLayerIndex);
 
 signals:
     void ambientLightChanged(float lightLevel);
+    void skyLayerChanged(int skyLayerIndex);
 
 protected slots:
 	void on_DialogPreferences_accepted();

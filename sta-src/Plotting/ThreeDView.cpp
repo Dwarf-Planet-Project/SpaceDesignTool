@@ -38,6 +38,7 @@
 #include <vesta/BodyFixedFrame.h>
 #include <vesta/CelestialCoordinateGrid.h>
 #include <vesta/StarsLayer.h>
+#include <vesta/SkyImageLayer.h>
 #include <vesta/DataChunk.h>
 #include <vesta/DDSLoader.h>
 #include <vesta/TextureMapLoader.h>
@@ -100,6 +101,23 @@ static double ValidTimeSpan = EndOfTime - BeginningOfTime;
 
 static const int ReflectionMapSize = 512;
 static const string DefaultSpacecraftMeshFile = "models/sorce.obj";
+
+
+// Frame string must be one of equatorial, ecliptic, or galactic.
+struct SkyLayerProperties
+{
+    string layerName;
+    string textureFile;
+    float opacity;
+    string frame;
+};
+
+static SkyLayerProperties SkyLayers[] =
+{
+    { "milky way",  "textures/medres/milkyway.jpg",   0.3f, "galactic" },
+    { "iras 100um", "textures/medres/iras-100um.jpg", 0.3f, "galactic" },
+};
+
 
 // Get texture properties appropriate for planet maps: the map should
 // wrap in longitude (so there's no seam on a meridian), but not in
@@ -873,19 +891,42 @@ ThreeDView::initializeStarCatalog(const QString& fileName)
 void
 ThreeDView::initializeLayers()
 {
-    // Layer 0 contains the stars
+    // Stars layer
     if (m_universe->starCatalog())
     {
         StarsLayer* stars = new StarsLayer();
         stars->setStarCatalog(m_universe->starCatalog());
         stars->setLimitingMagnitude(8.5);
-        m_renderer->addSkyLayer(stars);
+        m_universe->setLayer("stars", stars);
     }
 
-    // Layer 1 is an equatorial grid
+    // Equatorial grid layer
     CelestialCoordinateGrid* equatorialGrid = new CelestialCoordinateGrid();
     equatorialGrid->setColor(Spectrum(0.0f, 0.0f, 1.0f));
-    m_renderer->addSkyLayer(equatorialGrid);
+    m_universe->setLayer("equatorial grid", equatorialGrid);
+
+    // Image layers
+    unsigned int layerCount = sizeof(SkyLayers) / sizeof(SkyLayers[0]);
+    for (unsigned int i = 0; i < layerCount; ++i)
+    {
+        const SkyLayerProperties& layerProps = SkyLayers[i];
+        SkyImageLayer* layer = new SkyImageLayer();
+        layer->setDrawOrder(-1); // behind non-image layers
+        layer->setOpacity(layerProps.opacity);
+        layer->setTexture(m_textureLoader->loadTexture(layerProps.textureFile, planetTextureProperties()));
+
+        const InertialFrame* frame = InertialFrame::equatorJ2000();
+        if (layerProps.frame == "galactic")
+        {
+            frame = InertialFrame::galactic();
+        }
+        else if (layerProps.frame == "ecliptic")
+        {
+            frame = InertialFrame::eclipticJ2000();
+        }
+        layer->setOrientation(frame->orientation());
+        m_universe->setLayer(layerProps.layerName, layer);
+    }
 }
 
 
@@ -1036,7 +1077,6 @@ ThreeDView::setScenario(PropagatedScenario* scenario)
             if (arc->center() == earth)
             {
                 maxDistanceFromCenter = max(maxDistanceFromCenter, arc->trajectory()->boundingSphereRadius());
-                //qDebug() << "max dist: " << maxDistanceFromCenter;
             }
         }
     }
@@ -1294,7 +1334,7 @@ ThreeDView::selectParticipant(SpaceObject* spaceObj)
 void
 ThreeDView::setStars(bool enabled)
 {
-    SkyLayer* grid = m_renderer->skyLayer(0);
+    SkyLayer* grid = m_universe->layer("stars");
     if (grid)
     {
         grid->setVisibility(enabled);
@@ -1393,7 +1433,7 @@ ThreeDView::setReflections(bool enabled)
 void
 ThreeDView::setEquatorialGrid(bool enabled)
 {
-    SkyLayer* grid = m_renderer->skyLayer(1);
+    SkyLayer* grid = m_universe->layer("equatorial grid");
     if (grid)
     {
         grid->setVisibility(enabled);
@@ -1434,6 +1474,37 @@ ThreeDView::setSatelliteTrajectories(bool enabled)
 void
 ThreeDView::setReentryTrajectories(bool enabled)
 {
+}
+
+
+/** Set the current sky layer. An index of 0 will disable all layers.
+  */
+void
+ThreeDView::setCurrentSkyLayer(int layerIndex)
+{
+    unsigned int layerCount = sizeof(SkyLayers) / sizeof(SkyLayers[0]);
+
+    // Disable all layers
+    for (unsigned int i = 0; i < layerCount; ++i)
+    {
+        SkyLayer* layer = m_universe->layer(SkyLayers[i].layerName);
+        if (layer)
+        {
+            layer->setVisibility(false);
+        }
+    }
+
+    // Only enable a layer if the index is in range
+    if (layerIndex > 0 && layerIndex <= layerCount)
+    {
+        SkyLayer* activeLayer = m_universe->layer(SkyLayers[layerIndex - 1].layerName);
+        if (activeLayer)
+        {
+            activeLayer->setVisibility(true);
+        }
+    }
+
+    setViewChanged();
 }
 
 

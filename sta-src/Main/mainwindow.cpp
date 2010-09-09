@@ -294,6 +294,7 @@ MainWindow::MainWindow(QWidget *parent)	:
         connect(m_viewActions->atmospheresAction(), SIGNAL(toggled(bool)), view, SLOT(setAtmospheres(bool)));
         connect(m_viewActions->satelliteTrajectoriesAction(), SIGNAL(toggled(bool)), view, SLOT(setSatelliteTrajectories(bool)));
         connect(m_viewActions, SIGNAL(ambientLightChanged(float)), view, SLOT(setAmbientLight(float)));
+        connect(m_viewActions, SIGNAL(skyLayerChanged(int)), view, SLOT(setCurrentSkyLayer(int)));
     }
 
     // Read saved window preferences
@@ -637,6 +638,7 @@ void MainWindow::preferencesSTA()
     staPreferencesWidget->raise(); // Required to keep the modeless window alive
     staPreferencesWidget->activateWindow(); // Required to keep the modeless window alive
     staPreferencesWidget->setAmbientLight(m_viewActions->ambientLight());
+    staPreferencesWidget->setSkyLayer(m_viewActions->currentSkyLayer());
 }
 
 // Next lines created by Guillermo to handle the spawning of web browsers and e-mail clients, etc.

@@ -98,6 +98,7 @@ public slots:
    void setSatelliteTrajectories(bool enabled);
    void setReentryTrajectories(bool enabled);
 
+   void setCurrentSkyLayer(int layerIndex);
    void setAmbientLight(float lightLevel);
 
 protected:

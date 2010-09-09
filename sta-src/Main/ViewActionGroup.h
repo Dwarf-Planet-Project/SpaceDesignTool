@@ -84,11 +84,18 @@ public:
         return m_ambientLight;
     }
 
+    int currentSkyLayer() const
+    {
+        return m_currentSkyLayerIndex;
+    }
+
 public slots:
     void setAmbientLight(float lightLevel);
+    void setSkyLayer(int layerIndex);
 
 signals:
-    float ambientLightChanged(float lightLevel);
+    void ambientLightChanged(float lightLevel);
+    void skyLayerChanged(int layerIndex);
 
 private:
     QAction* m_shadowsAction;
@@ -100,5 +107,6 @@ private:
     QAction* m_reentryTrajectoriesAction;
     QAction* m_satelliteTrajectoriesAction;
     float m_ambientLight;
+    int m_currentSkyLayerIndex;
 };
 #endif // VIEW_ACTION_GROUP_H_

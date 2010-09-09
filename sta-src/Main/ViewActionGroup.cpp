@@ -33,7 +33,8 @@
   * same ViewActionGroup (created once, in MainWindow.)
   */
 ViewActionGroup::ViewActionGroup() :
-    m_ambientLight(0.0f)
+    m_ambientLight(0.0f),
+    m_currentSkyLayerIndex(0)
 {
     m_shadowsAction = new QAction(tr("Shadows"), this);
     m_shadowsAction->setCheckable(true);
@@ -76,6 +77,7 @@ ViewActionGroup::saveSettings()
     settings.setValue("ReentryTrajectories", m_reentryTrajectoriesAction->isChecked());
     settings.setValue("SatelliteTrajectories", m_satelliteTrajectoriesAction->isChecked());
     settings.setValue("AmbientLight", m_ambientLight);
+    settings.setValue("SkyLayer", m_currentSkyLayerIndex);
     settings.endGroup();
 }
 
@@ -97,6 +99,7 @@ ViewActionGroup::restoreSettings()
     m_reentryTrajectoriesAction->setChecked(settings.value("ReentryTrajectories", true).toBool());
     m_satelliteTrajectoriesAction->setChecked(settings.value("SatelliteTrajectories", true).toBool());
     setAmbientLight(settings.value("AmbientLight", 0.2f).toFloat());
+    setSkyLayer(settings.value("SkyLayer", 0).toInt());
 
     settings.endGroup();
 }
@@ -109,5 +112,16 @@ ViewActionGroup::setAmbientLight(float lightLevel)
     {
         m_ambientLight = lightLevel;
         emit ambientLightChanged(m_ambientLight);
+    }
+}
+
+
+void
+ViewActionGroup::setSkyLayer(int layerIndex)
+{
+    if (layerIndex != m_currentSkyLayerIndex)
+    {
+        m_currentSkyLayerIndex = layerIndex;
+        emit skyLayerChanged(m_currentSkyLayerIndex);
     }
 }

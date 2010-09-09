@@ -63,7 +63,7 @@
     </size>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="scenarioPreferences">
     <attribute name="title">
@@ -302,8 +302,8 @@
     <widget class="QSlider" name="horizontalSliderAmbientLight">
      <property name="geometry">
       <rect>
-       <x>236</x>
-       <y>236</y>
+       <x>170</x>
+       <y>250</y>
        <width>261</width>
        <height>22</height>
       </rect>
@@ -315,8 +315,8 @@
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>132</x>
-       <y>238</y>
+       <x>50</x>
+       <y>250</y>
        <width>93</width>
        <height>16</height>
       </rect>
@@ -328,8 +328,8 @@
     <widget class="QLabel" name="label_2">
      <property name="geometry">
       <rect>
-       <x>240</x>
-       <y>216</y>
+       <x>170</x>
+       <y>230</y>
        <width>41</width>
        <height>16</height>
       </rect>
@@ -341,8 +341,8 @@
     <widget class="QLabel" name="label_3">
      <property name="geometry">
       <rect>
-       <x>472</x>
-       <y>216</y>
+       <x>400</x>
+       <y>230</y>
        <width>41</width>
        <height>16</height>
       </rect>
@@ -397,7 +397,7 @@
         <item row="4" column="0">
          <widget class="QCheckBox" name="reflections">
           <property name="text">
-           <string>Refections</string>
+           <string>Reflections</string>
           </property>
          </widget>
         </item>
@@ -444,6 +444,60 @@
          </widget>
         </item>
        </layout>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>51</x>
+       <y>190</y>
+       <width>381</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Sky layer</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Preferred</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QComboBox" name="skyLayerCombo">
+        <item>
+         <property name="text">
+          <string>None</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Milky Way (optical)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>IRAS/COBE (100 micron)</string>
+         </property>
+        </item>
+       </widget>
       </item>
      </layout>
     </widget>
