@@ -1,5 +1,5 @@
 //
-// $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
+// $Revision: 494 $ $Date: 2010-09-08 15:49:05 -0700 (Wed, 08 Sep 2010) $
 //
 // Copyright by Astos Solutions GmbH, Germany
 //  
@@ -388,6 +388,7 @@ class TextureMap;
 class Object;
 class Visualizer;
 class MapLayerBounds;
+class SkyLayer;
 
 class StateVector
 {
@@ -668,6 +669,12 @@ public:
         }
     }
     }
+
+    void setLayer(const std::string& tag, SkyLayer* layer);
+    void removeLayer(const std::string& tag);
+    SkyLayer* layer(const std::string& tag) const;
+    bool hasLayers() const;
+    void clearLayers();
 };
 
 class Atmosphere : public Object
@@ -1034,9 +1041,12 @@ public:
     virtual ~InertialFrame() {}
 
     virtual Eigen::Quaterniond orientation(double t) const;
+    virtual Eigen::Quaterniond orientation() const;
 
     static InertialFrame* eclipticJ2000();
     static InertialFrame* equatorJ2000();
+    static InertialFrame* equatorB1950();
+    static InertialFrame* galactic();
 };
 
 class BodyFixedFrame : public Frame
@@ -1345,6 +1355,8 @@ public:
 
     bool isVisible() const;
     void setVisibility(bool visible);
+    int drawOrder() const;
+    void setDrawOrder(int order);
 };
 
 class CelestialCoordinateGrid : public SkyLayer
@@ -1436,20 +1448,21 @@ public:
     Spectrum ambientLight() const;
     void setAmbientLight(const Spectrum& spectrum);
 
-    void addSkyLayer(SkyLayer* layer);
-    void removeSkyLayer(unsigned int index);
-    SkyLayer* skyLayer(unsigned int index) const;
-    unsigned int skyLayerCount() const;
-    
+    bool visualizersEnabled() const;
+    void setVisualizersEnabled(bool enable);
     bool skyLayersEnabled() const;
     void setSkyLayersEnabled(bool enable);
 
     bool initializeGraphics();
     bool initializeShadowMaps(unsigned int shadowMapSize = 1024,
                               unsigned int maxShadowMaps = 1);
+    bool initializeOmniShadowMaps(unsigned int shadowMapSize = 1024,
+                                  unsigned int maxShadowMaps = 1);
+
     bool shadowsEnabled() const;
     void setShadowsEnabled(bool enable);
     bool shadowsSupported() const;    
+    bool omniShadowsSupported() const;
 };
 
 class ParticleEmitter : public Object

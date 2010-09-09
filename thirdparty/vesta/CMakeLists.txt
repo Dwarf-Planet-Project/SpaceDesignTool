@@ -1,5 +1,5 @@
 #
-# $Revision: 483 $ $Date: 2010-09-02 13:00:51 -0700 (Thu, 02 Sep 2010) $
+# $Revision: 491 $ $Date: 2010-09-08 08:16:43 -0700 (Wed, 08 Sep 2010) $
 #
 # Copyright by Astos Solutions GmbH, Germany
 #
@@ -72,6 +72,7 @@ set (SRCS
     RenderContext.cpp
     SensorVisualizer.cpp
     ShaderBuilder.cpp
+    SkyImageLayer.cpp
     Spectrum.cpp
     StarCatalog.cpp
     StarsLayer.cpp

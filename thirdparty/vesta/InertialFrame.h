@@ -1,5 +1,5 @@
 /*
- * $Revision: 223 $ $Date: 2010-03-30 05:44:44 -0700 (Tue, 30 Mar 2010) $
+ * $Revision: 490 $ $Date: 2010-09-07 13:34:23 -0700 (Tue, 07 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -45,18 +45,39 @@ public:
         return Eigen::Vector3d::Zero();
     }
 
+    /** Ecliptic frame based on the Earth mean equator J2000 frame.
+      */
     static InertialFrame* eclipticJ2000()
     {
-        return &*s_EclipticJ2000;
+        return s_EclipticJ2000.ptr();
     }
 
+    /** Earth mean equator of J2000.0. This is the base reference frame
+      * in VESTA.
+      */
     static InertialFrame* equatorJ2000()
     {
-        return &*s_EquatorJ2000;
+        return s_EquatorJ2000.ptr();
+    }
+
+    /** Earth mean equator and equinox of B1950 (Besselian year 1950)
+      */
+    static InertialFrame* equatorB1950()
+    {
+        return s_EquatorB1950.ptr();
+    }
+
+    /** Galactic System 2. The xy-plane is aligned with the galactic equator.
+      */
+    static InertialFrame* galactic()
+    {
+        return s_Galactic.ptr();
     }
 
     static counted_ptr<InertialFrame> s_EclipticJ2000;
     static counted_ptr<InertialFrame> s_EquatorJ2000;
+    static counted_ptr<InertialFrame> s_EquatorB1950;
+    static counted_ptr<InertialFrame> s_Galactic;
 
 private:
     Eigen::Quaterniond m_orientation;

@@ -34,6 +34,7 @@ static VertexAttribute posNormTexTangentAttributes[] = {
 static VertexSpec PositionNormalTexTangent(4, posNormTexTangentAttributes);
 
 
+
 QuadtreeTile::QuadtreeTile() :
     m_parent(NULL),
     m_level(NULL),
@@ -101,7 +102,9 @@ QuadtreeTile::tessellate(const Vector3f& eyePosition,
 
     // Compute the approximate altitude of the eye point. This is the exact altitude when the
     // world is a sphere, but larger than the actual altitude for other ellipsoids.
-    float approxAltitude = abs(eyePosition.norm() - (eyePosition.normalized().cwise() * globeSemiAxes).norm());
+    //float approxAltitude = abs(eyePosition.norm() - (eyePosition.normalized().cwise() * globeSemiAxes).norm());
+    float distToCenter = eyePosition.norm();
+    float approxAltitude = abs(distToCenter - ((eyePosition.cwise() * globeSemiAxes).norm()) / max(1.0e-6f, distToCenter));
 
     // Compute the approximate projected size of the tile.
     float distanceToTile = max(approxAltitude, (eyePosition - m_center).norm() - m_boundingSphereRadius);
@@ -246,7 +249,7 @@ QuadtreeTile::render(RenderContext& rc, unsigned int features) const
 
 
 void
-QuadtreeTile::render(RenderContext& rc, Material& material, TiledMap* baseTexture) const
+QuadtreeTile::render(RenderContext& rc, Material& material, TiledMap* baseTexture, unsigned int features) const
 {
     if (!m_isCulled)
     {
@@ -254,19 +257,19 @@ QuadtreeTile::render(RenderContext& rc, Material& material, TiledMap* baseTextur
         {
             for (unsigned int i = 0; i < 4; ++i)
             {
-                m_children[i]->render(rc, material, baseTexture);
+                m_children[i]->render(rc, material, baseTexture, features);
             }
         }
         else
         {
-            drawPatch(rc, material, baseTexture);
+            drawPatch(rc, material, baseTexture, features);
         }
     }
 }
 
 
 void
-QuadtreeTile::render(RenderContext& rc, const MapLayer& layer) const
+QuadtreeTile::render(RenderContext& rc, const MapLayer& layer, unsigned int features) const
 {
     if (!m_isCulled)
     {
@@ -289,7 +292,7 @@ QuadtreeTile::render(RenderContext& rc, const MapLayer& layer) const
         {
             for (unsigned int i = 0; i < 4; ++i)
             {
-                m_children[i]->render(rc, layer);
+                m_children[i]->render(rc, layer, features);
             }
         }
         else
@@ -300,13 +303,13 @@ QuadtreeTile::render(RenderContext& rc, const MapLayer& layer) const
                 layer.box().north() >= latNorth)
             {
                 // Draw a complete patch
-                drawPatch(rc, layer);
+                drawPatch(rc, layer, features);
             }
             else
             {
                 // Patch isn't completely covered by the map layer; draw
                 // only a portion of the patch.
-                drawPatch(rc, layer);
+                drawPatch(rc, layer, features);
             }
         }
     }
@@ -337,10 +340,15 @@ void
 QuadtreeTile::drawPatch(RenderContext& rc, unsigned int features) const
 {
     const unsigned int MaxVertexSize = 11;
-    unsigned int vertexStride = 8;
+    unsigned int vertexStride = 5;
+
     if ((features & NormalMap) != 0)
     {
         vertexStride = 11;
+    }
+    else if ((features & Normals) != 0)
+    {
+        vertexStride = 8;
     }
 
     const unsigned int vertexCount = (TileSubdivision + 1) * (TileSubdivision + 1);
@@ -403,7 +411,7 @@ QuadtreeTile::drawPatch(RenderContext& rc, unsigned int features) const
                 ++vertexIndex;
             }
         }
-        else
+        else if ((features & Normals) != 0)
         {
             for (unsigned int j = 0; j <= TileSubdivision; ++j)
             {
@@ -421,6 +429,25 @@ QuadtreeTile::drawPatch(RenderContext& rc, unsigned int features) const
                 vertexData[vertexStart + 5] = p.z();
                 vertexData[vertexStart + 6] = u * 0.5f + 0.5f;
                 vertexData[vertexStart + 7] = 0.5f - v;
+
+                ++vertexIndex;
+            }
+        }
+        else
+        {
+            for (unsigned int j = 0; j <= TileSubdivision; ++j)
+            {
+                unsigned int vertexStart = vertexStride * vertexIndex;
+
+                float lon = lonWest + j * dlon;
+                float u = m_southwest.x() + j * du;
+
+                Vector3f p(cosLat * cos(lon), cosLat * sin(lon), sinLat);
+                vertexData[vertexStart + 0] = p.x();
+                vertexData[vertexStart + 1] = p.y();
+                vertexData[vertexStart + 2] = p.z();
+                vertexData[vertexStart + 3] = u * 0.5f + 0.5f;
+                vertexData[vertexStart + 4] = 0.5f - v;
 
                 ++vertexIndex;
             }
@@ -453,16 +480,20 @@ QuadtreeTile::drawPatch(RenderContext& rc, unsigned int features) const
     {
         rc.bindVertexArray(PositionNormalTexTangent, vertexData, vertexStride * 4);
     }
-    else
+    else if ((features & Normals) != 0)
     {
         rc.bindVertexArray(VertexSpec::PositionNormalTex, vertexData, vertexStride * 4);
     }
-    glDrawElements(GL_TRIANGLES, triangleCount * 3, GL_UNSIGNED_SHORT, indexData);
+    else
+    {
+        rc.bindVertexArray(VertexSpec::PositionTex, vertexData, vertexStride * 4);
+    }
+    rc.drawPrimitives(PrimitiveBatch::Triangles, triangleCount * 3, PrimitiveBatch::Index16, reinterpret_cast<char*>(indexData));
 }
 
 
 void
-QuadtreeTile::drawPatch(RenderContext& rc, Material& material, TiledMap* baseMap) const
+QuadtreeTile::drawPatch(RenderContext& rc, Material& material, TiledMap* baseMap, unsigned int features) const
 {
     const unsigned int MaxVertexSize = 11;
     unsigned int vertexStride = 8;
@@ -579,8 +610,20 @@ QuadtreeTile::drawPatch(RenderContext& rc, Material& material, TiledMap* baseMap
 
     material.setBaseTexture(r.texture);
     rc.bindMaterial(&material);
-    rc.bindVertexArray(VertexSpec::PositionNormalTex, vertexData, vertexStride * 4);
-    glDrawElements(GL_TRIANGLES, triangleCount * 3, GL_UNSIGNED_SHORT, indexData);
+
+    if ((features & NormalMap) != 0)
+    {
+        rc.bindVertexArray(PositionNormalTexTangent, vertexData, vertexStride * 4);
+    }
+    else if ((features & Normals) != 0)
+    {
+        rc.bindVertexArray(VertexSpec::PositionNormalTex, vertexData, vertexStride * 4);
+    }
+    else
+    {
+        rc.bindVertexArray(VertexSpec::PositionTex, vertexData, vertexStride * 4);
+    }
+    rc.drawPrimitives(PrimitiveBatch::Triangles, triangleCount * 3, PrimitiveBatch::Index16, reinterpret_cast<char*>(indexData));
 }
 
 
@@ -651,7 +694,7 @@ mapLayerRow(const MapLayer& layer,
 // depth buffer artifacts. Using identical vertex coordinates may not be
 // possible at the very edges of map layers.
 void
-QuadtreeTile::drawPatch(RenderContext& rc, const MapLayer& layer) const
+QuadtreeTile::drawPatch(RenderContext& rc, const MapLayer& layer, unsigned int features) const
 {
     const unsigned int vertexStride = 8;
 
@@ -792,8 +835,16 @@ QuadtreeTile::drawPatch(RenderContext& rc, const MapLayer& layer) const
     unsigned int triangleCount = rowCount * columnCount * 2;
     if (triangleCount > 0)
     {
-        rc.bindVertexArray(VertexSpec::PositionNormalTex, vertexData, vertexStride * sizeof(float));
-        glDrawElements(GL_TRIANGLES, triangleCount * 3, GL_UNSIGNED_SHORT, indexData);
+        if ((features & Normals) != 0)
+        {
+            rc.bindVertexArray(VertexSpec::PositionNormalTex, vertexData, vertexStride * 4);
+        }
+        else
+        {
+            rc.bindVertexArray(VertexSpec::PositionTex, vertexData, vertexStride * 4);
+        }
+
+        rc.drawPrimitives(PrimitiveBatch::Triangles, triangleCount * 3, PrimitiveBatch::Index16, reinterpret_cast<char*>(indexData));
     }
 }
 

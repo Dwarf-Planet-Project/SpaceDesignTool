@@ -55,6 +55,7 @@ VESTA_SOURCES = \
     $$VESTA_PATH/LightingEnvironment.cpp \
     $$VESTA_PATH/SensorVisualizer.cpp \
     $$VESTA_PATH/ShaderBuilder.cpp \
+    $$VESTA_PATH/SkyImageLayer.cpp \
     $$VESTA_PATH/Spectrum.cpp \
     $$VESTA_PATH/StarCatalog.cpp \
     $$VESTA_PATH/StarsLayer.cpp \
@@ -68,6 +69,7 @@ VESTA_SOURCES = \
     $$VESTA_PATH/UniformRotationModel.cpp \
     $$VESTA_PATH/Universe.cpp \
     $$VESTA_PATH/UniverseRenderer.cpp \
+    $$VESTA_PATH/VectorMapLayer.cpp \
     $$VESTA_PATH/VelocityVisualizer.cpp \
     $$VESTA_PATH/VertexArray.cpp \
     $$VESTA_PATH/VertexBuffer.cpp \
@@ -139,6 +141,7 @@ VESTA_HEADERS = \
     $$VESTA_PATH/ShaderBuilder.h \
     $$VESTA_PATH/ShaderInfo.h \
     $$VESTA_PATH/SingleTextureTiledMap.h \
+    $$VESTA_PATH/SkyImageLayer.h \
     $$VESTA_PATH/SkyLayer.h \
     $$VESTA_PATH/Spectrum.h \
     $$VESTA_PATH/StarCatalog.h \
@@ -157,6 +160,7 @@ VESTA_HEADERS = \
     $$VESTA_PATH/Units.h \
     $$VESTA_PATH/Universe.h \
     $$VESTA_PATH/UniverseRenderer.h \
+    $$VESTA_PATH/VectorMapLayer.h \
     $$VESTA_PATH/VelocityVisualizer.h \
     $$VESTA_PATH/VertexArray.h \
     $$VESTA_PATH/VertexBuffer.h \

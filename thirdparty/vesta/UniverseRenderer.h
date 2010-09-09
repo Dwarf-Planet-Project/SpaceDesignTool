@@ -1,5 +1,5 @@
 /*
- * $Revision: 464 $ $Date: 2010-08-25 23:33:38 -0700 (Wed, 25 Aug 2010) $
+ * $Revision: 492 $ $Date: 2010-09-08 14:22:38 -0700 (Wed, 08 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -81,11 +81,6 @@ public:
     }
 
     void setAmbientLight(const Spectrum& spectrum);
-
-    void addSkyLayer(SkyLayer* layer);
-    void removeSkyLayer(unsigned int index);
-    SkyLayer* skyLayer(unsigned int index) const;
-    unsigned int skyLayerCount() const;
 
     bool initializeShadowMaps(unsigned int shadowMapSize = 1024,
                               unsigned int maxShadowMaps = 1);

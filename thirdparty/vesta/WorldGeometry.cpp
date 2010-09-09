@@ -1,5 +1,5 @@
 /*
- * $Revision: 481 $ $Date: 2010-09-02 12:28:40 -0700 (Thu, 02 Sep 2010) $
+ * $Revision: 492 $ $Date: 2010-09-08 14:22:38 -0700 (Wed, 08 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -228,11 +228,12 @@ WorldGeometry::render(RenderContext& rc, double clock) const
     else if (useNormalTexture)
     {
         rc.setVertexInfo(PositionNormalTexTangent);
-        tileFeatures |= QuadtreeTile::NormalMap;
+        tileFeatures |= QuadtreeTile::NormalMap | QuadtreeTile::Normals;
     }
     else
     {
         rc.setVertexInfo(VertexSpec::PositionNormalTex);
+        tileFeatures |= QuadtreeTile::Normals;
     }
 
     RenderContext::ScatteringParameters scatteringParams;
@@ -305,8 +306,8 @@ WorldGeometry::render(RenderContext& rc, double clock) const
     }
     else
     {
-        westHemi->render(rc, material, m_baseTiledMap.ptr());
-        eastHemi->render(rc, material, m_baseTiledMap.ptr());
+        westHemi->render(rc, material, m_baseTiledMap.ptr(), QuadtreeTile::Normals);
+        eastHemi->render(rc, material, m_baseTiledMap.ptr(), QuadtreeTile::Normals);
     }
 
     // TODO: replace this with more general WorldLayers mechanism
@@ -338,8 +339,8 @@ WorldGeometry::render(RenderContext& rc, double clock) const
                     simpleMaterial.setBaseTexture(texture);
                     rc.bindMaterial(&simpleMaterial);
 
-                    westHemi->render(rc, *layer);
-                    eastHemi->render(rc, *layer);
+                    westHemi->render(rc, *layer, QuadtreeTile::Normals);
+                    eastHemi->render(rc, *layer, QuadtreeTile::Normals);
                 }
             }
         }
@@ -427,9 +428,8 @@ WorldGeometry::render(RenderContext& rc, double clock) const
             westHemi->tessellate(eyePosition, cullingPlanes, cloudSemiAxes, splitThreshold, rc.pixelSize());
             eastHemi->tessellate(eyePosition, cullingPlanes, cloudSemiAxes, splitThreshold, rc.pixelSize());
 
-            rc.setVertexInfo(VertexSpec::PositionNormalTex);
-            westHemi->render(rc, 0);
-            eastHemi->render(rc, 0);
+            westHemi->render(rc, QuadtreeTile::Normals);
+            eastHemi->render(rc, QuadtreeTile::Normals);
         }
         glCullFace(GL_BACK);
 
@@ -489,9 +489,8 @@ WorldGeometry::render(RenderContext& rc, double clock) const
         westHemi->tessellate(eyePosition, cullingPlanes, atmSemiAxes, splitThreshold, rc.pixelSize());
         eastHemi->tessellate(eyePosition, cullingPlanes, atmSemiAxes, splitThreshold, rc.pixelSize());
 
-        rc.setVertexInfo(VertexSpec::PositionNormalTex);
-        westHemi->render(rc, 0);
-        eastHemi->render(rc, 0);
+        westHemi->render(rc, QuadtreeTile::Normals);
+        eastHemi->render(rc, QuadtreeTile::Normals);
 
         rc.popModelView();
         glCullFace(GL_BACK);
@@ -1336,7 +1335,7 @@ WorldGeometry::setLayer(const std::string& tag, WorldLayer* layer)
 }
 
 
-/** Remove the visualizer with the specified tag. The method has no
+/** Remove the layer with the specified tag. The method has no
   * effect if the tag is not found.
   */
 void

@@ -1,5 +1,5 @@
 /*
- * $Revision: 226 $ $Date: 2010-04-01 22:58:10 -0700 (Thu, 01 Apr 2010) $
+ * $Revision: 492 $ $Date: 2010-09-08 14:22:38 -0700 (Wed, 08 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -15,9 +15,12 @@
 #include "StarCatalog.h"
 #include "PickResult.h"
 #include <vector>
+#include <map>
 
 namespace vesta
 {
+
+class SkyLayer;
 
 class Universe : public Object
 {
@@ -39,9 +42,22 @@ public:
                     double pixelAngle,
                     PickResult* result) const;
 
+    typedef std::map<std::string, counted_ptr<SkyLayer> > SkyLayerTable;
+    const SkyLayerTable* layers() const
+    {
+        return &m_layers;
+    }
+
+    void setLayer(const std::string& tag, SkyLayer* layer);
+    void removeLayer(const std::string& tag);
+    SkyLayer* layer(const std::string& tag) const;
+    bool hasLayers() const;
+    void clearLayers();
+
 private:
     std::vector<Entity*> m_entities;
     counted_ptr<StarCatalog> m_starCatalog;
+    SkyLayerTable m_layers;
 };
 
 }

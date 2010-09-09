@@ -73,6 +73,7 @@ public:
     enum
     {
         NormalMap = 0x1,
+        Normals   = 0x2,
     };
 
     QuadtreeTile();
@@ -91,12 +92,12 @@ public:
     void split(const CullingPlaneSet& cullFrustum, const Eigen::Vector3f& semiAxes);
     bool cull(const CullingPlaneSet& cullFrustum) const;
     void render(RenderContext& rc, unsigned int features) const;
-    void render(RenderContext& rc, Material& material, TiledMap* tiledMap) const;
-    void render(RenderContext& rc, const MapLayer& layer) const;
+    void render(RenderContext& rc, Material& material, TiledMap* tiledMap, unsigned int features) const;
+    void render(RenderContext& rc, const MapLayer& layer, unsigned int features) const;
     void renderWorldLayer(RenderContext& rc, const WorldGeometry* world, const WorldLayer* layer) const;
     void drawPatch(RenderContext& rc, unsigned int features) const;
-    void drawPatch(RenderContext& rc, const MapLayer& layer) const;
-    void drawPatch(RenderContext& rc, Material& material, TiledMap* baseMap) const;
+    void drawPatch(RenderContext& rc, const MapLayer& layer, unsigned int features) const;
+    void drawPatch(RenderContext& rc, Material& material, TiledMap* baseMap, unsigned int features) const;
 
     bool isRoot() const
     {

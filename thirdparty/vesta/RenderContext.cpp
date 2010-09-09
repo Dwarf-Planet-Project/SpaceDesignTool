@@ -1,5 +1,5 @@
 /*
- * $Revision: 459 $ $Date: 2010-08-25 08:30:20 -0700 (Wed, 25 Aug 2010) $
+ * $Revision: 488 $ $Date: 2010-09-06 12:17:43 -0700 (Mon, 06 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -602,15 +602,12 @@ RenderContext::unbindVertexArray()
 }
 
 
-void
-RenderContext::drawPrimitives(const PrimitiveBatch& batch)
+static GLenum
+OGLPrimitiveType(PrimitiveBatch::PrimitiveType type)
 {
-    updateShaderState();
-    updateShaderTransformConstants();
-
     GLenum oglPrimitiveType = 0;
 
-    switch (batch.primitiveType())
+    switch (type)
     {
         case PrimitiveBatch::Triangles:     oglPrimitiveType = GL_TRIANGLES;      break;
         case PrimitiveBatch::TriangleStrip: oglPrimitiveType = GL_TRIANGLE_STRIP; break;
@@ -620,9 +617,20 @@ RenderContext::drawPrimitives(const PrimitiveBatch& batch)
         case PrimitiveBatch::Points:        oglPrimitiveType = GL_POINTS;         break;
         default:
             // Unknown primitive type
-            return;
+            break;
     }
 
+    return oglPrimitiveType;
+}
+
+
+void
+RenderContext::drawPrimitives(const PrimitiveBatch& batch)
+{
+    updateShaderState();
+    updateShaderTransformConstants();
+
+    GLenum oglPrimitiveType = OGLPrimitiveType(batch.primitiveType());
     if (batch.isIndexed())
     {
         glDrawElements(oglPrimitiveType,
@@ -634,6 +642,25 @@ RenderContext::drawPrimitives(const PrimitiveBatch& batch)
     {
         glDrawArrays(oglPrimitiveType, batch.firstVertex(), batch.indexCount());
     }
+}
+
+
+/** Draw a batch of primitives using the specified index data.
+  */
+void
+RenderContext::drawPrimitives(PrimitiveBatch::PrimitiveType type,
+                              unsigned int indexCount,
+                              PrimitiveBatch::IndexSize indexSize,
+                              const char* indexData)
+{
+    updateShaderState();
+    updateShaderTransformConstants();
+
+    GLenum oglPrimitiveType = OGLPrimitiveType(type);
+    glDrawElements(oglPrimitiveType,
+                   indexCount,
+                   indexSize == PrimitiveBatch::Index16 ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT,
+                   indexData);
 }
 
 

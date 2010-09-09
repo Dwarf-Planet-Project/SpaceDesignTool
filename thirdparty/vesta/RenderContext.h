@@ -1,5 +1,5 @@
 /*
- * $Revision: 459 $ $Date: 2010-08-25 08:30:20 -0700 (Wed, 25 Aug 2010) $
+ * $Revision: 488 $ $Date: 2010-09-06 12:17:43 -0700 (Mon, 06 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -305,6 +305,7 @@ public:
     void setSphericalGeometryHint(bool enabled);
 
     void drawPrimitives(const PrimitiveBatch& batch);
+    void drawPrimitives(PrimitiveBatch::PrimitiveType type, unsigned int indexCount, PrimitiveBatch::IndexSize indexSize, const char* indexData);
 
     void drawBillboard(const Eigen::Vector3f& position, float size);
     void drawText(const Eigen::Vector3f& position, const std::string& text, const TextureFont* font, const Spectrum& color);

@@ -30,7 +30,8 @@ class WorldLayer : public Object
 {
 public:
     WorldLayer() :
-        m_visible(false)
+        m_visible(false),
+        m_drawOrder(0)
     {
     }
 
@@ -56,8 +57,28 @@ public:
         m_visible = visible;
     }
 
+    /** The draw order defines how overlapping areas of world layers will be drawn. A
+      * world layer that has a higher draw order will be drawn on top of a layer with
+      * a lower draw order.
+      */
+    int drawOrder() const
+    {
+        return m_drawOrder;
+    }
+
+    /** Set the draw order for this layer. The draw order defines how overlapping areas
+      * of world layers will be drawn. A world layer that has a higher draw order will be
+      * drawn on top of a layer with a lower draw order. The default draw order
+      * is zero.
+      */
+    void setDrawOrder(int order)
+    {
+        m_drawOrder = order;
+    }
+
 private:
     bool m_visible;
+    int m_drawOrder;
 };
 
 }

@@ -15,7 +15,6 @@
 #include "WorldGeometry.h"
 #include "TextureFont.h"
 #include <Eigen/LU>
-
 #include <algorithm>
 
 using namespace vesta;
@@ -175,6 +174,10 @@ PlanetGridLayer::renderTile(RenderContext& rc, const WorldGeometry* world, const
     }
 
     // TODO: Draw coordinate labels
+    float subLon = atan2(cameraPosition.y(), cameraPosition.z());
+    float subLat = acos(cameraPosition.normalized().z());
+
+    float meridian = std::floor(subLon) / idealLonSpacing;
 }
 
 

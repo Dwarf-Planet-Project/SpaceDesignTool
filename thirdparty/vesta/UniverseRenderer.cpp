@@ -1,5 +1,5 @@
 /*
- * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
+ * $Revision: 492 $ $Date: 2010-09-08 14:22:38 -0700 (Wed, 08 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -396,6 +396,12 @@ showOmniShadowMap(CubeMapFramebuffer* shadowMap,
 #endif // DEBUG_OMNI_SHADOW_MAP
 
 
+static bool skyLayerOrderPredicate(const SkyLayer* layer0, const SkyLayer* layer1)
+{
+    return layer0->drawOrder() < layer1->drawOrder();
+}
+
+
 /** Render visible bodies in the universe using the specified camera position,
   * orientation, and projection.
   *
@@ -456,14 +462,23 @@ UniverseRenderer::renderView(const LightingEnvironment* lighting,
 
     if (m_skyLayersEnabled)
     {
-        for (vector<counted_ptr<SkyLayer> >::iterator iter = m_skyLayers.begin();
-             iter != m_skyLayers.end(); ++iter)
+        vector<SkyLayer*> visibleLayers;
+        const Universe::SkyLayerTable* skyLayers = m_universe->layers();
+        for (Universe::SkyLayerTable::const_iterator iter = skyLayers->begin(); iter != skyLayers->end(); ++iter)
+        {
+            SkyLayer* layer = iter->second.ptr();
+            if (layer && layer->isVisible())
+            {
+                visibleLayers.push_back(layer);
+            }
+
+            sort(visibleLayers.begin(), visibleLayers.end(), skyLayerOrderPredicate);
+        }
+
+        for (vector<SkyLayer*>::const_iterator iter = visibleLayers.begin(); iter != visibleLayers.end(); ++iter)
         {
             glDisable(GL_LIGHTING);
-            if (iter->ptr()->isVisible())
-            {
-                iter->ptr()->render(*m_renderContext);
-            }
+            (*iter)->render(*m_renderContext);
         }
     }
 
@@ -1503,52 +1518,6 @@ void
 UniverseRenderer::setAmbientLight(const Spectrum& spectrum)
 {
     m_ambientLight = spectrum;
-}
-
-
-void
-UniverseRenderer::addSkyLayer(SkyLayer* grid)
-{
-    m_skyLayers.push_back(counted_ptr<SkyLayer>(grid));
-}
-
-
-/** Remove the sky layer at the specified index. The method has no effect if
-  * the index is invalid.
-  */
-void
-UniverseRenderer::removeSkyLayer(unsigned int index)
-{
-    if (index < m_skyLayers.size())
-    {
-        m_skyLayers.erase(m_skyLayers.begin() + index);
-    }
-}
-
-
-/** Get the sky layer at the specified index. If the index is out
-  * of range, the method returns null.
-  */
-SkyLayer*
-UniverseRenderer::skyLayer(unsigned int index) const
-{
-    if (index >= m_skyLayers.size())
-    {
-        return 0;
-    }
-    else
-    {
-        return m_skyLayers[index].ptr();
-    }
-}
-
-
-/** Get the number of sky layers
-  */
-unsigned int
-UniverseRenderer::skyLayerCount() const
-{
-    return m_skyLayers.size();
 }
 
 

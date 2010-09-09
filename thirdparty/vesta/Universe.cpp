@@ -1,5 +1,5 @@
 /*
- * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
+ * $Revision: 492 $ $Date: 2010-09-08 14:22:38 -0700 (Wed, 08 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -12,6 +12,7 @@
 #include "Geometry.h"
 #include "Intersect.h"
 #include "Visualizer.h"
+#include "SkyLayer.h"
 #include <algorithm>
 #include <limits>
 
@@ -207,4 +208,60 @@ void
 Universe::setStarCatalog(StarCatalog* starCatalog)
 {
     m_starCatalog = starCatalog;
+}
+
+
+/** Add a new sky layer with a specified tag. If a layer with the
+  * same tag already exists, it will be replaced.
+  */
+void
+Universe::setLayer(const std::string& tag, SkyLayer* layer)
+{
+    m_layers[tag] = counted_ptr<SkyLayer>(layer);
+}
+
+
+/** Remove the sky layer with the specified tag. The method has no
+  * effect if the tag is not found.
+  */
+void
+Universe::removeLayer(const std::string& tag)
+{
+    m_layers.erase(tag);
+}
+
+
+/** Get the sky layer with the specified tag. If no layer with
+  * the tag exists, the method returns null.
+  */
+SkyLayer*
+Universe::layer(const std::string& tag) const
+{
+    SkyLayerTable::const_iterator iter = m_layers.find(tag);
+    if (iter == m_layers.end())
+    {
+        return NULL;
+    }
+    else
+    {
+        return iter->second.ptr();
+    }
+}
+
+
+/** Return true if there are any sky layers.
+  */
+bool
+Universe::hasLayers() const
+{
+    return !m_layers.empty();
+}
+
+
+/** Remove all sky layers.
+  */
+void
+Universe::clearLayers()
+{
+    m_layers.clear();
 }
