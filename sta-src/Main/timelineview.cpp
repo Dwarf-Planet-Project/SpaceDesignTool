@@ -178,26 +178,38 @@ void TimelineView::paintEvent(QPaintEvent* /* event */)
         }
     }
 
+    QDateTime indicatorDateTime = sta::JdToCalendar(sta::MjdToJd(m_currentTime));
+
     // Draw a line indicating the current time
+    // Show the current time and date next to the indicator
     {
         float x = (float) (viewWidth * (m_currentTime - viewStartTime) / m_visibleSpan);
 		QPen guillermosPen(Qt::red, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
         painter.setPen(guillermosPen);
         painter.drawLine(QPointF(x, 0), QPointF(x, viewHeight));
+
+        float labelWidth = painter.fontMetrics().width("00 Mmm 00:00:00");
+        int alignment = Qt::AlignBottom;
+
+        // Draw the date label on the right of the indicator except when it
+        // is position close to the right edge of the window.
+        float left;
+        if (x + labelWidth > viewWidth)
+        {
+            alignment |= Qt::AlignRight;
+            left = x - 5 - labelWidth;
+        }
+        else
+        {
+            alignment |= Qt::AlignLeft;
+            left = x + 5;
+        }
+
+        // Show the current time next to the indicator line
+        painter.drawText(QRectF(left, viewHeight - 20.0f, labelWidth, 20.0f),
+                         alignment,
+                         indicatorDateTime.toString("\ndd MMM hh:mm:ss"));
     }
-
-
-    // Draw the starting epoch
-
-    {
-		painter.setPen(Qt::darkGray);
-		QDateTime dateTime = sta::JdToCalendar(sta::MjdToJd(t0));
-		float x = 0;
-		painter.drawText(QRectF(x, 23.0f, 60.0f, TimeHeaderHeight),
-						 Qt::AlignHCenter | Qt::AlignTop,
-						 dateTime.toString("\ndd MMM"));
-	}
-
 
     // Draw the time labels
 	painter.setPen(Qt::black);
@@ -293,14 +305,14 @@ TimelineView::mouseMoveEvent(QMouseEvent* event)
 
 
 void
-		TimelineView::resizeEvent(QResizeEvent* event)
+TimelineView::resizeEvent(QResizeEvent* event)
 {
     updateScrollBars();
 }
 
 
 void
-		TimelineView::updateScrollBars()
+TimelineView::updateScrollBars()
 {
     horizontalScrollBar()->setRange(0, (int) ((m_endTime - m_startTime) * 86400));
     horizontalScrollBar()->setPageStep((int) (m_visibleSpan * 86400));
@@ -318,7 +330,7 @@ void
 
 
 void
-		TimelineView::clearMission()
+TimelineView::clearMission()
 {
     mission.clear();
     viewport()->update();
@@ -327,10 +339,10 @@ void
 
 
 void
-		TimelineView::addMissionSegment(int participantIndex,
-										double startTime,
-										double endTime,
-										QColor color)
+TimelineView::addMissionSegment(int participantIndex,
+                                double startTime,
+                                double endTime,
+                                QColor color)
 {
     MissionSegment segment;
     segment.participantIndex = participantIndex;
