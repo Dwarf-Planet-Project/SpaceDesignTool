@@ -1,5 +1,5 @@
 /*
- * $Revision: 492 $ $Date: 2010-09-08 14:22:38 -0700 (Wed, 08 Sep 2010) $
+ * $Revision: 498 $ $Date: 2010-09-10 09:01:38 -0700 (Fri, 10 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -106,7 +106,7 @@ UniverseRenderer::omniShadowsSupported() const
 void
 UniverseRenderer::setShadowsEnabled(bool enable)
 {
-    if (!m_shadowMap.isNull() && m_shadowMap->isValid())
+    if (!m_shadowMaps[0].isNull() && m_shadowMaps[0]->isValid())
     {
         m_shadowsEnabled = enable;
     }
@@ -162,13 +162,13 @@ UniverseRenderer::initializeGraphics()
   * better shadows but consume more memory. A smaller map may be allocated if the requested
   * size is larger than the maximum texture size supported by hardware
   *
-  * @param maxShadowMaps number of shadow maps to allocate. The number of shadows cast on
-  *                      any one body is limited by this value.
+  * @param shadowMapCount number of shadow maps to allocate. The number of shadows cast on
+  *                       any one body is limited by this value.
   *
   * \return true if the shadow map resources were successfully created
   */
 bool
-UniverseRenderer::initializeShadowMaps(unsigned int shadowMapSize, unsigned int maxShadowMaps)
+UniverseRenderer::initializeShadowMaps(unsigned int shadowMapSize, unsigned int shadowMapCount)
 {
     if (!m_renderContext)
     {
@@ -182,20 +182,33 @@ UniverseRenderer::initializeShadowMaps(unsigned int shadowMapSize, unsigned int 
         return false;
     }
 
+    if (shadowMapCount > MaxShadowMaps)
+    {
+        VESTA_LOG("Too many shadow maps requested. Using limit of %d", MaxShadowMaps);
+        shadowMapCount = MaxShadowMaps;
+    }
+
     // Constrain the shadow map size to the maximum size permitted by the hardware
     GLint maxTexSize = 0;
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize);
     shadowMapSize = min((unsigned int) maxTexSize, shadowMapSize);
 
     m_shadowsEnabled = false;
-    m_shadowMap = Framebuffer::CreateDepthOnlyFramebuffer(shadowMapSize, shadowMapSize);
+    m_shadowMaps.clear();
 
-    if (m_shadowMap.isNull())
+    for (unsigned int i = 0; i < shadowMapCount; ++i)
     {
-        return false;
+        counted_ptr<Framebuffer> shadowMap(Framebuffer::CreateDepthOnlyFramebuffer(shadowMapSize, shadowMapSize));
+        if (shadowMap.isNull())
+        {
+            VESTA_LOG("Failed to create shadow buffer %d. Shadows not enabled.", i);
+            m_shadowMaps.clear();
+            return false;
+        }
+        m_shadowMaps.push_back(shadowMap);
     }
 
-    VESTA_LOG("Created %d %dx%d shadow buffer(s) for UniverseRenderer.", maxShadowMaps, shadowMapSize, shadowMapSize);
+    VESTA_LOG("Created %d %dx%d shadow buffer(s) for UniverseRenderer.", shadowMapCount, shadowMapSize, shadowMapSize);
 
     return true;
 }
@@ -207,13 +220,13 @@ UniverseRenderer::initializeShadowMaps(unsigned int shadowMapSize, unsigned int 
   * better shadows but consume more memory. A smaller map may be allocated if the requested
   * size is larger than the maximum texture size supported by hardware
   *
-  * \param maxShadowMaps number of shadow maps to allocate. The number of shadows cast on
-  *                      any one body is limited by this value.
+  * \param shadowMapCount number of shadow maps to allocate. The number of shadows cast on
+  *                       any one body is limited by this value.
   *
   * \return true if the shadow map resources were successfully created
   */
 bool
-UniverseRenderer::initializeOmniShadowMaps(unsigned int shadowMapSize, unsigned int maxShadowMaps)
+UniverseRenderer::initializeOmniShadowMaps(unsigned int shadowMapSize, unsigned int shadowMapCount)
 {
     if (!m_renderContext)
     {
@@ -227,20 +240,35 @@ UniverseRenderer::initializeOmniShadowMaps(unsigned int shadowMapSize, unsigned 
         return false;
     }
 
+    if (shadowMapCount > MaxOmniShadowMaps)
+    {
+        VESTA_LOG("Too many shadow maps requested. Using limit of %d", MaxShadowMaps);
+        shadowMapCount = MaxShadowMaps;
+    }
+
     // Constrain the shadow map size to the maximum size permitted by the hardware
     GLint maxTexSize = 0;
     glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE_ARB, &maxTexSize);
     shadowMapSize = min((unsigned int) maxTexSize, shadowMapSize);
 
+    m_omniShadowMaps.clear();
+
     // Omnidirectional shadows are implemented as cube maps with the camera to fragment distance
     // stored in the red channel. We require 32-bit floating point precision for storing distances.
-    m_omniShadowMap = CubeMapFramebuffer::CreateCubicReflectionMap(shadowMapSize, TextureMap::R32F);
-    if (m_omniShadowMap.isNull())
+    for (unsigned int i = 0; i < shadowMapCount; ++i)
     {
-        return false;
+        counted_ptr<CubeMapFramebuffer> shadowMap(CubeMapFramebuffer::CreateCubicReflectionMap(shadowMapSize, TextureMap::R32F));
+        if (shadowMap.isNull())
+        {
+            VESTA_LOG("Failed to create omni shadow buffer %d. Omni shadows not enabled.", i);
+            m_omniShadowMaps.clear();
+            return false;
+        }
+
+        m_omniShadowMaps.push_back(shadowMap);
     }
 
-    VESTA_LOG("Created %d %dx%d cube map shadow buffer(s) for UniverseRenderer.", maxShadowMaps, shadowMapSize, shadowMapSize);
+    VESTA_LOG("Created %d %dx%d cube map shadow buffer(s) for UniverseRenderer.", shadowMapCount, shadowMapSize, shadowMapSize);
 
     return true;
 }
@@ -724,6 +752,17 @@ UniverseRenderer::renderView(const Observer* observer,
 }
 
 
+// Predicate used for sorting light sources so that shadow casters are first
+static bool lightCastsShadowsPredicate(const UniverseRenderer::VisibleLightSourceItem& light0,
+                                       const UniverseRenderer::VisibleLightSourceItem& light1)
+{
+    // Handle the special case for the Sun, which casts shadows but has a NULL lightSource.
+    int shadow0 = !light0.lightSource || light0.lightSource->isShadowCaster() ? 1 : 0;
+    int shadow1 = !light1.lightSource || light1.lightSource->isShadowCaster() ? 1 : 0;
+    return shadow0 > shadow1;
+}
+
+
 // Private method to create the visible light source list from the main light
 // source list. Only light sources which interact with objects in the view
 // frustum will appear in the visible light list.
@@ -774,6 +813,10 @@ UniverseRenderer::buildVisibleLightSourceList(const Vector3d& cameraPosition)
             m_visibleLightSources.push_back(visibleLight);
         }
     }
+
+    // Sort the light sources so that the shadow casters appear first in the visible
+    // light sources list.
+    sort(m_visibleLightSources.begin(), m_visibleLightSources.end(), lightCastsShadowsPredicate);
 }
 
 
@@ -1126,25 +1169,22 @@ void UniverseRenderer::renderDepthBufferSpan(const DepthBufferSpan& span, const 
     }
 
     bool shadowsOn = false;
-    bool omniShadowsOn = false;
+    unsigned int omniShadowCount = 0;
     if (m_shadowsEnabled && !m_visibleLightSources.empty())
     {
         // Render shadows from the Sun (currently always the first light source)
-        shadowsOn = renderDepthBufferSpanShadows(span, m_visibleLightSources[0].cameraRelativePosition);
+        shadowsOn = renderDepthBufferSpanShadows(0, span, m_visibleLightSources[0].cameraRelativePosition);
 
-        // See if there are additional light sources casting shadows. We'll only handle
-        // one additional shadow.
-        for (unsigned int i = 1; i < m_visibleLightSources.size(); ++i)
+        // See if there are additional light sources casting shadows.
+        for (unsigned int i = 1; i < m_visibleLightSources.size() && omniShadowCount < m_omniShadowMaps.size(); ++i)
         {
             if (m_visibleLightSources[i].lightSource->isShadowCaster())
             {
-                omniShadowsOn = renderDepthBufferSpanOmniShadows(span,
-                                                                 m_visibleLightSources[i].lightSource,
-                                                                 m_visibleLightSources[i].cameraRelativePosition);
-                if (omniShadowsOn)
-                {
-                    break;
-                }
+                renderDepthBufferSpanOmniShadows(omniShadowCount,
+                                                 span,
+                                                 m_visibleLightSources[i].lightSource,
+                                                 m_visibleLightSources[i].cameraRelativePosition);
+                ++omniShadowCount;
             }
         }
     }
@@ -1174,9 +1214,9 @@ void UniverseRenderer::renderDepthBufferSpan(const DepthBufferSpan& span, const 
                     m_renderContext->setShadowMapCount(0);
                 }
 
-                if (omniShadowsOn && item.geometry->isShadowReceiver())
+                if (item.geometry->isShadowReceiver())
                 {
-                    m_renderContext->setOmniShadowMapCount(1);
+                    m_renderContext->setOmniShadowMapCount(omniShadowCount);
                 }
                 else
                 {
@@ -1197,6 +1237,7 @@ void UniverseRenderer::renderDepthBufferSpan(const DepthBufferSpan& span, const 
 
         // Disable all shadows
         m_renderContext->setShadowMapCount(0);
+        m_renderContext->setOmniShadowMapCount(0);
 
         // Draw all splittable items that fall at least partly within this span.
         for (unsigned int i = 0; i < m_splittableItems.size(); ++i)
@@ -1222,7 +1263,8 @@ void UniverseRenderer::renderDepthBufferSpan(const DepthBufferSpan& span, const 
 //   span - the depth buffer span for which to draw shadows
 //   lightPosition - the position of the light source relative to the camera
 bool
-UniverseRenderer::renderDepthBufferSpanShadows(const DepthBufferSpan& span,
+UniverseRenderer::renderDepthBufferSpanShadows(unsigned int shadowIndex,
+                                               const DepthBufferSpan& span,
                                                const Vector3d& lightPosition)
 {
     if (!m_shadowsEnabled)
@@ -1230,10 +1272,12 @@ UniverseRenderer::renderDepthBufferSpanShadows(const DepthBufferSpan& span,
         return false;
     }
 
+    assert(shadowIndex < m_shadowMaps.size());
+
     // Check for shadow support
     if (!Framebuffer::supported() ||
-        m_shadowMap.isNull() ||
-        !m_shadowMap->isValid())
+        m_shadowMaps[shadowIndex].isNull() ||
+        !m_shadowMaps[shadowIndex]->isValid())
     {
         return false;
     }
@@ -1281,7 +1325,7 @@ UniverseRenderer::renderDepthBufferSpanShadows(const DepthBufferSpan& span,
     // shadow space. Shadow group space has axes aligned with world space but has an origin located
     // at the center of the collection of mutually shadowing objects.
     Matrix4f invCameraTransform = m_renderContext->modelview().matrix().transpose();
-    Matrix4f shadowTransform = setupShadowRendering(m_shadowMap.ptr(), lightDirection, shadowGroupBoundingRadius);
+    Matrix4f shadowTransform = setupShadowRendering(m_shadowMaps[shadowIndex].ptr(), lightDirection, shadowGroupBoundingRadius);
     shadowTransform = shadowTransform * Transform3f(Translation3f(-shadowGroupCenter)).matrix() * invCameraTransform;
 
     // Render shadows for all casters
@@ -1312,8 +1356,8 @@ UniverseRenderer::renderDepthBufferSpanShadows(const DepthBufferSpan& span,
     glViewport(m_renderViewport.x(), m_renderViewport.y(), m_renderViewport.width(), m_renderViewport.height());
 
     // Set shadow state in the render context
-    m_renderContext->setShadowMapMatrix(0, shadowTransform);
-    m_renderContext->setShadowMap(0, m_shadowMap->glFramebuffer());
+    m_renderContext->setShadowMapMatrix(shadowIndex, shadowTransform);
+    m_renderContext->setShadowMap(shadowIndex, m_shadowMaps[shadowIndex]->glFramebuffer());
 
     return true;
 }
@@ -1326,7 +1370,8 @@ UniverseRenderer::renderDepthBufferSpanShadows(const DepthBufferSpan& span,
 //   span - the depth buffer span for which to draw shadows
 //   lightPosition - the position of the light source relative to the camera
 bool
-UniverseRenderer::renderDepthBufferSpanOmniShadows(const DepthBufferSpan& span,
+UniverseRenderer::renderDepthBufferSpanOmniShadows(unsigned int shadowIndex,
+                                                   const DepthBufferSpan& span,
                                                    const LightSource* light,
                                                    const Vector3d& lightPosition)
 {
@@ -1336,11 +1381,7 @@ UniverseRenderer::renderDepthBufferSpanOmniShadows(const DepthBufferSpan& span,
         return false;
     }
 
-    if (m_omniShadowMap.isNull())
-    {
-        // No shadow map created
-        return false;
-    }
+    assert(shadowIndex < m_omniShadowMaps.size());
 
     BoundingSphere<float> shadowReceiverBounds;
     bool shadowCastersPresent = false;
@@ -1371,7 +1412,7 @@ UniverseRenderer::renderDepthBufferSpanOmniShadows(const DepthBufferSpan& span,
     }
 
     // Set up the view port (same for all faces)
-    glViewport(0, 0, m_omniShadowMap->size(), m_omniShadowMap->size());
+    glViewport(0, 0, m_omniShadowMaps[shadowIndex]->size(), m_omniShadowMaps[shadowIndex]->size());
     glDepthRange(0.0f, 1.0f);
 
     // Set up cube map shadow rendering
@@ -1390,7 +1431,7 @@ UniverseRenderer::renderDepthBufferSpanOmniShadows(const DepthBufferSpan& span,
     // redrawing.
     for (int face = 0; face < 6; ++face)
     {
-        Framebuffer* fb = m_omniShadowMap->face(CubeMapFramebuffer::Face(face));
+        Framebuffer* fb = m_omniShadowMaps[shadowIndex]->face(CubeMapFramebuffer::Face(face));
         if (fb)
         {
             fb->bind();
@@ -1455,7 +1496,7 @@ UniverseRenderer::renderDepthBufferSpanOmniShadows(const DepthBufferSpan& span,
     glViewport(m_renderViewport.x(), m_renderViewport.y(), m_renderViewport.width(), m_renderViewport.height());
 
     // Set shadow state in the render context
-    m_renderContext->setOmniShadowMap(0, m_omniShadowMap->colorTexture());
+    m_renderContext->setOmniShadowMap(shadowIndex, m_omniShadowMaps[shadowIndex]->colorTexture());
 
     // Restore clear color to black
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

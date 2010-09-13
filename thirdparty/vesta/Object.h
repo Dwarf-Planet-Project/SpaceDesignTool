@@ -1,5 +1,5 @@
 /*
- * $Revision: 432 $ $Date: 2010-08-16 09:05:19 -0700 (Mon, 16 Aug 2010) $
+ * $Revision: 504 $ $Date: 2010-09-13 16:25:03 -0700 (Mon, 13 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -11,8 +11,21 @@
 #ifndef _VESTA_OBJECT_H_
 #define _VESTA_OBJECT_H_
 
+// Set to 1 when using atomic increment and decrement operations for
+// thread safety. Currently disabled while the code for atomic operations
+// are being tested with the GNU and Microsoft C++ compilers.
+#define USE_ATOMICS 0
+
+#include "CountedPtr.h"
+#if USE_ATOMICS
+#include "internal/AtomicInt.h"
+#endif
 #include <cassert>
 
+/** Object is the base class for all complex classes (i.e. not plain-old-data)
+  * in VESTA. It implements the reference counting methods addRef() and release()
+  * so that it can be used with VESTA's counted_ptr smart pointer template class.
+  */
 namespace vesta
 {
 
@@ -29,117 +42,48 @@ public:
     }
 
 public:
+    /** Add a reference to this object.
+      */
     int addRef()
     {
         return ++m_refCount;
     }
 
+    /** Remove a reference to this object. The object is deleted if the
+      * reference count reaches zero.
+      */
     int release()
     {
-        assert(m_refCount > 0);
+        assert(refCount() > 0);
 
-        // TODO: Need atomic decrement/test to ensure thread safety
-        --m_refCount;
-        if (m_refCount == 0)
+        if (--m_refCount == 0)
         {
             delete this;
             return 0;
         }
         else
         {
-            return m_refCount;
+            return refCount();
         }
     }
 
+    /** Return the current number of references to this object.
+      */
     int refCount() const
     {
+#if USE_ATOMICS
+        return m_refCount.value();
+#else
         return m_refCount;
+#endif
     }
 
 private:
+#if USE_ATOMICS
+    mutable AtomicInt m_refCount;
+#else
     mutable int m_refCount;
-};
-
-template <class T> class counted_ptr
-{
-public:
-    typedef T element_type;
-
-    explicit counted_ptr(T* p = 0) :
-        m_p(p)
-    {
-        if (m_p)
-            m_p->addRef();
-    }
-
-    ~counted_ptr()
-    {
-        if (m_p)
-            m_p->release();
-    }
-
-    counted_ptr(const counted_ptr& cp) :
-        m_p(cp.m_p)
-    {
-        if (m_p)
-            m_p->addRef();
-    }
-
-    counted_ptr& operator=(T* p)
-    {
-        if (m_p != p)
-        {
-            if (m_p)
-                m_p->release();
-            m_p = p;
-            if (m_p)
-                m_p->addRef();
-        }
-
-        return *this;
-    }
-
-    counted_ptr& operator=(const counted_ptr& cp)
-    {
-        if (this != &cp)
-        {
-            if (m_p)
-                m_p->release();
-            m_p = cp.m_p;
-            if (m_p)
-                m_p->addRef();
-        }
-
-        return *this;
-    }
-
-    T& operator*() const
-    {
-        return *m_p;
-    }
-
-    T* operator->() const
-    {
-        return m_p;
-    }
-
-    bool isNull() const
-    {
-        return !m_p;
-    }
-
-    bool isValid() const
-    {
-        return m_p;
-    }
-
-    T* ptr() const
-    {
-        return m_p;
-    }
-
-private:
-    T* m_p;
+#endif
 };
 
 }

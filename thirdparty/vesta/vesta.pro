@@ -97,6 +97,7 @@ VESTA_HEADERS = \
     $$VESTA_PATH/Chronology.h \
     $$VESTA_PATH/ConeGeometry.h \
     $$VESTA_PATH/ConstellationsLayer.h \
+    $$VESTA_PATH/CountedPtr.h \
     $$VESTA_PATH/CubeMapFramebuffer.h \
     $$VESTA_PATH/DataChunk.h \
     $$VESTA_PATH/Debug.h \

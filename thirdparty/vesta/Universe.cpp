@@ -1,5 +1,5 @@
 /*
- * $Revision: 492 $ $Date: 2010-09-08 14:22:38 -0700 (Wed, 08 Sep 2010) $
+ * $Revision: 505 $ $Date: 2010-09-13 16:38:02 -0700 (Mon, 13 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -28,19 +28,20 @@ Universe::Universe()
 
 Universe::~Universe()
 {
-    for (vector<Entity*>::iterator iter = m_entities.begin(); iter != m_entities.end(); ++iter)
-    {
-        (*iter)->release();
-    }
 }
 
 
 /** Return an array of all entities in the universe.
   */
-const vector<Entity*>&
+vector<Entity*>
 Universe::entities() const
 {
-    return m_entities;
+    vector<Entity*> entities;
+    for (EntityTable::const_iterator iter = m_entities.begin(); iter != m_entities.end(); ++iter)
+    {
+        entities.push_back(iter->ptr());
+    }
+    return entities;
 }
 
 
@@ -50,8 +51,7 @@ Universe::entities() const
 void
 Universe::addEntity(Entity* entity)
 {
-    entity->addRef();
-    m_entities.push_back(entity);
+    m_entities.push_back(counted_ptr<Entity>(entity));
 }
 
 
@@ -60,10 +60,9 @@ Universe::addEntity(Entity* entity)
 void
 Universe::removeEntity(Entity* entity)
 {
-    vector<Entity*>::iterator iter = find(m_entities.begin(), m_entities.end(), entity);
+    EntityTable::iterator iter = find(m_entities.begin(), m_entities.end(), counted_ptr<Entity>(entity));
     if (iter != m_entities.end())
     {
-        (*iter)->release();
         m_entities.erase(iter);
     }
 }
@@ -78,13 +77,15 @@ Entity*
 Universe::findFirst(const std::string& name)
 {
     if (name.empty())
+    {
         return NULL;
+    }
 
-    for (vector<Entity*>::iterator iter = m_entities.begin(); iter != m_entities.end(); ++iter)
+    for (EntityTable::iterator iter = m_entities.begin(); iter != m_entities.end(); ++iter)
     {
         if (name == (*iter)->name())
         {
-            return *iter;
+            return iter->ptr();
         }
     }
 
@@ -113,9 +114,9 @@ Universe::pickObject(double t,
     double closest = numeric_limits<double>::infinity();
     PickResult closestResult;
 
-    for (vector<Entity*>::const_iterator iter = m_entities.begin(); iter != m_entities.end(); ++iter)
+    for (EntityTable::const_iterator iter = m_entities.begin(); iter != m_entities.end(); ++iter)
     {
-        Entity* entity = *iter;
+        Entity* entity = iter->ptr();
 
         if (entity->geometry() || entity->hasVisualizers())
         {

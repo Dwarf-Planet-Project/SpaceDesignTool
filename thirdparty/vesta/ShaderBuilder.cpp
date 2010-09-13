@@ -1,5 +1,5 @@
 /*
- * $Revision: 451 $ $Date: 2010-08-23 09:33:46 -0700 (Mon, 23 Aug 2010) $
+ * $Revision: 499 $ $Date: 2010-09-10 18:18:05 -0700 (Fri, 10 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -555,7 +555,17 @@ static void generateBlinnPhongShader(ostream& vertex, ostream& fragment, const S
         fragment << "    vec3 B = cross(T, Ngeom);" << endl;
 
         // Retrieve the normal from the normal texture
-        fragment << "    vec3 m = normalize(texture2D(normalTex, texCoord).xyz * 2.0 - 1.0);" << endl;
+        if (shaderInfo.hasCompressedNormalMap())
+        {
+            // Compressed normal maps have the normal x and y stored in the alpha
+            // and green channels; z is computed from as sqrt(1-x^2-y^2)
+            fragment << "    vec2 mxy = texture2D(normalTex, texCoord).ag * 2.0 - 1.0;" << endl;
+            fragment << "    vec3 m = vec3(mxy, sqrt(1.0 - dot(mxy, mxy)));" << endl;
+        }
+        else
+        {
+            fragment << "    vec3 m = normalize(texture2D(normalTex, texCoord).xyz * 2.0 - 1.0);" << endl;
+        }
 
         // Map the normal from surface local space to model space
         fragment << "    vec3 N = m.x * T + m.y * B + m.z * Ngeom;" << endl;
@@ -607,16 +617,15 @@ static void generateBlinnPhongShader(ostream& vertex, ostream& fragment, const S
 
         fragment << "        float d = max(0.0, dot(N, " << lightDirection << "));" << endl;
 
-        // Presently, a maximum of one directional and one omnidirectional (cube) shadow map
-        // is supported.
+        // Presently, a maximum of one directional shadow and three omnidirectional shadows are supported.
         if (light == 0 && shaderInfo.shadowCount() != 0)
         {
             unsigned int shadowIndex = 0;
             fragment << "        float shadow = shadowPCF(shadowTex" << shadowIndex << ", shadowCoord[" << shadowIndex << "]);" << endl;
         }
-        else if (light == 1 && shaderInfo.omniShadowCount() != 0)
+        else if (light > 0 && light <= shaderInfo.omniShadowCount())
         {
-            unsigned int shadowIndex = 0;
+            unsigned int shadowIndex = light - 1;
             fragment << "        float shadow = omniShadow(shadowCubeMap" << shadowIndex << ", objToWorldMat * " << lightPosition << ");" << endl;
         }
         else if (hasTangents)

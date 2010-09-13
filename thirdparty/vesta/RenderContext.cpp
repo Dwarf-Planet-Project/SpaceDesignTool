@@ -1,5 +1,5 @@
 /*
- * $Revision: 488 $ $Date: 2010-09-06 12:17:43 -0700 (Mon, 06 Sep 2010) $
+ * $Revision: 502 $ $Date: 2010-09-13 14:19:36 -0700 (Mon, 13 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -56,11 +56,22 @@ static const unsigned int NormalTextureUnit        = 1;
 static const unsigned int SpecularTextureUnit      = 2;
 static const unsigned int EmissiveTextureUnit      = 3;
 static const unsigned int ShadowTextureUnit        = 4;
-static const unsigned int OmniShadowTextureUnit    = 5;
+static const unsigned int OmniShadowTextureUnit0   = 5;
 static const unsigned int TransmittanceTextureUnit = 6;
 static const unsigned int ScatterTextureUnit       = 7;
 static const unsigned int ReflectionTextureUnit    = 8;
+static const unsigned int OmniShadowTextureUnit1   = 9;
+static const unsigned int OmniShadowTextureUnit2   = 10;
 
+static const unsigned int OmniShadowTextureUnits[3] =
+{
+    OmniShadowTextureUnit0, OmniShadowTextureUnit1, OmniShadowTextureUnit2
+};
+
+static const char* OmniShadowSamplerNames[3] =
+{
+    "shadowCubeMap0", "shadowCubeMap1", "shadowCubeMap2"
+};
 
 // Camera distance shader used for generating shadow maps.
 // The shader simply writes distance to the camera position in the
@@ -794,18 +805,29 @@ RenderContext::setFixedFunctionMaterial(const Material* material)
         glDisable(GL_TEXTURE_2D);
     }
 
+    // Don't let GL transform the light positions; UniverseRenderer has already taken
+    // care of this transformation.
+    glPushMatrix();
+    glLoadIdentity();
+
     // Update the lights
     for (unsigned int lightIndex = 0; lightIndex < m_environment.m_activeLightCount; ++lightIndex)
     {
         const Light& light = m_environment.m_lights[lightIndex];
 
+        Vector4f lightPosition;
+        lightPosition.start<3>() = m_environment.m_lights[lightIndex].position;
         glEnable(GL_LIGHT0 + lightIndex);
-        float lightDirection[] = { light.position.x(),
-                                   light.position.y(),
-                                   light.position.z(),
-                                   0.0f };
-        glLightfv(GL_LIGHT0 + lightIndex, GL_POSITION, lightDirection);
+
+        // Currently assume that the first light source is at infinity (directional),
+        // and the rest are local light sources. Set w for the light position appropriately:
+        // OpenGL treats light sources with w == 0 as directional.
+        bool isLocal = lightIndex > 0;
+        lightPosition.w() = isLocal ? 1.0f : 0.0;
+
+        glLightfv(GL_LIGHT0 + lightIndex, GL_POSITION, lightPosition.data());
         glLightfv(GL_LIGHT0 + lightIndex, GL_DIFFUSE, light.color.data());
+        glLightfv(GL_LIGHT0 + lightIndex, GL_SPECULAR, light.color.data());
     }
 
     // Disable all unused lights
@@ -813,6 +835,8 @@ RenderContext::setFixedFunctionMaterial(const Material* material)
     {
         glDisable(GL_LIGHT0 + lightIndex);
     }
+
+    glPopMatrix();
 
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, m_environment.m_ambientLight.data());
 }
@@ -908,7 +932,10 @@ computeShaderInfo(const Material* material,
                 if (material->normalTexture()->id() != 0)
                 {
                     shaderInfo.setTextures(ShaderInfo::NormalTexture);
-                    // TODO: add support for compressed normal maps
+                    if (material->normalTexture()->properties().usage == TextureProperties::CompressedNormalMap)
+                    {
+                        shaderInfo.setCompressedNormalMap(true);
+                    }
                 }
             }
         }
@@ -1088,20 +1115,16 @@ RenderContext::setShaderMaterial(const Material* material)
     if (shaderInfo.hasOmniShadows())
     {
         // TODO: support multiple omnidirectional shadows
-        if (!m_environment.m_omniShadowMaps[0].isNull())
+        for (unsigned int i = 0; i < shaderInfo.omniShadowCount(); ++i)
         {
-            glActiveTexture(GL_TEXTURE0 + OmniShadowTextureUnit);
-            glBindTexture(GL_TEXTURE_CUBE_MAP_ARB, m_environment.m_omniShadowMaps[0]->id());
-            glActiveTexture(GL_TEXTURE0);
-            shader->setSampler("shadowCubeMap0", OmniShadowTextureUnit);
-
-#if 0
-            // We want the model to world transformation; get it by multiplying the modelview
-            // matrix by the inverse of the camera transformation.
-            // TODO: do lighting in world space so that this is unnecessary
-            Matrix3f objToWorldMat = m_cameraOrientation.toRotationMatrix() * modelview().linear();
-            shader->setConstant("objToWorldMat", objToWorldMat);
-#endif
+            if (!m_environment.m_omniShadowMaps[i].isNull() && i < 3)
+            {
+                unsigned int texUnit = OmniShadowTextureUnits[i];
+                glActiveTexture(GL_TEXTURE0 + texUnit);
+                glBindTexture(GL_TEXTURE_CUBE_MAP_ARB, m_environment.m_omniShadowMaps[i]->id());
+                glActiveTexture(GL_TEXTURE0);
+                shader->setSampler(OmniShadowSamplerNames[i], texUnit);
+            }
         }
     }
 
@@ -1187,11 +1210,11 @@ RenderContext::updateShaderTransformConstants()
             if (m_currentShaderInfo.hasShadows())
             {
                 Matrix4f shadowMatrices[MaxLights];
-                for (unsigned int i = 0; i < 1; ++i)
+                for (unsigned int i = 0; i < m_environment.m_shadowMapCount; ++i)
                 {
                     shadowMatrices[i] = m_environment.m_shadowMapMatrices[i] * modelview();
                 }
-                m_currentShader->setConstantArray("shadowMatrix", shadowMatrices, 1);
+                m_currentShader->setConstantArray("shadowMatrix", shadowMatrices, m_environment.m_shadowMapCount);
             }
 
             // No special handling required for omnidirectional shadows; they're stored in
@@ -1299,7 +1322,7 @@ RenderContext::setVertexInfo(const VertexSpec& spec)
 void
 RenderContext::setActiveLightCount(unsigned int count)
 {
-    if (count < MaxLights)
+    if (count <= MaxLights)
     {
         if (count != m_environment.m_activeLightCount)
         {
@@ -1336,7 +1359,7 @@ RenderContext::setAmbientLight(const Spectrum& ambient)
 void
 RenderContext::setShadowMapCount(unsigned int count)
 {
-    if (count < MaxLights)
+    if (count <= MaxLights)
     {
         if (count != m_environment.m_shadowMapCount)
         {
@@ -1370,7 +1393,7 @@ RenderContext::setShadowMap(unsigned int index, GLFramebuffer* shadowMap)
 void
 RenderContext::setOmniShadowMapCount(unsigned int count)
 {
-    if (count < MaxLights)
+    if (count <= MaxLights)
     {
         if (count != m_environment.m_omniShadowMapCount)
         {

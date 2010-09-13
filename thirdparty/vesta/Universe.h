@@ -1,5 +1,5 @@
 /*
- * $Revision: 492 $ $Date: 2010-09-08 14:22:38 -0700 (Wed, 08 Sep 2010) $
+ * $Revision: 505 $ $Date: 2010-09-13 16:38:02 -0700 (Mon, 13 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -28,7 +28,7 @@ public:
     Universe();
     ~Universe();
 
-    const std::vector<Entity*>& entities() const;
+    std::vector<Entity*> entities() const;
     void addEntity(Entity* entity);
     void removeEntity(Entity* entity);
     Entity* findFirst(const std::string& name);
@@ -55,7 +55,9 @@ public:
     void clearLayers();
 
 private:
-    std::vector<Entity*> m_entities;
+    typedef std::vector<counted_ptr<Entity> > EntityTable;
+
+    EntityTable m_entities;
     counted_ptr<StarCatalog> m_starCatalog;
     SkyLayerTable m_layers;
 };

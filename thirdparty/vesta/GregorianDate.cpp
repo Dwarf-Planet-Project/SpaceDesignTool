@@ -667,7 +667,7 @@ GregorianDate::toTDBJD() const
 double
 GregorianDate::toTAIJD() const
 {
-    double second = m_second + m_usec * 1.0e6;
+    double second = m_second + m_usec * 1.0e-6;
 
     double uniformTime = UniformCalendarToJD(m_year, m_month, m_day, m_hour, m_minute, second);
     TimeScale timeScale = m_timeScale;

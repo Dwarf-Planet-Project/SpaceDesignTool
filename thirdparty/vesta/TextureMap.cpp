@@ -1,5 +1,5 @@
 /*
- * $Revision: 435 $ $Date: 2010-08-16 16:32:45 -0700 (Mon, 16 Aug 2010) $
+ * $Revision: 501 $ $Date: 2010-09-13 10:05:41 -0700 (Mon, 13 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -479,12 +479,15 @@ TextureMap::MipmapLevelSize(ImageFormat format, unsigned int width, unsigned int
     switch (format)
     {
     case DXT1:
+    case DXT1_sRGB:
         blockWidth = 4;
         blockHeight = 4;
         break;
 
     case DXT3:
     case DXT5:
+    case DXT3_sRGB:
+    case DXT5_sRGB:
         blockWidth = 4;
         blockHeight = 4;
         break;

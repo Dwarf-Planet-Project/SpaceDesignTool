@@ -1,5 +1,5 @@
 /*
- * $Revision: 451 $ $Date: 2010-08-23 09:33:46 -0700 (Mon, 23 Aug 2010) $
+ * $Revision: 499 $ $Date: 2010-09-10 18:18:05 -0700 (Fri, 10 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -207,20 +207,31 @@ public:
         m_data = (m_data & ~FresnelFalloffMask) | (enable ? FresnelFalloffMask : 0x0);
     }
 
+    bool hasCompressedNormalMap() const
+    {
+        return (m_data & CompressedNormalMapMask) != 0;
+    }
+
+    void setCompressedNormalMap(bool enable)
+    {
+        m_data = (m_data & ~CompressedNormalMapMask) | (enable ? CompressedNormalMapMask : 0x0);
+    }
+
 private:
     enum
     {
-        ReflectanceModelMask  = 0x00000f,
-        TextureUsageMask      = 0x0001f0,
-        LightCountMask        = 0x000e00,
-        ShadowCountMask       = 0x003000,
-        OmniShadowCountMask   = 0x00c000,
-        VertexColorMask       = 0x010000,
-        AlphaTextureMask      = 0x020000,
-        ScatteringMask        = 0x040000,
-        SphericalGeometryMask = 0x080000,
-        SpecularInAlphaMask   = 0x100000,
-        FresnelFalloffMask    = 0x200000,
+        ReflectanceModelMask    = 0x00000f,
+        TextureUsageMask        = 0x0001f0,
+        LightCountMask          = 0x000e00,
+        ShadowCountMask         = 0x003000,
+        OmniShadowCountMask     = 0x00c000,
+        VertexColorMask         = 0x010000,
+        AlphaTextureMask        = 0x020000,
+        ScatteringMask          = 0x040000,
+        SphericalGeometryMask   = 0x080000,
+        SpecularInAlphaMask     = 0x100000,
+        FresnelFalloffMask      = 0x200000,
+        CompressedNormalMapMask = 0x400000,
     };
 
     enum

@@ -104,6 +104,20 @@ public:
         return m_usec;
     }
 
+    TimeScale timeScale() const
+    {
+        return m_timeScale;
+    }
+
+    /** Change the time scale of this date. No conversion is applied, thus
+      * calling this method with a different time scale means that the time
+      * object will represent a different instant.
+      */
+    void setTimeScale(TimeScale timeScale)
+    {
+        m_timeScale = timeScale;
+    }
+
     unsigned int dayOfWeek() const;
     unsigned int dayOfYear() const;
     unsigned int daysInMonth() const;

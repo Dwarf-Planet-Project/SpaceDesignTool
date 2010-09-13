@@ -1,5 +1,5 @@
 //
-// $Revision: 494 $ $Date: 2010-09-08 15:49:05 -0700 (Wed, 08 Sep 2010) $
+// $Revision: 505 $ $Date: 2010-09-13 16:38:02 -0700 (Mon, 13 Sep 2010) $
 //
 // Copyright by Astos Solutions GmbH, Germany
 //  
@@ -637,7 +637,7 @@ public:
     Universe();
     ~Universe();
 
-    const std::vector<Entity*>& entities() const;
+    const std::vector<Entity*> entities() const;
     void addEntity(Entity* entity);
     void removeEntity(Entity* entity);
     Entity* findFirst(const std::string& name);

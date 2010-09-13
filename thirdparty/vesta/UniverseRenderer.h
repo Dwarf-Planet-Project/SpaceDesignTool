@@ -1,5 +1,5 @@
 /*
- * $Revision: 492 $ $Date: 2010-09-08 14:22:38 -0700 (Wed, 08 Sep 2010) $
+ * $Revision: 498 $ $Date: 2010-09-10 09:01:38 -0700 (Fri, 10 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -47,6 +47,9 @@ public:
         RendererUninitialized,
     };
 
+    static const unsigned int MaxShadowMaps     = 3;
+    static const unsigned int MaxOmniShadowMaps = 3;
+
     RenderStatus beginViewSet(const Universe& universe, double t);
     RenderStatus endViewSet();
 
@@ -83,9 +86,9 @@ public:
     void setAmbientLight(const Spectrum& spectrum);
 
     bool initializeShadowMaps(unsigned int shadowMapSize = 1024,
-                              unsigned int maxShadowMaps = 1);
+                              unsigned int shadowMapCount = 1);
     bool initializeOmniShadowMaps(unsigned int shadowMapSize = 1024,
-                                  unsigned int maxShadowMaps = 1);
+                                  unsigned int shadowMapCount = 1);
 
 
     /** Return true if this renderer has shadows enabled.
@@ -168,9 +171,11 @@ private:
     void splitDepthBuffer();
     void coalesceDepthBuffer();
     void renderDepthBufferSpan(const DepthBufferSpan& span, const PlanarProjection& projection);
-    bool renderDepthBufferSpanShadows(const DepthBufferSpan& span,
+    bool renderDepthBufferSpanShadows(unsigned int shadowIndex,
+                                      const DepthBufferSpan& span,
                                       const Eigen::Vector3d& lightPosition);
-    bool renderDepthBufferSpanOmniShadows(const DepthBufferSpan& span,
+    bool renderDepthBufferSpanOmniShadows(unsigned int shadowIndex,
+                                          const DepthBufferSpan& span,
                                           const LightSource* light,
                                           const Eigen::Vector3d& lightPosition);
     void addVisibleItem(const Entity* entity,
@@ -203,8 +208,8 @@ private:
     Spectrum m_ambientLight;
     std::vector<counted_ptr<SkyLayer> > m_skyLayers;
 
-    counted_ptr<Framebuffer> m_shadowMap;
-    counted_ptr<CubeMapFramebuffer> m_omniShadowMap;
+    std::vector<counted_ptr<Framebuffer> > m_shadowMaps;
+    std::vector<counted_ptr<CubeMapFramebuffer> > m_omniShadowMaps;
 
     bool m_shadowsEnabled;
     bool m_visualizersEnabled;

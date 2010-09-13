@@ -1,5 +1,5 @@
 /*
- * $Revision: 343 $ $Date: 2010-07-11 19:29:07 -0700 (Sun, 11 Jul 2010) $
+ * $Revision: 503 $ $Date: 2010-09-13 14:38:52 -0700 (Mon, 13 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -127,6 +127,14 @@ public:
 v_uint64
 TextureMapLoader::evictTextures(v_uint64 desiredMemory, v_int64 mostRecentAllowed)
 {
+#if DEBUG_EVICTION
+    // Show all textures managed by this loader
+    for (TextureTable::const_iterator iter = m_textures.begin(); iter != m_textures.end(); ++iter)
+    {
+        VESTA_LOG("Texture: %s, mem: %.2f", iter->second.ptr()->name().c_str(), double(iter->second.ptr()->memoryUsage()) / (1024*1024));
+    }
+#endif
+
     v_uint64 textureMemory = textureMemoryUsed();
 
     // Early out if the memory usage target is already met
