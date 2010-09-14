@@ -79,6 +79,16 @@ public:
         return m_satelliteTrajectoriesAction;
     }
 
+    QAction* planetOrbitsAction() const
+    {
+        return m_planetOrbitsAction;
+    }
+
+    QAction* moonOrbitsAction() const
+    {
+        return m_moonOrbitsAction;
+    }
+
     float ambientLight() const
     {
         return m_ambientLight;
@@ -106,6 +116,8 @@ private:
     QAction* m_equatorialGridAction;
     QAction* m_reentryTrajectoriesAction;
     QAction* m_satelliteTrajectoriesAction;
+    QAction* m_planetOrbitsAction;
+    QAction* m_moonOrbitsAction;
     float m_ambientLight;
     int m_currentSkyLayerIndex;
 };

@@ -51,6 +51,8 @@ void Preferences::connectViewActions(const ViewActionGroup* viewActions)
     celestialGrid->setChecked(viewActions->equatorialGridAction()->isChecked());
     satellitesTrajectories->setChecked(viewActions->satelliteTrajectoriesAction()->isChecked());
     reentryTrajectories->setChecked(viewActions->reentryTrajectoriesAction()->isChecked());
+    planetsTrajectories->setChecked(viewActions->planetOrbitsAction()->isChecked());
+    moonsTrajectories->setChecked(viewActions->moonOrbitsAction()->isChecked());
 
     // Connect dialog widgets to view actions
     // Note that we connect from the clicked() signal of the checkbox widgets. This prevents circular
@@ -64,6 +66,8 @@ void Preferences::connectViewActions(const ViewActionGroup* viewActions)
     connect(celestialGrid,          SIGNAL(clicked(bool)), viewActions->equatorialGridAction(),        SLOT(setChecked(bool)));
     connect(satellitesTrajectories, SIGNAL(clicked(bool)), viewActions->satelliteTrajectoriesAction(), SLOT(setChecked(bool)));
     connect(reentryTrajectories,    SIGNAL(clicked(bool)), viewActions->reentryTrajectoriesAction(),   SLOT(setChecked(bool)));
+    connect(planetsTrajectories,    SIGNAL(clicked(bool)), viewActions->planetOrbitsAction(),          SLOT(setChecked(bool)));
+    connect(moonsTrajectories,      SIGNAL(clicked(bool)), viewActions->moonOrbitsAction(),            SLOT(setChecked(bool)));
     connect(skyLayerCombo,          SIGNAL(currentIndexChanged(int)), viewActions,                     SLOT(setSkyLayer(int)));
     connect(this, SIGNAL(ambientLightChanged(float)), viewActions, SLOT(setAmbientLight(float)));
 
@@ -76,6 +80,8 @@ void Preferences::connectViewActions(const ViewActionGroup* viewActions)
     connect(viewActions->equatorialGridAction(),        SIGNAL(toggled(bool)), celestialGrid,          SLOT(setChecked(bool)));
     connect(viewActions->satelliteTrajectoriesAction(), SIGNAL(toggled(bool)), satellitesTrajectories, SLOT(setChecked(bool)));
     connect(viewActions->reentryTrajectoriesAction(),   SIGNAL(toggled(bool)), reentryTrajectories,    SLOT(setChecked(bool)));
+    connect(viewActions->planetOrbitsAction(),          SIGNAL(toggled(bool)), planetsTrajectories,    SLOT(setChecked(bool)));
+    connect(viewActions->moonOrbitsAction(),            SIGNAL(toggled(bool)), moonsTrajectories,      SLOT(setChecked(bool)));
     connect(viewActions, SIGNAL(skyLayerChanged(int)), this, SLOT(setSkyLayer(int)));
     connect(viewActions, SIGNAL(ambientLightChanged(float)), this, SLOT(setAmbientLight(float)));
 }
@@ -120,41 +126,6 @@ void Preferences::setSkyLayer(int skyLayerIndex)
     }
 }
 
-void Preferences::on_shadows_clicked(bool)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void Preferences::on_atmospheres_clicked(bool)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void Preferences::on_clouds_clicked(bool)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void Preferences::on_nightLigfhts_clicked(bool)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void Preferences::on_reflections_clicked(bool)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void Preferences::on_stars_clicked(bool)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void Preferences::on_celestialGrid_clicked(bool)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
 void Preferences::on_fieldOfView_clicked(bool)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
@@ -176,16 +147,6 @@ void Preferences::on_coverageAreas_clicked(bool)
 }
 
 void Preferences::on_satellitesTrajectories_clicked(bool)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void Preferences::on_planetsTrajectories_clicked(bool)
-{
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void Preferences::on_moonsTrajectories_clicked(bool)
 {
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }

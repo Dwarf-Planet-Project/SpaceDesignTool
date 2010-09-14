@@ -293,6 +293,8 @@ MainWindow::MainWindow(QWidget *parent)	:
         connect(m_viewActions->reflectionsAction(), SIGNAL(toggled(bool)), view, SLOT(setReflections(bool)));
         connect(m_viewActions->atmospheresAction(), SIGNAL(toggled(bool)), view, SLOT(setAtmospheres(bool)));
         connect(m_viewActions->satelliteTrajectoriesAction(), SIGNAL(toggled(bool)), view, SLOT(setSatelliteTrajectories(bool)));
+        connect(m_viewActions->planetOrbitsAction(), SIGNAL(toggled(bool)), view, SLOT(setPlanetOrbits(bool)));
+        connect(m_viewActions->moonOrbitsAction(), SIGNAL(toggled(bool)), view, SLOT(setMoonOrbits(bool)));
         connect(m_viewActions, SIGNAL(ambientLightChanged(float)), view, SLOT(setAmbientLight(float)));
         connect(m_viewActions, SIGNAL(skyLayerChanged(int)), view, SLOT(setCurrentSkyLayer(int)));
     }

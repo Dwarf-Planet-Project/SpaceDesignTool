@@ -48,6 +48,7 @@ namespace vesta
     class Atmosphere;
     class PlanetGridLayer;
     class CubeMapFramebuffer;
+    class Spectrum;
 }
 
 class StaBody;
@@ -97,6 +98,8 @@ public slots:
 
    void setSatelliteTrajectories(bool enabled);
    void setReentryTrajectories(bool enabled);
+   void setPlanetOrbits(bool enabled);
+   void setMoonOrbits(bool enabled);
 
    void setCurrentSkyLayer(int layerIndex);
    void setAmbientLight(float lightLevel);
@@ -121,6 +124,8 @@ private:
     vesta::Entity* findSolarSystemBody(const StaBody* body);
     vesta::Entity* findSolarSystemBody(StaBodyId id);
     vesta::Frame* createFrame(const MissionArc* arc);
+
+    void createOrbitVisualizer(const StaBody* body, const vesta::Spectrum& color);
 
     void drawOverlay();
 

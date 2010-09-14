@@ -102,6 +102,19 @@ static double ValidTimeSpan = EndOfTime - BeginningOfTime;
 static const int ReflectionMapSize = 512;
 static const string DefaultSpacecraftMeshFile = "models/sorce.obj";
 
+static StaBodyId PlanetIds[] = {
+    STA_MERCURY, STA_VENUS, STA_EARTH, STA_MARS,
+    STA_JUPITER, STA_SATURN, STA_URANUS, STA_NEPTUNE
+};
+
+static const unsigned int PlanetCount = sizeof(PlanetIds) / sizeof(PlanetIds[0]);
+
+static StaBodyId MoonIds[] = {
+    STA_MOON
+};
+
+static const unsigned int MoonCount = sizeof(MoonIds) / sizeof(MoonIds[0]);
+
 
 // Frame string must be one of equatorial, ecliptic, or galactic.
 struct SkyLayerProperties
@@ -200,6 +213,11 @@ public:
         // Just return a very large value. For better performance, we should eventually return
         // a much tighter bounding sphere.
         return 1.0e10;
+    }
+
+    virtual double period() const
+    {
+        return daysToSeconds(m_body->orbitalPeriod());
     }
 
     const StaBody* body()
@@ -776,6 +794,18 @@ ThreeDView::initializeUniverse()
         rings->setTexture(m_textureLoader->loadTexture("textures/medres/saturn-rings.png", TextureProperties(TextureProperties::Clamp)));
         dynamic_cast<WorldGeometry*>(saturn->geometry())->setRingSystem(rings);
     }
+
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_MERCURY), Spectrum(0.7f, 0.5f, 0.4f));
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_VENUS),   Spectrum(0.7f, 0.7f, 0.6f));
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_EARTH),   Spectrum(0.4f, 0.5f, 0.7f));
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_MARS),    Spectrum(0.7f, 0.4f, 0.3f));
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_JUPITER), Spectrum(0.7f, 0.6f, 0.3f));
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_SATURN),  Spectrum(0.7f, 0.7f, 0.6f));
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_URANUS),  Spectrum(0.55f, 0.7f, 0.55f));
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_NEPTUNE), Spectrum(0.5f, 0.5f, 0.7f));
+    //createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_PLUTO));
+
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_MOON),    Spectrum(0.6f, 0.6f, 0.6f));
 }
 
 
@@ -828,6 +858,29 @@ ThreeDView::addSolarSystemBody(const StaBody* body, Entity* center)
     m_universe->addEntity(b);
 
     return b;
+}
+
+
+void
+ThreeDView::createOrbitVisualizer(const StaBody* stabody, const Spectrum& color)
+{
+    Entity* body = findSolarSystemBody(stabody);
+    if (!body)
+    {
+        return;
+    }
+
+    vesta::Arc* arc = body->chronology()->firstArc();
+
+    TrajectoryGeometry* trajGeom = new TrajectoryGeometry();
+    trajGeom->setDisplayedPortion(TrajectoryGeometry::Entire);
+    trajGeom->setColor(color);
+
+    trajGeom->computeSamples(arc->trajectory(), m_currentTime - arc->trajectory()->period() / 2.0, m_currentTime + arc->trajectory()->period() / 2.0, 200);
+    Visualizer* trajVisualizer = new Visualizer(trajGeom);
+    trajVisualizer->setVisibility(false);
+
+    arc->center()->setVisualizer(string("traj ") + body->name(), trajVisualizer);
 }
 
 
@@ -1474,6 +1527,48 @@ ThreeDView::setSatelliteTrajectories(bool enabled)
 void
 ThreeDView::setReentryTrajectories(bool enabled)
 {
+}
+
+
+void
+ThreeDView::setPlanetOrbits(bool enabled)
+{
+    for (unsigned int i = 0; i < PlanetCount; ++i)
+    {
+        Entity* planet = findSolarSystemBody(PlanetIds[i]);
+        if (planet)
+        {
+            Entity* center = planet->chronology()->firstArc()->center();
+            Visualizer* vis = center->visualizer(string("traj ") + planet->name());
+            if (vis)
+            {
+                vis->setVisibility(enabled);
+            }
+        }
+    }
+
+    setViewChanged();
+}
+
+
+void
+ThreeDView::setMoonOrbits(bool enabled)
+{
+    for (unsigned int i = 0; i < MoonCount; ++i)
+    {
+        Entity* planet = findSolarSystemBody(MoonIds[i]);
+        if (planet)
+        {
+            Entity* center = planet->chronology()->firstArc()->center();
+            Visualizer* vis = center->visualizer(string("traj ") + planet->name());
+            if (vis)
+            {
+                vis->setVisibility(enabled);
+            }
+        }
+    }
+
+    setViewChanged();
 }
 
 

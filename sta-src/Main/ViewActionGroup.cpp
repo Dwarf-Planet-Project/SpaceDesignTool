@@ -52,6 +52,10 @@ ViewActionGroup::ViewActionGroup() :
     m_reentryTrajectoriesAction->setCheckable(true);
     m_satelliteTrajectoriesAction = new QAction(tr("Satellite Trajectories"), this);
     m_satelliteTrajectoriesAction->setCheckable(true);
+    m_planetOrbitsAction = new QAction(tr("Planet Orbits"), this);
+    m_planetOrbitsAction->setCheckable(true);
+    m_moonOrbitsAction = new QAction(tr("Moon Orbits"), this);
+    m_moonOrbitsAction->setCheckable(true);
 }
 
 
@@ -76,6 +80,8 @@ ViewActionGroup::saveSettings()
     settings.setValue("EquatorialGrid", m_equatorialGridAction->isChecked());
     settings.setValue("ReentryTrajectories", m_reentryTrajectoriesAction->isChecked());
     settings.setValue("SatelliteTrajectories", m_satelliteTrajectoriesAction->isChecked());
+    settings.setValue("PlanetOrbits", m_planetOrbitsAction->isChecked());
+    settings.setValue("MoonOrbits", m_moonOrbitsAction->isChecked());
     settings.setValue("AmbientLight", m_ambientLight);
     settings.setValue("SkyLayer", m_currentSkyLayerIndex);
     settings.endGroup();
@@ -98,6 +104,8 @@ ViewActionGroup::restoreSettings()
     m_equatorialGridAction->setChecked(settings.value("EquatorialGrid", false).toBool());
     m_reentryTrajectoriesAction->setChecked(settings.value("ReentryTrajectories", true).toBool());
     m_satelliteTrajectoriesAction->setChecked(settings.value("SatelliteTrajectories", true).toBool());
+    m_planetOrbitsAction->setChecked(settings.value("PlanetOrbits", false).toBool());
+    m_moonOrbitsAction->setChecked(settings.value("MoonOrbits", false).toBool());
     setAmbientLight(settings.value("AmbientLight", 0.2f).toFloat());
     setSkyLayer(settings.value("SkyLayer", 0).toInt());
 
