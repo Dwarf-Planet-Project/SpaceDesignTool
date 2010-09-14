@@ -1,5 +1,5 @@
 /*
- * $Revision: 498 $ $Date: 2010-09-10 09:01:38 -0700 (Fri, 10 Sep 2010) $
+ * $Revision: 506 $ $Date: 2010-09-14 13:32:15 -0700 (Tue, 14 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -615,16 +615,41 @@ UniverseRenderer::renderView(const LightingEnvironment* lighting,
 
     // Depth sort all visible items
     sort(m_visibleItems.begin(), m_visibleItems.end(), visibleItemPredicate);
+    sort(m_splittableItems.begin(), m_splittableItems.end(), visibleItemPredicate);
 
     splitDepthBuffer();
     coalesceDepthBuffer();
 
     // If there is splittable geometry, we need to add extra depth spans
     // at the front and back, otherwise it may be clipped.
-    if (!m_splittableItems.empty() && !m_depthBufferSpans.empty())
+    if (!m_splittableItems.empty())
     {
         // Use a different near/far ratio for these extra spans
         const float MaxFarNearRatio = 10000.0f;
+
+        float furthestDistance = min(m_splittableItems.front().farDistance, projection.farDistance());
+
+        // Handle the case when the only visible geometry is splittable. This can happen
+        // in solar system views where just the planet orbits are visible. The only thing
+        // that we need to do is add the furthest span.
+        if (m_depthBufferSpans.empty())
+        {
+            DepthBufferSpan back;
+            back.backItemIndex = 0;
+            back.itemCount = 0;
+            back.farDistance = projection.farDistance();
+            back.nearDistance = max(projection.nearDistance(), back.farDistance / MaxFarNearRatio);
+            m_mergedDepthBufferSpans.push_back(back);
+        }
+        else if (furthestDistance > m_mergedDepthBufferSpans.front().farDistance)
+        {
+            DepthBufferSpan back;
+            back.backItemIndex = 0;
+            back.itemCount = 0;
+            back.farDistance = furthestDistance;
+            back.nearDistance = m_mergedDepthBufferSpans.front().farDistance;
+            m_mergedDepthBufferSpans.insert(m_mergedDepthBufferSpans.begin(), back);
+        }
 
         while (m_mergedDepthBufferSpans.back().nearDistance > projection.nearDistance())
         {
