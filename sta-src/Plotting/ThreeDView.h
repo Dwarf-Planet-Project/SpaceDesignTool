@@ -133,6 +133,8 @@ private:
     vesta::Body* createGroundObject(const GroundObject* groundObj);
     void clearScenarioObjects();
 
+    void updateSolarSystemTrajectoryPlots();
+
 private:
     double m_currentTime;
     vesta::Universe* m_universe;

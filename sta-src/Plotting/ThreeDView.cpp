@@ -542,6 +542,8 @@ ThreeDView::paintGL()
         m_newAtmospheres.clear();
     }
 
+    updateSolarSystemTrajectoryPlots();
+
     glDepthMask(GL_TRUE);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -619,6 +621,7 @@ ThreeDView::drawOverlay()
     glTranslatef(0.125f, 0.125f, 0);
 
     glEnable(GL_TEXTURE_2D);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
     if (m_labelFont.isValid())
     {
@@ -873,14 +876,37 @@ ThreeDView::createOrbitVisualizer(const StaBody* stabody, const Spectrum& color)
     vesta::Arc* arc = body->chronology()->firstArc();
 
     TrajectoryGeometry* trajGeom = new TrajectoryGeometry();
-    trajGeom->setDisplayedPortion(TrajectoryGeometry::Entire);
+    trajGeom->setDisplayedPortion(TrajectoryGeometry::WindowBeforeCurrentTime);
+    trajGeom->setWindowDuration(arc->trajectory()->period());
     trajGeom->setColor(color);
+    trajGeom->setFadeFraction(0.25);
 
-    trajGeom->computeSamples(arc->trajectory(), m_currentTime - arc->trajectory()->period() / 2.0, m_currentTime + arc->trajectory()->period() / 2.0, 200);
     Visualizer* trajVisualizer = new Visualizer(trajGeom);
     trajVisualizer->setVisibility(false);
 
     arc->center()->setVisualizer(string("traj ") + body->name(), trajVisualizer);
+}
+
+
+void
+ThreeDView::updateSolarSystemTrajectoryPlots()
+{
+    for (unsigned int i = 0; i < PlanetCount + MoonCount; ++i)
+    {
+        StaBodyId id = i < PlanetCount ? PlanetIds[i] : MoonIds[i - PlanetCount];
+
+        Entity* body = findSolarSystemBody(id);
+        if (body)
+        {
+            vesta::Arc* arc = body->chronology()->firstArc();
+            Visualizer* vis = arc->center()->visualizer(string("traj ") + body->name());
+            if (vis)
+            {
+                TrajectoryGeometry* plot = dynamic_cast<TrajectoryGeometry*>(vis->geometry());
+                plot->updateSamples(arc->trajectory(), m_currentTime - plot->windowDuration(), m_currentTime, 100);
+            }
+        }
+    }
 }
 
 
