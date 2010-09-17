@@ -1,5 +1,5 @@
 //
-// $Revision: 505 $ $Date: 2010-09-13 16:38:02 -0700 (Mon, 13 Sep 2010) $
+// $Revision: 507 $ $Date: 2010-09-15 15:17:27 -0700 (Wed, 15 Sep 2010) $
 //
 // Copyright by Astos Solutions GmbH, Germany
 //  
@@ -465,6 +465,11 @@ public:
     virtual Eigen::Vector3d velocity(double t) const;
     virtual bool isPeriodic() const;
     virtual double period() const;
+    double startTime() const;
+    double endTime() const;
+    void setStartTime(double startTime);
+    void setEndTime(double endTime);
+    void setValidTimeRange(double startTime, double endTime);
 };
 
 
@@ -905,6 +910,14 @@ public:
 class TrajectoryGeometry : public Geometry
 {
 public:
+    enum TrajectoryPortion
+    {
+        Entire                  = 0,
+        StartToCurrentTime      = 1,
+        CurrentTimeToEnd        = 2,
+        WindowBeforeCurrentTime = 3,
+    };
+
     TrajectoryGeometry();
     virtual ~TrajectoryGeometry();
 
@@ -916,7 +929,15 @@ public:
     float opacity() const;
     void setOpacity(float opacity);
 
+    TrajectoryPortion displayedPortion() const;
+    void setDisplayedPortion(TrajectoryPortion portion);
+    double windowDuration() const;
+    void setWindowDuration(double duration);
+    double fadeFraction() const;
+    void setFadeFraction(double fadeFraction);
+
     void computeSamples(const Trajectory* trajectory, double startTime, double endTime, unsigned int steps);
+    void updateSamples(const Trajectory* trajectory, double startTime, double endTime, unsigned int steps);
 };
 
 class TextureFont;

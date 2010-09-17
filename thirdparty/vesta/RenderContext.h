@@ -1,5 +1,5 @@
 /*
- * $Revision: 488 $ $Date: 2010-09-06 12:17:43 -0700 (Mon, 06 Sep 2010) $
+ * $Revision: 508 $ $Date: 2010-09-17 11:21:21 -0700 (Fri, 17 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -279,9 +279,10 @@ public:
 
     void bindVertexArray(const VertexArray* vertexArray);
     void bindVertexArray(const VertexSpec& spec, const void* vertexData, unsigned int stride);
+    void unbindVertexArray();
     void bindVertexBuffer(const VertexSpec& spec, const GLVertexBuffer* vertexBuffer, unsigned int stride);
     void bindVertexBuffer(const VertexSpec& spec, const VertexBuffer* vertexBuffer, unsigned int stride);
-    void unbindVertexArray();
+    void unbindVertexBuffer();
     void setVertexInfo(const VertexSpec& spec);
 
     void bindMaterial(const Material* material);

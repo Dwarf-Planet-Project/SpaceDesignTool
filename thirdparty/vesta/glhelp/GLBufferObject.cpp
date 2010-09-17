@@ -31,6 +31,9 @@ using namespace vesta;
   * data is not null, the memory pointed to by data will be used to
   * initialize the buffer. Otherwise, the initial contents of the buffer
   * are undefined.
+  *
+  * Constructing a GLBufferObject has the side effect of unbinding any
+  * currently bound buffer object of the same type.
   */
 GLBufferObject::GLBufferObject(GLuint target, unsigned int size, GLenum usage, const void* data) :
     m_target(target),
@@ -54,6 +57,9 @@ GLBufferObject::GLBufferObject(GLuint target, unsigned int size, GLenum usage, c
 
             // Check for errors
             GLenum err = glGetError();
+
+            glBindBuffer(m_target, 0);
+
             if (err != GL_NO_ERROR)
             {
                 switch (err)
@@ -69,7 +75,6 @@ GLBufferObject::GLBufferObject(GLuint target, unsigned int size, GLenum usage, c
                     break;
                 }
 
-                glBindBuffer(m_target, 0);
                 glDeleteBuffers(1, &m_handle);
                 m_handle = 0;
             }

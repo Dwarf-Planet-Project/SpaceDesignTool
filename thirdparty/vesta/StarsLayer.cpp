@@ -418,11 +418,7 @@ StarsLayer::render(RenderContext& rc)
 
     rc.drawPrimitives(PrimitiveBatch(PrimitiveBatch::Points, m_starCatalog->size()));
 
-    rc.unbindVertexArray();
-    if (m_vertexBuffer.isValid())
-    {
-        m_vertexBuffer->unbind();
-    }
+    rc.unbindVertexBuffer();
 
     if (useStarShader)
     {

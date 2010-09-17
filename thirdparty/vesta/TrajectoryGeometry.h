@@ -1,5 +1,5 @@
 /*
- * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
+ * $Revision: 507 $ $Date: 2010-09-15 15:17:27 -0700 (Wed, 15 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -23,8 +23,10 @@ namespace vesta
 
 class Trajectory;
 
-/** TrajectoryGeometry is used for visualizing the paths of bodies through
-  * space.
+/** TrajectoryGeometry is used for plotting the paths of bodies through
+  * space. It provides flexibility in how the plots are drawn. Depending on
+  * settings, an entire trajectory can be shown or just a portion of it.
+  *
   */
 class TrajectoryGeometry : public Geometry
 {
@@ -34,8 +36,7 @@ public:
     TrajectoryGeometry();
     virtual ~TrajectoryGeometry();
 
-    void render(RenderContext& rc,
-                double animationClock) const;
+    void render(RenderContext& rc, double clock) const;
 
     float boundingSphereRadius() const
     {
@@ -75,12 +76,14 @@ public:
     void addSample(double t, const StateVector& s);
     void clearSamples();
     void computeSamples(const Trajectory* trajectory, double startTime, double endTime, unsigned int steps);
+    void updateSamples(const Trajectory* trajectory, double startTime, double endTime, unsigned int steps);
 
     enum TrajectoryPortion
     {
-        Entire             = 0,
-        StartToCurrentTime = 1,
-        CurrentTimeToEnd   = 2,
+        Entire                  = 0,
+        StartToCurrentTime      = 1,
+        CurrentTimeToEnd        = 2,
+        WindowBeforeCurrentTime = 3,
     };
 
     /** Return the portion of the trajectory that will be displayed.
@@ -95,11 +98,67 @@ public:
       *    Entire - show the complete trajectory from beginning to end
       *    StartToCurrentTime - show the trajectory from the first point through the current time
       *    CurrenTimeToEnd - show the trajectory from the current time through the end point
+      *    WindowBeforeCurrentTime - show the trajectory over the span [ currentTime - windowDuration, currentTime ]
+      *
+      * In order to use WindowBeforeCurrentTime, the window duration must be set to an appropriate
+      * value. The default is 0, so the trajectory won't be shown at all without calling setWindowDuration()
+      * to a non-zero value.
       */
     void setDisplayedPortion(TrajectoryPortion portion)
     {
         m_displayedPortion = portion;
     }
+
+    /** Get the window of time over which the trajectory is shown. This value is
+      * only used when the displayed portion is set to WindowBeforeCurrentTime.
+      *
+      * \returns the window duration in seconds
+      */
+    double windowDuration() const
+    {
+        return m_windowDuration;
+    }
+
+    /** Set the window of time over which the trajectory is shown. This value is
+      * only used when the displayed portion is set to WindowBeforeCurrentTime.
+      *
+      * \param duration the window duration in seconds
+      */
+    void setWindowDuration(double duration)
+    {
+        m_windowDuration = duration;
+    }
+
+    /** Get the fraction of the window duration over which the trajectory plot
+      * fades to transparent.
+      */
+    double fadeFraction() const
+    {
+        return m_fadeFraction;
+    }
+
+    /** Set the fraction of the window duration over which the trajectory plot
+      * fades to transparent. Setting it to zero (which is the initial value)
+      * disables fading completely. Fading is only used when the displayed portion
+      * of the orbit is a fixed time window (e.g. WindowBeforeCurrentTime).
+      *
+      * Example: the following code sets the TrajectoryGeometry to plot a
+      * trajectory for one orbital period over a time range ending at the
+      * current simulation time. The plot is opaque except for the earliest
+      * 25%, where it fades linearly to completely transparent.
+      *
+      * \code
+      * Trajectory* traj = ...;
+      * plot->setWindowDuration(traj->period());
+      * plot->setDisplayedPortion(TrajectoryGeometry::WindowBeforeCurrentTime);
+      * plot->setFadeFraction(0.25);
+      * \endcode
+      */
+    void setFadeFraction(double fadeFraction)
+    {
+        m_fadeFraction = fadeFraction;
+    }
+
 
 private:
     Spectrum m_color;
@@ -109,6 +168,8 @@ private:
     double m_endTime;
     double m_boundingRadius;
     TrajectoryPortion m_displayedPortion;
+    double m_windowDuration;
+    double m_fadeFraction;
 };
 
 }

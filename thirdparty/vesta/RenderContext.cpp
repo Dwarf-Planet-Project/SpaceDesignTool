@@ -1,5 +1,5 @@
 /*
- * $Revision: 502 $ $Date: 2010-09-13 14:19:36 -0700 (Mon, 13 Sep 2010) $
+ * $Revision: 508 $ $Date: 2010-09-17 11:21:21 -0700 (Fri, 17 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -592,6 +592,17 @@ RenderContext::bindVertexBuffer(const VertexSpec& spec, const VertexBuffer* vert
     else
     {
         bindVertexArray(spec, vertexBuffer->data(), stride);
+    }
+}
+
+
+void
+RenderContext::unbindVertexBuffer()
+{
+    unbindVertexArray();
+    if (GLEW_ARB_vertex_buffer_object == GL_TRUE)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 }
 

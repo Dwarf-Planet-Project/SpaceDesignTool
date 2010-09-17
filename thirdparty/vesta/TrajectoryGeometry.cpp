@@ -1,5 +1,5 @@
 /*
- * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
+ * $Revision: 507 $ $Date: 2010-09-15 15:17:27 -0700 (Wed, 15 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -12,12 +12,14 @@
 #include "Trajectory.h"
 #include "RenderContext.h"
 #include "Material.h"
+#include "Debug.h"
 #include <curveplot/curveplot.h>
 #include <Eigen/LU>
 #include <algorithm>
 
 using namespace vesta;
 using namespace Eigen;
+using namespace std;
 
 
 TrajectoryGeometry::TrajectoryGeometry() :
@@ -27,7 +29,9 @@ TrajectoryGeometry::TrajectoryGeometry() :
     m_startTime(0.0),
     m_endTime(0.0),
     m_boundingRadius(0.0),
-    m_displayedPortion(Entire)
+    m_displayedPortion(Entire),
+    m_windowDuration(0.0),
+    m_fadeFraction(0.0)
 {
     // Make trajectories splittable by default in order to prevent
     // clipping artifacts.
@@ -49,8 +53,6 @@ TrajectoryGeometry::render(RenderContext& rc, double clock) const
         return;
     }
 
-    rc.setVertexInfo(VertexSpec::Position);
-
     const Frustum& frustum = rc.frustum();
 
     // Get a high precision modelview matrix; the full transformation is stored at single precision,
@@ -59,15 +61,12 @@ TrajectoryGeometry::render(RenderContext& rc, double clock) const
     Vector3d t = rc.modelTranslation();
     modelview.matrix().col(3) = Vector4d(t.x(), t.y(), t.z(), 1.0);
 
-    Material material;
-    material.setEmission(m_color);
-    rc.bindMaterial(&material);
-
     // Set the model view matrix to identity, as the curveplot module performs all transformations in
     // software using double precision.
     rc.pushModelView();
     rc.identityModelView();
 
+    bool fade = false;
     double startTime = m_startTime;
     double endTime = m_endTime;
     switch (m_displayedPortion)
@@ -78,14 +77,47 @@ TrajectoryGeometry::render(RenderContext& rc, double clock) const
     case CurrentTimeToEnd:
         startTime = clock;
         break;
+    case WindowBeforeCurrentTime:
+        endTime = clock;
+        startTime = clock - m_windowDuration;
+        fade = m_fadeFraction > 0.0;
+        break;
     default:
         break;
     }
 
-    m_curvePlot->render(modelview,
-                        -frustum.nearZ, -frustum.farZ, frustum.planeNormals, // viewFrustum
-                        rc.pixelSize() * 30.0,                               // subdivisionThreshold
-                        startTime, endTime);
+    double subdivisionThreshold = rc.pixelSize() * 30.0;
+    if (fade)
+    {
+        rc.setVertexInfo(VertexSpec::PositionColor);
+        Material material;
+        material.setDiffuse(Spectrum::White());
+        rc.bindMaterial(&material);
+
+        double fadeStartTime = startTime;
+        double fadeEndTime = fadeStartTime + m_windowDuration * m_fadeFraction;
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        m_curvePlot->renderFaded(modelview,
+                                 -frustum.nearZ, -frustum.farZ, frustum.planeNormals, // viewFrustum
+                                 subdivisionThreshold,
+                                 startTime, endTime,
+                                 Vector4f(m_color.red(), m_color.green(), m_color.blue(), 1.0f),
+                                 fadeStartTime, fadeEndTime);
+        glDisable(GL_BLEND);
+    }
+    else
+    {
+        rc.setVertexInfo(VertexSpec::Position);
+        Material material;
+        material.setEmission(m_color);
+        rc.bindMaterial(&material);
+
+        m_curvePlot->render(modelview,
+                            -frustum.nearZ, -frustum.farZ, frustum.planeNormals, // viewFrustum
+                            subdivisionThreshold,
+                            startTime, endTime);
+    }
 
     rc.popModelView();
 }
@@ -158,6 +190,9 @@ TrajectoryGeometry::computeSamples(const Trajectory* trajectory, double startTim
 
     clearSamples();
 
+    startTime = max(trajectory->startTime(), startTime);
+    endTime = min(trajectory->endTime(), endTime);
+
     // Nothing to plot if end is before start
     if (endTime <= startTime)
     {
@@ -182,3 +217,77 @@ TrajectoryGeometry::computeSamples(const Trajectory* trajectory, double startTim
     m_boundingRadius *= 1.1;
 }
 
+
+/** Automatically add samples to the trajectory plot. Samples of the specified trajectory
+  * are calculated at regular intervals between the startTime and endTime.
+  */
+void
+TrajectoryGeometry::updateSamples(const Trajectory* trajectory, double startTime, double endTime, unsigned int steps)
+{
+    // Abort if we're asked to plot a null trajectory
+    if (!trajectory)
+    {
+        return;
+    }
+
+    if (!m_curvePlot)
+    {
+        // Trajectory hasn't been created yet; initialize it for the specified time range
+        computeSamples(trajectory, startTime, endTime, steps);
+        return;
+    }
+
+    double dt = (endTime - startTime) / (steps - 1);
+    double windowStartTime = max(trajectory->startTime(), startTime - dt);
+    double windowEndTime = min(trajectory->endTime(), endTime + dt);
+
+    if (endTime <= m_curvePlot->startTime() || startTime >= m_curvePlot->endTime())
+    {
+        computeSamples(trajectory, windowStartTime, windowEndTime, steps);
+    }
+    else
+    {
+        if (startTime < m_curvePlot->startTime())
+        {
+            // Add samples at the beginning
+            for (double t = m_curvePlot->startTime() - dt; t > windowStartTime; t -= dt)
+            {
+                t = max(t, windowStartTime);
+                StateVector sv = trajectory->state(t);
+
+                CurvePlotSample sample;
+                sample.t = t;
+                sample.position = sv.position();
+                sample.velocity = sv.velocity();
+                m_curvePlot->addSample(sample);
+                m_boundingRadius = std::max(m_boundingRadius, sv.position().norm());
+            }
+        }
+
+        if (endTime > m_curvePlot->endTime())
+        {
+            unsigned int sampCount = 0;
+            // Add samples at the end
+            for (double t = m_curvePlot->endTime() + dt; t < windowEndTime; t += dt)
+            {
+                t = min(t, windowEndTime);
+                StateVector sv = trajectory->state(t);
+
+                CurvePlotSample sample;
+                sample.t = t;
+                sample.position = sv.position();
+                sample.velocity = sv.velocity();
+                m_curvePlot->addSample(sample);
+                m_boundingRadius = std::max(m_boundingRadius, sv.position().norm());
+                ++sampCount;
+            }
+        }
+
+        // Remove samples
+        m_curvePlot->removeSamplesAfter(windowEndTime);
+        m_curvePlot->removeSamplesBefore(windowStartTime);
+    }
+
+    m_startTime = windowStartTime;
+    m_endTime = windowEndTime;
+}
