@@ -114,6 +114,7 @@ protected:
     void wheelEvent(QWheelEvent* event);
     void keyPressEvent(QKeyEvent* event);
     void keyReleaseEvent(QKeyEvent* event);
+    void contextMenuEvent(QContextMenuEvent* event);
 
 private:
     void initializeUniverse();
@@ -153,6 +154,7 @@ private:
     double m_fov;
 
     QPointF m_mousePosition;
+    float m_mouseMotion;
 
     QHash<SpaceObject*, vesta::Entity*> m_scenarioSpaceObjects;
     QHash<GroundObject*, vesta::Entity*> m_scenarioGroundObjects;

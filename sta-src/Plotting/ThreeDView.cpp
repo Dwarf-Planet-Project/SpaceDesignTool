@@ -48,6 +48,7 @@
 #include <vesta/LabelGeometry.h>
 #include <vesta/PlaneVisualizer.h>
 #include <vesta/PlanetGridLayer.h>
+#include <vesta/AxesVisualizer.h>
 #include <vesta/Units.h>
 #include <vesta/MeshGeometry.h>
 #include <vesta/PlanetaryRings.h>
@@ -68,6 +69,8 @@
 #include <QFileInfo>
 #include <QDataStream>
 #include <QDebug>
+#include <QMenu>
+#include <QCoreApplication>
 
 #include <cmath>
 
@@ -409,6 +412,7 @@ ThreeDView::ThreeDView(const QGLFormat& format, QWidget* parent) :
     m_universe(NULL),
     m_renderer(NULL),
     m_fov(sta::degToRad(50.0)),
+    m_mouseMotion(0.0f),
     m_viewChanged(1),
     m_selectedSpacecraft(NULL),
     m_satelliteTrajectoriesEnabled(false),
@@ -693,12 +697,21 @@ void
 ThreeDView::mousePressEvent(QMouseEvent *event)
 {
     m_mousePosition = event->posF();
+    m_mouseMotion = 0.0f;
 }
 
 
 void
 ThreeDView::mouseReleaseEvent(QMouseEvent* event)
 {
+    if (m_mouseMotion < 3.0f)
+    {
+        if (event->button() == Qt::RightButton)
+        {
+            QContextMenuEvent menuEvent(QContextMenuEvent::Other, event->pos(), event->globalPos());
+            QCoreApplication::sendEvent(this, &menuEvent);
+        }
+    }
 }
 
 
@@ -708,6 +721,7 @@ ThreeDView::mouseMoveEvent(QMouseEvent *event)
     Vector2f delta(event->posF().x() - m_mousePosition.x(),
                    event->posF().y() - m_mousePosition.y());
     m_mousePosition = event->posF();
+    m_mouseMotion += delta.norm();
 
     bool leftButton = (event->buttons() & Qt::LeftButton) != 0;
     bool rightButton = (event->buttons() & Qt::RightButton) != 0;
@@ -758,6 +772,96 @@ ThreeDView::keyPressEvent(QKeyEvent* event)
 void
 ThreeDView::keyReleaseEvent(QKeyEvent* event)
 {
+}
+
+
+void
+ThreeDView::contextMenuEvent(QContextMenuEvent* event)
+{
+    if (event->reason() == QContextMenuEvent::Mouse)
+    {
+        // Don't popup the context menu when triggered by the mouse,
+        // as this interferes with right dragging to pan the view.
+        return;
+    }
+
+    double pixelAngle = m_fov / size().height();
+
+    // Get the click point in normalized device coordinaes
+    Vector2d ndc = Vector2d(double(event->pos().x()) / double(size().width()),
+                            double(event->pos().y()) / double(size().height())) * 2.0 - Vector2d::Ones();
+    ndc.y() = -ndc.y();
+
+    // Get the pick direction
+    double aspectRatio = double(size().width()) / double(size().height());
+    double h = tan(m_fov / 2.0f);
+    Vector3d pickDirection = Vector3d(h * aspectRatio * ndc.x(), h * ndc.y(), -1.0).normalized();
+
+    // Convert to world coordinates
+    pickDirection = m_observer->absoluteOrientation(m_currentTime) * pickDirection;
+    Vector3d pickOrigin = m_observer->absolutePosition(m_currentTime);
+
+    PickResult pickResult;
+    if (m_universe->pickObject(m_currentTime, pickOrigin, pickDirection, pixelAngle, &pickResult))
+    {
+        Entity* hit = pickResult.hitObject();
+        if (hit)
+        {
+            QMenu* menu = new QMenu(this);
+            QAction* nameAction = menu->addAction(hit->name().c_str());
+            nameAction->setEnabled(false);
+
+            menu->addSeparator();
+
+            QAction* bodyAxesAction = menu->addAction("Show Body Axes");
+            QAction* frameAxesAction = menu->addAction("Show Frame Axes");
+
+            bool hasBodyAxes = hit->visualizer("body axes") != NULL;
+            bool hasFrameAxes = hit->visualizer("frame axes") != NULL;
+            bodyAxesAction->setCheckable(true);
+            bodyAxesAction->setChecked(hasBodyAxes);
+            frameAxesAction->setCheckable(true);
+            frameAxesAction->setChecked(hasFrameAxes);
+
+            // Visualizer size is based on the geometry size
+            double arrowSize = 1.0;
+            if (hit->geometry())
+            {
+                arrowSize = hit->geometry()->boundingSphereRadius() * 2.0;
+            }
+
+            QAction* chosenAction = menu->exec(event->globalPos(), bodyAxesAction);
+            if (chosenAction == bodyAxesAction)
+            {
+                if (chosenAction->isChecked())
+                {
+                    AxesVisualizer* axes = new AxesVisualizer(AxesVisualizer::BodyAxes, arrowSize);
+                    axes->setVisibility(true);
+                    hit->setVisualizer("body axes", axes);
+                }
+                else
+                {
+                    hit->removeVisualizer("body axes");
+                }
+                setViewChanged();
+            }
+            else if (chosenAction == frameAxesAction)
+            {
+                if (chosenAction->isChecked())
+                {
+                    AxesVisualizer* axes = new AxesVisualizer(AxesVisualizer::FrameAxes, arrowSize);
+                    axes->setVisibility(true);
+                    axes->arrows()->setOpacity(0.33f);
+                    hit->setVisualizer("frame axes", axes);
+                }
+                else
+                {
+                    hit->removeVisualizer("frame axes");
+                }
+                setViewChanged();
+            }
+        }
+    }
 }
 
 
