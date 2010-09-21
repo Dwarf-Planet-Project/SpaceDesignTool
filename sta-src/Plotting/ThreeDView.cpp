@@ -49,6 +49,8 @@
 #include <vesta/PlaneVisualizer.h>
 #include <vesta/PlanetGridLayer.h>
 #include <vesta/AxesVisualizer.h>
+#include <vesta/VelocityVisualizer.h>
+#include <vesta/BodyDirectionVisualizer.h>
 #include <vesta/Units.h>
 #include <vesta/MeshGeometry.h>
 #include <vesta/PlanetaryRings.h>
@@ -813,15 +815,38 @@ ThreeDView::contextMenuEvent(QContextMenuEvent* event)
 
             menu->addSeparator();
 
-            QAction* bodyAxesAction = menu->addAction("Show Body Axes");
-            QAction* frameAxesAction = menu->addAction("Show Frame Axes");
+            QAction* bodyAxesAction       = menu->addAction("Show Body Axes");
+            QAction* frameAxesAction      = menu->addAction("Show Frame Axes");
+            QAction* velocityDirectionAction       = menu->addAction("Show Velocity Direction");
+            QAction* sunDirectionAction   = menu->addAction("Show Sun Direction");
+            QAction* earthDirectionAction = menu->addAction("Show Earth Direction");
 
             bool hasBodyAxes = hit->visualizer("body axes") != NULL;
             bool hasFrameAxes = hit->visualizer("frame axes") != NULL;
+            bool hasVelocityDirection = hit->visualizer("velocity") != NULL;
+            bool hasSunDirection = hit->visualizer("sun direction") != NULL;
+            bool hasEarthDirection = hit->visualizer("earth direction") != NULL;
             bodyAxesAction->setCheckable(true);
             bodyAxesAction->setChecked(hasBodyAxes);
             frameAxesAction->setCheckable(true);
             frameAxesAction->setChecked(hasFrameAxes);
+            velocityDirectionAction->setCheckable(true);
+            velocityDirectionAction->setChecked(hasVelocityDirection);
+            sunDirectionAction->setCheckable(true);
+            sunDirectionAction->setChecked(hasSunDirection);
+            earthDirectionAction->setCheckable(true);
+            earthDirectionAction->setChecked(hasEarthDirection);
+
+            // Disable Sun direction action for the Sun, etc.
+            if (hit->name() == "Sun")
+            {
+                sunDirectionAction->setDisabled(true);
+            }
+
+            if (hit->name() == "Earth")
+            {
+                earthDirectionAction->setDisabled(true);
+            }
 
             // Visualizer size is based on the geometry size
             double arrowSize = 1.0;
@@ -843,7 +868,6 @@ ThreeDView::contextMenuEvent(QContextMenuEvent* event)
                 {
                     hit->removeVisualizer("body axes");
                 }
-                setViewChanged();
             }
             else if (chosenAction == frameAxesAction)
             {
@@ -858,8 +882,50 @@ ThreeDView::contextMenuEvent(QContextMenuEvent* event)
                 {
                     hit->removeVisualizer("frame axes");
                 }
-                setViewChanged();
             }
+            else if (chosenAction == velocityDirectionAction)
+            {
+                if (chosenAction->isChecked())
+                {
+                    VelocityVisualizer* velocityVis = new VelocityVisualizer(arrowSize);
+                    velocityVis->setVisibility(true);
+                    hit->setVisualizer("velocity", velocityVis);
+                }
+                else
+                {
+                    hit->removeVisualizer("velocity");
+                }
+            }
+            else if (chosenAction == sunDirectionAction)
+            {
+                if (chosenAction->isChecked())
+                {
+                    BodyDirectionVisualizer* vis = new BodyDirectionVisualizer(arrowSize, m_universe->findFirst("Sun"));
+                    vis->setColor(Spectrum(1.0f, 1.0f, 0.5f));
+                    vis->setVisibility(true);
+                    hit->setVisualizer("sun direction", vis);
+                }
+                else
+                {
+                    hit->removeVisualizer("sun direction");
+                }
+            }
+            else if (chosenAction == earthDirectionAction)
+            {
+                if (chosenAction->isChecked())
+                {
+                    BodyDirectionVisualizer* vis = new BodyDirectionVisualizer(arrowSize, m_universe->findFirst("Earth"));
+                    vis->setColor(Spectrum(0.5f, 0.5f, 1.0f));
+                    vis->setVisibility(true);
+                    hit->setVisualizer("earth direction", vis);
+                }
+                else
+                {
+                    hit->removeVisualizer("earth direction");
+                }
+            }
+
+            setViewChanged();
         }
     }
 }
