@@ -18,6 +18,7 @@ VESTA_SOURCES = \
     $$VESTA_PATH/AxesVisualizer.cpp \
     $$VESTA_PATH/BillboardGeometry.cpp \
     $$VESTA_PATH/Body.cpp \
+    $$VESTA_PATH/BodyDirectionVisualizer.cpp \
     $$VESTA_PATH/BodyFixedFrame.cpp \
     $$VESTA_PATH/CelestialCoordinateGrid.cpp \
     $$VESTA_PATH/Chronology.cpp \
@@ -90,6 +91,7 @@ VESTA_HEADERS = \
     $$VESTA_PATH/AxesVisualizer.h \
     $$VESTA_PATH/BillboardGeometry.h \
     $$VESTA_PATH/Body.h \
+    $$VESTA_PATH/BodyDirectionVisualizer.h \
     $$VESTA_PATH/BodyFixedFrame.h \
     $$VESTA_PATH/BoundingBox.h \
     $$VESTA_PATH/BoundingSphere.h \

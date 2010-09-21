@@ -1,5 +1,5 @@
 /*
- * $Revision: 223 $ $Date: 2010-03-30 05:44:44 -0700 (Tue, 30 Mar 2010) $
+ * $Revision: 509 $ $Date: 2010-09-21 14:35:45 -0700 (Tue, 21 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -17,6 +17,9 @@
 namespace vesta
 {
 
+/** A VelocityVisualizer shows an arrow pointing in the direction
+  * of an object's current velocity within its reference frame.
+  */
 class VelocityVisualizer : public ArrowVisualizer
 {
 public:

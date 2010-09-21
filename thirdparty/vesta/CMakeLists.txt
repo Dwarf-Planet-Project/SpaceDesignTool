@@ -1,5 +1,5 @@
 #
-# $Revision: 491 $ $Date: 2010-09-08 08:16:43 -0700 (Wed, 08 Sep 2010) $
+# $Revision: 509 $ $Date: 2010-09-21 14:35:45 -0700 (Tue, 21 Sep 2010) $
 #
 # Copyright by Astos Solutions GmbH, Germany
 #
@@ -35,6 +35,7 @@ set (SRCS
     Atmosphere.cpp
     AxesVisualizer.cpp
     Body.cpp
+    BodyDirectionVisualizer.cpp
     BodyFixedFrame.cpp
     CelestialCoordinateGrid.cpp
     Chronology.cpp
