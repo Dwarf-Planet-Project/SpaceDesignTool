@@ -296,4 +296,7 @@ win32-g++ {
 }
 
 
-
+macx {
+    CONFIG += x86
+    # QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
+}
