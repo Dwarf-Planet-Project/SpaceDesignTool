@@ -49,6 +49,21 @@ public:
       * \param y row index; level n has 2^n rows
       */
     virtual TextureSubrect tile(unsigned int level, unsigned int x, unsigned int y) = 0;
+
+    /** Get the size in pixels of one side of a tile. Maps map
+      * contain texture tiles of different resolutions, but determining
+      * which tiles to load is based on assuming that all tiles are
+      * tileSize x tileSize.
+      *
+      * A tileSize of zero indicates that no assumptions about tessellating
+      * globe geometry should be made based on texture tile resolution. This is
+      * appropriate when the tiled map isn't a pyramid with higher resolution
+      * at lower levels (e.g. SingleTextureTiledMap)
+      */
+    virtual unsigned int tileSize() const
+    {
+        return 0;
+    }
 };
 
 }

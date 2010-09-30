@@ -1,5 +1,5 @@
 /*
- * $Revision: 435 $ $Date: 2010-08-16 16:32:45 -0700 (Mon, 16 Aug 2010) $
+ * $Revision: 514 $ $Date: 2010-09-29 19:24:31 -0700 (Wed, 29 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -54,6 +54,7 @@ public:
     AddressMode addressT;
     TextureUsage usage;
     bool useMipmaps;
+    unsigned int maxAnisotropy;
 };
 
 

@@ -20,10 +20,19 @@
 namespace vesta
 {
 
+/** HierarchicalTiledMap contains a set of tiles of (ideally) the same resolution, with
+  * each lower level of the map having four times as many tiles as the one above it.
+  * (i.e. if level N contains m x n tiles, N+1 will have 2m x 2n tiles.
+  *
+  * HierarchicalTiledMap is an abstract class. Subclasses are responsible for implementing
+  * the tileResourceIdentifier method which maps a tile address (level, column, row) to a
+  * a string. The interpretation of the string is up to the TextureMapLoader. Depending on
+  * the loader, the string could be a filename, an URL, or something else.
+  */
 class HierarchicalTiledMap : public TiledMap
 {
 public:
-    HierarchicalTiledMap(TextureMapLoader* loader);
+    HierarchicalTiledMap(TextureMapLoader* loader, unsigned int tileSize);
     virtual ~HierarchicalTiledMap();
 
     virtual TextureSubrect tile(unsigned int level, unsigned int x, unsigned int y);
@@ -48,12 +57,18 @@ public:
 
     TextureMapLoader* loader() const;
 
+    virtual unsigned int tileSize() const
+    {
+        return m_tileSize;
+    }
+
 private:
     TextureMapLoader* m_loader;
 
     // TODO: a hash table would be a better fit here
     typedef std::map<v_uint64, counted_ptr<TextureMap> > TileCache;
     TileCache m_tiles;
+    unsigned int m_tileSize;
 };
 
 }

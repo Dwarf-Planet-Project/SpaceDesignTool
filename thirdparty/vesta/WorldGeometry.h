@@ -1,5 +1,5 @@
 /*
- * $Revision: 481 $ $Date: 2010-09-02 12:28:40 -0700 (Thu, 02 Sep 2010) $
+ * $Revision: 510 $ $Date: 2010-09-24 19:17:53 -0700 (Fri, 24 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -24,6 +24,7 @@ namespace vesta
 class RenderContext;
 class TextureMap;
 class Atmosphere;
+class QuadtreeTile;
 class QuadtreeTileAllocator;
 class TiledMap;
 class PlanetaryRings;
@@ -247,6 +248,8 @@ private:
                     double lonEnd,
                     float tStart,
                     float tEnd) const;
+
+    void initQuadtree(const Eigen::Vector3f& semiAxes, QuadtreeTile** westHemi, QuadtreeTile** eastHemi) const;
 
 private:
     Eigen::Vector3f m_ellipsoidAxes;

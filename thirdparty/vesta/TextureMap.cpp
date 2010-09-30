@@ -1,5 +1,5 @@
 /*
- * $Revision: 501 $ $Date: 2010-09-13 10:05:41 -0700 (Mon, 13 Sep 2010) $
+ * $Revision: 514 $ $Date: 2010-09-29 19:24:31 -0700 (Wed, 29 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -126,7 +126,8 @@ TextureProperties::TextureProperties() :
     addressS(Wrap),
     addressT(Wrap),
     usage(ColorTexture),
-    useMipmaps(true)
+    useMipmaps(true),
+    maxAnisotropy(1)
 {
 }
 
@@ -138,7 +139,8 @@ TextureProperties::TextureProperties(TextureProperties::AddressMode stAddress) :
     addressS(stAddress),
     addressT(stAddress),
     usage(ColorTexture),
-    useMipmaps(true)
+    useMipmaps(true),
+    maxAnisotropy(1)
 {
 }
 
@@ -227,6 +229,23 @@ TextureMap::makeResident()
 }
 
 
+static void setTextureFiltering(const TextureProperties& properties)
+{
+    GLint minFilter = properties.useMipmaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR;
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
+
+    if (GLEW_EXT_texture_filter_anisotropic && properties.maxAnisotropy > 1)
+    {
+        GLint maxAnisotropy = 1;
+        glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
+        GLint anisotropy = min((GLint) properties.maxAnisotropy, maxAnisotropy);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropy);
+    }
+}
+
+
 /** Generate a texture map without initializing the texture data.
   */
 bool
@@ -257,9 +276,7 @@ TextureMap::generate(unsigned int width, unsigned int height, ImageFormat format
                  GL_UNSIGNED_BYTE,
                  NULL);
 
-    GLint minFilter = m_properties.useMipmaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR;
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
+    setTextureFiltering(m_properties);
 
     setStatus(Ready);
 
@@ -347,9 +364,7 @@ TextureMap::generate(const unsigned char imageData[],
                      imageData);        
     }
 
-    GLint minFilter = m_properties.useMipmaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR;
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
+    setTextureFiltering(m_properties);
 
     setStatus(Ready);
 
@@ -444,9 +459,7 @@ static void ApplyTextureProperties(const TextureProperties& properties,
     glTexParameteri(target, GL_TEXTURE_WRAP_S, ToGlWrap(properties.addressS));
     glTexParameteri(target, GL_TEXTURE_WRAP_T, ToGlWrap(properties.addressT));
 
-    GLint minFilter = properties.useMipmaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR;
-    glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(target, GL_TEXTURE_MIN_FILTER, minFilter);
+    setTextureFiltering(properties);
 
     if (properties.usage == TextureProperties::DepthTexture)
     {

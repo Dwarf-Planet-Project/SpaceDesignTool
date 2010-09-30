@@ -512,7 +512,11 @@ QuadtreeTile::drawPatch(RenderContext& rc, Material& material, TiledMap* baseMap
     float dlon = tileArc / float(TileSubdivision);
     float dlat = tileArc / float(TileSubdivision);
 
-    unsigned int tileSize = 1024;
+    unsigned int tileSize = baseMap->tileSize();
+    if (tileSize == 0)
+    {
+        tileSize = 1024;
+    }
 
     unsigned int mapLevel = m_level;
     unsigned int mapColumn = m_column;

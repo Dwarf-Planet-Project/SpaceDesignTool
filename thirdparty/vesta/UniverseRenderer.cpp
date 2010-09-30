@@ -1,5 +1,5 @@
 /*
- * $Revision: 506 $ $Date: 2010-09-14 13:32:15 -0700 (Tue, 14 Sep 2010) $
+ * $Revision: 513 $ $Date: 2010-09-27 12:58:12 -0700 (Mon, 27 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -1214,7 +1214,13 @@ void UniverseRenderer::renderDepthBufferSpan(const DepthBufferSpan& span, const 
         }
     }
 
-    m_renderContext->setProjection(projection.slice(nearDistance, farDistance));
+    // Adjust the far distance slightly to prevent small objects at the back of the view
+    // from being clipped due to roundoff errors. The adjustment factor must be larger than
+    // one ulp of a 32-bit float, but as small as possible to reduce rendering artifacts
+    // caused by frusta that overlap in depth.
+    float safeFarDistance = farDistance * (1.0f + 1.0e-6f);
+
+    m_renderContext->setProjection(projection.slice(nearDistance, safeFarDistance));
     Frustum viewFrustum = m_renderContext->frustum();
 
     // Rendering of some translucent objects is order dependent. We can eliminate the

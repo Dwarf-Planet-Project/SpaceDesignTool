@@ -15,8 +15,11 @@ using namespace vesta;
 using namespace std;
 
 
-HierarchicalTiledMap::HierarchicalTiledMap(TextureMapLoader* loader) :
-    m_loader(loader)
+/** Construct a HierarchicalTiledMap.
+  */
+HierarchicalTiledMap::HierarchicalTiledMap(TextureMapLoader* loader, unsigned int tileSize) :
+    m_loader(loader),
+    m_tileSize(tileSize)
 {
 }
 
@@ -72,7 +75,10 @@ HierarchicalTiledMap::tile(unsigned int level, unsigned int x, unsigned int y)
                 string resourceId = tileResourceIdentifier((unsigned int) testLevel, testX, testY);
                 if (tileResourceExists(resourceId))
                 {
-                    tileTexture = m_loader->loadTexture(resourceId, TextureProperties(TextureProperties::Clamp));
+                    TextureProperties props(TextureProperties::Clamp);
+                    props.maxAnisotropy = 16;
+
+                    tileTexture = m_loader->loadTexture(resourceId, props);
                     m_tiles[tileId] = counted_ptr<TextureMap>(tileTexture);
                 }
                 else

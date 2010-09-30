@@ -1,5 +1,5 @@
 /*
- * $Revision: 492 $ $Date: 2010-09-08 14:22:38 -0700 (Wed, 08 Sep 2010) $
+ * $Revision: 510 $ $Date: 2010-09-24 19:17:53 -0700 (Fri, 24 Sep 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -20,6 +20,7 @@
 //#include "VertexBuffer.h"
 #include "QuadtreeTile.h"
 #include "WorldLayer.h"
+#include "Intersect.h"
 #include "Debug.h"
 #include <Eigen/LU>
 #include <algorithm>
@@ -282,20 +283,25 @@ WorldGeometry::render(RenderContext& rc, double clock) const
     // tiles might be more appropriate.
     Vector3f semiAxes = m_ellipsoidAxes * 0.5f;
 
-    m_tileAllocator->clear();
-    QuadtreeTile* westHemi = m_tileAllocator->newRootTile(0, 0, Vector2f(-1.0f, -0.5f), 1.0f, semiAxes);
-    QuadtreeTile* eastHemi = m_tileAllocator->newRootTile(0, 1, Vector2f( 0.0f, -0.5f), 1.0f, semiAxes);
+    QuadtreeTile* westHemi = NULL;
+    QuadtreeTile* eastHemi = NULL;
+    initQuadtree(semiAxes, &westHemi, &eastHemi);
 
-    // Set up the neighbor connections for the root nodes. Since the map wraps,
-    // the eastern hemisphere is both the east and west neighbor of the western
-    // hemisphere (and vice versa.) There are no north and south neighbors.
-    westHemi->setNeighbor(QuadtreeTile::West, eastHemi);
-    westHemi->setNeighbor(QuadtreeTile::East, eastHemi);
-    eastHemi->setNeighbor(QuadtreeTile::West, westHemi);
-    eastHemi->setNeighbor(QuadtreeTile::East, westHemi);
-
-    // TODO: Consider map tile resolution when setting the split threshold
     float splitThreshold = rc.pixelSize() * MaxTileSquareSize * QuadtreeTile::TileSubdivision;
+    if (m_baseTiledMap.isValid())
+    {
+        // Adjust split threshold based on tile size
+        //   - 0 is a special case indicating that the tile size shouldn't be used
+        //     to determine tessellation
+        //   - Prevent huge numbers of tiles from being generated if the tiled map
+        //     reports a very small tile size.
+        unsigned int tileSize = m_baseTiledMap->tileSize();
+        if (tileSize != 0 && tileSize < 1000)
+        {
+            splitThreshold *= float(max(128u, tileSize)) / 1000.0f;
+        }
+    }
+
     westHemi->tessellate(eyePosition, cullingPlanes, semiAxes, splitThreshold, rc.pixelSize());
     eastHemi->tessellate(eyePosition, cullingPlanes, semiAxes, splitThreshold, rc.pixelSize());
 
@@ -407,17 +413,9 @@ WorldGeometry::render(RenderContext& rc, double clock) const
         {
             Vector3f cloudSemiAxes = m_ellipsoidAxes * 0.5f * scale;
 
-            m_tileAllocator->clear();
-            QuadtreeTile* westHemi = m_tileAllocator->newRootTile(0, 0, Vector2f(-1.0f, -0.5f), 1.0f, cloudSemiAxes);
-            QuadtreeTile* eastHemi = m_tileAllocator->newRootTile(0, 1, Vector2f( 0.0f, -0.5f), 1.0f, cloudSemiAxes);
-
-            // Set up the neighbor connections for the root nodes. Since the map wraps,
-            // the eastern hemisphere is both the east and west neighbor of the western
-            // hemisphere (and vice versa.) There are no north and south neighbors.
-            westHemi->setNeighbor(QuadtreeTile::West, eastHemi);
-            westHemi->setNeighbor(QuadtreeTile::East, eastHemi);
-            eastHemi->setNeighbor(QuadtreeTile::West, westHemi);
-            eastHemi->setNeighbor(QuadtreeTile::East, westHemi);
+            QuadtreeTile* westHemi = NULL;
+            QuadtreeTile* eastHemi = NULL;
+            initQuadtree(cloudSemiAxes, &westHemi, &eastHemi);
 
             // Adjust the distance of the far plane.
             float maxCloudDistance = CloudShellDistance(eyePosition, m_ellipsoidAxes, m_cloudAltitude);
@@ -462,17 +460,9 @@ WorldGeometry::render(RenderContext& rc, double clock) const
 
         Vector3f atmSemiAxes = m_ellipsoidAxes * 0.5f * scale;
 
-        m_tileAllocator->clear();
-        QuadtreeTile* westHemi = m_tileAllocator->newRootTile(0, 0, Vector2f(-1.0f, -0.5f), 1.0f, atmSemiAxes);
-        QuadtreeTile* eastHemi = m_tileAllocator->newRootTile(0, 1, Vector2f( 0.0f, -0.5f), 1.0f, atmSemiAxes);
-
-        // Set up the neighbor connections for the root nodes. Since the map wraps,
-        // the eastern hemisphere is both the east and west neighbor of the western
-        // hemisphere (and vice versa.) There are no north and south neighbors.
-        westHemi->setNeighbor(QuadtreeTile::West, eastHemi);
-        westHemi->setNeighbor(QuadtreeTile::East, eastHemi);
-        eastHemi->setNeighbor(QuadtreeTile::West, westHemi);
-        eastHemi->setNeighbor(QuadtreeTile::East, westHemi);
+        QuadtreeTile* westHemi = NULL;
+        QuadtreeTile* eastHemi = NULL;
+        initQuadtree(atmSemiAxes, &westHemi, &eastHemi);
 
         // Adjust the distance of the near and far planes so that as much of the atmosphere
         // shell geometry as possible is culled.
@@ -485,7 +475,7 @@ WorldGeometry::render(RenderContext& rc, double clock) const
         float nearDistance = max(viewFrustum.nearZ, min(minAtmosphereDistance, viewFrustum.nearZ));
         cullingPlanes.planes[4].coeffs() = modelviewTranspose * Vector4f(0.0f, 0.0f, -1.0f, -nearDistance);
 
-        float splitThreshold = rc.pixelSize() * MaxTileSquareSize * QuadtreeTile::TileSubdivision;
+        float splitThreshold = rc.pixelSize() * MaxTileSquareSize * QuadtreeTile::TileSubdivision * 2;
         westHemi->tessellate(eyePosition, cullingPlanes, atmSemiAxes, splitThreshold, rc.pixelSize());
         eastHemi->tessellate(eyePosition, cullingPlanes, atmSemiAxes, splitThreshold, rc.pixelSize());
 
@@ -552,6 +542,23 @@ WorldGeometry::render(RenderContext& rc, double clock) const
     {
         m_ringSystem->render(rc, clock);
     }
+}
+
+
+void
+WorldGeometry::initQuadtree(const Vector3f& semiAxes, QuadtreeTile **westHemi, QuadtreeTile **eastHemi) const
+{
+    m_tileAllocator->clear();
+    *westHemi = m_tileAllocator->newRootTile(0, 0, Vector2f(-1.0f, -0.5f), 1.0f, semiAxes);
+    *eastHemi = m_tileAllocator->newRootTile(0, 1, Vector2f( 0.0f, -0.5f), 1.0f, semiAxes);
+
+    // Set up the neighbor connections for the root nodes. Since the map wraps,
+    // the eastern hemisphere is both the east and west neighbor of the western
+    // hemisphere (and vice versa.) There are no north and south neighbors.
+    (*westHemi)->setNeighbor(QuadtreeTile::West, *eastHemi);
+    (*westHemi)->setNeighbor(QuadtreeTile::East, *eastHemi);
+    (*eastHemi)->setNeighbor(QuadtreeTile::West, *westHemi);
+    (*eastHemi)->setNeighbor(QuadtreeTile::East, *westHemi);
 }
 
 
@@ -1314,14 +1321,13 @@ WorldGeometry::setRingSystem(PlanetaryRings* rings)
 
 
 bool
-WorldGeometry::handleRayPick(const Eigen::Vector3d& /* pickOrigin */,
-                            const Eigen::Vector3d& /* pickDirection */,
-                            double /* clock */,
-                            double* /* distance */) const
+WorldGeometry::handleRayPick(const Eigen::Vector3d& pickOrigin,
+                             const Eigen::Vector3d& pickDirection,
+                             double /* clock */,
+                             double* distance) const
 {
-    // TODO: handle ellipsoidal bodies
-
-    return true;
+    Vector3d semiAxes = (m_ellipsoidAxes * 0.5f).cast<double>();
+    return TestRayEllipsoidIntersection(pickOrigin, pickDirection, semiAxes, distance);
 }
 
 
