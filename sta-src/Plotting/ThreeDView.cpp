@@ -960,6 +960,7 @@ ThreeDView::initializeUniverse()
 
     initializeStarCatalog("vis3d/tycho2.stars");
 
+    // Add rings for Saturn
     Entity* saturn = this->findSolarSystemBody(STA_SATURN);
     if (saturn && dynamic_cast<WorldGeometry*>(saturn->geometry()))
     {
@@ -967,6 +968,9 @@ ThreeDView::initializeUniverse()
         rings->setTexture(m_textureLoader->loadTexture("textures/medres/saturn-rings.png", TextureProperties(TextureProperties::Clamp)));
         dynamic_cast<WorldGeometry*>(saturn->geometry())->setRingSystem(rings);
     }
+
+    // Make the Sun glow
+    dynamic_cast<WorldGeometry*>(sun->geometry())->setEmissive(true);
 
     createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_MERCURY), Spectrum(0.7f, 0.5f, 0.4f));
     createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_VENUS),   Spectrum(0.7f, 0.7f, 0.6f));
