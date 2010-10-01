@@ -134,6 +134,8 @@ NetworkTextureLoader::handleMakeResident(TextureMap* texture)
 
     texture->setStatus(TextureMap::Loading);
 
+    qDebug() << "Loading: " << textureName;
+
     // Treat texture names beginning with the string "wms:" as Web Map Server tile requests
     // The names should all have the form:
     //   wms:LAYERNAME:LEVEL:X:Y
@@ -280,4 +282,11 @@ void
 NetworkTextureLoader::reportTextureLoadFailure(vesta::TextureMap* texture)
 {
     texture->setStatus(TextureMap::LoadingFailed);
+}
+
+
+void
+NetworkTextureLoader::addLocalSearchPath(const QString& path)
+{
+    m_localImageLoader->addSearchPath(path);
 }

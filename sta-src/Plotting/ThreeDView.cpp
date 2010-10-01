@@ -365,6 +365,7 @@ ThreeDView::ThreeDView(const QGLFormat& format, QWidget* parent) :
     m_shadowsInitialized(false)
 {
     m_textureLoader = counted_ptr<NetworkTextureLoader>(new NetworkTextureLoader(this, true));
+    m_textureLoader->addLocalSearchPath("models");
 
     m_universe = new Universe();
     m_universe->addRef();
@@ -947,6 +948,7 @@ ThreeDView::initializeUniverse()
     // Make the Sun glow
     dynamic_cast<WorldGeometry*>(sun->geometry())->setEmissive(true);
 
+    // Add high resolution tiled texture for the Earth
     dynamic_cast<WorldGeometry*>(earth->geometry())->setBaseMap(new MultiWMSTiledMap(m_textureLoader.ptr(),
                                                                                      "bmng-apr-nb", 7,
                                                                                      "earth-global-mosaic", 13,

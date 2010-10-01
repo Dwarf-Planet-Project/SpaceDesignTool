@@ -23,6 +23,7 @@
 #include <vesta/TextureMap.h>
 #include <QImage>
 #include <QObject>
+#include <QStringList>
 
 
 /** LocalImageLoader handles loading of images from disk. It uses signals and slots
@@ -35,6 +36,8 @@ class LocalImageLoader : public QObject
 public:
     LocalImageLoader();
     ~LocalImageLoader();
+
+    void addSearchPath(const QString& path);
 
 public slots:
     void loadTexture(vesta::TextureMap* texture);
@@ -51,6 +54,9 @@ signals:
     /** This signal is emitted when texture loading fails for any reason.
       */
     void textureLoadFailed(vesta::TextureMap* texture);
+
+private:
+    QStringList m_searchPaths;
 };
 
 #endif // _LOCAL_IMAGE_LOADER_H_

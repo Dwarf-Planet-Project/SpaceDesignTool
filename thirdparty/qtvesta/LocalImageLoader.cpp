@@ -34,16 +34,37 @@ LocalImageLoader::~LocalImageLoader()
 
 
 void
+LocalImageLoader::addSearchPath(const QString &path)
+{
+    m_searchPaths << path;
+}
+
+
+void
 LocalImageLoader::loadTexture(TextureMap* texture)
 {
     if (texture)
     {
         QString textureName(texture->name().c_str());
+        QFileInfo info(textureName);
 
-        if (QFileInfo(texture->name().c_str()).suffix() == "dds")
+        if (!textureName.startsWith(":") && !info.exists())
+        {
+            foreach (QString path, m_searchPaths)
+            {
+                QString testName = path + "/" + textureName;
+                if (QFileInfo(testName).exists())
+                {
+                    textureName = testName;
+                    break;
+                }
+            }
+        }
+
+        if (info.suffix() == "dds")
         {
             // Handle DDS textures
-            QFile ddsFile(texture->name().c_str());
+            QFile ddsFile(textureName);
             ddsFile.open(QIODevice::ReadOnly);
             QByteArray data = ddsFile.readAll();
 
@@ -59,7 +80,7 @@ LocalImageLoader::loadTexture(TextureMap* texture)
         else
         {
             // Let Qt handle all file formats other than DDS
-            QImage image(QString(texture->name().c_str()));
+            QImage image(textureName);
             if (!image.isNull())
             {
                 emit textureLoaded(texture, image);
