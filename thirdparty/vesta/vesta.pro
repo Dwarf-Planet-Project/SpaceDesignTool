@@ -275,8 +275,7 @@ HEADERS = \
     $$VESTA_HEADERS \
     $$LIB3DS_HEADERS \
     $$GLEW_HEADERS \
-    $$CURVEPLOT_HEADERS \
-    $$APP_HEADERS
+    $$CURVEPLOT_HEADERS
 
 
 INCLUDEPATH += .. ../glew/include
