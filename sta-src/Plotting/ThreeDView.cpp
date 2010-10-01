@@ -56,7 +56,12 @@
 #include <vesta/PlanetaryRings.h>
 #include <vesta/Atmosphere.h>
 #include <vesta/CubeMapFramebuffer.h>
+#include <vesta/HierarchicalTiledMap.h>
 #include <vesta/interaction/ObserverController.h>
+
+#include <qtvesta/NetworkTextureLoader.h>
+#include <qtvesta/WMSTiledMap.h>
+#include <qtvesta/MultiWMSTiledMap.h>
 
 #include "ThreeDView.h"
 
@@ -328,70 +333,6 @@ private:
 };
 
 
-// QImage based TextureLoader implementation
-class QtTextureLoader : public TextureMapLoader
-{
-public:
-    bool handleMakeResident(TextureMap* texture)
-    {
-        QString fileName = texture->name().c_str();
-
-        // Also check the models directory; this should be generalized
-        // so that a list of alternate search paths can be specified.
-        if (!fileName.startsWith(":") && !QFileInfo(fileName).exists())
-        {
-            fileName = "models/" + fileName;
-        }
-        qDebug() << "Loading texture " << fileName;
-
-        if (QFileInfo(fileName).suffix() == "dds")
-        {
-            QFile ddsFile(fileName);
-            ddsFile.open(QIODevice::ReadOnly);
-            QByteArray data = ddsFile.readAll();
-            DataChunk chunk(data.data(), data.size());
-
-            DDSLoader ddsLoader;
-            if (!ddsLoader.load(texture, &chunk))
-            {
-                texture->setStatus(TextureMap::LoadingFailed);
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-        else
-        {
-            QImage image(fileName);
-            if (image.isNull())
-            {
-                texture->setStatus(TextureMap::LoadingFailed);
-                return false;
-            }
-
-            TextureMap::ImageFormat format = TextureMap::B8G8R8;
-            if (image.depth() == 24)
-            {
-                format = TextureMap::B8G8R8;
-            }
-            else if (image.depth() == 32)
-            {
-                format = TextureMap::B8G8R8A8;
-            }
-            else
-            {
-                return false;
-            }
-
-            int dataSize = image.bytesPerLine() * image.height();
-            return texture->generate(image.bits(), dataSize, image.width(), image.height(), format);
-        }
-    }
-};
-
-
 // Compute an orientation that will make an observer face in the directom from the 'from' point
 // to the 'to' point, with the specified 'up' vector.
 static Quaterniond
@@ -423,14 +364,15 @@ ThreeDView::ThreeDView(const QGLFormat& format, QWidget* parent) :
     m_glInitialized(false),
     m_shadowsInitialized(false)
 {
-    m_textureLoader = counted_ptr<TextureMapLoader>(new QtTextureLoader());
+    m_textureLoader = counted_ptr<NetworkTextureLoader>(new NetworkTextureLoader(this, true));
 
     m_universe = new Universe();
     m_universe->addRef();
     initializeUniverse();
+    initializeLayers();
+    initializeMapLayers();
 
     m_renderer = new UniverseRenderer();
-    initializeLayers();
     m_renderer->setAmbientLight(Spectrum::Flat(0.2f));
 
     Entity* earth = findSolarSystemBody(STA_SOLAR_SYSTEM->earth());
@@ -507,6 +449,14 @@ ThreeDView::initializeGL()
 void
 ThreeDView::paintGL()
 {
+    m_textureLoader->incrementFrameCount();
+    m_textureLoader->evictTextures();
+
+    if (m_textureLoader->realizeLoadedTextures() > 0)
+    {
+        setViewChanged();
+    }
+
     if (m_viewChanged <= 0)
     {
         // No need to repaint
@@ -672,6 +622,16 @@ ThreeDView::drawOverlay()
         // Display the position of the viewer relative to the center
         // Vector3d position = m_observer->position();
         // m_labelFont->render(QString("%1 %2 %3").arg(position.x()).arg(position.y()).arg(position.z()).toUtf8().data(), Vector2f(10.0f, 10.0f));
+
+        // Show the number of texture map tiles being loaded
+        {
+            unsigned int tileCount = m_textureLoader->wmsHandler()->pendingTileCount();
+            if (tileCount > 0)
+            {
+                QString status = QString("Downloading map tiles: %1").arg(tileCount);
+                m_labelFont->render(status.toLatin1().data(), Vector2f(float(width() / 2), 10.0f));
+            }
+        }
     }
 
     // Restore graphics state and matrices
@@ -732,6 +692,21 @@ ThreeDView::mouseMoveEvent(QMouseEvent *event)
     {
         double xrot = delta.y() / 80.0;
         double yrot = delta.x() / 80.0;
+
+        // Slow the movement when the observer is near the surface of a planet
+        Entity* center = m_observer->center();
+        if (center)
+        {
+            WorldGeometry* world = dynamic_cast<WorldGeometry*>(center->geometry());
+            if (world)
+            {
+                double distance = m_observer->position().norm() - world->maxRadius();
+                float scale = distance / (world->maxRadius() * 0.1f);
+                scale = min(1.0f, max(0.0f, scale));
+                xrot *= scale;
+                yrot *= scale;
+            }
+        }
 
         m_controller->applyOrbitTorque(Vector3d::UnitX() * -xrot);
         m_controller->applyOrbitTorque(Vector3d::UnitY() * -yrot);
@@ -972,6 +947,11 @@ ThreeDView::initializeUniverse()
     // Make the Sun glow
     dynamic_cast<WorldGeometry*>(sun->geometry())->setEmissive(true);
 
+    dynamic_cast<WorldGeometry*>(earth->geometry())->setBaseMap(new MultiWMSTiledMap(m_textureLoader.ptr(),
+                                                                                     "bmng-apr-nb", 7,
+                                                                                     "earth-global-mosaic", 13,
+                                                                                     480));
+
     createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_MERCURY), Spectrum(0.7f, 0.5f, 0.4f));
     createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_VENUS),   Spectrum(0.7f, 0.7f, 0.6f));
     createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_EARTH),   Spectrum(0.4f, 0.5f, 0.7f));
@@ -1138,6 +1118,45 @@ ThreeDView::initializeStarCatalog(const QString& fileName)
     }
 
     m_universe->setStarCatalog(stars);
+}
+
+
+// Set up WMS map layers
+// TODO: This should be set up in a config file instead of hardcoded
+void
+ThreeDView::initializeMapLayers()
+{
+    WMSRequester* wms = m_textureLoader->wmsHandler();
+    if (!wms)
+    {
+        return;
+    }
+
+    wms->addSurfaceDefinition("bmng-apr-nb",
+                              "http://wms.jpl.nasa.gov/wms.cgi?request=GetMap&layers=BMNG&srs=EPSG:4326&format=image/jpeg&styles=Apr_nb",
+                              WMSRequester::LatLongBoundingBox(-180.0, -166.0, 76.0, 90.0),
+                              480, 480);
+
+    wms->addSurfaceDefinition("earth-global-mosaic",
+                              "http://wms.jpl.nasa.gov/wms.cgi?request=GetMap&layers=global_mosaic&srs=EPSG:4326&format=image/jpeg&styles=visual",
+                              WMSRequester::LatLongBoundingBox(-180.0, -166.0, 76.0, 90.0),
+                              512, 512);
+    wms->addSurfaceDefinition("moon-lo",
+                              "http://onmoon.jpl.nasa.gov/wms.cgi?version=1.1.1&service=wms&request=GetMap&styles=&srs=IAU2000:30100&layers=LO&format=image/jpeg",
+                              WMSRequester::LatLongBoundingBox(-180.0, -198.0, 108.0, 90.0),
+                              512, 512);
+    wms->addSurfaceDefinition("moon-clementine",
+                              "http://onmoon.jpl.nasa.gov/wms.cgi?version=1.1.1&service=wms&request=GetMap&styles=&srs=IAU2000:30100&layers=Clementine&format=image/jpeg",
+                              WMSRequester::LatLongBoundingBox(-180.0, -150.0, 60.0, 90.0),
+                              512, 512);
+    wms->addSurfaceDefinition("mars-mdim",
+                              "http://onmars.jpl.nasa.gov/wms.cgi?request=GetMap&layers=mars&srs=IAU2000:49900&format=image/jpeg&styles=",
+                              WMSRequester::LatLongBoundingBox(-180.0, -166.0, 76.0, 90.0),
+                              512, 512);
+    wms->addSurfaceDefinition("mars-mdim-moc_na",
+                              "http://onmars.jpl.nasa.gov/wms.cgi?request=GetMap&layers=mars,moc_na&srs=IAU2000:49900&format=image/jpeg&styles=",
+                              WMSRequester::LatLongBoundingBox(-180.0, -166.0, 76.0, 90.0),
+                              512, 512);
 }
 
 
@@ -1492,7 +1511,21 @@ ThreeDView::createGroundObject(const GroundObject* groundObj)
         Vector3d position(cos(latRadians) * cos(lonRadians),
                           cos(latRadians) * sin(lonRadians),
                           sin(latRadians));
-        position = position.cwise() * groundObj->centralBody->radii();
+
+        WorldGeometry* globe = dynamic_cast<WorldGeometry*>(center->geometry());
+        if (globe)
+        {
+            // Position the object using the shape of the planet in VESTA. Currently,
+            // we're depicting the terrestrial planets as spherical in order to avoid
+            // problems maintaining a constant camera altitude.
+            position = position.cwise() * globe->ellipsoidAxes().cast<double>() / 2.0;
+        }
+        else
+        {
+            position = position.cwise() * groundObj->centralBody->radii();
+        }
+
+        qDebug() << "Ground object: " << groundObj->name << ", " << position.norm();
 
         vesta::Arc* arc = new vesta::Arc();
         arc->setCenter(center);

@@ -32,6 +32,7 @@ TARGET = STA
 QT += opengl
 QT += xml \
     xmlpatterns
+QT += network
 
 
 
@@ -41,6 +42,7 @@ MACOSX_LIBRARIES_DIR = thirdparty/macosx
 LINUX_LIBRARIES_DIR = thirdparty/linux
 QWT3D_DIR = thirdparty/qwtplot3d
 EIGEN_DIR = thirdparty/Eigen
+QTVESTA_DIR = thirdparty/qtvesta
 
 # ################### Main files ################################
 MAIN_SOURCES = \
@@ -517,8 +519,21 @@ NORAD_SOURCES += thirdparty/noradtle/basics.cpp \
     thirdparty/noradtle/sgp4.cpp \
     thirdparty/noradtle/sgp8.cpp
 
-# THIRDPARTY_SOURCES = $$GLEW_SOURCES $$CURVEPLOT_SOURCES $$QWT3D_SOURCES $$NORAD_SOURCES
-# THIRDPARTY_HEADERS = $$GLEW_HEADERS $$CURVEPLOT_HEADERS $$QWT3D_HEADERS $$NORAD_HEADERS
+QTVESTA_SOURCES = \
+    $$QTVESTA_DIR/LocalImageLoader.cpp \
+    $$QTVESTA_DIR/NetworkTextureLoader.cpp \
+    $$QTVESTA_DIR/WMSRequester.cpp \
+    $$QTVESTA_DIR/WMSTiledMap.cpp \
+    $$QTVESTA_DIR/MultiWMSTiledMap.cpp
+
+QTVESTA_HEADERS = \
+    $$QTVESTA_DIR/LocalImageLoader.h \
+    $$QTVESTA_DIR/NetworkTextureLoader.h \
+    $$QTVESTA_DIR/WMSRequester.h \
+    $$QTVESTA_DIR/WMSTiledMap.h \
+    $$QTVESTA_DIR/MultiWMSTiledMap.h
+
+
 DEFINES += GLEW_STATIC
 
 # ############### All app sources, headers, and forms ############
@@ -538,6 +553,7 @@ SOURCES = $$MAIN_SOURCES \
     $$CALCULATOR_SOURCES \
     $$GLEW_SOURCES \
     $$QWT3D_SOURCES \
+    $$QTVESTA_SOURCES \
     $$NORAD_SOURCES \
     $$HELPBROWSER_SOURCES \
     $$PAYLOAD_SOURCES \
@@ -561,6 +577,7 @@ HEADERS = $$MAIN_HEADERS \
     $$CALCULATOR_HEADERS \
     $$GLEW_HEADERS \
     $$QWT3D_HEADERS \
+    $$QTVESTA_HEADERS \
     $$NORAD_HEADERS \
     $$HELPBROWSER_HEADERS \
     $$PAYLOAD_HEADERS \
