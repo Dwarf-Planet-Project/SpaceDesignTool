@@ -1,5 +1,5 @@
 /*
- * $Revision: 514 $ $Date: 2010-09-29 19:24:31 -0700 (Wed, 29 Sep 2010) $
+ * $Revision: 516 $ $Date: 2010-10-01 13:24:12 -0700 (Fri, 01 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -229,11 +229,11 @@ TextureMap::makeResident()
 }
 
 
-static void setTextureFiltering(const TextureProperties& properties)
+static void setTextureFiltering(GLenum target, const TextureProperties& properties)
 {
     GLint minFilter = properties.useMipmaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR;
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
+    glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(target, GL_TEXTURE_MIN_FILTER, minFilter);
 
     if (GLEW_EXT_texture_filter_anisotropic && properties.maxAnisotropy > 1)
     {
@@ -241,7 +241,7 @@ static void setTextureFiltering(const TextureProperties& properties)
         glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
         GLint anisotropy = min((GLint) properties.maxAnisotropy, maxAnisotropy);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropy);
+        glTexParameteri(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropy);
     }
 }
 
@@ -276,7 +276,7 @@ TextureMap::generate(unsigned int width, unsigned int height, ImageFormat format
                  GL_UNSIGNED_BYTE,
                  NULL);
 
-    setTextureFiltering(m_properties);
+    setTextureFiltering(GL_TEXTURE_2D, m_properties);
 
     setStatus(Ready);
 
@@ -364,7 +364,7 @@ TextureMap::generate(const unsigned char imageData[],
                      imageData);        
     }
 
-    setTextureFiltering(m_properties);
+    setTextureFiltering(GL_TEXTURE_2D, m_properties);
 
     setStatus(Ready);
 
@@ -459,7 +459,7 @@ static void ApplyTextureProperties(const TextureProperties& properties,
     glTexParameteri(target, GL_TEXTURE_WRAP_S, ToGlWrap(properties.addressS));
     glTexParameteri(target, GL_TEXTURE_WRAP_T, ToGlWrap(properties.addressT));
 
-    setTextureFiltering(properties);
+    setTextureFiltering(target, properties);
 
     if (properties.usage == TextureProperties::DepthTexture)
     {
