@@ -1,19 +1,4 @@
 /*
- This program is free software; you can redistribute it and/or modify it under
- the terms of the European Union Public Licence - EUPL v.1.1 as published by
- the European Commission.
-
- This program is distributed in the hope that it will be useful, but WITHOUT
- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE. See the European Union Public Licence - EUPL v.1.1
- for more details.
-
- You should have received a copy of the European Union Public Licence - EUPL v.1.1
- along with this program.
-
- Further information about the European Union Public Licence - EUPL v.1.1 can
- also be found on the world wide web at http://ec.europa.eu/idabc/eupl
-
 */
 
 /*
@@ -33,7 +18,8 @@
 
 #include "Constellations/constellationmodule.h"
 
-//#include "Scenario/scenario.h"
+#include "Scenario/scenarioPropagator.h"
+#include "Scenario/missionsDefaults.h"
 
 #include "Loitering/loitering.h"
 
@@ -41,7 +27,6 @@
 
 #include "Main/mainwindow.h"
 #include "Main/scenariotree.h"
-//#include "Main/scenarioelementbox.h"
 
 #include <QMessageBox>
 #include <QDebug>
@@ -162,14 +147,14 @@ void ConstellationWizardDialog::accept()
         double domega;
         if (!scheme) domega = fakdg * limitedOrbitNodeRangeLineEdit->text().toDouble(&ok);
         // get central body data
-	// ScenarioEnvironment* env = new ScenarioEnvironment();    // Guillermo comented out
-	ScenarioEnvironmentType* env = new ScenarioEnvironmentType();
-	//loiteringdialog->saveValues(env);
-	// const StaBody* body =  env->centralBody()->body(); // Guillermo comented out
-	const StaBody* body = STA_SOLAR_SYSTEM->lookup("Earth");
-	//loitering.Environment()->CentralBody()->setName("EARTH");
-	//loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
-	//loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+        // ScenarioEnvironment* env = new ScenarioEnvironment();    // Guillermo comented out
+        ScenarioEnvironmentType* env = new ScenarioEnvironmentType();
+        //loiteringdialog->saveValues(env);
+        // const StaBody* body =  env->centralBody()->body(); // Guillermo comented out
+        const StaBody* body = STA_SOLAR_SYSTEM->lookup("Earth");
+        //loitering.Environment()->CentralBody()->setName("EARTH");
+        //loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
+        //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
 
 
         // rotation angular velocity
@@ -211,12 +196,33 @@ void ConstellationWizardDialog::accept()
     SpaceScenario* scenario = new SpaceScenario();
     scenario->setName(constTypeComboBox->currentText());
 
+    int colorIndex = 0;
+    QString trajectoryColor;
+
     // create new Participants, Properties and trajectories
     for (int i = 0; i < n; i++)
     {
-	ScenarioSC* sc = new ScenarioSC();
-	sc->setName(satellitekeplerian[i].name);
-	sc->ElementIdentifier()->setName(satellitekeplerian[i].name);
+
+        switch (colorIndex % 6)
+        {
+        case 0: trajectoryColor = "Yellow"; break;
+        case 1: trajectoryColor = "Cyan"; break;
+        case 2: trajectoryColor = "Green"; break;
+        case 3: trajectoryColor = "Magenta"; break;
+        case 4: trajectoryColor = "White"; break;
+        case 5: trajectoryColor = "Blue"; break;
+        case 6: trajectoryColor = "Gray"; break;
+        case 7: trajectoryColor = "Dark Yellow"; break;
+        case 8: trajectoryColor = "Drak Magenta"; break;
+        case 9: trajectoryColor = "Dark Red"; break;
+        default: trajectoryColor = "Red"; break;
+        }
+        ++colorIndex;
+
+
+        ScenarioSC* sc = new ScenarioSC();
+        sc->setName(satellitekeplerian[i].name);
+        sc->ElementIdentifier()->setName(satellitekeplerian[i].name);
 
         // Create the initial position (Keplerian elements)
         ScenarioKeplerianElementsType* elements = new ScenarioKeplerianElementsType();
@@ -227,40 +233,41 @@ void ConstellationWizardDialog::accept()
         elements->setArgumentOfPeriapsis(satellitekeplerian[i].param[4]);
         elements->setTrueAnomaly(satellitekeplerian[i].param[5]);
 
-	// Create the initial attitude (Euler elements)
-	ScenarioEulerBIType*  initAtt = new ScenarioEulerBIType();
-	//QSharedPointer<ScenarioEulerBIType> initAtt(new ScenarioEulerBIType());
-	initAtt->setPhi(0.00000);
-	initAtt->setTheta(0.00000);
-	initAtt->setPsi(0.00000);
-	initAtt->setPhiDot(0.00000);
-	initAtt->setThetaDot(0.00000);
-	initAtt->setPsiDot(0.00000);
+        // Create the initial attitude (Euler elements)
+        ScenarioEulerBIType*  initAtt = new ScenarioEulerBIType();
+        //QSharedPointer<ScenarioEulerBIType> initAtt(new ScenarioEulerBIType());
+        initAtt->setPhi(0.00000);
+        initAtt->setTheta(0.00000);
+        initAtt->setPsi(0.00000);
+        initAtt->setPhiDot(0.00000);
+        initAtt->setThetaDot(0.00000);
+        initAtt->setPsiDot(0.00000);
 
         // Create the trajectory arc
         ScenarioLoiteringType* loitering = new ScenarioLoiteringType();
-	loitering->ElementIdentifier()->setName("loitering");
-	loitering->Environment()->CentralBody()->setName("Earth");
+        loitering->ElementIdentifier()->setName("loitering");
+        loitering->ElementIdentifier()->setColorName(trajectoryColor);
+        loitering->Environment()->CentralBody()->setName("Earth");
         loitering->InitialPosition()->setCoordinateSystem("INERTIAL J2000");
         loitering->PropagationPosition()->setTimeStep(60.0);
         loitering->PropagationPosition()->setPropagator("TWO BODY");
-	loitering->PropagationPosition()->setIntegrator("RK4");
-	loitering->InitialAttitude()->setCoordinateSystem("EULER 123");
-	loitering->PropagationAttitude()->setIntegrator("");	// Not defined in STA yet
-	loitering->PropagationAttitude()->setTimeStep(60.0);
+        loitering->PropagationPosition()->setIntegrator("RK4");
+        loitering->InitialAttitude()->setCoordinateSystem("EULER 123");
+        loitering->PropagationAttitude()->setIntegrator("");	// Not defined in STA yet
+        loitering->PropagationAttitude()->setTimeStep(60.0);
 
-	// Time-line
-	QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
-	loitering->TimeLine()->setStartTime(TheCurrentDateAndTime);
-	loitering->TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
+        // Time-line
+        QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
+        loitering->TimeLine()->setStartTime(TheCurrentDateAndTime);
+        loitering->TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
         loitering->TimeLine()->setStepTime(60.0);
 
         loitering->InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(elements));
-	//loitering->InitialAttitude()->setAbstract6DOFAttitude(initAtt);
-	loitering->InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioAbstract6DOFAttitudeType>(initAtt));
+        //loitering->InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+        loitering->InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioAbstract6DOFAttitudeType>(initAtt));
 
         // Create the spacecraft
-	sc->SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(loitering));
+        sc->SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(loitering));
 
         // Add it to the scenario
         scenario->AbstractParticipant().append(QSharedPointer<ScenarioParticipantType>(sc));
