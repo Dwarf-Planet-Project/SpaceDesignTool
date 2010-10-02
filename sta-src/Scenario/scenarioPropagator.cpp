@@ -519,8 +519,17 @@ void scenarioPropagatorReEntryVehicle(ScenarioREV* entryVehicle, PropagationFeed
                                                  coordSys,
                                                  sampleTimes,
                                                  samples);
-                spaceObject->addMissionArc(arc);
 
+                // Loading arc color, name, and model
+                arc->setArcName(entry->ElementIdentifier()->Name());
+                QString arcColorName = entry->ElementIdentifier()->colorName();
+                MissionsDefaults myMissionDefaults;
+                QColor trajectoryColor = myMissionDefaults.missionArcColorFromQt(arcColorName);
+                // Yellow for the time being
+                arc->setArcTrajectoryColor("Yellow");
+                //arc->setArcTrajectoryColor(trajectoryColor);
+                arc->setModelName(entry->ElementIdentifier()->modelName());
+                spaceObject->addMissionArc(arc);
             }
         }
         propScenario->addSpaceObject(spaceObject);
