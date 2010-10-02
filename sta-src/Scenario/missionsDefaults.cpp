@@ -509,8 +509,8 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Artemis()
     initPos->setSemiMajorAxis(42164.1);
     initPos->setInclination(8.0);
     initPos->setEccentricity(0.0);
-    initPos->setRAAN(100.35);
-    initPos->setArgumentOfPeriapsis(201.76);
+    initPos->setRAAN(21.5);
+    initPos->setArgumentOfPeriapsis(0.0);
     initPos->setTrueAnomaly(0.0);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 

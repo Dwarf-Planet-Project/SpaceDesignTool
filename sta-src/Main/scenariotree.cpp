@@ -576,8 +576,8 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
 
         return true;
     }
-    // else if (trajectory && elementName != "tns:EntryArc" && elementName != "tns:DeltaV")   // Loitering and loiteirng TLEs
-    else if (trajectory && elementName != "tns:EntryArc" && elementName != "tns:DeltaV" && elementName != "tns:LoiteringTLE")    // Loitering
+    else if (trajectory && elementName != "tns:EntryArc" && elementName != "tns:DeltaV")   // Loitering and loiteirng TLEs
+    //else if (trajectory && elementName != "tns:EntryArc" && elementName != "tns:DeltaV" && elementName != "tns:LoiteringTLE")    // Loitering
     {
         ScenarioObject* parentObject = objectForItem(parent);
         ScenarioTrajectoryPlan* trajectoryPlan = dynamic_cast<ScenarioTrajectoryPlan*>(parentObject);
@@ -617,8 +617,7 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
                         initialPosition->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(newKeplerianElements));
                         theCurrentLoitering->InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(newKeplerianElements));
                         */
-                    }
-                    /*
+                    }                    
                       // for the time being TLEs are not treated
                     else if (theCurrentManeuver->elementName() == "LoiteringTLEType")
                     {
@@ -626,7 +625,6 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
                         theCurrentLoiteringTLE->TimeLine()->setStartTime(thePreviousArc->TimeLine()->EndTime()); // concatenating the times for the mission arcs
                         theCurrentLoiteringTLE->TimeLine()->setEndTime(thePreviousArc->TimeLine()->EndTime().addDays(1));
                     }
-                    */
                 }
             }
             else  // Then the trajectory plan is emptly and we just simply drop the arc
