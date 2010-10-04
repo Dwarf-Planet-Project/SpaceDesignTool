@@ -1,5 +1,5 @@
 /*
- * $Revision: 223 $ $Date: 2010-03-30 05:44:44 -0700 (Tue, 30 Mar 2010) $
+ * $Revision: 517 $ $Date: 2010-10-02 11:17:17 -0700 (Sat, 02 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -28,7 +28,7 @@ StateVector
 KeplerianTrajectory::state(double t) const
 {
     double ecc = m_elements.eccentricity;
-    double meanAnomaly = m_elements.meanAnomalyAtEpoch + m_elements.meanMotion * t;
+    double meanAnomaly = m_elements.meanAnomalyAtEpoch + m_elements.meanMotion * (t - m_elements.epoch);
     double E = OrbitalElements::eccentricAnomaly(ecc, meanAnomaly);
     double sinE = sin(E);
     double cosE = cos(E);

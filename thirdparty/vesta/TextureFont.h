@@ -1,5 +1,5 @@
 /*
- * $Revision: 294 $ $Date: 2010-06-16 15:49:05 -0700 (Wed, 16 Jun 2010) $
+ * $Revision: 521 $ $Date: 2010-10-04 15:44:05 -0700 (Mon, 04 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -57,6 +57,8 @@ public:
     {
         return m_glyphTexture.ptr();
     }
+
+    bool loadTxf(const DataChunk* data);
 
     static TextureFont* LoadTxf(const DataChunk* data);
 

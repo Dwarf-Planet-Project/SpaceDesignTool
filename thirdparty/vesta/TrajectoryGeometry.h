@@ -1,5 +1,5 @@
 /*
- * $Revision: 507 $ $Date: 2010-09-15 15:17:27 -0700 (Wed, 15 Sep 2010) $
+ * $Revision: 519 $ $Date: 2010-10-04 15:02:29 -0700 (Mon, 04 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -11,10 +11,10 @@
 #ifndef _VESTA_TRAJECTORY_GEOMETRY_H_
 #define _VESTA_TRAJECTORY_GEOMETRY_H_
 
-#include <Eigen/Core>
 #include "Geometry.h"
 #include "Spectrum.h"
-
+#include "Frame.h"
+#include <Eigen/Core>
 
 class CurvePlot;
 
@@ -27,6 +27,11 @@ class Trajectory;
   * space. It provides flexibility in how the plots are drawn. Depending on
   * settings, an entire trajectory can be shown or just a portion of it.
   *
+  * When a new trajectory, it is empty. Points may be added to the trajectory
+  * one-by-one useing the addSample() method or automatically via computedSamples()
+  * and updateSamples(). A 'sample' is a time tagged state vectory. Cubic interpolation
+  * is used to generate intermediate points, so there will never be any 'kinks' in
+  * the plot.
   */
 class TrajectoryGeometry : public Geometry
 {
@@ -48,11 +53,32 @@ public:
         return m_opacity >= 1.0f;
     }
 
+    /** Get the reference frame for this trajectory plot.
+      */
+    Frame* frame() const
+    {
+        return m_frame.ptr();
+    }
+
+    /** Set the reference frame for this trajectory plot. If not
+      * set, the inertial J2000 equatorial frame (the native frame
+      * of VESTA) is used.
+      */
+    void setFrame(Frame* frame)
+    {
+        m_frame = frame;
+    }
+
+    /** Return the color used for the trajectory plot.
+      */
     Spectrum color() const
     {
         return m_color;
     }
 
+    /** Set the color used for the trajectory plot. By default,
+      * trajectories are plotted in white.
+      */
     void setColor(const Spectrum& color)
     {
         m_color = color;
@@ -161,6 +187,7 @@ public:
 
 
 private:
+    counted_ptr<Frame> m_frame;
     Spectrum m_color;
     float m_opacity;
     CurvePlot* m_curvePlot;

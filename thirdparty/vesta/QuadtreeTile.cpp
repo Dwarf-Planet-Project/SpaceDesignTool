@@ -513,15 +513,13 @@ QuadtreeTile::drawPatch(RenderContext& rc, Material& material, TiledMap* baseMap
     float dlat = tileArc / float(TileSubdivision);
 
     unsigned int tileSize = baseMap->tileSize();
-    if (tileSize == 0)
-    {
-        tileSize = 1024;
-    }
 
     unsigned int mapLevel = m_level;
     unsigned int mapColumn = m_column;
     unsigned int mapRow = m_row;
 
+    // If the projected size in pixels of the tile is less than the number texels
+    // in the tile, then we can use a lower resolution version of the tile.
     if (m_approxPixelSize < tileSize)
     {
         unsigned int n = tileSize / m_approxPixelSize;

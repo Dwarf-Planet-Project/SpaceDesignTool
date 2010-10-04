@@ -1,5 +1,5 @@
 /*
- * $Revision: 507 $ $Date: 2010-09-15 15:17:27 -0700 (Wed, 15 Sep 2010) $
+ * $Revision: 519 $ $Date: 2010-10-04 15:02:29 -0700 (Mon, 04 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -60,6 +60,11 @@ TrajectoryGeometry::render(RenderContext& rc, double clock) const
     Transform3d modelview = rc.modelview().cast<double>();
     Vector3d t = rc.modelTranslation();
     modelview.matrix().col(3) = Vector4d(t.x(), t.y(), t.z(), 1.0);
+
+    if (m_frame.isValid())
+    {
+        modelview = modelview * m_frame->orientation(clock);
+    }
 
     // Set the model view matrix to identity, as the curveplot module performs all transformations in
     // software using double precision.

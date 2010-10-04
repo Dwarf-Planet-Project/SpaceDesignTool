@@ -1,5 +1,5 @@
 /*
- * $Revision: 294 $ $Date: 2010-06-16 15:49:05 -0700 (Wed, 16 Jun 2010) $
+ * $Revision: 521 $ $Date: 2010-10-04 15:44:05 -0700 (Mon, 04 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -202,12 +202,14 @@ TextureFont::buildCharacterSet()
 }
 
 
-
 /** Load a texture font from a chunk of data containing font data
   * in the TXF format used by GLUT.
+  *
+  * \returns true if the data is a valid font and the font texture
+  * could be created.
   */
-TextureFont*
-TextureFont::LoadTxf(const DataChunk* data)
+bool
+TextureFont::loadTxf(const DataChunk* data)
 {
     string str(data->data(), data->size());
     InputDataStream in(str);
@@ -268,8 +270,6 @@ TextureFont::LoadTxf(const DataChunk* data)
         return NULL;
     }
 
-    TextureFont* font = new TextureFont();
-
     Vector2f texelScale(1.0f / glyphTextureWidth, 1.0f / glyphTextureHeight);
     Vector2f halfTexel = texelScale * 0.5f;
 
@@ -288,8 +288,7 @@ TextureFont::LoadTxf(const DataChunk* data)
         if (in.status() != InputDataStream::Good)
         {
             VESTA_LOG("Error reading glyph %d in texture font.", i + 1);
-            delete font;
-            return NULL;
+            return false;
         }
 
         Vector2f normalizedSize = texelScale.cwise() * Vector2f(glyphWidth, glyphHeight);
@@ -305,7 +304,7 @@ TextureFont::LoadTxf(const DataChunk* data)
         glyph.textureCoords[2] = normalizedPosition + normalizedSize;
         glyph.textureCoords[3] = normalizedPosition + Vector2f(0.0f, normalizedSize.y());
 
-        font->addGlyph(glyph);
+        addGlyph(glyph);
     }
 
     unsigned int pixelCount = glyphTextureWidth * glyphTextureHeight;
@@ -315,16 +314,34 @@ TextureFont::LoadTxf(const DataChunk* data)
     {
         VESTA_LOG("Error reading pixel data in texture font.");
         delete[] pixels;
-        delete font;
-        return NULL;
+        return false;
     }
 
-    font->buildCharacterSet();
-    font->buildFontTexture(glyphTextureWidth, glyphTextureHeight, pixels);
+    buildCharacterSet();
+    buildFontTexture(glyphTextureWidth, glyphTextureHeight, pixels);
 
     delete[] pixels;
 
-    font->addRef();
+    return true;
+}
+
+
+/** Load a texture font from a chunk of data containing font data
+  * in the TXF format used by GLUT.
+  */
+TextureFont*
+TextureFont::LoadTxf(const DataChunk* data)
+{
+    TextureFont* font = new TextureFont();
+    if (font->loadTxf(data))
+    {
+        // TODO: Should skip the addRef
+        font->addRef();
+    }
+    else
+    {
+        delete font;
+    }
 
     return font;
 }
