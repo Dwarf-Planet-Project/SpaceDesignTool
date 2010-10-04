@@ -367,6 +367,8 @@ ThreeDView::ThreeDView(const QGLFormat& format, QWidget* parent) :
     m_textureLoader = counted_ptr<NetworkTextureLoader>(new NetworkTextureLoader(this, true));
     m_textureLoader->addLocalSearchPath("models");
 
+    m_labelFont = new TextureFont();
+
     m_universe = new Universe();
     m_universe->addRef();
     initializeUniverse();
@@ -411,20 +413,19 @@ ThreeDView::sizeHint() const
 }
 
 
-static TextureFont*
-LoadTextureFont(const QString& fileName)
+static void
+LoadTextureFont(TextureFont* font, const QString& fileName)
 {
     QFile fontFile(fileName);
     if (fontFile.open(QIODevice::ReadOnly))
     {
         QByteArray fontData = fontFile.readAll();
         DataChunk chunk(fontData.data(), fontData.size());
-        return TextureFont::LoadTxf(&chunk);
+        font->loadTxf(&chunk);
     }
     else
     {
         qDebug() << "Error loading font file " << fileName;
-        return NULL;
     }
 }
 
@@ -434,9 +435,10 @@ ThreeDView::initializeGL()
 {
     if (!m_renderer->initializeGraphics())
     {
+        qDebug() << "Error initializing VESTA graphics";
     }
 
-    m_labelFont = LoadTextureFont("vis3d/sans12.txf");
+    LoadTextureFont(m_labelFont.ptr(), "vis3d/sans12.txf");
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glEnable(GL_DEPTH_TEST);
@@ -1476,6 +1478,7 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
         QColor arcColor = missionArc->arcTrajectoryColor();
 
         TrajectoryGeometry* trajGeom = new TrajectoryGeometry();
+        trajGeom->setFrame(createFrame(missionArc));
         trajGeom->setDisplayedPortion(TrajectoryGeometry::StartToCurrentTime);
         trajGeom->setColor(Spectrum(arcColor.redF(), arcColor.greenF(), arcColor.blueF()));
 
@@ -1526,8 +1529,6 @@ ThreeDView::createGroundObject(const GroundObject* groundObj)
         {
             position = position.cwise() * groundObj->centralBody->radii();
         }
-
-        qDebug() << "Ground object: " << groundObj->name << ", " << position.norm();
 
         vesta::Arc* arc = new vesta::Arc();
         arc->setCenter(center);
