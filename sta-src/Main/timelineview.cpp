@@ -62,20 +62,33 @@ TimelineView::~TimelineView()
 
 
 void
-		TimelineView::setTimeRange(double startTime, double endTime)
+TimelineView::setTimeRange(double startTime, double endTime)
 {
     m_startTime = startTime;
     m_endTime = endTime;
     updateScrollBars();
+
     viewport()->update();
 }
 
 
 void
-		TimelineView::setVisibleSpan(double duration)
+TimelineView::setVisibleSpan(double duration)
 {
     m_visibleSpan = duration;
     updateScrollBars();
+
+    double viewStartTime = horizontalScrollBar()->value() / 86400.0 + m_startTime;
+
+    // When zooming, recenter the view if the current time is too far to the left or right
+    bool recenter = m_currentTime < viewStartTime + m_visibleSpan * 0.1 || m_currentTime > viewStartTime + m_visibleSpan * 0.9;
+
+    if (recenter)
+    {
+        double middle = m_currentTime - duration / 2.0;
+        horizontalScrollBar()->setValue(int((middle - m_startTime) * 86400.0));
+    }
+
     viewport()->update();
 }
 
