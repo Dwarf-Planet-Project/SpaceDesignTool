@@ -400,7 +400,6 @@ public:
             Vector4d p = coeff * Vector4d(1.0, t, t * t, t * t * t);
 
             double minDistance = max(-m_viewFrustum.nearZ(), abs(p.z()) - segmentBoundingRadius);
-
             if (segmentBoundingRadius >= m_subdivisionThreshold * minDistance)
             {
                 if (m_viewFrustum.cullSphere(p, segmentBoundingRadius))
@@ -811,6 +810,11 @@ CurvePlot::render(const Transform3d& modelview,
     HighPrec_Frustum viewFrustum(nearZ, farZ, viewFrustumPlaneNormals);
     HighPrec_RenderContext rc(vbuf, viewFrustum, subdivisionThreshold);
 
+#if DEBUG_ADAPTIVE_SPLINE
+    for (unsigned int i = 0; i < sizeof(SegmentCounts) / sizeof(SegmentCounts[0]); i++)
+        SegmentCounts[i] = 0;
+#endif
+
     vbuf.createVertexBuffer();
     vbuf.setup();
 
@@ -853,6 +857,10 @@ CurvePlot::render(const Transform3d& modelview,
         // volume.
         if (curveBoundingRadius >= subdivisionThreshold * minDistance || lastSegment || firstSegment)
         {
+#if DEBUG_ADAPTIVE_SPLINE
+            ++SegmentCounts[0];
+#endif
+
             // Skip rendering this section if it lies outside the view
             // frustum.
             if (viewFrustum.cullSphere(p0, curveBoundingRadius))
@@ -874,11 +882,19 @@ CurvePlot::render(const Transform3d& modelview,
                     t0 = (startTime - m_samples[i - 1].t) / dt;
                     t0 = std::max(0.0, std::min(1.0, t0));
                     firstSegment = false;
+                    if (!lastSegment)
+                    {
+                        // Adjust the bounding radius if we're only rendering a portion
+                        curveBoundingRadius *= (t1 - t0);
+                    }
                 }
 
                 if (lastSegment)
                 {
                     t1 = (endTime - m_samples[i - 1].t) / dt;
+
+                    // Adjust the bounding radius if we're only rendering a portion
+                    curveBoundingRadius *= (t1 - t0);
                 }
 
                 Matrix4d coeff = cubicHermiteCoefficients(p0, p1, v0 * dt, v1 * dt);
@@ -924,6 +940,14 @@ CurvePlot::render(const Transform3d& modelview,
 
     vbuf.flush();
     vbuf.finish();
+
+#if DEBUG_ADAPTIVE_SPLINE
+    for (unsigned int i = 0; SegmentCounts[i] != 0 || i < 3; i++)
+    {
+        clog << i << ":" << SegmentCounts[i] << ", ";
+    }
+    clog << endl;
+#endif
 }
 
 
@@ -1048,11 +1072,20 @@ CurvePlot::renderFaded(const Eigen::Transform3d& modelview,
                     t0 = (startTime - m_samples[i - 1].t) / dt;
                     t0 = std::max(0.0, std::min(1.0, t0));
                     firstSegment = false;
+
+                    // Adjust the bounding radius if we're only rendering a portion
+                    if (!lastSegment)
+                    {
+                        curveBoundingRadius *= (t1 - t0);
+                    }
                 }
 
                 if (lastSegment)
                 {
                     t1 = (endTime - m_samples[i - 1].t) / dt;
+
+                    // Adjust the bounding radius if we're only rendering a portion
+                    curveBoundingRadius *= (t1 - t0);
                 }
 
                 Matrix4d coeff = cubicHermiteCoefficients(p0, p1, v0 * dt, v1 * dt);
