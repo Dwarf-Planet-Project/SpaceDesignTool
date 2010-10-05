@@ -1128,8 +1128,8 @@ void MainWindow::setPropagatedScenario(PropagatedScenario* scenario)
             m_threeDViewWidget->view()->setScenario(scenario);
         }
 
-        configureTimeline(scenario);
         setTime(scenario->startTime());
+        configureTimeline(scenario);
 
         delete m_propagatedScenario;
         m_propagatedScenario = scenario;
