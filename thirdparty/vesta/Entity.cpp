@@ -1,5 +1,5 @@
 /*
- * $Revision: 402 $ $Date: 2010-08-03 13:00:55 -0700 (Tue, 03 Aug 2010) $
+ * $Revision: 530 $ $Date: 2010-10-12 11:26:43 -0700 (Tue, 12 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -21,6 +21,8 @@ using namespace Eigen;
 using namespace std;
 
 
+/** Create a new entity with an empty chronology.
+  */
 Entity::Entity() :
     m_visible(true),
     m_visualizers(NULL)
@@ -36,7 +38,7 @@ Entity::~Entity()
 
 
 /** Get the position of the entity in universal coordinates.
-  * @param t the time in seconds since J2000
+  * \param t the time in seconds since J2000 TDB
   */
 Vector3d
 Entity::position(double t) const
@@ -58,7 +60,7 @@ Entity::position(double t) const
 
 /** Get the state vector of the entity in the fundamental coordinate
   * system (J200).
-  * @param t the time in seconds since J2000
+  * \param t the time in seconds since J2000 TDB
   */
 StateVector
 Entity::state(double t) const
@@ -75,9 +77,9 @@ Entity::state(double t) const
         StateVector state = arc->trajectory()->state(t);
 
         Matrix3d m = arc->trajectoryFrame()->orientation(t).toRotationMatrix();
-        Vector3d w = arc->trajectoryFrame()->angularVelocity(t);
+        Vector3d omega = arc->trajectoryFrame()->angularVelocity(t);
         Vector3d position = m * state.position();
-        Vector3d velocity = m * state.velocity() + w.cross(state.position());
+        Vector3d velocity = m * state.velocity() + omega.cross(state.position());
 
         return centerState + StateVector(position, velocity);
     }
@@ -89,7 +91,7 @@ Entity::state(double t) const
 
 
 /** Get the orientation of the entity in universal coordinates.
-  * @param t the time in seconds since J2000
+  * \param t the time in seconds since J2000 TDB
   */
 Quaterniond
 Entity::orientation(double t) const
@@ -107,15 +109,27 @@ Entity::orientation(double t) const
 
 
 /** Get the angular velocity of the entity in universal coordinates.
-  * @param t the time in seconds since J2000
+  * \param t the time in seconds since J2000 TDB
   */
 Vector3d
-Entity::angularVelocity(double /* t */) const
+Entity::angularVelocity(double t) const
 {
-    return Vector3d::Zero();
+    Arc* arc = m_chronology->activeArc(t);
+    if (arc)
+    {
+        return arc->bodyFrame()->orientation(t) * arc->rotationModel()->angularVelocity(t);
+    }
+    else
+    {
+        return Vector3d::Zero();
+    }
 }
 
 
+/** Set whether the body should be visible. Neither geometry nor attached
+  * visualizers are shown for bodies with the visible flag set to false.
+  * The value of the visible flag is true by default.
+  */
 void
 Entity::setVisible(bool visible)
 {
@@ -123,6 +137,8 @@ Entity::setVisible(bool visible)
 }
 
 
+/** Set the name of the body.
+  */
 void
 Entity::setName(const std::string& name)
 {
@@ -182,6 +198,8 @@ Entity::visualizer(const std::string& tag) const
 }
 
 
+/** Returns true if the body has at least one attached visualizer.
+  */
 bool
 Entity::hasVisualizers() const
 {
@@ -189,6 +207,8 @@ Entity::hasVisualizers() const
 }
 
 
+/** Remove all attached visualizers.
+  */
 void
 Entity::clearVisualizers()
 {

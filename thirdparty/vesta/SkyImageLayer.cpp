@@ -47,6 +47,12 @@ SkyImageLayer::setTexture(TextureMap* texture)
 void
 SkyImageLayer::render(RenderContext& rc)
 {
+    // Don't render anything if the sky texture isn't resident
+    if (m_texture.isNull() || m_texture->makeResident() == false)
+    {
+        return;
+    }
+
     rc.pushModelView();
     rc.rotateModelView(m_orientation.cast<float>());
 

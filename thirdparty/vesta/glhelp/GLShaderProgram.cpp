@@ -242,9 +242,21 @@ GLShaderProgram::setConstant(const char* name, const Spectrum& color)
 }
 
 
+/** Set the value of a GLSL shader program uniform with a float array type.
+  */
+void
+GLShaderProgram::setConstantArray(const char* name, const float values[], unsigned int count)
+{
+    GLint location = glGetUniformLocationARB(m_handle, name);
+    if (location >= 0)
+    {
+        glUniform1fv(location, count, values);
+    }
+}
+
+
 /** Set the value of a GLSL shader program uniform with a vec3 array type.
   */
-
 void
 GLShaderProgram::setConstantArray(const char* name, const Eigen::Vector3f values[], unsigned int count)
 {

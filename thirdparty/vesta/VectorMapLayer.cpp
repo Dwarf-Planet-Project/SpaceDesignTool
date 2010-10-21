@@ -12,6 +12,7 @@
 #include "RenderContext.h"
 #include "QuadtreeTile.h"
 #include "Units.h"
+#include "Debug.h"
 #include <Eigen/Geometry>
 #include <algorithm>
 #include <cmath>
@@ -130,14 +131,6 @@ computeExtrema(const GreatCircleArc& arc)
 
 VectorMapLayer::VectorMapLayer()
 {
-    MapLineString* lines = new MapLineString();
-    lines->addPoint(spherePoint(47.5f, -122.5f));
-    lines->addPoint(spherePoint(64.133f, -21.933f));
-    lines->addPoint(spherePoint(-16.5f, -68.5f));
-    lines->addPoint(spherePoint(47.5f, -122.5f));
-    lines->setColor(Spectrum(0.0f, 1.0f, 0.0f));
-
-    m_lineStrings.push_back(lines);
 }
 
 
@@ -146,48 +139,16 @@ VectorMapLayer::~VectorMapLayer()
 }
 
 
-static void
-drawParallel(float lat, float lon0, float lon1)
-{
-    float cosLat = cos(lat);
-    float sinLat = sin(lat);
-
-    glBegin(GL_LINE_STRIP);
-    for (unsigned int i = 0; i <= 32; ++i)
-    {
-        float t = float(i) / 32.0f;
-        float lon = (1.0f - t) * lon0 + t * lon1;
-        Vector3f v(cos(lon) * cosLat, sin(lon) * cosLat, sinLat);
-        glVertex3fv(v.data());
-    }
-    glEnd();
-}
-
-
-static void
-drawMeridian(float lon, float lat0, float lat1)
-{
-    float cosLon = cos(lon);
-    float sinLon = sin(lon);
-
-    glBegin(GL_LINE_STRIP);
-    for (unsigned int i = 0; i <= 32; ++i)
-    {
-        float t = float(i) / 32.0f;
-        float lat = (1.0f - t) * lat0 + t * lat1;
-        float cosLat = cos(lat);
-        Vector3f v(cosLon * cosLat, sinLon * cosLat, sin(lat));
-        glVertex3fv(v.data());
-    }
-    glEnd();
-}
-
-
 // Draw an arc of a great circle between two points on the surface
 // of a sphere.
+//
+// TODO: Currently, we draw constant bearing arcs, as these are easier
+// to clip against sphere patch boundaries.
 static void
-drawGreatCircleArc(const Vector3f& v0, const Vector3f& v1)
+drawGreatCircleArc(const Vector3f& v0, const Vector3f& v1, unsigned int subdivision)
 {
+    float d = 1.0f / subdivision;
+
     glBegin(GL_LINE_STRIP);
 
     float cosArc = v0.dot(v1);
@@ -198,9 +159,9 @@ drawGreatCircleArc(const Vector3f& v0, const Vector3f& v1)
 
     Vector3f v = v0 * scale;
     glVertex3fv(v.data());
-    for (unsigned int i = 1; i < 32; ++i)
+    for (unsigned int i = 1; i < subdivision; ++i)
     {
-        float t = float(i) / 32.0f;
+        float t = float(i) * d;
         v = ((1.0f - t) * v0 + t * v1).normalized() * scale;
         glVertex3fv(v.data());
     }
@@ -336,14 +297,27 @@ static void clippedLine(const SpherePatch& box, const Vector2f& p0, const Vector
 
     if (!rejected)
     {
-#if GREAT_CIRCLE
+        // Adjust the subdivision level based on the size of the curve relative to the
+        // sphere patch. We subdivide more finely for small patches in order to reduce
+        // depth buffer artifacts and maintain a smooth appearance.
         Vector3f v0 = sphToCart(r0.x(), r0.y());
         Vector3f v1 = sphToCart(r1.x(), r1.y());
+        float cosArc = v0.dot(v1);
+        float arc = acos(max(-1.0f, min(1.0f, cosArc)));
+        unsigned int subdivision = (unsigned int) max(1.0f, min(32.0f, 32.0f * arc / (box.north - box.south)));
+#if GREAT_CIRCLE
         drawGreatCircleArc(v0, v1);
 #else
-        drawConstantBearingArc(r0.x(), r0.y(), r1.x(), r1.y(), 32);
+        drawConstantBearingArc(r0.x(), r0.y(), r1.x(), r1.y(), subdivision);
 #endif
     }
+}
+
+
+void
+VectorMapLayer::addElement(MapElement* e)
+{
+    m_elements.push_back(counted_ptr<MapElement>(e));
 }
 
 
@@ -366,41 +340,94 @@ VectorMapLayer::renderTile(RenderContext& rc, const WorldGeometry* /* world */, 
     box.south = float(PI) * southwest.y();
     box.north = box.south + tileArc;
 
-    for (vector<MapLineString*>::const_iterator iter = m_lineStrings.begin(); iter != m_lineStrings.end(); ++iter)
+    AlignedBox<float, 2> bounds(Vector2f(box.west, box.south), Vector2f(box.east, box.north));
+
+    for (vector<counted_ptr<MapElement> >::const_iterator iter = m_elements.begin(); iter != m_elements.end(); ++iter)
     {
-        const MapLineString* lineString = *iter;
-        Spectrum color = lineString->color();
-        glColor4f(color.red(), color.green(), color.blue(), lineString->opacity());
+        const MapElement* element = iter->ptr();
+        bool tileContainsElement = false;
 
-        if (lineString->points().size() >= 2)
+        if (element)
         {
-            for (unsigned int i = 1; i < lineString->points().size(); ++i)
+            AlignedBox<float, 2> elementBox = element->bounds();
+            if (!elementBox.isNull())
             {
-                Vector3f p0 = lineString->points().at(i - 1);
-                Vector3f p1 = lineString->points().at(i);
-
-                clippedLine(box, p0.start<2>(), p1.start<2>());
+                if (elementBox.min().x() < bounds.max().x() &&
+                    elementBox.max().x() > bounds.min().x() &&
+                    elementBox.min().y() < bounds.max().y() &&
+                    elementBox.max().y() > bounds.min().y())
+                {
+                    tileContainsElement = true;
+                }
             }
+        }
+
+        if (tileContainsElement)
+        {
+            Spectrum color = element->color();
+            glColor4f(color.red(), color.green(), color.blue(), element->opacity());
+
+            if (element->opacity() < 1.0f)
+            {
+                glEnable(GL_BLEND);
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            }
+            else
+            {
+                glDisable(GL_BLEND);
+            }
+
+            element->render(box.west, box.south, box.east, box.north);
         }
     }
 
+    glDisable(GL_BLEND);
 }
 
 
-MapLineString::MapLineString() :
+MapElement::MapElement() :
     m_color(1.0f, 1.0f, 1.0f),
     m_opacity(1.0f)
 {
+}
 
+
+MapLineString::MapLineString()
+{
 }
 
 
 void
+MapLineString::render(float west, float south, float east, float north) const
+{
+    SpherePatch box;
+    box.west = west;
+    box.east = east;
+    box.south = south;
+    box.north = north;
+
+    if (m_points.size() >= 2)
+    {
+        for (unsigned int i = 1; i < m_points.size(); ++i)
+        {
+            Vector3f p0 = m_points.at(i - 1);
+            Vector3f p1 = m_points.at(i);
+
+            clippedLine(box, p0.start<2>(), p1.start<2>());
+        }
+    }
+}
+
+
+/** Add a new point to the line string.
+  */
+void
 MapLineString::addPoint(const Eigen::Vector3f& p)
 {
-    // Automatically split arcs that cross the 180 degree meridian
+    // TODO: Automatically split arcs that cross the 180 degree meridian
 
     m_points.push_back(p);
+    setBounds(bounds().extend(Vector2f(p.x(), p.y())));
 }
 
 
@@ -408,5 +435,54 @@ const std::vector<Eigen::Vector3f>&
 MapLineString::points() const
 {
     return m_points;
+}
+
+
+MapPolygon::MapPolygon(MapLineString* border) :
+    m_border(border)
+{
+    if (m_border.isValid())
+    {
+        setBounds(m_border->bounds());
+    }
+}
+
+
+void
+MapPolygon::render(float west, float south, float east, float north) const
+{
+    if (m_border.isNull())
+    {
+        return;
+    }
+
+    if (m_border->points().size() >= 3)
+    {
+        glBegin(GL_POLYGON);
+        for (unsigned int i = 0; i < m_border->points().size(); ++i)
+        {
+            Vector3f p = m_border->points().at(i);
+            glVertex3fv(sphToCart(p.x(), p.y()).data());
+        }
+        glEnd();
+    }
+}
+
+
+/** Set the border of the polygon. Setting the border
+  * to null will make the polygon invisible.
+  */
+void
+MapPolygon::setBorder(MapLineString* border)
+{
+    m_border = border;
+    if (m_border.isValid())
+    {
+        setBounds(m_border->bounds());
+    }
+    else
+    {
+        setBounds(AlignedBox<float, 2>());
+    }
 }
 

@@ -1,5 +1,5 @@
 #
-# $Revision: 509 $ $Date: 2010-09-21 14:35:45 -0700 (Tue, 21 Sep 2010) $
+# $Revision: 536 $ $Date: 2010-10-15 16:29:55 -0700 (Fri, 15 Oct 2010) $
 #
 # Copyright by Astos Solutions GmbH, Germany
 #
@@ -34,6 +34,7 @@ set (SRCS
     ArrowVisualizer.cpp
     Atmosphere.cpp
     AxesVisualizer.cpp
+    BillboardGeometry.cpp
     Body.cpp
     BodyDirectionVisualizer.cpp
     BodyFixedFrame.cpp
@@ -48,6 +49,7 @@ set (SRCS
     Entity.cpp
     FixedPointTrajectory.cpp
     FixedRotationModel.cpp
+    Frame.cpp
     Framebuffer.cpp
     Geometry.cpp
     GregorianDate.cpp

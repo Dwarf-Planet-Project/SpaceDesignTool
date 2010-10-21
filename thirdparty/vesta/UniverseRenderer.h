@@ -1,5 +1,5 @@
 /*
- * $Revision: 498 $ $Date: 2010-09-10 09:01:38 -0700 (Fri, 10 Sep 2010) $
+ * $Revision: 526 $ $Date: 2010-10-07 20:19:32 -0700 (Thu, 07 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -29,6 +29,30 @@ class RenderContext;
 class Framebuffer;
 class CubeMapFramebuffer;
 
+/** UniverseRenderer draws views of a VESTA Universe using a 3D rendering
+  * library. Views are drawn as sets at a particular time. A typical usage
+  * of UniverseRenderer looks like this:
+  *
+  * \code
+  * UniverseRenderer* renderer = new UniverseRenderer();
+  *
+  * IntializeOpenGL();
+  *
+  * renderer->initializeGraphics();
+  *
+  * while (!done)
+  * {
+  *     glClear();
+  *     renderer->beginViewSet(universe, simulationTime);
+  *     renderer->renderView(observer1, fov1, viewWidth1, viewHeight2);
+  *     renderer->renderView(observer2, fov2, viewHeight2, viewHeight2);
+  *     simulationTime += deltaT;
+  * }
+  * \endcode
+  *
+  * The above code renders two different views at each step. This might happen
+  * when rendering a stereo pair, or when drawing a secondary view inset.
+  */
 class UniverseRenderer
 {
 public:
@@ -45,12 +69,13 @@ public:
         RenderNoViewSet,
         RenderViewSetAlreadyStarted,
         RendererUninitialized,
+        RendererBadParameter,
     };
 
     static const unsigned int MaxShadowMaps     = 3;
     static const unsigned int MaxOmniShadowMaps = 3;
 
-    RenderStatus beginViewSet(const Universe& universe, double t);
+    RenderStatus beginViewSet(const Universe* universe, double t);
     RenderStatus endViewSet();
 
     RenderStatus renderView(const Observer* observer,
@@ -219,6 +244,7 @@ private:
 
     counted_ptr<Framebuffer> m_renderSurface;
     Viewport m_renderViewport;
+    bool m_renderColorMask[4];
 
     Frustum m_viewFrustum;
 

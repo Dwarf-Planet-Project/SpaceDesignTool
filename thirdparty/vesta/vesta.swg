@@ -1,5 +1,5 @@
 //
-// $Revision: 507 $ $Date: 2010-09-15 15:17:27 -0700 (Wed, 15 Sep 2010) $
+// $Revision: 551 $ $Date: 2010-10-21 15:19:54 -0700 (Thu, 21 Oct 2010) $
 //
 // Copyright by Astos Solutions GmbH, Germany
 //  
@@ -69,7 +69,14 @@
 #include "Atmosphere.h"
 
 // Utility classes
+#include "GregorianDate.h"
 #include "DataChunk.h"
+#include "PlanarProjection.h"
+#include "Viewport.h"
+#include "LightingEnvironment.h"
+
+#include "Framebuffer.h"
+#include "CubeMapFramebuffer.h"
 
 // Geometry classes
 #include "Geometry.h"
@@ -81,8 +88,12 @@
 #include "ConeGeometry.h"
 #include "TrajectoryGeometry.h"
 #include "ParticleSystemGeometry.h"
+#include "BillboardGeometry.h"
+#include "PlanetaryRings.h"
 
 #include "MapLayer.h"
+#include "WorldLayer.h"
+#include "PlanetGridLayer.h"
 
 #include "FixedPointTrajectory.h"
 #include "KeplerianTrajectory.h"
@@ -103,18 +114,27 @@
 #include "AxesVisualizer.h"
 #include "VelocityVisualizer.h"
 #include "NadirVisualizer.h"
+#include "BodyDirectionVisualizer.h"
 #include "PlaneVisualizer.h"
 #include "SensorVisualizer.h"
 
 // Sky layers
 #include "CelestialCoordinateGrid.h"
 #include "StarsLayer.h"
+#include "SkyImageLayer.h"
+
+#include "TiledMap.h"
+#include "HierarchicalTiledMap.h"
 
 #include "RenderContext.h"
 
 #include "particlesys/ParticleEmitter.h"
 #include "particlesys/InitialStateGenerator.h"
 #include "particlesys/DiscGenerator.h"
+#include "particlesys/BoxGenerator.h"
+#include "particlesys/PointGenerator.h"
+
+#include "interaction/ObserverController.h"
 
 %}
 
@@ -258,6 +278,7 @@ public:
 
 };
 
+
 class Vector2d
 {
 public:
@@ -389,6 +410,7 @@ class Object;
 class Visualizer;
 class MapLayerBounds;
 class SkyLayer;
+class WorldLayer;
 
 class StateVector
 {
@@ -604,6 +626,65 @@ public:
 };
 
 
+enum TimeScale
+{
+    TimeScale_TDB  = 0, /**< Barycentric Dynamical Time */
+    TimeScale_TT   = 1, /**< Terrestrial Time */
+    TimeScale_TAI  = 2, /**< International Atomic Time */
+    TimeScale_UTC  = 3, /**< Coordinated Universal Time */
+};
+
+
+class GregorianDate
+{
+public:
+    enum Format
+    {
+        ISO8601_Combined = 0,
+    };
+
+    GregorianDate();
+    GregorianDate(const GregorianDate& other);
+    GregorianDate(int year, unsigned int month, unsigned int day,
+                  unsigned int hour = 0, unsigned int minute = 0, unsigned int second = 0, unsigned int usec = 0,
+                  TimeScale timeScale = TimeScale_UTC);
+
+    GregorianDate& operator=(const GregorianDate& other);
+
+    int year() const;
+    unsigned int month() const;
+    unsigned int day() const;
+    unsigned int hour() const;
+    unsigned int minute() const;
+    unsigned int second() const;
+    unsigned int usec() const;
+
+    TimeScale timeScale() const;
+    void setTimeScale(TimeScale timeScale);
+
+    unsigned int dayOfWeek() const;
+    unsigned int dayOfYear() const;
+    unsigned int daysInMonth() const;
+    int julianDay() const;
+
+    bool isValid() const;
+
+    bool isLeapYear() const;
+
+    double toTDBJD() const;
+    double toTAIJD() const;
+    double toTTJD() const;
+    double toTDBSec() const;
+
+    std::string toString(Format format = ISO8601_Combined) const;
+
+    static GregorianDate UTCDateFromTDBJD(double tdbjd);
+    static GregorianDate TDBDateFromTDBJD(double tdbjd);
+    static GregorianDate UTCDateFromTDBSec(double tdbsec);
+    static GregorianDate TDBDateFromTDBSec(double tdbsec);
+};
+
+
 class DataChunk : public Object
 {
 public:
@@ -620,6 +701,140 @@ public:
     ~DataChunk();
     
     unsigned int size() const;
+};
+
+
+class Viewport
+{
+public:
+    Viewport(unsigned int width, unsigned int height);
+    Viewport(int x, int y, unsigned int width, unsigned int height);
+
+    int x() const;
+    void setX(int x);
+    int y() const;
+    void setY(int y);
+    void setOrigin(int x, int y);
+    unsigned int width() const;
+    void setWidth(unsigned int width);
+    unsigned int height() const;
+    void setHeight(unsigned int height);
+    void setSize(unsigned int width, unsigned int height);
+    float aspectRatio() const;
+};
+
+
+class PlanarProjection
+{
+public:
+    enum ProjectionType
+    {
+        Perspective = 0,
+        Orthographic = 1,
+    };
+
+    enum Chirality
+    {
+        LeftHanded  = 0,
+        RightHanded = 1,
+    };
+
+    PlanarProjection(ProjectionType type, float left, float right, float bottom, float top, float nearDistance, float farDistance);
+
+    ProjectionType type() const;
+
+    float left() const;
+    float right() const;
+    float bottom() const;
+    float top() const;
+    float nearDistance() const;
+    float farDistance() const;
+
+    Chirality chirality() const;
+
+    //Eigen::Matrix4f matrix() const;
+
+    float fovY() const;
+    float fovX() const;
+    float fovDiagonal() const;
+    float aspectRatio() const;
+
+    PlanarProjection slice(float nearDistance, float farDistance) const;
+
+    static PlanarProjection CreatePerspective(float fovY, float aspectRatio, float nearDistance, float farDistance);
+    static PlanarProjection CreatePerspectiveLH(float fovY, float aspectRatio, float nearDistance, float farDistance);
+    static PlanarProjection CreateOrthographic(float left, float right, float bottom, float top, float nearDistance, float farDistance);
+    static PlanarProjection CreateOrthographic2D(float left, float right, float bottom, float top);
+};
+
+
+%nodefaultctor Framebuffer;
+
+class Framebuffer : public Object
+{
+public:
+    enum
+    {
+        ColorAttachment = 0x1,
+        DepthAttachment = 0x2,
+    };
+
+    ~Framebuffer();
+
+    unsigned int width() const;
+    unsigned int height() const;
+
+    bool isValid() const;
+
+    TextureMap* colorTexture() const;
+    TextureMap* depthTexture() const;
+
+    void bind() const;
+    static void unbind();
+
+    bool resize(unsigned int width, unsigned int height);
+
+    static bool supported();
+
+    static Framebuffer* CreateFramebuffer(unsigned int width,
+                                          unsigned int height,
+                                          TextureMap::ImageFormat format,
+                                          TextureMap::ImageFormat depthFormat = TextureMap::Depth24);
+    static Framebuffer* CreateDepthOnlyFramebuffer(unsigned int width,
+                                                   unsigned int height,
+                                                   TextureMap::ImageFormat depthFormat = TextureMap::Depth24);
+    static Framebuffer* CreateColorOnlyFramebuffer(unsigned int width,
+                                                   unsigned int height,
+                                                   TextureMap::ImageFormat format);
+};
+
+
+%nodefaultctor CubeMapFramebuffer;
+
+class CubeMapFramebuffer : public Object
+{
+public:
+    enum Face
+    {
+        PositiveX = 0,
+        NegativeX = 1,
+        PositiveY = 2,
+        NegativeY = 3,
+        PositiveZ = 4,
+        NegativeZ = 5,
+    };
+
+    ~CubeMapFramebuffer();
+
+    Framebuffer* face(Face faceIndex) const;
+    unsigned int size() const;
+    TextureMap* colorTexture() const;
+    TextureMap* depthTexture() const;
+    static bool supported();
+
+    static CubeMapFramebuffer* CreateCubicShadowMap(unsigned int size);
+    static CubeMapFramebuffer* CreateCubicReflectionMap(unsigned int size,
+                                                        TextureMap::ImageFormat format);
 };
 
 
@@ -735,8 +950,31 @@ public:
 };
 
 
+class BoxGenerator : public InitialStateGenerator
+{
+    BoxGenerator(const Eigen::Vector3f& sideLengths = Eigen::Vector3f::Ones(),
+                 const Eigen::Vector3f& center = Eigen::Vector3f::Zero(),
+                 const Eigen::Vector3f& velocity = Eigen::Vector3f::Zero());
+    virtual float maxDistanceFromOrigin() const;
+    virtual float maxSpeed() const;
+};
+
+
+class PointGenerator : public InitialStateGenerator
+{
+public:
+    PointGenerator(const Eigen::Vector3f& position = Eigen::Vector3f::Zero(),
+                   const Eigen::Vector3f& velocity = Eigen::Vector3f::Zero());
+    virtual float maxDistanceFromOrigin() const;
+    virtual float maxSpeed() const;
+};
+
+/****** End of generators ******/
+
+
 class LightSource : public Object
 {
+public:
     LightSource();
     ~LightSource();
 
@@ -746,21 +984,76 @@ class LightSource : public Object
     void setSpectrum(const Spectrum& spectrum);
     float range() const;
     void setRange(float range);
+    bool isShadowCaster() const;
+    void setShadowCaster(bool castsShadows);
 };
 
 
 /***** Geometry classes *****/
 
-// The following is necessary because the abstract methods of the Geometry
-// base class are not exposed in the scripting interface.
-%nodefaultctor Geometry;
+class Material : public Object
+{
+public:
+    enum BlendMode
+    {
+        Opaque                  = 0,
+        AlphaBlend              = 1,
+        AdditiveBlend           = 2,
+        PremultipliedAlphaBlend = 3,
+    };
+
+    enum SpecularModifierSource
+    {
+        SpecularTextureRGB      = 0,
+        DiffuseTextureAlpha     = 1,
+    };
+    
+    enum BRDF
+    {
+        Lambert,
+        BlinnPhong,
+        BlinnPhongReflective,
+        ParticulateVolume,
+    };
+
+    Material();
+    Material(const Material& m);
+
+    BRDF brdf() const;
+    float opacity() const;
+    Spectrum diffuse() const;
+    Spectrum specular() const;
+    float phongExponent() const;
+    float fresnelReflectance() const;
+    bool isReflective() const;
+    SpecularModifierSource specularModifier() const;
+    Spectrum emission() const;
+    BlendMode blendMode() const;
+    TextureMap* baseTexture() const;
+    TextureMap* normalTexture() const;
+    TextureMap* specularTexture() const;
+
+    void setBrdf(BRDF brdf);
+    void setOpacity(float opacity);
+    void setDiffuse(const Spectrum& diffuse);
+    void setSpecular(const Spectrum& specular);
+    void setPhongExponent(float phongExponent);
+    void setFresnelReflectance(float f);
+    void setSpecularModifier(SpecularModifierSource source);
+    void setEmission(const Spectrum& emission);
+    void setBaseTexture(TextureMap* texture);
+    void setNormalTexture(TextureMap* texture);
+    void setSpecularTexture(TextureMap* texture);
+    void setBlendMode(BlendMode blend);
+};
+
 
 class Geometry : public Object
 {
 public:
     virtual ~Geometry();
 
-    virtual float boundingSphereRadius() = 0;
+    virtual float boundingSphereRadius() const = 0;
 };
 
 class MapLayer : public Object
@@ -779,13 +1072,32 @@ public:
     void setBox(const MapLayerBounds& box);
 };
 
+class PlanetaryRings : public Geometry
+{
+public:
+    PlanetaryRings(float innerRadius, float outerRadius);
+    virtual ~PlanetaryRings();
+
+    virtual float boundingSphereRadius() const;
+
+    /** Get the radius of the inner edge of the ring system (in kilometers)
+      */
+    float innerRadius() const;
+    void setInnerRadius(float innerRadius);
+    float outerRadius() const;
+    void setOuterRadius(float outerRadius);
+    TextureMap* texture() const;
+    void setTexture(TextureMap* texture);
+};
+
+
 class WorldGeometry : public Geometry
 {
 public:
     WorldGeometry();
     virtual ~WorldGeometry();
 
-    virtual float boundingSphereRadius();
+    virtual float boundingSphereRadius() const;
 
     Eigen::Vector3f ellipsoidAxes() const;
     void setSphere(float radius);
@@ -814,10 +1126,19 @@ public:
     float cloudAltitude() const;
     void setCloudAltitude(float);
 
+    PlanetaryRings* ringSystem() const;
+    void setRingSystem(PlanetaryRings* rings);
+
     Spectrum specularReflectance() const;
     void setSpecularReflectance(const Spectrum& reflectance);
     float specularPower() const;
     void setSpecularPower(float specularPower);
+
+    void setLayer(const std::string& tag, WorldLayer* layer);
+    void removeLayer(const std::string& tag);
+    WorldLayer* layer(const std::string& tag) const;
+    bool hasLayers() const;
+    void clearLayers();
     
     %extend {
     static WorldGeometry* cast(vesta::Geometry* geometry)
@@ -836,7 +1157,7 @@ public:
     MeshGeometry();
     virtual ~MeshGeometry();
 
-    virtual float boundingSphereRadius();
+    virtual float boundingSphereRadius() const;
 
     Eigen::Vector3f meshScale() const;
     void setMeshScale(const Eigen::Vector3f& scale);
@@ -870,7 +1191,7 @@ public:
                   float headRadius);
     virtual ~ArrowGeometry();
 
-    virtual float boundingSphereRadius();
+    virtual float boundingSphereRadius() const;
 
     double scale() const;
     void setScale(double scale);
@@ -883,6 +1204,13 @@ public:
 
     float opacity() const;
     void setOpacity(float opacity);
+
+    %extend {
+    static ArrowGeometry* cast(vesta::Geometry* geometry)
+    {
+        return dynamic_cast<vesta::ArrowGeometry*>(geometry);
+    }
+    }    
 };
 
 
@@ -892,7 +1220,7 @@ public:
     PlaneGeometry();
     virtual ~PlaneGeometry();
 
-    virtual float boundingSphereRadius();
+    virtual float boundingSphereRadius() const;
 
     double scale() const;
     void setScale(double scale);
@@ -906,6 +1234,7 @@ public:
     double gridLineSpacing() const;
     void setGridLineSpacing(double gridLineSpacing);
 };
+
 
 class TrajectoryGeometry : public Geometry
 {
@@ -921,7 +1250,7 @@ public:
     TrajectoryGeometry();
     virtual ~TrajectoryGeometry();
 
-    virtual float boundingSphereRadius();
+    virtual float boundingSphereRadius() const;
 
     Spectrum color() const;
     void setColor(const Spectrum& color);
@@ -943,6 +1272,25 @@ public:
 class TextureFont;
 class RenderContext;
 
+class FadeRange : public Object
+{
+public:
+    FadeRange();
+    FadeRange(float minPixels, float maxPixels, float minFadeExtent, float maxFadeExtent);
+    FadeRange(float minPixels, float minFadeExtent);
+
+    float minPixels() const;
+    float maxPixels() const;
+    float minFadeExtent() const;
+    float maxFadeExtent() const;
+
+    void setMinPixels(float minPixels);
+    void setMaxPixels(float maxPixels);
+    void setMinFadeExtent(float minFadeExtent);
+    void setMaxFadeExtent(float maxFadeExtent);
+    float opacity(float pixelSize);
+};
+
 class LabelGeometry : public Geometry
 {
 public:
@@ -951,7 +1299,7 @@ public:
     LabelGeometry();
     virtual ~LabelGeometry();
 
-    float boundingSphereRadius();
+    float boundingSphereRadius() const;
     virtual bool isOpaque() const;
     virtual float apparentSize() const;
     std::string text() const;
@@ -966,6 +1314,11 @@ public:
     void setIconSize(float pixels);
     Spectrum iconColor() const;
     void setIconColor(const Spectrum& color);
+
+    FadeRange* fadeRange() const;
+    void setFadeRange(FadeRange* fadeRange);
+    float fadeSize() const;
+    void setFadeSize(float fadeSize);
 };
 
 class ParticleEmitter;
@@ -977,9 +1330,108 @@ public:
     ParticleSystemGeometry();
     virtual ~ParticleSystemGeometry();
 
-    virtual float boundingSphereRadius();
+    virtual float boundingSphereRadius() const;
 
     void addEmitter(ParticleEmitter* emitter, TextureMap* particleTexture);
+
+    %extend {
+    static ParticleSystemGeometry* cast(vesta::Geometry* geometry)
+    {
+        return dynamic_cast<vesta::ParticleSystemGeometry*>(geometry);
+    }
+    }    
+};
+
+
+class BillboardGeometry : public Geometry
+{
+public:
+    BillboardGeometry();
+    ~BillboardGeometry();
+
+    float boundingSphereRadius() const;
+
+    float size() const;
+    void setSize(float size);
+
+    TextureMap* texture() const;
+    void setTexture(TextureMap* texture);
+    Spectrum color() const;
+    void setColor(const Spectrum& color);
+    float opacity() const;
+    void setOpacity(float opacity);
+    bool hasFixedScreenSize() const;
+    void setFixedScreenSize(bool enable);
+
+    Material::BlendMode blendMode() const;
+    void setBlendMode(Material::BlendMode blendMode);
+};
+
+
+/***** WorldGeometry-related classes *****/
+
+%nodefaultctor WorldLayer;
+
+class WorldLayer : public Object
+{
+public:
+    bool isVisible() const;
+    void setVisibility(bool visible);
+    int drawOrder() const;
+    void setDrawOrder(int order);
+};
+
+
+class PlanetGridLayer : public WorldLayer
+{
+public:
+    PlanetGridLayer();
+    ~PlanetGridLayer();
+
+    Spectrum gridColor() const;
+    void setGridColor(const Spectrum& color);
+    float gridOpacity() const;
+    void setGridOpacity(float opacity);
+
+    TextureFont* labelFont() const;
+    void setLabelFont(TextureFont* font);
+};
+
+
+%nodefaultctor TiledMap;
+
+class TiledMap : public Object
+{
+public:
+    struct TextureSubrect
+    {
+        TextureMap* texture;
+        float u0;
+        float v0;
+        float u1;
+        float v1;
+    };
+
+    virtual ~TiledMap();
+
+    //virtual TextureSubrect tile(unsigned int level, unsigned int x, unsigned int y) = 0;
+    virtual unsigned int tileSize() const;
+};
+
+
+class HierarchicalTiledMap : public TiledMap
+{
+public:
+    HierarchicalTiledMap(TextureMapLoader* loader, unsigned int tileSize);
+    virtual ~HierarchicalTiledMap();
+
+    //virtual TextureSubrect tile(unsigned int level, unsigned int x, unsigned int y);
+    virtual std::string tileResourceIdentifier(unsigned int level, unsigned int column, unsigned int row) = 0;
+    virtual bool isValidTileAddress(unsigned int level, unsigned int column, unsigned int row) = 0;
+
+    virtual bool tileResourceExists(const std::string& resourceId);
+    TextureMapLoader* loader() const;
+    virtual unsigned int tileSize() const;
 };
 
 
@@ -991,6 +1443,13 @@ public:
     FixedPointTrajectory(const Eigen::Vector3d& point);
     virtual StateVector state(double t) const;
     virtual double boundingSphereRadius() const;
+
+    %extend {
+    static FixedPointTrajectory* cast(vesta::Trajectory* trajectory)
+    {
+        return dynamic_cast<vesta::FixedPointTrajectory*>(trajectory);
+    }
+    }    
 };
 
 class KeplerianTrajectory : public Trajectory
@@ -1000,7 +1459,15 @@ public:
 
     virtual StateVector state(double t) const;
     virtual double boundingSphereRadius() const;
+
+    %extend {
+    static KeplerianTrajectory* cast(vesta::Trajectory* trajectory)
+    {
+        return dynamic_cast<vesta::KeplerianTrajectory*>(trajectory);
+    }
+    }    
 };
+
 
 %feature("director") CallbackTrajectory;
 %feature("nodirector") CallbackTrajectory::position;
@@ -1196,6 +1663,10 @@ public:
         DXT1_sRGB     = 18,
         DXT3_sRGB     = 19,
         DXT5_sRGB     = 20,
+        Depth16       = 21,
+        Depth32       = 22,
+        Depth32F      = 23,
+        FormatCount   = 24,
         InvalidFormat = -1,
     };
 
@@ -1281,6 +1752,12 @@ public:
     Spectrum color() const;
     void setColor(const Spectrum& color);
 
+    %extend {
+    static ArrowVisualizer* cast(vesta::Visualizer* visualizer)
+    {
+        return dynamic_cast<vesta::ArrowVisualizer*>(visualizer);
+    }
+    }    
 };
 
 
@@ -1291,6 +1768,13 @@ public:
     virtual ~VelocityVisualizer();
 
     virtual Eigen::Vector3d direction(const Entity* parent, double t) const;
+
+    %extend {
+    static VelocityVisualizer* cast(vesta::Visualizer* visualizer)
+    {
+        return dynamic_cast<vesta::VelocityVisualizer*>(visualizer);
+    }
+    }    
 };
 
 
@@ -1307,6 +1791,13 @@ public:
     virtual ~AxesVisualizer();
     
     ArrowGeometry* arrows();
+
+    %extend {
+    static AxesVisualizer* cast(vesta::Visualizer* visualizer)
+    {
+        return dynamic_cast<vesta::AxesVisualizer*>(visualizer);
+    }
+    }    
 };
 
 
@@ -1317,6 +1808,32 @@ public:
     virtual ~NadirVisualizer();
 
     virtual Eigen::Vector3d direction(const Entity* parent, double t) const;
+
+    %extend {
+    static NadirVisualizer* cast(vesta::Visualizer* visualizer)
+    {
+        return dynamic_cast<vesta::NadirVisualizer*>(visualizer);
+    }
+    }    
+};
+
+
+class BodyDirectionVisualizer : public ArrowVisualizer
+{
+public:
+    BodyDirectionVisualizer(double size, Entity* body);
+    virtual ~BodyDirectionVisualizer();
+
+    virtual Eigen::Vector3d direction(const Entity* parent, double t) const;
+    Entity* body() const;
+    void setBody(Entity* body);
+
+    %extend {
+    static BodyDirectionVisualizer* cast(vesta::Visualizer* visualizer)
+    {
+        return dynamic_cast<vesta::BodyDirectionVisualizer*>(visualizer);
+    }
+    }    
 };
 
 
@@ -1329,6 +1846,13 @@ public:
     PlaneGeometry* plane() const;
     Frame* frame() const;
     void setFrame(Frame* frame);
+
+    %extend {
+    static PlaneVisualizer* cast(vesta::Visualizer* visualizer)
+    {
+        return dynamic_cast<vesta::PlaneVisualizer*>(visualizer);
+    }
+    }    
 };
 
 class SensorVisualizer : public Visualizer
@@ -1419,6 +1943,13 @@ public:
 
     GridStyle gridStyle() const;
     void setGridStyle(GridStyle style);
+
+    %extend {
+    static CelestialCoordinateGrid* cast(vesta::SkyLayer* layer)
+    {
+        return dynamic_cast<vesta::CelestialCoordinateGrid*>(layer);
+    }
+    }    
 };
 
 
@@ -1440,8 +1971,63 @@ public:
 
     StarStyle style() const;
     void setStyle(StarStyle style);
+
+    float limitingMagnitude() const;
+    void setLimitingMagnitude(float limitingMagnitude);
+    float diffractionSpikeBrightness();
+    void setDiffractionSpikeBrightness(float brightness);
+
+    %extend {
+    static StarsLayer* cast(vesta::SkyLayer* layer)
+    {
+        return dynamic_cast<vesta::StarsLayer*>(layer);
+    }
+    }
 };
 
+
+class SkyImageLayer : public SkyLayer
+{
+public:
+    SkyImageLayer();
+    ~SkyImageLayer();
+
+    Eigen::Quaterniond orientation() const;
+    void setOrientation(const Eigen::Quaterniond& orientation);
+    float opacity() const;
+    void setOpacity(float opacity);
+    TextureMap* texture() const;
+    void setTexture(TextureMap* texture);
+
+    %extend {
+    static SkyImageLayer* cast(vesta::SkyLayer* layer)
+    {
+        return dynamic_cast<vesta::SkyImageLayer*>(layer);
+    }
+    }
+};
+
+
+class LightingEnvironment
+{
+public:
+    LightingEnvironment();
+    ~LightingEnvironment();
+    void reset();
+
+    %extend
+    {
+    void addReflectionRegion(const Eigen::Vector3f& center,
+                             float radius,
+                             TextureMap* cubeMap)
+    {
+        vesta::ReflectionRegion r;
+        r.region = BoundingSphere<float>(center, radius);
+        r.cubeMap = cubeMap;
+        $self->reflectionRegions().push_back(r);
+    }
+    }
+};
 
 
 class UniverseRenderer
@@ -1458,13 +2044,33 @@ public:
         RendererUninitialized,
     };
 
-    RenderStatus beginViewSet(const Universe& universe, double t);
+    RenderStatus beginViewSet(const Universe* universe, double t);
     RenderStatus endViewSet();
 
     RenderStatus renderView(const Observer* observer,
                             double fieldOfView,
                             int viewportWidth,
                             int viewportHeight);
+    RenderStatus renderView(const LightingEnvironment* lighting,
+                            const Observer* observer,
+                            double fieldOfView,
+                            const Viewport& viewport,
+                            Framebuffer* renderSurface = 0);
+    RenderStatus renderView(const LightingEnvironment* lighting,
+                            const Eigen::Vector3d& cameraPosition,
+                            const Eigen::Quaterniond& cameraOrientation,
+                            const PlanarProjection& projection,
+                            const Viewport& viewport,
+                            Framebuffer* renderSurface = 0);
+    RenderStatus renderCubeMap(const LightingEnvironment* lighting,
+                               const Eigen::Vector3d& cameraPosition,
+                               CubeMapFramebuffer* cubeMap,
+                               double nearDistance = MinimumNearDistance,
+                               double farDistance = MaximumFarDistance,
+                               const Eigen::Quaterniond& rotation = Eigen::Quaterniond::Identity());
+    RenderStatus renderShadowCubeMap(const LightingEnvironment* lighting,
+                                     const Eigen::Vector3d& cameraPosition,
+                                     CubeMapFramebuffer* cubeMap);
 
     Spectrum ambientLight() const;
     void setAmbientLight(const Spectrum& spectrum);
@@ -1610,6 +2216,27 @@ public:
 };
 
 
+class ObserverController : public Object
+{
+public:
+    ObserverController();
+    ~ObserverController();
 
+    void tick(double dt);
+
+    Observer* observer() const;
+    void setObserver(Observer* observer);
+
+    void applyTorque(const Eigen::Vector3d& torque);
+    void roll(double f);
+    void pitch(double f);
+    void yaw(double f);
+    void applyOrbitTorque(const Eigen::Vector3d& torque);
+    void dolly(double factor);
+    void stop();
+
+    double rotationDampingFactor() const;
+    void setRotationDampingFactor(double rotationDampingFactor);
+};
 
 }

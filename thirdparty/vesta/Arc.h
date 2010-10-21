@@ -1,5 +1,5 @@
 /*
- * $Revision: 475 $ $Date: 2010-08-31 08:09:34 -0700 (Tue, 31 Aug 2010) $
+ * $Revision: 530 $ $Date: 2010-10-12 11:26:43 -0700 (Tue, 12 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -26,7 +26,7 @@ class RotationModel;
  *  a single trajectory expresses translational motion relative
  *  to the center object and in the trajectory frame. Similarly,
  *  rotational motion is described by a rotation model object.
- *  The frame for rotational motion is given by the Arc's bodyFrame,
+ *  The frame for rotational motion is given by the Arc's body frame,
  *  which can be disctinct from the trajectory frame.
  */
 class Arc : public Object
@@ -35,6 +35,8 @@ public:
     Arc();
     ~Arc();
 
+    /** Return the center object for this arc.
+      */
     Entity* center() const
     {
         return m_center.ptr();
@@ -42,6 +44,8 @@ public:
 
     void setCenter(Entity* center);
 
+    /** Return the frame of the trajectory in this arc.
+      */
     Frame* trajectoryFrame() const
     {
         return m_trajectoryFrame.ptr();
@@ -49,6 +53,8 @@ public:
 
     void setTrajectoryFrame(Frame* f);
 
+    /** Return the frame of the rotation mode in this arc.
+      */
     Frame* bodyFrame() const
     {
         return m_bodyFrame.ptr();
@@ -56,6 +62,9 @@ public:
 
     void setBodyFrame(Frame* f);
 
+    /** Return the trajectory for this arc. The trajectory describes the
+      * translational motion of a body over the duration of the arc.
+      */
     Trajectory* trajectory() const
     {
         return m_trajectory.ptr();
@@ -63,6 +72,10 @@ public:
 
     void setTrajectory(Trajectory* trajectory);
 
+    /** Return the rotation model for this arc. The rotation model
+      * describes the rotational motion of a body over the duration
+      * of the arc.
+      */
     RotationModel* rotationModel() const
     {
         return m_rotationModel.ptr();
@@ -70,6 +83,8 @@ public:
 
     void setRotationModel(RotationModel* rm);
 
+    /** Get the duration of the arc in seconds.
+      */
     double duration() const
     {
         return m_duration;

@@ -1,5 +1,5 @@
 /*
- * $Revision: 514 $ $Date: 2010-09-29 19:24:31 -0700 (Wed, 29 Sep 2010) $
+ * $Revision: 534 $ $Date: 2010-10-15 12:09:37 -0700 (Fri, 15 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -89,27 +89,31 @@ public:
 
     enum ImageFormat
     {
-        R8G8B8A8 =  0,
-        B8G8R8A8 =  1,
-        R8G8B8   =  2,
-        B8G8R8   =  3,
-        DXT1     =  4,
-        DXT3     =  5,
-        DXT5     =  6,
-        RGB16F   =  7,
-        RGBA16F  =  8,
-        RGB32F   =  9,
-        RGBA32F  = 10,
-        R16F     = 11,
-        R32F     = 12,
-        RG16F    = 13,
-        RG32F    = 14,
-        Depth24  = 15,
+        R8G8B8A8      =  0,
+        B8G8R8A8      =  1,
+        R8G8B8        =  2,
+        B8G8R8        =  3,
+        DXT1          =  4,
+        DXT3          =  5,
+        DXT5          =  6,
+        RGB16F        =  7,
+        RGBA16F       =  8,
+        RGB32F        =  9,
+        RGBA32F       = 10,
+        R16F          = 11,
+        R32F          = 12,
+        RG16F         = 13,
+        RG32F         = 14,
+        Depth24       = 15,
         R8G8B8_sRGB   = 16,
         R8G8B8A8_sRGB = 17,
         DXT1_sRGB     = 18,
         DXT3_sRGB     = 19,
         DXT5_sRGB     = 20,
+        Depth16       = 21,
+        Depth32       = 22,
+        Depth32F      = 23,
+        FormatCount   = 24,
         InvalidFormat = -1,
     };
 
@@ -224,6 +228,9 @@ public:
     static unsigned int MipmapLevelSize(ImageFormat format, unsigned int baseWidth, unsigned int baseHeight, unsigned int level);
     static unsigned int MipmapLevelSize(ImageFormat format, unsigned int width, unsigned int height);
     static unsigned int MipmapChainSize(ImageFormat format, unsigned int baseWidth, unsigned int baseHeight, unsigned int levelCount);
+    static bool IsDepthFormat(ImageFormat format);
+    static std::string FormatName(ImageFormat format);
+    static bool IsFormatSupported(ImageFormat format);
 
     static TextureMap* CreateDepthTexture(unsigned int width, unsigned int height, ImageFormat format);
     static TextureMap* CreateCubeMap(unsigned int size, ImageFormat format);

@@ -1,5 +1,5 @@
 /*
- * $Revision: 519 $ $Date: 2010-10-04 15:02:29 -0700 (Mon, 04 Oct 2010) $
+ * $Revision: 541 $ $Date: 2010-10-19 11:56:03 -0700 (Tue, 19 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -180,6 +180,34 @@ TrajectoryGeometry::clearSamples()
 }
 
 
+class TrajectorySampleGenerator : public TrajectoryPlotGenerator
+{
+public:
+    TrajectorySampleGenerator(const Trajectory* trajectory) :
+        m_trajectory(trajectory)
+    {
+    }
+
+    StateVector state(double t) const
+    {
+        return m_trajectory->state(t);
+    }
+
+    double startTime() const
+    {
+        return m_trajectory->startTime();
+    }
+
+    double endTime() const
+    {
+        return m_trajectory->endTime();
+    }
+
+private:
+    const Trajectory* m_trajectory;
+};
+
+
 /** Automatically add samples to the trajectory plot. Samples of the specified trajectory
   * are calculated at regular intervals between the startTime and endTime. Any existing samples
   * in the trajectory plot are replaced.
@@ -193,10 +221,45 @@ TrajectoryGeometry::computeSamples(const Trajectory* trajectory, double startTim
         return;
     }
 
+    TrajectorySampleGenerator gen(trajectory);
+    computeSamples(&gen, startTime, endTime, steps);
+}
+
+
+/** Automatically add samples to the trajectory plot. Samples of the specified trajectory
+  * are calculated at regular intervals between the startTime and endTime.
+  */
+void
+TrajectoryGeometry::updateSamples(const Trajectory* trajectory, double startTime, double endTime, unsigned int steps)
+{
+    // Abort if we're asked to plot a null trajectory
+    if (!trajectory)
+    {
+        return;
+    }
+
+    TrajectorySampleGenerator gen(trajectory);
+    computeSamples(&gen, startTime, endTime, steps);
+}
+
+
+/** Automatically add samples to the trajectory plot. States from the specified generator
+  * are calculated at regular intervals between the startTime and endTime. Any existing samples
+  * in the trajectory plot are replaced.
+  */
+void
+TrajectoryGeometry::computeSamples(const TrajectoryPlotGenerator* generator, double startTime, double endTime, unsigned int steps)
+{
+    // Abort if we're asked to use a null generator
+    if (!generator)
+    {
+        return;
+    }
+
     clearSamples();
 
-    startTime = max(trajectory->startTime(), startTime);
-    endTime = min(trajectory->endTime(), endTime);
+    startTime = max(generator->startTime(), startTime);
+    endTime = min(generator->endTime(), endTime);
 
     // Nothing to plot if end is before start
     if (endTime <= startTime)
@@ -213,7 +276,7 @@ TrajectoryGeometry::computeSamples(const Trajectory* trajectory, double startTim
     for (unsigned int i = 0; i <= steps; ++i)
     {
         double t = m_startTime + i * dt;
-        StateVector state = trajectory->state(t);
+        StateVector state = generator->state(t);
         addSample(t, state);
     }
 
@@ -223,14 +286,14 @@ TrajectoryGeometry::computeSamples(const Trajectory* trajectory, double startTim
 }
 
 
-/** Automatically add samples to the trajectory plot. Samples of the specified trajectory
-  * are calculated at regular intervals between the startTime and endTime.
+/** Automatically add samples to the trajectory plot. Samples of the specified
+  * generator are calculated at regular intervals between the startTime and endTime.
   */
 void
-TrajectoryGeometry::updateSamples(const Trajectory* trajectory, double startTime, double endTime, unsigned int steps)
+TrajectoryGeometry::updateSamples(const TrajectoryPlotGenerator* generator, double startTime, double endTime, unsigned int steps)
 {
-    // Abort if we're asked to plot a null trajectory
-    if (!trajectory)
+    // Abort if we're asked to use a null generator
+    if (!generator)
     {
         return;
     }
@@ -238,17 +301,17 @@ TrajectoryGeometry::updateSamples(const Trajectory* trajectory, double startTime
     if (!m_curvePlot)
     {
         // Trajectory hasn't been created yet; initialize it for the specified time range
-        computeSamples(trajectory, startTime, endTime, steps);
+        computeSamples(generator, startTime, endTime, steps);
         return;
     }
 
     double dt = (endTime - startTime) / (steps - 1);
-    double windowStartTime = max(trajectory->startTime(), startTime - dt);
-    double windowEndTime = min(trajectory->endTime(), endTime + dt);
+    double windowStartTime = max(generator->startTime(), startTime - dt);
+    double windowEndTime = min(generator->endTime(), endTime + dt);
 
     if (endTime <= m_curvePlot->startTime() || startTime >= m_curvePlot->endTime())
     {
-        computeSamples(trajectory, windowStartTime, windowEndTime, steps);
+        computeSamples(generator, windowStartTime, windowEndTime, steps);
     }
     else
     {
@@ -258,7 +321,7 @@ TrajectoryGeometry::updateSamples(const Trajectory* trajectory, double startTime
             for (double t = m_curvePlot->startTime() - dt; t > windowStartTime; t -= dt)
             {
                 t = max(t, windowStartTime);
-                StateVector sv = trajectory->state(t);
+                StateVector sv = generator->state(t);
 
                 CurvePlotSample sample;
                 sample.t = t;
@@ -276,7 +339,7 @@ TrajectoryGeometry::updateSamples(const Trajectory* trajectory, double startTime
             for (double t = m_curvePlot->endTime() + dt; t < windowEndTime; t += dt)
             {
                 t = min(t, windowEndTime);
-                StateVector sv = trajectory->state(t);
+                StateVector sv = generator->state(t);
 
                 CurvePlotSample sample;
                 sample.t = t;

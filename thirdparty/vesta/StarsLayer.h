@@ -43,6 +43,9 @@ public:
         GaussianStars = 1,
     };
 
+    /** Get the style used for star rendering. GaussianStars is more realistic, but
+      * is only available on graphics hardware that supports GLSL shaders.
+      */
     StarStyle style() const
     {
         return m_style;
@@ -62,6 +65,31 @@ public:
       */
     void setLimitingMagnitude(float limitingMagnitude);
 
+    /** Get the brightness of the diffraction spike effect.
+      *
+      * @see StarsLayer::setDiffractionSpikeBrightness
+      *
+      * \return a value between 0 and 1
+      */
+    float diffractionSpikeBrightness()
+    {
+        return m_diffractionSpikeBrightness;
+    }
+
+    /** Set the brightness of the diffraction spike effect. Diffraction spikes are
+      * an optical artifact caused by the secondary mirror support structures in
+      * a reflecting telescope. They can be used to make stars appear more
+      * brilliant when rendered on a device with limited dynamic range, such as
+      * a standard computer monitor.
+      *
+      * \param brightness a value between 0 and 1 that gives the intensity of the
+      * difraction spikes (where 0 disables the effect and 1 is maximum intensity)
+      */
+    void setDiffractionSpikeBrightness(float brightness)
+    {
+        m_diffractionSpikeBrightness = brightness;
+    }
+
 private:
     void updateVertexBuffer();
 
@@ -75,6 +103,7 @@ private:
     bool m_starShaderCompiled;
     StarStyle m_style;
     float m_limitingMagnitude;
+    float m_diffractionSpikeBrightness;
 };
 
 }

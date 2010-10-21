@@ -1,5 +1,5 @@
 /*
- * $Revision: 447 $ $Date: 2010-08-20 15:36:47 -0700 (Fri, 20 Aug 2010) $
+ * $Revision: 522 $ $Date: 2010-10-05 19:41:48 -0700 (Tue, 05 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -26,6 +26,9 @@ public:
     Chronology();
     ~Chronology();
 
+    /** Return the time at which the chronology begins. The time is in
+      * seconds since J2000 TDB.
+      */
     double beginning() const
     {
         return m_beginning;
@@ -33,11 +36,17 @@ public:
 
     void setBeginning(double t);
 
+    /** Return the time at which the chronology ends. The time is in
+      * seconds since J2000 TDB. An empty chronology will have
+      * beginning() == ending().
+      */
     double ending() const
     {
         return m_beginning + m_duration;
     }
 
+    /** Get the duration of the chronology in seconds.
+      */
     double duration() const
     {
         return m_duration;

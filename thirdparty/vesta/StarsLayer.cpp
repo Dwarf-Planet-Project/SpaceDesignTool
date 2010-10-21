@@ -84,6 +84,7 @@ static const char* StarFragmentShaderSource =
 "uniform float sigma2;                           \n"
 "uniform float glareFalloff;                     \n"
 "uniform float glareBrightness;                  \n"
+"uniform float diffSpikeBrightness;              \n"
 "uniform float exposure;                         \n"
 "varying float brightness;                       \n"
 
@@ -92,8 +93,8 @@ static const char* StarFragmentShaderSource =
 "    vec2 offset = gl_FragCoord.xy - pointCenter;                \n"
 "    float r2 = dot(offset, offset);                             \n"
 "    float b = exp(-r2 / (2.0 * sigma2));                        \n"
-"    float spikes = (max(0.0, 1.0 - abs(offset.x + offset.y)) + max(0.0, 1.0 - abs(offset.x - offset.y))) * 3.0 + 0.5;\n"
-"    b += glareBrightness / (glareFalloff * pow(r2, 1.5) + 1.0) * spikes;      \n"
+"    float spikes = (max(0.0, 1.0 - abs(offset.x + offset.y)) + max(0.0, 1.0 - abs(offset.x - offset.y))) * diffSpikeBrightness;\n"
+"    b += glareBrightness / (glareFalloff * pow(r2, 1.5) + 1.0) * (spikes + 0.5);     \n"
 "    gl_FragColor = vec4(linearToSRGB(b * exposure * color.rgb * brightness), 1.0);   \n"
 "}                                                               \n"
 ;
@@ -126,7 +127,8 @@ StarsLayer::StarsLayer() :
     m_vertexBufferCurrent(false),
     m_starShaderCompiled(false),
     m_style(GaussianStars),
-    m_limitingMagnitude(DefaultLimitingMagnitude)
+    m_limitingMagnitude(DefaultLimitingMagnitude),
+    m_diffractionSpikeBrightness(0.0f)
 {
 }
 
@@ -137,7 +139,8 @@ StarsLayer::StarsLayer(StarCatalog* starCatalog) :
     m_vertexBufferCurrent(false),
     m_starShaderCompiled(false),
     m_style(GaussianStars),
-    m_limitingMagnitude(DefaultLimitingMagnitude)
+    m_limitingMagnitude(DefaultLimitingMagnitude),
+    m_diffractionSpikeBrightness(0.0f)
 {
 }
 
@@ -391,6 +394,7 @@ StarsLayer::render(RenderContext& rc)
         starShader->setConstant("sigma2", 0.35f);
         starShader->setConstant("glareFalloff", 1.0f / 15.0f);
         starShader->setConstant("glareBrightness", 0.003f);
+        starShader->setConstant("diffSpikeBrightness", m_diffractionSpikeBrightness * 3.0f);
 
         // Exposure is set such that stars at the limiting magnitude are just
         // visible on screen, i.e. they will be rendered as pixels with
@@ -437,6 +441,9 @@ StarsLayer::render(RenderContext& rc)
 }
 
 
+/** Set the style used for star rendering. GaussianStars is more realistic, but
+  * is only available on graphics hardware that supports GLSL shaders.
+  */
 void
 StarsLayer::setStyle(StarStyle style)
 {

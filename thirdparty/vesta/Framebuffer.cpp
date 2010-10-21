@@ -111,6 +111,34 @@ Framebuffer::depthTexture() const
 }
 
 
+// Test formats for validity and hardware support
+static bool CheckFormats(TextureMap::ImageFormat colorFormat, TextureMap::ImageFormat depthFormat)
+{
+    if (!TextureMap::IsDepthFormat(depthFormat))
+    {
+        VESTA_WARNING("Error creating framebuffer. %s is not a depth buffer format",
+                      TextureMap::FormatName(depthFormat).c_str());
+        return false;
+    }
+
+    if (!TextureMap::IsFormatSupported(depthFormat))
+    {
+        VESTA_WARNING("Error creating framebuffer. %s is not a format supported by the graphics hardware.",
+                      TextureMap::FormatName(depthFormat).c_str());
+        return false;
+    }
+
+    if (!TextureMap::IsFormatSupported(colorFormat))
+    {
+        VESTA_WARNING("Error creating framebuffer. %s is not a format supported by the graphics hardware.",
+                      TextureMap::FormatName(colorFormat).c_str());
+        return false;
+    }
+
+    return true;
+}
+
+
 /** Create a new framebuffer object with both a color buffer and depth buffer.
   * This factory method will return either a valid and fully constructed framebuffer
   * or null if there was a problem creating the framebuffer.
@@ -118,8 +146,14 @@ Framebuffer::depthTexture() const
 Framebuffer*
 Framebuffer::CreateFramebuffer(unsigned int width,
                                unsigned int height,
-                               TextureMap::ImageFormat format)
+                               TextureMap::ImageFormat format,
+                               TextureMap::ImageFormat depthFormat)
 {
+    if (!CheckFormats(format, depthFormat))
+    {
+        return NULL;
+    }
+
     Framebuffer* fb = new Framebuffer(width, height,
                                       ColorAttachment | DepthAttachment,
                                       format);
@@ -127,6 +161,34 @@ Framebuffer::CreateFramebuffer(unsigned int width,
     {
         return NULL;
     }
+
+    TextureProperties texProps;
+    texProps.addressS = TextureProperties::Clamp;
+    texProps.addressT = TextureProperties::Clamp;
+    texProps.useMipmaps = false;
+    texProps.usage = TextureProperties::ColorTexture;
+
+    fb->m_colorTexture = new TextureMap("color", NULL, texProps);
+    if (fb->m_colorTexture->generate(width, height, format) == 0)
+    {
+        VESTA_WARNING("Error creating color texture for framebuffer.");
+        delete fb;
+        return NULL;
+    }
+    else
+    {
+        fb->m_fb->attachColorTarget2D(fb->m_colorTexture->id());
+    }
+
+    fb->m_depthTexture = TextureMap::CreateDepthTexture(width, height, depthFormat);
+    if (fb->m_depthTexture.isNull())
+    {
+        VESTA_WARNING("Error creating depth texture for framebuffer.");
+        delete fb;
+        return NULL;
+    }
+
+    fb->m_fb->attachDepthTarget(fb->m_depthTexture->id());
 
     if (!fb->isValid())
     {
@@ -147,6 +209,13 @@ Framebuffer::CreateColorOnlyFramebuffer(unsigned int width,
                                         unsigned int height,
                                         TextureMap::ImageFormat format)
 {
+    if (!TextureMap::IsFormatSupported(format))
+    {
+        VESTA_WARNING("Error creating framebuffer. %s is not a format supported by the graphics hardware.",
+                      TextureMap::FormatName(format).c_str());
+        return false;
+    }
+
     Framebuffer* fb = new Framebuffer(width, height,
                                       ColorAttachment,
                                       format);
@@ -191,8 +260,14 @@ Framebuffer::CreateColorOnlyFramebuffer(unsigned int width,
   */
 Framebuffer*
 Framebuffer::CreateDepthOnlyFramebuffer(unsigned int width,
-                                        unsigned int height)
+                                        unsigned int height,
+                                        TextureMap::ImageFormat depthFormat)
 {
+    if (!CheckFormats(TextureMap::R8G8B8A8, depthFormat))
+    {
+        return NULL;
+    }
+
     Framebuffer* fb = new Framebuffer(width, height,
                                       DepthAttachment,
                                       TextureMap::R8G8B8A8);

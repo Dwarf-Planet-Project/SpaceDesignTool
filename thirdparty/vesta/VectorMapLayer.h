@@ -14,21 +14,20 @@
 #include "WorldLayer.h"
 #include "Spectrum.h"
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <vector>
 
 
 namespace vesta
 {
 
-class MapLineString
+class MapElement : public Object
 {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-    MapLineString();
-
-    void addPoint(const Eigen::Vector3f& p);
-    const std::vector<Eigen::Vector3f>& points() const;
+    MapElement();
+    virtual ~MapElement() {}
 
     Spectrum color() const
     {
@@ -50,10 +49,63 @@ public:
         m_opacity = opacity;
     }
 
+    virtual void render(float west, float south, float east, float north) const = 0;
+
+    Eigen::AlignedBox<float, 2> bounds() const
+    {
+        return m_bounds;
+    }
+
+protected:
+    void setBounds(const Eigen::AlignedBox<float, 2>& bounds)
+    {
+        m_bounds = bounds;
+    }
+
 private:
-    std::vector<Eigen::Vector3f> m_points;
     Spectrum m_color;
     float m_opacity;
+    Eigen::AlignedBox<float, 2> m_bounds;
+};
+
+
+class MapLineString : public MapElement
+{
+public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+    MapLineString();
+
+    virtual void render(float west, float south, float east, float north) const;
+
+    void addPoint(const Eigen::Vector3f& p);
+    const std::vector<Eigen::Vector3f>& points() const;
+
+private:
+    std::vector<Eigen::Vector3f> m_points;
+};
+
+
+class MapPolygon : public MapElement
+{
+public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+    MapPolygon(MapLineString* border);
+
+    /** Get the line string that forms the polygon border.
+      */
+    MapLineString* border() const
+    {
+        return m_border.ptr();
+    }
+
+    void setBorder(MapLineString* border);
+
+    virtual void render(float west, float south, float east, float north) const;
+
+private:
+    counted_ptr<MapLineString> m_border;
 };
 
 
@@ -72,8 +124,10 @@ public:
 
     virtual void renderTile(RenderContext& rc, const WorldGeometry* world, const QuadtreeTile* tile) const;
 
+    void addElement(MapElement* e);
+
 private:
-    std::vector<MapLineString*> m_lineStrings;
+    std::vector<counted_ptr<MapElement> > m_elements;
 };
 
 }

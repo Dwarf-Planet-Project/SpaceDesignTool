@@ -1,5 +1,5 @@
 /*
- * $Revision: 447 $ $Date: 2010-08-20 15:36:47 -0700 (Fri, 20 Aug 2010) $
+ * $Revision: 522 $ $Date: 2010-10-05 19:41:48 -0700 (Tue, 05 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -28,7 +28,7 @@ Chronology::~Chronology()
 
 
 /** Set the starting time of this chronology.
-  * @param t time in seconds since J2000
+  * @param t time in seconds since J2000 TDB
   */
 void Chronology::setBeginning(double t)
 {

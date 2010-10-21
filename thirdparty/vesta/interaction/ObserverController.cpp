@@ -41,7 +41,7 @@ ObserverController::tick(double dt)
     double damping = exp(-dt * m_rotationDampingFactor);
     m_orbitAngularVelocity *= damping;
     m_panAngularVelocity *= damping;
-    m_dollyVelocity = 1.0 + damping * (m_dollyVelocity - 1.0);
+    m_dollyVelocity = pow(m_dollyVelocity, damping);
 
     double w = m_orbitAngularVelocity.norm();
     if (w > 1.0e-6)
@@ -58,7 +58,7 @@ ObserverController::tick(double dt)
     if (abs(m_dollyVelocity - 1.0) > 1.0e-6)
     {
         Entity* center = m_observer->center();
-        double f = m_dollyVelocity;
+        double f = pow(m_dollyVelocity, dt * 1000.0);
         if (center)
         {
             // Special case for world geometry, where the distance is to the surface of the

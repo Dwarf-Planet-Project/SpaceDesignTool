@@ -131,6 +131,7 @@ public:
     double toTAIJD() const;
     double toTTJD() const;
     double toTDBSec() const;
+    double toTTSec() const;
 
     std::string toString(Format format = ISO8601_Combined) const;
 

@@ -1,5 +1,5 @@
 /*
- * $Revision: 508 $ $Date: 2010-09-17 11:21:21 -0700 (Fri, 17 Sep 2010) $
+ * $Revision: 547 $ $Date: 2010-10-21 14:15:29 -0700 (Thu, 21 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -1065,10 +1065,16 @@ RenderContext::setShaderMaterial(const Material* material)
     // matrix.
     Matrix4f inverseModelView = modelview().inverse();
 
+    // Get the scale factor of this transformation; calculations that use this
+    // value will only be approximately correct when there is anisotropic
+    // scaling.
+    float scale = modelview().linear().rowwise().norm().sum() / 3.0f;
+
     // Gather the light positions and colors into arrays that we can
     // pass as shader constants.
     Vector3f lightPositions[MaxLights];
     Vector3f lightColors[MaxLights];
+    float lightAttenuations[MaxLights];
     for (unsigned int lightIndex = 0; lightIndex < shaderInfo.lightCount(); ++lightIndex)
     {
         const Light& light = m_environment.m_lights[lightIndex];
@@ -1081,6 +1087,9 @@ RenderContext::setShaderMaterial(const Material* material)
             lightPositions[lightIndex].normalize();
         }
         lightColors[lightIndex] = Vector3f(light.color.data());
+
+        // Attenuation factor must be scaled by the modelview matrix
+        lightAttenuations[lightIndex] = light.attenuation * scale;
     }
 
     //if (model == ShaderInfo::Lambert || model == ShaderInfo::BlinnPhong)
@@ -1088,6 +1097,10 @@ RenderContext::setShaderMaterial(const Material* material)
     {
         shader->setConstantArray("lightPosition", lightPositions, shaderInfo.lightCount());
         shader->setConstantArray("lightColor", lightColors,  shaderInfo.lightCount());
+        if (shaderInfo.lightCount() > 1)
+        {
+            shader->setConstantArray("lightAttenuation", lightAttenuations,  shaderInfo.lightCount());
+        }
         shader->setConstant("ambientLight", m_environment.m_ambientLight);
     }
 
@@ -1506,10 +1519,11 @@ RenderContext::drawBillboard(const Vector3f& position, float size)
 
 
 void
-RenderContext::drawText(const Vector3f& position, const std::string& text, const TextureFont* font, const Spectrum& color)
+RenderContext::drawText(const Vector3f& position, const std::string& text, const TextureFont* font, const Spectrum& color, float opacity)
 {
     Material material;
     material.setDiffuse(color);
+    material.setOpacity(opacity);
     material.setBlendMode(Material::AlphaBlend);
     material.setBaseTexture(font->glyphTexture());
     setVertexInfo(VertexSpec::PositionTex);

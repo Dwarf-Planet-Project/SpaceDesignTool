@@ -1,5 +1,5 @@
 /*
- * $Revision: 223 $ $Date: 2010-03-30 05:44:44 -0700 (Tue, 30 Mar 2010) $
+ * $Revision: 530 $ $Date: 2010-10-12 11:26:43 -0700 (Tue, 12 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -24,6 +24,10 @@ Body::~Body()
 }
 
 
+/** Set the geometry for this body. The default geometry
+  * is null, indicating that the object has no visibile representation
+  * (apart from visualizers.)
+  */
 void
 Body::setGeometry(Geometry* geometry)
 {

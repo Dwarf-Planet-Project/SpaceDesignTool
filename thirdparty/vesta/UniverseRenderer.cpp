@@ -1,5 +1,5 @@
 /*
- * $Revision: 513 $ $Date: 2010-09-27 12:58:12 -0700 (Mon, 27 Sep 2010) $
+ * $Revision: 545 $ $Date: 2010-10-20 18:58:01 -0700 (Wed, 20 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -274,12 +274,37 @@ UniverseRenderer::initializeOmniShadowMaps(unsigned int shadowMapSize, unsigned 
 }
 
 
+/** Set up the renderer to draw one or more views at the specified time.
+  * The renderer can perform optimizations that improve performance when
+  * multiple views are rendered within the same view set. These optimizations
+  * assume that no changes are made to objects in the universe in between
+  * beginViewSet / endViewSet. If objects are being changed between calls
+  * to renderView(), the calls should appear in different view sets.
+  *
+  * \param universe the universe to be rendered
+  * \param tsec simulation time in seconds since J2000 TDB
+  *
+  * \return a status code indicating whether the view set was
+  *         set up successfully. If there were no problems, this
+  *         method returns RendererOk. Otherwise, the beginViewSet()
+  *         will return:
+  *         \list
+  *         \li RendererUninitialized - if called before initializeGraphics()
+  *         \li RendererBadParameter - if universe is null
+  *         \li RendererViewSetAlreadyStarted - if called after a previous
+  *             beginViewSet() call but before endViewSet()
+  */
 UniverseRenderer::RenderStatus
-UniverseRenderer::beginViewSet(const Universe& universe, double t)
+UniverseRenderer::beginViewSet(const Universe* universe, double tsec)
 {
     if (!m_renderContext)
     {
         return RendererUninitialized;
+    }
+
+    if (universe == NULL)
+    {
+        return RendererBadParameter;
     }
 
     if (m_universe)
@@ -287,8 +312,8 @@ UniverseRenderer::beginViewSet(const Universe& universe, double t)
         return RenderViewSetAlreadyStarted;
     }
 
-    m_universe = &universe;
-    m_currentTime = t;
+    m_universe = universe;
+    m_currentTime = tsec;
 
     // Build the light source list
     // TODO: maintain a bounding sphere hierarchy in order to avoid having to do a linear
@@ -323,6 +348,11 @@ UniverseRenderer::beginViewSet(const Universe& universe, double t)
 }
 
 
+/** Finish the current view set.
+  *
+  * \return the render status, which will be RenderNoViewSet if endViewSet() is
+  *         called before beginViewSet(). Otherwise, endViewSet() returns RenderOk.
+  */
 UniverseRenderer::RenderStatus
 UniverseRenderer::endViewSet()
 {
@@ -457,6 +487,14 @@ UniverseRenderer::renderView(const LightingEnvironment* lighting,
     // shadow and reflection rendering.
     m_renderSurface = renderSurface;
     m_renderViewport = viewport;
+
+    // Save the current color mask
+    GLboolean mask[4];
+    glGetBooleanv(GL_COLOR_WRITEMASK, mask);
+    for (unsigned int i = 0; i < 4; ++i)
+    {
+        m_renderColorMask[i] = mask[i] == GL_TRUE;
+    }
 
     glViewport(viewport.x(), viewport.y(), viewport.width(), viewport.height());
 
@@ -1158,8 +1196,10 @@ beginCubicShadowRendering()
 }
 
 
+// Restore GL state after shadow rendering. Shadow rendering
+// affects the render target, color mask, and culling state.
 void
-finishShadowRendering(Framebuffer* renderSurface)
+finishShadowRendering(Framebuffer* renderSurface, bool colorMask[])
 {
     if (renderSurface)
     {
@@ -1170,7 +1210,11 @@ finishShadowRendering(Framebuffer* renderSurface)
         Framebuffer::unbind();
     }
 
-    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    glColorMask(colorMask[0] ? GL_TRUE : GL_FALSE,
+                colorMask[1] ? GL_TRUE : GL_FALSE,
+                colorMask[2] ? GL_TRUE : GL_FALSE,
+                colorMask[3] ? GL_TRUE : GL_FALSE);
+
     glCullFace(GL_BACK);
 }
 
@@ -1380,7 +1424,7 @@ UniverseRenderer::renderDepthBufferSpanShadows(unsigned int shadowIndex,
     m_renderContext->popProjection();
     m_renderContext->popModelView();
 
-    finishShadowRendering(m_renderSurface.ptr());
+    finishShadowRendering(m_renderSurface.ptr(), m_renderColorMask);
 
     // Reset the viewport
     glDepthRange(m_depthRangeFront, m_depthRangeBack);
@@ -1519,7 +1563,7 @@ UniverseRenderer::renderDepthBufferSpanOmniShadows(unsigned int shadowIndex,
 
     // Restore normal renderer operation
     m_renderContext->setRendererOutput(RenderContext::FragmentColor);
-    finishShadowRendering(m_renderSurface.ptr());
+    finishShadowRendering(m_renderSurface.ptr(), m_renderColorMask);
     glFrontFace(GL_CCW);
 
     // Reset the viewport
@@ -1552,19 +1596,22 @@ UniverseRenderer::drawItem(const VisibleItem& item)
                 // Special case for the Sun
                 m_renderContext->setLight(0, RenderContext::Light(RenderContext::DirectionalLight,
                                                                   iter->cameraRelativePosition.cast<float>(),
-                                                                  Spectrum(1.0f, 1.0f, 1.0f)));
+                                                                  Spectrum(1.0f, 1.0f, 1.0f),
+                                                                  1.0f));
                 ++lightCount;
             }
             else
             {
                 Vector3f lightPosition = (iter->position - item.position).cast<float>();
                 float distanceToLight = lightPosition.norm() - item.boundingRadius;
+                float attenuation = 1.0f / (256.0f * iter->lightSource->range() * iter->lightSource->range());
                 if (distanceToLight < iter->lightSource->range())
                 {
                     m_renderContext->setLight(lightCount,
                                               RenderContext::Light(RenderContext::PointLight,
                                                                    iter->cameraRelativePosition.cast<float>(),
-                                                                   iter->lightSource->spectrum()));
+                                                                   iter->lightSource->spectrum(),
+                                                                   attenuation));
                     ++lightCount;
                 }
             }
@@ -1586,6 +1633,13 @@ UniverseRenderer::drawItem(const VisibleItem& item)
 }
 
 
+/** Set the color of 'fill light' in the scene. Ambient light is
+  * a crude approximation to the light resulting from multiple
+  * reflections off of diffuse surfaces. By default, the ambient
+  * light is set to black. The default is realistic for space scenes, but
+  * some ambient light may be desirable when clarity of the visualization
+  * is more important than realism.
+  */
 void
 UniverseRenderer::setAmbientLight(const Spectrum& spectrum)
 {

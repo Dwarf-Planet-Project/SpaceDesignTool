@@ -69,9 +69,11 @@ public:
 
     static Framebuffer* CreateFramebuffer(unsigned int width,
                                           unsigned int height,
-                                          TextureMap::ImageFormat format);
+                                          TextureMap::ImageFormat format,
+                                          TextureMap::ImageFormat depthFormat = TextureMap::Depth24);
     static Framebuffer* CreateDepthOnlyFramebuffer(unsigned int width,
-                                                   unsigned int height);
+                                                   unsigned int height,
+                                                   TextureMap::ImageFormat depthFormat = TextureMap::Depth24);
     static Framebuffer* CreateColorOnlyFramebuffer(unsigned int width,
                                                    unsigned int height,
                                                    TextureMap::ImageFormat format);

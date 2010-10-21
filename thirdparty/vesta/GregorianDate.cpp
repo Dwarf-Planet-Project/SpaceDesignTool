@@ -682,12 +682,32 @@ GregorianDate::toTAIJD() const
 }
 
 
-/** Convert the date to a number of seconds since J2000.0 in the TDB time scale.
+/** Convert the date to a Julian day number in the TT time scale.
+  */
+double
+GregorianDate::toTTJD() const
+{
+    return toTAIJD() + secondsToDays(DeltaTAI);
+}
+
+
+/** Convert the date to a number of seconds since J2000.0 in the TDB
+  * (Barycentric Dynamical Time) time scale.
   */
 double
 GregorianDate::toTDBSec() const
 {
     return convertTAItoTDB(convertJDToSec(toTAIJD()));
+}
+
+
+/** Convert the date to a number of seconds since J2000.0 in the TT
+  * (Terrestrial Time) time scale.
+  */
+double
+GregorianDate::toTTSec() const
+{
+    return convertTAItoTT(convertJDToSec(toTAIJD()));
 }
 
 

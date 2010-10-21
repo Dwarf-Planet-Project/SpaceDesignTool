@@ -90,6 +90,7 @@ public:
     void setConstant(const char* name, const Eigen::Matrix3f& value);
     void setConstant(const char* name, const Eigen::Matrix4f& value);
     void setConstant(const char* name, const Spectrum& color);
+    void setConstantArray(const char* name, const float values[], unsigned int count);
     void setConstantArray(const char* name, const Eigen::Vector3f values[], unsigned int count);
     void setConstantArray(const char* name, const Eigen::Matrix4f values[], unsigned int count);
 

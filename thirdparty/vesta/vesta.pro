@@ -31,6 +31,7 @@ VESTA_SOURCES = \
     $$VESTA_PATH/Entity.cpp \
     $$VESTA_PATH/FixedPointTrajectory.cpp \
     $$VESTA_PATH/FixedRotationModel.cpp \
+    $$VESTA_PATH/Frame.cpp \
     $$VESTA_PATH/Framebuffer.cpp \
     $$VESTA_PATH/Geometry.cpp \
     $$VESTA_PATH/GregorianDate.cpp \
@@ -105,6 +106,7 @@ VESTA_HEADERS = \
     $$VESTA_PATH/Debug.h \
     $$VESTA_PATH/DDSLoader.h \
     $$VESTA_PATH/Entity.h \
+    $$VESTA_PATH/FadeRange.h \
     $$VESTA_PATH/Frame.h \
     $$VESTA_PATH/Framebuffer.h \
     $$VESTA_PATH/Frustum.h \

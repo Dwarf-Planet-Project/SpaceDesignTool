@@ -55,7 +55,10 @@ public:
         return true;
     }
 
-    TextureMapLoader* loader() const;
+    TextureMapLoader* loader() const
+    {
+        return m_loader;
+    }
 
     virtual unsigned int tileSize() const
     {

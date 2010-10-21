@@ -1,5 +1,5 @@
 /*
- * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
+ * $Revision: 547 $ $Date: 2010-10-21 14:15:29 -0700 (Thu, 21 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -15,6 +15,7 @@
 #include "Spectrum.h"
 #include "TextureFont.h"
 #include "TextureMap.h"
+#include "FadeRange.h"
 #include <string>
 
 
@@ -120,6 +121,38 @@ public:
         m_iconColor = color;
     }
 
+    /** Get the fade range for this label.
+      */
+    FadeRange* fadeRange() const
+    {
+        return m_fadeRange.ptr();
+    }
+
+    /** Set the fade range for this label. The fade range how the visibility
+      * of the label changes as its apparent size changes. Setting it to null will disable
+      * fading.
+      */
+    void setFadeRange(FadeRange* fadeRange);
+
+    /** Get the size used for calculating visibility. The size has no effect
+      * unless a fadeRange is set.
+      */
+    float fadeSize() const
+    {
+        return m_fadeSize;
+    }
+
+    /** Set the size used for calculating visibility. The size has no effect
+      * unless a fadeRange is set. To avoid screen clutter, it is useful to
+      * set the fade size of labels for orbiting objects to approximately the size of
+      * the orbit. For objects on the surface of a planet, the radius of the object
+      * is a good choice for the fade size.
+      */
+    void setFadeSize(float fadeSize)
+    {
+        m_fadeSize = fadeSize;
+    }
+
 private:
     std::string m_text;
     counted_ptr<TextureFont> m_font;
@@ -127,6 +160,8 @@ private:
     Spectrum m_color;
     float m_iconSize;
     Spectrum m_iconColor;
+    counted_ptr<FadeRange> m_fadeRange;
+    float m_fadeSize;
 };
 
 }

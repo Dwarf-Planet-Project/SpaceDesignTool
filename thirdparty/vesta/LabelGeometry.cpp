@@ -1,5 +1,5 @@
 /*
- * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
+ * $Revision: 547 $ $Date: 2010-10-21 14:15:29 -0700 (Thu, 21 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -30,7 +30,8 @@ LabelGeometry::LabelGeometry(const std::string& text, TextureFont* font, const S
     m_font(counted_ptr<TextureFont>(font)),
     m_color(color),
     m_iconSize(iconSize),
-    m_iconColor(Spectrum::White())
+    m_iconColor(Spectrum::White()),
+    m_fadeSize(1.0f)
 {
     setFixedApparentSize(true);
 }
@@ -52,6 +53,20 @@ LabelGeometry::render(RenderContext& rc, double /* clock */) const
         labelOffset.x() = std::floor(m_iconSize / 2.0f) + 1.0f;
     }
 
+    float opacity = 0.99f;
+    if (m_fadeRange.isValid())
+    {
+        float cameraDistance = rc.modelview().translation().norm();
+        float pixelSize = m_fadeSize / (rc.pixelSize() * cameraDistance);
+
+        opacity *= m_fadeRange->opacity(pixelSize);
+    }
+
+    if (opacity == 0.0f)
+    {
+        return;
+    }
+
     // Render during the opaque pass if opaque or during the translucent pass if not.
     if (rc.pass() == RenderContext::TranslucentPass)
     {
@@ -62,14 +77,14 @@ LabelGeometry::render(RenderContext& rc, double /* clock */) const
         // Draw the label string as long as it's not empty and we have a valid font
         if (!m_text.empty() && !m_font.isNull())
         {
-            rc.drawText(labelOffset, m_text, m_font.ptr(), m_color);
+            rc.drawText(labelOffset, m_text, m_font.ptr(), m_color, opacity);
         }
 
         if (hasIcon)
         {
             Material material;
             material.setEmission(m_iconColor);
-            material.setOpacity(0.99f);
+            material.setOpacity(opacity);
             material.setBaseTexture(m_icon.ptr());
             rc.bindMaterial(&material);
             rc.drawBillboard(Vector3f::Zero(), m_iconSize * rc.pixelSize() * distanceScale);
@@ -97,4 +112,11 @@ LabelGeometry::apparentSize() const
     {
         return m_iconSize;
     }
+}
+
+
+void
+LabelGeometry::setFadeRange(FadeRange *fadeRange)
+{
+    m_fadeRange = fadeRange;
 }

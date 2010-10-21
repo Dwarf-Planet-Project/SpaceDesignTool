@@ -1,5 +1,5 @@
 /*
- * $Revision: 475 $ $Date: 2010-08-31 08:09:34 -0700 (Tue, 31 Aug 2010) $
+ * $Revision: 523 $ $Date: 2010-10-07 10:06:21 -0700 (Thu, 07 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -19,6 +19,8 @@
 namespace vesta
 {
 
+typedef Eigen::Matrix<double, 6, 6> StateTransform;
+
 /** Abstract base class for reference frames. A reference frame in vesta is a
   * simply set of three orthogonal axes. Subclasses must override the orientation()
   * and angularVelocity() methods.
@@ -29,15 +31,19 @@ public:
     virtual ~Frame() {}
 
     /** Compute the orientation of the frame at the specified time.
-      * @param t The time given as the number of seconds since 1 Jan 2000 12:00:00 TDB.
+      * @param tsec The time given as the number of seconds since 1 Jan 2000 12:00:00 TDB.
       */
-    virtual Eigen::Quaterniond orientation(double t) const = 0;
+    virtual Eigen::Quaterniond orientation(double tsec) const = 0;
 
     /** Compute the angular of the frame at the specified time. The units
       * of angular velocity are radians per second.
-      * @param t The time given as the number of seconds since 1 Jan 2000 12:00:00 TDB.
+      * @param tsec The time given as the number of seconds since 1 Jan 2000 12:00:00 TDB.
       */
-    virtual Eigen::Vector3d angularVelocity(double t) const = 0;
+    virtual Eigen::Vector3d angularVelocity(double tsec) const = 0;
+
+    StateTransform stateTransform(double tsec);
+
+    StateTransform inverseStateTransform(double tsec);
 };
 
 }

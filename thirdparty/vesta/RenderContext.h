@@ -1,5 +1,5 @@
 /*
- * $Revision: 508 $ $Date: 2010-09-17 11:21:21 -0700 (Fri, 17 Sep 2010) $
+ * $Revision: 547 $ $Date: 2010-10-21 14:15:29 -0700 (Thu, 21 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -82,18 +82,20 @@ public:
         Light() :
             type(DirectionalLight),
             position(Eigen::Vector3f::UnitZ()),
-            color(0.0f, 0.0f, 0.0f)
+            color(0.0f, 0.0f, 0.0f),
+            attenuation(1.0f)
         {
         }
 
-        Light(LightType _type, const Eigen::Vector3f& _position, const Spectrum& _color) :
-            type(_type), position(_position), color(_color)
+        Light(LightType _type, const Eigen::Vector3f& _position, const Spectrum& _color, float _attenuation) :
+            type(_type), position(_position), color(_color), attenuation(_attenuation)
         {
         }
 
         LightType type;
         Eigen::Vector3f position;
         Spectrum color;
+        float attenuation;
     };
 
     struct ScatteringParameters
@@ -309,7 +311,7 @@ public:
     void drawPrimitives(PrimitiveBatch::PrimitiveType type, unsigned int indexCount, PrimitiveBatch::IndexSize indexSize, const char* indexData);
 
     void drawBillboard(const Eigen::Vector3f& position, float size);
-    void drawText(const Eigen::Vector3f& position, const std::string& text, const TextureFont* font, const Spectrum& color);
+    void drawText(const Eigen::Vector3f& position, const std::string& text, const TextureFont* font, const Spectrum& color, float opacity = 1.0f);
     void drawCone(float apexAngle, const Eigen::Vector3f& axis,
                   const Spectrum& color, float opacity,
                   unsigned int radialSubdivision, unsigned int axialSubdivision);

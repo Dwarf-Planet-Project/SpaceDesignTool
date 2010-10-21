@@ -1,5 +1,5 @@
 /*
- * $Revision: 499 $ $Date: 2010-09-10 18:18:05 -0700 (Fri, 10 Sep 2010) $
+ * $Revision: 546 $ $Date: 2010-10-21 12:37:00 -0700 (Thu, 21 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -496,6 +496,7 @@ static void generateBlinnPhongShader(ostream& vertex, ostream& fragment, const S
     // Light position in local space
     declareUniformArray(fragment, "vec3", "lightPosition", shaderInfo.lightCount());
     declareUniformArray(fragment, "vec3", "lightColor", shaderInfo.lightCount());
+    declareUniformArray(fragment, "float", "lightAttenuation", shaderInfo.lightCount());
 
     if (hasEnvironmentMap || shaderInfo.hasOmniShadows())
     {
@@ -597,10 +598,12 @@ static void generateBlinnPhongShader(ostream& vertex, ostream& fragment, const S
     // contributions from each.
     for (unsigned int light = 0; light < shaderInfo.lightCount(); ++light)
     {
+        bool isPointLight = light > 0;
+
         fragment << "    {" << endl;
         string lightDirection;
         string lightPosition;
-        if (light == 0)
+        if (!isPointLight)
         {
             // Light source zero is directional (i.e. effectively an infinite distance from the object)
             lightDirection = arrayIndex("lightPosition", light);
@@ -610,20 +613,22 @@ static void generateBlinnPhongShader(ostream& vertex, ostream& fragment, const S
         {
             // Light source is a point source
             fragment << "        vec3 lightPos = " << arrayIndex("lightPosition", light) << " - " << position(shaderInfo) << ";" << endl;
-            fragment << "        vec3 lightDir = normalize(lightPos);" << endl;
+            fragment << "        float dist2 = dot(lightPos, lightPos);" << endl;
+            fragment << "        vec3 lightDir = lightPos / sqrt(dist2);" << endl;
             lightDirection = "lightDir";
             lightPosition = "lightPos";
+            fragment << "        float lightIntensity = 1.0 / max(1.0, dist2 * " << arrayIndex("lightAttenuation", light) << ");" << endl;
         }
 
         fragment << "        float d = max(0.0, dot(N, " << lightDirection << "));" << endl;
 
         // Presently, a maximum of one directional shadow and three omnidirectional shadows are supported.
-        if (light == 0 && shaderInfo.shadowCount() != 0)
+        if (!isPointLight && shaderInfo.shadowCount() != 0)
         {
             unsigned int shadowIndex = 0;
             fragment << "        float shadow = shadowPCF(shadowTex" << shadowIndex << ", shadowCoord[" << shadowIndex << "]);" << endl;
         }
-        else if (light > 0 && light <= shaderInfo.omniShadowCount())
+        else if (isPointLight && light <= shaderInfo.omniShadowCount())
         {
             unsigned int shadowIndex = light - 1;
             fragment << "        float shadow = omniShadow(shadowCubeMap" << shadowIndex << ", objToWorldMat * " << lightPosition << ");" << endl;
@@ -642,6 +647,12 @@ static void generateBlinnPhongShader(ostream& vertex, ostream& fragment, const S
             fragment << "        float shadow = 1.0;" << endl;
         }
 
+        // Fold light intensity into shadow term
+        if (isPointLight)
+        {
+            fragment << "        shadow *= lightIntensity;" << endl;
+        }
+
         string lightColor = arrayIndex("lightColor", light);
         if (shaderInfo.hasScattering() && light == 0)
         {
@@ -652,19 +663,19 @@ static void generateBlinnPhongShader(ostream& vertex, ostream& fragment, const S
         if (phong)
         {
             // Compute the half angle vector
-            fragment << "       vec3 H = normalize(" << lightDirection << " + V);" << endl;
-            fragment << "       float s = pow(max(0.0, dot(H, N)), phongExponent);" << endl;
+            fragment << "        vec3 H = normalize(" << lightDirection << " + V);" << endl;
+            fragment << "        float s = pow(max(0.0, dot(H, N)), phongExponent);" << endl;
 
             // Self-shadowing term necessary to prevent the Phong highlight from bleeding
             // onto geometry that's facing away from the light source.
             if (!hasTangents)
             {
-                fragment << "       s *= clamp(d * 8.0, 0.0, 1.0);" << endl;
+                fragment << "        s *= clamp(d * 8.0, 0.0, 1.0);" << endl;
             }
 
             if (shaderInfo.hasFresnelFalloff())
             {
-                fragment << "       s *= " << fresnelTerm("dot(H, V)") << ";" << endl;
+                fragment << "        s *= " << fresnelTerm("dot(H, V)") << ";" << endl;
             }
 
             fragment << "       specLight += (shadow * s) * " << lightColor << ";" << endl;

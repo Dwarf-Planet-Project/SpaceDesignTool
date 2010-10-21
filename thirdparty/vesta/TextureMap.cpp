@@ -1,5 +1,5 @@
 /*
- * $Revision: 516 $ $Date: 2010-10-01 13:24:12 -0700 (Fri, 01 Oct 2010) $
+ * $Revision: 534 $ $Date: 2010-10-15 12:09:37 -0700 (Fri, 15 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -24,33 +24,37 @@ struct VestaFormatInfo
     GLenum glFormat;
     GLenum glInternalFormat;
     GLenum bytesPerPixel;
+    const char* name;
 };
 
 
 // Table containing mappings from VESTA formats to OpenGL formats
 static struct VestaFormatInfo FormatInfo[] =
 {
-    { TextureMap::R8G8B8A8,      GL_RGBA,     GL_RGBA8,            4 },
-    { TextureMap::B8G8R8A8,      GL_BGRA_EXT, GL_RGBA8,            4 },
-    { TextureMap::R8G8B8,        GL_RGB,      GL_RGB8,             3 },
-    { TextureMap::B8G8R8,        GL_BGR_EXT,  GL_RGB8,             3 },
-    { TextureMap::DXT1,          GL_COMPRESSED_RGBA_S3TC_DXT1_EXT, GL_COMPRESSED_RGBA_S3TC_DXT1_EXT, 8 },
-    { TextureMap::DXT3,          GL_COMPRESSED_RGBA_S3TC_DXT3_EXT, GL_COMPRESSED_RGBA_S3TC_DXT3_EXT, 16 },
-    { TextureMap::DXT5,          GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 16 },
-    { TextureMap::RGB16F,        GL_RGB,      GL_RGB16F_ARB,       6 },
-    { TextureMap::RGBA16F,       GL_RGBA,     GL_RGBA16F_ARB,      8 },
-    { TextureMap::RGB32F,        GL_RGB,      GL_RGB32F_ARB,      12 },
-    { TextureMap::RGBA32F,       GL_RGBA,     GL_RGBA32F_ARB,     16 },
-    { TextureMap::R16F,          GL_RED,      GL_R16F,             2 },
-    { TextureMap::R32F,          GL_RED,      GL_R32F,             4 },
-    { TextureMap::RG16F,         GL_RG,       GL_RG16F,            4 },
-    { TextureMap::RG32F,         GL_RG,       GL_RG32F,            8 },
-    { TextureMap::Depth24,       GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, 3 },
-    { TextureMap::R8G8B8_sRGB,   GL_RGB,      GL_SRGB8_EXT,        3 },
-    { TextureMap::R8G8B8A8_sRGB, GL_RGBA,     GL_SRGB8_ALPHA8_EXT, 4 },
-    { TextureMap::DXT1_sRGB,     GL_COMPRESSED_SRGB_S3TC_DXT1_EXT, GL_COMPRESSED_SRGB_S3TC_DXT1_EXT, 8 },
-    { TextureMap::DXT3_sRGB,     GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT, GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT, 16 },
-    { TextureMap::DXT5_sRGB,     GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT, GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT, 16 },
+    { TextureMap::R8G8B8A8,      GL_RGBA,     GL_RGBA8,            4, "R8G8B8A8" },
+    { TextureMap::B8G8R8A8,      GL_BGRA_EXT, GL_RGBA8,            4, "B8G8R8A8" },
+    { TextureMap::R8G8B8,        GL_RGB,      GL_RGB8,             3, "R8G8B8" },
+    { TextureMap::B8G8R8,        GL_BGR_EXT,  GL_RGB8,             3, "B8G8R8" },
+    { TextureMap::DXT1,          GL_COMPRESSED_RGBA_S3TC_DXT1_EXT, GL_COMPRESSED_RGBA_S3TC_DXT1_EXT, 8, "DXT1" },
+    { TextureMap::DXT3,          GL_COMPRESSED_RGBA_S3TC_DXT3_EXT, GL_COMPRESSED_RGBA_S3TC_DXT3_EXT, 16, "DXT3" },
+    { TextureMap::DXT5,          GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 16, "DXT5" },
+    { TextureMap::RGB16F,        GL_RGB,      GL_RGB16F_ARB,       6, "RGB16F" },
+    { TextureMap::RGBA16F,       GL_RGBA,     GL_RGBA16F_ARB,      8, "RGBA16F" },
+    { TextureMap::RGB32F,        GL_RGB,      GL_RGB32F_ARB,      12, "RGB32F" },
+    { TextureMap::RGBA32F,       GL_RGBA,     GL_RGBA32F_ARB,     16, "RGBA32F" },
+    { TextureMap::R16F,          GL_RED,      GL_R16F,             2, "R16F" },
+    { TextureMap::R32F,          GL_RED,      GL_R32F,             4, "R32F" },
+    { TextureMap::RG16F,         GL_RG,       GL_RG16F,            4, "RG16F" },
+    { TextureMap::RG32F,         GL_RG,       GL_RG32F,            8, "RG32F" },
+    { TextureMap::Depth24,       GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT24, 3, "Depth24" },
+    { TextureMap::R8G8B8_sRGB,   GL_RGB,      GL_SRGB8_EXT,        3, "R8G8B8 sRGB" },
+    { TextureMap::R8G8B8A8_sRGB, GL_RGBA,     GL_SRGB8_ALPHA8_EXT, 4, "R8G8B8A8 sRGB" },
+    { TextureMap::DXT1_sRGB,     GL_COMPRESSED_SRGB_S3TC_DXT1_EXT, GL_COMPRESSED_SRGB_S3TC_DXT1_EXT, 8, "DXT1 sRGB" },
+    { TextureMap::DXT3_sRGB,     GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT, GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT, 16, "DXT3 sRGB" },
+    { TextureMap::DXT5_sRGB,     GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT, GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT, 16, "DXT5 sRGB" },
+    { TextureMap::Depth16,       GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT16, 2, "Depth16" },
+    { TextureMap::Depth32,       GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT32, 4, "Depth32" },
+    { TextureMap::Depth32F,      GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT32F, 4, "Depth32F" },
 };
 
 
@@ -541,6 +545,106 @@ TextureMap::MipmapChainSize(ImageFormat format, unsigned int baseWidth, unsigned
     }
 
     return size;
+}
+
+
+/** Return true if the specified format is a depth buffer format.
+  */
+bool
+TextureMap::IsDepthFormat(ImageFormat format)
+{
+    switch (format)
+    {
+    case Depth16:
+    case Depth24:
+    case Depth32:
+    case Depth32F:
+        return true;
+    default:
+        return false;
+    }
+}
+
+
+/** Return a string with a human readable name of the format. This is
+  * primarily useful for logging and error handling.
+  */
+string
+TextureMap::FormatName(ImageFormat format)
+{
+    int formatIndex = (int) format;
+    if (formatIndex >= 0 && formatIndex < (int) FormatCount)
+    {
+        return FormatInfo[formatIndex].name;
+    }
+    else
+    {
+        return string("UNKNOWN");
+    }
+}
+
+
+/** Returns true if the specified format is supported the hardware
+  * and driver. This function will only return reliable results if
+  * called from a thread with a valid, initialized OpenGL context.
+  */
+bool
+TextureMap::IsFormatSupported(ImageFormat format)
+{
+    // Test for the presence of one or more OpenGL extensions based on
+    // the format.
+    bool dxtSupported = GLEW_EXT_texture_compression_s3tc == GL_TRUE;
+    bool srgbSupported = GLEW_EXT_texture_sRGB == GL_TRUE;
+    bool floatSupported = GLEW_ARB_texture_float == GL_TRUE;
+
+    switch (format)
+    {
+    case R8G8B8A8:
+    case R8G8B8:
+        return true;
+
+    case B8G8R8A8:
+    case B8G8R8:
+        return GLEW_EXT_bgra == GL_TRUE;
+
+    case DXT1:
+    case DXT3:
+    case DXT5:
+        return dxtSupported;
+
+    case RGB16F:
+    case RGBA16F:
+    case RGB32F:
+    case RGBA32F:
+        return floatSupported;
+
+    case R16F:
+    case R32F:
+    case RG16F:
+    case RG32F:
+        return floatSupported && GLEW_ARB_texture_rg == GL_TRUE;
+
+    case R8G8B8_sRGB:
+    case R8G8B8A8_sRGB:
+        return srgbSupported;
+
+    case DXT1_sRGB:
+    case DXT3_sRGB:
+    case DXT5_sRGB:
+        return dxtSupported && srgbSupported;
+
+    case Depth16:
+    case Depth24:
+    case Depth32:
+        return GLEW_VERSION_1_4 == GL_TRUE;
+
+    case Depth32F:
+        return GLEW_ARB_depth_buffer_float == GL_TRUE;
+
+    default:
+        return false;
+    }
+
 }
 
 

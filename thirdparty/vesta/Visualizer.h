@@ -1,5 +1,5 @@
 /*
- * $Revision: 226 $ $Date: 2010-04-01 22:58:10 -0700 (Thu, 01 Apr 2010) $
+ * $Revision: 530 $ $Date: 2010-10-12 11:26:43 -0700 (Tue, 12 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -32,11 +32,16 @@ public:
     Visualizer(Geometry* geometry);
     virtual ~Visualizer();
 
+    /** Return whether or not the visualizer is visible.
+      */
     bool isVisible() const
     {
         return m_visible;
     }
 
+    /** Set the visibility of the visualizer. The visible flag is set to true for
+     *  newly constructed visualizer.
+     */
     void setVisibility(bool visible)
     {
         m_visible = visible;

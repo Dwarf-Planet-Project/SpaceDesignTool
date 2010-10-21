@@ -1,5 +1,5 @@
 /*
- * $Revision: 519 $ $Date: 2010-10-04 15:02:29 -0700 (Mon, 04 Oct 2010) $
+ * $Revision: 541 $ $Date: 2010-10-19 11:56:03 -0700 (Tue, 19 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -22,6 +22,16 @@ namespace vesta
 {
 
 class Trajectory;
+
+
+class TrajectoryPlotGenerator
+{
+public:
+    virtual StateVector state(double tsec) const = 0;
+    virtual double startTime() const = 0;
+    virtual double endTime() const = 0;
+};
+
 
 /** TrajectoryGeometry is used for plotting the paths of bodies through
   * space. It provides flexibility in how the plots are drawn. Depending on
@@ -103,6 +113,8 @@ public:
     void clearSamples();
     void computeSamples(const Trajectory* trajectory, double startTime, double endTime, unsigned int steps);
     void updateSamples(const Trajectory* trajectory, double startTime, double endTime, unsigned int steps);
+    void computeSamples(const TrajectoryPlotGenerator* generator, double startTime, double endTime, unsigned int steps);
+    void updateSamples(const TrajectoryPlotGenerator* generator, double startTime, double endTime, unsigned int steps);
 
     enum TrajectoryPortion
     {

@@ -1,5 +1,5 @@
 /*
- * $Revision: 223 $ $Date: 2010-03-30 05:44:44 -0700 (Tue, 30 Mar 2010) $
+ * $Revision: 530 $ $Date: 2010-10-12 11:26:43 -0700 (Tue, 12 Oct 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -21,9 +21,11 @@ using namespace Eigen;
 
 
 /** Create a default arc:
- *    Both the trajectory and body frames are EME J2000
- *    The trajectory is a fixed point at the origin.
- *    The rotation model is a constant rotation matrix (the identity matrix)
+ *  \list
+ *  \li Both the trajectory and body frames are EME J2000
+ *  \li The trajectory is a fixed point at the origin.
+ *  \li The rotation model is a constant rotation matrix (the identity matrix)
+ *  \endlist
  */
 Arc::Arc() :
     m_duration(0.0)
@@ -51,6 +53,8 @@ Arc::setDuration(double t)
 }
 
 
+/** Set the center object for this arc.
+  */
 void
 Arc::setCenter(Entity* center)
 {
@@ -58,6 +62,8 @@ Arc::setCenter(Entity* center)
 }
 
 
+/** Set the frame of the trajectory in this arc.
+  */
 void
 Arc::setTrajectoryFrame(Frame* f)
 {
@@ -65,6 +71,8 @@ Arc::setTrajectoryFrame(Frame* f)
 }
 
 
+/** Return the frame of the rotation mode in this arc.
+  */
 void
 Arc::setBodyFrame(Frame* f)
 {
@@ -72,6 +80,9 @@ Arc::setBodyFrame(Frame* f)
 }
 
 
+/** Set the trajectory for this arc. The trajectory describes the
+  * translational motion of a body over the duration of the arc.
+  */
 void
 Arc::setTrajectory(Trajectory* trajectory)
 {
@@ -79,6 +90,10 @@ Arc::setTrajectory(Trajectory* trajectory)
 }
 
 
+/** Return the rotation model for this arc. The rotation model
+  * describes the rotational motion of a body over the duration
+  * of the arc.
+  */
 void
 Arc::setRotationModel(RotationModel* rm)
 {
