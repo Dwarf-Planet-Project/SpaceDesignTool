@@ -506,7 +506,7 @@ ThreeDView::paintGL()
     glDepthMask(GL_TRUE);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    m_renderer->beginViewSet(*m_universe, m_currentTime);
+    m_renderer->beginViewSet(m_universe, m_currentTime);
 
     // Draw the reflection map if reflections are enabled
     if (m_reflectionsEnabled && !m_reflectionMap.isNull())
@@ -734,7 +734,7 @@ ThreeDView::wheelEvent(QWheelEvent* event)
         // Assuming 15 degrees per wheel click; not sure how this maps
         // to other devices such as trackpads.
         float clicks = -event->delta() / 120.0f;
-        double zoomFactor = pow(1.03f, clicks);
+        double zoomFactor = pow(1.03f, clicks / 50.0f);
 
         m_controller->dolly(zoomFactor);
 
