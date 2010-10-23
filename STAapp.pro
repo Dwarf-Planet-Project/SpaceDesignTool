@@ -146,7 +146,7 @@ ASTROCORE_SOURCES = sta-src/Astro-Core/calendarTOjulian.cpp \
     sta-src/Astro-Core/trueAnomalyTOmeanAnomaly.cpp \
     sta-src/Astro-Core/surfaceVelocity.cpp \
     sta-src/Astro-Core/EclipseDuration.cpp \
-    sta-src/Astro-Core/bodyTowind.cpp \
+    sta-src/Astro-Core/bodyTOwind.cpp \
     sta-src/Astro-Core/nedTOfixed.cpp
 ASTROCORE_HEADERS = sta-src/Astro-Core/calendarTOjulian.h \
     sta-src/Astro-Core/date.h \
