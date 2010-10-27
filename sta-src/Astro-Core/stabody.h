@@ -146,30 +146,65 @@ namespace sta
     class Ephemeris;
 }
 
-/*! Solar system body ID codes. Current values are NAIF IDs; eventual numbering
- *  scheme TBD.
+/*! Solar system body ID codes. Current values are NAIF IDs; when adding
+ *  new bodies, please see the SPICE documentation for the proper IDs:
+ *
+ *  http://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/naif_ids.html
+ *
+ *  DO NOT use different IDs without good reason, as the SPICE interface
+ *  in STA currently depends on STA ids being identical to NAIF ids. Please
+ *  talk to Guillermo Ortega and/or Chris Laurel if you think you need
+ *  to change the current numbering scheme.
  */
 enum StaBodyId
 {
-    STA_SOLAR_SYSTEM_BARYCENTER = 0,
-    STA_EARTH_BARYCENTER = 3,
-    STA_MERCURY =  199,
-    STA_VENUS   =  299,
-    STA_EARTH   =  399,
-    STA_MARS    =  499,
-    STA_JUPITER =  599,
-    STA_SATURN  =  699,
-    STA_URANUS  =  799,
-    STA_NEPTUNE =  899,
-    STA_PLUTO   =  999,
-    STA_SUN     =   10,
-    STA_MOON	=  301,
-    STA_PHOBOS  =  401,
-    STA_DEIMOS	=  402,
-    STA_EUROPA 	=  502,
-    STA_TITAN	=  606,
-    STA_ENCELADUS= 602,
-    STA_TRITON	=  801,
+    STA_SOLAR_SYSTEM_BARYCENTER =    0,
+    STA_EARTH_BARYCENTER        =    3,
+
+    STA_SUN                     =   10,
+
+    STA_MERCURY                 =  199,
+    STA_VENUS                   =  299,
+    STA_EARTH                   =  399,
+    STA_MARS                    =  499,
+    STA_JUPITER                 =  599,
+    STA_SATURN                  =  699,
+    STA_URANUS                  =  799,
+    STA_NEPTUNE                 =  899,
+    STA_PLUTO                   =  999,
+
+    STA_MOON                    =  301,
+
+    STA_PHOBOS                  =  401,
+    STA_DEIMOS                  =  402,
+
+    STA_IO                      =  501,
+    STA_EUROPA                  =  502,
+    STA_GANYMEDE                =  503,
+    STA_CALLISTO                =  504,
+
+    STA_MIMAS                   =  601,
+    STA_ENCELADUS               =  602,
+    STA_TETHYS                  =  603,
+    STA_DIONE                   =  604,
+    STA_RHEA                    =  605,
+    STA_TITAN                   =  606,
+    STA_HYPERION                =  607,
+    STA_IAPETUS                 =  608,
+    STA_PHOEBE                  =  609,
+
+    STA_ARIEL                   =  701,
+    STA_UMBRIEL                 =  702,
+    STA_TITANIA                 =  703,
+    STA_OBERON                  =  704,
+    STA_MIRANDA                 =  705,
+
+    STA_TRITON                  =  801,
+
+    STA_CHARON                  =  901,
+    STA_NIX                     =  902,
+    STA_HYDRA                   =  903,
+
     STA_INVALID_BODY = -999999999,
 };
 
