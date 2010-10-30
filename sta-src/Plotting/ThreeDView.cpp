@@ -120,7 +120,8 @@ static StaBodyId PlanetIds[] = {
 static const unsigned int PlanetCount = sizeof(PlanetIds) / sizeof(PlanetIds[0]);
 
 static StaBodyId MoonIds[] = {
-    STA_MOON
+    STA_MOON,
+    STA_IO, STA_EUROPA, STA_GANYMEDE, STA_CALLISTO,
 };
 
 static const unsigned int MoonCount = sizeof(MoonIds) / sizeof(MoonIds[0]);
@@ -930,11 +931,17 @@ ThreeDView::initializeUniverse()
     addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_MERCURY), sun);
     addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_VENUS),   sun);
     addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_MARS),    sun);
-    addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_JUPITER), sun);
+    Body* jupiter = addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_JUPITER), sun);
     addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_SATURN),  sun);
     addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_URANUS),  sun);
     addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_NEPTUNE), sun);
     addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_PLUTO),   sun);
+
+    // Jovian system
+    addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_IO),       jupiter);
+    addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_EUROPA),   jupiter);
+    addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_GANYMEDE), jupiter);
+    addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_CALLISTO), jupiter);
 
     initializeStarCatalog("vis3d/tycho2.stars");
 
@@ -956,23 +963,35 @@ ThreeDView::initializeUniverse()
                                                                                      "earth-global-mosaic", 13,
                                                                                      480));
 
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_MERCURY), Spectrum(0.7f, 0.5f, 0.4f));
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_VENUS),   Spectrum(0.7f, 0.7f, 0.6f));
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_EARTH),   Spectrum(0.4f, 0.5f, 0.7f));
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_MARS),    Spectrum(0.7f, 0.4f, 0.3f));
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_JUPITER), Spectrum(0.7f, 0.6f, 0.3f));
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_SATURN),  Spectrum(0.7f, 0.7f, 0.6f));
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_URANUS),  Spectrum(0.55f, 0.7f, 0.55f));
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_NEPTUNE), Spectrum(0.5f, 0.5f, 0.7f));
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_MERCURY),  Spectrum(0.7f, 0.5f, 0.4f));
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_VENUS),    Spectrum(0.7f, 0.7f, 0.6f));
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_EARTH),    Spectrum(0.4f, 0.5f, 0.7f));
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_MARS),     Spectrum(0.7f, 0.4f, 0.3f));
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_JUPITER),  Spectrum(0.7f, 0.6f, 0.3f));
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_SATURN),   Spectrum(0.7f, 0.7f, 0.6f));
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_URANUS),   Spectrum(0.55f, 0.7f, 0.55f));
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_NEPTUNE),  Spectrum(0.5f, 0.5f, 0.7f));
     //createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_PLUTO));
 
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_MOON),    Spectrum(0.6f, 0.6f, 0.6f));
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_MOON),     Spectrum(0.6f, 0.6f, 0.6f));
+
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_IO),       Spectrum(0.9f, 0.9f,   0.6f));
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_EUROPA),   Spectrum(0.8f, 0.8f,   0.8f));
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_GANYMEDE), Spectrum(0.8f, 0.5f,   0.4f));
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_CALLISTO), Spectrum(0.6f, 0.5,    0.3f));
 }
 
 
 Body*
 ThreeDView::addSolarSystemBody(const StaBody* body, Entity* center)
 {
+    if (!body->ephemeris())
+    {
+        // No ephemeris defined for the body, so don't create it in VESTA
+        qDebug() << "No ephemeris for " << body->name();
+        return NULL;
+    }
+
     const StaBody* staCenter = STA_SOLAR_SYSTEM->ssb();
     if (center->chronology()->firstArc())
     {
