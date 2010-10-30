@@ -99,11 +99,31 @@ struct VisualAttributes SSVisualAttributes[] =
     { STA_PLUTO,   "textures/medres/pluto-lok.jpg"   },
 
     { STA_MOON,      "textures/medres/moon.jpg"      },
+
     { STA_PHOBOS,    "textures/medres/phobos.jpg"    },
     { STA_DEIMOS,    "textures/medres/deimos.jpg"    },
+
+    { STA_IO,        "textures/medres/io.jpg"        },
     { STA_EUROPA,    "textures/medres/europa.jpg"    },
+    { STA_GANYMEDE,  "textures/medres/ganymede.jpg"  },
+    { STA_CALLISTO,  "textures/medres/callisto.jpg"  },
+
+    { STA_MIMAS,     "textures/medres/mimas.jpg"     },
     { STA_ENCELADUS, "textures/medres/enceladus.jpg" },
+    { STA_DIONE,     "textures/medres/dione.jpg"     },
+    { STA_TETHYS,    "textures/medres/tethys.jpg"    },
+    { STA_RHEA,      "textures/medres/rhea.jpg"      },
     { STA_TITAN,     "textures/medres/titan.jpg"     },
+    { STA_HYPERION,  "textures/medres/hyperion.jpg"  },
+    { STA_IAPETUS,   "textures/medres/iapetus.jpg"   },
+    { STA_PHOEBE,    "textures/medres/phoebe.jpg"    },
+
+    { STA_MIRANDA,   "textures/medres/miranda.jpg"   },
+    { STA_ARIEL,     "textures/medres/ariel.jpg"     },
+    { STA_UMBRIEL,   "textures/medres/umbriel.jpg"   },
+    { STA_TITANIA,   "textures/medres/titania.jpg"   },
+    { STA_OBERON,    "textures/medres/oberon.jpg"    },
+
     { STA_TRITON,    "textures/medres/triton.jpg"    },
 };
 
