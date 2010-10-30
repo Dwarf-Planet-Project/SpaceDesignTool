@@ -49,6 +49,7 @@
 #include <QTextStream>
 #include <iostream>
 #include <QFileOpenEvent>
+#include <QDesktopServices>
 
 #ifdef Q_WS_MAC
 #include <CoreFoundation/CFBundle.h>
@@ -56,8 +57,11 @@
 
 #include "Astro-Core/stabody.h"
 #include "Astro-Core/jplephemeris.h"
+#include "Astro-Core/SpiceEphemeris.h"
 #include "main.h"
 #include "mainwindow.h"
+
+using namespace sta;
 
 
 // Celestia command line options
@@ -146,27 +150,41 @@ int main(int argc, char *argv[])
     // Initialize the astro core
     SolarSystemBodyDictionary::Create();
 
-    QString ephemerisFilename("ephemerides/de406_1800-2100.dat");
-    QFile ephemerisFile(ephemerisFilename);
-    if (!ephemerisFile.open(QFile::ReadOnly))
+    // Initialize SPICE
+    SpiceEphemeris* spiceEphem = SpiceEphemeris::InitializeSpice(QDesktopServices::storageLocation(QDesktopServices::DataLocation) + "/spice");
+    if (spiceEphem && 0)
     {
-        QMessageBox::critical(NULL,
-                              QObject::tr("Ephemeris Data Missing"),
-                              QObject::tr("Ephemeris data file %1 not found.").arg(ephemerisFilename));
+        qDebug() << "Using SPICE ephemeris";
+        SolarSystemBodyDictionary::UseEphemeris(spiceEphem);
+        qDebug() << "OK";
+    }
+    else
+    {
+        qDebug() << "Failed to initialize SPICE system.";
 
-        exit(0);
+        QString ephemerisFilename("ephemerides/de406_1800-2100.dat");
+        QFile ephemerisFile(ephemerisFilename);
+        if (!ephemerisFile.open(QFile::ReadOnly))
+        {
+            QMessageBox::critical(NULL,
+                                  QObject::tr("Ephemeris Data Missing"),
+                                  QObject::tr("Ephemeris data file %1 not found.").arg(ephemerisFilename));
+
+            exit(0);
+        }
+
+        sta::JPLEphemeris* ephemeris = sta::JPLEphemeris::load(&ephemerisFile);
+        if (!ephemeris)
+        {
+            QMessageBox::critical(NULL,
+                                  QObject::tr("Error Reading Ephemeris"),
+                                  QObject::tr("Ephemeris file %1 is corrupted.").arg(ephemerisFilename));
+            exit(0);
+        }
+
+        SolarSystemBodyDictionary::UseEphemeris(ephemeris);
     }
 
-    sta::JPLEphemeris* ephemeris = sta::JPLEphemeris::load(&ephemerisFile);
-    if (!ephemeris)
-    {
-        QMessageBox::critical(NULL,
-                              QObject::tr("Error Reading Ephemeris"),
-                              QObject::tr("Ephemeris file %1 is corrupted.").arg(ephemerisFilename));
-        exit(0);
-    }
-
-    SolarSystemBodyDictionary::UseEphemeris(ephemeris);
     // end astro core initialization
 
     MainWindow* mainwindow = new MainWindow();

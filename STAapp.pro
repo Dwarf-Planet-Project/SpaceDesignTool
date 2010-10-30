@@ -30,8 +30,7 @@ TEMPLATE = app
 TARGET = STA
 
 QT += opengl
-QT += xml \
-    xmlpatterns
+QT += xml xmlpatterns
 QT += network
 
 
@@ -110,6 +109,7 @@ ASTROCORE_SOURCES = sta-src/Astro-Core/calendarTOjulian.cpp \
     sta-src/Astro-Core/GravityModel.cpp \
     sta-src/Astro-Core/inertialTOfixed.cpp \
     sta-src/Astro-Core/jplephemeris.cpp \
+    sta-src/Astro-Core/SpiceEphemeris.cpp \
     sta-src/Astro-Core/stamath.cpp \
     sta-src/Astro-Core/nutate.cpp \
     sta-src/Astro-Core/orbitalTOcartesian.cpp \
@@ -157,6 +157,7 @@ ASTROCORE_HEADERS = sta-src/Astro-Core/calendarTOjulian.h \
     sta-src/Astro-Core/GravityModel.h \
     sta-src/Astro-Core/inertialTOfixed.h \
     sta-src/Astro-Core/jplephemeris.h \
+    sta-src/Astro-Core/SpiceEphemeris.h \
     sta-src/Astro-Core/nutate.h \
     sta-src/Astro-Core/orbitalTOcartesian.h \
     sta-src/Astro-Core/propagateJ2.h \
@@ -166,7 +167,7 @@ ASTROCORE_HEADERS = sta-src/Astro-Core/calendarTOjulian.h \
     sta-src/Astro-Core/propagateCOWELL.h \
     sta-src/Astro-Core/perturbations.h \
     sta-src/Astro-Core/rectangularTOpolar.h \
-    sta-src/Astro-Core/reduce.cpp \
+    sta-src/Astro-Core/reduce.h \
     sta-src/Astro-Core/RotationState.h \
     sta-src/Astro-Core/stabody.h \
     sta-src/Astro-Core/stacoordsys.h \
@@ -619,6 +620,15 @@ INCLUDEPATH += thirdparty/qwtplot3d/include
 INCLUDEPATH += thirdparty/noradtle
 
 LIBS += -lvesta -Lthirdparty/vesta/build
+
+# Add library path for static libraries
+win32-g++:LIBS += -Llib/win32-x86-gcc/cspice -lcspice.a
+macx:LIBS += ../trunk/lib/mac/cspice.a
+linux-g++-32:LIBS += -Llib/linux-x86 -lcspice.a
+linux-g++-64:LIBS += -Llib/linux-x64 -lcspice.a
+
+INCLUDEPATH += include/spice
+
 
 DEFINES += EIGEN_USE_NEW_STDVECTOR
 
