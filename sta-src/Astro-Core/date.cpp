@@ -48,9 +48,7 @@
  * October 4, 1957, all satellite-related MJDs are positive.
  */
 double sta::MJDBase = 2400000.5;
-//double sta::J2000 = 2451545.0;
-double sta::J2000 = 2400000.5;
-
+double sta::J2000   = 2451545.0;
 
 
 /*! Convert a Qt4 date-time object to a Julian date.
