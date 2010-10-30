@@ -53,12 +53,13 @@ public:
                                     const StaBody* center,
                                     sta::CoordinateSystemType coordSys) const;
 
-    static SpiceEphemeris* load(QIODevice* device);
-
     double getStartDate() const;
     double getEndDate() const;
 
-    static bool InitializeSpice(const QString& spiceKernelDirectory);
+    static SpiceEphemeris* InitializeSpice(const QString& spiceKernelDirectory);
+
+private:
+    bool buildBodyList();
 
 private:
     QList<StaBodyId> m_bodies;
