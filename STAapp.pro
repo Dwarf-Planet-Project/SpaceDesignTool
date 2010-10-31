@@ -622,7 +622,7 @@ INCLUDEPATH += thirdparty/noradtle
 LIBS += -lvesta -Lthirdparty/vesta/build
 
 # Add library path for static libraries
-win32-g++:LIBS += -Llib/win32-x86-gcc/cspice -lcspice.a
+win32-g++:LIBS += ../trunk/lib/win32-x86-gcc/cspice.a
 macx:LIBS += ../trunk/lib/mac/cspice.a
 linux-g++-32:LIBS += -Llib/linux-x86 -lcspice.a
 linux-g++-64:LIBS += -Llib/linux-x64 -lcspice.a
