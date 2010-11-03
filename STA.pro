@@ -34,9 +34,13 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     vesta \
-    STAapp
+    STAapp \
+    schema2cpp
 
 STAapp.file = ./STAapp.pro
 STAapp.depends = vesta
+
 vesta.subdir = thirdparty/vesta
+
+schema2cpp.subdir = tools/schema2cpp
 
