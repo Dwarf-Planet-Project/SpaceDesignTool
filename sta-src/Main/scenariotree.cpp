@@ -56,10 +56,160 @@
 #include "Maneuvers/deltaVDialog.h"
 
 #include <QtGui>
+#include <QHash>
 #include <iostream>
 
 
 int Lagrmode=-1;  // Guillermo says: take away this thing
+
+
+// We keep a table of information about how the various scenario elements should be
+// displayed in the tree view. Each element has the following display properties:
+//   label - the text label for the element
+//   icon - the name of an icon resource for the element
+//   autoExpand - true if the element should be expanded by default
+//
+// The list of ScenarioTreeLabel structures is converted into a hash table of
+// ElementDisplayInfo objects when the first ScenarioTree is created. The hash
+// table provides fast lookup of display info properties by element name.
+struct ScenarioTreeLabel
+{
+    const char* elementType;
+    const char* label;
+    const char* iconName;
+    bool autoExpand;
+};
+
+struct ElementDisplayInfo
+{
+    QString label;
+    QIcon icon;
+    bool autoExpand;
+};
+
+static QHash<QString, ElementDisplayInfo> TreeDisplayInfo;
+
+// Display properties for all scenario elements. If you add a new scenario element,
+// you should update this table. If an element is missing from this table, the
+// element name will be shown in the tree view, which may not be ideal (e.g.,
+// "LoiteringType" instead of just "Loitering")
+static ScenarioTreeLabel TreeLabels[] =
+{
+    { "SC", "Satellite", ":/icons/ParticipantSATELLITE.png", true },
+    { "LV", "Launcher", ":/icons/ParticipantROCKET.png", true },
+    { "GroundStation", "Ground Station", ":/icons/ParticipantSTATION.png", true },
+    { "Point", "Point", ":/icons/ParticipantPOINT.png", true },
+    { "REV", "Re-entry vehicle", ":/icons/ParticipantENTRYVEHICLE.png", true },
+    { "Transmitter", "Transmitter", "", false },
+    { "TransmitterPayload", "Transmitter", "", false },
+    { "TransmitterPayloadType", "Transmitter", ":/icons/Payload.png", false },
+    { "ReceiverPayload", "Receiver", "", false },
+    { "ReceiverPayloadType", "Receiver", ":/icons/Payload.png", false },
+    { "OpticalPayload", "Telescope", "", false },
+    { "OpticalPayloadType", "Telescope", ":/icons/Payload.png", false },
+    { "RadarPayload", "Radar", "", false },
+    { "RadarPayloadType", "Radar", ":/icons/Payload.png", false },
+    { "RadarProperties", "Radar properties", "", false },
+    { "RadarType", "Radar type", "", false },
+    { "Loitering", "Loitering", "", false },
+    { "LoiteringType", "Loitering", ":/icons/mission-arcs-loitering.png", false },
+    { "Rendezvous", "Rendezvous", "", false },
+    { "FlyBy", "Fly By", "", false },
+    { "LoiteringTLE", "TLE", "", false },
+    { "LoiteringTLEType", "TLE", ":/icons/mission-arcs-loiteringTLE.png", false },
+    { "EntryArc", "Entry", "", false },
+    { "DeltaVType", "Delta V", ":/icons/engine.png", false },
+    { "ExternalType", "External", "", false },
+    { "ElementIdentifierType", "Identifier", "", false },
+    { "SCProgram", "Program", "", false },
+    { "SCMission", "Mission", "", true },
+    { "TrajectoryPlan", "Trajctory plan", "", true },
+    { "PayloadSet", "Payload set", "", true },
+    { "SCSystemType", "Platform", "", false },
+    { "SystemBudgets", "Budgets", "", false },
+    { "MassOfSystem", "Mass", "", false },
+    { "PowerOfSystem", "Power", "", false },
+    { "Link", "Link", "", false },
+    { "SCAerodynamics", "Aerodynamics", "", false },
+    { "Propulsion", "Propulsion", "", false },
+    { "Structure", "Structure", "", false },
+    { "Sizing", "Sizing", "", false },
+    { "MomentsOfInertia", "Inertia", "", false },
+    { "SecondMomentsOfArea", "More inertia", "", false },
+    { "NaturalFrequency", "Natural frequency", "", false },
+    { "TCS", "Thermal control", "", false },
+    { "Temperature", "Temperature", "", false },
+    { "CoatingArea", "Coating area", "", false },
+    { "ColdSurface", "Cold surface", "", false },
+    { "ColdCoating", "Cold surface coating", "", false },
+    { "HotSurface", "Hot surface", "", false },
+    { "HotCoating", "Hot surface coating", "", false },
+    { "EPS", "EPS", "", false },
+    { "SolarArray", "Solar array", "", false },
+    { "BatteryType", "Battery", "", false },
+    { "TTC", "TTC", "", false },
+    { "TTCAntenna", "TTC antenna", "", false },
+    { "AOCS", "AOCS", "", false },
+    { "OBDH", "OBDH", "", false },
+    { "Optimization", "Optimization", "", false },
+    { "OutputFiles", "Output files", "", false },
+    { "REVProgramType", "Program", "", false },
+    { "REVMissionType", "Mission", "", true },
+    { "REVPayloadType", "Payload set", "", true },
+    { "REVTrajectoryPlanType", "Trajectory plan", "", true },
+    { "REVSystemType", "System", "", false },
+    { "REVWeights", "Mass", "", false },
+    { "InertialMatrix", "Inertia", "", false },
+    { "OptVarString", "Optimization", "", false },
+    { "OptVarInt", "Optimization", "", false },
+    { "OptVarDouble", "Optimization", "", false },
+    { "OptVarBool", "Optimization", "", false },
+    { "REVComponentsType", "Components", "", false },
+    { "REVComponentsMassType", "Mass", "", false },
+    { "CoGLongPosition", "CoG position (L)", "", false },
+    { "REVGeometryType", "Geometry", "", false },
+    { "REVTPS", "Thermal protection", "", false },
+    { "REVAeroThermodynamicsType", "Aerothermodynamics", "", false },
+    { "AeroCoefFileType", "Aerodynamics coefficients", "", false },
+    { "Parachutes", "Parachutes", "", false },
+    { "REVStructureType", "Structure", "", false },
+    { "REVSecondaryPropulsionType", "Propulsion (secondary)", "", false },
+    { "REVRCSType", "Propulsion (primary)", "", false },
+    { "REVCostsType", "Cost", "", false },
+    { "REVSystemCostsType", "Cost (system)", "", false },
+    { "REVSubsystemsDevelopCostsType", "Cost (subsystem)", "", false },
+    { "REVSubsystemsProductionCostsType", "Cost of production (subsystem)", "", false },
+    { "REVReliabilityType", "Reliability (system)", "", false },
+    { "REVSubsystemsReliablityType", "Reliability (subsystem)", "", false },
+    { "LocationType", "Location", "", false },
+    { "GroundPositionType", "Position", "", false },
+    { "GroundStationEnvironment", "Environment", "", false },
+    { "Rain", "Rain", "", false },
+    { "Modulation", "Modulation", "", false },
+    { "SystemTemperature", "Temperature", "", false },
+    { "TelescopeType", "Telescope", "", false },
+    { "OpticalProperties", "Optical properties", "", false },
+    { "SCEnvironmentType", "Environment", "", false },
+    { "TimeLine", "Time line", "", false },
+    { "InitialPositionType", "Initial position", "", false },
+    { "KeplerianElementsType", "Keplerian elements", "", false },
+    { "InitialAttitudeType", "Initial attitude", "", false },
+    { "EulerBIType", "Euler angles", "", false },
+    { "PropagationPositionType", "Propagation of position", "", false },
+    { "PropagationAttitudeType", "Propagation of attitude", "", false },
+    { "EntryArcType", "Re-entry arc", ":/icons/mission-arcs-reentry.png", false },
+    { "EnvironmentType", "Environment", "", false },
+    { "CentralBodyType", "Central body", "", false },
+    { "REVConstraintsType", "Constraints", "", false },
+    { "REVFinalStateType", "Final state", "", false },
+    { "REVConstraintsViolationType", "Constrains violations", "", false },
+    { "EntryCharacteristicsType", "Entry characteristics", "", false },
+    { "GravityModel", "Gravity model", "", false },
+    { "SphericalCoordinatesType", "Spherical coordinates", "", false },
+    { "REVDispersionAnalysisType", "Dispersion analysis", "", false },
+    { "SpaceScenario", "Scenario", "", true },
+    { "PerturbationsType", "Perturbations", "", false },
+};
 
 
 /*! Create a new scenario view widget.
@@ -70,6 +220,24 @@ ScenarioTree::ScenarioTree(QWidget *parent)
     QStringList labels;
     labels << tr("Element") << tr("Name");
     
+    // Create the table of display info if it hasn't been created already
+    if (TreeDisplayInfo.empty())
+    {
+        for (unsigned i = 0; i < sizeof(TreeLabels) / sizeof(TreeLabels[0]); ++i)
+        {
+            ElementDisplayInfo info;
+            info.label = TreeLabels[i].label;
+            info.autoExpand = TreeLabels[i].autoExpand;
+            QString iconName = TreeLabels[i].iconName;
+            if (!iconName.isEmpty())
+            {
+                info.icon = QIcon(iconName);
+            }
+
+            TreeDisplayInfo[TreeLabels[i].elementType] = info;
+        }
+    }
+
     header()->setResizeMode(QHeaderView::ResizeToContents);
     header()->setResizeMode(QHeaderView::Interactive);
     header()->setDefaultSectionSize(200);
@@ -103,307 +271,29 @@ ScenarioTree::ScenarioTree(QWidget *parent)
 
 
 // Guillermo says: This method changes the XML schema labels by better readable labels in the scenario view
-// It also adds the icons to the left of teh widget and takes care of the expansion true/false of the initial creation
-void changeLabels(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
+// It also adds the icons to the left of the widget and takes care of the expansion true/false of the initial creation
+static void changeLabels(QTreeWidgetItem* item, ScenarioObject* scenarioObject)
 {
-    // Guillermo says: renaming the labels of the first colum to make it compatible with the participants view
-    if ((scenarioObject->elementName()) == "SC")
+    if (TreeDisplayInfo.contains(scenarioObject->elementName()))
     {
-        item->setText(0, "Satellite");
-        item->setIcon(0, QIcon(":/icons/ParticipantSATELLITE.png"));
-        item->setExpanded(true);
+        // Use label and icon information from the TreeDisplayInfo table when available
+        ElementDisplayInfo info = TreeDisplayInfo[scenarioObject->elementName()];
+        item->setText(0, info.label);
+        item->setIcon(0, info.icon);
+        if (info.autoExpand)
+        {
+            item->setExpanded(true);
+        }
     }
-    else if ((scenarioObject->elementName()) == "LV")
+    else
     {
-        item->setText(0, "Launcher");
-        item->setIcon(0, QIcon(":/icons/ParticipantROCKET.png"));
-        item->setExpanded(true);
-    }
-    else if ((scenarioObject->elementName()) == "GroundStation")
-    {
-        item->setText(0, "Ground Station");
-        item->setIcon(0, QIcon(":/icons/ParticipantSTATION.png"));
-        item->setExpanded(true);
-    }
-    else if ((scenarioObject->elementName()) == "Point")
-    {
-        item->setText(0, "Point");
-        item->setIcon(0, QIcon(":/icons/ParticipantPOINT.png"));
-        item->setExpanded(true);
-    }
-    else if ((scenarioObject->elementName()) == "REV")
-    {
-        item->setText(0, "Re-entry vehicle");
-        item->setIcon(0, QIcon(":/icons/ParticipantENTRYVEHICLE.png"));
-        item->setExpanded(true);
-    }
-    else if ((scenarioObject->elementName()) == "Transmitter")
-        item->setText(0, "Transmitter");
-    else if ((scenarioObject->elementName()) == "TransmitterPayload")
-        item->setText(0, "Transmitter");
-    else if ((scenarioObject->elementName()) == "TransmitterPayloadType")
-    {
-        item->setText(0, "Transmitter");
-        item->setIcon(0, QIcon(":/icons/Payload.png"));
-    }
-    else if ((scenarioObject->elementName()) == "ReceiverPayload")
-        item->setText(0, "Receiver");
-    else if ((scenarioObject->elementName()) == "ReceiverPayloadType")
-    {
-        item->setText(0, "Receiver");
-        item->setIcon(0, QIcon(":/icons/Payload.png"));
-    }
-    else if ((scenarioObject->elementName()) == "OpticalPayload")
-        item->setText(0, "Telescope");
-    else if ((scenarioObject->elementName()) == "OpticalPayloadType")
-    {
-        item->setText(0, "Telescope");
-        item->setIcon(0, QIcon(":/icons/Payload.png"));
-    }
-    else if ((scenarioObject->elementName()) == "RadarPayload")
-        item->setText(0, "Radar");
-    else if ((scenarioObject->elementName()) == "RadarPayloadType")
-    {
-        item->setText(0, "Radar");
-        item->setIcon(0, QIcon(":/icons/Payload.png"));
-    }
-    else if ((scenarioObject->elementName()) == "RadarProperties")
-        item->setText(0, "Radar properties");
-    else if ((scenarioObject->elementName()) == "RadarType")
-        item->setText(0, "Radar type");
-    else if ((scenarioObject->elementName()) == "Loitering")
-        item->setText(0, "Loitering");
-    else if ((scenarioObject->elementName()) == "LoiteringType")
-    {
-        item->setText(0, "Loitering");
-        item->setIcon(0, QIcon(":/icons/mission-arcs-loitering.png"));
-    }
-    else if ((scenarioObject->elementName()) == "Lagrangian")
-        item->setText(0, "Lagrangian");
-    else if ((scenarioObject->elementName()) == "LagrangianType")
-    {
-        item->setText(0, "Lagrangian");
-        item->setIcon(0, QIcon(":/icons/mission-arcs-loitering.png"));
-    }
-    else if ((scenarioObject->elementName()) == "Rendezvous")
-        item->setText(0, "Rendezvous");
-    else if ((scenarioObject->elementName()) == "FlyBy")
-        item->setText(0, "Fly By");
-    else if ((scenarioObject->elementName()) == "LoiteringTLE")
-        item->setText(0, "TLE");
-    else if ((scenarioObject->elementName()) == "LoiteringTLEType")
-    {
-        item->setText(0, "TLE");
-        item->setIcon(0, QIcon(":/icons/mission-arcs-loiteringTLE.png"));
-    }
-    else if ((scenarioObject->elementName()) == "EntryArc")
-        item->setText(0, "Entry");
-    else if ((scenarioObject->elementName()) == "DeltaVType")
-    {
-        item->setText(0, "Delta V");
-        item->setIcon(0, QIcon(":/icons/engine.png"));
-    }
-    else if ((scenarioObject->elementName()) == "ElementIdentifierType")
-        item->setText(0, "Identifier");
-    else if ((scenarioObject->elementName()) == "SCProgram")
-        item->setText(0, "Program");
-    else if ((scenarioObject->elementName()) == "SCMission")
-    {
-        item->setText(0, "Mission");
-        item->setExpanded(true);
-    }
-    else if ((scenarioObject->elementName()) == "TrajectoryPlan")
-    {
-        item->setText(0, "Trajectory plan:");
-        item->setExpanded(true);
-    }
-    else if ((scenarioObject->elementName()) == "PayloadSet")
-    {
-        item->setText(0, "Payload set:");
-        item->setExpanded(true);
-    }
-    else if ((scenarioObject->elementName()) == "SCSystemType")
-        item->setText(0, "Platform");
-    else if ((scenarioObject->elementName()) == "SystemBudgets")
-        item->setText(0, "Budgets");
-    else if ((scenarioObject->elementName()) == "MassOfSystem")
-        item->setText(0, "Mass");
-    else if ((scenarioObject->elementName()) == "PowerOfSystem")
-        item->setText(0, "Power");
-    else if ((scenarioObject->elementName()) == "Link")
-        item->setText(0, "Link");
-    else if ((scenarioObject->elementName()) == "SCAerodynamics")
-        item->setText(0, "Aerodynamics");
-    else if ((scenarioObject->elementName()) == "Propulsion")
-        item->setText(0, "Propulsion");
-    else if ((scenarioObject->elementName()) == "Structure")
-        item->setText(0, "Structure");
-    else if ((scenarioObject->elementName()) == "Sizing")
-        item->setText(0, "Size");
-    else if ((scenarioObject->elementName()) == "MomentsOfInertia")
-        item->setText(0, "Inertia");
-    else if ((scenarioObject->elementName()) == "SecondMomentsOfArea")
-        item->setText(0, "More inertia");
-    else if ((scenarioObject->elementName()) == "NaturalFrequency")
-        item->setText(0, "Natural frquency");
-    else if ((scenarioObject->elementName()) == "TCS")
-        item->setText(0, "Thermal control");
-    else if ((scenarioObject->elementName()) == "Temperature")
-        item->setText(0, "Temperature");
-    else if ((scenarioObject->elementName()) == "CoatingArea")
-        item->setText(0, "Coating Area");
-    else if ((scenarioObject->elementName()) == "ColdSurface")
-        item->setText(0, "Cold surface");
-    else if ((scenarioObject->elementName()) == "ColdCoating")
-        item->setText(0, "Cold surface coating");
-    else if ((scenarioObject->elementName()) == "HotSurface")
-        item->setText(0, "Hot surface");
-    else if ((scenarioObject->elementName()) == "HotCoating")
-        item->setText(0, "Hot surface coating");
-    else if ((scenarioObject->elementName()) == "EPS")
-        item->setText(0, "EPS");
-    else if ((scenarioObject->elementName()) == "SolarArray")
-        item->setText(0, "Solar array type");
-    else if ((scenarioObject->elementName()) == "BatteryType")
-        item->setText(0, "Battery type");
-    else if ((scenarioObject->elementName()) == "TTC")
-        item->setText(0, "TTC");
-    else if ((scenarioObject->elementName()) == "TTCAntenna")
-        item->setText(0, "TTC antenna");
-    else if ((scenarioObject->elementName()) == "AOCS")
-        item->setText(0, "AOCS");
-    else if ((scenarioObject->elementName()) == "OBDH")
-        item->setText(0, "OBDH");
-    else if ((scenarioObject->elementName()) == "Optimization")
-        item->setText(0, "Optimization");
-    else if ((scenarioObject->elementName()) == "OutputFiles")
-        item->setText(0, "Output Files");
-    else if ((scenarioObject->elementName()) == "REVProgramType")
-        item->setText(0, "Program");
-    else if ((scenarioObject->elementName()) == "REVMissionType")
-    {
-        item->setText(0, "Mission");
-        item->setExpanded(true);
-    }
-    else if ((scenarioObject->elementName()) == "REVPayloadType")
-    {
-        item->setText(0, "Payload set:");
-        item->setExpanded(true);
-    }
-    else if ((scenarioObject->elementName()) == "REVTrajectoryPlanType")
-    {
-        item->setText(0, "Trajectory plan:");
-        item->setExpanded(true);
-    }
-    else if ((scenarioObject->elementName()) == "REVSystemType")
-        item->setText(0, "System");
-    else if ((scenarioObject->elementName()) == "REVWeights")
-        item->setText(0, "Mass");
-    else if ((scenarioObject->elementName()) == "InertialMatrix")
-        item->setText(0, "Inertia");
-    else if ((scenarioObject->elementName()) == "OptVarString")
-        item->setText(0, "Optimization");
-    else if ((scenarioObject->elementName()) == "OptVarInt")
-        item->setText(0, "Optimization");
-    else if ((scenarioObject->elementName()) == "REVComponentsType")
-        item->setText(0, "Components");
-    else if ((scenarioObject->elementName()) == "REVComponentsMassType")
-        item->setText(0, "Mass");
-    else if ((scenarioObject->elementName()) == "CoGLongPosition")
-        item->setText(0, "CoG position (L)");
-    else if ((scenarioObject->elementName()) == "REVGeometryType")
-        item->setText(0, "Geometry");
-    else if ((scenarioObject->elementName()) == "REVTPS")
-	    item->setText(0, "Thermal protection");
-    else if ((scenarioObject->elementName()) == "OptVarDouble")
-        item->setText(0, "Optimization");
-    else if ((scenarioObject->elementName()) == "OptVarBool")
-        item->setText(0, "Optimization");
-    else if ((scenarioObject->elementName()) == "REVAeroThermodynamicsType")
-        item->setText(0, "Aerothermodynamics");
-    else if ((scenarioObject->elementName()) == "AeroCoefFileType")
-        item->setText(0, "Aerodynamics coefficients");
-    else if ((scenarioObject->elementName()) == "Parachutes")
-        item->setText(0, "Parachutes");
-    else if ((scenarioObject->elementName()) == "REVStructureType")
-        item->setText(0, "Structure");
-    else if ((scenarioObject->elementName()) == "REVSecondaryPropulsionType")
-        item->setText(0, "Propulsion (secondary)");
-    else if ((scenarioObject->elementName()) == "REVRCSType")
-        item->setText(0, "Propulsion (primary)");
-    else if ((scenarioObject->elementName()) == "REVCostsType")
-        item->setText(0, "Cost");
-    else if ((scenarioObject->elementName()) == "REVSystemCostsType")
-        item->setText(0, "Cost (system)");
-    else if ((scenarioObject->elementName()) == "REVSubsystemsDevelopCostsType")
-        item->setText(0, "Cost (subsystem)");
-    else if ((scenarioObject->elementName()) == "REVSubsystemsProductionCostsType")
-        item->setText(0, "Cost of production (subsystem");
-    else if ((scenarioObject->elementName()) == "REVReliabilityType")
-        item->setText(0, "Reliability (system)");
-    else if ((scenarioObject->elementName()) == "REVSubsystemsReliablityType")
-        item->setText(0, "Reliability (subsystem)");
-    else if ((scenarioObject->elementName()) == "LocationType")
-        item->setText(0, "Location");
-    else if ((scenarioObject->elementName()) == "GroundPositionType")
-        item->setText(0, "Position");
-    else if ((scenarioObject->elementName()) == "GroundStationEnvironment")
-        item->setText(0, "Environment");
-    else if ((scenarioObject->elementName()) == "Rain")
-        item->setText(0, "Rain");
-    else if ((scenarioObject->elementName()) == "Modulation")
-        item->setText(0, "Modulation");
-    else if ((scenarioObject->elementName()) == "SystemTemperature")
-        item->setText(0, "Temperature");
-    else if ((scenarioObject->elementName()) == "TelescopeType")
-        item->setText(0, "Telescope");
-    else if ((scenarioObject->elementName()) == "OpticalProperties")
-        item->setText(0, "Optical properties");
-    else if ((scenarioObject->elementName()) == "SystemTemperature")
-        item->setText(0, "Temperature");
-    else if ((scenarioObject->elementName()) == "SCEnvironmentType")
-        item->setText(0, "Environment type");
-    else if ((scenarioObject->elementName()) == "TimeLine")
-        item->setText(0, "Time line");
-    else if ((scenarioObject->elementName()) == "InitialPositionType")
-        item->setText(0, "Initial position");
-    else if ((scenarioObject->elementName()) == "KeplerianElementsType")
-        item->setText(0, "Keplerian elements");
-    else if ((scenarioObject->elementName()) == "InitialAttitudeType")
-        item->setText(0, "Initial attitude");
-    else if ((scenarioObject->elementName()) == "EulerBIType")
-        item->setText(0, "Euler angles");
-    else if ((scenarioObject->elementName()) == "PropagationPositionType")
-        item->setText(0, "Propagation of position");
-    else if ((scenarioObject->elementName()) == "PropagationAttitudeType")
-        item->setText(0, "Propagation of attitude");
-    else if ((scenarioObject->elementName()) == "SystemTemperature")
-        item->setText(0, "Temperature");
-    else if ((scenarioObject->elementName()) == "EntryArcType")  //Next lines added by Dominic to remove empty lines in scenario tree
-    {
-        item->setText(0, "Re-entry Arc");
-        item->setIcon(0, QIcon(":/icons/mission-arcs-reentry.png"));
-    }
-    else if ((scenarioObject->elementName()) == "EnvironmentType")
-        item->setText(0, "Environment");
-    else if ((scenarioObject->elementName()) == "CentralBodyType")
-        item->setText(0, "Central Body");
-    else if ((scenarioObject->elementName()) == "REVConstraintsType")
-        item->setText(0, "Constraints");
-    else if ((scenarioObject->elementName()) == "REVFinalStateType")
-        item->setText(0, "Final State");
-    else if ((scenarioObject->elementName()) == "REVConstraintsViolationType")
-        item->setText(0, "Constraints Violations");
-    else if ((scenarioObject->elementName()) == "EntryCharacteristicsType")
-        item->setText(0, "Entry Characteristics");
-    else if ((scenarioObject->elementName()) == "GravityModel")
-        item->setText(0, "Gravity Model");
-    else if ((scenarioObject->elementName()) == "SphericalCoordinatesType")
-        item->setText(0, "Spherical Coordinates");
-    else if ((scenarioObject->elementName()) == "REVDispersionAnalysisType")
-        item->setText(0, "Dispersion Analysis");
+        // No record in the TreeDisplayInfo table for this element, so just show the
+        // element name.
+        item->setText(0, scenarioObject->elementName());
 
-
+        // When debugging, set the color of elements missing from the table to red.
+        // item->setTextColor(0, "red");
+    }
 }
 
 
