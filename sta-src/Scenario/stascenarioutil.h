@@ -39,6 +39,7 @@ extern QDateTime parseDateTime(const QString& e);
 extern QList<double> parseDoubleList(const QString& e);
 extern QList<QString> parseStringList(const QString& e);
 extern QList<int> parseIntList(const QString& e);
+extern QList<QDateTime> parseDateTimeList(const QString& e);
 
 extern QString convertToString(const QString& e);
 extern QString convertToString(double d);
@@ -48,6 +49,7 @@ extern QString convertToString(const QDateTime& d);
 extern QString convertToString(const QList<double>& l);
 extern QString convertToString(const QList<int>& l);
 extern QString convertToString(const QList<QString>& l);
+extern QString convertToString(const QList<QDateTime>& l);
 
 // Create a new element with a single text node as a child. The text node
 // contains the string representation of the value.

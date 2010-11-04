@@ -100,6 +100,30 @@ QList<int> parseIntList(const QString& s)
     return parseItemList<int>(s);
 }
 
+QList<QDateTime> parseDateTimeList(const QString& s)
+{
+    QList<QDateTime> list;
+    QTextStream in(const_cast<QString*>(&s), QIODevice::ReadOnly);
+    bool readOk = true;
+
+    while (readOk)
+    {
+        QString s;
+        in >> s;
+        QDateTime dateTime = QDateTime::fromString(s, Qt::ISODate);
+        if (in.status() == QTextStream::Ok && dateTime.isValid())
+        {
+            list << dateTime;
+        }
+        else
+        {
+            readOk = false;
+        }
+    }
+
+    return list;
+}
+
 
 QString convertToString(const QString& s)
 {
@@ -153,6 +177,14 @@ QString convertToString(const QList<int>& l)
     return s;
 }
 
+QString convertToString(const QList<QDateTime>& l)
+{
+    QString s;
+    foreach (QDateTime d, l)
+    {
+        s += d.toString(Qt::ISODate);
+    }
+}
 
 void AddScenarioNamespaceAttributes(QDomElement& scenarioElement)
 {
