@@ -133,6 +133,7 @@ public:
         DoubleList,
         IntegerList,
         StringList,
+        DateTimeList,
         Complex
     };
 
@@ -178,6 +179,7 @@ public:
         case DoubleList:
         case StringList:
         case IntegerList:
+        case DateTimeList:
             return true;
         default:
             return false;
@@ -235,6 +237,8 @@ public:
             return "parseStringList";
         case IntegerList:
             return "parseIntList";
+        case DateTimeList:
+            return "parseDateTimeList";
         default:
             return "";
         }
@@ -591,6 +595,8 @@ SchemaType::ctype() const
         return "QList<QString>";
     case IntegerList:
         return "QList<int>";
+    case DateTimeList:
+        return "QList<QDateTime>";
     case Complex:
         return classNameFromElement(m_complexTypeName);
     default:
@@ -637,6 +643,10 @@ SchemaType::CreateFromTypeName(const QString& name)
     else if (name == "ListOfInt")
     {
         propType = SchemaType::IntegerList;
+    }
+    else if (name == "ListOfDateTime")
+    {
+        propType = SchemaType::DateTimeList;
     }
     else
     {
