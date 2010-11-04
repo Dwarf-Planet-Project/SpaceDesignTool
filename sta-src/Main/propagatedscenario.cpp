@@ -222,8 +222,8 @@ MissionArc::generateEphemerisFile()
 /****** SpaceObject        ******/
 
 SpaceObject::SpaceObject() :
-    m_missionStartTime(0.0),
-    m_missionEndTime(0.0)
+    m_missionStartTime(sta::JdToMjd(sta::J2000)),
+    m_missionEndTime(sta::JdToMjd(sta::J2000))
 {
 }
 
@@ -468,8 +468,8 @@ double GroundObject::getRange(const SpaceObject *spacecraft, double t) const{
 /*! Create a new, empty propagated scenario.
  */
 PropagatedScenario::PropagatedScenario() :
-    m_startTime(0.0),
-    m_endTime(0.0)
+    m_startTime(sta::JdToMjd(sta::J2000)),
+    m_endTime(sta::JdToMjd(sta::J2000))
 {
 }
 
