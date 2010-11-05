@@ -54,19 +54,15 @@ double sta::J2000   = 2451545.0;
 /*! Convert a Qt4 date-time object to a Julian date.
  *
  *  TODO: leap seconds are not handled by Qt4 yet.
- *  TODO: milliseconds are not handled in the calendarTOjulian function yet.
  */
-double sta::CalendarToJd(QDateTime calendarDate)
+double sta::CalendarToJd(const QDateTime& calendarDate)
 {
     Q_ASSERT(calendarDate.isValid());
+
+    QDate d = calendarDate.date();
+    QTime t = calendarDate.time();
     
-    // Convert the timespec to UTC
-    // QDateTime utcDate = calendarDate.toUTC();  // We assume for the time being that all times are UTC
-    QDateTime utcDate = calendarDate;
-    QDate d = utcDate.date();
-    QTime t = utcDate.time();
-    
-    return calendarTOjulian(d.year(), d.month(), d.day(), t.hour(), t.minute(), t.second());
+    return calendarTOjulian(d.year(), d.month(), d.day(), t.hour(), t.minute(), t.second()) + secsToDays(t.msec() / 1000.0);
 }
 
 

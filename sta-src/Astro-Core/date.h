@@ -35,7 +35,7 @@ namespace sta
 {
     int MjdToElapsed(double StartEpoch, int ArrayIndex); //added by Ana
     QDateTime JdToCalendar(double jd);
-    double CalendarToJd(QDateTime calendarDate);
+    double CalendarToJd(const QDateTime& calendarDate);
     double MjdToJd(double mjd);
     double JdToMjd(double jd);
     double MjdToFromEpoch(double StartEpoch, double mjd, QString Units); //added by Ana
