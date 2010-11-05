@@ -160,7 +160,7 @@ QString convertToString(const QList<double>& l)
     QString s;
     foreach (double d, l)
     {
-        s += QString::number(d) + " ";
+        s += QString::number(d, 'g', 16) + " ";
     }
 
     return s;
@@ -182,8 +182,10 @@ QString convertToString(const QList<QDateTime>& l)
     QString s;
     foreach (QDateTime d, l)
     {
-        s += d.toString(Qt::ISODate);
+        s += d.toString("yyyy-MM-ddThh:mm:ss.z") + " ";
     }
+
+    return s;
 }
 
 void AddScenarioNamespaceAttributes(QDomElement& scenarioElement)
