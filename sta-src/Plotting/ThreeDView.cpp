@@ -172,7 +172,11 @@ public:
         double mjd = secsSinceJ2000ToMjd(t);
 
         sta::StateVector sv;
-        m_missionArc->getStateVector(mjd, &sv);
+        if (!m_missionArc->getStateVector(mjd, &sv))
+        {
+            qDebug() << "Failed to get state vector for mission arc (probably because of a bad trajectory)";
+        }
+
         return StateVector(sv.position, sv.velocity);
     }
 
@@ -607,7 +611,8 @@ ThreeDView::drawOverlay()
                     {
                         StateVector sv = selectedBody->state(m_currentTime);
 
-                        Entity* centralBody = selectedBody->chronology()->firstArc()->center();
+                        vesta::Arc* currentArc = selectedBody->chronology()->activeArc(m_currentTime);
+                        Entity* centralBody = currentArc->center();
                         StateVector centerSv = centralBody->state(m_currentTime);
 
                         double r = (sv.position() - centerSv.position()).norm();
@@ -617,7 +622,7 @@ ThreeDView::drawOverlay()
                             r -= globe->meanRadius();
                         }
 
-                        m_labelFont->render(QString("Altitude: %1 km").arg(r, 0, 'f', 2).toLatin1().data(),
+                        m_labelFont->render(QString("Distance to %1: %2 km").arg(centralBody->name().c_str()).arg(r, 0, 'f', 2).toLatin1().data(),
                                             Vector2f(10.0f, 10.0f));
                     }
                 }
