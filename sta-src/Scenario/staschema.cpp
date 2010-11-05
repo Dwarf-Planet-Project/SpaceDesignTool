@@ -7234,6 +7234,8 @@ bool ScenarioREVTrajectoryPlanType::load(const QDomElement& e, QDomElement* next
             v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioFlyByType::create(*next));
         else if (next->tagName() == "tns:LoiteringTLE")
             v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioLoiteringTLEType::create(*next));
+        else if (next->tagName() == "tns:External")
+            v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioExternalType::create(*next));
         else if (next->tagName() == "tns:DeltaV")
             v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioDeltaVType::create(*next));
         if (v.isNull()) break; else {
@@ -7260,6 +7262,8 @@ QDomElement ScenarioREVTrajectoryPlanType::toDomElement(QDomDocument& doc, const
             tagName = "FlyBy";
         else if (dynamic_cast<ScenarioLoiteringTLEType*>(p.data()))
             tagName = "LoiteringTLE";
+        else if (dynamic_cast<ScenarioExternalType*>(p.data()))
+            tagName = "External";
         else if (dynamic_cast<ScenarioDeltaVType*>(p.data()))
             tagName = "DeltaV";
         QDomElement child = p->toDomElement(doc, tagName);
@@ -10322,6 +10326,8 @@ bool ScenarioTrajectoryPlan::load(const QDomElement& e, QDomElement* next)
             v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioFlyByType::create(*next));
         else if (next->tagName() == "tns:LoiteringTLE")
             v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioLoiteringTLEType::create(*next));
+        else if (next->tagName() == "tns:External")
+            v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioExternalType::create(*next));
         else if (next->tagName() == "tns:DeltaV")
             v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioDeltaVType::create(*next));
         if (v.isNull()) break; else {
@@ -10348,6 +10354,8 @@ QDomElement ScenarioTrajectoryPlan::toDomElement(QDomDocument& doc, const QStrin
             tagName = "FlyBy";
         else if (dynamic_cast<ScenarioLoiteringTLEType*>(p.data()))
             tagName = "LoiteringTLE";
+        else if (dynamic_cast<ScenarioExternalType*>(p.data()))
+            tagName = "External";
         else if (dynamic_cast<ScenarioDeltaVType*>(p.data()))
             tagName = "DeltaV";
         QDomElement child = p->toDomElement(doc, tagName);
@@ -10620,6 +10628,75 @@ QDomElement ScenarioFlyByType::toDomElement(QDomDocument& doc, const QString& el
 QList<QSharedPointer<ScenarioObject> >ScenarioFlyByType::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
+// ScenarioExternalType
+ScenarioExternalType::ScenarioExternalType()
+{
+    m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(new ScenarioElementIdentifierType());
+    m_CentralBody = QSharedPointer<ScenarioCentralBodyType>(new ScenarioCentralBodyType());
+}
+
+ScenarioExternalType* ScenarioExternalType::create(const QDomElement& e)
+{
+    ScenarioExternalType* v;
+    {
+        v = new ScenarioExternalType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioExternalType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioAbstractTrajectoryType::load(e, next);
+    if (next->tagName() == "tns:ElementIdentifier")
+        m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(ScenarioElementIdentifierType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:CentralBody")
+        m_CentralBody = QSharedPointer<ScenarioCentralBodyType>(ScenarioCentralBodyType::create(*next));
+    *next = next->nextSiblingElement();
+        m_CoordinateSystem = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_TimeTags = parseDateTimeList(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_States = parseDoubleList(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioExternalType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc, elementName);
+    if (!m_ElementIdentifier.isNull())
+    {
+        QString tagName = "ElementIdentifier";
+        QDomElement child = m_ElementIdentifier->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_CentralBody.isNull())
+    {
+        QString tagName = "CentralBody";
+        QDomElement child = m_CentralBody->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    e.appendChild(createSimpleElement(doc, "tns:CoordinateSystem", m_CoordinateSystem));
+    e.appendChild(createSimpleElement(doc, "tns:TimeTags", m_TimeTags));
+    e.appendChild(createSimpleElement(doc, "tns:States", m_States));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioExternalType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_ElementIdentifier.isNull()) children << m_ElementIdentifier;
+    if (!m_CentralBody.isNull()) children << m_CentralBody;
     return children;
 }
 
@@ -12686,6 +12763,11 @@ QDomElement CreateInitialPositionElement(ScenarioInitialPositionType* e, QDomDoc
 QDomElement CreateOutputFilesElement(ScenarioOutputFiles* e, QDomDocument& doc)
 {
     return e->toDomElement(doc, "OutputFiles");
+}
+
+QDomElement CreateExternalElement(ScenarioExternalType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "External");
 }
 
 QDomElement CreateEulerBIElement(ScenarioEulerBIType* e, QDomDocument& doc)

@@ -41,6 +41,7 @@ QT_END_NAMESPACE
 class ScenarioTree;
 class ScenarioSimulationParameters;
 class ScenarioTrajectoryPropagation;
+class PropagationFeedback;
 
 class ExternalDropArea;
 
@@ -91,5 +92,14 @@ protected:
     void dragLeaveEvent(QDragLeaveEvent *event);
     void dropEvent(QDropEvent *event);
 };
+
+
+extern bool
+PropagateExternalTrajectory(ScenarioExternalType* extTrajectory,
+                            const QString& ephemerisSearchDirectory,
+                            QList<double>& sampleTimes,
+                            QList<sta::StateVector>& samples,
+                            PropagationFeedback& propFeedback);
+
 
 #endif // _EXTERNAL_H_

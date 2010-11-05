@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
 
     // Initialize SPICE
     SpiceEphemeris* spiceEphem = SpiceEphemeris::InitializeSpice(QDesktopServices::storageLocation(QDesktopServices::DataLocation) + "/spice");
-    if (spiceEphem && 0)
+    if (spiceEphem)
     {
         qDebug() << "Using SPICE ephemeris";
         SolarSystemBodyDictionary::UseEphemeris(spiceEphem);

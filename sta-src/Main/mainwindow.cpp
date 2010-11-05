@@ -77,6 +77,8 @@
 
 #include "Help/HelpBrowser.h"
 
+#include "OemImporter.h"
+
 #include "about.h"
 
 // Constellations
@@ -329,7 +331,7 @@ SpaceScenario* MainWindow::scenario() const
  *  views. If a scenario was loaded already, it will be replaced.
  */
 void
-		MainWindow::setScenario(SpaceScenario* scenario)
+MainWindow::setScenario(SpaceScenario* scenario)
 {
     clearViews();
 
@@ -390,10 +392,12 @@ void MainWindow::on_actionOpenScenario_triggered()
         dir = settings.value("OpenScenarioDir").toString();
     }
 
+    SpaceScenario* scenario = NULL;
+
     QString fileName = QFileDialog::getOpenFileName(this,
                                                     tr("Open Scenario"),
                                                     dir,
-                                                    "Space Scenario Files (*.stas)");
+                                                    "Space Scenario Files (*.stas);;Orbit Ephemeris Messages (*.oem)");
     if (!fileName.isEmpty())
     {
         QFile scenarioFile(fileName);
@@ -407,52 +411,76 @@ void MainWindow::on_actionOpenScenario_triggered()
             QFileInfo scenarioFileInfo(fileName);
             settings.setValue("OpenScenarioDir", scenarioFileInfo.absolutePath());
 
-            if (!m_spaceScenarioSchema)
+            if (fileName.endsWith(".oem", Qt::CaseInsensitive))
             {
-                QFile schemaFile(SCHEMA_FILE);
-                if (!schemaFile.open(QIODevice::ReadOnly))
+                // Import an OEM (Orbit Ephemeris Message) file
+                QFile oemFile(fileName);
+                if (!oemFile.open(QIODevice::ReadOnly))
                 {
-                    QMessageBox::critical(this, tr("Critical Error"), tr("Error opening space scenario schema file. Unable to load scenario."));
+                    QMessageBox::warning(this, tr("Error"), tr("Error opening file %1").arg(fileName));
                     return;
                 }
 
-                m_spaceScenarioSchema = new QXmlSchema;
-                if (!m_spaceScenarioSchema->load(&schemaFile, QUrl::fromLocalFile(schemaFile.fileName())))
+                QTextStream oemStream(&oemFile);
+                OemImporter importer(&oemStream);
+
+                scenario = importer.loadScenario();
+
+                if (!scenario)
                 {
-                    QMessageBox::critical(this, tr("Critical Error"), tr("Error in space scenario schema file. Unable to load scenario."));
-                    delete m_spaceScenarioSchema;
-                    m_spaceScenarioSchema = NULL;
+                    QMessageBox::warning(this, tr("OEM File Error"), tr("%1 (line %2)").arg(importer.errorMessage()).arg(importer.lineNumber()));
                     return;
                 }
             }
-
-            QXmlSchemaValidator validator(*m_spaceScenarioSchema);
-            if (!validator.validate(&scenarioFile))
+            else
             {
+                if (!m_spaceScenarioSchema)
+                {
+                    QFile schemaFile(SCHEMA_FILE);
+                    if (!schemaFile.open(QIODevice::ReadOnly))
+                    {
+                        QMessageBox::critical(this, tr("Critical Error"), tr("Error opening space scenario schema file. Unable to load scenario."));
+                        return;
+                    }
 
-                QMessageBox::critical(this, tr("Scenario Load Error"), tr("Scenario is not a valid space scenario."));
-                return;
-            }
+                    m_spaceScenarioSchema = new QXmlSchema;
+                    if (!m_spaceScenarioSchema->load(&schemaFile, QUrl::fromLocalFile(schemaFile.fileName())))
+                    {
+                        QMessageBox::critical(this, tr("Critical Error"), tr("Error in space scenario schema file. Unable to load scenario."));
+                        delete m_spaceScenarioSchema;
+                        m_spaceScenarioSchema = NULL;
+                        return;
+                    }
+                }
 
-            scenarioFile.reset();
-            QDomDocument scenarioDoc;
-            if (!scenarioDoc.setContent(&scenarioFile))
-            {
-                // This should not fail, since we just got done validating the xml file against the space
-                // scenario schema.
+                QXmlSchemaValidator validator(*m_spaceScenarioSchema);
+                if (!validator.validate(&scenarioFile))
+                {
+
+                    QMessageBox::critical(this, tr("Scenario Load Error"), tr("Scenario is not a valid space scenario."));
+                    return;
+                }
+
+                scenarioFile.reset();
+                QDomDocument scenarioDoc;
+                if (!scenarioDoc.setContent(&scenarioFile))
+                {
+                    // This should not fail, since we just got done validating the xml file against the space
+                    // scenario schema.
+                    scenarioFile.close();
+                    QMessageBox::critical(this, tr("Scenario Load Error"), tr("Internal error occurred when loading space scenario."));
+                    return;
+                }
+
                 scenarioFile.close();
-                QMessageBox::critical(this, tr("Scenario Load Error"), tr("Internal error occurred when loading space scenario."));
-                return;
-            }
 
-            scenarioFile.close();
-
-            QDomElement rootElement = scenarioDoc.firstChildElement("tns:SpaceScenario");
-            SpaceScenario* scenario = SpaceScenario::create(rootElement);
-            if (!scenario)
-            {
-                QMessageBox::critical(this, tr("Scenario Load Error"), tr("Internal error (parser problem) occurred when loading space scenario."));
-                return;
+                QDomElement rootElement = scenarioDoc.firstChildElement("tns:SpaceScenario");
+                scenario = SpaceScenario::create(rootElement);
+                if (!scenario)
+                {
+                    QMessageBox::critical(this, tr("Scenario Load Error"), tr("Internal error (parser problem) occurred when loading space scenario."));
+                    return;
+                }
             }
 
             // TODO: Probably should just call setScenario() here.
@@ -470,7 +498,18 @@ void MainWindow::on_actionOpenScenario_triggered()
 
             m_scenarioView->m_scenarioTree->addScenarioItems(rootItem, scenario);
             m_scenarioView->m_scenarioTree->addTopLevelItem(rootItem);
-            replaceCurrentScenario(scenario, fileName);
+
+            // Don't set the current file name if we've imported from a non-STA format. This
+            // forces the user to choose a new file name when saving, which is better than
+            // overwriting the source file.
+            if (fileName.endsWith(".stas", Qt::CaseInsensitive))
+            {
+                replaceCurrentScenario(scenario, fileName);
+            }
+            else
+            {
+                replaceCurrentScenario(scenario, "");
+            }
 
             // This sequence seems to be required to force the scenario view
             // widget to update (at least on Mac OS X)
@@ -1498,7 +1537,7 @@ void MainWindow::on_actionPropagateCoverage_triggered()
 		{
 			ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
 
-			scenarioPropagatorSatellite(vehicle,  trajectoryColor, feedback, propScenario);
+            scenarioPropagatorSatellite(vehicle, feedback, propScenario, this);
 		}
 
 		else if (dynamic_cast<ScenarioREV*>(participant.data()))//Added by Dominic to allow propagation of re-entry vehicle trajectories
@@ -1577,9 +1616,8 @@ void MainWindow::on_actionSat_to_Sat_triggered()
 		if (dynamic_cast<ScenarioSC*>(participant.data()))
 		{
 			ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
-
-			scenarioPropagatorSatellite(vehicle,  trajectoryColor, feedback, propScenario);
-		}
+            scenarioPropagatorSatellite(vehicle, feedback, propScenario, this);
+        }
 
 		else if (dynamic_cast<ScenarioREV*>(participant.data()))//Added by Dominic to allow propagation of re-entry vehicle trajectories
 		{
@@ -1657,7 +1695,7 @@ void MainWindow::on_actionSat_to_Ground_triggered()
         if (dynamic_cast<ScenarioSC*>(participant.data()))
         {
             ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
-            scenarioPropagatorSatellite(vehicle,  trajectoryColor, feedback, propScenario);
+            scenarioPropagatorSatellite(vehicle, feedback, propScenario, this);
         }
 
         else if (dynamic_cast<ScenarioREV*>(participant.data()))//Added by Dominic to allow propagation of re-entry vehicle trajectories
@@ -1781,7 +1819,6 @@ void MainWindow::openFileFromAEvent(const QString& fileName)
 
 			m_scenarioView->m_scenarioTree->addScenarioItems(rootItem, scenario);
 			m_scenarioView->m_scenarioTree->addTopLevelItem(rootItem);
-			replaceCurrentScenario(scenario, fileName);
 
 			// This sequence seems to be required to force the scenario view
 			// widget to update (at least on Mac OS X)

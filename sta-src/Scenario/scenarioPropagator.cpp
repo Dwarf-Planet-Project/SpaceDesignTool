@@ -55,6 +55,8 @@
 
 #include "Entry/reentry.h"
 
+#include "External/external.h"
+
 #include <QWidget>
 #include <QColor>
 #include <QDebug>
@@ -120,7 +122,6 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback feedba
                         stateVector->setVy(theLastStateVector.velocity(1));
                         stateVector->setVz(theLastStateVector.velocity(2));
                         //qDebug() << stateVector->x() << stateVector->y() << stateVector->z() << endl;
-                        //qDebug() << stateVector->vx() << stateVector->vy() << stateVector->vz() << endl;
                         loitering->InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(stateVector));
                         //QDateTime myStarDateTime = sta::JdToCalendar(sta::MjdToJd(theLastSampleTime));
                         //loitering->TimeLine()->setStartTime(myStarDateTime);
@@ -299,169 +300,75 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback feedba
                 arc->setArcTrajectoryColor(trajectoryColor);
                 arc->setModelName(deltaV->ElementIdentifier()->modelName());
                 spaceObject->addMissionArc(arc);
+            }
+            else if (dynamic_cast<ScenarioExternalType*>(trajectory.data()))    // External trajectory
+            {
+                ScenarioExternalType* extTrajectory = dynamic_cast<ScenarioExternalType*>(trajectory.data());
 
-            }  /////////////////////////// end of the big IF for all arcs
+                QString centralBodyName = extTrajectory->CentralBody()->Name();
+                StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+                if (!centralBody)
+                {
+                    int ret = QMessageBox::warning(parent, "Propagation Error", "Unrecognized central body");
+                    continue;
+                }
+
+                QString coordSysName = extTrajectory->CoordinateSystem();
+                sta::CoordinateSystem coordSys(coordSysName);
+                if (coordSys.type() == sta::COORDSYS_INVALID)
+                {
+                    int ret = QMessageBox::warning(parent, "Propagation Error", "Unrecognized coordinate system");
+                    continue;
+                }
+
+                PropagateExternalTrajectory(extTrajectory, "", sampleTimes, samples, feedback);
+
+                if (feedback.status() != PropagationFeedback::PropagationOk)
+                {
+                    // An error occurred during propagate. Clean up everything and return immediately.
+                    // The current propagation results will not be replaced.
+                    if (feedback.status() == PropagationFeedback::PropagationCanceled)
+                    {
+                        int ret = QMessageBox::warning(parent, "Canceled", "Propagation was canceled.");
+                    }
+                    else
+                    {
+                        int ret = QMessageBox::critical(parent, "Propagation Error", "Error during propagation");
+                    }
+
+                    delete propScenario;
+                    return;
+                }
+
+                if (sampleTimes.size() > 1)
+                {
+                    MissionArc* arc = new MissionArc(centralBody,
+                                                     coordSys,
+                                                     sampleTimes,
+                                                     samples);
+
+                    // Loading arc color, name, and model
+                    QString arcName = extTrajectory->ElementIdentifier()->Name();
+                    QString arcColorName = extTrajectory->ElementIdentifier()->colorName();
+
+                    MissionsDefaults myMissionDefaults;
+                    QColor trajectoryColor = myMissionDefaults.missionArcColorFromQt(arcColorName);
+                    QString arcModelName = extTrajectory->ElementIdentifier()->modelName();
+
+                    arc->setArcName(arcName);
+                    arc->setArcTrajectoryColor(trajectoryColor);
+                    arc->setModelName(arcModelName);
+
+                    spaceObject->addMissionArc(arc);
+                }
+
+            }
+            /////////////////////////// end of the big IF for all arcs
         }
 
         propScenario->addSpaceObject(spaceObject);
 	}
 }
-
-
-
-void scenarioPropagatorSatellite(ScenarioSC* vehicle,  QColor trajectoryColor, PropagationFeedback feedback, PropagatedScenario* propScenario)
-{
-    int Lagrmode = 99;
-    const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList = vehicle->SCMission()->TrajectoryPlan()->AbstractTrajectory();
-
-    // Initial state is stored in the first trajectory (for now); so,
-    // the empty trajectory plan case has to be treated specially.
-    if (!trajectoryList.isEmpty())
-    {
-        SpaceObject* spaceObject = new SpaceObject();
-        spaceObject->setName(vehicle->Name());
-
-        spaceObject->setTrajectoryColor(trajectoryColor);
-        /*
-#if OLDSCENARIO
-        // TODO: Visual properties not added to new space scenario schema yet -cjl
-        spaceObject->setModelFile(vehicle->appearance()->model());
-        spaceObject->setTrajectoryColor(vehicle->visualProperties().trajectoryColor);
-#endif
-*/
-        // Propagate all segments of the trajectory plan.
-        foreach (QSharedPointer<ScenarioAbstractTrajectoryType> trajectory, trajectoryList)
-        {
-            QList<double> sampleTimes;
-            QList<sta::StateVector> samples;
-
-            if (dynamic_cast<ScenarioLoiteringType*>(trajectory.data()))    // Loitering
-            {
-                ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
-                PropagateLoiteringTrajectory(loitering, sampleTimes, samples, feedback);
-
-                //******************************************************************** /OZGUN
-                // Eclipse function is called and the "data/EclipseStarLight.stad" is generated
-                EclipseDuration* Eclipse = new EclipseDuration();
-
-                Eclipse->StarLightTimeFunction(sampleTimes,
-                                               samples,
-                                               STA_SOLAR_SYSTEM->lookup("Earth"),
-                                               STA_SOLAR_SYSTEM->lookup("Sun"));
-
-                //******************************************************************** OZGUN/
-
-                if (feedback.status() != PropagationFeedback::PropagationOk)
-                {
-                    // An error occurred during propagate. Clean up everything and return immediately.
-                    // The current propagation results will not be replaced.
-                    if (feedback.status() == PropagationFeedback::PropagationCanceled)
-                    {
-                        //QMessageBox::information(this, tr("Canceled"), tr("Propagation was canceled."));
-                    }
-                    else
-                    {
-                        //QMessageBox::critical(this, tr("Propagation Error"), tr("Error during propagation: %1").arg(feedback.errorString()));
-                    }
-
-                    delete propScenario;
-                    return;
-                }
-
-                QString centralBodyName = loitering->Environment()->CentralBody()->Name();
-                StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
-                if (!centralBody)
-                {
-                    //QMessageBox::warning(this, tr("Propagation Error"), tr("Unrecognized body '%1'").arg(centralBodyName));
-                    continue;
-                }
-
-                QString coordSysName = loitering->InitialPosition()->CoordinateSystem();
-                sta::CoordinateSystem coordSys(coordSysName);
-                if (coordSys.type() == sta::COORDSYS_INVALID)
-                {
-                    //QMessageBox::warning(this,tr("Propagation Error"),tr("Unrecognized coordinate system '%1'").arg(coordSysName));
-                    continue;
-                }
-
-
-                if (sampleTimes.size() > 1)
-                {
-                    if (Lagrmode != 2)
-                    {
-                        MissionArc* arc = new MissionArc(centralBody,
-                                                         coordSys,
-                                                         sampleTimes,
-                                                         samples);
-                        spaceObject->addMissionArc(arc);
-                    }
-                }
-            } ///////// End of loitering IF
-            else if (dynamic_cast<ScenarioLoiteringTLEType*>(trajectory.data()))    //// TLEs
-            {
-                ScenarioLoiteringTLEType* loiteringTLE = dynamic_cast<ScenarioLoiteringTLEType*>(trajectory.data());
-                PropagateLoiteringTLETrajectory(loiteringTLE, sampleTimes, samples, feedback);
-
-                if (feedback.status() != PropagationFeedback::PropagationOk)
-                {
-                    // An error occurred during propagate. Clean up everything and return immediately.
-                    // The current propagation results will not be replaced.
-                    if (feedback.status() == PropagationFeedback::PropagationCanceled)
-                    {
-                        //QMessageBox::information(this, tr("Canceled"), tr("Propagation was canceled."));
-                    }
-                    else
-                    {
-                        //QMessageBox::critical(this, tr("Propagation Error"), tr("Error during propagation: %1").arg(feedback.errorString()));
-                    }
-
-                    delete propScenario;
-                    return;
-                }
-
-                QString centralBodyName = "Earth";
-                StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
-
-                if (!centralBody)
-                {
-                    //QMessageBox::warning(this, tr("Propagation Error"),tr("Unrecognized body '%1'").arg(centralBodyName));
-                    continue;
-                }
-
-                QString coordSysName = "INERTIAL J2000";
-                sta::CoordinateSystem coordSys(coordSysName);
-                if (coordSys.type() == sta::COORDSYS_INVALID)
-                {
-                    //QMessageBox::warning(this,tr("Propagation Error"),tr("Unrecognized coordinate system '%1'").arg(coordSysName));
-                    continue;
-                }
-
-                if (sampleTimes.size() > 1)
-                {
-                    if (Lagrmode != 2)
-                    {
-                        MissionArc* arc = new MissionArc(centralBody,
-                                                         coordSys,
-                                                         sampleTimes,
-                                                         samples);
-                        spaceObject->addMissionArc(arc);
-                    }
-                }
-
-            }  /////////////////////////// end of the big IF for all arcs
-
-#if OLDSCENARIO
-            PropagateLagrangian();
-#endif
-        }
-
-        if (Lagrmode != 2)
-        {
-            propScenario->addSpaceObject(spaceObject);
-        }
-    }
-}
-
 
 
 void scenarioPropagatorReEntryVehicle(ScenarioREV* entryVehicle, PropagationFeedback feedback, PropagatedScenario* propScenario, QWidget* parent)

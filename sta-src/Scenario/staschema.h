@@ -176,6 +176,7 @@ class ScenarioLoiteringType;
 class ScenarioLoiteringTLEType;
 class ScenarioLagrangianType;
 class ScenarioFlyByType;
+class ScenarioExternalType;
 class ScenarioDeltaVType;
 class ScenarioSCSystemType;
 class ScenarioSystemBudgets;
@@ -6643,6 +6644,52 @@ private:
 };
 
 
+// ScenarioExternalType
+class ScenarioExternalType : public ScenarioAbstractTrajectoryType
+{
+public:
+    ScenarioExternalType();
+    static ScenarioExternalType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "ExternalType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
+    { return m_ElementIdentifier; }
+    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
+    { m_ElementIdentifier = ElementIdentifier; }
+    QSharedPointer<ScenarioCentralBodyType> CentralBody() const
+    { return m_CentralBody; }
+    void setCentralBody(QSharedPointer<ScenarioCentralBodyType> CentralBody)
+    { m_CentralBody = CentralBody; }
+    QString CoordinateSystem() const
+    { return m_CoordinateSystem; }
+    void setCoordinateSystem(QString CoordinateSystem)
+    { m_CoordinateSystem = CoordinateSystem; }
+    const QList<QDateTime>& TimeTags() const
+    { return m_TimeTags; }
+    QList<QDateTime>& TimeTags()
+    { return m_TimeTags; }
+    void setTimeTags(QList<QDateTime> TimeTags)
+    { m_TimeTags = TimeTags; }
+    const QList<double>& States() const
+    { return m_States; }
+    QList<double>& States()
+    { return m_States; }
+    void setStates(QList<double> States)
+    { m_States = States; }
+
+private:
+    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
+    QSharedPointer<ScenarioCentralBodyType> m_CentralBody;
+    QString m_CoordinateSystem;
+    QList<QDateTime> m_TimeTags;
+    QList<double> m_States;
+};
+
+
 // ScenarioDeltaVType
 class ScenarioDeltaVType : public ScenarioAbstractTrajectoryType
 {
@@ -7733,6 +7780,7 @@ QDomElement CreateGroundPositionElement(ScenarioGroundPositionType* e, QDomDocum
 QDomElement CreateLVElement(ScenarioLV* e, QDomDocument& doc);
 QDomElement CreateInitialPositionElement(ScenarioInitialPositionType* e, QDomDocument& doc);
 QDomElement CreateOutputFilesElement(ScenarioOutputFiles* e, QDomDocument& doc);
+QDomElement CreateExternalElement(ScenarioExternalType* e, QDomDocument& doc);
 QDomElement CreateEulerBIElement(ScenarioEulerBIType* e, QDomDocument& doc);
 QDomElement CreateState12DOFElement(ScenarioState12DOF* e, QDomDocument& doc);
 QDomElement CreateEulerBLVLHElement(ScenarioEulerBLVLHType* e, QDomDocument& doc);

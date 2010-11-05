@@ -41,8 +41,6 @@ void scenarioPropagatorGroundElement(ScenarioGroundStation* groundElement, Propa
 
 
 
-void scenarioPropagatorSatellite(ScenarioSC* vehicle,  QColor trajectoryColor, PropagationFeedback feedback, PropagatedScenario* propScenario);
-
 void scenarioPropagatorReEntryVehicle(ScenarioREV* vehicle,  QColor trajectoryColor, PropagationFeedback feedback, PropagatedScenario* propScenario);
 
 void scenarioPropagatorLaunchVehicle(ScenarioLV* entryVehicle,  QColor trajectoryColor, PropagationFeedback feedback, PropagatedScenario* propScenario);

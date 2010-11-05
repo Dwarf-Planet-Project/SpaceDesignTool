@@ -34,6 +34,7 @@
 #include "Scenario/scenario.h"
 #include "Astro-Core/date.h"
 #include "Astro-Core/stacoordsys.h"
+#include "Scenario/propagationfeedback.h"
 
 #include <QtGui>
 #include <iostream>
@@ -41,6 +42,8 @@
 #include <QTemporaryFile>
 
 #include "ui_external.h"
+
+#include <limits>
 
 
 QT_BEGIN_NAMESPACE
@@ -424,4 +427,133 @@ void ExternalDropArea::clear()
     setBackgroundRole(QPalette::Dark);
     emit changed();
 }
+
+
+bool
+PropagateExternalTrajectory(ScenarioExternalType* extTrajectory,
+                            const QString& ephemerisSearchDirectory,
+                            QList<double>& sampleTimes,
+                            QList<sta::StateVector>& samples,
+                            PropagationFeedback& propFeedback)
+{
+    if (extTrajectory->States().size() != extTrajectory->TimeTags().size() * 6)
+    {
+        propFeedback.raiseError(QObject::tr("Number of time tags in external trajectory doesn't match number of state vectors"));
+        return true;
+    }
+
+    const QList<double>& states = extTrajectory->States();
+
+    qDebug() << extTrajectory->TimeTags().size() << " times, " << states.size() << " states";
+
+    double lastJd = -std::numeric_limits<double>::infinity();
+    unsigned int index = 0;
+    foreach (QDateTime d, extTrajectory->TimeTags())
+    {
+        //qDebug() << index << " " << d.toString("yyyy-MM-ddThh:mm:ss.z");
+
+        double jd = sta::CalendarToJd(d);
+
+        if (jd < lastJd)
+        {
+            if (index > 0)
+            {
+                qDebug() << "Times are not increasing! " <<  d.toString("yyyy-MM-ddThh:mm:ss.z")
+                        << ", " << extTrajectory->TimeTags().at(index - 1).toString("yyyy-MM-ddThh:mm:ss.z");
+                for (unsigned int i = 0; i < extTrajectory->TimeTags().size(); i++)
+                {
+                    qDebug() << i << ": " << extTrajectory->TimeTags().at(i).toString("yyyy-MM-ddThh:mm:ss.z");
+                }
+            }
+            propFeedback.raiseError(QObject::tr("Times in external trajectory are not strictly increasing"));
+            return true;
+        }
+
+        // Skip records with identical time tags. This should be an error, but it's possible
+        // for different times to appear identical because Qt's QDateTime is limited to millisecond
+        // precision.
+
+        if (jd != lastJd)
+        {
+            Vector3d position(states[index * 6    ], states[index * 6 + 1], states[index * 6 + 2]);
+            Vector3d velocity(states[index * 6 + 3], states[index * 6 + 4], states[index * 6 + 5]);
+
+            sampleTimes << sta::JdToMjd(jd);
+            samples << sta::StateVector(position, velocity);
+
+            lastJd = jd;
+        }
+        ++index;
+    }
+
+#if 0
+    double startJd = sta::CalendarToJd(extTrajectory->TimeLine()->StartTime());
+    double endJd = sta::CalendarToJd(extTrajectory->TimeLine()->EndTime());
+
+    double timelineDuration = sta::daysToSecs(endJd - startJd);
+
+    if (timelineDuration < 0)
+    {
+        propFeedback.raiseError(QObject::tr("End time before initial time"));
+        return true;
+    }
+
+    double dt = extTrajectory->TimeLine()->StepTime();
+
+    QString ephemerisFileName = ephemerisSearchDirectory + "/" + extTrajectory->EphemerisFile();
+    if (!QFileInfo(ephemerisFileName).exists())
+    {
+        propFeedback.raiseError(QObject::tr("External trajectory file '%1' not found").arg(ephemerisFileName));
+        return true;
+    }
+
+    QFile ephemerisFile(ephemerisFileName);
+    if (!ephemerisFile.open(QIODevice::ReadOnly))
+    {
+        propFeedback.raiseError(QObject::tr("Error opening external trajectory file '%1'").arg(ephemerisFileName));
+        return true;
+    }
+
+    QTextStream ephemerisStream(&ephemerisFile);
+
+    double lastJd = -std::numeric_limits<double>::infinity();
+    while (!ephemerisStream.atEnd())
+    {
+        double mjd = 0.0;
+        sta::StateVector state;
+
+        ephemerisStream >> mjd
+                        >> state.position.x() >> state.position.y() >> state.position.z()
+                        >> state.velocity.x() >> state.velocity.y() >> state.velocity.z();
+
+        QTextStream::Status status = ephemerisStream.status();
+        if (status == QTextStream::Ok)
+        {
+            double jd = sta::JdToMjd(mjd);
+
+            if (jd <= lastJd)
+            {
+                propFeedback.raiseError(QObject::tr("Times in external trajectory file '%1' are not strictly increasing").arg(ephemerisFileName));
+                return true;
+            }
+
+            if (jd >= startJd && jd <= endJd)
+            {
+                sampleTimes << mjd;
+                samples << state;
+            }
+
+            lastJd = jd;
+        }
+        else if (status != QTextStream::ReadPastEnd)
+        {
+            propFeedback.raiseError(QObject::tr("Error parsing state vectors in external trajectory file '%1'").arg(ephemerisFileName));
+            return true;
+        }
+    }
+
+#endif
+    return true;
+}
+
 

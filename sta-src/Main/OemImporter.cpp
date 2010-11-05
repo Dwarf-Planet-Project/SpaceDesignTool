@@ -21,8 +21,10 @@
 */
 
 #include "OemImporter.h"
+#include "Astro-Core/date.h"
 
 #include <QStringList>
+#include <QRegExp>
 #include <QDebug>
 
 
@@ -57,6 +59,15 @@ OemImporter::OemImporter(QTextStream* stream) :
 
 /** Load an OEM file and convert it to an STA Space Scenario.
   *
+  * Not all features of the OEM format are supported by the OemImporter
+  * class. An oem file that uses an unsupported feature will fail to load;
+  * details of the problem are available via the errorMessage() method.
+  *
+  * The current implementation has the following limitations:
+  *   - TIME_STANDARD must be TDB
+  *   - REF_FRAME must be EMEJ2000
+  *   - CENTER_NAME must be an object with an ephemeris
+  *
   * \return a pointer to a complete space scenario, or NULL if
   * there was an error loading the scenario.
   */
@@ -78,7 +89,22 @@ OemImporter::loadScenario()
     QString objectName;
     StaBody* center = NULL;
 
+    QRegExp whiteSpaceRegExp("\\s+");
 
+
+    // This is the state machine for parsing OEM files. Roughly, the structure
+    // of an OEM file is:
+    //    Header
+    //
+    //    Metadata
+    //    Ephemeris data
+    //    Metadata
+    //    Ephemeris data
+    //    ...
+    //
+    // Where the metadata and ephemeris data blocks alternate; any number
+    // of metadata/ephemeris data pairs may appear in the file. For full
+    // details see Recommended Standard CCSDS 502.0-B-2.
     while (m_parserState != Oem_End && m_parserState != Oem_Error)
     {
         if (skip)
@@ -353,7 +379,13 @@ OemImporter::loadScenario()
                     m_parserState = Oem_AfterMetaStop;
                     trajectory = new ScenarioExternalType();
 
+                    int trajectoryIndex = sc->SCMission()->TrajectoryPlan()->AbstractTrajectory().size();
+
                     trajectory->CentralBody()->setName(center->name());
+                    trajectory->setCoordinateSystem("INERTIAL J2000");
+                    trajectory->ElementIdentifier()->setName(QString("%1 - %2").arg(objectName).arg(trajectoryIndex + 1));
+                    trajectory->ElementIdentifier()->setColorName("Green");
+
                     sc->SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
                 }
                 else
@@ -382,14 +414,100 @@ OemImporter::loadScenario()
                 else
                 {
                     // Parse the ephemeris line
+                    QStringList values = line.split(whiteSpaceRegExp);
+                    if (values.size() != 7)
+                    {
+                        raiseError("Bad or unsupported ephemeris data record");
+                    }
+                    else
+                    {
+                        QDateTime dateTime;
+                        int secondsDecimal = values[0].lastIndexOf('.');
+                        if (secondsDecimal > 0)
+                        {
+                            bool msecOk = false;
+                            double sec = values[0].right(values[0].length() - secondsDecimal).toDouble(&msecOk);
+                            if (msecOk)
+                            {
+                                dateTime = QDateTime::fromString(values[0].left(secondsDecimal), Qt::ISODate);
+                                dateTime.setTimeSpec(Qt::UTC);
+                                int msec = (int) (sec * 1000.0);
+                                dateTime = dateTime.addMSecs((int) (sec * 1000.0));
+                            }
+                        }
+                        else
+                        {
+                            dateTime = QDateTime::fromString(values[0], Qt::ISODate);
+                        }
+
+                        if (!dateTime.isValid())
+                        {
+                            raiseError(QString("Bad time value in ephemeris data (%1)").arg(values[0]));
+                        }
+                        else
+                        {
+                            bool stateValid = true;
+                            double state[6];
+                            for (int i = 0; i < 6; ++i)
+                            {
+                                bool ok = false;
+                                state[i] = values[i + 1].toDouble(&ok);
+                                if (!ok)
+                                {
+                                    stateValid = false;
+                                }
+                            }
+
+                            if (!stateValid)
+                            {
+                                raiseError("Non-number in ephemeris data");
+                            }
+                            else
+                            {
+                                trajectory->TimeTags().append(dateTime);
+                                for (int i = 0; i < 6; ++i)
+                                {
+                                    trajectory->States() << state[i];
+                                }
+                            }
+                        }
+                    }
                 }
                 break;
+
+            default:
+                m_parserState = Oem_Error;
+                break;
+            }
+        }
+    }
+
+    // Validate trajectory by making sure that there are no overlapping segments or gaps
+    if (sc)
+    {
+        for (int i = 1; i < sc->SCMission()->TrajectoryPlan()->AbstractTrajectory().size(); ++i)
+        {
+            ScenarioExternalType* prev = dynamic_cast<ScenarioExternalType*>(sc->SCMission()->TrajectoryPlan()->AbstractTrajectory().at(i - 1).data());
+            ScenarioExternalType* curr = dynamic_cast<ScenarioExternalType*>(sc->SCMission()->TrajectoryPlan()->AbstractTrajectory().at(i).data());
+            if (prev && curr && !prev->TimeTags().isEmpty() && !curr->TimeTags().isEmpty())
+            {
+                QDateTime prevEnd = prev->TimeTags().last();
+                QDateTime currStart = curr->TimeTags().first();
+                if (currStart < prevEnd)
+                {
+                    raiseError(QString("Ephemeris segments %1 and %2 overlap.").arg(i - 1).arg(i));
+                }
+                else if (currStart > prevEnd)
+                {
+                    raiseError(QString("Gap between ephemeris segments %1 and %2.").arg(i - 1).arg(i));
+                }
             }
         }
     }
 
     if (m_parserState == Oem_Error)
     {
+        qDebug() << "Error while importing OEM file: " << errorMessage();
         delete scenario;
         scenario = NULL;
     }
@@ -397,6 +515,7 @@ OemImporter::loadScenario()
     {
         scenario->setName(objectName);
         sc->setName(objectName);
+        sc->ElementIdentifier()->setName(objectName);
     }
 
     return scenario;
