@@ -192,9 +192,7 @@ MissionArc::generateEphemerisFile()
         return false;
     }
 
-    //m_ephemerisFile = QDir::tempPath() + "/" + m_ephemerisTempFile->fileName();
     m_ephemerisFile = m_ephemerisTempFile->fileName();
-    //qDebug() << "ephemeris file: " << m_ephemerisTempFile->fileName();
 
     QTextStream ephemerisStream(m_ephemerisTempFile);
 

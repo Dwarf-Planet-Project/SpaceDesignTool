@@ -123,7 +123,7 @@ static ScenarioTreeLabel TreeLabels[] =
     { "ElementIdentifierType", "Identifier", "", false },
     { "SCProgram", "Program", "", false },
     { "SCMission", "Mission", "", true },
-    { "TrajectoryPlan", "Trajctory plan", "", true },
+    { "TrajectoryPlan", "Trajectory plan", "", true },
     { "PayloadSet", "Payload set", "", true },
     { "SCSystemType", "Platform", "", false },
     { "SystemBudgets", "Budgets", "", false },
@@ -689,11 +689,6 @@ void ScenarioTree::updateTreeItems(QTreeWidgetItem* parentItem,
         QTreeWidgetItem* child = parentItem->takeChild(i);
         delete child;
     }
-
-
-#if OLDSCENARIO
-    scenarioObject->createItemContents(parentItem);
-#endif
 }
 
 
