@@ -248,10 +248,10 @@ InitSolarSystemBodyDictionary(QHash<StaBodyId, StaBody*>& dict, QHash<QString, S
 
     AddSolarSystemBody(dict, nameIndex, STA_MOON,      "Moon",  4902.801,        1737.4,                            1.023,      384399,     27.3217,      5.145);
 
-    AddSolarSystemBody(dict, nameIndex, STA_PHOBOS,    "Phobos",  85.22834344572990e-5,     Vector3d(13.4, 11.2, 9.2),           0,          23459,          0.31910,  1.79);
-    AddSolarSystemBody(dict, nameIndex, STA_DEIMOS,    "Deimos", 119.9192772100721e-6,      Vector3d( 7.5,  6.1, 5.2),           0,          23459,          1.26244,  1.79);
+    AddSolarSystemBody(dict, nameIndex, STA_PHOBOS,    "Phobos",  85.22834344572990e-5,     Vector3d(13.4, 11.2, 9.2),           0,     9380,          0.31910,  1.075);
+    AddSolarSystemBody(dict, nameIndex, STA_DEIMOS,    "Deimos", 119.9192772100721e-6,      Vector3d( 7.5,  6.1, 5.2),           0,    23459,          1.26244,  1.79);
 
-    AddSolarSystemBody(dict, nameIndex, STA_IO,        "Io",       5960.981613781674,       Vector3d(1829.4,  1819.3,  1815.7),  0,    42180,          1.7692,   0.47);
+    AddSolarSystemBody(dict, nameIndex, STA_IO,        "Io",       5960.981613781674,       Vector3d(1829.4,  1819.3,  1815.7),  0,    421800,         1.7692,   0.47);
     AddSolarSystemBody(dict, nameIndex, STA_EUROPA,    "Europa",   3200.988724107317,       Vector3d(1564.13, 1561.23, 1560.93), 0,    670900,         3.551,    0.47);
     AddSolarSystemBody(dict, nameIndex, STA_GANYMEDE,  "Ganymede", 9886.997387719448,       Vector3d(2632.4,  2632.29, 2623.35), 0,    1070400,        7.155,    0.47);
     AddSolarSystemBody(dict, nameIndex, STA_CALLISTO,  "Callisto", 7180.972962701350,       Vector3d(2409.4,  2409.2,  2409.3),  0,    1882700,       16.69,     0.47);
