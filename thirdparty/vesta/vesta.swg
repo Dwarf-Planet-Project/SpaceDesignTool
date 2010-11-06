@@ -1,5 +1,5 @@
 //
-// $Revision: 551 $ $Date: 2010-10-21 15:19:54 -0700 (Thu, 21 Oct 2010) $
+// $Revision: 552 $ $Date: 2010-11-06 11:13:29 +0100 (Sat, 06 Nov 2010) $
 //
 // Copyright by Astos Solutions GmbH, Germany
 //  
@@ -1264,6 +1264,8 @@ public:
     void setWindowDuration(double duration);
     double fadeFraction() const;
     void setFadeFraction(double fadeFraction);
+    float lineWidth() const;
+    void setLineWidth(float width);
 
     void computeSamples(const Trajectory* trajectory, double startTime, double endTime, unsigned int steps);
     void updateSamples(const Trajectory* trajectory, double startTime, double endTime, unsigned int steps);

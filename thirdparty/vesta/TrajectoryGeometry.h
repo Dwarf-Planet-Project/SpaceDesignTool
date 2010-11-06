@@ -1,5 +1,5 @@
 /*
- * $Revision: 541 $ $Date: 2010-10-19 11:56:03 -0700 (Tue, 19 Oct 2010) $
+ * $Revision: 552 $ $Date: 2010-11-06 11:13:29 +0100 (Sat, 06 Nov 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -198,6 +198,21 @@ public:
     }
 
 
+    /** Get the width of the lines used to plot the trajectory.
+      */
+    float lineWidth() const
+    {
+        return m_lineWidth;
+    }
+
+    /** Set the width of the lines used to plot the trajectory. By default,
+      * lines of width 1 are used.
+      */
+    void setLineWidth(float width)
+    {
+        m_lineWidth = width;
+    }
+
 private:
     counted_ptr<Frame> m_frame;
     Spectrum m_color;
@@ -209,6 +224,7 @@ private:
     TrajectoryPortion m_displayedPortion;
     double m_windowDuration;
     double m_fadeFraction;
+    float m_lineWidth;
 };
 
 }

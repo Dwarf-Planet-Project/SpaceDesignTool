@@ -1,5 +1,5 @@
 /*
- * $Revision: 541 $ $Date: 2010-10-19 11:56:03 -0700 (Tue, 19 Oct 2010) $
+ * $Revision: 552 $ $Date: 2010-11-06 11:13:29 +0100 (Sat, 06 Nov 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -31,7 +31,8 @@ TrajectoryGeometry::TrajectoryGeometry() :
     m_boundingRadius(0.0),
     m_displayedPortion(Entire),
     m_windowDuration(0.0),
-    m_fadeFraction(0.0)
+    m_fadeFraction(0.0),
+    m_lineWidth(1.0f)
 {
     // Make trajectories splittable by default in order to prevent
     // clipping artifacts.
@@ -91,6 +92,7 @@ TrajectoryGeometry::render(RenderContext& rc, double clock) const
         break;
     }
 
+    glLineWidth(m_lineWidth);
     double subdivisionThreshold = rc.pixelSize() * 30.0;
     if (fade)
     {
@@ -123,6 +125,7 @@ TrajectoryGeometry::render(RenderContext& rc, double clock) const
                             subdivisionThreshold,
                             startTime, endTime);
     }
+    glLineWidth(1.0f);
 
     rc.popModelView();
 }
