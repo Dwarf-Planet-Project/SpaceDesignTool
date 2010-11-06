@@ -100,7 +100,10 @@ SpiceEphemeris::checkCoverage(const StaBody* body, double et) const
         qDebug() << "SpiceEphemeris error: Requested state of " << body->name() << " at " << DateString(et) << ", outside valid range of "
                  << DateString(interval.start()) << " -- " << DateString(interval.end());
         Q_ASSERT(false);
+        return false;
     }
+
+    return true;
 }
 
 
