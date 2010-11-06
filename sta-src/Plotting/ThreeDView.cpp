@@ -114,7 +114,8 @@ static const string DefaultSpacecraftMeshFile = "models/sorce.obj";
 
 static StaBodyId PlanetIds[] = {
     STA_MERCURY, STA_VENUS, STA_EARTH, STA_MARS,
-    STA_JUPITER, STA_SATURN, STA_URANUS, STA_NEPTUNE
+    STA_JUPITER, STA_SATURN, STA_URANUS, STA_NEPTUNE,
+    STA_PLUTO
 };
 
 static const unsigned int PlanetCount = sizeof(PlanetIds) / sizeof(PlanetIds[0]);
@@ -122,6 +123,7 @@ static const unsigned int PlanetCount = sizeof(PlanetIds) / sizeof(PlanetIds[0])
 static StaBodyId MoonIds[] = {
     STA_MOON,
     STA_IO, STA_EUROPA, STA_GANYMEDE, STA_CALLISTO,
+    STA_MIMAS, STA_ENCELADUS, STA_TETHYS, STA_DIONE, STA_RHEA, STA_TITAN, STA_HYPERION, STA_IAPETUS, STA_PHOEBE
 };
 
 static const unsigned int MoonCount = sizeof(MoonIds) / sizeof(MoonIds[0]);
@@ -152,6 +154,44 @@ TextureProperties planetTextureProperties()
     texProps.addressS = TextureProperties::Wrap;
     texProps.addressT = TextureProperties::Clamp;
     return texProps;
+}
+
+
+Spectrum
+BodyLabelColor(StaBodyId id)
+{
+    switch (id)
+    {
+    case STA_MERCURY:   return Spectrum(0.7f, 0.5f, 0.4f);
+    case STA_VENUS:     return Spectrum(0.7f, 0.7f, 0.6f);
+    case STA_EARTH:     return Spectrum(0.4f, 0.5f, 0.7f);
+    case STA_MARS:      return Spectrum(0.7f, 0.4f, 0.3f);
+    case STA_JUPITER:   return Spectrum(0.7f, 0.6f, 0.3f);
+    case STA_SATURN:    return Spectrum(0.7f, 0.7f, 0.6f);
+    case STA_URANUS:    return Spectrum(0.55f, 0.7f, 0.55f);
+    case STA_NEPTUNE:   return Spectrum(0.5f, 0.5f, 0.7f);
+
+    case STA_PLUTO:     return Spectrum(0.5f, 0.5f, 0.5f);
+
+    case STA_MOON:      return Spectrum(0.6f, 0.6f, 0.6f);
+
+    case STA_IO:        return Spectrum(0.9f, 0.9f, 0.6f);
+    case STA_EUROPA:    return Spectrum(0.8f, 0.8f, 0.8f);
+    case STA_GANYMEDE:  return Spectrum(0.8f, 0.5f, 0.4f);
+    case STA_CALLISTO:  return Spectrum(0.6f, 0.5f, 0.3f);
+
+    case STA_MIMAS:     return Spectrum(0.9f, 0.9f, 0.9f);
+    case STA_ENCELADUS: return Spectrum(0.8f, 0.8f, 1.0f);
+    case STA_TETHYS:    return Spectrum(0.8f, 0.5f, 0.4f);
+    case STA_DIONE:     return Spectrum(0.6f, 0.5f, 0.3f);
+    case STA_RHEA:      return Spectrum(0.8f, 0.8f, 0.6f);
+    case STA_TITAN:     return Spectrum(0.8f, 0.6f, 0.3f);
+    case STA_HYPERION:  return Spectrum(0.6f, 0.5f, 0.4f);
+    case STA_IAPETUS:   return Spectrum(0.6f, 0.5f, 0.3f);
+    case STA_PHOEBE:    return Spectrum(0.5f, 0.5f, 0.5f);
+
+    default:            return Spectrum(0.5f, 0.5f, 0.5f);
+    }
 }
 
 
@@ -225,9 +265,9 @@ public:
 
     virtual double boundingSphereRadius() const
     {
-        // Just return a very large value. For better performance, we should eventually return
-        // a much tighter bounding sphere.
-        return 1.0e10;
+        // Return a conservative estimate for orbit size; use the mean
+        // distance of the object from the central body plus 50%.
+        return m_body->distance() * 1.5;
     }
 
     virtual double period() const
@@ -373,6 +413,7 @@ ThreeDView::ThreeDView(const QGLFormat& format, QWidget* parent) :
     m_textureLoader->addLocalSearchPath("models");
 
     m_labelFont = new TextureFont();
+    initializeStandardResources();
 
     m_universe = new Universe();
     m_universe->addRef();
@@ -387,7 +428,6 @@ ThreeDView::ThreeDView(const QGLFormat& format, QWidget* parent) :
     m_observer = counted_ptr<Observer>(new Observer(earth));
     m_controller = counted_ptr<ObserverController>(new ObserverController());
     m_controller->setObserver(m_observer.ptr());
-    initializeStandardResources();
 
     gotoBody(STA_SOLAR_SYSTEM->earth());
 }
@@ -937,7 +977,7 @@ ThreeDView::initializeUniverse()
     addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_VENUS),   sun);
     addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_MARS),    sun);
     Body* jupiter = addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_JUPITER), sun);
-    addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_SATURN),  sun);
+    Body* saturn  = addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_SATURN),  sun);
     addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_URANUS),  sun);
     addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_NEPTUNE), sun);
     addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_PLUTO),   sun);
@@ -948,10 +988,20 @@ ThreeDView::initializeUniverse()
     addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_GANYMEDE), jupiter);
     addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_CALLISTO), jupiter);
 
+    // Saturnian system
+    addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_MIMAS),     saturn);
+    addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_ENCELADUS), saturn);
+    addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_TETHYS),    saturn);
+    addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_DIONE),     saturn);
+    addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_RHEA),      saturn);
+    addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_TITAN),     saturn);
+    addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_HYPERION),  saturn);
+    addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_IAPETUS),   saturn);
+    addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_PHOEBE),    saturn);
+
     initializeStarCatalog("vis3d/tycho2.stars");
 
     // Add rings for Saturn
-    Entity* saturn = this->findSolarSystemBody(STA_SATURN);
     if (saturn && dynamic_cast<WorldGeometry*>(saturn->geometry()))
     {
         PlanetaryRings* rings = new PlanetaryRings(74500.0f, 140220.0f);
@@ -968,22 +1018,15 @@ ThreeDView::initializeUniverse()
                                                                                      "earth-global-mosaic", 13,
                                                                                      480));
 
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_MERCURY),  Spectrum(0.7f, 0.5f, 0.4f));
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_VENUS),    Spectrum(0.7f, 0.7f, 0.6f));
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_EARTH),    Spectrum(0.4f, 0.5f, 0.7f));
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_MARS),     Spectrum(0.7f, 0.4f, 0.3f));
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_JUPITER),  Spectrum(0.7f, 0.6f, 0.3f));
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_SATURN),   Spectrum(0.7f, 0.7f, 0.6f));
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_URANUS),   Spectrum(0.55f, 0.7f, 0.55f));
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_NEPTUNE),  Spectrum(0.5f, 0.5f, 0.7f));
-    //createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_PLUTO));
+    for (unsigned int i = 0; i < PlanetCount; ++i)
+    {
+        createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(PlanetIds[i]), BodyLabelColor(PlanetIds[i]));
+    }
 
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_MOON),     Spectrum(0.6f, 0.6f, 0.6f));
-
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_IO),       Spectrum(0.9f, 0.9f,   0.6f));
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_EUROPA),   Spectrum(0.8f, 0.8f,   0.8f));
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_GANYMEDE), Spectrum(0.8f, 0.5f,   0.4f));
-    createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(STA_CALLISTO), Spectrum(0.6f, 0.5,    0.3f));
+    for (unsigned int i = 0; i < MoonCount; ++i)
+    {
+        createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(MoonIds[i]), BodyLabelColor(MoonIds[i]));
+    }
 }
 
 
@@ -1059,14 +1102,32 @@ ThreeDView::createOrbitVisualizer(const StaBody* stabody, const Spectrum& color)
 
     TrajectoryGeometry* trajGeom = new TrajectoryGeometry();
     trajGeom->setDisplayedPortion(TrajectoryGeometry::WindowBeforeCurrentTime);
-    trajGeom->setWindowDuration(arc->trajectory()->period());
+    trajGeom->setWindowDuration(arc->trajectory()->period() * 0.98);
     trajGeom->setColor(color);
     trajGeom->setFadeFraction(0.25);
+    //trajGeom->setLineWidth(1.5f);
 
     Visualizer* trajVisualizer = new Visualizer(trajGeom);
     trajVisualizer->setVisibility(false);
 
     arc->center()->setVisualizer(string("traj ") + body->name(), trajVisualizer);
+
+    LabelGeometry* label = new LabelGeometry(stabody->name().toUtf8().data(), m_labelFont.ptr(), color, 7.0f);
+    label->setIcon(m_planetIcon.ptr());
+    label->setIconColor(color);
+
+    // To avoid clutter, set the labels to fade out when then viewer is far
+    // away or very close to a planet.
+    float fadeSize = arc->trajectory()->boundingSphereRadius();
+    float minPixels = 20.0f;
+    float maxPixels = 20.0f * fadeSize / stabody->meanRadius();
+    label->setFadeSize(fadeSize);
+    label->setFadeRange(new FadeRange(minPixels, maxPixels, minPixels, maxPixels));
+
+    Visualizer* visualizer = new Visualizer(label);
+    visualizer->setDepthAdjustment(Visualizer::AdjustToFront);
+    visualizer->setVisibility(true);
+    body->setVisualizer("label", visualizer);
 }
 
 
@@ -1236,6 +1297,7 @@ ThreeDView::initializeStandardResources()
 {
     // Create icon textures
     m_spacecraftIcon = m_textureLoader->loadTexture(":/icons/Icon3DViewSpacecraft", TextureProperties(TextureProperties::Clamp));
+    m_planetIcon = m_textureLoader->loadTexture(":/icons/Icon3DViewSpacecraft", TextureProperties(TextureProperties::Clamp));
 
     // Load the default spacecraft model
     m_defaultSpacecraftMesh = MeshGeometry::loadFromFile(DefaultSpacecraftMeshFile, m_textureLoader.ptr());
@@ -1821,6 +1883,39 @@ ThreeDView::setMoonOrbits(bool enabled)
         {
             Entity* center = planet->chronology()->firstArc()->center();
             Visualizer* vis = center->visualizer(string("traj ") + planet->name());
+            if (vis)
+            {
+                vis->setVisibility(enabled);
+            }
+        }
+    }
+
+    setViewChanged();
+}
+
+
+void
+ThreeDView::setPlanetLabels(bool enabled)
+{
+    for (unsigned int i = 0; i < PlanetCount; ++i)
+    {
+        Entity* planet = findSolarSystemBody(PlanetIds[i]);
+        if (planet)
+        {
+            Visualizer* vis = planet->visualizer("label");
+            if (vis)
+            {
+                vis->setVisibility(enabled);
+            }
+        }
+    }
+
+    for (unsigned int i = 0; i < MoonCount; ++i)
+    {
+        Entity* planet = findSolarSystemBody(MoonIds[i]);
+        if (planet)
+        {
+            Visualizer* vis = planet->visualizer("label");
             if (vis)
             {
                 vis->setVisibility(enabled);

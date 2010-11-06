@@ -56,6 +56,8 @@ ViewActionGroup::ViewActionGroup() :
     m_planetOrbitsAction->setCheckable(true);
     m_moonOrbitsAction = new QAction(tr("Moon Orbits"), this);
     m_moonOrbitsAction->setCheckable(true);
+    m_planetLabelsAction = new QAction(tr("Planet Labels"), this);
+    m_planetLabelsAction->setCheckable(true);
 }
 
 
@@ -84,6 +86,7 @@ ViewActionGroup::saveSettings()
     settings.setValue("MoonOrbits", m_moonOrbitsAction->isChecked());
     settings.setValue("AmbientLight", m_ambientLight);
     settings.setValue("SkyLayer", m_currentSkyLayerIndex);
+    settings.setValue("PlanetLabels", m_planetLabelsAction->isChecked());
     settings.endGroup();
 }
 
@@ -106,6 +109,7 @@ ViewActionGroup::restoreSettings()
     m_satelliteTrajectoriesAction->setChecked(settings.value("SatelliteTrajectories", true).toBool());
     m_planetOrbitsAction->setChecked(settings.value("PlanetOrbits", false).toBool());
     m_moonOrbitsAction->setChecked(settings.value("MoonOrbits", false).toBool());
+    m_planetLabelsAction->setChecked(settings.value("PlanetLabels", true).toBool());
     setAmbientLight(settings.value("AmbientLight", 0.2f).toFloat());
     setSkyLayer(settings.value("SkyLayer", 0).toInt());
 

@@ -101,6 +101,7 @@ public slots:
    void setReentryTrajectories(bool enabled);
    void setPlanetOrbits(bool enabled);
    void setMoonOrbits(bool enabled);
+   void setPlanetLabels(bool enabled);
 
    void setCurrentSkyLayer(int layerIndex);
    void setAmbientLight(float lightLevel);
@@ -149,6 +150,7 @@ private:
     vesta::counted_ptr<vesta::MeshGeometry> m_defaultSpacecraftMesh;
 
     vesta::counted_ptr<vesta::TextureMap> m_spacecraftIcon;
+    vesta::counted_ptr<vesta::TextureMap> m_planetIcon;
     vesta::counted_ptr<vesta::CubeMapFramebuffer> m_reflectionMap;
 
     vesta::counted_ptr<vesta::PlanetGridLayer> m_planetGrid;

@@ -53,6 +53,7 @@ void Preferences::connectViewActions(const ViewActionGroup* viewActions)
     reentryTrajectories->setChecked(viewActions->reentryTrajectoriesAction()->isChecked());
     planetsTrajectories->setChecked(viewActions->planetOrbitsAction()->isChecked());
     moonsTrajectories->setChecked(viewActions->moonOrbitsAction()->isChecked());
+    planetsLabels->setChecked(viewActions->planetLabelsAction()->isChecked());
 
     // Connect dialog widgets to view actions
     // Note that we connect from the clicked() signal of the checkbox widgets. This prevents circular
@@ -68,6 +69,7 @@ void Preferences::connectViewActions(const ViewActionGroup* viewActions)
     connect(reentryTrajectories,    SIGNAL(clicked(bool)), viewActions->reentryTrajectoriesAction(),   SLOT(setChecked(bool)));
     connect(planetsTrajectories,    SIGNAL(clicked(bool)), viewActions->planetOrbitsAction(),          SLOT(setChecked(bool)));
     connect(moonsTrajectories,      SIGNAL(clicked(bool)), viewActions->moonOrbitsAction(),            SLOT(setChecked(bool)));
+    connect(planetsLabels,          SIGNAL(clicked(bool)), viewActions->planetLabelsAction(),          SLOT(setChecked(bool)));
     connect(skyLayerCombo,          SIGNAL(currentIndexChanged(int)), viewActions,                     SLOT(setSkyLayer(int)));
     connect(this, SIGNAL(ambientLightChanged(float)), viewActions, SLOT(setAmbientLight(float)));
 
@@ -81,6 +83,7 @@ void Preferences::connectViewActions(const ViewActionGroup* viewActions)
     connect(viewActions->satelliteTrajectoriesAction(), SIGNAL(toggled(bool)), satellitesTrajectories, SLOT(setChecked(bool)));
     connect(viewActions->reentryTrajectoriesAction(),   SIGNAL(toggled(bool)), reentryTrajectories,    SLOT(setChecked(bool)));
     connect(viewActions->planetOrbitsAction(),          SIGNAL(toggled(bool)), planetsTrajectories,    SLOT(setChecked(bool)));
+    connect(viewActions->planetLabelsAction(),          SIGNAL(toggled(bool)), planetsLabels,          SLOT(setChecked(bool)));
     connect(viewActions->moonOrbitsAction(),            SIGNAL(toggled(bool)), moonsTrajectories,      SLOT(setChecked(bool)));
     connect(viewActions, SIGNAL(skyLayerChanged(int)), this, SLOT(setSkyLayer(int)));
     connect(viewActions, SIGNAL(ambientLightChanged(float)), this, SLOT(setAmbientLight(float)));

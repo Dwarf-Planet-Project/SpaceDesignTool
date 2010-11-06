@@ -297,6 +297,7 @@ MainWindow::MainWindow(QWidget *parent)	:
         connect(m_viewActions->satelliteTrajectoriesAction(), SIGNAL(toggled(bool)), view, SLOT(setSatelliteTrajectories(bool)));
         connect(m_viewActions->planetOrbitsAction(), SIGNAL(toggled(bool)), view, SLOT(setPlanetOrbits(bool)));
         connect(m_viewActions->moonOrbitsAction(), SIGNAL(toggled(bool)), view, SLOT(setMoonOrbits(bool)));
+        connect(m_viewActions->planetLabelsAction(), SIGNAL(toggled(bool)), view, SLOT(setPlanetLabels(bool)));
         connect(m_viewActions, SIGNAL(ambientLightChanged(float)), view, SLOT(setAmbientLight(float)));
         connect(m_viewActions, SIGNAL(skyLayerChanged(int)), view, SLOT(setCurrentSkyLayer(int)));
     }
@@ -529,12 +530,6 @@ void MainWindow::on_actionOpenScenario_triggered()
     actionSystem_Engineering->setEnabled(m_scenario != NULL);
     //actionAnalyse->setEnabled(m_scenario = NULL);
     actionAnalyse->setDisabled(m_scenario != NULL);  // Do not enable analysis here. Do it after propagation
-
-}
-
-// Add required namespace attributes for the
-static void addScenarioNamespaceAttributes(QDomElement& rootElement)
-{
 
 }
 
@@ -957,10 +952,6 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
 
     PropagationFeedback feedback;
     PropagatedScenario* propScenario = new PropagatedScenario();
-
-    //extern int Lagrmode;
-
-    int Lagrmode = 99;	    //Guillermo says: take this thong out of here
 
     int colorIndex = 0;
 
@@ -1507,10 +1498,6 @@ void MainWindow::on_actionPropagateCoverage_triggered()
 
     PropagationFeedback feedback;
     PropagatedScenario* propScenario = new PropagatedScenario();
-
-    //extern int Lagrmode;
-
-    int Lagrmode = 99;	    //Guillermo says: take this thong out of here
 
     int colorIndex = 0;
 
