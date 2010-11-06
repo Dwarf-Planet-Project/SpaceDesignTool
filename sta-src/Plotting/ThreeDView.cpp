@@ -93,18 +93,6 @@ yearsToSecs(double julianYears)
     return sta::daysToSecs(365.25 * julianYears);
 }
 
-static double
-mjdToSecsSinceJ2000(double mjd)
-{
-    return sta::daysToSecs(mjd + (MJDBase - vesta::J2000));
-}
-
-static double
-secsSinceJ2000ToMjd(double secs)
-{
-    return sta::secsToDays(secs) - (MJDBase - vesta::J2000);
-}
-
 static double BeginningOfTime = -yearsToSecs(200.0);  // 1900 CE
 static double EndOfTime = yearsToSecs(100.0);         // 2100 CE
 static double ValidTimeSpan = EndOfTime - BeginningOfTime;
@@ -209,7 +197,7 @@ public:
     virtual StateVector state(double t) const
     {
         // VESTA provides the time as the number of seconds since 1 Jan 2000 12:00:00 UTC.
-        double mjd = secsSinceJ2000ToMjd(t);
+        double mjd = sta::SecJ2000ToMjd(t);
 
         sta::StateVector sv;
         if (!m_missionArc->getStateVector(mjd, &sv))
@@ -245,12 +233,18 @@ public:
         m_body(body),
         m_center(center)
     {
+        const sta::Ephemeris* ephemeris = m_body->ephemeris();
+        if (ephemeris)
+        {
+            sta::Ephemeris::TimeInterval interval = ephemeris->validTimeInterval(m_body);
+            setValidTimeRange(sta::MjdToSecJ2000(interval.start()), sta::MjdToSecJ2000(interval.end()));
+        }
     }
 
     virtual StateVector state(double t) const
     {
         // VESTA provides the time as the number of seconds since 1 Jan 2000 12:00:00 UTC.
-        double mjd = secsSinceJ2000ToMjd(t);
+        double mjd = sta::SecJ2000ToMjd(t);
         const sta::Ephemeris* ephemeris = m_body->ephemeris();
         if (ephemeris)
         {
@@ -299,7 +293,7 @@ public:
     virtual Quaterniond orientation(double t) const
     {
         // VESTA provides the time as the number of seconds since 1 Jan 2000 12:00:00 UTC.
-        double mjd = secsSinceJ2000ToMjd(t);
+        double mjd = sta::SecJ2000ToMjd(t);
         return m_body->orientation(mjd, sta::COORDSYS_EME_J2000);
     }
 
@@ -341,7 +335,7 @@ public:
     virtual void render(RenderContext& rc,
                         double t) const
     {
-        double mjd = secsSinceJ2000ToMjd(t);
+        double mjd = sta::SecJ2000ToMjd(t);
 
         // Linear search for the current arc
         Spectrum color;
@@ -1311,7 +1305,7 @@ ThreeDView::initializeStandardResources()
 void
 ThreeDView::setCurrentTime(double mjd)
 {
-    double t = mjdToSecsSinceJ2000(mjd);
+    double t = sta::MjdToSecJ2000(mjd);
     if (t != m_currentTime)
     {
         setViewChanged();
@@ -1540,7 +1534,7 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
         }
     }
 
-    body->chronology()->setBeginning(mjdToSecsSinceJ2000(spaceObj->mission().first()->beginning()));
+    body->chronology()->setBeginning(sta::MjdToSecJ2000(spaceObj->mission().first()->beginning()));
 
     body->setGeometry(m_defaultSpacecraftMesh.ptr());
 
@@ -1571,7 +1565,7 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
         for (unsigned int i = 0; i < missionArc->trajectorySampleCount(); ++i)
         {
             sta::StateVector state = missionArc->trajectorySample(i);
-            trajGeom->addSample(mjdToSecsSinceJ2000(missionArc->trajectorySampleTime(i)), StateVector(state.position, state.velocity));
+            trajGeom->addSample(sta::MjdToSecJ2000(missionArc->trajectorySampleTime(i)), StateVector(state.position, state.velocity));
         }
 
         Visualizer* trajVisualizer = new Visualizer(trajGeom);
