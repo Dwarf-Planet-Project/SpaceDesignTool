@@ -100,6 +100,12 @@ public:
     double getStartDate() const;
     double getEndDate() const;
 
+
+    /** Get the range of time for which ephemeris data is available for
+      * the specified body.
+      */
+    virtual TimeInterval validTimeInterval(const StaBody* body) const;
+
 private:
     JPLEphemItem mapStaId(StaBodyId id) const;
     StateVector getPlanetStateVector(JPLEphemItem planet, double t) const;

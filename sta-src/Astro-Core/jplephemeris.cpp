@@ -78,6 +78,11 @@ sta::JPLEphemeris::getEndDate() const
     return endDate;
 }
 
+sta::Ephemeris::TimeInterval
+sta::JPLEphemeris::validTimeInterval(const StaBody* /* body */) const
+{
+    return TimeInterval(sta::JdToMjd(startDate), sta::JdToMjd(endDate));
+}
 
 // Internal method to map an STA body id to a JPL ephemeris item
 sta::JPLEphemItem

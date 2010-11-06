@@ -28,22 +28,6 @@
 using namespace sta;
 
 
-class CoverageWindow
-{
-public:
-    CoverageWindow() : m_start(0.0), m_end(-1.0) {}
-    CoverageWindow(double start, double end) : m_start(start), m_end(end) {};
-
-    double start() const { return m_start; }
-    double end() const { return m_end; }
-    bool isEmpty() const { return m_end < m_start; }
-
-private:
-    double m_start;
-    double m_end;
-};
-
-
 SpiceEphemeris::SpiceEphemeris()
 {
 }
@@ -74,6 +58,71 @@ SpiceEphemeris::coordinateSystem(const StaBody* /* body */) const
 }
 
 
+static QString DateString(double et)
+{
+    SpiceChar timeString[128];
+
+    timout_c(et, "YYYY MON DD HR:MN:SC.### (TDB) ::TDB",
+             sizeof(timeString), timeString);
+
+    return QString(timeString);
+}
+
+
+/** Test the ephemeris for the specified body to see if:
+  *   1. There's an ephemeris for the body
+  *   2. The ephemeris is valid at the specified time
+  *
+  * Return true if both conditions are met and false otherwise.
+  *
+  * Note that this test still isn't exhaustive: the position of
+  * the object could depend some other object that isn't valid
+  * at the current time.
+  */
+bool
+SpiceEphemeris::checkCoverage(const StaBody* body, double et) const
+{
+    if (body->id() == STA_SOLAR_SYSTEM_BARYCENTER)
+    {
+        // We can always depend on the Solar System barycenter
+        return true;
+    }
+
+    if (!m_coverage.contains(body->id()))
+    {
+        qDebug() << "SpiceEphemeris error: Body " << body->name() << " missing from kernel pool.";
+        return false;
+    }
+
+    TimeInterval interval = m_coverage[body->id()];
+    if (!interval.contains(et))
+    {
+        qDebug() << "SpiceEphemeris error: Requested state of " << body->name() << " at " << DateString(et) << ", outside valid range of "
+                 << DateString(interval.start()) << " -- " << DateString(interval.end());
+        Q_ASSERT(false);
+    }
+}
+
+
+Ephemeris::TimeInterval
+SpiceEphemeris::validTimeInterval(const StaBody* body) const
+{
+    if (m_coverage.contains(body->id()))
+    {
+        TimeInterval etInterval = m_coverage[body->id()];
+
+        // Convert ET to MJD and shrink the interval slightly (by a second on either side) so
+        // that roundoff errors don't cause us to sample just outside the valid range.
+        return TimeInterval(SecJ2000ToMjd(etInterval.start() + 1.0), SecJ2000ToMjd(etInterval.end() - 1.0));
+    }
+    else
+    {
+        // Body not present at all; return an empty interval
+        return TimeInterval();
+    }
+}
+
+
 StateVector
 SpiceEphemeris::stateVector(const StaBody* body,
                             double mjd,
@@ -84,7 +133,13 @@ SpiceEphemeris::stateVector(const StaBody* body,
     double lightTime = 0.0;
 
     // The time argument for SPICE is seconds since J2000 TDB
-    double et = sta::daysToSecs(mjd + (MJDBase - J2000));
+    double et = sta::MjdToSecJ2000(mjd);
+
+    // Avoid calling SPICE with an out of range time value
+    if (!checkCoverage(body, et) || !checkCoverage(center, et))
+    {
+        return StateVector(Vector3d::Zero(), Vector3d::Zero());
+    }
 
     // Call SPICE to get the geometric state (i.e. not corrected for aberration or light
     // time) of the body relative to the specified center object. STA's ids for Solar
@@ -92,17 +147,6 @@ SpiceEphemeris::stateVector(const StaBody* body,
     spkgeo_c(body->id(), et, "j2000", center->id(), state, &lightTime);
 
     return StateVector(Vector3d(state[0], state[1], state[2]), Vector3d(state[3], state[4], state[5]));
-}
-
-
-static QString DateString(double et)
-{
-    SpiceChar timeString[128];
-
-    timout_c(et, "YYYY MON DD HR:MN:SC.### (TDB) ::TDB",
-             sizeof(timeString), timeString);
-
-    return QString(timeString);
 }
 
 
@@ -129,8 +173,6 @@ SpiceEphemeris::buildBodyList()
 
     // Get the number of SPK files that are loaded
     ktotal_c("SPK", &spkCount);
-
-    QMap<SpiceInt, CoverageWindow> objCoverage;
 
     // Iterate over the loaded kernel files
     for (SpiceInt spkIndex = 0; spkIndex < spkCount; ++spkIndex)
@@ -162,8 +204,6 @@ SpiceEphemeris::buildBodyList()
 
             SpiceInt intervalCount = wncard_c(&cover);
 
-            qDebug() << objId << ", " << intervalCount;
-
             if (intervalCount == 1)
             {
                 // Get the endpoints of the jth interval.
@@ -172,16 +212,20 @@ SpiceEphemeris::buildBodyList()
                 double intervalEnd = 0.0;
                 wnfetd_c(&cover, intervalIndex, &intervalStart, &intervalEnd);
 
-                objCoverage[objId] = CoverageWindow(intervalStart, intervalEnd);
+                m_coverage[objId] = TimeInterval(intervalStart, intervalEnd);
             }
         }
     }
 
-    foreach (SpiceInt objId, objCoverage.keys())
+    foreach (SpiceInt objId, m_coverage.keys())
     {
-        CoverageWindow w = objCoverage[objId];
-        qDebug() << (int) objId << ": " << DateString(w.start()) << " -- " << DateString(w.end());
-        m_bodies << StaBodyId(objId);
+        TimeInterval w = m_coverage[objId];
+        if (!w.isEmpty())
+        {
+            m_bodies << StaBodyId(objId);
+        }
+
+        //qDebug() << (int) objId << ": " << DateString(w.start()) << " -- " << DateString(w.end());
     }
 }
 
@@ -211,6 +255,24 @@ SpiceEphemeris::InitializeSpice(const QString& spiceKernelDirectory)
     // Jupiter system ephemeris: covers Galilean satellites, Amalthea, and
     // Thebe from 1900 - 2100
     FurnishKernel(spiceKernelDirectory, "jup230l.bsp");
+
+    // Saturn system ephemeris: covers Mimas, Enceladus, Tethys, Dione, Rhea,
+    // Titan, Hyperion, Iapetus, Phoebe, Helene, Telesto, Calypso, Methone
+    // From 1900 - 2050
+    FurnishKernel(spiceKernelDirectory, "sat317.bsp");
+
+    // Uranus system ephemeris: covers Ariel, Umbriel, Titania, Oberon, and
+    // Mirandia
+    // From 1950 - 2050
+    FurnishKernel(spiceKernelDirectory, "ura083.bsp");
+
+    // Neptune system ephemeris: covers Triton, Nereid, and Proteus
+    // From 1950 - 2050
+    FurnishKernel(spiceKernelDirectory, "nep081.bsp");
+
+    // Pluto system ephemeris: covers Charon, Hydra, and Nix
+    // From 1900 - 2051
+    FurnishKernel(spiceKernelDirectory, "plu017xl.bsp");
 
     if (failed_c() == SPICETRUE)
     {

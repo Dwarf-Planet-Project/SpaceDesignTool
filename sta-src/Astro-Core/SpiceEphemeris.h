@@ -29,6 +29,7 @@
 #define _STA_ASTROCORE_SPICEEPHEMERIS_H_
 
 #include <QtCore>
+#include <QHash>
 #include <vector>
 #include "ephemeris.h"
 
@@ -40,6 +41,8 @@ namespace sta
 class SpiceEphemeris : public Ephemeris
 {
 private:
+    // Constructor is deliberately private; a SpiceEphemeris object
+    // should only be created via the InitializeSpice static method.
     SpiceEphemeris();
 
 public:
@@ -52,17 +55,17 @@ public:
                                     double mjd,
                                     const StaBody* center,
                                     sta::CoordinateSystemType coordSys) const;
-
-    double getStartDate() const;
-    double getEndDate() const;
+    virtual TimeInterval validTimeInterval(const StaBody* body) const;
 
     static SpiceEphemeris* InitializeSpice(const QString& spiceKernelDirectory);
 
 private:
     bool buildBodyList();
+    bool checkCoverage(const StaBody* body, double et) const;
 
 private:
     QList<StaBodyId> m_bodies;
+    QHash<int, TimeInterval> m_coverage;
 };
 
 } // namespace sta
