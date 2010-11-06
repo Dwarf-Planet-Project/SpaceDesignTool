@@ -128,8 +128,51 @@ double sta::MjdToJd(double mjd)
  */
 double sta::JdToMjd(double jd)
 {
-    return jd - sta::MJDBase;
+    return jd - MJDBase;
 }
+
+
+/** Convert a modified Julian date (day offset from JD240000.0) to a
+  * time offset in seconds since J2000.0. This function is provided because
+  * toolkits such as SPICE and VESTA use seconds from J2000 as their basic
+  * time parameter.
+  */
+double sta::MjdToSecJ2000(double mjd)
+{
+    return sta::daysToSecs(mjd + (MJDBase - sta::J2000));
+}
+
+
+/** Convert a time offset in seconds since J2000.0 to a modified Julian
+  * date (day offset from JD240000.0). This function is provided because
+  * toolkits such as SPICE and VESTA use seconds from J2000 as their
+  * basic time parameter.
+  */
+double sta::SecJ2000ToMjd(double sec)
+{
+    return sta::secsToDays(sec) - (MJDBase - sta::J2000);
+}
+
+
+/** Convert a Julian date to a time offset in seconds since J2000.0.
+  * This function is provided because some toolkits (such as SPICE and VESTA)
+  * use seconds from J2000 as their basic time parameter.
+  */
+double sta::JdToSecJ2000(double jd)
+{
+    return sta::daysToSecs(jd - sta::J2000);
+}
+
+
+/** Convert a time offset in seconds since J2000.0 to a Julian date.
+  * This function is provided because toolkits such as SPICE and VESTA
+  * use seconds from J2000 as their basic time parameter.
+  */
+double sta::SecJ2000ToJd(double sec)
+{
+    return sta::J2000 + sta::secsToDays(sec);
+}
+
 
 /*! functions added by Ana Raposo to fulfill some Analysis Module requirements*/
 

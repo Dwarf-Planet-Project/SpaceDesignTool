@@ -38,6 +38,10 @@ namespace sta
     double CalendarToJd(const QDateTime& calendarDate);
     double MjdToJd(double mjd);
     double JdToMjd(double jd);
+    double MjdToSecJ2000(double mjd);
+    double SecJ2000ToMjd(double sec);
+    double JdToSecJ2000(double jd);
+    double SecJ2000ToJd(double sec);
     double MjdToFromEpoch(double StartEpoch, double mjd, QString Units); //added by Ana
     double DateTimeTOjulian(QDateTime DateTime); //Added by Ana
     bool CheckIfLeapYear(int year); //added by Ana
