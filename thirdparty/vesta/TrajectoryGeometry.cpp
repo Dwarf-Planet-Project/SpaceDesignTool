@@ -1,5 +1,5 @@
 /*
- * $Revision: 552 $ $Date: 2010-11-06 11:13:29 +0100 (Sat, 06 Nov 2010) $
+ * $Revision: 553 $ $Date: 2010-11-06 17:58:51 +0100 (Sat, 06 Nov 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -242,7 +242,7 @@ TrajectoryGeometry::updateSamples(const Trajectory* trajectory, double startTime
     }
 
     TrajectorySampleGenerator gen(trajectory);
-    computeSamples(&gen, startTime, endTime, steps);
+    updateSamples(&gen, startTime, endTime, steps);
 }
 
 
@@ -337,7 +337,6 @@ TrajectoryGeometry::updateSamples(const TrajectoryPlotGenerator* generator, doub
 
         if (endTime > m_curvePlot->endTime())
         {
-            unsigned int sampCount = 0;
             // Add samples at the end
             for (double t = m_curvePlot->endTime() + dt; t < windowEndTime; t += dt)
             {
@@ -350,7 +349,6 @@ TrajectoryGeometry::updateSamples(const TrajectoryPlotGenerator* generator, doub
                 sample.velocity = sv.velocity();
                 m_curvePlot->addSample(sample);
                 m_boundingRadius = std::max(m_boundingRadius, sv.position().norm());
-                ++sampCount;
             }
         }
 
