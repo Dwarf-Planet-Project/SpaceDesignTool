@@ -50,8 +50,7 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     const QList<StaBody*>& majorBodies = STA_SOLAR_SYSTEM->majorBodies();
     foreach (const StaBody* body, majorBodies)
     {
-        // Don't add the Sun to the combo box. However, it probably should be there
-        // for the 3D view.
+        // Don't add the Sun to the combo box.
         if (!body->baseTexture().isEmpty() && body->id() != STA_SUN)
         {
             int SolarBody = body->id();
@@ -69,6 +68,7 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
             m_bodySelectCombo->addItem(QIcon(MyIconWithPath), body->name(), SolarBody);
         }
     }
+    m_bodySelectCombo->setVisible(false);
 
 
     // Create the tick interval action
@@ -168,6 +168,12 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     m_analysisAction = new QAction(QIcon(":/icons/IconCONSTELLATION.png"), tr("Constellation Tools"), this);
     m_analysisAction->setMenu(m_analysisMenu);
 
+    QMenu* cameraMenu = new QMenu("Camera viewpoint", this);
+    m_cameraAction = new QAction(QIcon(":/icons/ComboEarth.png"), "", this);
+    m_cameraAction->setToolTip(tr("Select camera viewpoint"));
+    m_cameraAction->setMenu(cameraMenu);
+
+    /*
     // Add all actions and widgets to the toolbar
     addWidget(m_bodySelectCombo);
     addSeparator();  // Guillermo says: in windows, it looks better to be separated from the combobox
@@ -180,6 +186,7 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     addSeparator();  // Guillermo says: in windows, it looks better to be separated from the combobox
     // Guillermo on widget patching
     addAction(m_analysisAction);
+    */
 
     // Set the initial state of the actions and widgets
     m_enable25DViewAction->setChecked(false);
@@ -196,19 +203,97 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     connect(m_terminatorAction,    SIGNAL(triggered(bool)),              this, SIGNAL(terminatorToggled(bool)));
     connect(m_enable25DViewAction, SIGNAL(toggled(bool)),                this, SIGNAL(projectionChanged(bool)));
     connect(m_saveImageAction,     SIGNAL(triggered()),                  this, SIGNAL(saveImageRequested()));
+    connect(cameraMenu,            SIGNAL(triggered(QAction*)),          this, SLOT(setCameraViewpoint(QAction*)));
 
     // Analysis (Claas Grohnfeldt, Steffen Peter)
     m_discretizationAction->setChecked(false);
-    connect(m_discretizationAction,	  SIGNAL(triggered(bool)),              this, SIGNAL(discretizationToggled(bool)));
-    connect(m_coverageCurrentAction,      SIGNAL(triggered(bool)),              this, SIGNAL(coverageCurrentToggled(bool)));
-    connect(m_coverageHistoryAction,      SIGNAL(triggered(bool)),              this, SIGNAL(coverageHistoryToggled(bool)));
-    connect(m_linkSOAction,		  SIGNAL(triggered(bool)),              this, SIGNAL(linkSOToggled(bool)));
-    connect(m_linkGOAction,		  SIGNAL(triggered(bool)),              this, SIGNAL(linkGOToggled(bool)));
+    connect(m_discretizationAction,	  SIGNAL(triggered(bool)), this, SIGNAL(discretizationToggled(bool)));
+    connect(m_coverageCurrentAction, SIGNAL(triggered(bool)), this, SIGNAL(coverageCurrentToggled(bool)));
+    connect(m_coverageHistoryAction, SIGNAL(triggered(bool)), this, SIGNAL(coverageHistoryToggled(bool)));
+    connect(m_linkSOAction,          SIGNAL(triggered(bool)), this, SIGNAL(linkSOToggled(bool)));
+    connect(m_linkGOAction,          SIGNAL(triggered(bool)), this, SIGNAL(linkGOToggled(bool)));
 }
 
 
 VisualizationToolBar::~VisualizationToolBar()
 {
+}
+
+
+/** Configure the tool bar for use with the ground track view.
+  */
+void
+VisualizationToolBar::configureFor2DView()
+{
+    // TODO: The 2D and 3D versions of the tool bar have evolved to be
+    // different enough that a better design would be to make them
+    // distinct classes.
+    clear();
+
+    QAction* widgetAction = addWidget(m_bodySelectCombo);
+    widgetAction->setVisible(true);
+
+    addSeparator();  // Guillermo says: in windows, it looks better to be separated from the combobox
+    addAction(m_tickIntervalAction);
+    addAction(m_gridAction);
+    addAction(m_equatorAction);
+    addAction(m_terminatorAction);
+    addAction(m_enable25DViewAction);
+    addAction(m_saveImageAction);
+    addSeparator();  // Guillermo says: in windows, it looks better to be separated from the combobox
+    addAction(m_analysisAction);
+}
+
+
+/** Configure the tool bar for use with the 3D view.
+  */
+void
+VisualizationToolBar::configureFor3DView()
+{
+    clear();
+
+    QAction* widgetAction = addWidget(m_bodySelectCombo);
+    widgetAction->setVisible(false);
+
+    addAction(m_cameraAction);
+    createCameraMenuAction(tr("Earth"),  ":/icons/ComboEarth.png", "Earth");
+    createCameraMenuAction(tr("Moon"),   ":/icons/ComboMoon.png", "Moon");
+    createCameraMenuAction(tr("Earth-Moon System"), "", "Earth-Moon");
+    m_cameraAction->menu()->addSeparator();
+    createCameraMenuAction(tr("Inner Solar System"), "", "Inner Solar System");
+    createCameraMenuAction(tr("Outer Solar System"), "", "Outer Solar System");
+    m_cameraAction->menu()->addSeparator();
+    createCameraMenuAction(tr("Mercury"), ":/icons/ComboMercury.png", "Mercury");
+    createCameraMenuAction(tr("Venus"),   ":/icons/ComboVenus.png", "Venus");
+    createCameraMenuAction(tr("Mars"),    ":/icons/ComboMars.png", "Mars");
+    createCameraMenuAction(tr("Jupiter"), ":/icons/ComboJupiter.png", "Jupiter");
+    createCameraMenuAction(tr("Saturn"),  ":/icons/ComboSaturn.png", "Saturn");
+    createCameraMenuAction(tr("Uranus"),  ":/icons/ComboUranus.png", "Uranus");
+    createCameraMenuAction(tr("Neptune"), ":/icons/ComboNeptune.png", "Neptune");
+    createCameraMenuAction(tr("Pluto"),   ":/icons/ComboPluto.png", "Pluto");
+    m_cameraAction->menu()->addSeparator();
+    createCameraMenuAction(tr("Jupiter System"), "", "jupiter system");
+    createCameraMenuAction(tr("Saturn System"), "", "saturn system");
+    m_cameraAction->menu()->addSeparator();
+    createCameraMenuAction(tr("Io"),       ":/icons/ComboMoon.png", "Io");
+    createCameraMenuAction(tr("Europa"),   ":/icons/ComboMoon.png", "Europa");
+    createCameraMenuAction(tr("Ganymede"), ":/icons/ComboMoon.png", "Ganymede");
+    createCameraMenuAction(tr("Callisto"), ":/icons/ComboMoon.png", "Callisto");
+
+    // Add all actions and widgets to the toolbar
+    addAction(m_gridAction);
+    addAction(m_equatorAction);
+    addAction(m_saveImageAction);
+}
+
+
+QAction*
+VisualizationToolBar::createCameraMenuAction(const QString& label, const QString& iconName, const QString& name)
+{
+    QAction* action = m_cameraAction->menu()->addAction(QIcon(iconName), label);
+    action->setData(name);
+
+    return action;
 }
 
 
@@ -257,31 +342,37 @@ void VisualizationToolBar::enableAnalysisTools(ConstellationAnalysis* analysisOf
     // set
     if (analysisOfConstellations != NULL)
     {
-	if (!analysisOfConstellations->m_anaSpaceObjectList.at(0).linksamples.isEmpty()) // link SO
-	{
-	    m_linkSOAction->setVisible(true);
-	    m_analysisAction->setVisible(true);
-	}
-	if (!analysisOfConstellations->m_anaSpaceObjectList.at(0).groundlinksamples.isEmpty()) // link GO
-	{
-	    m_linkGOAction->setVisible(true);
-	    m_analysisAction->setVisible(true);
-	}
-	if(!analysisOfConstellations->m_discreteMesh->meshAsList.isEmpty()) // discretization
-	{
-	    m_discretizationAction->setVisible(true);
-	    m_analysisAction->setVisible(true);
-	}
-	if(!analysisOfConstellations->m_anaSpaceObjectList.at(0).coveragesample.isEmpty()) // coverage
-	{
-	    m_coverageCurrentAction->setVisible(true);
-	    m_coverageHistoryAction->setVisible(true);
-	    m_analysisAction->setVisible(true);
-	}
+        if (!analysisOfConstellations->m_anaSpaceObjectList.at(0).linksamples.isEmpty()) // link SO
+        {
+            m_linkSOAction->setVisible(true);
+            m_analysisAction->setVisible(true);
+        }
+        if (!analysisOfConstellations->m_anaSpaceObjectList.at(0).groundlinksamples.isEmpty()) // link GO
+        {
+            m_linkGOAction->setVisible(true);
+            m_analysisAction->setVisible(true);
+        }
+        if(!analysisOfConstellations->m_discreteMesh->meshAsList.isEmpty()) // discretization
+        {
+            m_discretizationAction->setVisible(true);
+            m_analysisAction->setVisible(true);
+        }
+        if(!analysisOfConstellations->m_anaSpaceObjectList.at(0).coveragesample.isEmpty()) // coverage
+        {
+            m_coverageCurrentAction->setVisible(true);
+            m_coverageHistoryAction->setVisible(true);
+            m_analysisAction->setVisible(true);
+        }
     }
 }
 
 void VisualizationToolBar::disableAnalysisTools()
 {
     m_analysisAction->setVisible(false);
+}
+
+
+void VisualizationToolBar::setCameraViewpoint(QAction* action)
+{
+    emit cameraViewpointChanged(action->data().toString());
 }

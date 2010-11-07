@@ -2652,6 +2652,8 @@ GroundTrackPlotTool::GroundTrackPlotTool(QWidget* parent) :
 
     // Create and hook up the tool bar
     m_toolBar = new VisualizationToolBar(tr("View Controls"), this);
+    m_toolBar->configureFor2DView();
+
     connect(m_toolBar, SIGNAL(bodyChanged(const StaBody*)),  m_view, SLOT(setBody(const StaBody*)));
     connect(m_toolBar, SIGNAL(gridToggled(bool)),            m_view, SLOT(setShowGrid(bool)));
     connect(m_toolBar, SIGNAL(equatorToggled(bool)),         m_view, SLOT(setShowEquator(bool)));

@@ -1390,6 +1390,112 @@ ThreeDView::gotoBody(const StaBody* body)
 }
 
 
+/** Set the camera to any one of the builtin viewpoints.
+  *
+  * The valid names are:
+  *   - Any Solar System body (with ephemeris data)
+  *   - "earth-moon"
+  *   - "inner solar system"
+  *   - "outer solar system"
+  */
+void
+ThreeDView::setCameraViewpoint(const QString& viewName)
+{
+    QString name = viewName.toLower();
+
+    // Get the center of the camera frame
+    Entity* center = NULL;
+    if (name == "earth-moon")
+    {
+        center = m_universe->findFirst("Earth");
+    }
+    else if (name == "inner solar system" ||
+             name == "outer solar system")
+    {
+        center = m_universe->findFirst("Sun");
+    }
+    else if (name =="jupiter system")
+    {
+        center = m_universe->findFirst("Jupiter");
+    }
+    else if (name =="saturn system")
+    {
+        center = m_universe->findFirst("Saturn");
+    }
+    else
+    {
+        StaBody* body = STA_SOLAR_SYSTEM->lookup(name);
+        if (body)
+        {
+            center = m_universe->findFirst(body->name().toUtf8().data());
+        }
+    }
+
+    // Abort if the center doesn't exist
+    if (!center)
+    {
+        return;
+    }
+
+    Vector3d eclNorth = InertialFrame::eclipticJ2000()->orientation() * Vector3d::UnitZ();
+    Vector3d centerNorth = center->orientation(m_currentTime) * Vector3d::UnitZ();
+
+    // Next, get the offset and camera up direction.
+    double distance = 1.0;
+    Vector3d offsetDirection = Vector3d::UnitZ();
+    Vector3d upDirection = Vector3d::UnitX();
+    if (name == "earth-moon")
+    {
+        distance = 8.0e5;
+    }
+    else if (name == "inner solar system")
+    {
+        offsetDirection = eclNorth;
+        distance = 7.5e8;
+    }
+    else if (name == "outer solar system")
+    {
+        offsetDirection = eclNorth;
+        distance = 1.0e10;
+    }
+    else if (name =="jupiter system")
+    {
+        offsetDirection = centerNorth;
+        distance = 2.0e6;
+    }
+    else if (name =="saturn system")
+    {
+        offsetDirection = centerNorth;
+        distance = 3.0e6;
+    }
+    else
+    {
+        // Position the camera so that it is facing the sunlit side of the planet. The up
+        // direction is set to the planet's north pole (rotational north, not ecliptical
+        // north.)
+        if (center->geometry())
+        {
+            distance = center->geometry()->boundingSphereRadius() * 4.0;
+        }
+
+        Entity* sun = m_universe->findFirst("Sun");
+        if (sun)
+        {
+            offsetDirection = (sun->position(m_currentTime) - center->position(m_currentTime)).normalized();
+        }
+
+        upDirection = centerNorth;
+    }
+
+    m_observer->setCenter(center);
+    m_observer->setPosition(offsetDirection * distance);
+    m_observer->setOrientation(LookAt(Vector3d::Zero(), m_observer->position(), upDirection));
+
+    setViewChanged();
+    update();
+}
+
+
 void
 ThreeDView::setScenario(PropagatedScenario* scenario)
 {

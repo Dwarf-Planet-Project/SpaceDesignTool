@@ -85,6 +85,7 @@ public slots:
    void setViewChanged();
 
    void gotoBody(const StaBody* body);
+   void setCameraViewpoint(const QString& viewName);
    void setScenario(PropagatedScenario* scenario);
    void selectParticipant(SpaceObject* spaceObject);
 

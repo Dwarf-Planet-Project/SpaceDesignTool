@@ -48,6 +48,9 @@ public:
     VisualizationToolBar(const QString& title, QWidget* parent = 0);
     ~VisualizationToolBar();
 
+   void configureFor3DView();
+   void configureFor2DView();
+
     // Analysis (Claas Grohnfeldt, Steffen Peter)
    void enableAnalysisTools(ConstellationAnalysis* analysisOfConstellations);
    void disableAnalysisTools();
@@ -58,6 +61,7 @@ public:
 private slots:
     void mapSetTickInterval();
     void mapBodyChanged(QString bodyName);
+    void setCameraViewpoint(QAction* action);
 
 signals:
     void bodyChanged(const StaBody* body);
@@ -75,6 +79,10 @@ signals:
     void linkSOToggled(bool enabled);
     void linkGOToggled(bool enabled);
 
+    void cameraViewpointChanged(const QString&);
+
+private:
+    QAction* createCameraMenuAction(const QString& label, const QString& iconName, const QString& name);
 
 private:
     QComboBox* m_bodySelectCombo;
@@ -97,6 +105,7 @@ private:
     QAction* m_linkSOAction;
     QAction* m_linkGOAction;
 
+    QAction* m_cameraAction;
 };
 
 #endif // _PLOTTING_VISUALIZATION_TOOLBAR_H_
