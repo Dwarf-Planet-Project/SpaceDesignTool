@@ -250,6 +250,8 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback feedba
                     MissionsDefaults myMissionDefaults;
                     QColor trajectoryColor = myMissionDefaults.missionArcColorFromQt(arcColorName);
                     QString arcModelName = loiteringTLE->ElementIdentifier()->modelName();
+                    arc->setArcTrajectoryColor(trajectoryColor);
+                    arc->setModelName(arcModelName);
 
 					spaceObject->addMissionArc(arc);
 				}
