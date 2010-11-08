@@ -757,7 +757,7 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
     else if (dynamic_cast<ScenarioDeltaVType*>(scenarioObject) != NULL)
     {
         ScenarioDeltaVType* deltaV = dynamic_cast<ScenarioDeltaVType*>(scenarioObject);
-        deltaVDialog editDialog(this);
+        DeltaVDialog editDialog(this);
 
         if (!editDialog.loadValues(deltaV))
         {
