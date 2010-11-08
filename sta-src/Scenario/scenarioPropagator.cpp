@@ -257,28 +257,45 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback feedba
             else if (dynamic_cast<ScenarioDeltaVType*>(trajectory.data()))    // DeltaVs
             {
                 ScenarioDeltaVType* deltaV = dynamic_cast<ScenarioDeltaVType*>(trajectory.data());
-                // Calculating direction and magnitude
-                double theDeltaVMagnitude = deltaV->Magnitude();
-                //qDebug() << deltaV->DeltaVx() << deltaV->DeltaVy() << deltaV->DeltaVz() << endl;                
+                // Calculating direction and magnitude. The magnitude is
+                // stored in m/s, and we need to convert to km/s
+                double theDeltaVMagnitude = deltaV->Magnitude() * 0.001;
 
-                // Calculating duration
+                // Calculating the duration dt (in seconds)
                 theLastSampleTime = sta::JdToMjd(sta::CalendarToJd(deltaV->TimeLine()->StartTime()));
+                double endTime = sta::JdToMjd(sta::CalendarToJd(deltaV->TimeLine()->EndTime()));
+                double dt = sta::daysToSecs(endTime - theLastSampleTime);
+
                 sampleTimes << theLastSampleTime;
                 samples << theLastStateVector;
 
-                sta::StateVector theDeltaVVector;
-                theDeltaVVector.position(0) = 0.0;
-                theDeltaVVector.position(1) = 0.0;
-                theDeltaVVector.position(2) = 0.0;
-                //theDeltaVVector.velocity(0) = theDeltaVMagnitude * deltaV->DeltaVx();
-                //theDeltaVVector.velocity(1) = theDeltaVMagnitude * deltaV->DeltaVy();
-                //theDeltaVVector.velocity(2) = theDeltaVMagnitude * deltaV->DeltaVz();
-                theDeltaVVector.velocity(0) = theDeltaVMagnitude;
-                theDeltaVVector.velocity(1) = theDeltaVMagnitude;
-                theDeltaVVector.velocity(2) = 0.0;
-                theLastStateVector = theLastStateVector.operator +(theDeltaVVector);
+                // Calculating direction and magnitude. The magnitude is
+                // stored in m/s, and we need to convert to km/s
+                Vector3d dv = Vector3d(deltaV->DeltaVx(), deltaV->DeltaVy(), deltaV->DeltaVz()) * (deltaV->Magnitude() * 0.001);
 
-                theLastSampleTime = sta::JdToMjd(sta::CalendarToJd(deltaV->TimeLine()->EndTime()));
+                // Compute the transformation from the local satellite coordinate system to the
+                // coordinate system of the trajectory.
+                Vector3d T = theLastStateVector.velocity.normalized();
+                Vector3d R = -theLastStateVector.position.normalized();
+
+                // Compute the rows of the 3x3 transformation matrix
+                Vector3d X = T;
+                Vector3d Y = (X.cross(R)).normalized();
+                Vector3d Z = Y.cross(X);
+                Matrix3d M;
+                M << X, Y, Z;
+
+                // Transform delta-V
+                dv = M * dv;
+
+                // TODO: We should be performing at least two body propagation over the duration
+                // of the maneuver.
+                theLastStateVector.position += theLastStateVector.velocity * dt;
+                theLastStateVector.velocity += dv;
+
+                theLastSampleTime = endTime;
+
+                // Emit the time+state sample
                 sampleTimes << theLastSampleTime;
                 samples << theLastStateVector;
 

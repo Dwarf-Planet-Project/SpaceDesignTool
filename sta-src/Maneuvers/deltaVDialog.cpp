@@ -60,7 +60,7 @@ using namespace Eigen;
 
 
 
-deltaVDialog::deltaVDialog(ScenarioTree* parent) :
+DeltaVDialog::DeltaVDialog(ScenarioTree* parent) :
         QDialog(parent)
 {
     setupUi(this);
@@ -86,16 +86,13 @@ deltaVDialog::deltaVDialog(ScenarioTree* parent) :
     magnitudeLineEdit->setValidator(positiveDoubleValidator);
 }
 
-deltaVDialog::~deltaVDialog()
+DeltaVDialog::~DeltaVDialog()
 {
 
 }
 
 
-
-
-
-bool deltaVDialog::loadValues(ScenarioDeltaVType* deltaV)
+bool DeltaVDialog::loadValues(ScenarioDeltaVType* deltaV)
 {
     ScenarioElementIdentifierType* arcIdentifier    = deltaV->ElementIdentifier().data();
     ScenarioTimeLine* parameters		            = deltaV->TimeLine().data();
@@ -104,21 +101,26 @@ bool deltaVDialog::loadValues(ScenarioDeltaVType* deltaV)
     double myDeltaVz                                = deltaV->DeltaVz();
     double myMagnitude                              = deltaV->Magnitude();
 
-    double myAzimuth = 0.0;
-    double myElevation = 0.0;
-    double range = 0.0;
+    // Delta-V in the file *should* already be normalized, but just in case...
+    Vector3d dv = Vector3d(deltaV->DeltaVx(), deltaV->DeltaVy(), deltaV->DeltaVz()).normalized();
 
-    // Conversion of the direction of the impulse from cartesian into polar
-    myElevation = atan2(myDeltaVz, myDeltaVx);
-    myAzimuth = atan2(myDeltaVy, myDeltaVx);
+    // Cartesian to spherical
+    double myElevation = asin(dv.z());
+    double myAzimuth;
 
-    // Conversion from radians to deg
-    myAzimuth = sta::radToDeg(myAzimuth);
-    myElevation = sta::radToDeg(myElevation);
+    // Report an azimuth of zero when dv is aligned with the z-axis
+    if (!Vector2d(dv.x(), dv.y()).isZero())
+    {
+        myAzimuth = atan2(dv.y(), dv.x());
+    }
+    else
+    {
+        myAzimuth = 0.0;
+    }
 
     magnitudeLineEdit->setText(QString::number(myMagnitude));
-    azimuthLineEdit->setText(QString::number(myAzimuth));
-    elevationLineEdit->setText(QString::number(myElevation));
+    azimuthLineEdit->setText(QString::number(sta::radToDeg(myAzimuth)));
+    elevationLineEdit->setText(QString::number(sta::radToDeg(myElevation)));
 
     if (loadValues(arcIdentifier) && loadValues(parameters))
     {
@@ -133,7 +135,7 @@ bool deltaVDialog::loadValues(ScenarioDeltaVType* deltaV)
 
 
 
-bool deltaVDialog::loadValues(ScenarioElementIdentifierType* arcIdentifier)
+bool DeltaVDialog::loadValues(ScenarioElementIdentifierType* arcIdentifier)
 {
     QString theArcName = arcIdentifier->Name();
     deltaVAspect.loadValueArcName(theArcName);
@@ -149,7 +151,7 @@ bool deltaVDialog::loadValues(ScenarioElementIdentifierType* arcIdentifier)
 
 
 
-bool deltaVDialog::loadValues(ScenarioTimeLine* timeLine)
+bool DeltaVDialog::loadValues(ScenarioTimeLine* timeLine)
 {
     QDateTime myStartTime = timeLine->StartTime();
     QDateTime myEndTime   = timeLine->EndTime();
@@ -163,24 +165,23 @@ bool deltaVDialog::loadValues(ScenarioTimeLine* timeLine)
 
 
 
-bool deltaVDialog::saveValues(ScenarioDeltaVType* deltaV)
+bool DeltaVDialog::saveValues(ScenarioDeltaVType* deltaV)
 {
     ScenarioElementIdentifierType* arcIdentifier    = deltaV->ElementIdentifier().data();
-    ScenarioTimeLine* parameters		            = deltaV->TimeLine().data();
+    ScenarioTimeLine* parameters		             = deltaV->TimeLine().data();
 
-    double myMagnitude = magnitudeLineEdit->text().toDouble();
+    double myMagnitude  = magnitudeLineEdit->text().toDouble();
     double myAzimuth    = azimuthLineEdit->text().toDouble();
     double myElevation  = elevationLineEdit->text().toDouble();
 
     // From degrees to radians
-    myAzimuth = sta::degToRad(myAzimuth);
+    myAzimuth   = sta::degToRad(myAzimuth);
     myElevation = sta::degToRad(myElevation);
 
     // Conversion of the direction of the impulse from polar into cartesian
-    double r = 1.0;
-    double myDeltaVx = r * cos(myAzimuth);
-    double myDeltaVy = r * sin(myAzimuth);
-    double myDeltaVz = r * sin(myElevation);
+    double myDeltaVx = cos(myAzimuth) * cos(myElevation);
+    double myDeltaVy = sin(myAzimuth) * cos(myElevation);
+    double myDeltaVz = sin(myElevation);
 
     deltaV->setDeltaVx(myDeltaVx);
     deltaV->setDeltaVy(myDeltaVy);
@@ -192,14 +193,15 @@ bool deltaVDialog::saveValues(ScenarioDeltaVType* deltaV)
         return true;
     }
     else
+    {
         return false;
-
+    }
 }
 
 
 
 
-bool deltaVDialog::saveValues(ScenarioElementIdentifierType* arcIdentifier)
+bool DeltaVDialog::saveValues(ScenarioElementIdentifierType* arcIdentifier)
 {
     // The arc name
     QString theArcName = deltaVAspect.saveValueArcName();
@@ -218,7 +220,7 @@ bool deltaVDialog::saveValues(ScenarioElementIdentifierType* arcIdentifier)
 
 
 
-bool deltaVDialog::saveValues(ScenarioTimeLine* timeline)
+bool DeltaVDialog::saveValues(ScenarioTimeLine* timeline)
 {
     QDateTime myStartTime = startDateTimeEdit->dateTime();
     QDateTime myEndTime   = endDateTimeEdit->dateTime();
@@ -232,257 +234,14 @@ bool deltaVDialog::saveValues(ScenarioTimeLine* timeline)
 
 
 
-
-
-/*
-/////////////////////////////////////// PropagateLoiteringTrajectory /////////////////////////////
-bool PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
-                                     QList<double>& sampleTimes,
-                                     QList<sta::StateVector>& samples,
-                                     PropagationFeedback& propFeedback)
-{
-    QString loiteringLabel = loitering->ElementIdentifier()->Name();
-
-    QString centralBodyName = loitering->Environment()->CentralBody()->Name();
-    StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
-    if (!centralBody)
-    {
-        propFeedback.raiseError(QObject::tr("Unrecognized central body '%1'").arg(centralBodyName));
-        return false;
-    }
-
-    QString coordSysName = loitering->InitialPosition()->CoordinateSystem();
-    sta::CoordinateSystem coordSys(coordSysName);
-    if (coordSys.type() == sta::COORDSYS_INVALID)
-    {
-        propFeedback.raiseError(QObject::tr("Unrecognized coordinate system '%1'").arg(coordSysName));
-        return false;
-    }
-
-    // Get the initial state in two forms:
-    //   - Keplerian elements for simple two-body propagation
-    //   - A state vector for any other sort of propagation
-    ScenarioAbstract6DOFPositionType* position = loitering->InitialPosition()->Abstract6DOFPosition().data();
-    sta::StateVector initialState = AbstractPositionToStateVector(position, centralBody);
-    sta::KeplerianElements initialStateKeplerian = AbstractPositionToKeplerianElements(position, centralBody);
-
-    double mu = centralBody->mu();
-
-    // Get the timeline information
-    const ScenarioTimeLine* timeline = loitering->TimeLine().data();
-    double timelineDuration = timeline->StartTime().secsTo(timeline->EndTime());
-    double dt = loitering->PropagationPosition()->timeStep();
-
-    if (dt == 0.0)
-    {
-        propFeedback.raiseError(QObject::tr("Time step is zero!"));
-        return false;
-    }
-
-    // We don't output values at every integration step. Instead use the time step
-    // from simulation parameters. The actual output step used will not necessarily
-    // match the requested output step: the code below sets it to be an integer
-    // multiple of the integration step.
-    double requestedOutputTimeStep = timeline->StepTime();
-    double outputTimeStep;
-    unsigned int outputRate;
-    if (requestedOutputTimeStep < dt)
-    {
-        outputRate = 1;
-        outputTimeStep = dt;
-    }
-    else
-    {
-        outputRate = (unsigned int) floor(requestedOutputTimeStep / dt + 0.5);
-        outputTimeStep = outputRate * dt;
-    }
-
-    if (timelineDuration / outputTimeStep > MAX_OUTPUT_STEPS)
-    {
-        propFeedback.raiseError(QObject::tr("Number of propagation steps exceeds %1. Try increasing the simulation time step.").arg(MAX_OUTPUT_STEPS));
-        return false;
-    }
-
-	QList<Perturbations*> perturbationsList; // Create the list of perturbations that will influence the propagation
-
-    sta::StateVector stateVector = initialState;
-
-    // deviation, reference, and q will be used only in Encke propagation
-    sta::StateVector deviation(Vector3d::Zero(), Vector3d::Zero());
-    sta::StateVector reference = initialState;
-    double q = 0.0;
-
-    double startTime = sta::JdToMjd(sta::CalendarToJd(timeline->StartTime()));
-
-    sampleTimes << startTime;
-    samples << stateVector;
-
-    QFile ciccio("data/PerturbationsData.stae");
-    QTextStream cicciostream(&ciccio);
-    ciccio.open(QIODevice::WriteOnly);
-
-    //unsigned int steps = 0;
-    unsigned int steps = 1; // patched by Ana on 18th June 2010
-
-    QString propagator = loitering->PropagationPosition()->propagator();
-    QString integrator = loitering->PropagationPosition()->integrator();
-
-    if (propagator == "TWO BODY")
-    {
-
-        double sma            = initialStateKeplerian.SemimajorAxis;
-        double e              = initialStateKeplerian.Eccentricity;
-        double inclination    = initialStateKeplerian.Inclination*Pi()/180.0;
-        double raan           = initialStateKeplerian.AscendingNode*Pi()/180.0;
-        double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis*Pi()/180.0;
-        double trueAnomaly    = initialStateKeplerian.TrueAnomaly*Pi()/180.0;
-        double meanAnomaly    = trueAnomalyTOmeanAnomaly(trueAnomaly, e);
-
-        // Next lines patched by Guillermo on April 23 2010 to speed up calculations outside the for loop
-        double argOfPeriapsisUpdated      = 0.0;
-        double meanAnomalyUpdated         = 0.0;
-        double raanUpdated                = 0.0;
-
-        double perigee = sma * (1 - e);
-        if (perigee < centralBody->meanRadius())
-        {
-            propFeedback.raiseError(QObject::tr("The perigee distance is smaller than the main body radius."));
-            return false;
-        }
-        else
-        {
-            for (double t = dt; t < timelineDuration + dt; t += dt)
-            {
-                JulianDate jd = startTime + sta::secsToDays(t);
-
-                stateVector = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
-                                               dt,
-                                               raanUpdated, argOfPeriapsisUpdated, meanAnomalyUpdated);
-
-                argOfPeriapsis = argOfPeriapsisUpdated;
-                meanAnomaly    = meanAnomalyUpdated;
-                raan           = raanUpdated;
-
-				// Append a trajectory sample every outputRate integration steps (and always at the last step.)
-                if (steps % outputRate == 0 || t >= timelineDuration)
-                {
-                    sampleTimes << jd;
-                    samples << stateVector;
-                }
-                ++steps;
-            }
-        }
-    }
-    else if (propagator == "COWELL")
-    {
-        for (double t = dt; t < timelineDuration + dt; t += dt)
-        {
-            JulianDate jd = startTime + sta::secsToDays(t);
-            stateVector = propagateCOWELL(mu, stateVector, dt, perturbationsList, jd, integrator, propFeedback);
-			// Append a trajectory sample every outputRate integration steps (and always at the last step.)
-            if (steps % outputRate == 0 || t >= timelineDuration)
-            {
-                sampleTimes << jd;
-                samples << stateVector;
-            }
-            ++steps;
-        }
-    }
-    else if (propagator == "ENCKE")
-    {
-        double sma            = initialStateKeplerian.SemimajorAxis;
-        double e              = initialStateKeplerian.Eccentricity;
-        double inclination    = initialStateKeplerian.Inclination;
-        double raan           = initialStateKeplerian.AscendingNode;
-        double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis;
-        double meanAnomaly    = initialStateKeplerian.MeanAnomaly;
-
-        for (double t = dt; t < timelineDuration + dt; t += dt)
-        {
-            JulianDate jd = startTime + sta::secsToDays(t);
-            deviation = propagateENCKE(mu, reference, dt, perturbationsList, jd, stateVector, deviation,  q, integrator, propFeedback);
-
-            // PropagateTWObody is used to propagate the reference trajectory
-            double argOfPeriapsisUpdated      = 0.0;
-            double meanAnomalyUpdated         = 0.0;
-            double raanUpdated                = 0.0;
-            reference = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
-                                         dt,
-                                         raanUpdated, argOfPeriapsisUpdated, meanAnomalyUpdated);
-
-            argOfPeriapsis = argOfPeriapsisUpdated;
-            meanAnomaly    = meanAnomalyUpdated;
-            raan           = raanUpdated;
-
-            // Calculating the perturbed trajectory
-            stateVector = reference + deviation;
-            q = deviation.position.dot(reference.position + 0.5 * deviation.position) / pow(reference.position.norm(), 2.0);
-
-#if 0
-            // Rectification of the reference trajectory, when the deviation is too large.
-            if (q > 0.01)
-            {
-                sta::KeplerianElements keplerian = cartesianTOorbital(mu, stateVector);
-
-                sma = keplerian.SemimajorAxis;
-                e = keplerian.Eccentricity;
-                inclination = keplerian.Inclination;
-                argOfPeriapsis = keplerian.ArgumentOfPeriapsis;
-                raan = keplerian.AscendingNode;
-                meanAnomaly = keplerian.MeanAnomaly;
-
-                q = 0;
-                reference = stateVector;
-                deviation = sta::StateVector(null, null);
-            }
-#endif
-			// Append a trajectory sample every outputRate integration steps (and always at the last step.)
-            if (steps % outputRate == 0 || t >= timelineDuration)
-            {
-                sampleTimes << jd;
-                samples << stateVector;
-            }
-            ++steps;
-        }
-    }
-    else if (propagator == "GAUSS")
-    {
-        for (double t = dt; t < timelineDuration + dt; t += dt)
-        {
-            JulianDate jd = startTime + sta::secsToDays(t);
-			// Append a trajectory sample every outputRate integration steps (and always at the last step.)
-            if (steps % outputRate == 0 || t >= timelineDuration)
-            {
-                sampleTimes << jd;
-                samples << stateVector;
-            }
-            ++steps;
-
-            stateVector = propagateGAUSS(mu, stateVector, dt, perturbationsList, jd, integrator);
-        }
-    }
-    else
-    {
-        propFeedback.raiseError(QObject::tr("Unsupported propagator '%1'").arg(propagator));
-        return false;
-    }
-
-    return true;
-} // ------------------------------- End o the propagation method -----------------------
-
-*/
-
-
-
-
-void deltaVDialog::on_endDateTimeEdit_dateTimeChanged(const QDateTime&)
+void DeltaVDialog::on_endDateTimeEdit_dateTimeChanged(const QDateTime&)
 {
     QDateTime myStartTime = startDateTimeEdit->dateTime();
     QDateTime myEndTime   = endDateTimeEdit->dateTime();
     durationLineEdit->setText(QString::number(myStartTime.secsTo(myEndTime)));
 }
 
-void deltaVDialog::on_durationLineEdit_textChanged(const QString&)
+void DeltaVDialog::on_durationLineEdit_textChanged(const QString&)
 {
     QDateTime myStartTime = startDateTimeEdit->dateTime();
     double myDuration = durationLineEdit->text().toDouble();
@@ -495,7 +254,7 @@ void deltaVDialog::on_durationLineEdit_textChanged(const QString&)
 
 
 
-void deltaVDialog::on_pushButtonAspect_clicked()
+void DeltaVDialog::on_pushButtonAspect_clicked()
 {
     deltaVAspect.exec();
 }

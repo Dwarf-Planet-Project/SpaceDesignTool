@@ -23,8 +23,8 @@
 ------------------ Author: Guillermo Ortega  -------------------------------------------
  */
 
-#ifndef _DELTAV_H_
-#define _DELTAV_H_
+#ifndef _STA_MANEUVERS_DELTAV_H_
+#define _STA_MANEUVERS_DELTAV_H_
 
 #include "ui_deltaVDialog.h"
 
@@ -38,13 +38,13 @@
 class ScenarioTree;
 
 
-class deltaVDialog : public QDialog, private Ui_deltaVDialogClass
+class DeltaVDialog : public QDialog, private Ui_deltaVDialogClass
 {
     Q_OBJECT
 
 public:
-    deltaVDialog(ScenarioTree* parent = NULL);
-    ~deltaVDialog();
+    DeltaVDialog(ScenarioTree* parent = NULL);
+    ~DeltaVDialog();
 
     bool loadValues(ScenarioDeltaVType* deltaV);
     bool loadValues(ScenarioElementIdentifierType* arcIdentifier);
@@ -57,21 +57,11 @@ public:
 public:
     missionAspectDialog deltaVAspect;
 
-
 protected slots:
         void on_pushButtonAspect_clicked();
         void on_endDateTimeEdit_dateTimeChanged(const QDateTime&);
         void on_durationLineEdit_textChanged(const QString&);
 };
 
-
-/*
-extern bool
-PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
-                             QList<double>& sampleTimes,
-                             QList<sta::StateVector>& samples,
-                             PropagationFeedback& propFeedback);
-*/
-
-#endif // _DELTAV_H_
+#endif // _STA_MANEUVERS_DELTAV_H_
 
