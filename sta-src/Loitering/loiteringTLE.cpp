@@ -373,21 +373,7 @@ bool
 		break;
     }
 
-    // Time variable for SGP is in minutes
-    //double timeBase = (sta::MjdToJd(m_timeline->startTime()) - tle.epoch) * 1440.0;
-
-    // Obtaining the Julian date of the start epoch
-    // Defining the separator that will segment the lines of the TLEs
-    QRegExp separator("\\s+");  // the + Means one or more spaces!
-    QString Temporal = loiteringTLE->TimeLine()->StartTime().toString("yyyy MM dd hh mm ss.zzzz");
-    int TheYear           = int (Temporal.section(separator, 0, 0).toDouble());    //out << "YYYY: " << TheYear << endl;
-    int TheMonth          = int (Temporal.section(separator, 1, 1).toDouble());    //out << "MM: " << TheMonth << endl;
-    int TheDay            = int (Temporal.section(separator, 2, 2).toDouble());    //out << "dd: " << TheDay << endl;
-    int TheHour           = int (Temporal.section(separator, 3, 3).toDouble());    //out << "hh: " << TheHour << endl;
-    int TheMinute         = int (Temporal.section(separator, 4, 4).toDouble());    //out << "mm: " << TheMinute << endl;
-    double TheSecond      = int (Temporal.section(separator, 5, 5).toDouble());    //out << "ss: " << TheSecond << endl;
-
-    double startTimeJd = calendarTOjulian(TheYear, TheMonth, TheDay, TheHour, TheMinute, TheSecond);
+    double startTimeJd = sta::CalendarToJd(loiteringTLE->TimeLine()->StartTime());
     double timeBase = (startTimeJd - tle.epoch) * 1440.0;
 
     sta::StateVector state;
