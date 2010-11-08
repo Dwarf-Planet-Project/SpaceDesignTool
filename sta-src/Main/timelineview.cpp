@@ -241,9 +241,9 @@ void TimelineView::paintEvent(QPaintEvent* /* event */)
             QDateTime dateTime = sta::JdToCalendar(sta::MjdToJd(t));
             
             float x = (float) (viewWidth * (t - viewStartTime) / m_visibleSpan);
-			painter.drawText(QRectF(x - 30.0f, 0.0f, 60.0f, TimeHeaderHeight),
+            painter.drawText(QRectF(x - 40.0f, 0.0f, 80.0f, TimeHeaderHeight),
                              Qt::AlignHCenter | Qt::AlignTop,
-							 dateTime.toString("hh:mm\ndd MMM"));
+                             dateTime.toString("hh:mm\ndd MMM yyyy"));
         }
         else
         {
