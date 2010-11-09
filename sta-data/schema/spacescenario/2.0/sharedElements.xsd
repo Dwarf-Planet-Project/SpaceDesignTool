@@ -84,7 +84,9 @@
 	<simpleType name="ListOfString">
 		<list itemType="string"></list>
 	</simpleType>
-
+	<simpleType name="ListOfDateTime">
+		<list itemType="dateTime"></list>
+	</simpleType>
 
 	<!-- OPTIMIZATION VARIABLES -->
 	<complexType name="OptVarDouble">

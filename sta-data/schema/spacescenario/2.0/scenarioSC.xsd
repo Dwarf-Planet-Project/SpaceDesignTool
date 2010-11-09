@@ -69,7 +69,8 @@
 		type="tns:FlyByType"></element>
 	<element name="LoiteringTLE" substitutionGroup="tns:AbstractTrajectory"
 		type="tns:LoiteringTLEType"></element>
-
+	<element name="External" substitutionGroup="tns:AbstractTrajectory"
+		type="tns:ExternalType"></element>
 
 	<complexType name="LoiteringType">
 		<complexContent>
@@ -117,7 +118,19 @@
 		</complexContent>
 	</complexType>
 
-
+	<complexType name="ExternalType">
+		<complexContent>
+			<extension base="tns:AbstractTrajectoryType">
+				<sequence>
+					<element ref="tns:ElementIdentifier"></element>
+			        <element name="CentralBody" type="tns:CentralBodyType"></element>
+			        <element name="CoordinateSystem" type="string"></element>
+                    <element name="TimeTags" type="tns:ListOfDateTime"></element>
+                    <element name="States" type="tns:ListOfDouble"></element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
 
 	<!-- Maneuvers -->
 	<element name="DeltaV" substitutionGroup="tns:AbstractTrajectory"
