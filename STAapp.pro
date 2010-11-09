@@ -345,7 +345,7 @@ VISUALIZATION_SOURCES = \
     sta-src/Visualization/GroundTrackPlotTool.cpp \
     sta-src/Visualization/GroundTrackView.cpp \
     sta-src/Visualization/ThreeDView.cpp \
-    sta-src/Visualization/ThreeDVisualizationtool.cpp \
+    sta-src/Visualization/ThreeDVisualizationTool.cpp \
     sta-src/Visualization/VisualizationToolBar.cpp
 
 VISUALIZATION_HEADERS = \
