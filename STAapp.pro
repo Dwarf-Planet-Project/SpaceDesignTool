@@ -640,8 +640,14 @@ LIBS += -lvesta -Lthirdparty/vesta/build
 # Add library path for static libraries
 win32-g++:LIBS += $$PWD/lib/win32-x86-gcc/cspice.a
 macx:LIBS += $$PWD/lib/mac/cspice.a
-linux-g++-32:LIBS += -Llib/linux-x86 -lcspice.a
-linux-g++-64:LIBS += -Llib/linux-x64 -lcspice.a
+#linux-g++-32:LIBS += $$PWD/lib/linux-x86/cspice.a
+#linux-g++-64:LIBS += $$PWD/lib/linux-x64/cspice.a
+
+linux-g++ {
+    message("Compiling linux 32 bits")
+    LIBS += -L$$PWD/lib/linux-x86
+    LIBS += -lcspice
+}
 
 INCLUDEPATH += include/spice
 
@@ -713,8 +719,8 @@ linux-g++-64 {
     INCLUDEPATH += $$LINUX_LIBRARIES_DIR
     INCLUDEPATH += /usr/include
     CXXFLAGS += -std=c++0x
-    QMAKE_CXX = g++-4.3
-    QMAKE_CC  = gcc-4.3
+    QMAKE_CXX >= g++-4.3
+    QMAKE_CC  >= gcc-4.3
 
 }
 

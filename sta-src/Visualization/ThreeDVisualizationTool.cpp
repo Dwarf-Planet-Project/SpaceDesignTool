@@ -26,9 +26,9 @@
  Patched by Guillermo August 2010 to connect the proper equator grid button
  */
 
-#include "threedvisualizationtool.h"
+#include "ThreeDVisualizationTool.h"
 #include "ThreeDView.h"
-#include "visualizationtoolbar.h"
+#include "VisualizationToolBar.h"
 #include "Main/ViewActionGroup.h"
 #include "Astro-Core/stabody.h"
 #include <QBoxLayout>
