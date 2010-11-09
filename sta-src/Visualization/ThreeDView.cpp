@@ -32,10 +32,12 @@
 #include <vesta/Arc.h>
 #include <vesta/Trajectory.h>
 #include <vesta/FixedPointTrajectory.h>
+#include <vesta/FixedRotationModel.h>
 #include <vesta/RotationModel.h>
 #include <vesta/WorldGeometry.h>
 #include <vesta/InertialFrame.h>
 #include <vesta/BodyFixedFrame.h>
+#include <vesta/TwoBodyRotatingFrame.h>
 #include <vesta/CelestialCoordinateGrid.h>
 #include <vesta/StarsLayer.h>
 #include <vesta/SkyImageLayer.h>
@@ -137,13 +139,14 @@ struct ModelProperties
     QString name;
     QString modelFileName;
     float scale;
+    Vector3d nadirDirection;
 };
 
 static ModelProperties SpacecraftModels[] =
 {
-    { "default", "models/sorce.obj", 0.004f },
-    { "iss",     "models/iss.3ds", 0.025f },
-    { "xmm",     "models/xmm.3ds", 0.004 },
+    { "default", "models/sorce.obj", 0.004f, -Vector3d::UnitY() },
+    { "iss",     "models/iss.3ds", 0.025f, Vector3d::UnitZ() },
+    { "xmm",     "models/xmm.3ds", 0.004, -Vector3d(0.0, 1.0, 1.0).normalized() },
 };
 
 
@@ -1324,6 +1327,21 @@ ThreeDView::initializeStandardResources()
 }
 
 
+static ModelProperties& GetModelProperties(const QString& name)
+{
+    QString lname = name.toLower();
+    for (unsigned int i = 0; i < sizeof(SpacecraftModels) / sizeof(SpacecraftModels[0]); ++i)
+    {
+        if (lname == SpacecraftModels[i].name)
+        {
+            return SpacecraftModels[i];
+        }
+    }
+
+    return SpacecraftModels[0];
+}
+
+
 MeshGeometry*
 ThreeDView::getSpacecraftModel(const QString& name)
 {
@@ -1730,6 +1748,9 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
     Body* body = new Body();
     body->setName(spaceObj->name().toUtf8().data());
 
+    TwoBodyRotatingFrame* bodyFrame = NULL;
+    RotationModel* rotation = NULL;
+
     foreach (MissionArc* missionArc, spaceObj->mission())
     {
         // Calculate the radius of a sphere that contains all the points in the trajectory.
@@ -1752,6 +1773,25 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
                 arc->setTrajectoryFrame(frame);
                 arc->setTrajectory(new StaMissionArcTrajectory(missionArc, boundingRadius * 1.1));
                 body->chronology()->addArc(arc);
+
+                if (bodyFrame == NULL)
+                {
+                    // Create a frame for the spacecraft that will maintain a nadir pointing attitude. This
+                    // makes the visualization somewhat more realistic in the absence of an attitude module.
+                    // We create a single body frame for the entire trajectory; the secondary body in the
+                    // two-body frame is the center of the first arc.
+                    bodyFrame = new TwoBodyRotatingFrame(body, center);
+                }
+                arc->setBodyFrame(bodyFrame);
+
+                if (rotation == NULL)
+                {
+                    // Create a fixed rotation model to orient the model in the right direction
+                    Quaterniond q;
+                    q.setFromTwoVectors(GetModelProperties(spaceObj->mission().first()->modelName()).nadirDirection, Vector3d::UnitX());
+                    rotation = new FixedRotationModel(q);
+                }
+                arc->setRotationModel(rotation);
             }
         }
     }
