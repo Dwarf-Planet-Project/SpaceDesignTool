@@ -27,8 +27,8 @@
  Patched by Guillermo August 2010 to add the equqtor line
  */
 
-#include "Plotting/groundtrackplottool.h"
-#include "Plotting/visualizationtoolbar.h"
+#include "GroundTrackView.h"
+#include "GroundTrackPlotTool.h"
 #include "Main/propagatedscenario.h"
 #include "Astro-Core/rectangularTOpolar.h"
 #include "Astro-Core/stamath.h"
@@ -259,7 +259,7 @@ void GroundTrackView::setScenario(PropagatedScenario* scenario)
 bool GroundTrackView::addGroundTrack(SpaceObject* vehicle)
 {
     GroundTrack* track = new GroundTrack();
-	track->color = vehicle->trajectoryColor();
+    track->color = vehicle->trajectoryColor();
 
     track->vehicle = vehicle;
 
@@ -273,27 +273,27 @@ bool GroundTrackView::addGroundTrack(SpaceObject* vehicle)
 
     m_groundTrackList.append(track);
 
-	return true;
+    return true;
 }
 */
 
 
 bool GroundTrackView::addGroundTrack(SpaceObject* vehicle)
 {
-	GroundTrack* track = new GroundTrack();
-	track->vehicle = vehicle;
+    GroundTrack* track = new GroundTrack();
+    track->vehicle = vehicle;
 
-	// Skip empty ground tracks
-	computeGroundTrack(*track);
+    // Skip empty ground tracks
+    computeGroundTrack(*track);
     if (track->segments.size() == 0)
-	{
-		delete track;
-		return false;
-	}
+    {
+        delete track;
+        return false;
+    }
 
-	m_groundTrackList.append(track);
+    m_groundTrackList.append(track);
 
-	return true;
+    return true;
 }
 
 
@@ -322,12 +322,12 @@ void GroundTrackView::computeGroundTrack(GroundTrack& track)
             sample.mjd = mjd;
             planetographicCoords(v.position, m_body, &sample.longitude, &sample.latitude, &sample.altitude);
             segment->samples << sample;
-		}
+        }
 
         track.segments << segment;
-	}
+    }
 
-	computeTicks(track, sta::secsToDays(m_tickInterval));
+    computeTicks(track, sta::secsToDays(m_tickInterval));
 }
 
 
@@ -678,7 +678,7 @@ void GroundTrackView::mouseMoveEvent(QMouseEvent* event)
     if (event->buttons() & Qt::LeftButton)
     {
         QPointF position = event->posF();
-        QPointF delta = position - m_lastMousePosition;        
+        QPointF delta = position - m_lastMousePosition;
         m_lastMousePosition = position;
 
         int viewWidth = viewport()->size().width();
@@ -2037,7 +2037,7 @@ void GroundTrackView::paint2DView(QPainter& painter)
         linkPen.setStyle(Qt::DotLine);
         linkPen.setColor(Qt::white);
         painter.setPen(linkPen);
-        m_trackPoints.clear();   
+        m_trackPoints.clear();
 
         // Show Links between Space Objects
         // Todo: merge m_showSOLink and m_showGOLink (it is too much code duplication)
@@ -2624,60 +2624,3 @@ void
 
     painter.setBrush(Qt::NoBrush);
 }
-
-
-/*** GroundTrackPlotTool implementation ***/
-
-GroundTrackPlotTool::GroundTrackPlotTool(QWidget* parent, ViewActionGroup* viewActions) :
-    QWidget(parent),
-    m_view(NULL),
-    m_toolBar(NULL)
-{
-    m_view = new GroundTrackView(this);
-
-    // Create and hook up the tool bar
-    m_toolBar = new VisualizationToolBar(tr("View Controls"), this);
-    m_toolBar->configureFor2DView(viewActions);
-
-    connect(m_toolBar, SIGNAL(bodyChanged(const StaBody*)),  m_view, SLOT(setBody(const StaBody*)));
-    connect(m_toolBar, SIGNAL(gridToggled(bool)),            m_view, SLOT(setShowGrid(bool)));
-    connect(m_toolBar, SIGNAL(equatorToggled(bool)),         m_view, SLOT(setShowEquator(bool)));
-    connect(m_toolBar, SIGNAL(terminatorToggled(bool)),      m_view, SLOT(setTerminatorVisible(bool)));
-    connect(m_toolBar, SIGNAL(tickIntervalChanged(double)),  m_view, SLOT(setTickInterval(double)));
-    connect(m_toolBar, SIGNAL(projectionChanged(bool)),      m_view, SLOT(set2HalfDView(bool)));
-    connect(m_toolBar, SIGNAL(saveImageRequested()),         m_view, SLOT(saveImage()));
-
-    // Analysis Button signals (Claas Grohnfeldt, Steffen Peter)
-    connect(m_toolBar, SIGNAL(discretizationToggled(bool)),  m_view, SLOT(setDiscretizationVisible(bool)));
-    connect(m_toolBar, SIGNAL(coverageCurrentToggled(bool)), m_view, SLOT(setCoverageCurrentVisible(bool)));
-    connect(m_toolBar, SIGNAL(coverageHistoryToggled(bool)), m_view, SLOT(setCoverageHistoryVisible(bool)));
-    connect(m_toolBar, SIGNAL(linkSOToggled(bool)),          m_view, SLOT(setLinkSOVisible(bool)));
-    connect(m_toolBar, SIGNAL(linkGOToggled(bool)),          m_view, SLOT(setLinkGOVisible(bool)));
-
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->setSpacing(0);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget(m_view);
-    layout->addWidget(m_toolBar);
-    setLayout(layout);
-
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-}
-
-
-GroundTrackPlotTool::~GroundTrackPlotTool()
-{
-}
-
-
-
-// Analysis (Claas Grohnfeldt, Steffen Peter)
-void GroundTrackPlotTool::setAnalysis(ConstellationAnalysis* analysisOfConstellations)
-{
-    m_toolBar->enableAnalysisTools(analysisOfConstellations);
-    m_view->setAnalysis(analysisOfConstellations);
-}
-
-
-
-

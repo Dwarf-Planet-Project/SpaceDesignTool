@@ -340,25 +340,35 @@ SEM_FORMS = sta-src/SEM/sem.ui \
 #    sta-src/Optimization/realmut1.h \
 #    sta-src/Optimization/keepaliven.h
 
+# ############# Visualization Module ##############
+VISUALIZATION_SOURCES = \
+    sta-src/Visualization/GroundTrackPlotTool.cpp \
+    sta-src/Visualization/GroundTrackView.cpp \
+    sta-src/Visualization/ThreeDView.cpp \
+    sta-src/Visualization/ThreeDVisualizationtool.cpp \
+    sta-src/Visualization/VisualizationToolBar.cpp
+
+VISUALIZATION_HEADERS = \
+    sta-src/Visualization/GroundTrackPlotTool.h \
+    sta-src/Visualization/GroundTrackView.h \
+    sta-src/Visualization/ThreeDView.h \
+    sta-src/Visualization/ThreeDVisualizationTool.h \
+    sta-src/Visualization/VisualizationToolBar.h
+
 # ############# Plotting Module ##############
-PLOT_SOURCES = sta-src/Plotting/groundtrackplottool.cpp \
+PLOT_SOURCES = \
     sta-src/Plotting/plottingtool.cpp \
     sta-src/Plotting/PlotScale.cpp \
     sta-src/Plotting/PlotStyle.cpp \
     sta-src/Plotting/PlotView.cpp \
     sta-src/Plotting/PlotView3D.cpp \
-    sta-src/Plotting/ThreeDView.cpp \
-    sta-src/Plotting/threedvisualizationtool.cpp \
-    sta-src/Plotting/visualizationtoolbar.cpp \
     sta-src/Plotting/PlotGraphFromFile.cpp
-PLOT_HEADERS = sta-src/Plotting/groundtrackplottool.h \
+
+PLOT_HEADERS = \
     sta-src/Plotting/plottingtool.h \
     sta-src/Plotting/PlotDataSource.h \
     sta-src/Plotting/PlotScale.h \
     sta-src/Plotting/PlotStyle.h \
-    sta-src/Plotting/ThreeDView.h \
-    sta-src/Plotting/threedvisualizationtool.h \
-    sta-src/Plotting/visualizationtoolbar.h \
     sta-src/Plotting/PlotView.h \
     sta-src/Plotting/PlotView3D.h \
     sta-src/Plotting/PlotGraphFromFile.h
@@ -545,6 +555,7 @@ DEFINES += GLEW_STATIC
 SOURCES = $$MAIN_SOURCES \
     $$ASTROCORE_SOURCES \
     $$SEM_SOURCES \
+    $$VISUALIZATION_SOURCES \
     $$PLOT_SOURCES \
     $$SCENARIO_SOURCES \
     $$ENTRY_SOURCES \
@@ -569,6 +580,7 @@ SOURCES = $$MAIN_SOURCES \
 HEADERS = $$MAIN_HEADERS \
     $$ASTROCORE_HEADERS \
     $$SEM_HEADERS \
+    $$VISUALIZATION_HEADERS \
     $$PLOT_HEADERS \
     $$SCENARIO_HEADERS \
     $$ENTRY_HEADERS \

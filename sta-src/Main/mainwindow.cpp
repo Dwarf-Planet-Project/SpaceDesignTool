@@ -52,9 +52,9 @@
 #include "ViewActionGroup.h"
 #include "Scenario/scenario.h"
 #include "Scenario/propagationfeedback.h"
-#include "Plotting/ThreeDView.h"
-#include "Plotting/groundtrackplottool.h"
-#include "Plotting/threedvisualizationtool.h"
+#include "Visualization/ThreeDView.h"
+#include "Visualization/GroundTrackPlotTool.h"
+#include "Visualization/ThreeDVisualizationTool.h"
 #include "Astro-Core/date.h"
 
 #include "Scenario/scenarioPropagator.h"

@@ -27,7 +27,7 @@
  Patched by Guillermo August 2010 to include the equqtorial grid button
  */
 
-#include "visualizationtoolbar.h"
+#include "VisualizationToolBar.h"
 #include "Main/propagatedscenario.h"
 #include "Astro-Core/stabody.h"
 #include <QAction>

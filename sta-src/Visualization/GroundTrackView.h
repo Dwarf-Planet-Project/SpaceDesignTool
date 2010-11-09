@@ -26,18 +26,16 @@
   Patched by Guillermo on June 2010 to include the constellations module
  */
 
-#ifndef _PLOTTING_GROUNDTRACKPLOTTOOL_H_
-#define _PLOTTING_GROUNDTRACKPLOTTOOL_H_
+#ifndef _STA_VISUALIZATION_GROUND_TRACK_VIEW_H_
+#define _STA_VISUALIZATION_GROUND_TRACK_VIEW_H_
 
+#include "Constellations/canalysis.h"
 #include "Astro-Core/stabody.h"
+
 #include <QWidget>
 #include <QAbstractScrollArea>
 #include <QGraphicsView>
 #include <Eigen/Geometry>
-
-// Analysis (Claas Grohnfeldt, Steffen Peter)
-#include "Constellations/canalysis.h"
-#include "visualizationtoolbar.h"
 
 class QPixmap;
 class QMenu;
@@ -101,10 +99,10 @@ Q_OBJECT
  public:
     GroundTrackView(QWidget* parent);
     ~GroundTrackView();
-    
+
     void setScenario(PropagatedScenario* scenario);
     void computeTicks(GroundTrack& track, double interval);
-    
+
     QPointF center() const { return m_center; }
     float zoomFactor() const { return m_zoomFactor; }
     double currentTime() const { return m_currentTime; }
@@ -116,7 +114,7 @@ Q_OBJECT
 
     // Analysis (Claas Grohnfeldt, Steffen Peter)
     void setAnalysis(ConstellationAnalysis* analysisOfConstellations);
-        
+
  public slots:
     void setCurrentTime(double jd);
     void setShowEntireTracks(bool show);
@@ -147,7 +145,7 @@ Q_OBJECT
     void resizeEvent(QResizeEvent* event);
     void drawBackground(QPainter* painter, const QRectF& rect);
     void contextMenuEvent(QContextMenuEvent* event);
-    
+
  private:
     bool addGroundTrack(SpaceObject* vehicle);
     void planetographicCoords(const Eigen::Vector3d& position,
@@ -228,27 +226,4 @@ Q_OBJECT
     QSlider* m_maxHeightSlider;
 };
 
-
-class GroundTrackPlotTool : public QWidget
-{
-Q_OBJECT
-public:
-    GroundTrackPlotTool(QWidget* parent, ViewActionGroup* viewActions);
-    ~GroundTrackPlotTool();
-
-    GroundTrackView* view() const { return m_view; }
-
-    // Analysis (Claas Grohnfeldt, Steffen Peter)
-    void setAnalysis(ConstellationAnalysis* analysisOfConstellations);
-
-    VisualizationToolBar* toolBar() const
-    {
-        return m_toolBar;
-    }
-    
-private:
-    GroundTrackView* m_view;
-    VisualizationToolBar* m_toolBar;
-};
-
-#endif // _PLOTTING_GROUNDTRACKPLOTTOOL_H_
+#endif // _STA_VISUALIZATION_GROUND_TRACK_VIEW_H_
