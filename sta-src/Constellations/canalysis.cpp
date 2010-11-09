@@ -40,7 +40,11 @@ AnaSpaceObject::AnaSpaceObject(SpaceObject* spaceObject, Antenna* obsAnt):
     // Declaration of comm. antennas (temporarily here)
     visibility.append(new Antenna(0.0, 0.0, 3.14/4));
     visibility.append(new Antenna(3.14, 0.0, 3.14/4));
-    asocolor = spaceObject->trajectoryColor();
+
+    if (!spaceObject->mission().isEmpty())
+    {
+        asocolor = spaceObject->mission().first()->arcTrajectoryColor();
+    }
     asoname = spaceObject->name();
 }
 

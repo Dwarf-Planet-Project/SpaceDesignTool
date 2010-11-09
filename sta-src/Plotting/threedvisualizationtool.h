@@ -31,7 +31,9 @@
 
 class ThreeDView;
 class StaBody;
+class ViewActionGroup;
 
+class VisualizationToolBar;
 
 /** ThreeDVisualizationTool is a widget containing a 3D view along with
   * controls specific for navigating and controlling the presentation of
@@ -42,7 +44,7 @@ class ThreeDVisualizationTool : public QWidget
 Q_OBJECT
 
 public:
-    ThreeDVisualizationTool(QWidget* parent);
+    ThreeDVisualizationTool(QWidget* parent, ViewActionGroup* viewActions);
     ~ThreeDVisualizationTool();
 
 public slots:
@@ -50,10 +52,16 @@ public slots:
     void showGrid(bool enabled);
     void setTickInterval(double seconds);
     void saveImage();
+    void setToolBarVisible(bool show);
 
     ThreeDView* view() const
     {
         return m_view;
+    }
+
+    VisualizationToolBar* toolBar() const
+    {
+        return m_toolBar;
     }
 
 protected:
@@ -61,6 +69,7 @@ protected:
 
 private:
     ThreeDView* m_view;
+    VisualizationToolBar* m_toolBar;
 };
 
 #endif // _THREED_VISUALIZATION_TOOL_H_

@@ -28,6 +28,7 @@
  */
 
 #include "visualizationtoolbar.h"
+#include "Main/propagatedscenario.h"
 #include "Astro-Core/stabody.h"
 #include <QAction>
 #include <QMenu>
@@ -69,7 +70,6 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
         }
     }
     m_bodySelectCombo->setVisible(false);
-
 
     // Create the tick interval action
     m_tickIntervalAction = new QAction(QIcon(":/icons/IconCLOCK.png"), tr("Ticks"), this);
@@ -173,21 +173,6 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     m_cameraAction->setToolTip(tr("Select camera viewpoint"));
     m_cameraAction->setMenu(cameraMenu);
 
-    /*
-    // Add all actions and widgets to the toolbar
-    addWidget(m_bodySelectCombo);
-    addSeparator();  // Guillermo says: in windows, it looks better to be separated from the combobox
-    addAction(m_tickIntervalAction);
-    addAction(m_gridAction);
-    addAction(m_equatorAction);
-    addAction(m_terminatorAction);
-    addAction(m_enable25DViewAction);
-    addAction(m_saveImageAction);
-    addSeparator();  // Guillermo says: in windows, it looks better to be separated from the combobox
-    // Guillermo on widget patching
-    addAction(m_analysisAction);
-    */
-
     // Set the initial state of the actions and widgets
     m_enable25DViewAction->setChecked(false);
     // Next line patch by Guillermo to set to false initial grid and equator
@@ -223,7 +208,7 @@ VisualizationToolBar::~VisualizationToolBar()
 /** Configure the tool bar for use with the ground track view.
   */
 void
-VisualizationToolBar::configureFor2DView()
+VisualizationToolBar::configureFor2DView(ViewActionGroup* viewActions)
 {
     // TODO: The 2D and 3D versions of the tool bar have evolved to be
     // different enough that a better design would be to make them
@@ -242,13 +227,15 @@ VisualizationToolBar::configureFor2DView()
     addAction(m_saveImageAction);
     addSeparator();  // Guillermo says: in windows, it looks better to be separated from the combobox
     addAction(m_analysisAction);
+
+    addViewSelectActions(viewActions->viewSelectGroup());
 }
 
 
 /** Configure the tool bar for use with the 3D view.
   */
 void
-VisualizationToolBar::configureFor3DView()
+VisualizationToolBar::configureFor3DView(ViewActionGroup* viewActions)
 {
     clear();
 
@@ -256,9 +243,62 @@ VisualizationToolBar::configureFor3DView()
     widgetAction->setVisible(false);
 
     addAction(m_cameraAction);
+    configureCameraMenu(NULL);
+
+    // Add all actions and widgets to the toolbar
+    addAction(m_gridAction);
+    addAction(m_equatorAction);
+    addAction(m_saveImageAction);
+
+    addViewSelectActions(viewActions->viewSelectGroup());
+}
+
+
+QAction*
+VisualizationToolBar::createCameraMenuAction(const QString& label, const QString& iconName, const QString& name)
+{
+    QAction* action = m_cameraAction->menu()->addAction(QIcon(iconName), label);
+    action->setData(name);
+
+    return action;
+}
+
+
+void
+VisualizationToolBar::addViewSelectActions(QActionGroup* actionGroup)
+{
+    // Add actions to toggle between 2D and 3D views (and perhaps others eventually). We
+    // create an empty, expandable widget first so that the view select buttons end up on
+    // the right side of the tool bar.
+    QWidget* stretchWidget = new QWidget(this);
+    stretchWidget->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
+    addWidget(stretchWidget);
+
+    foreach (QAction* action, actionGroup->actions())
+    {
+        addAction(action);
+    }
+}
+
+
+void
+VisualizationToolBar::configureCameraMenu(const PropagatedScenario* scenario)
+{
+    m_cameraAction->menu()->clear();
+
     createCameraMenuAction(tr("Earth"),  ":/icons/ComboEarth.png", "Earth");
     createCameraMenuAction(tr("Moon"),   ":/icons/ComboMoon.png", "Moon");
     createCameraMenuAction(tr("Earth-Moon System"), "", "Earth-Moon");
+
+    if (scenario != NULL && !scenario->spaceObjects().isEmpty())
+    {
+        m_cameraAction->menu()->addSeparator();
+        foreach (SpaceObject* spaceObj, scenario->spaceObjects())
+        {
+            createCameraMenuAction(spaceObj->name(), ":/icons/Satellite.png", QString("S#%1").arg(spaceObj->name()));
+        }
+    }
+
     m_cameraAction->menu()->addSeparator();
     createCameraMenuAction(tr("Inner Solar System"), "", "Inner Solar System");
     createCameraMenuAction(tr("Outer Solar System"), "", "Outer Solar System");
@@ -279,21 +319,6 @@ VisualizationToolBar::configureFor3DView()
     createCameraMenuAction(tr("Europa"),   ":/icons/ComboMoon.png", "Europa");
     createCameraMenuAction(tr("Ganymede"), ":/icons/ComboMoon.png", "Ganymede");
     createCameraMenuAction(tr("Callisto"), ":/icons/ComboMoon.png", "Callisto");
-
-    // Add all actions and widgets to the toolbar
-    addAction(m_gridAction);
-    addAction(m_equatorAction);
-    addAction(m_saveImageAction);
-}
-
-
-QAction*
-VisualizationToolBar::createCameraMenuAction(const QString& label, const QString& iconName, const QString& name)
-{
-    QAction* action = m_cameraAction->menu()->addAction(QIcon(iconName), label);
-    action->setData(name);
-
-    return action;
 }
 
 

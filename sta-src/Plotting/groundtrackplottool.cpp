@@ -34,11 +34,7 @@
 #include "Astro-Core/stamath.h"
 #include "Astro-Core/date.h"
 #include "Scenario/scenario.h"
-//#include "Scenario/scenariospacevehicle.h"
-//#include "Scenario/scenariotrajectoryplan.h"
-//#include "Scenario/scenarioabstracttrajectory.h"
 #include "Constellations/constellationmodule.h"  // Analysis (Claas Grohnfeldt, Steffen Peter)
-#include "Main/mainwindow.h"
 
 #include <QTextStream>
 #include <QtGui>
@@ -2208,25 +2204,14 @@ void GroundTrackView::contextMenuEvent(QContextMenuEvent* event)
     entireAction->setChecked(m_showEntireTracks);
     connect(entireAction, SIGNAL(triggered(bool)), this, SLOT(setShowEntireTracks(bool)));
 
-    QAction* gridAction = new QAction(tr("Show &Grid"), m_contextMenu);
-    connect(gridAction, SIGNAL(triggered(bool)), this, SLOT(setShowGrid(bool)));
-    gridAction->setCheckable(true);
-    gridAction->setChecked(m_showGrid);
-    MainWindow myMainWindow;
-    myMainWindow.m_groundTrackPlotTool->m_toolBar->m_gridAction->setChecked(m_showGrid);
-    myMainWindow.m_groundTrackPlotTool->show();
-
-    QAction* equatorAction = new QAction(tr("Show &Equator"), m_contextMenu);
-    connect(equatorAction, SIGNAL(triggered(bool)), this, SLOT(setShowEquator(bool)));
-    equatorAction->setCheckable(true);
-    equatorAction->setChecked(m_showEquator);
-    myMainWindow.m_groundTrackPlotTool->m_toolBar->m_equatorAction->setChecked(m_showEquator);
-    myMainWindow.m_groundTrackPlotTool->show();
-
-
     m_contextMenu->addAction(entireAction);
-    m_contextMenu->addAction(gridAction);
-    m_contextMenu->addAction(equatorAction);
+    GroundTrackPlotTool* groundTrackPlotTool = qobject_cast<GroundTrackPlotTool*>(parent());
+    Q_ASSERT(groundTrackPlotTool != NULL);
+    if (groundTrackPlotTool)
+    {
+        m_contextMenu->addAction(groundTrackPlotTool->toolBar()->gridAction());
+        m_contextMenu->addAction(groundTrackPlotTool->toolBar()->equatorAction());
+    }
 
     m_contextMenu->popup(event->globalPos());
 }
@@ -2643,16 +2628,16 @@ void
 
 /*** GroundTrackPlotTool implementation ***/
 
-GroundTrackPlotTool::GroundTrackPlotTool(QWidget* parent) :
-        QWidget(parent),
-        m_view(NULL),
-        m_toolBar(NULL)
+GroundTrackPlotTool::GroundTrackPlotTool(QWidget* parent, ViewActionGroup* viewActions) :
+    QWidget(parent),
+    m_view(NULL),
+    m_toolBar(NULL)
 {
     m_view = new GroundTrackView(this);
 
     // Create and hook up the tool bar
     m_toolBar = new VisualizationToolBar(tr("View Controls"), this);
-    m_toolBar->configureFor2DView();
+    m_toolBar->configureFor2DView(viewActions);
 
     connect(m_toolBar, SIGNAL(bodyChanged(const StaBody*)),  m_view, SLOT(setBody(const StaBody*)));
     connect(m_toolBar, SIGNAL(gridToggled(bool)),            m_view, SLOT(setShowGrid(bool)));
@@ -2670,8 +2655,8 @@ GroundTrackPlotTool::GroundTrackPlotTool(QWidget* parent) :
     connect(m_toolBar, SIGNAL(linkGOToggled(bool)),          m_view, SLOT(setLinkGOVisible(bool)));
 
     QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->setSpacing(1);
-    layout->setContentsMargins(3, 3, 3, 3);
+    layout->setSpacing(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(m_view);
     layout->addWidget(m_toolBar);
     setLayout(layout);

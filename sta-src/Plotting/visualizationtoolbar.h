@@ -28,8 +28,11 @@
 #ifndef _PLOTTING_VISUALIZATION_TOOLBAR_H_
 #define _PLOTTING_VISUALIZATION_TOOLBAR_H_
 
+#include "Main/ViewActionGroup.h"
+
 #include <QToolBar>
 #include <QComboBox>
+#include <QStringList>
 
 // Analysis (Claas Grohnfeldt, Steffen Peter)
 #include <QMenu>
@@ -37,6 +40,7 @@
 
 
 class StaBody;
+class PropagatedScenario;
 
 // The visualization toolbar contains a list of buttons used for both the ground track
 // and 3D views.
@@ -48,15 +52,24 @@ public:
     VisualizationToolBar(const QString& title, QWidget* parent = 0);
     ~VisualizationToolBar();
 
-   void configureFor3DView();
-   void configureFor2DView();
+   void configureFor3DView(ViewActionGroup* viewActions);
+   void configureFor2DView(ViewActionGroup* viewActions);
+
+   void configureCameraMenu(const PropagatedScenario* scenario);
 
     // Analysis (Claas Grohnfeldt, Steffen Peter)
    void enableAnalysisTools(ConstellationAnalysis* analysisOfConstellations);
    void disableAnalysisTools();
 
-   QAction* m_gridAction;
-   QAction* m_equatorAction;
+   QAction* gridAction() const
+   {
+       return m_gridAction;
+   }
+
+   QAction* equatorAction() const
+   {
+       return m_equatorAction;
+   }
 
 private slots:
     void mapSetTickInterval();
@@ -83,16 +96,16 @@ signals:
 
 private:
     QAction* createCameraMenuAction(const QString& label, const QString& iconName, const QString& name);
+    void addViewSelectActions(QActionGroup* actionGroup);
 
 private:
     QComboBox* m_bodySelectCombo;
     QAction* m_tickIntervalAction;
-    //QAction* m_gridAction;
-    //QAction* m_equatorAction;
+    QAction* m_gridAction;
+    QAction* m_equatorAction;
     QAction* m_terminatorAction;
     QAction* m_saveImageAction;
 
-    // Possibly move these 2D-specific buttons to a subclass
     QAction* m_enable2DViewAction;
     QAction* m_enable25DViewAction;
 

@@ -152,7 +152,10 @@ MainWindow::MainWindow(QWidget *parent)	:
     setupUi(this);
     connect(actionQuit, SIGNAL(triggered()), QApplication::instance(), SLOT(closeAllWindows()));
 
-    m_groundTrackPlotTool = new GroundTrackPlotTool(this);
+    m_viewActions = new ViewActionGroup();
+    connect(m_viewActions->viewSelectGroup(), SIGNAL(triggered(QAction*)), this, SLOT(selectVisualization(QAction*)));
+
+    m_groundTrackPlotTool = new GroundTrackPlotTool(this, m_viewActions);
     m_groundTrackPlotTool->setWindowTitle(tr("Ground Track"));
 
     // Set the dock options. We want the scenario tree view to occupy the entire left side of
@@ -206,11 +209,20 @@ MainWindow::MainWindow(QWidget *parent)	:
     QStringList extrasDirs;
 
     // Set up the central widget
-    m_viewPanel = new QTabWidget(this);
-    m_viewPanel->addTab(m_groundTrackPlotTool, tr("Ground Track View"));
+    //m_viewPanel = new QTabWidget(this);
+    //m_viewPanel->setDocumentMode(true);
 
-    m_threeDViewWidget = new ThreeDVisualizationTool(this);
-    m_viewPanel->addTab(m_threeDViewWidget, tr("3D View"));
+    //m_viewPanel->addTab(m_groundTrackPlotTool, tr("Ground Track View"));
+    m_viewPanel = new QStackedWidget(this);
+    m_viewPanel->setContentsMargins(0, 0, 0, 0);
+    m_viewPanel->layout()->setContentsMargins(0, 0, 0, 0);
+    m_viewPanel->layout()->setMargin(0);
+    m_viewPanel->layout()->setSpacing(0);
+    m_viewPanel->addWidget(m_groundTrackPlotTool);
+
+    m_threeDViewWidget = new ThreeDVisualizationTool(this, m_viewActions);
+    //m_viewPanel->addTab(m_threeDViewWidget, tr("3D View"));
+    m_viewPanel->addWidget(m_threeDViewWidget);
 
     setCentralWidget(m_viewPanel);
 
@@ -225,6 +237,11 @@ MainWindow::MainWindow(QWidget *parent)	:
     m_dockGroundTrackAction = new QAction(tr("Undock Ground Track View"), menuWindow);
     menuWindow->addAction(m_dockGroundTrackAction);
     connect(m_dockGroundTrackAction, SIGNAL(triggered()), this, SLOT(toggleGroundTrackView()));
+    m_fullScreen3DAction = new QAction(tr("Show Full Screen 3D View"), menuWindow);
+    m_fullScreen3DAction->setCheckable(true);
+    m_fullScreen3DAction->setShortcut(QKeySequence("Ctrl+Shift+F"));
+    menuWindow->addAction(m_fullScreen3DAction);
+    connect(m_fullScreen3DAction, SIGNAL(triggered(bool)), this, SLOT(setFullScreen3D(bool)));
 
     // Initial state has no scenario loaded, so disable the propagate, Engineer, and analise
     // scenario actions. Patched by Guillermo to make it work correctly
@@ -278,9 +295,6 @@ MainWindow::MainWindow(QWidget *parent)	:
     m_timelineWidget->timelineView()->setTimeRange(now - 1 / 24.0, now + 1.0);
     m_timelineWidget->setZoom("all");
 
-    m_viewActions = new ViewActionGroup();
-
-    if (m_threeDViewWidget)
     {
         ThreeDView* view = m_threeDViewWidget->view();
 
@@ -1100,7 +1114,7 @@ void MainWindow::showGroundTrackPlotTool()
 {
     if (m_groundTrackPlotTool == NULL)
     {
-        m_groundTrackPlotTool = new GroundTrackPlotTool(this);
+        m_groundTrackPlotTool = new GroundTrackPlotTool(this, m_viewActions);
         m_groundTrackPlotTool->resize(1001, 500);
     }
     m_groundTrackPlotTool->show();
@@ -1155,6 +1169,7 @@ void MainWindow::setPropagatedScenario(PropagatedScenario* scenario)
 
         if (m_threeDViewWidget)
         {
+            m_threeDViewWidget->toolBar()->configureCameraMenu(scenario);
             m_threeDViewWidget->view()->setScenario(scenario);
         }
 
@@ -1286,11 +1301,44 @@ void MainWindow::refreshCentralWidget(int tabIndex)
 }
 
 
-void MainWindow::toggleGroundTrackView()
+void
+MainWindow::selectVisualization(QAction* action)
+{
+    QString visName = action->text();
+
+    if (m_viewPanel->count() == 1)
+    {
+        // The ground track view is undocked; if that's the visualization that was selected,
+        // move it to the front. Otherwise, bring the 3D window to the front.
+        if (visName == "2D")
+        {
+            m_groundTrackPlotTool->raise();
+        }
+        else
+        {
+            this->raise();
+        }
+    }
+    else
+    {
+        if (visName == "2D")
+        {
+            m_viewPanel->setCurrentIndex(0);
+        }
+        else if (visName == "3D")
+        {
+            m_viewPanel->setCurrentIndex(1);
+        }
+    }
+}
+
+
+void
+MainWindow::toggleGroundTrackView()
 {
     if (m_groundTrackPlotTool->parentWidget())
     {
-        m_viewPanel->removeTab(0);
+        m_viewPanel->removeWidget(m_groundTrackPlotTool);
         m_groundTrackPlotTool->setParent(NULL);
         m_groundTrackPlotTool->move(100, 100);
         m_groundTrackPlotTool->show();
@@ -1298,8 +1346,38 @@ void MainWindow::toggleGroundTrackView()
     }
     else
     {
-        m_viewPanel->insertTab(0, m_groundTrackPlotTool, tr("Ground Track View"));
+        m_viewPanel->setCurrentIndex(0);
+        m_viewPanel->insertWidget(0, m_groundTrackPlotTool);
         m_dockGroundTrackAction->setText(tr("Undock Ground Track View"));
+    }
+}
+
+
+void
+MainWindow::setFullScreen3D(bool enable)
+{
+    if (enable)
+    {
+        m_savedWindowState = saveState();
+        foreach (QObject* obj, this->children())
+        {
+            QDockWidget* dockWidget = qobject_cast<QDockWidget*>(obj);
+            if (dockWidget)
+            {
+                dockWidget->hide();
+            }
+        }
+
+        m_viewPanel->setCurrentIndex(1);
+        m_threeDViewWidget->view()->setViewChanged();
+        m_threeDViewWidget->setToolBarVisible(false);
+        showFullScreen();
+    }
+    else
+    {
+        m_threeDViewWidget->setToolBarVisible(true);
+        showNormal();
+        restoreState(m_savedWindowState);
     }
 }
 
@@ -1395,7 +1473,7 @@ void MainWindow::readSettings()
     }
     if (settings.value("Fullscreen", false).toBool())
     {
-        showFullScreen();
+        //showFullScreen();
     }
 
     QPoint winpos = settings.value("Pos", DEFAULT_MAIN_WINDOW_SIZE).toPoint();

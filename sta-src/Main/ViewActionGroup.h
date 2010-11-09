@@ -94,6 +94,11 @@ public:
         return m_planetLabelsAction;
     }
 
+    QActionGroup* viewSelectGroup() const
+    {
+        return m_viewSelectGroup;
+    }
+
     float ambientLight() const
     {
         return m_ambientLight;
@@ -124,6 +129,11 @@ private:
     QAction* m_planetOrbitsAction;
     QAction* m_moonOrbitsAction;
     QAction* m_planetLabelsAction;
+
+    QAction* m_view2DAction;
+    QAction* m_view3DAction;
+    QActionGroup* m_viewSelectGroup;
+
     float m_ambientLight;
     int m_currentSkyLayerIndex;
 };

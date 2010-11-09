@@ -129,6 +129,8 @@ private:
     vesta::Entity* findSolarSystemBody(const StaBody* body);
     vesta::Entity* findSolarSystemBody(StaBodyId id);
     vesta::Frame* createFrame(const MissionArc* arc);
+    vesta::Entity* pickObject(const QPoint& pos);
+    vesta::MeshGeometry* getSpacecraftModel(const QString& name);
 
     void createOrbitVisualizer(const StaBody* body, const vesta::Spectrum& color);
 
@@ -164,6 +166,7 @@ private:
     QHash<SpaceObject*, vesta::Entity*> m_scenarioSpaceObjects;
     QHash<GroundObject*, vesta::Entity*> m_scenarioGroundObjects;
     QHash<vesta::Entity*, vesta::counted_ptr<vesta::Atmosphere> > m_atmospheres;
+    QHash<QString, vesta::counted_ptr<vesta::MeshGeometry> > m_spacecraftMeshes;
     QList<vesta::Atmosphere*> m_newAtmospheres;
 
     int m_viewChanged;

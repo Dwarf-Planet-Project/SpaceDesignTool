@@ -39,6 +39,7 @@
 class QCloseEvent;
 class QTimer;
 class QTabWidget;
+class QStackedWidget;
 
 class OrbitPropagationDialog;
 class GroundTrackPlotTool;
@@ -75,8 +76,6 @@ public:
     SpaceScenario* scenario() const;
     void setScenario(SpaceScenario* scenario);
 
-    GroundTrackPlotTool* m_groundTrackPlotTool;
-
 public:
     void readSettings();
     void writeSettings();
@@ -110,6 +109,7 @@ public slots:
     void about();
     void preferencesSTA();
     void ActivateSTACalc();
+    void selectVisualization(QAction* action);
     
     void tick();
     void setTime(double mjd);
@@ -119,6 +119,8 @@ public slots:
     void toggleGroundTrackView();
 
     void openFileFromAEvent(const QString& fileName);	//Guillermo
+
+    void setFullScreen3D(bool enable);
 	
 // Next clases added by Guillermo to handle the ABOUT menu
 public:
@@ -150,11 +152,12 @@ private:
     ScenarioView* m_scenarioView;
     TimelineWidget* m_timelineWidget;
     OrbitPropagationDialog* m_orbitPropagationDialog;
-    //GroundTrackPlotTool* m_groundTrackPlotTool;
+    GroundTrackPlotTool* m_groundTrackPlotTool;
     ThreeDVisualizationTool* m_threeDViewWidget;
     STAcalculator* STAcalculatorWidget;
     ScenarioElementBox* m_scenarioElementBox;
-    QTabWidget* m_viewPanel;
+    //QTabWidget* m_viewPanel;
+    QStackedWidget* m_viewPanel;
     
     RendezvousDialog* m_rendezvousDialog;
     ReEntryDialog* m_reentryDialog;
@@ -167,6 +170,8 @@ private:
     QTime m_intervalChangeTime;
     
     QAction* m_dockGroundTrackAction;
+    QAction* m_fullScreen3DAction;
+    QByteArray m_savedWindowState;
 
     QXmlSchema* m_spaceScenarioSchema;
 

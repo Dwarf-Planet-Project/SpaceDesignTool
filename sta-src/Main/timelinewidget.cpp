@@ -118,6 +118,7 @@ TimelineWidget::TimelineWidget(QWidget* parent) :
     layout->addWidget(m_timelineView);
     layout->addWidget(controls);
     //layout->addLayout(controlsLayout);
+    layout->setContentsMargins(0, 0, 0, 0);
     
     this->setLayout(layout);
     this->show();

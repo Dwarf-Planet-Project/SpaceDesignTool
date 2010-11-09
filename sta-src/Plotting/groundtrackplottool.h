@@ -233,20 +233,22 @@ class GroundTrackPlotTool : public QWidget
 {
 Q_OBJECT
 public:
-    GroundTrackPlotTool(QWidget* parent);
+    GroundTrackPlotTool(QWidget* parent, ViewActionGroup* viewActions);
     ~GroundTrackPlotTool();
-
-    VisualizationToolBar* m_toolBar;
 
     GroundTrackView* view() const { return m_view; }
 
     // Analysis (Claas Grohnfeldt, Steffen Peter)
     void setAnalysis(ConstellationAnalysis* analysisOfConstellations);
+
+    VisualizationToolBar* toolBar() const
+    {
+        return m_toolBar;
+    }
     
 private:
     GroundTrackView* m_view;
-    // Analysis (Claas Grohnfeldt, Steffen Peter)
-    //VisualizationToolBar* m_toolBar;
+    VisualizationToolBar* m_toolBar;
 };
 
 #endif // _PLOTTING_GROUNDTRACKPLOTTOOL_H_

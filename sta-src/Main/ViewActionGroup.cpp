@@ -58,6 +58,13 @@ ViewActionGroup::ViewActionGroup() :
     m_moonOrbitsAction->setCheckable(true);
     m_planetLabelsAction = new QAction(tr("Planet Labels"), this);
     m_planetLabelsAction->setCheckable(true);
+
+    m_viewSelectGroup = new QActionGroup(this);
+    m_view2DAction = m_viewSelectGroup->addAction("2D");
+    m_view3DAction = m_viewSelectGroup->addAction("3D");
+    m_view2DAction->setCheckable(true);
+    m_view3DAction->setCheckable(true);
+    m_view2DAction->setChecked(true);
 }
 
 

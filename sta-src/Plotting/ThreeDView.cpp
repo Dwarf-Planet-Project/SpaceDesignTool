@@ -132,6 +132,20 @@ static SkyLayerProperties SkyLayers[] =
     { "iras 100um", "textures/medres/iras-100um.jpg", 0.3f, "galactic" },
 };
 
+struct ModelProperties
+{
+    QString name;
+    QString modelFileName;
+    float scale;
+};
+
+static ModelProperties SpacecraftModels[] =
+{
+    { "default", "models/sorce.obj", 0.004f },
+    { "iss",     "models/iss.3ds", 0.025f },
+    { "xmm",     "models/xmm.3ds", 0.004 },
+};
+
 
 // Get texture properties appropriate for planet maps: the map should
 // wrap in longitude (so there's no seam on a meridian), but not in
@@ -365,6 +379,10 @@ public:
         return m_label->isOpaque();
     }
 
+    virtual float apparentSize() const
+    {
+        return m_label->apparentSize();
+    }
 
 private:
     const SpaceObject* m_spaceObject;
@@ -713,8 +731,25 @@ ThreeDView::mouseReleaseEvent(QMouseEvent* event)
     {
         if (event->button() == Qt::RightButton)
         {
+            // Right click brings up the context menu
             QContextMenuEvent menuEvent(QContextMenuEvent::Other, event->pos(), event->globalPos());
             QCoreApplication::sendEvent(this, &menuEvent);
+        }
+        else if (event->button() == Qt::LeftButton)
+        {
+            // Left click selects a spacecraft
+            Entity* hit = pickObject(event->pos());
+            if (hit)
+            {
+                foreach (SpaceObject* spaceObj, m_scenarioSpaceObjects.keys())
+                {
+                    if (m_scenarioSpaceObjects[spaceObj] == hit)
+                    {
+                        selectParticipant(spaceObj);
+                        break;
+                    }
+                }
+            }
         }
     }
 }
@@ -805,146 +840,126 @@ ThreeDView::contextMenuEvent(QContextMenuEvent* event)
         return;
     }
 
-    double pixelAngle = m_fov / size().height();
-
-    // Get the click point in normalized device coordinaes
-    Vector2d ndc = Vector2d(double(event->pos().x()) / double(size().width()),
-                            double(event->pos().y()) / double(size().height())) * 2.0 - Vector2d::Ones();
-    ndc.y() = -ndc.y();
-
-    // Get the pick direction
-    double aspectRatio = double(size().width()) / double(size().height());
-    double h = tan(m_fov / 2.0f);
-    Vector3d pickDirection = Vector3d(h * aspectRatio * ndc.x(), h * ndc.y(), -1.0).normalized();
-
-    // Convert to world coordinates
-    pickDirection = m_observer->absoluteOrientation(m_currentTime) * pickDirection;
-    Vector3d pickOrigin = m_observer->absolutePosition(m_currentTime);
-
-    PickResult pickResult;
-    if (m_universe->pickObject(m_currentTime, pickOrigin, pickDirection, pixelAngle, &pickResult))
+    Entity* hit = pickObject(event->pos());
+    if (hit)
     {
-        Entity* hit = pickResult.hitObject();
-        if (hit)
+        QMenu* menu = new QMenu(this);
+        QAction* nameAction = menu->addAction(hit->name().c_str());
+        nameAction->setEnabled(false);
+
+        menu->addSeparator();
+
+        QAction* bodyAxesAction       = menu->addAction("Show Body Axes");
+        QAction* frameAxesAction      = menu->addAction("Show Frame Axes");
+        QAction* velocityDirectionAction       = menu->addAction("Show Velocity Direction");
+        QAction* sunDirectionAction   = menu->addAction("Show Sun Direction");
+        QAction* earthDirectionAction = menu->addAction("Show Earth Direction");
+
+        bool hasBodyAxes = hit->visualizer("body axes") != NULL;
+        bool hasFrameAxes = hit->visualizer("frame axes") != NULL;
+        bool hasVelocityDirection = hit->visualizer("velocity") != NULL;
+        bool hasSunDirection = hit->visualizer("sun direction") != NULL;
+        bool hasEarthDirection = hit->visualizer("earth direction") != NULL;
+        bodyAxesAction->setCheckable(true);
+        bodyAxesAction->setChecked(hasBodyAxes);
+        frameAxesAction->setCheckable(true);
+        frameAxesAction->setChecked(hasFrameAxes);
+        velocityDirectionAction->setCheckable(true);
+        velocityDirectionAction->setChecked(hasVelocityDirection);
+        sunDirectionAction->setCheckable(true);
+        sunDirectionAction->setChecked(hasSunDirection);
+        earthDirectionAction->setCheckable(true);
+        earthDirectionAction->setChecked(hasEarthDirection);
+
+        // Disable Sun direction action for the Sun, etc.
+        if (hit->name() == "Sun")
         {
-            QMenu* menu = new QMenu(this);
-            QAction* nameAction = menu->addAction(hit->name().c_str());
-            nameAction->setEnabled(false);
-
-            menu->addSeparator();
-
-            QAction* bodyAxesAction       = menu->addAction("Show Body Axes");
-            QAction* frameAxesAction      = menu->addAction("Show Frame Axes");
-            QAction* velocityDirectionAction       = menu->addAction("Show Velocity Direction");
-            QAction* sunDirectionAction   = menu->addAction("Show Sun Direction");
-            QAction* earthDirectionAction = menu->addAction("Show Earth Direction");
-
-            bool hasBodyAxes = hit->visualizer("body axes") != NULL;
-            bool hasFrameAxes = hit->visualizer("frame axes") != NULL;
-            bool hasVelocityDirection = hit->visualizer("velocity") != NULL;
-            bool hasSunDirection = hit->visualizer("sun direction") != NULL;
-            bool hasEarthDirection = hit->visualizer("earth direction") != NULL;
-            bodyAxesAction->setCheckable(true);
-            bodyAxesAction->setChecked(hasBodyAxes);
-            frameAxesAction->setCheckable(true);
-            frameAxesAction->setChecked(hasFrameAxes);
-            velocityDirectionAction->setCheckable(true);
-            velocityDirectionAction->setChecked(hasVelocityDirection);
-            sunDirectionAction->setCheckable(true);
-            sunDirectionAction->setChecked(hasSunDirection);
-            earthDirectionAction->setCheckable(true);
-            earthDirectionAction->setChecked(hasEarthDirection);
-
-            // Disable Sun direction action for the Sun, etc.
-            if (hit->name() == "Sun")
-            {
-                sunDirectionAction->setDisabled(true);
-            }
-
-            if (hit->name() == "Earth")
-            {
-                earthDirectionAction->setDisabled(true);
-            }
-
-            // Visualizer size is based on the geometry size
-            double arrowSize = 1.0;
-            if (hit->geometry())
-            {
-                arrowSize = hit->geometry()->boundingSphereRadius() * 2.0;
-            }
-
-            QAction* chosenAction = menu->exec(event->globalPos(), bodyAxesAction);
-            if (chosenAction == bodyAxesAction)
-            {
-                if (chosenAction->isChecked())
-                {
-                    AxesVisualizer* axes = new AxesVisualizer(AxesVisualizer::BodyAxes, arrowSize);
-                    axes->setVisibility(true);
-                    hit->setVisualizer("body axes", axes);
-                }
-                else
-                {
-                    hit->removeVisualizer("body axes");
-                }
-            }
-            else if (chosenAction == frameAxesAction)
-            {
-                if (chosenAction->isChecked())
-                {
-                    AxesVisualizer* axes = new AxesVisualizer(AxesVisualizer::FrameAxes, arrowSize);
-                    axes->setVisibility(true);
-                    axes->arrows()->setOpacity(0.33f);
-                    hit->setVisualizer("frame axes", axes);
-                }
-                else
-                {
-                    hit->removeVisualizer("frame axes");
-                }
-            }
-            else if (chosenAction == velocityDirectionAction)
-            {
-                if (chosenAction->isChecked())
-                {
-                    VelocityVisualizer* velocityVis = new VelocityVisualizer(arrowSize);
-                    velocityVis->setVisibility(true);
-                    hit->setVisualizer("velocity", velocityVis);
-                }
-                else
-                {
-                    hit->removeVisualizer("velocity");
-                }
-            }
-            else if (chosenAction == sunDirectionAction)
-            {
-                if (chosenAction->isChecked())
-                {
-                    BodyDirectionVisualizer* vis = new BodyDirectionVisualizer(arrowSize, m_universe->findFirst("Sun"));
-                    vis->setColor(Spectrum(1.0f, 1.0f, 0.5f));
-                    vis->setVisibility(true);
-                    hit->setVisualizer("sun direction", vis);
-                }
-                else
-                {
-                    hit->removeVisualizer("sun direction");
-                }
-            }
-            else if (chosenAction == earthDirectionAction)
-            {
-                if (chosenAction->isChecked())
-                {
-                    BodyDirectionVisualizer* vis = new BodyDirectionVisualizer(arrowSize, m_universe->findFirst("Earth"));
-                    vis->setColor(Spectrum(0.5f, 0.5f, 1.0f));
-                    vis->setVisibility(true);
-                    hit->setVisualizer("earth direction", vis);
-                }
-                else
-                {
-                    hit->removeVisualizer("earth direction");
-                }
-            }
-
-            setViewChanged();
+            sunDirectionAction->setDisabled(true);
         }
+
+        if (hit->name() == "Earth")
+        {
+            earthDirectionAction->setDisabled(true);
+        }
+
+        // Visualizer size is based on the geometry size
+        double arrowSize = 1.0;
+        if (hit->geometry())
+        {
+            arrowSize = hit->geometry()->boundingSphereRadius() * 2.0;
+        }
+
+        QAction* chosenAction = menu->exec(event->globalPos(), bodyAxesAction);
+        if (chosenAction == bodyAxesAction)
+        {
+            if (chosenAction->isChecked())
+            {
+                AxesVisualizer* axes = new AxesVisualizer(AxesVisualizer::BodyAxes, arrowSize);
+                axes->setVisibility(true);
+                hit->setVisualizer("body axes", axes);
+            }
+            else
+            {
+                hit->removeVisualizer("body axes");
+            }
+        }
+        else if (chosenAction == frameAxesAction)
+        {
+            if (chosenAction->isChecked())
+            {
+                AxesVisualizer* axes = new AxesVisualizer(AxesVisualizer::FrameAxes, arrowSize);
+                axes->setVisibility(true);
+                axes->arrows()->setOpacity(0.33f);
+                hit->setVisualizer("frame axes", axes);
+            }
+            else
+            {
+                hit->removeVisualizer("frame axes");
+            }
+        }
+        else if (chosenAction == velocityDirectionAction)
+        {
+            if (chosenAction->isChecked())
+            {
+                VelocityVisualizer* velocityVis = new VelocityVisualizer(arrowSize);
+                velocityVis->setVisibility(true);
+                hit->setVisualizer("velocity", velocityVis);
+            }
+            else
+            {
+                hit->removeVisualizer("velocity");
+            }
+        }
+        else if (chosenAction == sunDirectionAction)
+        {
+            if (chosenAction->isChecked())
+            {
+                BodyDirectionVisualizer* vis = new BodyDirectionVisualizer(arrowSize, m_universe->findFirst("Sun"));
+                vis->setColor(Spectrum(1.0f, 1.0f, 0.5f));
+                vis->setVisibility(true);
+                hit->setVisualizer("sun direction", vis);
+            }
+            else
+            {
+                hit->removeVisualizer("sun direction");
+            }
+        }
+        else if (chosenAction == earthDirectionAction)
+        {
+            if (chosenAction->isChecked())
+            {
+                BodyDirectionVisualizer* vis = new BodyDirectionVisualizer(arrowSize, m_universe->findFirst("Earth"));
+                vis->setColor(Spectrum(0.5f, 0.5f, 1.0f));
+                vis->setVisibility(true);
+                hit->setVisualizer("earth direction", vis);
+            }
+            else
+            {
+                hit->removeVisualizer("earth direction");
+            }
+        }
+
+        setViewChanged();
     }
 }
 
@@ -965,7 +980,7 @@ ThreeDView::initializeUniverse()
 
     Body* sun = addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_SUN), ssb);
     Body* earth = addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_EARTH), sun);
-    addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_MOON), earth);
+    Body* moon = addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_MOON), earth);
 
     addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_MERCURY), sun);
     addSolarSystemBody(STA_SOLAR_SYSTEM->lookup(STA_VENUS),   sun);
@@ -1006,11 +1021,17 @@ ThreeDView::initializeUniverse()
     // Make the Sun glow
     dynamic_cast<WorldGeometry*>(sun->geometry())->setEmissive(true);
 
-    // Add high resolution tiled texture for the Earth
+    // Add high resolution tiled texture for the Earth. The map uses BMNG for levels 0-6, and the global
+    // mosaic for more detailed levels.
     dynamic_cast<WorldGeometry*>(earth->geometry())->setBaseMap(new MultiWMSTiledMap(m_textureLoader.ptr(),
                                                                                      "bmng-apr-nb", 7,
                                                                                      "earth-global-mosaic", 13,
                                                                                      480));
+
+    // Add high resolution tiled texture for the Moon: 6 levels, 512x512 tiles
+    dynamic_cast<WorldGeometry*>(moon->geometry())->setBaseMap(new WMSTiledMap(m_textureLoader.ptr(),
+                                                                               "moon-clementine", 512, 6));
+
 
     for (unsigned int i = 0; i < PlanetCount; ++i)
     {
@@ -1299,6 +1320,34 @@ ThreeDView::initializeStandardResources()
     {
         m_defaultSpacecraftMesh->setMeshScale(0.002f / m_defaultSpacecraftMesh->boundingSphereRadius());
     }
+    m_spacecraftMeshes["default"] = m_defaultSpacecraftMesh;
+}
+
+
+MeshGeometry*
+ThreeDView::getSpacecraftModel(const QString& name)
+{
+    QString lname = name.toLower();
+    for (unsigned int i = 0; i < sizeof(SpacecraftModels) / sizeof(SpacecraftModels[0]); ++i)
+    {
+        const ModelProperties& props = SpacecraftModels[i];
+        if (lname == props.name)
+        {
+            if (!m_spacecraftMeshes.contains(lname))
+            {
+                MeshGeometry* mesh = MeshGeometry::loadFromFile(props.modelFileName.toUtf8().data(), m_textureLoader.ptr());
+                if (mesh)
+                {
+                    mesh->setMeshScale(props.scale / mesh->boundingSphereRadius());
+                }
+                m_spacecraftMeshes[lname] = vesta::counted_ptr<MeshGeometry>(mesh);
+            }
+            return m_spacecraftMeshes[lname].ptr();
+        }
+    }
+
+    // Nothing found; return the default mesh
+    return m_defaultSpacecraftMesh.ptr();
 }
 
 
@@ -1397,6 +1446,7 @@ ThreeDView::gotoBody(const StaBody* body)
   *   - "earth-moon"
   *   - "inner solar system"
   *   - "outer solar system"
+  *   - "S#name" - spaceobject with the specified index, e.g. "S#Herschel"
   */
 void
 ThreeDView::setCameraViewpoint(const QString& viewName)
@@ -1422,6 +1472,17 @@ ThreeDView::setCameraViewpoint(const QString& viewName)
     {
         center = m_universe->findFirst("Saturn");
     }
+    else if (name.startsWith("s#"))
+    {
+        QString spaceObjName = name.mid(2);
+        foreach (SpaceObject* spaceObj, m_scenarioSpaceObjects.keys())
+        {
+            if (spaceObj->name().toLower() == spaceObjName)
+            {
+                center = m_scenarioSpaceObjects[spaceObj];
+            }
+        }
+    }
     else
     {
         StaBody* body = STA_SOLAR_SYSTEM->lookup(name);
@@ -1431,8 +1492,8 @@ ThreeDView::setCameraViewpoint(const QString& viewName)
         }
     }
 
-    // Abort if the center doesn't exist
-    if (!center)
+    // Abort if the center doesn't exist, or if it isn't visible at the current time
+    if (!center || !center->chronology()->includesTime(m_currentTime))
     {
         return;
     }
@@ -1467,6 +1528,27 @@ ThreeDView::setCameraViewpoint(const QString& viewName)
     {
         offsetDirection = centerNorth;
         distance = 3.0e6;
+    }
+    else if (name.startsWith("s#"))
+    {
+        // Position the camera so that it's on a line from the spacecraft to the
+        // spacecraft's current central body.
+        if (center->geometry())
+        {
+            distance = center->geometry()->boundingSphereRadius() * 3.0;
+        }
+
+        vesta::Entity* origin = center->chronology()->activeArc(m_currentTime)->center();
+        if (origin)
+        {
+            offsetDirection = (center->position(m_currentTime) - origin->position(m_currentTime)).normalized();
+            upDirection = origin->orientation(m_currentTime) * Vector3d::UnitZ();
+        }
+        else
+        {
+            offsetDirection = center->position(m_currentTime).normalized();
+            upDirection = Vector3d::UnitZ();
+        }
     }
     else
     {
@@ -1594,6 +1676,40 @@ ThreeDView::createFrame(const MissionArc* arc)
 }
 
 
+/** Determine which VESTA object was is closest to the viewer at the
+  * specified 2D position.
+  */
+vesta::Entity*
+ThreeDView::pickObject(const QPoint& pos)
+{
+    double pixelAngle = m_fov / size().height();
+
+    // Get the click point in normalized device coordinaes
+    Vector2d ndc = Vector2d(double(pos.x()) / double(size().width()),
+                            double(pos.y()) / double(size().height())) * 2.0 - Vector2d::Ones();
+    ndc.y() = -ndc.y();
+
+    // Get the pick direction
+    double aspectRatio = double(size().width()) / double(size().height());
+    double h = tan(m_fov / 2.0f);
+    Vector3d pickDirection = Vector3d(h * aspectRatio * ndc.x(), h * ndc.y(), -1.0).normalized();
+
+    // Convert to world coordinates
+    pickDirection = m_observer->absoluteOrientation(m_currentTime) * pickDirection;
+    Vector3d pickOrigin = m_observer->absolutePosition(m_currentTime);
+
+    PickResult pickResult;
+    if (m_universe->pickObject(m_currentTime, pickOrigin, pickDirection, pixelAngle, &pickResult))
+    {
+        return pickResult.hitObject();
+    }
+    else
+    {
+        return NULL;
+    }
+}
+
+
 static string TrajectoryVisualizerTag(const Entity* spaceObj, unsigned int arcIndex)
 {
     return string(QString("%1 - %2 trajectory").arg(qHash(spaceObj)).arg(arcIndex).toUtf8().data());
@@ -1642,7 +1758,9 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
 
     body->chronology()->setBeginning(sta::MjdToSecJ2000(spaceObj->mission().first()->beginning()));
 
-    body->setGeometry(m_defaultSpacecraftMesh.ptr());
+    //body->setGeometry(m_defaultSpacecraftMesh.ptr());
+    // For now, use the model in the first arc for the whole mission
+    body->setGeometry(getSpacecraftModel(spaceObj->mission().first()->modelName()));
 
     Spectrum spaceObjColor(spaceObj->mission().front()->arcTrajectoryColor().redF(),
                            spaceObj->mission().front()->arcTrajectoryColor().greenF(),
@@ -1797,12 +1915,7 @@ void
 ThreeDView::selectParticipant(SpaceObject* spaceObj)
 {
     m_selectedSpacecraft = spaceObj;
-
-    if (m_scenarioSpaceObjects.contains(m_selectedSpacecraft))
-    {
-        Entity* selectedBody = m_scenarioSpaceObjects.value(m_selectedSpacecraft);
-        setSpacecraftView(m_observer.ptr(), selectedBody, m_currentTime);
-    }
+    setViewChanged();
 }
 
 

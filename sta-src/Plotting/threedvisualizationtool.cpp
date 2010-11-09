@@ -29,6 +29,7 @@
 #include "threedvisualizationtool.h"
 #include "ThreeDView.h"
 #include "visualizationtoolbar.h"
+#include "Main/ViewActionGroup.h"
 #include "Astro-Core/stabody.h"
 #include <QBoxLayout>
 #include <QFileDialog>
@@ -36,9 +37,10 @@
 #include <QDesktopServices>
 
 
-ThreeDVisualizationTool::ThreeDVisualizationTool(QWidget* parent) :
+ThreeDVisualizationTool::ThreeDVisualizationTool(QWidget* parent, ViewActionGroup* viewActions) :
     QWidget(parent),
-    m_view(NULL)
+    m_view(NULL),
+    m_toolBar(NULL)
 {
     QGLFormat format;
     format = QGLFormat::defaultFormat();
@@ -49,22 +51,23 @@ ThreeDVisualizationTool::ThreeDVisualizationTool(QWidget* parent) :
     format.setSwapInterval(1);
     m_view = new ThreeDView(format, this);
 
-    VisualizationToolBar* toolBar = new VisualizationToolBar(tr("3D View Controls"), this);
-    toolBar->configureFor3DView();
-    connect(toolBar, SIGNAL(bodyChanged(const StaBody*)),  this,    SLOT(gotoBody(const StaBody*)));
-    connect(toolBar, SIGNAL(gridToggled(bool)),            m_view,  SLOT(setPlanetGrid(bool)));
-    connect(toolBar, SIGNAL(equatorToggled(bool)),         m_view,  SLOT(setEquatorialPlane(bool)));
-    connect(toolBar, SIGNAL(tickIntervalChanged(double)),  this,    SLOT(setTickInterval(double)));
-    //connect(toolBar, SIGNAL(projectionChanged(bool)),    m_view,  SLOT(set2HalfDView(bool)));
-    connect(toolBar, SIGNAL(saveImageRequested()),         this,    SLOT(saveImage()));
-    connect(toolBar, SIGNAL(cameraViewpointChanged(QString)), m_view, SLOT(setCameraViewpoint(const QString&)));
+    m_toolBar = new VisualizationToolBar(tr("3D View Controls"), this);
+    m_toolBar->configureFor3DView(viewActions);
+    connect(m_toolBar, SIGNAL(bodyChanged(const StaBody*)),  this,    SLOT(gotoBody(const StaBody*)));
+    connect(m_toolBar, SIGNAL(gridToggled(bool)),            m_view,  SLOT(setPlanetGrid(bool)));
+    connect(m_toolBar, SIGNAL(equatorToggled(bool)),         m_view,  SLOT(setEquatorialPlane(bool)));
+    connect(m_toolBar, SIGNAL(tickIntervalChanged(double)),  this,    SLOT(setTickInterval(double)));
+    connect(m_toolBar, SIGNAL(saveImageRequested()),         this,    SLOT(saveImage()));
+    connect(m_toolBar, SIGNAL(cameraViewpointChanged(QString)), m_view, SLOT(setCameraViewpoint(const QString&)));
 
     QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->setSpacing(1);
-    layout->setContentsMargins(3, 3, 3, 3);
     layout->addWidget(m_view);
-    layout->addWidget(toolBar);
+    layout->addWidget(m_toolBar);
     setLayout(layout);
+
+    layout->setSpacing(0);
+    layout->setContentsMargins(0, 0, 0, 0);
+    setToolBarVisible(true);
 
     // Sync 3D view state with toolbar settings
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -118,4 +121,11 @@ ThreeDVisualizationTool::saveImage()
 void
 ThreeDVisualizationTool::resizeEvent(QResizeEvent* /* ev */)
 {
+}
+
+
+void
+ThreeDVisualizationTool::setToolBarVisible(bool show)
+{
+    m_toolBar->setVisible(show);
 }
