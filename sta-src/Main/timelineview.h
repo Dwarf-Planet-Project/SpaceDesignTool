@@ -49,7 +49,8 @@ Q_OBJECT
     void addMissionSegment(int participantIndex,
                            double startTime,
                            double endTime,
-                           QColor color);
+                           QColor color,
+                           const QString& name);
 
     double currentTime() const { return m_currentTime; }
 
@@ -83,6 +84,7 @@ Q_OBJECT
         double startTime;
         double endTime;
         QColor color;
+        QString name;
     };
     
     QList<MissionSegment> mission;

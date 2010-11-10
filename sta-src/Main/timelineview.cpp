@@ -94,7 +94,7 @@ TimelineView::setVisibleSpan(double duration)
 
 
 void
-		TimelineView::setCurrentTime(double mjd)
+TimelineView::setCurrentTime(double mjd)
 {
     if (mjd != m_currentTime)
     {
@@ -105,7 +105,8 @@ void
 }
 
 
-void TimelineView::paintEvent(QPaintEvent* /* event */)
+void
+TimelineView::paintEvent(QPaintEvent* /* event */)
 {
     QPainter painter(viewport());
     int viewWidth = viewport()->size().width();
@@ -174,6 +175,8 @@ void TimelineView::paintEvent(QPaintEvent* /* event */)
         shade = !shade;
     }
 
+    QFontMetrics fontMetrics = painter.fontMetrics();
+
     // Draw the mission duration bars for each participant
     foreach (MissionSegment segment, mission)
     {
@@ -188,6 +191,29 @@ void TimelineView::paintEvent(QPaintEvent* /* event */)
             painter.fillRect(missionSegmentRect, QBrush(segment.color));
             painter.setPen(segment.color.darker(130));
             painter.drawRect(missionSegmentRect);
+
+            // Draw labels for the mission segments (as long as they fit in
+            // the visible area of the bar)
+            const int labelWidth = fontMetrics.width(segment.name);
+            const float margin = 5.0f;
+            const float minSpace = labelWidth + margin * 2.0f;
+            const float leftEdge = margin;
+            const float rightEdge = width() - margin;
+
+            float span = x1 - x0;
+            if (span > minSpace)
+            {
+                painter.setPen(segment.color.darker(200));
+
+                // Keep the label centered in the visible portion of the mission segment bar
+                QRectF textRect = missionSegmentRect;
+                textRect.setLeft(std::max(leftEdge, x0));
+                textRect.setRight(std::min(rightEdge, x1));
+                if (textRect.width() > minSpace)
+                {
+                    painter.drawText(textRect, segment.name, QTextOption(Qt::AlignCenter));
+                }
+            }
         }
     }
 
@@ -355,13 +381,15 @@ void
 TimelineView::addMissionSegment(int participantIndex,
                                 double startTime,
                                 double endTime,
-                                QColor color)
+                                QColor color,
+                                const QString& name)
 {
     MissionSegment segment;
     segment.participantIndex = participantIndex;
     segment.startTime = startTime;
     segment.endTime = endTime;
     segment.color = color;
+    segment.name = name;
     
     mission.append(segment);
 
