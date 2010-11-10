@@ -29,6 +29,7 @@ class ScenarioObject
 
 // Forward declarations
 
+class ScenarioElementIdentifierType;
 class ScenarioPropagationPositionType;
 class ScenarioPropagationAttitudeType;
 class ScenarioAbstractTrajectoryType;
@@ -44,7 +45,6 @@ class ScenarioOptVarString;
 class ScenarioTimeLine;
 class ScenarioPropagation;
 class ScenarioEnvironmentType;
-class ScenarioElementIdentifierType;
 class ScenarioCentralBodyType;
 class ScenarioGravityModel;
 class ScenarioPerturbationsType;
@@ -217,6 +217,43 @@ class SpaceScenario;
 
 #include <QDomElement>
 #include <QDomDocument>
+// ScenarioElementIdentifierType
+class ScenarioElementIdentifierType : public ScenarioObject
+{
+public:
+    ScenarioElementIdentifierType();
+    static ScenarioElementIdentifierType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "ElementIdentifierType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QString Name() const
+    { return m_Name; }
+    void setName(QString Name)
+    { m_Name = Name; }
+    int theOrder() const
+    { return m_theOrder; }
+    void setTheOrder(int theOrder)
+    { m_theOrder = theOrder; }
+    QString modelName() const
+    { return m_modelName; }
+    void setModelName(QString modelName)
+    { m_modelName = modelName; }
+    QString colorName() const
+    { return m_colorName; }
+    void setColorName(QString colorName)
+    { m_colorName = colorName; }
+
+private:
+    QString m_Name;
+    int m_theOrder;
+    QString m_modelName;
+    QString m_colorName;
+};
+
+
 // ScenarioPropagationPositionType
 class ScenarioPropagationPositionType : public ScenarioObject
 {
@@ -288,8 +325,13 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
+    { return m_ElementIdentifier; }
+    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
+    { m_ElementIdentifier = ElementIdentifier; }
 
 private:
+    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
 };
 
 
@@ -605,43 +647,6 @@ public:
 private:
     QSharedPointer<ScenarioCentralBodyType> m_CentralBody;
     QSharedPointer<ScenarioPerturbationsType> m_PerturbationsToCentralBody;
-};
-
-
-// ScenarioElementIdentifierType
-class ScenarioElementIdentifierType : public ScenarioObject
-{
-public:
-    ScenarioElementIdentifierType();
-    static ScenarioElementIdentifierType* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "ElementIdentifierType"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QString Name() const
-    { return m_Name; }
-    void setName(QString Name)
-    { m_Name = Name; }
-    int theOrder() const
-    { return m_theOrder; }
-    void setTheOrder(int theOrder)
-    { m_theOrder = theOrder; }
-    QString modelName() const
-    { return m_modelName; }
-    void setModelName(QString modelName)
-    { m_modelName = modelName; }
-    QString colorName() const
-    { return m_colorName; }
-    void setColorName(QString colorName)
-    { m_colorName = colorName; }
-
-private:
-    QString m_Name;
-    int m_theOrder;
-    QString m_modelName;
-    QString m_colorName;
 };
 
 
@@ -6528,10 +6533,6 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
-    { return m_ElementIdentifier; }
-    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
-    { m_ElementIdentifier = ElementIdentifier; }
     QSharedPointer<ScenarioEnvironmentType> Environment() const
     { return m_Environment; }
     void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
@@ -6558,7 +6559,6 @@ public:
     { m_PropagationAttitude = PropagationAttitude; }
 
 private:
-    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
     QSharedPointer<ScenarioEnvironmentType> m_Environment;
     QSharedPointer<ScenarioTimeLine> m_TimeLine;
     QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
@@ -6580,10 +6580,6 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
-    { return m_ElementIdentifier; }
-    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
-    { m_ElementIdentifier = ElementIdentifier; }
     QSharedPointer<ScenarioTimeLine> TimeLine() const
     { return m_TimeLine; }
     void setTimeLine(QSharedPointer<ScenarioTimeLine> TimeLine)
@@ -6602,7 +6598,6 @@ public:
     { m_tleLine2 = tleLine2; }
 
 private:
-    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
     QSharedPointer<ScenarioTimeLine> m_TimeLine;
     QString m_tleLine0;
     QString m_tleLine1;
@@ -6656,10 +6651,6 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
-    { return m_ElementIdentifier; }
-    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
-    { m_ElementIdentifier = ElementIdentifier; }
     QSharedPointer<ScenarioCentralBodyType> CentralBody() const
     { return m_CentralBody; }
     void setCentralBody(QSharedPointer<ScenarioCentralBodyType> CentralBody)
@@ -6682,7 +6673,6 @@ public:
     { m_States = States; }
 
 private:
-    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
     QSharedPointer<ScenarioCentralBodyType> m_CentralBody;
     QString m_CoordinateSystem;
     QList<QDateTime> m_TimeTags;
@@ -6702,10 +6692,6 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
-    { return m_ElementIdentifier; }
-    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
-    { m_ElementIdentifier = ElementIdentifier; }
     QSharedPointer<ScenarioEnvironmentType> Environment() const
     { return m_Environment; }
     void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
@@ -6740,7 +6726,6 @@ public:
     { m_Magnitude = Magnitude; }
 
 private:
-    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
     QSharedPointer<ScenarioEnvironmentType> m_Environment;
     QSharedPointer<ScenarioTimeLine> m_TimeLine;
     QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
