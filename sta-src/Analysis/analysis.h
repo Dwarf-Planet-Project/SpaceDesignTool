@@ -119,7 +119,7 @@ private:
     QList<MissionArc*> m_missionArcs;
     QList<SpaceObject*> m_spaceObjectList;
     //double* ReadTime(int column);
-    void ReadTime(int column, double *MJD);
+    void ReadTime(int column, QVector<double>& MJD);
     double ReadStopTime();
     QList<ScenarioTransmitterPayloadType*>TxSC;
     QList<ScenarioTransmitterPayloadType*>TxGS;

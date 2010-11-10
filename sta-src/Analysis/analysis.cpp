@@ -43,7 +43,7 @@
 #include "Plotting/PlotView3D.h"
 #include "Help/HelpBrowser.h"
 
-#include "math.h"
+#include <cmath>
 
 #include <QDesktopServices>
 #include <QUrl>
@@ -66,6 +66,92 @@ class ScenarioTree;
 class HelpBrowser;
 
 
+// Format for date/time strings shown to user when selecting a time range
+static const QString TimeRangeSelectionDateFormat = "d/M/yyyy hh:mm:ss";
+
+
+// ***** Scenario helper functions *****
+
+QList<QSharedPointer<ScenarioAbstractTrajectoryType> >
+Scenario_GetTrajectoryPlan(ScenarioParticipantType* participant)
+{
+    if (dynamic_cast<ScenarioSC*>(participant))
+    {
+        return dynamic_cast<ScenarioSC*>(participant)->SCMission()->TrajectoryPlan()->AbstractTrajectory();
+    }
+    else if (dynamic_cast<ScenarioREV*>(participant))
+    {
+        return dynamic_cast<ScenarioREV*>(participant)->REVMission()->REVTrajectoryPlan()->AbstractTrajectory();
+    }
+    else
+    {
+        // Return an empty list
+        return QList<QSharedPointer<ScenarioAbstractTrajectoryType> >();
+    }
+}
+
+
+/** Get the start time, end time, and step time (in seconds) for a mission arc.
+  * Return true if the mission arc is valid and has a non-zero duration.
+  */
+bool
+Scenario_GetTimeRange(ScenarioAbstractTrajectoryType* trajectory, QDateTime* startTime, QDateTime* endTime, double* stepTime)
+{
+    // TODO: This function only exists because TimeLine isn't a property of the base
+    // trajectory class. This is probably appropriate, as future trajectory types (e.g. rendezvous)
+    // will not have durations that are known until propagation.
+    if (dynamic_cast<ScenarioLoiteringType*>(trajectory))
+    {
+        ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory);
+        *startTime = loitering->TimeLine()->StartTime();
+        *endTime = loitering->TimeLine()->EndTime();
+        *stepTime = loitering->TimeLine()->StepTime();
+    }
+    else if (dynamic_cast<ScenarioLoiteringTLEType*>(trajectory))
+    {
+        ScenarioLoiteringTLEType* loiteringTLE = dynamic_cast<ScenarioLoiteringTLEType*>(trajectory);
+        *startTime = loiteringTLE->TimeLine()->StartTime();
+        *endTime = loiteringTLE->TimeLine()->EndTime();
+        *stepTime = loiteringTLE->TimeLine()->StepTime();
+    }
+    else if (dynamic_cast<ScenarioExternalType*>(trajectory))
+    {
+        ScenarioExternalType* ext = dynamic_cast<ScenarioExternalType*>(trajectory);
+        if (ext->TimeTags().size() >= 2)
+        {
+            *startTime = ext->TimeTags().first();
+            *endTime = ext->TimeTags().last();
+            *stepTime = startTime->secsTo(*endTime) / 1000.0; // Default time step is 1/1000 of duration
+        }
+        else
+        {
+            *startTime = QDateTime();
+            *endTime = QDateTime();
+        }
+    }
+    else if (dynamic_cast<ScenarioDeltaVType*>(trajectory))
+    {
+        ScenarioDeltaVType* deltaV = dynamic_cast<ScenarioDeltaVType*>(trajectory);
+        *startTime = deltaV->TimeLine()->StartTime();
+        *endTime = deltaV->TimeLine()->EndTime();
+        *stepTime = deltaV->TimeLine()->StartTime().secsTo(deltaV->TimeLine()->EndTime());
+    }
+    else if (dynamic_cast<ScenarioEntryArcType*>(trajectory))
+    {
+        ScenarioEntryArcType* entry = dynamic_cast<ScenarioEntryArcType*>(trajectory);
+        *startTime = entry->TimeLine()->StartTime();
+        *endTime = entry->TimeLine()->EndTime();
+        *stepTime = entry->TimeLine()->StepTime();
+    }
+    else
+    {
+        // Invalid or unknown trajectory type; set the times to be invalid
+        *startTime = QDateTime();
+        *endTime = QDateTime();
+    }
+
+    return startTime->isValid() && endTime->isValid();
+}
 
 
 analysis::analysis(SpaceScenario*scenario, PropagatedScenario*propagatedScenario,QWidget * parent, Qt::WindowFlags f) : QDialog(parent,f)
@@ -219,34 +305,45 @@ void analysis::readScenario()
             MissionInd=0;
             foreach (QSharedPointer<ScenarioAbstractTrajectoryType> trajectory,trajectoryList) //Loitering
             {
+                QTreeWidgetItem* loiterItem = new QTreeWidgetItem(trajectoryPlan);
+
+                loiterItem->setText(0, trajectory->ElementIdentifier()->Name());
+                // Guillermo
+                loiterItem->setIcon(0, QIcon(":/icons/mission-arcs-loitering.png"));
+
+                QTreeWidgetItem* parentType= new QTreeWidgetItem(loiterItem);
+                parentType->setText(0,"space");
+                parentType->setHidden(true);
+                QTreeWidgetItem* parentInd= new QTreeWidgetItem(loiterItem);
+                parentInd->setText(0,QString::number(SpaceObjectInd));
+                parentInd->setHidden(true);
+                QTreeWidgetItem* mindex = new QTreeWidgetItem(loiterItem);
+                mindex->setText(0,QString::number(MissionInd));
+                mindex->setHidden(true);
+                QTreeWidgetItem * mlabel= new QTreeWidgetItem(loiterItem);
                 if (dynamic_cast<ScenarioLoiteringType*>(trajectory.data()))
                 {
-                    QTreeWidgetItem* loiterItem = new QTreeWidgetItem(trajectoryPlan);
-                    //loiterItem->setText(0,"Loitering");
-                    ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
-                    loiterItem->setText(0,loitering->ElementIdentifier()->Name());
-		    // Guillermo
-		    loiterItem->setIcon(0, QIcon(":/icons/mission-arcs-loitering.png"));
-
-                    QTreeWidgetItem* parentType= new QTreeWidgetItem(loiterItem);
-                    parentType->setText(0,"space");
-                    parentType->setHidden(true);
-                    QTreeWidgetItem* parentInd= new QTreeWidgetItem(loiterItem);
-                    parentInd->setText(0,QString::number(SpaceObjectInd));
-                    parentInd->setHidden(true);
-                    QTreeWidgetItem* mindex = new QTreeWidgetItem(loiterItem);
-                    mindex->setText(0,QString::number(MissionInd));
-                    mindex->setHidden(true);
-                    QTreeWidgetItem * mlabel= new QTreeWidgetItem(loiterItem);
-                    mlabel->setText(0,"Loiter");
-                    mlabel->setHidden(true);
-                    QTreeWidgetItem * mission= new QTreeWidgetItem(loiterItem);
-                    mission->setText(0,"MArc");
-                    mission->setHidden(true);
-
-                    MissionInd++;
-
+                    mlabel->setText(0, "Loiter");
                 }
+                else if (dynamic_cast<ScenarioLoiteringTLEType*>(trajectory.data()))
+                {
+                    mlabel->setText(0, "TLE");
+                }
+                else if (dynamic_cast<ScenarioDeltaVType*>(trajectory.data()))
+                {
+                    mlabel->setText(0, "Delta-V");
+                }
+                else if (dynamic_cast<ScenarioExternalType*>(trajectory.data()))
+                {
+                    mlabel->setText(0, "External");
+                }
+
+                mlabel->setHidden(true);
+                QTreeWidgetItem * mission= new QTreeWidgetItem(loiterItem);
+                mission->setText(0,"MArc");
+                mission->setHidden(true);
+
+                MissionInd++;
             }
 
             const QList<QSharedPointer<ScenarioAbstractPayloadType> >& payloadList =
@@ -681,165 +778,36 @@ void analysis::on_AddDefaultPushButton_clicked()
 
         for(int z=0;z<SelectedObjects.size();z++)
         {
-
-            //QSharedPointer<ScenarioParticipantType>participant=m_scenario->AbstractParticipant().at(MParentIndex[z]);
             QSharedPointer<ScenarioParticipantType>participant=m_scenario->AbstractParticipant().at(SelectedObjects.at(z));
-            if ((dynamic_cast<ScenarioSC*>(participant.data())!=NULL))
-	    {
 
-                ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
-                const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList =
-                        vehicle->SCMission()->TrajectoryPlan()->AbstractTrajectory();
+            QList<QSharedPointer<ScenarioAbstractTrajectoryType> > trajectoryList = Scenario_GetTrajectoryPlan(participant.data());
 
-                {
-
-                    //QSharedPointer<ScenarioAbstractTrajectoryType>trajectory=trajectoryList.at(MObjectsIndex[y]);
-                    QSharedPointer<ScenarioAbstractTrajectoryType>trajectory=trajectoryList.at(MIndex.at(z));
-
-                    if (dynamic_cast<ScenarioLoiteringType*>(trajectory.data()))
-                    {
-
-                        ScenarioLoiteringType* loitering = dynamic_cast<ScenarioLoiteringType*>(trajectory.data());
-                        QDateTime StartTimeDate=loitering->TimeLine()->StartTime();
-                        QDateTime EndTimeDate=loitering->TimeLine()->EndTime();
-                        double StepTime=loitering->TimeLine()->StepTime();
-                        QString StepTimeSec= QString::number(StepTime);
-
-                        double StartTimeYear=StartTimeDate.date().year();
-                        double EndTimeYear=EndTimeDate.date().year();
-
-                        double StartTimeMonth=StartTimeDate.date().month();
-                        double EndTimeMonth=EndTimeDate.date().month();
-
-                        double StartTimeDay=StartTimeDate.date().day();
-                        double EndTimeDay=EndTimeDate.date().day();
-
-                        double StartTimeHour=StartTimeDate.time().hour();
-                        double EndTimeHour=EndTimeDate.time().hour();
-
-                        double StartTimeMinute=StartTimeDate.time().minute();
-                        double EndTimeMinute=EndTimeDate.time().minute();
-
-                        double StartTimeSecond=StartTimeDate.time().second();
-                        double EndTimeSecond=EndTimeDate.time().second();
-
-                        QString StartTime = QString::number(StartTimeDay);
-                        StartTime.append("/");
-                        StartTime.append(QString::number(StartTimeMonth));
-                        StartTime.append("/");
-                        StartTime.append(QString::number(StartTimeYear));
-                        StartTime.append(" ");
-                        StartTime.append(QString::number(StartTimeHour));
-                        StartTime.append(":");
-                        StartTime.append(QString::number(StartTimeMinute));
-                        StartTime.append(":");
-                        StartTime.append(QString::number(StartTimeSecond));
-
-
-
-                        QString EndTime = QString::number(EndTimeDay);
-                        EndTime.append("/");
-                        EndTime.append(QString::number(EndTimeMonth));
-                        EndTime.append("/");
-                        EndTime.append(QString::number(EndTimeYear));
-                        EndTime.append(" ");
-                        EndTime.append(QString::number(EndTimeHour));
-                        EndTime.append(":");
-                        EndTime.append(QString::number(EndTimeMinute));
-                        EndTime.append(":");
-                        EndTime.append(QString::number(EndTimeSecond));
-
-                        if((treeWidgetTimeSpecifications->findItems(StartTime,Qt::MatchExactly,0).isEmpty())||(treeWidgetTimeSpecifications->findItems(EndTime,Qt::MatchExactly,1).isEmpty())||(treeWidgetTimeSpecifications->findItems(StepTimeSec,Qt::MatchExactly,2).isEmpty()))
-                        {
-                            QTreeWidgetItem*treeTime=new QTreeWidgetItem(treeWidgetTimeSpecifications);
-                            treeTime->setText(0,StartTime);
-                            treeTime->setText(1,EndTime);
-                            treeTime->setText(2,StepTimeSec);
-                        }
-
-                    }
-                }
-            }
-
-
-            if ((dynamic_cast<ScenarioREV*>(participant.data())!=NULL)) //Re-entry mission arc
-
+            int index = MIndex.at(z);
+            if (index < trajectoryList.size())
             {
+                QSharedPointer<ScenarioAbstractTrajectoryType> trajectory = trajectoryList.at(MIndex.at(z));
 
+                QDateTime StartTimeDate;
+                QDateTime EndTimeDate;
+                double stepTime;
 
-                ScenarioREV* vehicle = dynamic_cast<ScenarioREV*>(participant.data());
-                const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList =
-                        vehicle->REVMission()->REVTrajectoryPlan()->AbstractTrajectory();
-
-                foreach (QSharedPointer<ScenarioAbstractTrajectoryType> trajectory,trajectoryList)
+                if (Scenario_GetTimeRange(trajectory.data(), &StartTimeDate, &EndTimeDate, &stepTime))
                 {
-                    if (dynamic_cast<ScenarioEntryArcType*>(trajectory.data()))
+                    QString StepTimeSec= QString::number(stepTime);
+                    QString StartTime = StartTimeDate.toString(TimeRangeSelectionDateFormat);
+                    QString EndTime   = EndTimeDate.toString(TimeRangeSelectionDateFormat);
+
+                    if ((treeWidgetTimeSpecifications->findItems(StartTime, Qt::MatchExactly,0).isEmpty()) ||
+                        (treeWidgetTimeSpecifications->findItems(EndTime, Qt::MatchExactly,1).isEmpty())   ||
+                        (treeWidgetTimeSpecifications->findItems(StepTimeSec, Qt::MatchExactly,2).isEmpty()))
                     {
-
-                        ScenarioEntryArcType* entry = dynamic_cast<ScenarioEntryArcType*>(trajectory.data());
-                        QDateTime StartTimeDate=entry->TimeLine()->StartTime();
-
-                        QDateTime EndTimeDate=entry->TimeLine()->EndTime();
-
-                        double StepTime=entry->PropagationPosition().data()->timeStep();
-                        QString StepTimeSec= QString::number(StepTime);
-
-                        double StartTimeYear=StartTimeDate.date().year();
-                        double EndTimeYear=EndTimeDate.date().year();
-
-                        double StartTimeMonth=StartTimeDate.date().month();
-                        double EndTimeMonth=EndTimeDate.date().month();
-
-                        double StartTimeDay=StartTimeDate.date().day();
-                        double EndTimeDay=EndTimeDate.date().day();
-
-                        double StartTimeHour=StartTimeDate.time().hour();
-                        double EndTimeHour=EndTimeDate.time().hour();
-
-                        double StartTimeMinute=StartTimeDate.time().minute();
-                        double EndTimeMinute=EndTimeDate.time().minute();
-
-                        double StartTimeSecond=StartTimeDate.time().second();
-                        double EndTimeSecond=EndTimeDate.time().second();
-
-                        QString StartTime = QString::number(StartTimeDay);
-                        StartTime.append("/");
-                        StartTime.append(QString::number(StartTimeMonth));
-                        StartTime.append("/");
-                        StartTime.append(QString::number(StartTimeYear));
-                        StartTime.append(" ");
-                        StartTime.append(QString::number(StartTimeHour));
-                        StartTime.append(":");
-                        StartTime.append(QString::number(StartTimeMinute));
-                        StartTime.append(":");
-                        StartTime.append(QString::number(StartTimeSecond));
-
-
-                        QString EndTime = QString::number(EndTimeDay);
-                        EndTime.append("/");
-                        EndTime.append(QString::number(EndTimeMonth));
-                        EndTime.append("/");
-                        EndTime.append(QString::number(EndTimeYear));
-                        EndTime.append(" ");
-                        EndTime.append(QString::number(EndTimeHour));
-                        EndTime.append(":");
-                        EndTime.append(QString::number(EndTimeMinute));
-                        EndTime.append(":");
-                        EndTime.append(QString::number(EndTimeSecond));
-
-
-                        if((treeWidgetTimeSpecifications->findItems(EndTime,Qt::MatchExactly,1).isEmpty())||((treeWidgetTimeSpecifications->findItems(StepTimeSec,Qt::MatchExactly,2).isEmpty()))||(treeWidgetTimeSpecifications->findItems(StartTime,Qt::MatchExactly).isEmpty()))
-                        {
-                            QTreeWidgetItem*treeTime=new QTreeWidgetItem(treeWidgetTimeSpecifications);
-                            treeTime->setText(0,StartTime);
-                            treeTime->setText(1,EndTime);
-                            treeTime->setText(2,StepTimeSec);
-                        }
-
+                        QTreeWidgetItem*treeTime=new QTreeWidgetItem(treeWidgetTimeSpecifications);
+                        treeTime->setText(0,StartTime);
+                        treeTime->setText(1,EndTime);
+                        treeTime->setText(2,StepTimeSec);
                     }
                 }
             }
-
         }
     }
     else
@@ -851,7 +819,7 @@ void analysis::on_AddDefaultPushButton_clicked()
 }
 
 
-void analysis::ReadTime(int column, double *MJD) //reads the time in the treeWidgetTimeSpecifications
+void analysis::ReadTime(int column, QVector<double>& MJD) //reads the time in the treeWidgetTimeSpecifications
 {
     /*
   Inputs: column-column number in the treeWidgetTimeSpecifications (start or end epochs);
@@ -905,6 +873,8 @@ void analysis::ReadTime(int column, double *MJD) //reads the time in the treeWid
         //      return 0;  ;
     }
 }
+
+
 QString analysis::ReadParameter(QTreeWidgetItem*Item)
 {
     /*
@@ -1316,13 +1286,13 @@ void analysis::Warnings(int i)
 void analysis::on_GeneratePushButton_clicked()
 {
     /*
-  when the "generate" button is pressed, the plot or report are displayed,
-some warning messages can de displayed if:
-- there are no parameters selected to analyse
-- there are no selected mission arcs
--there are no time intervals selected
--the selected parameters, in the plotting option, are not correct (number or type of parameters selected)
-  */
+    when the "generate" button is pressed, the plot or report are displayed,
+    some warning messages can de displayed if:
+    - there are no parameters selected to analyse
+    - there are no selected mission arcs
+    -there are no time intervals selected
+    -the selected parameters, in the plotting option, are not correct (number or type of parameters selected)
+    */
     QString AnalysisFormat=ComboBoxAnalysisFormat->currentText();
 
     QList<QTreeWidgetItem *> selected=TreeWidgetMissionArc->selectedItems();
@@ -1344,190 +1314,182 @@ some warning messages can de displayed if:
     }
     if(AnalysisFormat=="3D")
     {
-	numberOfParameters=treeWidgetXaxis->selectedItems().size()+treeWidgetYaxis->selectedItems().size()+treeWidgetZaxis->selectedItems().size();
+        numberOfParameters=treeWidgetXaxis->selectedItems().size()+treeWidgetYaxis->selectedItems().size()+treeWidgetZaxis->selectedItems().size();
     }
-    if(numberOfParameters==0)
+
+    // Abort if there are no parameters
+    if(numberOfParameters == 0)
     {
         QMessageBox parametersWarning;
         parametersWarning.setText("Please select the parameters to be calculated");
         parametersWarning.exec();
         return;
     }
-    else
+
+    // Abort if there are no mission arcs selected
+    if (selected.isEmpty())
     {
-        if(selected.size()==0)
+        QMessageBox MissionWarning;
+        MissionWarning.setText("Please select one or more Mission Arcs");
+        MissionWarning.exec();
+        return;
+    }
+
+    // Abort if there are no time intervals selected
+    if (selectedTimes.size()==0)
+    {
+        QMessageBox tswarning;
+        tswarning.setText("Please select one or more time intervals");
+        tswarning.exec();
+        return;
+    }
+
+    int Control=InputsControl(tree); //checks if the selected parameters are valid according to the inputs n other module functions
+    if(Control!=0)
+    {
+        Warnings(Control);
+        return;
+    }
+
+    // Write the ouput
+    QList<analysis::AnalysisData> DataStructure;
+    if (AnalysisFormat=="Report")
+    {
+        WriteReport(selected,selectedTimes);
+    }
+    else if((AnalysisFormat=="2D")||(AnalysisFormat=="3D"))
+    {
+        DataStructure=WriteDataStructure(selected,selectedTimes);
+    }
+
+    // Show the report: spreadsheet, 2D, or 3D
+    if(AnalysisFormat=="2D")
+    {
+        if(DataStructure.size()==2)
         {
-            QMessageBox MissionWarning;
-            MissionWarning.setText("Please select one or more Mission Arcs");
-            MissionWarning.exec();
-            return;
+            int numberOfLines=0;
+            int numberOfParameters=1; //one parameter per axis
+
+            for(int i=0;i<DataStructure[0].Data[0].size();i++)
+            {
+                numberOfLines++;
+            }
+
+            // Patched by Guillermo to create a Non-Modal window each time the user wishes to create a 2D plot
+            QWidget *window2D = new QWidget(this, Qt::Window);
+            QVBoxLayout* layout = new QVBoxLayout(window2D);
+
+            plotView2D = new PlotView(window2D);
+            layout->addWidget(plotView2D);
+
+            AnalysisPlot::AnalysisPlot* Data = new AnalysisPlot();
+            Data->setPoints(DataStructure,numberOfLines,numberOfParameters);
+            plotView2D->addPlot(Data);
+
+            QString PlotTitle = "";
+            PlotTitle = PlotTitle + DataStructure[1].ParameterTitles[0];
+            PlotTitle = PlotTitle + " = f ( ";
+            PlotTitle = PlotTitle + DataStructure[0].ParameterTitles[0];
+            PlotTitle = PlotTitle + " )";
+
+            plotView2D->setTitle(PlotTitle);
+            plotView2D->setLeftLabel(DataStructure[1].ParameterTitles[0]);
+            plotView2D->setBottomLabel(DataStructure[0].ParameterTitles[0]);
+            plotView2D->autoScale();
+            plotView2D->setMinimumSize(600, 400); // Rectangle
+
+            QHBoxLayout *buttonLayout = new QHBoxLayout;
+            buttonLayout->addStretch();
+            QPushButton *saveButton = new QPushButton(tr("Save"));
+            buttonLayout->addWidget(saveButton);
+            connect(saveButton, SIGNAL(clicked()), this, SLOT(saveImage2D()));
+            QPushButton *closeButton = new QPushButton(tr("Close"));
+            closeButton->setShortcut(tr("Esc"));
+            closeButton->setAutoDefault(true);
+            connect(closeButton, SIGNAL(clicked()), window2D, SLOT(close()));
+            buttonLayout->addWidget(closeButton);
+            layout->addLayout(buttonLayout);
+
+            window2D->setLayout(layout);
+            window2D->setWindowModality(Qt::NonModal);
+            window2D->setWindowTitle("STA analysis 2D plot");
+            window2D->setWindowIcon(QIcon(":/icons/CoordinateSystemBody.png"));
+            window2D->show();
+            window2D->raise(); // Required to keep the modeless window alive
+            window2D->activateWindow(); // Required to keep the modeless window alive
         }
         else
         {
-            if (selectedTimes.size()==0)
-            {
-                QMessageBox tswarning;
-                tswarning.setText("Please select one or more time intervals");
-                tswarning.exec();
-            }
-            else
-            {
-                int Control=InputsControl(tree); //checks if the selected parameters are valid according to the inputs n other module functions
-                if(Control!=0)
-                {
-                    Warnings(Control);
-                }
-                else
-                {
-                    QList<analysis::AnalysisData> DataStructure;
-                    if (AnalysisFormat=="Report")
-                    {
+            QMessageBox PlotWarning;
+            PlotWarning.setText("Invalid selection of parameters to be plotted");
+            PlotWarning.exec();
+        }
+    }
+    else if(AnalysisFormat=="3D")
+    {
+        int numberOfLines=0;
+        int numberOfParameters=1; //one parameter per axis
 
-                        WriteReport(selected,selectedTimes);
+        for(int i=0;i<DataStructure[0].Data[0].size();i++)
+        {
+            numberOfLines++;
+        }
 
-                    }
-                    if((AnalysisFormat=="2D")||(AnalysisFormat=="3D"))
-                    {
-                        DataStructure=WriteDataStructure(selected,selectedTimes);
-                    }
+        if(DataStructure.size()==3)
+        {
+            // Patched by Guillermo to create a Non-Modal window each time the user wishes to create a 3D plot
+            QWidget *window3D = new QWidget(this, Qt::Window);
 
-                    if(AnalysisFormat=="2D")
-                    {
+            QVBoxLayout* layout = new QVBoxLayout(window3D);
 
-                        if(DataStructure.size()==2)
-                        {
-			    int numberOfLines=0;
-			    int numberOfParameters=1; //one parameter per axis
+            plotView3D = new PlotView3D(window3D);
+            layout->addWidget(plotView3D);
 
-			    for(int i=0;i<DataStructure[0].Data[0].size();i++)
-			    {
-				numberOfLines++;
-			    }
+            Analysis3D::Analysis3D *Data = new Analysis3D();
+            Data->setPoints(DataStructure,numberOfLines,numberOfParameters);
 
-			    {
-                            // Patched by Guillermo to create a Non-Modal window each time the user wishes to create a 2D plot
-			    QWidget *window2D = new QWidget(this, Qt::Window);
-                            QVBoxLayout* layout = new QVBoxLayout(window2D);
+            plotView3D->addPlot(Data, PlotStyle(PlotStyle::LinePlot, QPen(Qt::red, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin)));
 
-			    plotView2D = new PlotView(window2D);
-			    layout->addWidget(plotView2D);
+            QString PlotTitle = "";
+            PlotTitle = PlotTitle + DataStructure[2].ParameterTitles[0];
+                        PlotTitle = PlotTitle + " = f (";
+            PlotTitle = PlotTitle + DataStructure[0].ParameterTitles[0];
+            PlotTitle = PlotTitle + ", ";
+            PlotTitle = PlotTitle + DataStructure[1].ParameterTitles[0];
+            PlotTitle = PlotTitle + ")";
 
-                            AnalysisPlot::AnalysisPlot* Data = new AnalysisPlot();
-                            Data->setPoints(DataStructure,numberOfLines,numberOfParameters);
-			    plotView2D->addPlot(Data);
+            plotView3D->setTitle(PlotTitle);
+            plotView3D->setXLabel(DataStructure[0].ParameterTitles[0]);
+            plotView3D->setYLabel(DataStructure[1].ParameterTitles[0]);
+            plotView3D->setZLabel(DataStructure[2].ParameterTitles[0]);
+            plotView3D->autoScale();
+            plotView3D->setMinimumSize(600, 600);
 
-                            QString PlotTitle = "";
-                            PlotTitle = PlotTitle + DataStructure[1].ParameterTitles[0];
-                            PlotTitle = PlotTitle + " = f ( ";
-                            PlotTitle = PlotTitle + DataStructure[0].ParameterTitles[0];
-                            PlotTitle = PlotTitle + " )";
+            QHBoxLayout *buttonLayout = new QHBoxLayout;
+            buttonLayout->addStretch();
+            QPushButton *saveButton = new QPushButton(tr("Save"));
+            buttonLayout->addWidget(saveButton);
+            connect(saveButton, SIGNAL(clicked()), this, SLOT(saveImage3D()));
+            QPushButton *closeButton = new QPushButton(tr("Close"));
+            closeButton->setShortcut(tr("Esc"));
+            closeButton->setAutoDefault(true);
+            connect(closeButton, SIGNAL(clicked()), window3D, SLOT(close()));
+            buttonLayout->addWidget(closeButton);
+            layout->addLayout(buttonLayout);
 
-			    plotView2D->setTitle(PlotTitle);
-			    plotView2D->setLeftLabel(DataStructure[1].ParameterTitles[0]);
-			    plotView2D->setBottomLabel(DataStructure[0].ParameterTitles[0]);
-			    plotView2D->autoScale();
-			    plotView2D->setMinimumSize(600, 400); // Rectangle
-
-                            QHBoxLayout *buttonLayout = new QHBoxLayout;
-                            buttonLayout->addStretch();
-                            QPushButton *saveButton = new QPushButton(tr("Save"));
-                            buttonLayout->addWidget(saveButton);
-			    connect(saveButton, SIGNAL(clicked()), this, SLOT(saveImage2D()));
-                            QPushButton *closeButton = new QPushButton(tr("Close"));
-                            closeButton->setShortcut(tr("Esc"));
-                            closeButton->setAutoDefault(true);
-			    connect(closeButton, SIGNAL(clicked()), window2D, SLOT(close()));
-                            buttonLayout->addWidget(closeButton);
-                            layout->addLayout(buttonLayout);
-
-                            window2D->setLayout(layout);
-                            window2D->setWindowModality(Qt::NonModal);
-                            window2D->setWindowTitle("STA analysis 2D plot");
-                            window2D->setWindowIcon(QIcon(":/icons/CoordinateSystemBody.png"));
-                            window2D->show();
-                            window2D->raise(); // Required to keep the modeless window alive
-                            window2D->activateWindow(); // Required to keep the modeless window alive
-			}
-
-			}
-                        else
-                        {
-                            QMessageBox PlotWarning;
-                            PlotWarning.setText("Invalid selection of parameters to be plotted");
-                            PlotWarning.exec();
-                        }
-		    }
-                    if(AnalysisFormat=="3D")
-                    {
-                        int numberOfLines=0;
-                        int numberOfParameters=1; //one parameter per axis
-
-                        for(int i=0;i<DataStructure[0].Data[0].size();i++)
-                        {
-                            numberOfLines++;
-                        }
-
-                        if(DataStructure.size()==3)
-			{
-
-			    // Patched by Guillermo to create a Non-Modal window each time the user wishes to create a 3D plot
-			    QWidget *window3D = new QWidget(this, Qt::Window);
-
-			    QVBoxLayout* layout = new QVBoxLayout(window3D);
-
-			    plotView3D = new PlotView3D(window3D);
-			    layout->addWidget(plotView3D);
-
-			    Analysis3D::Analysis3D *Data = new Analysis3D();
-			    Data->setPoints(DataStructure,numberOfLines,numberOfParameters);
-
-			    plotView3D->addPlot(Data, PlotStyle(PlotStyle::LinePlot, QPen(Qt::red, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin)));
-
-			    QString PlotTitle = "";
-			    PlotTitle = PlotTitle + DataStructure[2].ParameterTitles[0];
-                            PlotTitle = PlotTitle + " = f (";
-			    PlotTitle = PlotTitle + DataStructure[0].ParameterTitles[0];
-			    PlotTitle = PlotTitle + ", ";
-			    PlotTitle = PlotTitle + DataStructure[1].ParameterTitles[0];
-			    PlotTitle = PlotTitle + ")";
-
-			    plotView3D->setTitle(PlotTitle);
-			    plotView3D->setXLabel(DataStructure[0].ParameterTitles[0]);
-			    plotView3D->setYLabel(DataStructure[1].ParameterTitles[0]);
-			    plotView3D->setZLabel(DataStructure[2].ParameterTitles[0]);
-			    plotView3D->autoScale();
-			    plotView3D->setMinimumSize(600, 600);
-
-                            QHBoxLayout *buttonLayout = new QHBoxLayout;
-                            buttonLayout->addStretch();
-                            QPushButton *saveButton = new QPushButton(tr("Save"));
-                            buttonLayout->addWidget(saveButton);
-			    connect(saveButton, SIGNAL(clicked()), this, SLOT(saveImage3D()));
-                            QPushButton *closeButton = new QPushButton(tr("Close"));
-                            closeButton->setShortcut(tr("Esc"));
-                            closeButton->setAutoDefault(true);
-                            connect(closeButton, SIGNAL(clicked()), window3D, SLOT(close()));
-                            buttonLayout->addWidget(closeButton);
-                            layout->addLayout(buttonLayout);
-
-			    window3D->setLayout(layout);
-                            window3D->setWindowModality(Qt::NonModal);
-                            window3D->setWindowTitle("STA analysis 3D plot");
-                            window3D->setWindowIcon(QIcon(":/icons/CoordinateSystemBody.png"));
-			    window3D->show();
-                            window3D->raise(); // Required to keep the modeless window alive
-                            window3D->activateWindow(); // Required to keep the modeless window alive
-
-                        }
-                        else
-                        {
-                            QMessageBox PlotWarning;
-                            PlotWarning.setText("Invalid selection of parameters to be plotted");
-                            PlotWarning.exec();
-                        }
-                    }
-                }
-            }
+            window3D->setLayout(layout);
+            window3D->setWindowModality(Qt::NonModal);
+            window3D->setWindowTitle("STA analysis 3D plot");
+            window3D->setWindowIcon(QIcon(":/icons/CoordinateSystemBody.png"));
+            window3D->show();
+            window3D->raise(); // Required to keep the modeless window alive
+            window3D->activateWindow(); // Required to keep the modeless window alive
+        }
+        else
+        {
+            QMessageBox PlotWarning;
+            PlotWarning.setText("Invalid selection of parameters to be plotted");
+            PlotWarning.exec();
         }
     }
 }
@@ -1682,10 +1644,11 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
 	    stream<<"Satellite: "<<MParentIndex.at(z)+1<<"\t"<<"Mission Arc: "<<indMissionArc+1<<"\r\n";
 
-	    double StartTime[selectedTimes.size()];
-	    double StopTime[selectedTimes.size()];
-	    int countStart[selectedTimes.size()];
-	    int countStop[selectedTimes.size()];
+        int timeRangeCount = selectedTimes.size();
+        QVector<double> StartTime(timeRangeCount);
+        QVector<double> StopTime(timeRangeCount);
+        QVector<int> countStart(timeRangeCount);
+        QVector<int> countStop(timeRangeCount);
 
 	    ReadTime(0,StartTime);//in MJD
 	    ReadTime(1,StopTime); //in MJD
@@ -3436,10 +3399,11 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 		int indMissionArc=MObjectsIndex.at(z);
 		MissionArc*arc=spaceObj->mission().at(MObjectsIndex.at(z));
 
-		double StartTime[selectedTimes.size()]; // time specifications, for each line in the time tree
-		double StopTime[selectedTimes.size()];
-		int countStart[selectedTimes.size()]; // time step index from where the data is being collected
-		int countStop[selectedTimes.size()];
+        int timeRangeCount = selectedTimes.size();
+        QVector<double> StartTime(timeRangeCount); // time specifications, for each line in the time tree
+        QVector<double> StopTime(timeRangeCount);
+        QVector<int> countStart(timeRangeCount); // time step index from where the data is being collected
+        QVector<int> countStop(timeRangeCount);
 
 		ReadTime(0,StartTime);//in MJD, reads the time in the treeWidgetTimeSpecifications
 		ReadTime(1,StopTime); //in MJD
@@ -3584,7 +3548,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 			//WRITE stream<<"#######Beginning of time"<<" "<<(k+1)<<"######"<<"\r\n"<<"######"<<"Start Time"<<" "<<Start<<"\t"<<"Stop Time"<<" "<<Stop<<"######"<<"\r\n"<<"MJD"<<"\r\t";
 
 			QList<QTreeWidgetItem*>SelParameters=Tree.at(a)->selectedItems();
-			for(int i=0;i<SelParameters.size();i++)
+            for(int i=0;i<SelParameters.size();i++)
 			{
                             //QString name=SelParameters.at(i)->text(0);
                             QString name=analysis::ReadParameter(SelParameters.at(i));
