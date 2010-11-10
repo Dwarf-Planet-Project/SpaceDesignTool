@@ -42,6 +42,12 @@ static bool SetTextureImage(TextureMap* texture, const QImage& image)
     {
         format = TextureMap::B8G8R8A8;
     }
+    else if (image.depth() == 8)
+    {
+        // Convert indexed color (paletted) to RGB before generating a texture
+        QImage rgbImage = image.convertToFormat(QImage::Format_RGB888);
+        return SetTextureImage(texture, rgbImage);
+    }
     else
     {
         return false;
