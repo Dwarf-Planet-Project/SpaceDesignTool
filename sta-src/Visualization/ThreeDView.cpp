@@ -53,6 +53,7 @@
 #include <vesta/AxesVisualizer.h>
 #include <vesta/VelocityVisualizer.h>
 #include <vesta/BodyDirectionVisualizer.h>
+#include <vesta/SensorVisualizer.h>
 #include <vesta/Units.h>
 #include <vesta/MeshGeometry.h>
 #include <vesta/PlanetaryRings.h>
@@ -445,6 +446,8 @@ ThreeDView::ThreeDView(const QGLFormat& format, QWidget* parent) :
     m_controller->setObserver(m_observer.ptr());
 
     gotoBody(STA_SOLAR_SYSTEM->earth());
+
+    setMouseTracking(true);
 }
 
 
@@ -768,8 +771,19 @@ ThreeDView::mouseMoveEvent(QMouseEvent *event)
 
     bool leftButton = (event->buttons() & Qt::LeftButton) != 0;
     bool rightButton = (event->buttons() & Qt::RightButton) != 0;
+    bool pan = false;
+    bool orbit = false;
 
-    if (leftButton)
+    if (rightButton || (event->modifiers() & Qt::AltModifier) != 0)
+    {
+        pan = true;
+    }
+    else if (leftButton || (event->modifiers() & Qt::ShiftModifier) != 0)
+    {
+        orbit = true;
+    }
+
+    if (orbit)
     {
         double xrot = delta.y() / 80.0;
         double yrot = delta.x() / 80.0;
@@ -792,7 +806,8 @@ ThreeDView::mouseMoveEvent(QMouseEvent *event)
         m_controller->applyOrbitTorque(Vector3d::UnitX() * -xrot);
         m_controller->applyOrbitTorque(Vector3d::UnitY() * -yrot);
     }
-    else if (rightButton)
+
+    if (pan)
     {
         double fovFactor = 1.0;//toDegrees(m_fovY) / 60.0;
         double xrot = delta.y() / 100.0 * fovFactor;
@@ -1838,6 +1853,19 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
 
         arcStartTime += arc->duration();
     }
+
+    SensorVisualizer* sensor = new SensorVisualizer();
+    sensor->setFrustumAngles(toRadians(5.0), toRadians(5.0));
+    sensor->setRange(25000.0);
+    sensor->setSource(body);
+    sensor->setOpacity(0.3f);
+    sensor->setColor(Spectrum(0.2f, 0.5f, 1.0f));
+    Quaterniond sensorRotation;
+    sensorRotation.setFromTwoVectors(Vector3d::UnitZ(), -Vector3d::UnitY());
+    sensor->setSensorOrientation(sensorRotation);
+    sensor->setTarget(findSolarSystemBody(spaceObj->mission().first()->centralBody()));
+    sensor->setVisibility(false);
+    body->setVisualizer("sensor", sensor);
 
     return body;
 }
