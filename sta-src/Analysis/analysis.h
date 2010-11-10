@@ -108,6 +108,7 @@ private:
     bool CheckIfMissionArc();
     void InsertComboBox();
     void ComboBoxOptions(QTreeWidgetItem*);
+    void SetPlotComboBox(const QString& name, QTreeWidget* treeWidget, QTreeWidgetItem* item);
     void PlotComboBox();
     QComboBox * TimeFramesBox();
     QComboBox * TimeUnitsBox();
