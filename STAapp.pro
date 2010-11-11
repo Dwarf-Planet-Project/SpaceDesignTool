@@ -705,7 +705,7 @@ linux-g++ {
     QMAKE_CC      >= gcc-4.3
 }
 
-unix {
+linux {
     HARDWARE_PLATFORM = $$system(uname -a)
     contains( HARDWARE_PLATFORM, x86_64 ) {
         # 64-bit Linux
@@ -718,8 +718,6 @@ unix {
     LIBS += -L$$PWD/lib/linux-x86
     LIBS += -lcspice
     }
-
-
 }
 
 # ################## Package files ###################
