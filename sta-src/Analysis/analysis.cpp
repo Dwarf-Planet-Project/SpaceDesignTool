@@ -2379,7 +2379,8 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                     }
                     DisplayDateCalendar[index]=sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]));
 
-                                    QString DDD=sta::calendarToDayOfYear(sta::JdToCalendar(sta::MjdToJd(MJDdate[index]+0.00001)));
+                    //QString DDD=sta::calendarToDayOfYear(sta::JdToCalendar(sta::MjdToJd(MJDdate[index]+0.00001)));
+                    QString DDD=sta::calendarToDayOfYear(sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]+0.00001)));
                     int Year=(sta::JdToCalendar(sta::MjdToJd(MJDdate[index]))).date().year();
                     QString YearPreLastDigit=QString::number(Year).at(2);
                     QString YearLastDigit=QString::number(Year).at(3);
@@ -2539,7 +2540,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                     }
                 }
                 }
-                if(name=="Equivalent Isotropical Radiated Power")
+                if(name=="EIRP")
                 {
 
                                 if(Comm1Index[0]<LineOfComm1Report.size())
@@ -3466,6 +3467,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
         QStringList LineOfComm3Report;
         if(ReadCoverage==true)
         {
+
             CoverageAnalysis covAna=CoverageAnalysis(m_propagatedScenario, indSC, indGS, indMissionArc);
             covAna.reportAER();
                     QString Path = QDir::currentPath ();
@@ -3486,8 +3488,12 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
         }
         if(ReadCommunication1==true)
         {
+
+
             CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
+
             commAnalysis.CommReports();
+
                     QString Path = QDir::currentPath ();
                     QString Comm1File = Path + "/" + "reportComm1.txt";
 
@@ -3502,6 +3508,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                 LineOfComm1Report.append(Communication1Line);
             }
             Communication1.close();
+
             }
         }
         if(ReadCommunication2==true)
@@ -3907,7 +3914,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                         }
                         }
                     }
-                    else if(name=="Equivalent Isotropical Radiated Power")
+                    else if(name=="EIRP")
                     {
 
                         if(Comm1Index[0]<LineOfComm1Report.length())
@@ -5382,7 +5389,7 @@ void analysis::ComboBoxOptions(QTreeWidgetItem*item)
     treeWidgetShowInReport->setItemWidget(item,1,CoordinateBox());
     treeWidgetShowInReport->setItemWidget(item,2,AngleUnitsBox());
     }
-    if((name=="Equivalent Isotropical Radiated Power")||(name=="Received Frequency")||(name=="Doppler Shift")||(name=="Received Power")||(name=="Flux Density")||(name=="Overlap Bandwidth Factor")||
+    if((name=="EIRP")||(name=="Received Frequency")||(name=="Doppler Shift")||(name=="Received Power")||(name=="Flux Density")||(name=="Overlap Bandwidth Factor")||
        (name=="Free Space Loss")||(name=="Oxygen Loss")||(name=="Water Vapour Loss")||(name=="Rain Loss")||(name=="Atmospheric Loss")||(name=="Propagation Loss")||
        (name=="G/T")||(name=="C/No")||(name=="C/N")||(name=="Eb/No")||(name=="BER"))
     {

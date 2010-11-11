@@ -198,7 +198,10 @@ sta::KeplerianElements cartesianTOorbital(double mu, sta::StateVector cartesianS
           foundKeplerianElements.ArgumentOfPeriapsis += 2.0 * M_PI;
       }
 
-
+      if(foundKeplerianElements.Eccentricity<1e-15)
+            {
+          foundKeplerianElements.ArgumentOfPeriapsis=0; //patched by Ana to match STK results, and avoid undefinition in circular orbits
+      }
       // Calculating now the Mean Anomaly
       pseudoEccentricity = sqrt( fabs(1.0 - foundKeplerianElements.Eccentricity) / (1.0 + foundKeplerianElements.Eccentricity) );
 
