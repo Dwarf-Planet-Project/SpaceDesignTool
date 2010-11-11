@@ -29,6 +29,7 @@
 
 #include "GroundTrackView.h"
 #include "GroundTrackPlotTool.h"
+#include "ClippedDraw.h"
 #include "Main/propagatedscenario.h"
 #include "Astro-Core/rectangularTOpolar.h"
 #include "Astro-Core/stamath.h"
@@ -70,17 +71,6 @@ using namespace Eigen;
 // overlap the east or wedge of the viewport may need to be drawn as _two_ line
 // segments when the view is sufficiently wide.
 //
-// A note on clipping:
-// Lines in the 2.5D view must be clipped in software, because Qt has no way to clip
-// in three dimensions. (Not even all OpenGL drivers/hardware actually support user
-// clip planes, which would be necessary in order to avoid having to clip in software.)
-// It is possible to clip lines drawn on the ground plane (z = 0) using a 2D clip region
-// set to the projected outline of the ground rectangle. However, the performance
-// of this option needs to be investigated. If Qt implements clipping by using OpenGL's
-// stencil buffer, performance should be very good. But, if clipping in software is
-// necessary, the general algorithm required by Qt would be considerably slower than
-// the special case of clipping to an axis-aligned view box, which is what is implemented
-// here.
 
 // Possible spacings of longitude and latitude lines, in arc seconds:
 static double LongLatSpacings[] =
@@ -149,14 +139,6 @@ static const double GroundStationElevationAngle = 5.0;
 static const QColor GroundStationColor(255, 64, 20);
 
 
-GroundTrack::~GroundTrack()
-{
-    foreach (GroundTrackSegment* segment, segments)
-    {
-        delete segment;
-    }
-}
-
 GroundTrackView::GroundTrackView(QWidget* parent) :
         QGraphicsView(parent),
         m_scenario(NULL),
@@ -169,7 +151,7 @@ GroundTrackView::GroundTrackView(QWidget* parent) :
         m_showEquator(false),
         m_showTicks(false),
         m_showTerminator(false),
-        m_tickInterval(300.0), // seconds
+        m_tickInterval(86400.0), // seconds
         m_body(NULL),
         m_zoomFactor(1.0f),
         m_center(0.0f, 0.0f),
@@ -769,270 +751,9 @@ static void drawQuad(QPainter& painter, const Transform3f& transform,
     painter.drawConvexPolygon(points, 4);
 }
 
-enum
-{
-    OUT_WEST   = 0x01,
-    OUT_EAST   = 0x02,
-    OUT_SOUTH  = 0x04,
-    OUT_NORTH  = 0x08,
-    OUT_ABOVE  = 0x10,
-    OUT_BELOW  = 0x20
-             };
-
-
-// Compute outcodes for Cohen-Sutherland line clipping
-static unsigned int computeOutcode(const AlignedBox<float, 3>& clipBox, float longitude, float latitude)
-{
-    unsigned int outcode = 0;
-
-    outcode |= (longitude < clipBox.min().x() ) ? OUT_WEST   : 0x0;
-    outcode |= (longitude > clipBox.max().x() ) ? OUT_EAST   : 0x0;
-    outcode |= (latitude  < clipBox.min().y())  ? OUT_SOUTH  : 0x0;
-    outcode |= (latitude  > clipBox.max().y())  ? OUT_NORTH  : 0x0;
-
-    return outcode;
-}
-
-
-static void clippedLine(const AlignedBox<float, 3>& clipBox,
-                        float long0, float lat0,
-                        float long1, float lat1,
-                        QVector<QPointF>& points)
-{
-    bool done = false;
-    unsigned int outcode0 = computeOutcode(clipBox, long0, lat0);
-    unsigned int outcode1 = computeOutcode(clipBox, long1, lat1);
-
-    // Cohen-Sutherland line clipping. Lots of code here, but the common
-    // cases of unclipped and invisible line segments are handled very
-    // quickly.
-    while (!done)
-    {
-        bool accept = (outcode0 | outcode1) == 0;
-        bool reject = (outcode0 & outcode1) != 0;
-        bool clippingRequired = !accept && !reject;
-
-        if (accept)
-        {
-            points << QPointF(long0, lat0) << QPointF(long1, lat1);
-            done = true;
-        }
-        else if (reject)
-        {
-            done = true;
-        }
-        else if (clippingRequired)
-        {
-            float clipX;
-            float clipY;
-
-            // One or both endpoints outside the clip volume. Pick one of them.
-            unsigned int outcodeOut = outcode0 ? outcode0: outcode1;
-
-            // Find the intersection point.
-            if (outcodeOut & OUT_NORTH)
-            {
-                clipX = long0 + (long1 - long0) * (clipBox.max().y() - lat0) / (lat1 - lat0);
-                clipY = clipBox.max().y();
-            }
-            else if (outcodeOut & OUT_SOUTH)
-            {
-                clipX = long0 + (long1 - long0) * (clipBox.min().y() - lat0) / (lat1 - lat0);
-                clipY = clipBox.min().y();
-            }
-            else if (outcodeOut & OUT_EAST)
-            {
-                clipY = lat0 + (lat1 - lat0) * (clipBox.max().x() - long0) / (long1 - long0);
-                clipX = clipBox.max().x();
-            }
-            else if (outcodeOut & OUT_WEST)
-            {
-                clipY = lat0 + (lat1 - lat0) * (clipBox.min().x() - long0) / (long1 - long0);
-                clipX = clipBox.min().x();
-            }
-
-            // Now we move outside point to intersection point to clip
-            // and get ready for next pass.
-            if (outcodeOut == outcode0)
-            {
-                long0 = clipX;
-                lat0 = clipY;
-                outcode0 = computeOutcode(clipBox, long0, lat0);
-            }
-            else
-            {
-                long1 = clipX;
-                lat1 = clipY;
-                outcode1 = computeOutcode(clipBox, long1, lat1);
-            }
-        }
-    }
-}
-
-
-// Compute outcodes for Cohen-Sutherland line clipping in 3D
-static unsigned int computeOutcode(const AlignedBox<float, 3>& clipBox, float longitude, float latitude, float altitude)
-{
-    // Clip in 2D first
-    unsigned int outcode = computeOutcode(clipBox, longitude, latitude);
-
-    outcode |= (altitude < clipBox.min().z() ) ? OUT_BELOW   : 0x0;
-    outcode |= (altitude > clipBox.max().z() ) ? OUT_ABOVE   : 0x0;
-
-    return outcode;
-}
-
-
-// Clip a line and 3D and emit the endpoints into the specified vector
-// (unless the line was clipped completely.) This function is required
-// the 2.5D view: since the Qt canvas is strictly 2D, we need to take
-// care of doing our own line clipping in three dimensions. If we switched
-// to using OpenGL for drawing, we could use GL's clip planes for this
-// task, but those aren't supported by all drivers.
-static void clippedLine(const AlignedBox<float, 3>& clipBox,
-                        const Transform3f& projection,
-                        float long0, float lat0, float alt0,
-                        float long1, float lat1, float alt1,
-                        QVector<QPointF>& points)
-{
-    bool done = false;
-    unsigned int outcode0 = computeOutcode(clipBox, long0, lat0, alt0);
-    unsigned int outcode1 = computeOutcode(clipBox, long1, lat1, alt1);
-
-    // Cohen-Sutherland line clipping, extended to a third dimension.
-    // Lots of code here, but the common cases of unclipped and invisible
-    // line segments are handled very quickly.
-    while (!done)
-    {
-        bool accept = (outcode0 | outcode1) == 0;
-        bool reject = (outcode0 & outcode1) != 0;
-        bool clippingRequired = !accept && !reject;
-
-        if (accept)
-        {
-            Vector3f p0    = projection * Vector3f(long0, lat0, alt0);
-            Vector3f p1    = projection * Vector3f(long1, lat1, alt1);
-            points << QPointF(p0.x(), p0.y()) << QPointF(p1.x(), p1.y());
-            done = true;
-        }
-        else if (reject)
-        {
-            done = true;
-        }
-        else if (clippingRequired)
-        {
-            float clipX;
-            float clipY;
-            float clipZ;
-
-            // One or both endpoints outside the clip volume. Pick one of them.
-            unsigned int outcodeOut = outcode0 ? outcode0: outcode1;
-
-            // Now find the intersection point;
-            // use formulas y = y0 + slope * (x - x0), x = x0 + (1/slope)* (y - y0)
-            if (outcodeOut & OUT_NORTH)
-            {
-                float w = (clipBox.max().y() - lat0) / (lat1 - lat0);
-                clipX = long0 + (long1 - long0) * w;
-                clipZ = alt0 + (alt1 - alt0) * w;
-                clipY = clipBox.max().y();
-            }
-            else if (outcodeOut & OUT_SOUTH)
-            {
-                float w = (clipBox.min().y() - lat0) / (lat1 - lat0);
-                clipX = long0 + (long1 - long0) * w;
-                clipZ = alt0 + (alt1 - alt0) * w;
-                clipY = clipBox.min().y();
-            }
-            else if (outcodeOut & OUT_EAST)
-            {
-                float w = (clipBox.max().x() - long0) / (long1 - long0);
-                clipY = lat0 + (lat1 - lat0) * w;
-                clipZ = alt0 + (alt1 - alt0) * w;
-                clipX = clipBox.max().x();
-            }
-            else if (outcodeOut & OUT_WEST)
-            {
-                float w = (clipBox.min().x() - long0) / (long1 - long0);
-                clipY = lat0 + (lat1 - lat0) * w;
-                clipZ = alt0 + (alt1 - alt0) * w;
-                clipX = clipBox.min().x();
-            }
-            else if (outcodeOut & OUT_ABOVE)
-            {
-                float w = (clipBox.max().z() - alt0) / (alt1 - alt0);
-                clipX = long0 + (long1 - long0) * w;
-                clipY = lat0 + (lat1 - lat0) * w;
-                clipZ = clipBox.max().z();
-            }
-            else if (outcodeOut & OUT_BELOW)
-            {
-                float w = (clipBox.min().z() - alt0) / (alt1 - alt0);
-                clipX = long0 + (long1 - long0) * w;
-                clipY = lat0 + (lat1 - lat0) * w;
-                clipZ = clipBox.min().z();
-            }
-
-            // Now we move outside point to intersection point to clip
-            // and get ready for next pass.
-            if (outcodeOut == outcode0)
-            {
-                long0 = clipX;
-                lat0 = clipY;
-                alt0 = clipZ;
-                outcode0 = computeOutcode(clipBox, long0, lat0, alt0);
-            }
-            else
-            {
-                long1 = clipX;
-                lat1 = clipY;
-                alt1 = clipZ;
-                outcode1 = computeOutcode(clipBox, long1, lat1, alt1);
-            }
-        }
-    }
-}
-
-
-// Utility function for easier line drawing. This handles the complexities of
-// clipping and wrapping. From zero to two line segments will be emitted into
-// the points vector:
-//   * 0 if the line was completely clipped
-//   * 1 if the line was partially clipped or not clipped at all
-//   * 2 if the line was clipped at the east or west edge of a wide view
-static void clippedWrappedLine(const AlignedBox<float, 3>& clipBox,
-                               float long0, float lat0,
-                               float long1, float lat1,
-                               QVector<QPointF>& points)
-{
-    if (long0 < clipBox.min().x())
-        long0 += 360.0;
-    if (long1 < clipBox.min().x())
-        long1 += 360.0;
-
-    if (std::abs(long0 - long1) > 180.0)
-    {
-        // Handle segments that wrap across the edges of the map.
-        if (long0 > long1)
-        {
-            clippedLine(clipBox, (float) long0, (float) lat0, (float) long1 + 360, (float) lat1, points);
-            clippedLine(clipBox, (float) long0 - 360, (float) lat0, (float) long1, (float) lat1, points);
-        }
-        else
-        {
-            clippedLine(clipBox, (float) long1, (float) lat1, (float) long0 + 360, (float) lat0, points);
-            clippedLine(clipBox, (float) long1 - 360, (float) lat1, (float) long0, (float) lat0, points);
-        }
-    }
-    else
-    {
-        clippedLine(clipBox, (float) long0, (float) lat0, (float) long1, (float) lat1, points);
-    }
-}
-
 
 bool
-        GroundTrackView::inView(float longitude, float latitude, float altitude)
+GroundTrackView::inView(float longitude, float latitude, float altitude)
 {
     if (latitude >= m_south && latitude <= m_north)
     {
@@ -1144,9 +865,9 @@ void GroundTrackView::paintObliqueView(QPainter& painter)
     float zshear = xform.m21() / xform.m11() * zscale;
     Transform3f proj;
     proj.matrix() << 1.0f, 0.0f, -zshear / m_zoomFactor, 0.0f,
-    0.0f, 1.0f, zscale / m_zoomFactor,    0.0f,
-    0.0f, 0.0f, 1.0f, 0.0f,
-    0.0f, 0.0f, 0.0f, 1.0f;
+                     0.0f, 1.0f, zscale / m_zoomFactor,    0.0f,
+                     0.0f, 0.0f, 1.0f, 0.0f,
+                     0.0f, 0.0f, 0.0f, 1.0f;
 
     // Draw the left and back sides of a box
     painter.setBrush(QColor(200, 200, 200));
@@ -1352,177 +1073,41 @@ void GroundTrackView::paintObliqueView(QPainter& painter)
             activeNow = true;
         }
 
-        foreach (GroundTrackSegment* segment, track->segments)
+        track->draw(painter, m_body, m_currentTime, proj, clipBox);
+
+        QPen trackPen;
+        trackPen.setWidthF(3.0f / xform.m11());
+        painter.setPen(trackPen);
+
+        if (m_showTicks)
         {
-            // Calculate the ground track
-            m_trackPoints.clear();
-
-            bool trackVisible = false;
-            if (segment->samples.empty() || (m_currentTime <= segment->samples[0].mjd && !m_showEntireTracks))
-            {
-                trackVisible = true;
-            }
-
-            double endTime = std::numeric_limits<double>::infinity();
-            if (!m_showEntireTracks)
-            {
-                endTime = m_currentTime;
-            }
-
-            bool complete = trackVisible;
-
-            // Draw the ground track
-            for (int i = 1; i < segment->samples.size() && !complete; i++)
-            {
-                double long0 = segment->samples[i - 1].longitude;
-                double lat0  = segment->samples[i - 1].latitude;
-                double long1 = segment->samples[i].longitude;
-                double lat1  = segment->samples[i].latitude;
-
-                // Only draw the track up to the specified endTime
-                if (segment->samples[i].mjd >= endTime)
-                {
-                    long1 = longNow;
-                    lat1  = latNow;
-                    complete = true;
-                }
-
-                clippedWrappedLine(clipBox, (float) long0, (float) lat0, (float) long1, (float) lat1, m_trackPoints);
-            }
-
-            painter.setPen(segment->color);
-            painter.drawLines(m_trackPoints);
-            m_trackPoints.clear();
-            complete = trackVisible;
-
-            // Draw the track through space
-            for (int i = 1; i < segment->samples.size() && !complete; i++)
-            {
-                float long0 = (float) segment->samples[i - 1].longitude;
-                float lat0  = (float) segment->samples[i - 1].latitude;
-                float alt0  = (float) segment->samples[i - 1].altitude;
-                float long1 = (float) segment->samples[i].longitude;
-                float lat1  = (float) segment->samples[i].latitude;
-                float alt1  = (float) segment->samples[i].altitude;
-
-                // Only draw the track up to the specified endTime
-                if (segment->samples[i].mjd >= endTime)
-                {
-                    long1 = (float) longNow;
-                    lat1  = (float) latNow;
-                    alt1  = (float) altNow;
-                    complete = true;
-                }
-
-                if (long0 < m_west)
-                    long0 += 360.0f;
-                if (long1 < m_west)
-                    long1 += 360.0f;
-
-                if (std::abs(long0 - long1) > 180.0f)
-                {
-                    // Handle segments that wrap across the edges of the map.
-                    if (long0 > long1)
-                    {
-                        clippedLine(clipBox, proj,
-                                    long0, lat0, alt0, long1 + 360, lat1, alt1,
-                                    m_trackPoints);
-                        clippedLine(clipBox, proj,
-                                    long0 - 360, lat0, alt0, long1, lat1, alt1,
-                                    m_trackPoints);
-                    }
-                    else
-                    {
-                        clippedLine(clipBox, proj,
-                                    long1, lat1, alt1, long0 + 360, lat0, alt0,
-                                    m_trackPoints);
-                        clippedLine(clipBox, proj,
-                                    long1 - 360, lat1, alt1, long0, lat0, alt0,
-                                    m_trackPoints);
-                    }
-                }
-                else
-                {
-                    clippedLine(clipBox, proj, long0, lat0, alt0, long1, lat1, alt1, m_trackPoints);
-                }
-            }
-
-            QPen trackPen(segment->color);
-            trackPen.setWidthF(3.0f / xform.m11());
-            painter.setPen(trackPen);
-            painter.drawLines(m_trackPoints);
-            m_trackPoints.clear();
-
-            // Draw ticks on the ground tracks
-            if (m_showTicks)
-            {
-                double startTime = 0.0;
-                if (segment->samples.size() > 0)
-                    startTime = segment->samples.first().mjd;
-                int lastTick = segment->ticks.size();
-                if (!m_showEntireTracks)
-                {
-                    lastTick = std::min(lastTick,
-                                        (int) std::ceil((endTime - startTime) / sta::secsToDays(m_tickInterval)));
-                }
-
-                for (int i = 0; i < lastTick; i++)
-                {
-                    GroundTrackTick& tick = segment->ticks[i];
-                    float tickLongitude = tick.longitude;
-                    if (tickLongitude < m_west)
-                        tickLongitude += 360.0f;
-                    unsigned int outcode0 = computeOutcode(clipBox, tickLongitude, tick.latitude);
-
-                    if (outcode0 == 0 && tick.altitude > 0.0f)
-                    {
-                        Vector3f groundPoint = proj * Vector3f(tickLongitude, tick.latitude, 0.0f);
-                        Vector3f skyPoint    = proj * Vector3f(tickLongitude, tick.latitude, std::min(m_maxHeight, tick.altitude));
-
-                        m_trackPoints << QPointF(groundPoint.x(), groundPoint.y())
-                                << QPointF(skyPoint.x(), skyPoint.y());
-                    }
-                }
-            }
-
-            painter.setPen(segment->color);
-            painter.drawLines(m_trackPoints);
+            track->drawDropLines(painter, m_body, m_currentTime, m_tickInterval, proj, clipBox);
         }
 
-        // Draw an indicator at the current spacecraft subpoint
-        if (activeNow && inView(longNow, latNow, 0.0f))
+        foreach (GroundTrackSegment* segment, track->segments)
         {
-
-            // This part has been patched by Guillermo to allow the change of color of the marker and the
-            // name the the satellite as a fucntion of the color of the arc
-            foreach (GroundTrackSegment* segment, track->segments)
+            // Draw an indicator at the current spacecraft subpoint
+            if (!segment->samples.empty() &&
+                m_currentTime >= segment->samples.first().mjd && m_currentTime < segment->samples.last().mjd &&
+                inView(longNow, latNow, 0.0f))
             {
-                // Get the time limits of the segment
-                int segmentSize = segment->samples.size();
-                double timeStart = segment->samples[0].mjd;
-                double timeEnd = segment->samples[segmentSize-1].mjd;
+                painter.setPen(segment->color);
+                painter.drawLine(QPointF((float) longNow - indicatorSize, (float) latNow),
+                                 QPointF((float) longNow + indicatorSize, (float) latNow));
+                painter.drawLine(QPointF((float) longNow, (float) latNow - indicatorSize),
+                                 QPointF((float) longNow, (float) latNow + indicatorSize));
 
-                if ((m_currentTime >=  timeStart) && (m_currentTime <=  timeEnd))
-                {
-                    painter.setPen(segment->color);
-                    painter.drawLine(QPointF((float) longNow - indicatorSize, (float) latNow),
-                                     QPointF((float) longNow + indicatorSize, (float) latNow));
-                    painter.drawLine(QPointF((float) longNow, (float) latNow - indicatorSize),
-                                     QPointF((float) longNow, (float) latNow + indicatorSize));
-
-                    // We don't want the transformation to scale the text. So, we temporarily
-                    // reset the transformation to an identity matrix, draw the text, then restore
-                    // the matrix.
-                    QTransform xform = painter.worldTransform();
-                    painter.setWorldTransform(QTransform());
-                    QPointF textOrigin = QPointF((float) longNow + labelOffset, (float) latNow + labelOffset) * xform;
-                    painter.drawText(textOrigin, track->vehicle->name());       // Guillermo says: this is an attribute and should be removed
-                    painter.setWorldTransform(xform);
-                }
+                // We don't want the transformation to scale the text. So, we temporarily
+                // reset the transformation to an identity matrix, draw the text, then restore
+                // the matrix.
+                QTransform xform = painter.worldTransform();
+                painter.setWorldTransform(QTransform());
+                QPointF textOrigin = QPointF((float) longNow + labelOffset, (float) latNow + labelOffset) * xform;
+                painter.drawText(textOrigin, track->vehicle->name());       // Guillermo says: this is an attribute and should be removed
+                painter.setWorldTransform(xform);
             }
         }
     }
-
 }
 
 
@@ -1790,128 +1375,13 @@ void GroundTrackView::paint2DView(QPainter& painter)
                 longNow += 360.0;
         }
 
-        foreach (GroundTrackSegment* segment, track->segments)
-        {
-            // Calculate the ground track
-            double endTime = std::numeric_limits<double>::infinity();
-            bool complete = false;
+        AlignedBox<float, 2> clipBox;
+        clipBox.min() = Vector2f(m_west, m_south);
+        clipBox.max() = Vector2f(m_east, m_north);
+        track->draw2D(painter, m_body, m_currentTime, clipBox);
 
-            m_trackPoints.clear();
-
-            if (!m_showEntireTracks)
-            {
-                endTime = m_currentTime;
-                if (segment->samples.size() > 0 &&
-                    m_currentTime <= segment->samples[0].mjd)
-                {
-                    complete = true;
-                }
-            }
-
-            for (int i = 1; i < segment->samples.size() && !complete; i++)
-            {
-                double long0 = segment->samples[i - 1].longitude;
-                double lat0  = segment->samples[i - 1].latitude;
-                double long1 = segment->samples[i].longitude;
-                double lat1  = segment->samples[i].latitude;
-
-                // Only draw the track up to the specified endTime
-                if (segment->samples[i].mjd >= endTime)
-                {
-                    long1 = longNow;
-                    lat1  = latNow;
-                    complete = true;
-                }
-
-                if (long0 < m_west)
-                    long0 += 360.0f;
-                if (long1 < m_west)
-                    long1 += 360.0f;
-
-                double longDiff = std::abs(long0 - long1);
-                if (longDiff > 90.0)
-                {
-                    // Adjacent ground track points have very different longitudes. This
-                    // can arise from three things:
-                    //   1. The two points straddle longitude 180 degrees. In this case, the
-                    //      difference will be around 360 degrees.
-                    //   2. The orbit crosses near a pole. The difference will be approximately
-                    //      180 degrees.
-                    //   3. The ground track doesn't have enough samples. Nothing we can do
-                    //      about this--the user should have specified a smaller output interval.
-                    //
-                    // We will treat differences of 90 - 270 degrees as polar crossings, and
-                    // differences > 270 degrees as crossings of the prime meridian. This is
-                    // effective except in the case where there are far too few ground track
-                    // samples.
-                    if (longDiff > 270.0)
-                    {
-                        // Handle segments that wrap across the edges of the map.
-                        if (long0 > long1)
-                        {
-                            m_trackPoints << QPointF(long0, lat0) << QPointF(long1 + 360, lat1);
-                            m_trackPoints << QPointF(long0 - 360, lat0) << QPointF(long1, lat1);
-                        }
-                        else
-                        {
-                            m_trackPoints << QPointF(long1, lat1) << QPointF(long0 + 360, lat0);
-                            m_trackPoints << QPointF(long1 - 360, lat1) << QPointF(long0, lat0);
-                        }
-                    }
-                    else
-                    {
-                        double sign = long0 - long1 < 0.0 ? -1.0 : 0.0;
-                        if (lat0 > 0)
-                        {
-                            // Crossing the north pole
-                            m_trackPoints << QPointF(long0, lat0) << QPointF(long0 + sign * (180.0 - longDiff), 180.0 - lat1);
-                            m_trackPoints << QPointF(long1, lat1) << QPointF(long1 + sign * (180.0 - longDiff), 180.0 - lat0);
-                        }
-                        else
-                        {
-                            // Crossing the south pole
-                            m_trackPoints << QPointF(long0, lat0) << QPointF(long0 - sign * (180.0 - longDiff), lat1 - 180.0);
-                            m_trackPoints << QPointF(long1, lat1) << QPointF(long1 - sign * (180.0 - longDiff), lat0 - 180.0);
-                        }
-                    }
-                }
-                else
-                {
-                    m_trackPoints << QPointF(long0, lat0) << QPointF(long1, lat1);
-                }
-            }
-
-            // Draw ticks on the ground tracks
-            if (m_showTicks)
-            {
-                float tickScale = 2.5f / xscale / m_zoomFactor;
-                double startTime = 0.0;
-                if (segment->samples.size() > 0)
-                    startTime = segment->samples.first().mjd;
-                int lastTick = segment->ticks.size();
-                if (!m_showEntireTracks)
-                {
-                    lastTick = std::min(lastTick,
-                                        (int) std::ceil((endTime - startTime) / sta::secsToDays(m_tickInterval)));
-                }
-
-                for (int i = 0; i < lastTick; i++)
-                {
-                    GroundTrackTick& tick = segment->ticks[i];
-                    float tickLongitude = tick.longitude;
-                    if (tickLongitude < m_west)
-                        tickLongitude += 360.0f;
-                    m_trackPoints << QPointF(tickLongitude - tick.dx * tickScale,
-                                             tick.latitude  - tick.dy * tickScale)
-                    << QPointF(tickLongitude + tick.dx * tickScale,
-                               tick.latitude  + tick.dy * tickScale);
-                }
-            }
-
-            painter.setPen(segment->color);
-            painter.drawLines(m_trackPoints);
-
-        }
+        float tickScale = 2.5f / xscale / m_zoomFactor;
+        track->drawTicks(painter, m_body, m_currentTime, m_tickInterval, tickScale, clipBox);
 
         // Draw an indicator at the current spacecraft subpoint
         if (activeNow)
@@ -2100,7 +1570,7 @@ void GroundTrackView::paint2DView(QPainter& painter)
                             if (longNow2 < m_west)
                                 longNow2 += 360.0;
                         }
-                        clippedWrappedLine(clipBox, longNow1, latNow1, longNow2, latNow2, m_trackPoints);
+                        ClippedWrappedLine(clipBox, longNow1, latNow1, longNow2, latNow2, m_trackPoints);
                     }
                 }
             }
@@ -2162,7 +1632,7 @@ void GroundTrackView::paint2DView(QPainter& painter)
                         if (longNow2 < m_west)
                             longNow2 += 360.0;
                     }*/
-                    clippedWrappedLine(clipBox, longNow1, latNow1, groundObject->longitude, groundObject->latitude, m_trackPoints);
+                    ClippedWrappedLine(clipBox, longNow1, latNow1, groundObject->longitude, groundObject->latitude, m_trackPoints);
                 }
             }
         }
@@ -2516,7 +1986,7 @@ void
         // Look out for wrapping
         if (std::abs(longitude - lastLongitude) < 180.0)
         {
-            clippedLine(clipBox, lastLongitude, lastLatitude, longitude, latitude, m_trackPoints);
+            ClippedLine(clipBox, lastLongitude, lastLatitude, longitude, latitude, m_trackPoints);
         }
         else
         {

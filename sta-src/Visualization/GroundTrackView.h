@@ -29,6 +29,7 @@
 #ifndef _STA_VISUALIZATION_GROUND_TRACK_VIEW_H_
 #define _STA_VISUALIZATION_GROUND_TRACK_VIEW_H_
 
+#include "GroundTrack.h"
 #include "Constellations/canalysis.h"
 #include "Astro-Core/stabody.h"
 
@@ -44,46 +45,6 @@ class QGraphicsScene;
 
 class SpaceObject;
 class PropagatedScenario;
-
-
-class GroundTrackSample
-{
-public:
-    double mjd;
-    double latitude;
-    double longitude;
-    double altitude;
-};
-
-class GroundTrackTick
-{
-public:
-    float latitude;
-    float longitude;
-    float altitude;
-    float dx;
-    float dy;
-};
-
-// A GroundTrackSegment corresponds to a mission arc
-class GroundTrackSegment
-{
-public:
-    QColor color;
-    QList<GroundTrackSample> samples;
-    QList<GroundTrackTick> ticks;
-
-};
-
-// There's one ground track per SpaceObject
-class GroundTrack
-{
-public:
-    GroundTrack() {}
-    ~GroundTrack();
-    SpaceObject* vehicle;
-    QList<GroundTrackSegment*> segments;
-};
 
 
 class GroundTrackView : public QGraphicsView

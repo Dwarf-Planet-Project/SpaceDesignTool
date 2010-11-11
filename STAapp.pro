@@ -342,6 +342,8 @@ SEM_FORMS = sta-src/SEM/sem.ui \
 
 # ############# Visualization Module ##############
 VISUALIZATION_SOURCES = \
+    sta-src/Visualization/ClippedDraw.cpp \
+    sta-src/Visualization/GroundTrack.cpp \
     sta-src/Visualization/GroundTrackPlotTool.cpp \
     sta-src/Visualization/GroundTrackView.cpp \
     sta-src/Visualization/ThreeDView.cpp \
@@ -349,6 +351,8 @@ VISUALIZATION_SOURCES = \
     sta-src/Visualization/VisualizationToolBar.cpp
 
 VISUALIZATION_HEADERS = \
+    sta-src/Visualization/ClippedDraw.h \
+    sta-src/Visualization/GroundTrack.h \
     sta-src/Visualization/GroundTrackPlotTool.h \
     sta-src/Visualization/GroundTrackView.h \
     sta-src/Visualization/ThreeDView.h \
