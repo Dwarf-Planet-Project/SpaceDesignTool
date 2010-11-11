@@ -644,14 +644,6 @@ LIBS += -lvesta -Lthirdparty/vesta/build
 # Add library path for static libraries
 win32-g++:LIBS += $$PWD/lib/win32-x86-gcc/cspice.a
 macx:LIBS += $$PWD/lib/mac/cspice.a
-#linux-g++-32:LIBS += $$PWD/lib/linux-x86/cspice.a
-#linux-g++-64:LIBS += $$PWD/lib/linux-x64/cspice.a
-
-linux-g++ {
-    message("Compiling linux 32 bits")
-    LIBS += -L$$PWD/lib/linux-x86
-    LIBS += -lcspice
-}
 
 INCLUDEPATH += include/spice
 
@@ -699,8 +691,8 @@ macx:QMAKE_CXXFLAGS_RELEASE = -ffast-math \
     -fexpensive-optimizations \
     -O3 \
     -Bdynamic
+
 linux-g++ { 
-    message("Warning: compiling a linux version with gcc v4.3")
     QT += dbus
     QMAKE_CXXFLAGS_RELEASE = -ffast-math \
         -fexpensive-optimizations \
@@ -711,23 +703,24 @@ linux-g++ {
     CXXFLAGS += -std=c++0x
     QMAKE_CXX     >= g++-4.3
     QMAKE_CC      >= gcc-4.3
-
-}
-linux-g++-64 {
-    message("Warning: compiling a 64-bits linux version with gcc v4.3")
-    QT += dbus
-    QMAKE_CXXFLAGS_RELEASE = -ffast-math \
-        -fexpensive-optimizations \
-        -O3 \
-        -Bdynamic
-    INCLUDEPATH += $$LINUX_LIBRARIES_DIR
-    INCLUDEPATH += /usr/include
-    CXXFLAGS += -std=c++0x
-    QMAKE_CXX >= g++-4.3
-    QMAKE_CC  >= gcc-4.3
-
 }
 
+unix {
+    HARDWARE_PLATFORM = $$system(uname -a)
+    contains( HARDWARE_PLATFORM, x86_64 ) {
+        # 64-bit Linux
+    message("Warning: compiling a 64-bit linux version with >= gcc v4.3")
+    LIBS += -L$$PWD/lib/linux-x64
+    LIBS += -lcspice
+    } else {
+        # 32-bit Linux
+    message("Warning: compiling a 32-bit linux version with >= gcc v4.3")
+    LIBS += -L$$PWD/lib/linux-x86
+    LIBS += -lcspice
+    }
+
+
+}
 
 # ################## Package files ###################
 VIS3D_SOURCE = sta-data/vis3d
