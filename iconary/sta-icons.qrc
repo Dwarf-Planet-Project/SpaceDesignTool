@@ -59,7 +59,6 @@
         <file>TLE-icon.png</file>
         <file>rocket.png</file>
         <file>reentryVehicle.png</file>
-        <file>ComboEarth.png</file>
         <file>ComboJupiter.png</file>
         <file>ComboMars.png</file>
         <file>ComboMercury.png</file>
@@ -72,7 +71,6 @@
         <file>Gravity_field_icon.png</file>
         <file>ComboDeimos.png</file>
         <file>ComboEnceladus.png</file>
-        <file>ComboEuropa.png</file>
         <file>ComboTitan.png</file>
         <file>ComboTriton.png</file>
         <file>ComboSun.png</file>
@@ -115,5 +113,12 @@
         <file>colorWHITE.png</file>
         <file>colorYELLOW.png</file>
         <file>colorTRANSPARENT.png</file>
+        <file>ComboIo.png</file>
+        <file>ComboEuropa.png</file>
+        <file>ComboGanymede.png</file>
+        <file>ComboEarth.png</file>
+        <file>ComboCallisto.png</file>
+        <file>IconBEAM.png</file>
+        <file>IconPARTICIPANTS.png</file>
     </qresource>
 </RCC>

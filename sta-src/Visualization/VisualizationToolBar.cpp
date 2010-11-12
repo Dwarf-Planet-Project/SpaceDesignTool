@@ -70,12 +70,12 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
         }
     }
 
-    m_bodySelectCombo->addItem(QIcon(":/icons/ComboPluto.png"), "Io", STA_IO);
-    m_bodySelectCombo->addItem(QIcon(":/icons/ComboPluto.png"), "Europa", STA_EUROPA);
-    m_bodySelectCombo->addItem(QIcon(":/icons/ComboPluto.png"), "Ganymede", STA_GANYMEDE);
-    m_bodySelectCombo->addItem(QIcon(":/icons/ComboPluto.png"), "Callisto", STA_CALLISTO);
-    m_bodySelectCombo->addItem(QIcon(":/icons/ComboPluto.png"), "Enceladus", STA_ENCELADUS);
-    m_bodySelectCombo->addItem(QIcon(":/icons/ComboPluto.png"), "Titan", STA_TITAN);
+    m_bodySelectCombo->addItem(QIcon(":/icons/ComboIo.png"), "Io", STA_IO);
+    m_bodySelectCombo->addItem(QIcon(":/icons/ComboEuropa.png"), "Europa", STA_EUROPA);
+    m_bodySelectCombo->addItem(QIcon(":/icons/ComboGanymede.png"), "Ganymede", STA_GANYMEDE);
+    m_bodySelectCombo->addItem(QIcon(":/icons/ComboCallisto.png"), "Callisto", STA_CALLISTO);
+    m_bodySelectCombo->addItem(QIcon(":/icons/ComboEnceladus.png"), "Enceladus", STA_ENCELADUS);
+    m_bodySelectCombo->addItem(QIcon(":/icons/ComboTitan.png"), "Titan", STA_TITAN);
 
     m_bodySelectCombo->setVisible(false);
 
@@ -140,7 +140,7 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     m_saveImageAction = new QAction(QIcon(":/icons/IconDOWNLOAD.png"), tr("Save"), this);
     m_saveImageAction->setToolTip(tr("Save plot to a file"));
 
-    m_sensorFovsAction = new QAction(QIcon(":/icons/ParticipantSTATION.png"), tr("Sensor FOVs"), this);
+    m_sensorFovsAction = new QAction(QIcon(":/icons/IconBEAM.png"), tr("Sensor FOVs"), this);
     m_sensorFovsAction->setToolTip(tr("Show sensor FOVs"));
     m_sensorFovsAction->setCheckable(true);
 
@@ -181,7 +181,7 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     m_analysisAction->setMenu(m_analysisMenu);
 
     QMenu* cameraMenu = new QMenu("Camera viewpoint", this);
-    m_cameraAction = new QAction(QIcon(":/icons/ComboEarth.png"), "", this);
+    m_cameraAction = new QAction(QIcon(":/icons/IconPARTICIPANTS.png"), "", this);
     m_cameraAction->setToolTip(tr("Select camera viewpoint"));
     m_cameraAction->setMenu(cameraMenu);
 
@@ -329,10 +329,10 @@ VisualizationToolBar::configureCameraMenu(const PropagatedScenario* scenario)
     createCameraMenuAction(tr("Jupiter System"), "", "jupiter system");
     createCameraMenuAction(tr("Saturn System"), "", "saturn system");
     m_cameraAction->menu()->addSeparator();
-    createCameraMenuAction(tr("Io"),       ":/icons/ComboMoon.png", "Io");
-    createCameraMenuAction(tr("Europa"),   ":/icons/ComboMoon.png", "Europa");
-    createCameraMenuAction(tr("Ganymede"), ":/icons/ComboMoon.png", "Ganymede");
-    createCameraMenuAction(tr("Callisto"), ":/icons/ComboMoon.png", "Callisto");
+    createCameraMenuAction(tr("Io"),       ":/icons/ComboIo.png", "Io");
+    createCameraMenuAction(tr("Europa"),   ":/icons/ComboEuropa.png", "Europa");
+    createCameraMenuAction(tr("Ganymede"), ":/icons/ComboGanymede.png", "Ganymede");
+    createCameraMenuAction(tr("Callisto"), ":/icons/ComboCallisto.png", "Callisto");
 }
 
 
