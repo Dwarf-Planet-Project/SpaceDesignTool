@@ -154,6 +154,46 @@ Scenario_GetTimeRange(ScenarioAbstractTrajectoryType* trajectory, QDateTime* sta
 }
 
 
+// Convert a state vector to the coordinate system given by the specified name
+static StateVector ConvertStateVector(const StateVector& state, const QString& coordSys, double mjd)
+{
+    sta::CoordinateSystemType toSystem = sta::COORDSYS_INVALID;
+    if (coordSys == "Fixed")
+    {
+        toSystem = sta::COORDSYS_BODYFIXED;
+    }
+    else if (coordSys == "Ecliptic J2000")
+    {
+        toSystem = sta::COORDSYS_ECLIPTIC_J2000;
+    }
+    else if (coordSys == "EME J2000")
+    {
+        toSystem = sta::COORDSYS_ECLIPTIC_J2000;
+    }
+    else if (coordSys == "EME B1950")
+    {
+        toSystem = sta::COORDSYS_EME_B1950;
+    }
+    Q_ASSERT(toSystem != sta::COORDSYS_INVALID);
+
+    return CoordinateSystem::convert(state,
+                                     mjd,
+                                     STA_SOLAR_SYSTEM->earth(),
+                                     sta::CoordinateSystem(sta::COORDSYS_EME_J2000),
+                                     STA_SOLAR_SYSTEM->earth(),
+                                     sta::CoordinateSystem(toSystem));
+}
+
+
+// Return true if this output field is the apparent distance to a Solar System body
+static bool IsPlanetDistanceField(const QString& fieldName)
+{
+    return STA_SOLAR_SYSTEM->lookup(fieldName) != NULL;
+}
+
+/***** End helper functions *****/
+
+
 analysis::analysis(SpaceScenario*scenario, PropagatedScenario*propagatedScenario,QWidget * parent, Qt::WindowFlags f) : QDialog(parent,f)
 {
     setupUi(this);
@@ -1099,7 +1139,7 @@ int analysis::InputsControl(QList<QTreeWidget*>tree)
         QTreeWidgetItem*ShowInReport=treeWidgetShowInReport->topLevelItem(i);
         QString ToReport=ShowInReport->text(0);
 
-            if((ToReport=="Azimuth")||(ToReport=="Elevation")||(ToReport=="Range")||(ToReport=="Equivalent Isotropical Radiated Power")||(ToReport=="Received Frequency")||(ToReport=="Doppler Shift")||(ToReport=="Received Power")||(ToReport=="Flux Density")||(ToReport=="Overlap Bandwidth Factor")||(ToReport=="Free Space Loss")||(ToReport=="Oxygen Loss")||(ToReport=="Water Vapour Loss")||(ToReport=="Rain Loss")||(ToReport=="Atmospheric Loss")||(ToReport=="Propagation Loss")||(ToReport=="G/T")||(ToReport=="C/No")||(ToReport=="C/N")||(ToReport=="Eb/No")||(ToReport=="BER"))
+            if((ToReport=="Azimuth")||(ToReport=="Elevation")||(ToReport=="Range")||(ToReport=="EIRP")||(ToReport=="Received Frequency")||(ToReport=="Doppler Shift")||(ToReport=="Received Power")||(ToReport=="Flux Density")||(ToReport=="Overlap Bandwidth Factor")||(ToReport=="Free Space Loss")||(ToReport=="Oxygen Loss")||(ToReport=="Water Vapour Loss")||(ToReport=="Rain Loss")||(ToReport=="Atmospheric Loss")||(ToReport=="Propagation Loss")||(ToReport=="G/T")||(ToReport=="C/No")||(ToReport=="C/N")||(ToReport=="Eb/No")||(ToReport=="BER"))
         {
 
         CovCommCount++;
@@ -1122,7 +1162,7 @@ int analysis::InputsControl(QList<QTreeWidget*>tree)
             {
         QTreeWidgetItem*Show=tree[j]->selectedItems().at(i);
         QString ToShow=Show->text(0);
-        if((ToShow=="Azimuth")||(ToShow=="Elevation")||(ToShow=="Range")||(ToShow=="Equivalent Isotropical Radiated Power")||(ToShow=="Received Frequency")||(ToShow=="Doppler Shift")||(ToShow=="Received Power")||(ToShow=="Flux Density")||(ToShow=="Overlap Bandwidth Factor")||(ToShow=="Free Space Loss")||(ToShow=="Oxygen Loss")||(ToShow=="Water Vapour Loss")||(ToShow=="Rain Loss")||(ToShow=="Atmospheric Loss")||(ToShow=="Propagation Loss")||(ToShow=="G/T")||(ToShow=="C/No")||(ToShow=="C/N")||(ToShow=="Eb/No")||(ToShow=="BER"))
+        if((ToShow=="Azimuth")||(ToShow=="Elevation")||(ToShow=="Range")||(ToShow=="EIRP")||(ToShow=="Received Frequency")||(ToShow=="Doppler Shift")||(ToShow=="Received Power")||(ToShow=="Flux Density")||(ToShow=="Overlap Bandwidth Factor")||(ToShow=="Free Space Loss")||(ToShow=="Oxygen Loss")||(ToShow=="Water Vapour Loss")||(ToShow=="Rain Loss")||(ToShow=="Atmospheric Loss")||(ToShow=="Propagation Loss")||(ToShow=="G/T")||(ToShow=="C/No")||(ToShow=="C/N")||(ToShow=="Eb/No")||(ToShow=="BER"))
         {
 
             CovCommCount++;
@@ -1891,536 +1931,165 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
                 if((name=="x position")||(name=="y position")||(name=="z position")||(name=="x velocity")||(name=="y velocity")||(name=="z velocity"))
                 {
+                    QString Coordinate = analysis::ReadCoordinateSys(treeWidgetShowInReport,parameter);
+                    QString Units = analysis::ReadUnits(treeWidgetShowInReport,parameter);
 
-                QString Coordinate=analysis::ReadCoordinateSys(treeWidgetShowInReport,parameter);
-                QString Units=analysis::ReadUnits(treeWidgetShowInReport,parameter);
+                    double outputValue = 0.0;
 
-                sta::StateVector Vector[inumber];
+                    double mjd = MJDdate[index];
+                    StateVector state = arc->trajectorySample(j);
+                    StateVector transformedState = ConvertStateVector(state, Coordinate, mjd);
 
-                Vector[index]=arc->trajectorySample(j);
-
-                if(name=="x position")
-
-                {
-                    if(Coordinate=="Fixed")
+                    if (name == "x position")
                     {
-
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem Fixed("PLANETO FIXED");
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             Fixed);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].position.x(),"km")<<"\t";
-
-
+                        outputValue = transformedState.position.x();
                     }
-                    if(Coordinate=="Ecliptic J2000")
+                    else if (name == "y position")
                     {
-
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem Ecliptic("ECLIPTIC");
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             Ecliptic);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].position.x(),"km")<<"\t";
-
+                        outputValue = transformedState.position.y();
                     }
-                    if(Coordinate=="EME J2000")
+                    else if (name == "z position")
                     {
-
-
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000);
-
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].position.x(),"km")<<"\t";
-
-
+                        outputValue = transformedState.position.z();
                     }
-                    if(Coordinate=="EME B1950")
+                    else if (name == "x velocity")
                     {
-
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem B1950("INERTIAL B1950");
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             B1950);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].position.x(),"km")<<"\t";
-
+                        outputValue = transformedState.velocity.x();
                     }
-                }
-
-                if(name=="y position")
-                {
-                    if(Coordinate=="Fixed")
+                    else if (name == "y velocity")
                     {
-
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem Fixed("PLANETO FIXED");
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             Fixed);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].position.y(),"km")<<"\t";
-
+                        outputValue = transformedState.velocity.y();
                     }
-                    if(Coordinate=="Ecliptic J2000")
+                    else if (name == "z velocity")
                     {
-
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem Ecliptic("ECLIPTIC");
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             Ecliptic);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].position.y(),"km")<<"\t";
-
-                    }
-                    if(Coordinate=="EME J2000")
-                    {
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].position.y(),"km")<<"\t";
-
-                    }
-                    if(Coordinate=="EME B1950")
-                    {
-
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem B1950("INERTIAL B1950");
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             B1950);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].position.y(),"km")<<"\t";
-
-                    }
-                }
-
-                if(name=="z position")
-                {
-
-                    if(Coordinate=="Fixed")
-                    {
-
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem Fixed("PLANETO FIXED");
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             Fixed);
-
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].position.z(),"km")<<"\t";
-
-                    }
-                    if(Coordinate=="Ecliptic J2000")
-                    {
-
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem Ecliptic("ECLIPTIC");
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             Ecliptic);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].position.z(),"km")<<"\t";
-
-                    }
-                    if(Coordinate=="EME J2000")
-                    {
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].position.z(),"km")<<"\t";
-
-                    }
-                    if(Coordinate=="EME B1950")
-                    {
-
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem B1950("INERTIAL B1950");
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             B1950);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].position.z(),"km")<<"\t";
-
+                        outputValue = transformedState.velocity.z();
                     }
 
-                }
-
-                if(name=="x velocity")
-                {
-                    if(Coordinate=="Fixed")
-                    {
-
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem Fixed("PLANETO FIXED");
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             Fixed);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.x(),"km/s")<<"\t";
-
-
-
-                    }
-                    if(Coordinate=="Ecliptic J2000")
-                    {
-
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem Ecliptic("ECLIPTIC");
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             Ecliptic);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.x(),"km/s")<<"\t";
-
-
-
-                    }
-                    if(Coordinate=="EME J2000")
-                    {
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.x(),"km/s")<<"\t";
-
-                    }
-                    if(Coordinate=="EME B1950")
-                    {
-
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem B1950("INERTIAL B1950");
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             B1950);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.x(),"km/s")<<"\t";
-
-
-
-                    }
-                }
-                if(name=="y velocity")
-                {
-                    if(Coordinate=="Fixed")
-                    {
-
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem Fixed("PLANETO FIXED");
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             Fixed);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.y(),"km/s")<<"\t";
-
-
-
-                    }
-                    if(Coordinate=="Ecliptic J2000")
-                    {
-
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem Ecliptic("ECLIPTIC");
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             Ecliptic);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.y(),"km/s")<<"\t";
-
-
-
-                    }
-                    if(Coordinate=="EME J2000")
-                    {
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.y(),"km/s")<<"\t";
-
-                    }
-                    if(Coordinate=="EME B1950")
-                    {
-
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem B1950("INERTIAL B1950");
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             B1950);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.y(),"km/s")<<"\t";
-
-
-
-                    }
-                }
-                if(name=="z velocity")
-                {
-                    if(Coordinate=="Fixed")
-                    {
-
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem Fixed("PLANETO FIXED");
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             Fixed);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.z(),"km/s")<<"\t";
-
-                    }
-                    if(Coordinate=="Ecliptic J2000")
-                    {
-
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem Ecliptic("ECLIPTIC");
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             Ecliptic);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.z(),"km/s")<<"\t";
-                    }
-                    if(Coordinate=="EME J2000")
-                    {
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.z(),"km/s")<<"\t";
-
-                    }
-                    if(Coordinate=="EME B1950")
-                    {
-
-                    sta::StateVector ModifVector[inumber];
-                    sta::CoordinateSystem B1950("INERTIAL B1950");
-                    sta::CoordinateSystem EME2000("INERTIAL J2000");
-                    ModifVector[index]=CoordinateSystem::convert(Vector[index],
-                                             MJDdate[index],
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             EME2000,
-                                             STA_SOLAR_SYSTEM->lookup("Earth"),
-                                             B1950);
-                    stream<<sta::ConvertUnits(Units,ModifVector[index].velocity.z(),"km/s")<<"\t";
-
-
-
-                    }
-
-                }
+                    stream << sta::ConvertUnits(Units,outputValue, "km") << "\t";
                 }
                 if(name=="Time")
                 {
 
-                QString TimeCoordinate=analysis::ReadCoordinateSys(treeWidgetShowInReport,parameter);
+                    QString TimeCoordinate=analysis::ReadCoordinateSys(treeWidgetShowInReport,parameter);
 
-                //Options of Time
-                if(TimeCoordinate=="MJD")
-                {
-                    stream<<MJDdate[index]<<"\t";
-                }
-                if(TimeCoordinate=="Julian Date")
-                {
-                    JulianDate[index]=sta::MjdToJd(MJDdate[index]);
-                    stream<<JulianDate[index]<<"\t";
-                }
-                if(TimeCoordinate=="Julian UTC")
-                {
-                    //format:DayOfYear/YY UTCTime
-                    JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
-                    TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
-                    int Year=TimeDateVector[index].date().year();
-                                    QString YearPreLastDigit=QString::number(Year).at(2);
-                    QString YearLastDigit=QString::number(Year).at(3);
-                                    QString DDD=sta::calendarToDayOfYear(TimeDateVector[index]);
-                                    QString Time = TimeDateVector[index].time().toString(Qt::TextDate);
-                                    stream<<DDD<<"/"<<YearPreLastDigit<<YearLastDigit<<" "<<Time;
-                                }
-                if(TimeCoordinate=="Gregorian LCL")
-                {
-                    QDateTime CurrentDate=QDateTime::currentDateTime();
-                    QDateTime CurrentUTC=CurrentDate.toUTC();
-                    double DisplayDate[inumber];
-                    QDateTime DisplayDateCalendar[inumber];
-                    double CurrentDateInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentDate));
-                    double CurrentUtcInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentUTC));
-
-                    if(CurrentUtcInMJD-CurrentDateInMJD<0)
-
+                    //Options of Time
+                    if(TimeCoordinate=="MJD")
                     {
-                    DisplayDate[index]=MJDdate[index]+(CurrentDateInMJD-CurrentUtcInMJD)+0.00001;
+                        stream<<MJDdate[index]<<"\t";
                     }
-                    else
+                    if(TimeCoordinate=="Julian Date")
                     {
-                    DisplayDate[index]=MJDdate[index]-(CurrentUtcInMJD-CurrentDateInMJD)+0.00001;
+                        JulianDate[index]=sta::MjdToJd(MJDdate[index]);
+                        stream<<JulianDate[index]<<"\t";
                     }
-                    DisplayDateCalendar[index]=sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]));
-
-                                    QList<QString>Date= sta::TimeLayout(DisplayDateCalendar[index].date().day(),DisplayDateCalendar[index].date().month());
-                                    QString Time=DisplayDateCalendar[index].time().toString(Qt::TextDate);
-                                    stream<<Date[0]<<"/"<<Date[1]<<"/"<<DisplayDateCalendar[index].date().year()<<" "<<Time<<"\t";
-                }
-                if(TimeCoordinate=="Gregorian UTC")
-                {
-
-                    JulianDate[index]=sta::MjdToJd(MJDdate[index])+0.00001;
-                    TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
-                                    QList<QString>Date=sta::TimeLayout(TimeDateVector[index].date().day(),TimeDateVector[index].date().month());
-                                    QString Time=TimeDateVector[index].time().toString(Qt::TextDate);
-                                    stream<<Date[0]<<"/"<<Date[1]<<"/"<<TimeDateVector[index].date().year()<<" "<<Time<<"\t";
-
-                }
-                if(TimeCoordinate=="Julian LCL")
-                {
-                    QDateTime CurrentDate=QDateTime::currentDateTime();
-                    QDateTime CurrentUTC=CurrentDate.toUTC();
-                    double DisplayDate[inumber];
-                    QDateTime DisplayDateCalendar[inumber];
-                    double CurrentDateInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentDate));
-                    double CurrentUtcInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentUTC));
-
-                    if(CurrentUtcInMJD-CurrentDateInMJD<0)
-
+                    if(TimeCoordinate=="Julian UTC")
                     {
-                    DisplayDate[index]=MJDdate[index]+(CurrentDateInMJD-CurrentUtcInMJD)+0.00001;
-                    }
-                    else
-                    {
-                    DisplayDate[index]=MJDdate[index]-(CurrentUtcInMJD-CurrentDateInMJD)+0.00001;
-                    }
-                    DisplayDateCalendar[index]=sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]));
+                        //format:DayOfYear/YY UTCTime
+                        JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
+                        TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
+                        int Year=TimeDateVector[index].date().year();
+                                        QString YearPreLastDigit=QString::number(Year).at(2);
+                        QString YearLastDigit=QString::number(Year).at(3);
+                                        QString DDD=sta::calendarToDayOfYear(TimeDateVector[index]);
 
-                    //QString DDD=sta::calendarToDayOfYear(sta::JdToCalendar(sta::MjdToJd(MJDdate[index]+0.00001)));
-                    QString DDD=sta::calendarToDayOfYear(sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]+0.00001)));
-                    int Year=(sta::JdToCalendar(sta::MjdToJd(MJDdate[index]))).date().year();
-                    QString YearPreLastDigit=QString::number(Year).at(2);
-                    QString YearLastDigit=QString::number(Year).at(3);
-
-                                    QString Time=DisplayDateCalendar[index].time().toString(Qt::TextDate);
-                                    stream<<DDD<<"/"<<YearPreLastDigit<<YearLastDigit<<" "<<Time<<"\t";
-
-                }
-
-                                if(TimeCoordinate=="Mission Elapsed")
-                {
-                                    QString Elapsed= sta::MissionElapsedTime(MJDdate[index],StartEpoch);
-                                    stream<<Elapsed<<"\t";
-
-                                }
-                if(TimeCoordinate=="YYDDD")
-                {
-                    JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
-                    TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
-                    int Year=TimeDateVector[index].date().year();
-                    QDateTime FirstDayCurrentYear(QDate(Year,1,1),QTime(0,0,0));
-                    double StartYearTime=sta::JdToMjd(sta::CalendarToJd(FirstDayCurrentYear));
-                    QString YearPreLastDigit=QString::number(Year).at(2);
-                    QString YearLastDigit=QString::number(Year).at(3);
-
-                    DayOfYear[index]=sta::MjdToFromEpoch(StartYearTime,MJDdate[index],"Days")+1;
-                                    QList<double>DDD=sta::DayOfYearToDDD(DayOfYear[index]);
-                                    stream<<YearPreLastDigit<<YearLastDigit;
-                                    for(int i=0;i<DDD.size();i++)
-                                    {
-                                        stream<<DDD[i];
+                                        QString Time = TimeDateVector[index].time().toString(Qt::TextDate);
+                                        stream<<DDD<<"/"<<YearPreLastDigit<<YearLastDigit<<" "<<Time;
                                     }
-                                    stream<<"\t";
-                }
+                    if(TimeCoordinate=="Gregorian LCL")
+                    {
+                        QDateTime CurrentDate=QDateTime::currentDateTime();
+                        QDateTime CurrentUTC=CurrentDate.toUTC();
+                        double DisplayDate[inumber];
+                        QDateTime DisplayDateCalendar[inumber];
+                        double CurrentDateInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentDate));
+                        double CurrentUtcInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentUTC));
 
-                                /*if(TimeCoordinate=="GMT")
-                {
+                        if(CurrentUtcInMJD-CurrentDateInMJD<0)
 
-                                }*/
-                }
+                        {
+                        DisplayDate[index]=MJDdate[index]+(CurrentDateInMJD-CurrentUtcInMJD)+0.00001;
+                        }
+                        else
+                        {
+                        DisplayDate[index]=MJDdate[index]-(CurrentUtcInMJD-CurrentDateInMJD)+0.00001;
+                        }
+                        DisplayDateCalendar[index]=sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]));
+
+                                        QList<QString>Date= sta::TimeLayout(DisplayDateCalendar[index].date().day(),DisplayDateCalendar[index].date().month());
+                                        QString Time=DisplayDateCalendar[index].time().toString(Qt::TextDate);
+                                        stream<<Date[0]<<"/"<<Date[1]<<"/"<<DisplayDateCalendar[index].date().year()<<" "<<Time<<"\t";
+                    }
+                    if(TimeCoordinate=="Gregorian UTC")
+                    {
+
+                        JulianDate[index]=sta::MjdToJd(MJDdate[index])+0.00001;
+                        TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
+                                        QList<QString>Date=sta::TimeLayout(TimeDateVector[index].date().day(),TimeDateVector[index].date().month());
+                                        QString Time=TimeDateVector[index].time().toString(Qt::TextDate);
+                                        stream<<Date[0]<<"/"<<Date[1]<<"/"<<TimeDateVector[index].date().year()<<" "<<Time<<"\t";
+
+                    }
+                    if(TimeCoordinate=="Julian LCL")
+                    {
+                        QDateTime CurrentDate=QDateTime::currentDateTime();
+                        QDateTime CurrentUTC=CurrentDate.toUTC();
+                        double DisplayDate[inumber];
+                        QDateTime DisplayDateCalendar[inumber];
+                        double CurrentDateInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentDate));
+                        double CurrentUtcInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentUTC));
+
+                        if(CurrentUtcInMJD-CurrentDateInMJD<0)
+                        {
+                            DisplayDate[index]=MJDdate[index]+(CurrentDateInMJD-CurrentUtcInMJD)+0.00001;
+                        }
+                        else
+                        {
+                            DisplayDate[index]=MJDdate[index]-(CurrentUtcInMJD-CurrentDateInMJD)+0.00001;
+                        }
+                        DisplayDateCalendar[index]=sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]));
+
+                        //QString DDD=sta::calendarToDayOfYear(sta::JdToCalendar(sta::MjdToJd(MJDdate[index]+0.00001)));
+                        QString DDD=sta::calendarToDayOfYear(sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]+0.00001)));
+
+                        int Year=(sta::JdToCalendar(sta::MjdToJd(MJDdate[index]))).date().year();
+                        QString YearPreLastDigit=QString::number(Year).at(2);
+                        QString YearLastDigit=QString::number(Year).at(3);
+
+                        QString Time=DisplayDateCalendar[index].time().toString(Qt::TextDate);
+                        stream<<DDD<<"/"<<YearPreLastDigit<<YearLastDigit<<" "<<Time<<"\t";
+
+                    }
+
+                    if(TimeCoordinate=="Mission Elapsed")
+                    {
+                        QString Elapsed= sta::MissionElapsedTime(MJDdate[index],StartEpoch);
+                        stream<<Elapsed<<"\t";
+                    }
+                    if(TimeCoordinate=="YYDDD")
+                    {
+                        JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
+                        TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
+                        int Year=TimeDateVector[index].date().year();
+                        QDateTime FirstDayCurrentYear(QDate(Year,1,1),QTime(0,0,0));
+                        double StartYearTime=sta::JdToMjd(sta::CalendarToJd(FirstDayCurrentYear));
+                        QString YearPreLastDigit=QString::number(Year).at(2);
+                        QString YearLastDigit=QString::number(Year).at(3);
+
+                        DayOfYear[index]=sta::MjdToFromEpoch(StartYearTime,MJDdate[index],"Days")+1;
+                                        QList<double>DDD=sta::DayOfYearToDDD(DayOfYear[index]);
+                                        stream<<YearPreLastDigit<<YearLastDigit;
+                                        for(int i=0;i<DDD.size();i++)
+                                        {
+                                            stream<<DDD[i];
+                                        }
+                                        stream<<"\t";
+                    }
+
+                                    /*if(TimeCoordinate=="GMT")
+                    {
+
+                                    }*/
+                    }
 
                             if(name=="Epoch")
                             {
@@ -2446,6 +2115,19 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                 {
                                     stream<<ElapsedTime<<"\t";
                                 }
+                            }
+                            else if (IsPlanetDistanceField(name))
+                            {
+                                StaBody* body = STA_SOLAR_SYSTEM->lookup(name);
+                                Q_ASSERT(body != NULL);
+
+                                QString Units = analysis::ReadUnits(treeWidgetShowInReport,parameter);
+
+                                double mjd = MJDdate[index];
+                                sta::StateVector state;
+                                spaceObj->getStateVector(mjd, *body, CoordinateSystem(COORDSYS_EME_J2000), &state);
+
+                                stream << sta::ConvertUnits(Units, state.position.norm(), "km") << "\t";
                             }
 
 
@@ -3244,44 +2926,6 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
         // Guillermo says: next line to used any more since we have now a spreadsheet table
         //QDesktopServices::openUrl(QUrl(analysisFileOutputURL));
     }
-}
-
-
-// Convert a state vector to the coordinate system given by the specified name
-static StateVector ConvertStateVector(const StateVector& state, const QString& coordSys, double mjd)
-{
-    sta::CoordinateSystemType toSystem = sta::COORDSYS_INVALID;
-    if (coordSys == "Fixed")
-    {
-        toSystem = sta::COORDSYS_BODYFIXED;
-    }
-    else if (coordSys == "Ecliptic J2000")
-    {
-        toSystem = sta::COORDSYS_ECLIPTIC_J2000;
-    }
-    else if (coordSys == "EME J2000")
-    {
-        toSystem = sta::COORDSYS_ECLIPTIC_J2000;
-    }
-    else if (coordSys == "EME B1950")
-    {
-        toSystem = sta::COORDSYS_EME_B1950;
-    }
-    Q_ASSERT(toSystem != sta::COORDSYS_INVALID);
-
-    return CoordinateSystem::convert(state,
-                                     mjd,
-                                     STA_SOLAR_SYSTEM->earth(),
-                                     sta::CoordinateSystem(sta::COORDSYS_EME_J2000),
-                                     STA_SOLAR_SYSTEM->earth(),
-                                     sta::CoordinateSystem(toSystem));
-}
-
-
-// Return true if this output field is the apparent distance to a Solar System body
-static bool IsPlanetDistanceField(const QString& fieldName)
-{
-    return STA_SOLAR_SYSTEM->lookup(fieldName) != NULL;
 }
 
 
