@@ -59,6 +59,7 @@ ThreeDVisualizationTool::ThreeDVisualizationTool(QWidget* parent, ViewActionGrou
     connect(m_toolBar, SIGNAL(tickIntervalChanged(double)),  this,    SLOT(setTickInterval(double)));
     connect(m_toolBar, SIGNAL(saveImageRequested()),         this,    SLOT(saveImage()));
     connect(m_toolBar, SIGNAL(cameraViewpointChanged(QString)), m_view, SLOT(setCameraViewpoint(const QString&)));
+    connect(m_toolBar, SIGNAL(sensorFovsToggled(bool)),      m_view,  SLOT(setSensorFovs(bool)));
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(m_view);

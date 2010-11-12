@@ -168,6 +168,8 @@ BodyLabelColor(StaBodyId id)
 {
     switch (id)
     {
+    case STA_SUN:       return Spectrum(1.0f, 1.0f, 0.0f);
+
     case STA_MERCURY:   return Spectrum(0.7f, 0.5f, 0.4f);
     case STA_VENUS:     return Spectrum(0.7f, 0.7f, 0.6f);
     case STA_EARTH:     return Spectrum(0.4f, 0.5f, 0.7f);
@@ -1051,6 +1053,7 @@ ThreeDView::initializeUniverse()
                                                                                "moon-clementine", 512, 6));
 
 
+    createOrbitVisualizer(STA_SOLAR_SYSTEM->sun(), BodyLabelColor(STA_SUN));
     for (unsigned int i = 0; i < PlanetCount; ++i)
     {
         createOrbitVisualizer(STA_SOLAR_SYSTEM->lookup(PlanetIds[i]), BodyLabelColor(PlanetIds[i]));
@@ -1133,29 +1136,40 @@ ThreeDView::createOrbitVisualizer(const StaBody* stabody, const Spectrum& color)
 
     vesta::Arc* arc = body->chronology()->firstArc();
 
-    TrajectoryGeometry* trajGeom = new TrajectoryGeometry();
-    trajGeom->setDisplayedPortion(TrajectoryGeometry::WindowBeforeCurrentTime);
-    trajGeom->setWindowDuration(arc->trajectory()->period() * 0.98);
-    trajGeom->setColor(color);
-    trajGeom->setFadeFraction(0.25);
-    //trajGeom->setLineWidth(1.5f);
+    if (stabody->id() != STA_SUN)
+    {
+        TrajectoryGeometry* trajGeom = new TrajectoryGeometry();
+        trajGeom->setDisplayedPortion(TrajectoryGeometry::WindowBeforeCurrentTime);
+        trajGeom->setWindowDuration(arc->trajectory()->period() * 0.98);
+        trajGeom->setColor(color);
+        trajGeom->setFadeFraction(0.25);
+        //trajGeom->setLineWidth(1.5f);
 
-    Visualizer* trajVisualizer = new Visualizer(trajGeom);
-    trajVisualizer->setVisibility(false);
+        Visualizer* trajVisualizer = new Visualizer(trajGeom);
+        trajVisualizer->setVisibility(false);
 
-    arc->center()->setVisualizer(string("traj ") + body->name(), trajVisualizer);
+        arc->center()->setVisualizer(string("traj ") + body->name(), trajVisualizer);
+    }
 
     LabelGeometry* label = new LabelGeometry(stabody->name().toUtf8().data(), m_labelFont.ptr(), color, 7.0f);
     label->setIcon(m_planetIcon.ptr());
     label->setIconColor(color);
 
-    // To avoid clutter, set the labels to fade out when then viewer is far
-    // away or very close to a planet.
-    float fadeSize = arc->trajectory()->boundingSphereRadius();
-    float minPixels = 20.0f;
-    float maxPixels = 20.0f * fadeSize / stabody->meanRadius();
-    label->setFadeSize(fadeSize);
-    label->setFadeRange(new FadeRange(minPixels, maxPixels, minPixels, maxPixels));
+    if (stabody->id() == STA_SUN)
+    {
+        label->setFadeSize(stabody->meanRadius());
+        label->setFadeRange(new FadeRange(0.0f, 20.0f, 0.0f, 20.0f));
+    }
+    else
+    {
+        // To avoid clutter, set the labels to fade out when then viewer is far
+        // away or very close to a planet.
+        float fadeSize = arc->trajectory()->boundingSphereRadius();
+        float minPixels = 20.0f;
+        float maxPixels = 20.0f * fadeSize / stabody->meanRadius();
+        label->setFadeSize(fadeSize);
+        label->setFadeRange(new FadeRange(minPixels, maxPixels, minPixels, maxPixels));
+    }
 
     Visualizer* visualizer = new Visualizer(label);
     visualizer->setDepthAdjustment(Visualizer::AdjustToFront);
@@ -1427,6 +1441,23 @@ ThreeDView::setEquatorialPlane(bool enabled)
         vis->setVisibility(enabled);
         setViewChanged();
     }
+}
+
+
+void
+ThreeDView::setSensorFovs(bool enabled)
+{
+    foreach (Entity* e, m_scenarioSpaceObjects.values())
+    {
+        // Set visibility of trajectory visualizers for all arcs
+        Visualizer* vis = e->visualizer("sensor fov");
+        if (vis)
+        {
+            vis->setVisibility(enabled);
+        }
+    }
+
+    setViewChanged();
 }
 
 
@@ -1865,7 +1896,7 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
     sensor->setSensorOrientation(sensorRotation);
     sensor->setTarget(findSolarSystemBody(spaceObj->mission().first()->centralBody()));
     sensor->setVisibility(false);
-    body->setVisualizer("sensor", sensor);
+    body->setVisualizer("sensor fov", sensor);
 
     return body;
 }
@@ -2178,6 +2209,16 @@ ThreeDView::setMoonOrbits(bool enabled)
 void
 ThreeDView::setPlanetLabels(bool enabled)
 {
+    Entity* sun = findSolarSystemBody(STA_SUN);
+    if (sun)
+    {
+        Visualizer* vis = sun->visualizer("label");
+        if (vis)
+        {
+            vis->setVisibility(enabled);
+        }
+    }
+
     for (unsigned int i = 0; i < PlanetCount; ++i)
     {
         Entity* planet = findSolarSystemBody(PlanetIds[i]);

@@ -89,15 +89,18 @@ public slots:
    void setScenario(PropagatedScenario* scenario);
    void selectParticipant(SpaceObject* spaceObject);
 
-   void setEquatorialPlane(bool enabled);
+   // Rendering
    void setStars(bool enabled);
    void setAtmospheres(bool enabled);
    void setClouds(bool enabled);
    void setShadows(bool enabled);
    void setReflections(bool enabled);
+
+   // Visualizers
+   void setEquatorialPlane(bool enabled);
    void setEquatorialGrid(bool enabled);
    void setPlanetGrid(bool enabled);
-
+   void setSensorFovs(bool enabled);
    void setSatelliteTrajectories(bool enabled);
    void setReentryTrajectories(bool enabled);
    void setPlanetOrbits(bool enabled);

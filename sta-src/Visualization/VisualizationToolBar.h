@@ -84,6 +84,7 @@ signals:
     void projectionChanged(bool enable25DView);
     void saveImageRequested();
     void tickIntervalChanged(double seconds);
+    void sensorFovsToggled(bool enabled);
 
     // Analysis (Claas Grohnfeldt, Steffen Peter)
     void discretizationToggled(bool enable);
@@ -104,6 +105,7 @@ private:
     QAction* m_gridAction;
     QAction* m_equatorAction;
     QAction* m_terminatorAction;
+    QAction* m_sensorFovsAction;
     QAction* m_saveImageAction;
 
     QAction* m_enable2DViewAction;

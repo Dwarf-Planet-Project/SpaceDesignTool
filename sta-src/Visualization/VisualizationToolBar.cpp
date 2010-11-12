@@ -140,6 +140,10 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     m_saveImageAction = new QAction(QIcon(":/icons/IconDOWNLOAD.png"), tr("Save"), this);
     m_saveImageAction->setToolTip(tr("Save plot to a file"));
 
+    m_sensorFovsAction = new QAction(QIcon(":/icons/ParticipantSTATION.png"), tr("Sensor FOVs"), this);
+    m_sensorFovsAction->setToolTip(tr("Show sensor FOVs"));
+    m_sensorFovsAction->setCheckable(true);
+
     // Analysis (Claas Grohnfeldt, Steffen Peter)
     m_discretizationAction = new QAction(tr("Show Discretization"), this);
     m_discretizationAction->setCheckable(true);
@@ -197,6 +201,7 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     connect(m_enable25DViewAction, SIGNAL(toggled(bool)),                this, SIGNAL(projectionChanged(bool)));
     connect(m_saveImageAction,     SIGNAL(triggered()),                  this, SIGNAL(saveImageRequested()));
     connect(cameraMenu,            SIGNAL(triggered(QAction*)),          this, SLOT(setCameraViewpoint(QAction*)));
+    connect(m_sensorFovsAction,    SIGNAL(triggered(bool)),              this, SIGNAL(sensorFovsToggled(bool)));
 
     // Analysis (Claas Grohnfeldt, Steffen Peter)
     m_discretizationAction->setChecked(false);
@@ -256,6 +261,7 @@ VisualizationToolBar::configureFor3DView(ViewActionGroup* viewActions)
     // Add all actions and widgets to the toolbar
     addAction(m_gridAction);
     addAction(m_equatorAction);
+    addAction(m_sensorFovsAction);
     addAction(m_saveImageAction);
 
     addViewSelectActions(viewActions->viewSelectGroup());
