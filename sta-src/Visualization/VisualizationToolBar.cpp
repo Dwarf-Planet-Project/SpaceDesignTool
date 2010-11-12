@@ -69,6 +69,14 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
             m_bodySelectCombo->addItem(QIcon(MyIconWithPath), body->name(), SolarBody);
         }
     }
+
+    m_bodySelectCombo->addItem(QIcon(":/icons/ComboPluto.png"), "Io", STA_IO);
+    m_bodySelectCombo->addItem(QIcon(":/icons/ComboPluto.png"), "Europa", STA_EUROPA);
+    m_bodySelectCombo->addItem(QIcon(":/icons/ComboPluto.png"), "Ganymede", STA_GANYMEDE);
+    m_bodySelectCombo->addItem(QIcon(":/icons/ComboPluto.png"), "Callisto", STA_CALLISTO);
+    m_bodySelectCombo->addItem(QIcon(":/icons/ComboPluto.png"), "Enceladus", STA_ENCELADUS);
+    m_bodySelectCombo->addItem(QIcon(":/icons/ComboPluto.png"), "Titan", STA_TITAN);
+
     m_bodySelectCombo->setVisible(false);
 
     // Create the tick interval action
