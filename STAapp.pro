@@ -705,7 +705,7 @@ linux-g++ {
     QMAKE_CC      >= gcc-4.3
 }
 
-linux {
+linux-g++ {
     HARDWARE_PLATFORM = $$system(uname -a)
     contains( HARDWARE_PLATFORM, x86_64 ) {
         # 64-bit Linux
