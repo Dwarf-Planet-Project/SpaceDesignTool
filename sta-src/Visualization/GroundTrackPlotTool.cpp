@@ -74,7 +74,6 @@ GroundTrackPlotTool::~GroundTrackPlotTool()
 }
 
 
-
 // Analysis (Claas Grohnfeldt, Steffen Peter)
 void GroundTrackPlotTool::setAnalysis(ConstellationAnalysis* analysisOfConstellations)
 {

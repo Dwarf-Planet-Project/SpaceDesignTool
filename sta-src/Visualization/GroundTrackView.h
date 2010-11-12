@@ -62,7 +62,6 @@ Q_OBJECT
     ~GroundTrackView();
 
     void setScenario(PropagatedScenario* scenario);
-    void computeTicks(GroundTrack& track, double interval);
 
     QPointF center() const { return m_center; }
     float zoomFactor() const { return m_zoomFactor; }
@@ -159,6 +158,7 @@ Q_OBJECT
     bool m_showTerminator;
     double m_tickInterval;
     const StaBody* m_body;
+    double m_trackDisplayDuration;
 
     // Analysis (Claas Grohnfeldt, Steffen Peter)
     bool m_showAnalysis;

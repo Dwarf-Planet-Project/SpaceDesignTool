@@ -153,6 +153,7 @@ GroundTrackView::GroundTrackView(QWidget* parent) :
         m_showTerminator(false),
         m_tickInterval(86400.0), // seconds
         m_body(NULL),
+        m_trackDisplayDuration(1.0), // days
         m_zoomFactor(1.0f),
         m_center(0.0f, 0.0f),
         m_maxHeight(180.0f),
@@ -237,28 +238,6 @@ void GroundTrackView::setScenario(PropagatedScenario* scenario)
     viewport()->update();
 }
 
-/*
-bool GroundTrackView::addGroundTrack(SpaceObject* vehicle)
-{
-    GroundTrack* track = new GroundTrack();
-    track->color = vehicle->trajectoryColor();
-
-    track->vehicle = vehicle;
-
-    // Skip empty ground tracks
-    computeGroundTrack(*track);
-    if (track->samples.size() == 0)
-    {
-        delete track;
-        return false;
-    }
-
-    m_groundTrackList.append(track);
-
-    return true;
-}
-*/
-
 
 bool GroundTrackView::addGroundTrack(SpaceObject* vehicle)
 {
@@ -288,94 +267,8 @@ void GroundTrackView::computeGroundTrack(GroundTrack& track)
     {
         GroundTrackSegment* segment = new GroundTrackSegment();
 
-        segment->color = arc->arcTrajectoryColor();
-
-        for (int i = 0; i < arc->trajectorySampleCount(); ++i)
-        {
-            double mjd = arc->trajectorySampleTime(i);
-            sta::StateVector v = arc->trajectorySample(i);
-
-            // Convert the state vector to the planet centered - planet fixed coordinates
-            v = sta::CoordinateSystem::convert(v, mjd,
-                                               arc->centralBody(), arc->coordinateSystem(),
-                                               m_body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED));
-
-            GroundTrackSample sample;
-            sample.mjd = mjd;
-            planetographicCoords(v.position, m_body, &sample.longitude, &sample.latitude, &sample.altitude);
-            segment->samples << sample;
-        }
-
+        segment->setColor(arc->arcTrajectoryColor());
         track.segments << segment;
-    }
-
-    computeTicks(track, sta::secsToDays(m_tickInterval));
-}
-
-
-
-// Calculate ticks at regular time intervals on the ground track
-void GroundTrackView::computeTicks(GroundTrack& track, double interval)
-{
-    unsigned int arcIndex = 0;
-
-    foreach (MissionArc* arc, track.vehicle->mission())
-    {
-        int nSamples = arc->trajectorySampleCount();
-        GroundTrackSegment* segment = track.segments.at(arcIndex);
-
-        segment->ticks.clear();
-
-        if (nSamples > 1)
-        {
-            double startTime = arc->trajectorySampleTime(0);
-            double endTime = arc->trajectorySampleTime(nSamples - 1);
-
-            for (double mjd = startTime; mjd < endTime; mjd += interval)
-            {
-                // We want to draw the ticks so that they're perpendicular to the
-                // ground track. We'll use simple differencing to compute the projected
-                // direction.
-                double t0 = mjd;
-                double t1 = t0 + interval * 0.01;
-
-                if (t1 < endTime)
-                {
-                    sta::StateVector v0;
-                    sta::StateVector v1;
-                    track.vehicle->getStateVector(t0, *m_body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v0);
-                    track.vehicle->getStateVector(t1, *m_body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v1);
-                    double long0, lat0, alt0;
-                    double long1, lat1, alt1;
-                    planetographicCoords(v0.position, m_body, &long0, &lat0, &alt0);
-                    planetographicCoords(v1.position, m_body, &long1, &lat1, &alt1);
-
-                    double diffLong = long1 - long0;
-                    double diffLat = lat1 - lat0;
-                    double l = sqrt(diffLong * diffLong + diffLat * diffLat);
-                    if (l == 0.0)
-                    {
-                        diffLong = 0.0;
-                        diffLat = 1.0;
-                    }
-                    else
-                    {
-                        diffLong /= l;
-                        diffLat /= l;
-                    }
-
-                    GroundTrackTick tick;
-                    tick.longitude = (float) long0;
-                    tick.latitude = (float) lat0;
-                    tick.altitude = (float) alt0;
-                    tick.dx = (float) -diffLat;
-                    tick.dy = (float) diffLong;
-
-                    segment->ticks << tick;
-                }
-            }
-        }
-        ++arcIndex;
     }
 }
 
@@ -431,10 +324,11 @@ void GroundTrackView::setTickInterval(double seconds)
     else
     {
         setShowTicks(true);
+
         m_tickInterval = seconds;
         foreach (GroundTrack* track, m_groundTrackList)
         {
-            computeTicks(*track, sta::secsToDays(m_tickInterval));
+            track->clearTicks();
         }
     }
 
@@ -470,7 +364,8 @@ void GroundTrackView::setBody(const StaBody* newBody)
         // Recompute all ground tracks
         foreach (GroundTrack* track, m_groundTrackList)
         {
-            computeGroundTrack(*track);
+            track->clearSamples();
+            track->clearTicks();
         }
 
         viewport()->update();
@@ -560,11 +455,11 @@ void GroundTrackView::saveImage()
 // a point in the body fixed frame of the current planet. Longitude and
 // latitude are in degrees, altitude is in kilometers.
 void
-        GroundTrackView::planetographicCoords(const Vector3d& position,
-                                              const StaBody* body,
-                                              double* longitude,
-                                              double* latitude,
-                                              double* altitude) const
+GroundTrackView::planetographicCoords(const Vector3d& position,
+                                      const StaBody* body,
+                                      double* longitude,
+                                      double* latitude,
+                                      double* altitude) const
 {
     // TODO: This simple approximation doesn't account for oblateness
     double radius = 0.0;
@@ -707,6 +602,13 @@ void GroundTrackView::drawBackground(QPainter* painter, const QRectF& rect)
 {
     QTransform savedTransform(painter->worldTransform());
     painter->setWorldTransform(QTransform());
+
+    // Update ground track for the current time
+    foreach (GroundTrack* track, m_groundTrackList)
+    {
+        track->updateSamples(track->vehicle, m_body, m_currentTime - m_trackDisplayDuration, m_currentTime);
+        track->updateTicks(track->vehicle, m_body, m_currentTime - m_trackDisplayDuration, m_currentTime, sta::secsToDays(m_tickInterval));
+    }
 
     if (m_projection == Oblique)
     {
@@ -1073,7 +975,7 @@ void GroundTrackView::paintObliqueView(QPainter& painter)
             activeNow = true;
         }
 
-        track->draw(painter, m_body, m_currentTime, proj, clipBox);
+        track->draw(painter, m_body, m_currentTime - m_trackDisplayDuration, m_currentTime, proj, clipBox);
 
         QPen trackPen;
         trackPen.setWidthF(3.0f / xform.m11());
@@ -1081,17 +983,17 @@ void GroundTrackView::paintObliqueView(QPainter& painter)
 
         if (m_showTicks)
         {
-            track->drawDropLines(painter, m_body, m_currentTime, m_tickInterval, proj, clipBox);
+            track->drawDropLines(painter, m_body, m_currentTime - m_trackDisplayDuration, m_currentTime, m_tickInterval, proj, clipBox);
         }
 
         foreach (GroundTrackSegment* segment, track->segments)
         {
             // Draw an indicator at the current spacecraft subpoint
-            if (!segment->samples.empty() &&
-                m_currentTime >= segment->samples.first().mjd && m_currentTime < segment->samples.last().mjd &&
+            if (!segment->samples().empty() &&
+                m_currentTime >= segment->startTime() && m_currentTime < segment->endTime() &&
                 inView(longNow, latNow, 0.0f))
             {
-                painter.setPen(segment->color);
+                painter.setPen(segment->color());
                 painter.drawLine(QPointF((float) longNow - indicatorSize, (float) latNow),
                                  QPointF((float) longNow + indicatorSize, (float) latNow));
                 painter.drawLine(QPointF((float) longNow, (float) latNow - indicatorSize),
@@ -1378,10 +1280,10 @@ void GroundTrackView::paint2DView(QPainter& painter)
         AlignedBox<float, 2> clipBox;
         clipBox.min() = Vector2f(m_west, m_south);
         clipBox.max() = Vector2f(m_east, m_north);
-        track->draw2D(painter, m_body, m_currentTime, clipBox);
+        track->draw2D(painter, m_body, m_currentTime - m_trackDisplayDuration, m_currentTime, clipBox);
 
         float tickScale = 2.5f / xscale / m_zoomFactor;
-        track->drawTicks(painter, m_body, m_currentTime, m_tickInterval, tickScale, clipBox);
+        track->drawTicks(painter, m_body, m_currentTime - m_trackDisplayDuration, m_currentTime, tickScale, clipBox);
 
         // Draw an indicator at the current spacecraft subpoint
         if (activeNow)
@@ -1390,14 +1292,9 @@ void GroundTrackView::paint2DView(QPainter& painter)
             // name the the satellite as a fucntion of the color of the arc
             foreach (GroundTrackSegment* segment, track->segments)
             {
-                // Get the time limits of the segment
-                int segmentSize = segment->samples.size();
-                double timeStart = segment->samples[0].mjd;
-                double timeEnd = segment->samples[segmentSize-1].mjd;
-
-                if ((m_currentTime >=  timeStart) && (m_currentTime <=  timeEnd))
+                if (segment->includesTime(m_currentTime))
                 {
-                    painter.setPen(segment->color);
+                    painter.setPen(segment->color());
                     painter.drawLine(QPointF((float) longNow - indicatorSize, (float) latNow),
                                      QPointF((float) longNow + indicatorSize, (float) latNow));
                     painter.drawLine(QPointF((float) longNow, (float) latNow - indicatorSize),
@@ -1411,11 +1308,9 @@ void GroundTrackView::paint2DView(QPainter& painter)
                     QPointF textOrigin = QPointF((float) longNow + labelOffset, (float) latNow + labelOffset) * xform;
                     painter.drawText(textOrigin, track->vehicle->name());       // Guillermo says: this is an attribute and should be removed
                     painter.setWorldTransform(xform);
-
                 }
             }
         }
-
     }
 
     // Draw the ground elements
@@ -1871,13 +1766,13 @@ static Vector3d ellipsoidClosestPoint(const Vector3d& semiAxes, const Vector3d& 
   * @return true if some area of coverage exists, false if not (e.g. minElevation >= 90 degrees)
   */
 bool
-        GroundTrackView::computeCoverageFootprint(double stationLongitude,
-                                                  double stationLatitude,
-                                                  const StaBody* planet,
-                                                  double minElevation,
-                                                  double spacecraftAltitude,
-                                                  unsigned int profilePointCount,
-                                                  QVector<Eigen::Vector3d>& profile) const
+GroundTrackView::computeCoverageFootprint(double stationLongitude,
+                                          double stationLatitude,
+                                          const StaBody* planet,
+                                          double minElevation,
+                                          double spacecraftAltitude,
+                                          unsigned int profilePointCount,
+                                          QVector<Eigen::Vector3d>& profile) const
 {
     if (std::abs(minElevation) >= sta::Pi() || spacecraftAltitude <= 0.0)
     {
@@ -1941,12 +1836,12 @@ bool
 
 
 void
-        GroundTrackView::drawCoverageFootprint(QPainter& painter,
-                                               double stationLongitude,
-                                               double stationLatitude,
-                                               const StaBody* planet,
-                                               double minElevation,
-                                               double spacecraftAltitude)
+GroundTrackView::drawCoverageFootprint(QPainter& painter,
+                                       double stationLongitude,
+                                       double stationLatitude,
+                                       const StaBody* planet,
+                                       double minElevation,
+                                       double spacecraftAltitude)
 {
     m_coverageProfile.clear();
     computeCoverageFootprint(stationLongitude, stationLatitude, planet,
@@ -2035,7 +1930,7 @@ void GroundTrackView::drawSubsolarPoint(QPainter& painter, QColor color, float s
 // Draw the region of the planet illuminated by the Sun.
 // TODO: This function still approximates the body as a sphere
 void
-        GroundTrackView::drawDaylitRegion(QPainter& painter)
+GroundTrackView::drawDaylitRegion(QPainter& painter)
 {
     // Get the position of the Sun in the current planet-fixed coordinate frame.
     sta::StateVector sunState = STA_SOLAR_SYSTEM->sun()->stateVector(m_currentTime, m_body, sta::COORDSYS_BODYFIXED);

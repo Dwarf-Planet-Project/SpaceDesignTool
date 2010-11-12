@@ -33,6 +33,9 @@
 #include "Astro-Core/rectangularTOpolar.h"
 #include "Astro-Core/stamath.h"
 #include <cmath>
+#include <algorithm>
+
+#include <QDebug>
 
 using namespace sta;
 using namespace Eigen;
@@ -76,323 +79,357 @@ planetographicCoords(const Vector3d& position,
 }
 
 
-#if 0
-enum
-{
-    OUT_WEST   = 0x01,
-    OUT_EAST   = 0x02,
-    OUT_SOUTH  = 0x04,
-    OUT_NORTH  = 0x08,
-    OUT_ABOVE  = 0x10,
-    OUT_BELOW  = 0x20
-};
-
-
-// Compute outcodes for Cohen-Sutherland line clipping
-static unsigned int computeOutcode(const AlignedBox<float, 3>& clipBox, float longitude, float latitude)
-{
-    unsigned int outcode = 0;
-
-    outcode |= (longitude < clipBox.min().x() ) ? OUT_WEST   : 0x0;
-    outcode |= (longitude > clipBox.max().x() ) ? OUT_EAST   : 0x0;
-    outcode |= (latitude  < clipBox.min().y())  ? OUT_SOUTH  : 0x0;
-    outcode |= (latitude  > clipBox.max().y())  ? OUT_NORTH  : 0x0;
-
-    return outcode;
-}
-
-
-static void clippedLine(const AlignedBox<float, 3>& clipBox,
-                        float long0, float lat0,
-                        float long1, float lat1,
-                        QVector<QPointF>& points)
-{
-    bool done = false;
-    unsigned int outcode0 = computeOutcode(clipBox, long0, lat0);
-    unsigned int outcode1 = computeOutcode(clipBox, long1, lat1);
-
-    // Cohen-Sutherland line clipping. Lots of code here, but the common
-    // cases of unclipped and invisible line segments are handled very
-    // quickly.
-    while (!done)
-    {
-        bool accept = (outcode0 | outcode1) == 0;
-        bool reject = (outcode0 & outcode1) != 0;
-        bool clippingRequired = !accept && !reject;
-
-        if (accept)
-        {
-            points << QPointF(long0, lat0) << QPointF(long1, lat1);
-            done = true;
-        }
-        else if (reject)
-        {
-            done = true;
-        }
-        else if (clippingRequired)
-        {
-            float clipX;
-            float clipY;
-
-            // One or both endpoints outside the clip volume. Pick one of them.
-            unsigned int outcodeOut = outcode0 ? outcode0: outcode1;
-
-            // Find the intersection point.
-            if (outcodeOut & OUT_NORTH)
-            {
-                clipX = long0 + (long1 - long0) * (clipBox.max().y() - lat0) / (lat1 - lat0);
-                clipY = clipBox.max().y();
-            }
-            else if (outcodeOut & OUT_SOUTH)
-            {
-                clipX = long0 + (long1 - long0) * (clipBox.min().y() - lat0) / (lat1 - lat0);
-                clipY = clipBox.min().y();
-            }
-            else if (outcodeOut & OUT_EAST)
-            {
-                clipY = lat0 + (lat1 - lat0) * (clipBox.max().x() - long0) / (long1 - long0);
-                clipX = clipBox.max().x();
-            }
-            else if (outcodeOut & OUT_WEST)
-            {
-                clipY = lat0 + (lat1 - lat0) * (clipBox.min().x() - long0) / (long1 - long0);
-                clipX = clipBox.min().x();
-            }
-
-            // Now we move outside point to intersection point to clip
-            // and get ready for next pass.
-            if (outcodeOut == outcode0)
-            {
-                long0 = clipX;
-                lat0 = clipY;
-                outcode0 = computeOutcode(clipBox, long0, lat0);
-            }
-            else
-            {
-                long1 = clipX;
-                lat1 = clipY;
-                outcode1 = computeOutcode(clipBox, long1, lat1);
-            }
-        }
-    }
-}
-
-
-// Compute outcodes for Cohen-Sutherland line clipping in 3D
-static unsigned int computeOutcode(const AlignedBox<float, 3>& clipBox, float longitude, float latitude, float altitude)
-{
-    // Clip in 2D first
-    unsigned int outcode = computeOutcode(clipBox, longitude, latitude);
-
-    outcode |= (altitude < clipBox.min().z() ) ? OUT_BELOW   : 0x0;
-    outcode |= (altitude > clipBox.max().z() ) ? OUT_ABOVE   : 0x0;
-
-    return outcode;
-}
-
-
-// Clip a line and 3D and emit the endpoints into the specified vector
-// (unless the line was clipped completely.) This function is required
-// the 2.5D view: since the Qt canvas is strictly 2D, we need to take
-// care of doing our own line clipping in three dimensions. If we switched
-// to using OpenGL for drawing, we could use GL's clip planes for this
-// task, but those aren't supported by all drivers.
-static void clippedLine(const AlignedBox<float, 3>& clipBox,
-                        const Transform3f& projection,
-                        float long0, float lat0, float alt0,
-                        float long1, float lat1, float alt1,
-                        QVector<QPointF>& points)
-{
-    bool done = false;
-    unsigned int outcode0 = computeOutcode(clipBox, long0, lat0, alt0);
-    unsigned int outcode1 = computeOutcode(clipBox, long1, lat1, alt1);
-
-    // Cohen-Sutherland line clipping, extended to a third dimension.
-    // Lots of code here, but the common cases of unclipped and invisible
-    // line segments are handled very quickly.
-    while (!done)
-    {
-        bool accept = (outcode0 | outcode1) == 0;
-        bool reject = (outcode0 & outcode1) != 0;
-        bool clippingRequired = !accept && !reject;
-
-        if (accept)
-        {
-            Vector3f p0    = projection * Vector3f(long0, lat0, alt0);
-            Vector3f p1    = projection * Vector3f(long1, lat1, alt1);
-            points << QPointF(p0.x(), p0.y()) << QPointF(p1.x(), p1.y());
-            done = true;
-        }
-        else if (reject)
-        {
-            done = true;
-        }
-        else if (clippingRequired)
-        {
-            float clipX;
-            float clipY;
-            float clipZ;
-
-            // One or both endpoints outside the clip volume. Pick one of them.
-            unsigned int outcodeOut = outcode0 ? outcode0: outcode1;
-
-            // Now find the intersection point;
-            // use formulas y = y0 + slope * (x - x0), x = x0 + (1/slope)* (y - y0)
-            if (outcodeOut & OUT_NORTH)
-            {
-                float w = (clipBox.max().y() - lat0) / (lat1 - lat0);
-                clipX = long0 + (long1 - long0) * w;
-                clipZ = alt0 + (alt1 - alt0) * w;
-                clipY = clipBox.max().y();
-            }
-            else if (outcodeOut & OUT_SOUTH)
-            {
-                float w = (clipBox.min().y() - lat0) / (lat1 - lat0);
-                clipX = long0 + (long1 - long0) * w;
-                clipZ = alt0 + (alt1 - alt0) * w;
-                clipY = clipBox.min().y();
-            }
-            else if (outcodeOut & OUT_EAST)
-            {
-                float w = (clipBox.max().x() - long0) / (long1 - long0);
-                clipY = lat0 + (lat1 - lat0) * w;
-                clipZ = alt0 + (alt1 - alt0) * w;
-                clipX = clipBox.max().x();
-            }
-            else if (outcodeOut & OUT_WEST)
-            {
-                float w = (clipBox.min().x() - long0) / (long1 - long0);
-                clipY = lat0 + (lat1 - lat0) * w;
-                clipZ = alt0 + (alt1 - alt0) * w;
-                clipX = clipBox.min().x();
-            }
-            else if (outcodeOut & OUT_ABOVE)
-            {
-                float w = (clipBox.max().z() - alt0) / (alt1 - alt0);
-                clipX = long0 + (long1 - long0) * w;
-                clipY = lat0 + (lat1 - lat0) * w;
-                clipZ = clipBox.max().z();
-            }
-            else if (outcodeOut & OUT_BELOW)
-            {
-                float w = (clipBox.min().z() - alt0) / (alt1 - alt0);
-                clipX = long0 + (long1 - long0) * w;
-                clipY = lat0 + (lat1 - lat0) * w;
-                clipZ = clipBox.min().z();
-            }
-
-            // Now we move outside point to intersection point to clip
-            // and get ready for next pass.
-            if (outcodeOut == outcode0)
-            {
-                long0 = clipX;
-                lat0 = clipY;
-                alt0 = clipZ;
-                outcode0 = computeOutcode(clipBox, long0, lat0, alt0);
-            }
-            else
-            {
-                long1 = clipX;
-                lat1 = clipY;
-                alt1 = clipZ;
-                outcode1 = computeOutcode(clipBox, long1, lat1, alt1);
-            }
-        }
-    }
-}
-
-
-
-// Utility function for easier line drawing. This handles the complexities of
-// clipping and wrapping. From zero to two line segments will be emitted into
-// the points vector:
-//   * 0 if the line was completely clipped
-//   * 1 if the line was partially clipped or not clipped at all
-//   * 2 if the line was clipped at the east or west edge of a wide view
 static void
-clippedWrappedLine(const AlignedBox<float, 3>& clipBox,
-                   float long0, float lat0,
-                   float long1, float lat1,
-                   QVector<QPointF>& points)
+bodyFixedPosition(const SpaceObject* spaceObj,
+                  const StaBody* body,
+                  double mjd,
+                  double* longitude, double* latitude, double* altitude)
 {
-    if (long0 < clipBox.min().x())
-        long0 += 360.0;
-    if (long1 < clipBox.min().x())
-        long1 += 360.0;
-
-    if (std::abs(long0 - long1) > 180.0)
+    StateVector v;
+    if (spaceObj->getStateVector(mjd, *body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v))
     {
-        // Handle segments that wrap across the edges of the map.
-        if (long0 > long1)
+        planetographicCoords(v.position, body, longitude, latitude, altitude);
+    }
+}
+
+
+static GroundTrackSample
+computeGroundTrackSample(const SpaceObject* spaceObj, const StaBody* body, double mjd)
+{
+    double longitude = 0.0;
+    double latitude = 0.0;
+    double altitude = 0.0;
+
+    bodyFixedPosition(spaceObj, body, mjd, &longitude, &latitude, &altitude);
+
+    GroundTrackSample sample;
+    sample.mjd = mjd;
+    sample.latitude = latitude;
+    sample.longitude = longitude;
+    sample.altitude = altitude;
+
+    return sample;
+}
+
+
+static GroundTrackTick
+computeGroundTrackTick(const SpaceObject* spaceObj, const StaBody* body, double mjd, double diffDt)
+{
+    // We want to draw the ticks so that they're perpendicular to the
+    // ground track. We'll use simple differencing to compute the projected
+    // direction.
+    double t0 = mjd;
+    double t1 = t0 + diffDt;
+    if (t1 > spaceObj->missionEndTime())
+    {
+        t1 = t0;
+        t0 = t0 - diffDt;
+    }
+
+    double longitude0 = 0.0;
+    double latitude0 = 0.0;
+    double altitude0 = 0.0;
+    bodyFixedPosition(spaceObj, body, t0, &longitude0, &latitude0, &altitude0);
+
+    double longitude1 = 0.0;
+    double latitude1 = 0.0;
+    double altitude1 = 0.0;
+    bodyFixedPosition(spaceObj, body, t1, &longitude1, &latitude1, &altitude1);
+
+    double diffLong = longitude1 - longitude0;
+    double diffLat = latitude1 - latitude0;
+    double l = std::sqrt(diffLong * diffLong + diffLat * diffLat);
+    if (l == 0.0)
+    {
+        diffLong = 0.0;
+        diffLat = 1.0;
+    }
+    else
+    {
+        diffLong /= l;
+        diffLat /= l;
+    }
+
+    GroundTrackTick tick;
+    tick.mjd = mjd;
+    tick.latitude = float(latitude0);
+    tick.longitude = float(longitude0);
+    tick.altitude = float(altitude0);
+    tick.dx = (float) -diffLat;
+    tick.dy = (float) diffLong;
+
+    return tick;
+}
+
+
+GroundTrackSegment::GroundTrackSegment()
+{
+}
+
+
+void
+GroundTrackSegment::clearSamples()
+{
+    m_samples.clear();
+}
+
+
+void
+GroundTrackSegment::clearTicks()
+{
+    m_ticks.clear();
+}
+
+
+/** Add ground track samples to cover the specified time window. Remove
+  * old samples that fall outside of the time window.
+  */
+void
+GroundTrackSegment::updateSamples(SpaceObject* spaceObj,
+                                  MissionArc* arc,
+                                  const StaBody* body,
+                                  double plotStartTime,
+                                  double plotEndTime)
+{
+    double dt = 1.0 / 1440.0;
+    double windowStartTime = std::max(arc->beginning(), plotStartTime - dt);
+    double windowEndTime = std::min(arc->ending(), plotEndTime + dt);
+
+    if (plotEndTime <= startTime() || plotStartTime >= endTime())
+    {
+        // Requested time window is disjoint with time window of samples, so
+        // just replace everything.
+        clearSamples();
+
+        if (windowEndTime <= windowStartTime)
         {
-            clippedLine(clipBox, (float) long0, (float) lat0, (float) long1 + 360, (float) lat1, points);
-            clippedLine(clipBox, (float) long0 - 360, (float) lat0, (float) long1, (float) lat1, points);
+            return;
         }
-        else
+
+        double t = windowStartTime;
+        for (;;)
         {
-            clippedLine(clipBox, (float) long1, (float) lat1, (float) long0 + 360, (float) lat0, points);
-            clippedLine(clipBox, (float) long1 - 360, (float) lat1, (float) long0, (float) lat0, points);
+            t = std::min(t, windowEndTime);
+            m_samples.push_back(computeGroundTrackSample(spaceObj, body, t));
+
+            if (t == windowEndTime)
+            {
+                break;
+            }
+
+            t += dt;
         }
     }
     else
     {
-        clippedLine(clipBox, (float) long0, (float) lat0, (float) long1, (float) lat1, points);
+        // Add ground track samples at the beginning
+        if (plotStartTime < startTime())
+        {
+            double t = startTime() - dt;
+            for (;;)
+            {
+                t = std::max(t, windowStartTime);
+                m_samples.push_front(computeGroundTrackSample(spaceObj, body, t));
+
+                if (t == windowStartTime)
+                {
+                    break;
+                }
+
+                t -= dt;
+            }
+        }
+
+        // Add ground track samples at the end
+        if (plotEndTime > endTime())
+        {
+            double t = endTime() + dt;
+            for (;;)
+            {
+                t = std::min(t, windowEndTime);
+                m_samples.push_back(computeGroundTrackSample(spaceObj, body, t));
+
+                if (t == windowEndTime)
+                {
+                    break;
+                }
+
+                t += dt;
+            }
+        }
+
+        // Remove samples before the current time window
+        while (!m_samples.isEmpty() && m_samples.first().mjd < windowStartTime)
+        {
+            m_samples.pop_front();
+        }
+
+        while (!m_samples.isEmpty() && m_samples.last().mjd > windowEndTime)
+        {
+            m_samples.pop_back();
+        }
     }
 }
-#endif
+
+
+/** Add ground track samples to cover the specified time window. Remove
+  * old samples that fall outside of the time window.
+  */
+void
+GroundTrackSegment::updateTicks(SpaceObject* spaceObj,
+                                MissionArc* arc,
+                                const StaBody* body,
+                                double plotStartTime,
+                                double plotEndTime,
+                                double tickSpacing)
+{
+    double dt = tickSpacing;
+    double windowStartTime = std::max(arc->beginning(), plotStartTime - dt);
+    double windowEndTime = std::min(arc->ending(), plotEndTime + dt);
+
+    double firstTick = firstTickTime();
+    double lastTick = lastTickTime();
+
+    // Delta to use when calculating tick orientation
+    double diffDt = tickSpacing * 0.01;
+
+    if (plotEndTime <= firstTick || plotStartTime >= lastTick)
+    {
+        // Requested time window is disjoint with time window of samples, so
+        // just replace everything.
+        clearTicks();
+
+        if (windowEndTime <= windowStartTime)
+        {
+            return;
+        }
+
+        double t = windowStartTime;
+        for (;;)
+        {
+            t = std::min(t, windowEndTime);
+            m_ticks.push_back(computeGroundTrackTick(spaceObj, body, t, diffDt));
+
+            if (t == windowEndTime)
+            {
+                break;
+            }
+
+            t += dt;
+        }
+    }
+    else
+    {
+        // Add ticks at the beginning
+        if (plotStartTime < firstTick)
+        {
+            for (double t = firstTick - dt; t > windowStartTime; t -= dt)
+            {
+                m_ticks.push_front(computeGroundTrackTick(spaceObj, body, t, diffDt));
+            }
+        }
+
+        // Add ticks at the end
+        if (plotEndTime > lastTick)
+        {
+            for (double t = lastTick + dt; t < windowEndTime; t += dt)
+            {
+                m_ticks.push_back(computeGroundTrackTick(spaceObj, body, t, diffDt));
+            }
+        }
+
+        // Remove ticks before the current time window
+        while (!m_ticks.isEmpty() && m_ticks.first().mjd < windowStartTime)
+        {
+            m_ticks.pop_front();
+        }
+
+        // Remove ticks after the current time window
+        while (!m_ticks.isEmpty() && m_ticks.last().mjd > windowEndTime)
+        {
+            m_ticks.pop_back();
+        }
+    }
+}
 
 
 void
 GroundTrack::draw2D(QPainter& painter,
                     const StaBody* body,
-                    double mjd,
+                    double startMjd,
+                    double endMjd,
                     const AlignedBox<float, 2>& clipBox)
 {
-    bool showEntireTrack = false;
-
     double west = clipBox.min().x();
 
+    int arcIndex = 0;
     foreach (GroundTrackSegment* segment, segments)
     {
-        // Calculate the ground track
-        double endTime = std::numeric_limits<double>::infinity();
-        bool complete = false;
+        const MissionArc* arc = vehicle->mission().at(arcIndex);
+        arcIndex++;
+
+        if (endMjd <= arc->beginning() || startMjd >= arc->ending())
+        {
+            continue;
+        }
+
+        if (segment->sampleCount() == 0)
+        {
+            qDebug() << "Empty segment " << arcIndex << ", duration: " << arc->ending() - arc->beginning();
+            continue;
+        }
 
         m_trackPoints.clear();
 
-        if (!showEntireTrack)
+        int firstSample = 0;
+        for (int i = 0; i < segment->samples().size(); ++i)
         {
-            endTime = mjd;
-            if (segment->samples.size() > 0 &&
-                mjd <= segment->samples[0].mjd)
+            if (startMjd > segment->sample(i).mjd)
             {
-                complete = true;
+                firstSample = i;
+                break;
             }
         }
 
-        StateVector v;
         double longNow = 0.0;
         double latNow  = 0.0;
-        if (vehicle->getStateVector(mjd, *body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v))
+        if (firstSample == 0)
         {
-            double altNow = 0.0;
-            planetographicCoords(v.position, body, &longNow, &latNow, &altNow);
-            if (longNow < west)
-                longNow += 360.0;
+            longNow = segment->sample(0).longitude;
+            latNow = segment->sample(0).latitude;
+        }
+        else
+        {
+            StateVector v;
+            if (vehicle->getStateVector(startMjd, *body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v))
+            {
+                double altNow = 0.0;
+                planetographicCoords(v.position, body, &longNow, &latNow, &altNow);
+            }
         }
 
-        for (int i = 1; i < segment->samples.size() && !complete; i++)
+        if (longNow < west)
         {
-            double long0 = segment->samples[i - 1].longitude;
-            double lat0  = segment->samples[i - 1].latitude;
-            double long1 = segment->samples[i].longitude;
-            double lat1  = segment->samples[i].latitude;
+            longNow += 360.0;
+        }
+
+        bool complete = false;
+        for (int i = firstSample + 1; i < segment->samples().size() && !complete; i++)
+        {
+            double long0 = segment->sample(i - 1).longitude;
+            double lat0  = segment->sample(i - 1).latitude;
+            double long1 = segment->sample(i).longitude;
+            double lat1  = segment->sample(i).latitude;
 
             // Only draw the track up to the specified endTime
-            if (segment->samples[i].mjd >= endTime)
+            if (segment->sample(i).mjd >= endMjd)
             {
-                long1 = longNow;
-                lat1  = latNow;
+                StateVector v;
+                if (vehicle->getStateVector(endMjd, *body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v))
+                {
+                    double alt = 0.0;
+                    planetographicCoords(v.position, body, &long1, &lat1, &alt);
+                }
                 complete = true;
             }
 
@@ -454,7 +491,7 @@ GroundTrack::draw2D(QPainter& painter,
             }
         }
 
-        painter.setPen(segment->color);
+        painter.setPen(segment->color());
         painter.drawLines(m_trackPoints);
     }
 }
@@ -463,54 +500,47 @@ GroundTrack::draw2D(QPainter& painter,
 void
 GroundTrack::drawTicks(QPainter& painter,
                        const StaBody* body,
-                       double mjd,
-                       float tickInterval,
+                       double startMjd,
+                       double endMjd,
                        float tickScale,
                        const AlignedBox<float, 2>& clipBox)
 {
-    bool showEntireTrack = false;
-
     double west = clipBox.min().x();
 
+    int arcIndex = 0;
     foreach (GroundTrackSegment* segment, segments)
     {
-        double endTime = std::numeric_limits<double>::infinity();
-        bool complete = false;
+        const MissionArc* arc = vehicle->mission().at(arcIndex);
+        arcIndex++;
 
-        m_trackPoints.clear();
-
-        if (!showEntireTrack)
+        if (endMjd <= arc->beginning() || startMjd >= arc->ending())
         {
-            endTime = mjd;
+            continue;
         }
 
         m_trackPoints.clear();
 
-        double startTime = 0.0;
-        if (segment->samples.size() > 0)
-            startTime = segment->samples.first().mjd;
-        int lastTick = segment->ticks.size();
-        if (!showEntireTrack)
+        foreach (GroundTrackTick tick, segment->ticks())
         {
-            lastTick = std::min(lastTick,
-                                (int) std::ceil((endTime - startTime) / sta::secsToDays(tickInterval)));
-        }
-
-        for (int i = 0; i < lastTick; i++)
-        {
-            GroundTrackTick& tick = segment->ticks[i];
-            float tickLongitude = tick.longitude;
-            if (tickLongitude < west)
+            if (tick.mjd > endMjd)
             {
-                tickLongitude += 360.0f;
+                break;
             }
-            m_trackPoints << QPointF(tickLongitude - tick.dx * tickScale,
-                                     tick.latitude  - tick.dy * tickScale)
-                          << QPointF(tickLongitude + tick.dx * tickScale,
-                                     tick.latitude  + tick.dy * tickScale);
+            else if (tick.mjd >= startMjd)
+            {
+                float tickLongitude = tick.longitude;
+                if (tickLongitude < west)
+                {
+                    tickLongitude += 360.0f;
+                }
+                m_trackPoints << QPointF(tickLongitude - tick.dx * tickScale,
+                                         tick.latitude  - tick.dy * tickScale)
+                              << QPointF(tickLongitude + tick.dx * tickScale,
+                                         tick.latitude  + tick.dy * tickScale);
+            }
         }
 
-        painter.setPen(segment->color);
+        painter.setPen(segment->color());
         painter.drawLines(m_trackPoints);
     }
 }
@@ -519,10 +549,12 @@ GroundTrack::drawTicks(QPainter& painter,
 void
 GroundTrack::draw(QPainter& painter,
                   const StaBody* body,
-                  double mjd,
+                  double startMjd,
+                  double endMjd,
                   const Transform3f& projection,
                   const AlignedBox<float, 3>& clipBox)
 {
+    double mjd = endMjd; // TODO: FIX
     // Calculate the current latitude and longitude of the vehicle
     StateVector v;
     double longNow = 0.0;
@@ -548,15 +580,14 @@ GroundTrack::draw(QPainter& painter,
 
     foreach (GroundTrackSegment* segment, segments)
     {
-        // Calculate the ground track
         m_trackPoints.clear();
 
         QPen pen = painter.pen();
-        pen.setColor(segment->color);
+        pen.setColor(segment->color());
         painter.setPen(pen);
 
         bool trackVisible = false;
-        if (segment->samples.empty() || (mjd <= segment->samples[0].mjd && !showEntireTrack))
+        if (segment->samples().empty() || (mjd <= segment->startTime() && !showEntireTrack))
         {
             trackVisible = true;
         }
@@ -570,15 +601,15 @@ GroundTrack::draw(QPainter& painter,
         bool complete = trackVisible;
 
         // Draw the ground track
-        for (int i = 1; i < segment->samples.size() && !complete; i++)
+        for (int i = 1; i < segment->samples().size() && !complete; i++)
         {
-            double long0 = segment->samples[i - 1].longitude;
-            double lat0  = segment->samples[i - 1].latitude;
-            double long1 = segment->samples[i].longitude;
-            double lat1  = segment->samples[i].latitude;
+            double long0 = segment->sample(i - 1).longitude;
+            double lat0  = segment->sample(i - 1).latitude;
+            double long1 = segment->sample(i).longitude;
+            double lat1  = segment->sample(i).latitude;
 
             // Only draw the track up to the specified endTime
-            if (segment->samples[i].mjd >= endTime)
+            if (segment->sample(i).mjd >= endTime)
             {
                 long1 = longNow;
                 lat1  = latNow;
@@ -588,23 +619,23 @@ GroundTrack::draw(QPainter& painter,
             ClippedWrappedLine(clipBox, (float) long0, (float) lat0, (float) long1, (float) lat1, m_trackPoints);
         }
 
-        painter.setPen(segment->color);
+        painter.setPen(segment->color());
         painter.drawLines(m_trackPoints);
         m_trackPoints.clear();
         complete = trackVisible;
 
         // Draw the track through space
-        for (int i = 1; i < segment->samples.size() && !complete; i++)
+        for (int i = 1; i < segment->sampleCount() && !complete; i++)
         {
-            float long0 = (float) segment->samples[i - 1].longitude;
-            float lat0  = (float) segment->samples[i - 1].latitude;
-            float alt0  = (float) segment->samples[i - 1].altitude;
-            float long1 = (float) segment->samples[i].longitude;
-            float lat1  = (float) segment->samples[i].latitude;
-            float alt1  = (float) segment->samples[i].altitude;
+            float long0 = (float) segment->sample(i - 1).longitude;
+            float lat0  = (float) segment->sample(i - 1).latitude;
+            float alt0  = (float) segment->sample(i - 1).altitude;
+            float long1 = (float) segment->sample(i).longitude;
+            float lat1  = (float) segment->sample(i).latitude;
+            float alt1  = (float) segment->sample(i).altitude;
 
             // Only draw the track up to the specified endTime
-            if (segment->samples[i].mjd >= endTime)
+            if (segment->sample(i).mjd >= endTime)
             {
                 long1 = (float) longNow;
                 lat1  = (float) latNow;
@@ -644,7 +675,7 @@ GroundTrack::draw(QPainter& painter,
                 ClippedLine(clipBox, projection, long0, lat0, alt0, long1, lat1, alt1, m_trackPoints);
             }
         }
-        painter.setPen(segment->color);
+        painter.setPen(segment->color());
         painter.drawLines(m_trackPoints);
     }
 }
@@ -653,11 +684,13 @@ GroundTrack::draw(QPainter& painter,
 void
 GroundTrack::drawDropLines(QPainter& painter,
                            const StaBody* body,
-                           double mjd,
+                           double startMjd,
+                           double endMjd,
                            float tickInterval,
                            const Eigen::Transform3f& projection,
                            const Eigen::AlignedBox<float, 3>& clipBox)
 {
+    double mjd = endMjd;
     bool showEntireTrack = false;
 
     float west = clipBox.min().x();
@@ -671,17 +704,16 @@ GroundTrack::drawDropLines(QPainter& painter,
 
     foreach (GroundTrackSegment* segment, segments)
     {
-        // Calculate the ground track
         m_trackPoints.clear();
 
         QPen pen = painter.pen();
-        pen.setColor(segment->color);
+        pen.setColor(segment->color());
         painter.setPen(pen);
 
         double startTime = 0.0;
-        if (segment->samples.size() > 0)
-            startTime = segment->samples.first().mjd;
-        int lastTick = segment->ticks.size();
+        if (segment->sampleCount() > 0)
+            startTime = segment->startTime();
+        int lastTick = segment->tickCount();
         if (!showEntireTrack)
         {
             lastTick = std::min(lastTick,
@@ -690,7 +722,7 @@ GroundTrack::drawDropLines(QPainter& painter,
 
         for (int i = 0; i < lastTick; i++)
         {
-            GroundTrackTick& tick = segment->ticks[i];
+            const GroundTrackTick& tick = segment->tick(i);
             float tickLongitude = tick.longitude;
             if (tickLongitude < west)
                 tickLongitude += 360.0f;
@@ -705,7 +737,73 @@ GroundTrack::drawDropLines(QPainter& painter,
             }
         }
 
-        painter.setPen(segment->color);
+        painter.setPen(segment->color());
         painter.drawLines(m_trackPoints);
     }
 }
+
+
+void
+GroundTrack::clearSamples()
+{
+    foreach (GroundTrackSegment* segment, segments)
+    {
+        segment->clearSamples();
+    }
+}
+
+
+void
+GroundTrack::clearTicks()
+{
+    foreach (GroundTrackSegment* segment, segments)
+    {
+        segment->clearTicks();
+    }
+}
+
+
+/** Update the samples in a ground track for the specified time interval.
+  *
+  * \param spaceObj the space object
+  * \param body the planet on which we're displaying the ground track
+  * \param plotStartTime start of the time interval (MJD)
+  * \param plotEndTime end of the time interval (MJD)
+  */
+void
+GroundTrack::updateSamples(SpaceObject* spaceObj, const StaBody* body, double plotStartTime, double plotEndTime)
+{
+    unsigned int index = 0;
+    foreach (GroundTrackSegment* segment, segments)
+    {
+        if (plotStartTime < segment->startTime() || plotEndTime > segment->endTime())
+        {
+            segment->updateSamples(spaceObj, spaceObj->mission().at(index), body, plotStartTime, plotEndTime);
+        }
+        index++;
+    }
+}
+
+
+/** Update the ticks in a ground track for the specified time interval.
+  *
+  * \param spaceObj the space object
+  * \param body the planet on which we're displaying the ground track
+  * \param plotStartTime start of the time interval (MJD)
+  * \param plotEndTime end of the time interval (MJD)
+  * \param tickSpacing time between ticks (in Julian days)
+  */
+void
+GroundTrack::updateTicks(SpaceObject* spaceObj, const StaBody* body, double plotStartTime, double plotEndTime, double tickSpacing)
+{
+    unsigned int index = 0;
+    foreach (GroundTrackSegment* segment, segments)
+    {
+        if (plotStartTime < segment->firstTickTime() || plotEndTime > segment->lastTickTime())
+        {
+            segment->updateTicks(spaceObj, spaceObj->mission().at(index), body, plotStartTime, plotEndTime, tickSpacing);
+        }
+        index++;
+    }
+}
+

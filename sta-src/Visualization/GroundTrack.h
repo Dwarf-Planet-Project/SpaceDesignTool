@@ -34,7 +34,9 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <deque>
+#include <limits>
 
+class MissionArc;
 class SpaceObject;
 class StaBody;
 
@@ -50,6 +52,7 @@ public:
 class GroundTrackTick
 {
 public:
+    double mjd;
     float latitude;
     float longitude;
     float altitude;
@@ -61,9 +64,114 @@ public:
 class GroundTrackSegment
 {
 public:
-    QColor color;
-    QList<GroundTrackSample> samples;
-    QList<GroundTrackTick> ticks;
+    GroundTrackSegment();
+    void updateSamples(SpaceObject* spaceObj, MissionArc* arc, const StaBody* body, double plotStartTime, double plotEndTime);
+    void clearSamples();
+    void updateTicks(SpaceObject* spaceObj, MissionArc* arc, const StaBody* body, double plotStartTime, double plotEndTime, double tickInterval);
+    void clearTicks();
+
+    QColor color() const
+    {
+        return m_color;
+    }
+
+    void setColor(const QColor& color)
+    {
+        m_color = color;
+    }
+
+    int sampleCount() const
+    {
+        return m_samples.size();
+    }
+
+    QList<GroundTrackSample>& samples()
+    {
+        return m_samples;
+    }
+
+    const QList<GroundTrackSample>& samples() const
+    {
+        return m_samples;
+    }
+
+    const GroundTrackSample& sample(int index) const
+    {
+        return m_samples[index];
+    }
+
+    int tickCount() const
+    {
+        return m_ticks.size();
+    }
+
+    QList<GroundTrackTick> ticks() const
+    {
+        return m_ticks;
+    }
+
+    const GroundTrackTick& tick(int index) const
+    {
+        return m_ticks[index];
+    }
+
+    double startTime() const
+    {
+        if (m_samples.isEmpty())
+        {
+            return 0.0;
+        }
+        else
+        {
+            return m_samples.first().mjd;
+        }
+    }
+
+    double endTime() const
+    {
+        if (m_samples.isEmpty())
+        {
+            return 0.0;
+        }
+        else
+        {
+            return m_samples.last().mjd;
+        }
+    }
+
+    double firstTickTime() const
+    {
+        if (m_ticks.isEmpty())
+        {
+            return 0.0;
+        }
+        else
+        {
+            return m_ticks.first().mjd;
+        }
+    }
+
+    double lastTickTime() const
+    {
+        if (m_ticks.isEmpty())
+        {
+            return 0.0;
+        }
+        else
+        {
+            return m_ticks.last().mjd;
+        }
+    }
+
+    bool includesTime(double mjd) const
+    {
+        return mjd >= startTime() && mjd < endTime();
+    }
+
+private:
+    QColor m_color;
+    QList<GroundTrackSample> m_samples;
+    QList<GroundTrackTick> m_ticks;
 
 };
 
@@ -73,10 +181,15 @@ class GroundTrack
 public:
     GroundTrack();
     ~GroundTrack();
-    void draw2D(QPainter& painter, const StaBody* body, double mjd, const Eigen::AlignedBox<float, 2>& clipBox);
-    void drawTicks(QPainter& painter, const StaBody* body, double mjd, float tickInterval, float tickScale, const Eigen::AlignedBox<float, 2>& clipBox);
-    void draw(QPainter& painter, const StaBody* body, double mjd, const Eigen::Transform3f& projection, const Eigen::AlignedBox<float, 3>& clipBox);
-    void drawDropLines(QPainter& painter, const StaBody* body, double mjd, float tickInterval, const Eigen::Transform3f& projection, const Eigen::AlignedBox<float, 3>& clipBox);
+    void draw2D(QPainter& painter, const StaBody* body, double startTime, double endTime, const Eigen::AlignedBox<float, 2>& clipBox);
+    void drawTicks(QPainter& painter, const StaBody* body, double startTime, double endTime, float tickScale, const Eigen::AlignedBox<float, 2>& clipBox);
+    void draw(QPainter& painter, const StaBody* body, double startTime, double endTime, const Eigen::Transform3f& projection, const Eigen::AlignedBox<float, 3>& clipBox);
+    void drawDropLines(QPainter& painter, const StaBody* body, double startTime, double endTime, float tickInterval, const Eigen::Transform3f& projection, const Eigen::AlignedBox<float, 3>& clipBox);
+
+    void updateSamples(SpaceObject* spaceObj, const StaBody* body, double plotStartTime, double plotEndTime);
+    void updateTicks(SpaceObject* spaceObj, const StaBody* body, double plotStartTime, double plotEndTime, double tickSpacing);
+    void clearSamples();
+    void clearTicks();
 
     SpaceObject* vehicle;
     QList<GroundTrackSegment*> segments;
