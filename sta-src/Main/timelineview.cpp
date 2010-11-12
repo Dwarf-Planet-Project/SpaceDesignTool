@@ -34,13 +34,17 @@
 #include <QScrollBar>
 #include <QDateTime>
 #include <QDebug>
+#include <QTimer>
 
 #include <iostream>
 
 
 static const float TimeHeaderHeight = 40.0f;
-static const float MissionSegmentBarThickness = 15.0f;    // pixels
-static const float MissionSegmentBarSpacing = 8.0f;  // pixels
+static const float MissionSegmentBarThickness = 18.0f; // pixels
+static const float MissionSegmentBarSpacing = 8.0f;    // pixels
+
+// Set to zero to disable timeline zoom animations
+#define ANIMATED_ZOOM 1
 
 
 TimelineView::TimelineView(QWidget* parent) :
@@ -50,9 +54,16 @@ TimelineView::TimelineView(QWidget* parent) :
 		m_endTime(1.0),
 		m_visibleSpan(1.0 / 24.0),
         m_participantCount(0),
-        m_mouseMotion(0)
+        m_mouseMotion(0),
+        m_timer(NULL),
+        m_autoScrollRate(0.0),
+        m_targetVisibleSpan(0.0)
 {
     updateScrollBars();
+
+    // The timer is used for autoscrolling and for animated zooms
+    m_timer = new QTimer(this);
+    connect(m_timer, SIGNAL(timeout()), this, SLOT(animate()));
 }
 
 
@@ -75,10 +86,16 @@ TimelineView::setTimeRange(double startTime, double endTime)
 void
 TimelineView::setVisibleSpan(double duration)
 {
+#if ANIMATED_ZOOM
+    // The code below triggers an animated zoom.
+    m_timer->start(16);
+    m_targetVisibleSpan = std::min(duration, m_endTime - m_startTime);
+    m_zoomScaleFactor = std::pow(m_targetVisibleSpan / m_visibleSpan, 1.0 / 20.0);
+#else
     m_visibleSpan = duration;
     updateScrollBars();
 
-    double viewStartTime = horizontalScrollBar()->value() / 86400.0 + m_startTime;
+    double viewStartTime = sta::secsToDays(horizontalScrollBar()->value()) + m_startTime;
 
     // When zooming, recenter the view if the current time is too far to the left or right
     bool recenter = m_currentTime < viewStartTime + m_visibleSpan * 0.1 || m_currentTime > viewStartTime + m_visibleSpan * 0.9;
@@ -86,10 +103,12 @@ TimelineView::setVisibleSpan(double duration)
     if (recenter)
     {
         double middle = m_currentTime - duration / 2.0;
-        horizontalScrollBar()->setValue(int((middle - m_startTime) * 86400.0));
+        horizontalScrollBar()->setValue(int(sta::daysToSecs(middle - m_startTime)));
     }
 
     viewport()->update();
+#endif
+    horizontalScrollBar()->setSingleStep(int(sta::daysToSecs(duration / 100.0)));
 }
 
 
@@ -122,6 +141,7 @@ TimelineView::paintEvent(QPaintEvent* /* event */)
     double subdivMins = 0.0;
     const double julianDay = 1440.0;
 
+    // Select the tick interval
     if (m_visibleSpan <= 0.25 / 24.0)
         subdivMins = 1.0;
     else if (m_visibleSpan <= 0.5 / 24.0)
@@ -166,13 +186,23 @@ TimelineView::paintEvent(QPaintEvent* /* event */)
 
     double viewEndTime = std::min(m_endTime, viewStartTime + m_visibleSpan);
 
-    // Draw the background
+    // Fill the background
+    painter.fillRect(QRect(0, 0, viewWidth, viewHeight), lightGrayBrush);
+
+    // Draw ticks
+    painter.setPen(QColor(180, 180, 180));
     for (double t = t0; t < viewEndTime; t += subdiv)
     {
         float blockWidth = (subdiv / m_visibleSpan) * viewWidth;
         float x = (float) (viewWidth * (t - viewStartTime) / m_visibleSpan);
-        painter.fillRect(QRectF(x, 0.0f, blockWidth, viewHeight), shade ? lightGrayBrush : darkGrayBrush);
-        shade = !shade;
+        painter.drawLine(QPointF(x, 15.0f), QPointF(x, float(viewHeight)));
+
+        // Draw small 'subticks', 5 for each labeled tick
+        for (unsigned int i = 1; i < 6; i++)
+        {
+            float tickX = x + i * blockWidth / 6.0f;
+            painter.drawLine(QPointF(tickX, 10.0f), QPointF(tickX, 15.0f));
+        }
     }
 
     QFontMetrics fontMetrics = painter.fontMetrics();
@@ -223,9 +253,9 @@ TimelineView::paintEvent(QPaintEvent* /* event */)
     // Show the current time and date next to the indicator
     {
         float x = (float) (viewWidth * (m_currentTime - viewStartTime) / m_visibleSpan);
-		QPen guillermosPen(Qt::red, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        QPen guillermosPen(QColor(128, 0, 0), 2);
         painter.setPen(guillermosPen);
-        painter.drawLine(QPointF(x, 0), QPointF(x, viewHeight));
+        painter.drawLine(QPointF(x, 2), QPointF(x, viewHeight - 2));
 
         float labelWidth = painter.fontMetrics().width("00 Mmm 00:00:00");
         int alignment = Qt::AlignBottom;
@@ -297,6 +327,8 @@ TimelineView::mousePressEvent(QMouseEvent* event)
 void 
 TimelineView::mouseReleaseEvent(QMouseEvent* event)
 {
+    m_timer->stop();
+
     int viewWidth = viewport()->size().width();
     double viewStartTime = horizontalScrollBar()->value() / 86400.0 + m_startTime;
 
@@ -340,6 +372,30 @@ TimelineView::mouseMoveEvent(QMouseEvent* event)
     
     double mjd = viewStartTime + m_visibleSpan * (double) event->x() / (double) viewWidth;
     setCurrentTime(mjd);
+
+    // Autoscroll if the time indicator is dragged into the leftmost or rightmost region of
+    // the timeline.
+    int autoScrollRegionWidth = viewWidth / 10;
+    double x = event->pos().x();
+    if (x < autoScrollRegionWidth || x > viewWidth - autoScrollRegionWidth)
+    {
+        if (!m_timer->isActive())
+        {
+            m_timer->start(50);  // Fire 20 times/second
+        }
+        if (x < autoScrollRegionWidth)
+        {
+            m_autoScrollRate = -horizontalScrollBar()->singleStep() / 2.0 * (1.0 - x / autoScrollRegionWidth);
+        }
+        else
+        {
+            m_autoScrollRate = horizontalScrollBar()->singleStep() / 2.0 * ((x - viewWidth) / autoScrollRegionWidth + 1.0);
+        }
+    }
+    else
+    {
+        m_autoScrollRate = 0.0;
+    }
 }
 
 
@@ -395,4 +451,49 @@ TimelineView::addMissionSegment(int participantIndex,
 
     m_participantCount = std::max(m_participantCount, participantIndex + 1);
     updateScrollBars();
+}
+
+
+void
+TimelineView::animate()
+{
+    // Handle auto scrolling
+    if (m_autoScrollRate != 0.0)
+    {
+        int viewWidth = viewport()->size().width();
+        double viewStartTime = horizontalScrollBar()->value() / 86400.0 + m_startTime;
+        double mjd = viewStartTime + m_visibleSpan * (double) m_lastMousePosition.x() / (double) viewWidth;
+        setCurrentTime(mjd);
+        qDebug() << "autoscroll " << m_autoScrollRate;
+
+        horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->sliderPosition() + m_autoScrollRate);
+    }
+
+    // Handle animated zooming
+    if (m_targetVisibleSpan != 0.0 && m_visibleSpan != m_targetVisibleSpan)
+    {
+        //double viewMiddle = horizontalScrollBar()->value() + sta::daysToSecs(m_visibleSpan) / 2.0;
+        double x = sta::daysToSecs(m_currentTime - m_startTime);
+        double f = (x - horizontalScrollBar()->value()) / sta::daysToSecs(m_visibleSpan);
+
+        if (m_targetVisibleSpan > m_visibleSpan)
+        {
+            m_visibleSpan = std::min(m_visibleSpan * m_zoomScaleFactor, m_targetVisibleSpan);
+        }
+        else
+        {
+            m_visibleSpan = std::max(m_visibleSpan * m_zoomScaleFactor, m_targetVisibleSpan);
+        }
+
+        //horizontalScrollBar()->setValue(int(viewMiddle - sta::daysToSecs(m_visibleSpan) / 2.0));
+        horizontalScrollBar()->setValue(int(x - sta::daysToSecs(m_visibleSpan) * f));
+
+        updateScrollBars();
+        viewport()->update();
+
+        if (m_visibleSpan == m_targetVisibleSpan)
+        {
+            m_timer->stop();
+        }
+    }
 }

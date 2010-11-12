@@ -24,12 +24,13 @@
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
  */
 
-#ifndef _MAIN_TIMELINEVIEW_H_
-#define _MAIN_TIMELINEVIEW_H_
+#ifndef _STA_MAIN_TIMELINEVIEW_H_
+#define _STA_MAIN_TIMELINEVIEW_H_
 
 #include <QAbstractScrollArea>
 #include <QList>
 
+class QTimer;
 
 class TimelineView : public QAbstractScrollArea
 {
@@ -70,6 +71,9 @@ Q_OBJECT
     
  private:
     void updateScrollBars();
+
+ private slots:
+    void animate();
     
  private:
     double m_currentTime;
@@ -91,9 +95,14 @@ Q_OBJECT
 
     float m_mouseMotion;
     QPointF m_lastMousePosition;
+
+    QTimer* m_timer;
+    double m_autoScrollRate;
+    double m_targetVisibleSpan;
+    double m_zoomScaleFactor;
 };
 
-#endif // _MAIN_TIMELINEVIEW_H_
+#endif // _STA_MAIN_TIMELINEVIEW_H_
 
 
 
