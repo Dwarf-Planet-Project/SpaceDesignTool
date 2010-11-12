@@ -63,7 +63,7 @@
     </size>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="scenarioPreferences">
     <attribute name="title">
@@ -73,7 +73,7 @@
      <property name="geometry">
       <rect>
        <x>8</x>
-       <y>-4</y>
+       <y>10</y>
        <width>293</width>
        <height>149</height>
       </rect>
@@ -134,7 +134,7 @@
      <property name="geometry">
       <rect>
        <x>316</x>
-       <y>-4</y>
+       <y>10</y>
        <width>297</width>
        <height>149</height>
       </rect>
@@ -206,10 +206,13 @@
      </layout>
     </widget>
     <widget class="QGroupBox" name="groupBoxDisplay">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>8</x>
-       <y>148</y>
+       <y>160</y>
        <width>293</width>
        <height>133</height>
       </rect>
@@ -246,10 +249,13 @@
      </layout>
     </widget>
     <widget class="QGroupBox" name="groupBox">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>316</x>
-       <y>148</y>
+       <y>160</y>
        <width>293</width>
        <height>133</height>
       </rect>
@@ -302,8 +308,8 @@
     <widget class="QSlider" name="horizontalSliderAmbientLight">
      <property name="geometry">
       <rect>
-       <x>170</x>
-       <y>250</y>
+       <x>200</x>
+       <y>270</y>
        <width>261</width>
        <height>22</height>
       </rect>
@@ -315,9 +321,9 @@
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>50</x>
-       <y>250</y>
-       <width>93</width>
+       <x>120</x>
+       <y>270</y>
+       <width>71</width>
        <height>16</height>
       </rect>
      </property>
@@ -328,8 +334,8 @@
     <widget class="QLabel" name="label_2">
      <property name="geometry">
       <rect>
-       <x>170</x>
-       <y>230</y>
+       <x>200</x>
+       <y>250</y>
        <width>41</width>
        <height>16</height>
       </rect>
@@ -341,8 +347,8 @@
     <widget class="QLabel" name="label_3">
      <property name="geometry">
       <rect>
-       <x>400</x>
-       <y>230</y>
+       <x>430</x>
+       <y>250</y>
        <width>41</width>
        <height>16</height>
       </rect>
@@ -354,9 +360,9 @@
     <widget class="QGroupBox" name="groupBox_4">
      <property name="geometry">
       <rect>
-       <x>12</x>
-       <y>-4</y>
-       <width>601</width>
+       <x>90</x>
+       <y>10</y>
+       <width>471</width>
        <height>181</height>
       </rect>
      </property>
@@ -447,12 +453,12 @@
       </item>
      </layout>
     </widget>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
-       <x>51</x>
-       <y>190</y>
-       <width>381</width>
+       <x>180</x>
+       <y>200</y>
+       <width>241</width>
        <height>26</height>
       </rect>
      </property>
@@ -462,23 +468,10 @@
         <property name="text">
          <string>Sky layer</string>
         </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
        </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Preferred</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
       </item>
       <item>
        <widget class="QComboBox" name="skyLayerCombo">

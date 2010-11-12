@@ -25,47 +25,12 @@
   <property name="windowTitle">
    <string>About</string>
   </property>
-  <widget class="QPushButton" name="pushButton">
-   <property name="geometry">
-    <rect>
-     <x>4</x>
-     <y>16</y>
-     <width>493</width>
-     <height>169</height>
-    </rect>
-   </property>
-   <property name="autoFillBackground">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="icon">
-    <iconset resource="../../iconary/sta-icons.qrc">
-     <normaloff>:/icons/STAsplash.png</normaloff>:/icons/STAsplash.png</iconset>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>700</width>
-     <height>250</height>
-    </size>
-   </property>
-   <property name="autoDefault">
-    <bool>false</bool>
-   </property>
-   <property name="default">
-    <bool>false</bool>
-   </property>
-   <property name="flat">
-    <bool>true</bool>
-   </property>
-  </widget>
   <widget class="QTextEdit" name="textEdit">
    <property name="geometry">
     <rect>
-     <x>52</x>
+     <x>11</x>
      <y>212</y>
-     <width>409</width>
+     <width>471</width>
      <height>177</height>
     </rect>
    </property>
@@ -73,27 +38,80 @@
     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Space Trajectory Analysis (STA)  &amp;quot;Cambrian&amp;quot;  v3.0&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; &lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The “Space Trajectory Analysis” or STA software suite is conceived as a research tool to support the analysis phase of a space mission having the ability to analyze, determine, simulate, and visualize a wide range of space trajectories.                                    &lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;One of the STA aims is to promote the exchange of technical ideas, and raise knowledge and competence in the areas of applied mathematics, space engineering, and informatics. &lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;STA is open source and it is distributed under the terms of the European Union Public License v 1.1&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;STA is copyright of the STA Steering Board 2005-2010.&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The STA Steering Board formed by: European Space Agency; Periapsis Visual Software, USA; University of Bremen, Germany; Technical University of Delft, The Netherlands; Instituto Superior Técnico, Lisbon, Portugal; University of Southampton, United Kingdom; Complutense University of Madrid, Spain; Univeristy of Coimbra, Portugal; University of Kent, United Kingdom; University of Birmingham, United Kingdom; University of Wuerzburg, Germany; Politecnico di Milano, Italy; Technical University of Madrid, Spain; Technical University of Catalonia, Spain; Institut Supérieur de L'Aéronautique et de l'Espace, Toulouse, France; Technical School of Aeronautics, Madrid, Spain; Von Karman Institute, Brussels, Belgium&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;STA uses some open source libraries. Here is the list:&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;STA uses the Independent JPEG Group libraries.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;STA uses the Eigen libraries. Eigen is a C++ template library for linear algebra that includes vectors, matrices, and related algorithms. &lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;STA is compatible with the NASA SPICE system for spacecraft and planetary information. SPICE was developed by Caltech/JPL under contract to NASA.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;STA uses VESTA code and VESTA data. In particular, STA uses VESTA rendering engine for the 3D view window. The STA star database is derived from the Tycho 2 star catalogue.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;STA uses Curveplot. Curveplot is a library for high precision plotting of piecewise cubic curves in OpenGL. It is distributed under the terms of the GNU Lesser Public License and is Copyright of Chris Laurel.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;STA uses OpenGL Extension Wrangler Library GLEW. For credits and authorship of this library, please read the README file inside the GLEW folder.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;STA uses the QwPlot3D programming library that provides 3D-widgets for plotting. The library is zlib licensed. QwPlot3D ic copyright of Michael Bieber.&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Space Trajectory Analysis (STA) &amp;quot;Cambrian&amp;quot; v3.0&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; The “Space Trajectory Analysis” or STA software suite is conceived as a research tool to support the analysis phase of a space mission having the ability to analyze, determine, simulate, and visualize a wide range of space trajectories. One of the STA aims is to promote the exchange of technical ideas, and raise knowledge and competence in the areas of applied mathematics, space engineering, and informatics. &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;STA is open source and it is distributed under the terms of the European Union Public License v 1.1 &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;STA is copyright of the STA Steering Board 2005-2010. The STA Steering Board formed by: European Space Agency; Periapsis Visual Software, USA; University of Bremen, Germany; Technical University of Delft, The Netherlands; Instituto Superior Técnico, Lisbon, Portugal; University of Southampton, United Kingdom; Complutense University of Madrid, Spain; Univeristy of Coimbra, Portugal; University of Kent, United Kingdom; University of Birmingham, United Kingdom; University of Wuerzburg, Germany; Politecnico di Milano, Italy; Technical University of Madrid, Spain; Technical University of Catalonia, Spain; Institut Supérieur de L'Aéronautique et de l'Espace, Toulouse, France; Technical School of Aeronautics, Madrid, Spain; Von Karman Institute, Brussels, Belgium.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;STA uses some open source libraries. Here is the list: STA uses the Independent JPEG Group libraries. STA uses the Eigen libraries. Eigen is a C++ template library for linear algebra that includes vectors, matrices, and related algorithms. STA is compatible with the NASA SPICE system for spacecraft and planetary information. SPICE was developed by Caltech/JPL under contract to NASA. STA uses VESTA code and VESTA data. In particular, STA uses VESTA rendering engine for the 3D view window. The STA star database is derived from the Tycho 2 star catalogue. STA uses Curveplot. Curveplot is a library for high precision plotting of piecewise cubic curves in OpenGL. It is distributed under the terms of the GNU Lesser Public License and is Copyright of Chris Laurel. STA uses OpenGL Extension Wrangler Library GLEW. For credits and authorship of this library, please read the README file inside the GLEW folder. STA uses the QwPlot3D programming library that provides 3D-widgets for plotting. The library is zlib licensed. QwPlot3D ic copyright of Michael Bieber.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
+  </widget>
+  <widget class="Line" name="line">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>190</y>
+     <width>481</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>20</y>
+     <width>381</width>
+     <height>161</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string/>
+   </property>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>351</width>
+      <height>141</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="../../iconary/sta-icons.qrc">
+      <normaloff>:/icons/STAsplash.png</normaloff>:/icons/STAsplash.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>700</width>
+      <height>250</height>
+     </size>
+    </property>
+    <property name="autoDefault">
+     <bool>false</bool>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
   </widget>
  </widget>
  <tabstops>
