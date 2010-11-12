@@ -87,8 +87,10 @@ void
 TimelineView::setVisibleSpan(double duration)
 {
 #if ANIMATED_ZOOM
-    // The code below triggers an animated zoom.
-    m_timer->start(16);
+    // The code below triggers an animated zoom. Choose the zoom scale factor
+    // so that the zoom animation completes in 1/3 second: slow enough for the
+    // user to understand the visual cue, fast enough to not be annoying.
+    m_timer->start(16);  // ~60 fps
     m_targetVisibleSpan = std::min(duration, m_endTime - m_startTime);
     m_zoomScaleFactor = std::pow(m_targetVisibleSpan / m_visibleSpan, 1.0 / 20.0);
 #else
@@ -327,7 +329,9 @@ TimelineView::mousePressEvent(QMouseEvent* event)
 void 
 TimelineView::mouseReleaseEvent(QMouseEvent* event)
 {
+    // Stop autoscrolling
     m_timer->stop();
+    m_autoScrollRate = 0;
 
     int viewWidth = viewport()->size().width();
     double viewStartTime = horizontalScrollBar()->value() / 86400.0 + m_startTime;
@@ -464,7 +468,6 @@ TimelineView::animate()
         double viewStartTime = horizontalScrollBar()->value() / 86400.0 + m_startTime;
         double mjd = viewStartTime + m_visibleSpan * (double) m_lastMousePosition.x() / (double) viewWidth;
         setCurrentTime(mjd);
-        qDebug() << "autoscroll " << m_autoScrollRate;
 
         horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->sliderPosition() + m_autoScrollRate);
     }
@@ -472,7 +475,6 @@ TimelineView::animate()
     // Handle animated zooming
     if (m_targetVisibleSpan != 0.0 && m_visibleSpan != m_targetVisibleSpan)
     {
-        //double viewMiddle = horizontalScrollBar()->value() + sta::daysToSecs(m_visibleSpan) / 2.0;
         double x = sta::daysToSecs(m_currentTime - m_startTime);
         double f = (x - horizontalScrollBar()->value()) / sta::daysToSecs(m_visibleSpan);
 
@@ -485,7 +487,6 @@ TimelineView::animate()
             m_visibleSpan = std::max(m_visibleSpan * m_zoomScaleFactor, m_targetVisibleSpan);
         }
 
-        //horizontalScrollBar()->setValue(int(viewMiddle - sta::daysToSecs(m_visibleSpan) / 2.0));
         horizontalScrollBar()->setValue(int(x - sta::daysToSecs(m_visibleSpan) * f));
 
         updateScrollBars();
