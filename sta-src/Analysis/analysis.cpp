@@ -2654,9 +2654,9 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                 {
                 QString ToCoord=analysis::ReadCoordinateSys(treeWidgetShowInReport,parameter);
 
-                sta::StateVector Vector[inumber];
-                Vector[index]=arc->trajectorySample(j);
-                double Eccentricity=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"Eccentricity",
+                sta::StateVector Vector;
+                Vector=arc->trajectorySample(j);
+                double Eccentricity=calcKeplerianElements(Vector,arc->centralBody(),"Eccentricity",
                                       MJDdate[index],
                                       "EME J2000",
                                       ToCoord);
@@ -2671,12 +2671,12 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                 QString ToCoord=analysis::ReadCoordinateSys(treeWidgetShowInReport,parameter);
                 QString ToUnit=analysis::ReadUnits(treeWidgetShowInReport,parameter);
 
-                sta::StateVector Vector[inumber];
-                Vector[index]=arc->trajectorySample(j);
+                sta::StateVector Vector;
+                Vector=arc->trajectorySample(j);
 
                 if(name=="Inclination")
                 {
-                    double Inclination=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                    double Inclination=calcKeplerianElements(Vector, arc->centralBody(),name,
                                          MJDdate[index],
                                          "EME J2000",
                                          ToCoord);
@@ -2684,7 +2684,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                 }
                 if(name=="RAAN")
                 {
-                    double Ascending=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                    double Ascending=calcKeplerianElements(Vector,arc->centralBody(),name,
                                        MJDdate[index],
                                        "EME J2000",
                                        ToCoord);
@@ -2692,7 +2692,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                 }
                 if(name=="True Anomaly")
                 {
-                    double TrueAnom=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                    double TrueAnom=calcKeplerianElements(Vector,arc->centralBody(),name,
                                       MJDdate[index],
                                       "EME J2000",
                                       ToCoord);
@@ -2700,7 +2700,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                 }
                 if(name=="Argument of Periapsis")
                 {
-                    double Periapsis=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                    double Periapsis=calcKeplerianElements(Vector,arc->centralBody(),name,
                                        MJDdate[index],
                                        "EME J2000",
                                        ToCoord);
@@ -2708,7 +2708,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                 }
                 if(name=="Semimajor Axis")
                 {
-                    double SemAxis=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                    double SemAxis=calcKeplerianElements(Vector,arc->centralBody(),name,
                                      MJDdate[index],
                                      "EME J2000",
                                      ToCoord);
@@ -2719,12 +2719,12 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                 if((name=="l")||(name=="g")||(name=="h")||(name=="L")||(name=="G")||(name=="H"))
                 {
                 QString ToCoord=analysis::ReadCoordinateSys(treeWidgetShowInReport,parameter);
-                sta::StateVector Vector[inumber];
-                Vector[index]=arc->trajectorySample(j);
+                sta::StateVector Vector;
+                Vector=arc->trajectorySample(j);
 
                 if(name=="l")
                 {
-                    double Delaunay_l=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                    double Delaunay_l=calcDelaunayElements(Vector,arc->centralBody(),name,
                                        MJDdate[index],
                                        "EME J2000",
                                        ToCoord);
@@ -2732,7 +2732,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                 }
                 if(name=="g")
                 {
-                    double Delaunay_g=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                    double Delaunay_g=calcDelaunayElements(Vector,arc->centralBody(),name,
                                        MJDdate[index],
                                        "EME J2000",
                                        ToCoord);
@@ -2740,7 +2740,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                 }
                 if(name=="h")
                 {
-                    double Delaunay_h=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                    double Delaunay_h=calcDelaunayElements(Vector,arc->centralBody(),name,
                                        MJDdate[index],
                                        "EME J2000",
                                        ToCoord);
@@ -2748,7 +2748,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                 }
                 if(name=="L")
                 {
-                    double Delaunay_L=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                    double Delaunay_L=calcDelaunayElements(Vector,arc->centralBody(),name,
                                        MJDdate[index],
                                        "EME J2000",
                                        ToCoord);
@@ -2756,7 +2756,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                 }
                 if(name=="G")
                 {
-                    double Delaunay_G=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                    double Delaunay_G=calcDelaunayElements(Vector,arc->centralBody(),name,
                                        MJDdate[index],
                                        "EME J2000",
                                        ToCoord);
@@ -2764,7 +2764,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                 }
                 if(name=="H")
                 {
-                    double Delaunay_H=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
+                    double Delaunay_H=calcDelaunayElements(Vector,arc->centralBody(),name,
                                        MJDdate[index],
                                        "EME J2000",
                                        ToCoord);
@@ -2782,9 +2782,9 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                 sta::CoordinateSystem EME2000("INERTIAL J2000");
                 ModifVector[index]=CoordinateSystem::convert(Vector[index],
                                          MJDdate[index],
-                                         STA_SOLAR_SYSTEM->lookup("Earth"),
+                                         arc->centralBody(),
                                          EME2000,
-                                         STA_SOLAR_SYSTEM->lookup("Earth"),
+                                         arc->centralBody(),
                                          analysis::CoordSys(ToCoord));
                 double SphericalElements[6]; // tau, delta, r, V, gamma, chi
                 cartesianTOspherical(ModifVector[index].position.x(),ModifVector[index].position.y(),ModifVector[index].position.z(),
@@ -2805,7 +2805,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                 }
                 if(name=="Altitude")
                 {
-                    stream<<sta::ConvertUnits(Units,SphericalElements[2]-STA_SOLAR_SYSTEM->lookup("Earth")->meanRadius(),"km")<<"\t";
+                    stream<<sta::ConvertUnits(Units,SphericalElements[2]-arc->centralBody()->meanRadius(),"km")<<"\t";
                 }
                 if(name=="Flight Path Angle")
                 {
@@ -2831,7 +2831,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                 Vector[index]=arc->trajectorySample(j);
                 if(name=="e*sin(omegaBar)")
                 {
-                    double esin=calcEquinoctialElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"e*sin(omegaBar)",
+                    double esin=calcEquinoctialElements(Vector[index],arc->centralBody(),"e*sin(omegaBar)",
                                     MJDdate[index],
                                     "EME J2000",
                                     ToCoord);
@@ -2840,7 +2840,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                 }
                 if(name=="e*cos(omegaBar)")
                 {
-                    double ecos=calcEquinoctialElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"e*cos(omegaBar)",
+                    double ecos=calcEquinoctialElements(Vector[index],arc->centralBody(),"e*cos(omegaBar)",
                                     MJDdate[index],
                                     "EME J2000",
                                     ToCoord);
@@ -2849,7 +2849,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                 }
                 if(name=="tan(i/2)*sin(raan)")
                 {
-                    double etansin=calcEquinoctialElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"tan(i/2)*sin(raan)",
+                    double etansin=calcEquinoctialElements(Vector[index],arc->centralBody(),"tan(i/2)*sin(raan)",
                                        MJDdate[index],
                                        "EME J2000",
                                        ToCoord);
@@ -2858,7 +2858,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                 }
                 if(name=="tan(i/2)*cos(raan)")
                 {
-                    double etancos=calcEquinoctialElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"tan(i/2)*cos(raan)",
+                    double etancos=calcEquinoctialElements(Vector[index],arc->centralBody(),"tan(i/2)*cos(raan)",
                                        MJDdate[index],
                                        "EME J2000",
                                        ToCoord);
@@ -2867,7 +2867,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                 }
                 if(name=="Mean Longitude")
                 {
-                    double MeanLon=calcEquinoctialElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"Mean Longitude",
+                    double MeanLon=calcEquinoctialElements(Vector[index],arc->centralBody(),"Mean Longitude",
                                        MJDdate[index],
                                        "EME J2000",
                                        ToCoord);
@@ -4039,12 +4039,11 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                         }
                     }
                     else if(name=="Eccentricity")
-                                    {
-                                        QString ToCoord=analysis::ReadCoordinateSys(Tree.at(a),SelParameters.at(i));
+                    {
+                        QString ToCoord=analysis::ReadCoordinateSys(Tree.at(a),SelParameters.at(i));
 
-                        sta::StateVector Vector[inumber];
-                        Vector[index]=arc->trajectorySample(j);
-                        double Eccentricity=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"Eccentricity",
+                        sta::StateVector Vector=arc->trajectorySample(j);
+                        double Eccentricity=calcKeplerianElements(Vector,arc->centralBody(),"Eccentricity",
                                               MJDdate[index],
                                               "EME J2000",
                                               ToCoord);
@@ -4056,127 +4055,125 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                            (name=="Argument of Periapsis")||
                            (name=="True Anomaly")||
                            (name=="Semimajor Axis"))
-                                        {
-                                            QString ToCoord=analysis::ReadCoordinateSys(Tree.at(a),SelParameters.at(i));
-                                            QString ToUnit=analysis::ReadUnits(Tree.at(a),SelParameters.at(i));
+                    {
+                        QString ToCoord=analysis::ReadCoordinateSys(Tree.at(a),SelParameters.at(i));
+                        QString ToUnit=analysis::ReadUnits(Tree.at(a),SelParameters.at(i));
 
-                            sta::StateVector Vector[inumber];
-                            Vector[index]=arc->trajectorySample(j);
+                        sta::StateVector Vector = arc->trajectorySample(j);
 
-                            if(name=="Inclination")
-                            {
-                            double Inclination=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                 MJDdate[index],
-                                                 "EME J2000",
-                                                 ToCoord);
-                            //stream<<sta::ConvertUnits(ToUnit,Inclination)<<"\t";
-                            LineData.append(sta::ConvertUnits(ToUnit,Inclination,"rad"));
-                            }
-                            if(name=="RAAN")
-                            {
-                            double Ascending=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                   MJDdate[index],
-                                                   "EME J2000",
-                                                   ToCoord);
-                            //stream<<sta::ConvertUnits(ToUnit,Ascending)<<"\t";
-                            LineData.append(sta::ConvertUnits(ToUnit,Ascending,"rad"));
-                            }
-                            if(name=="True Anomaly")
-                            {
-                            double TrueAnom=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                  MJDdate[index],
-                                                  "EME J2000",
-                                                  ToCoord);
-                            //stream<<sta::ConvertUnits(ToUnit,TrueAnom)<<"\t";
-                            LineData.append(sta::ConvertUnits(ToUnit,TrueAnom,"rad"));
-                            }
-                            if(name=="Argument of Periapsis")
-                            {
-                            double Periapsis=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                   MJDdate[index],
-                                                   "EME J2000",
-                                                   ToCoord);
-                            //stream<<sta::ConvertUnits(ToUnit,Periapsis)<<"\t";
-                            LineData.append(sta::ConvertUnits(ToUnit,Periapsis,"rad"));
-                            }
-                            if(name=="Semimajor Axis")
-                            {
-                            double SemAxis=calcKeplerianElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                 MJDdate[index],
-                                                 "EME J2000",
-                                                 ToCoord);
-                            //stream<<sta::ConvertUnits(ToUnit,SemAxis)<<"\t";
-                            LineData.append(sta::ConvertUnits(ToUnit,SemAxis,"km"));
-                            }
-
+                        if(name=="Inclination")
+                        {
+                        double Inclination=calcKeplerianElements(Vector,arc->centralBody(),name,
+                                             MJDdate[index],
+                                             "EME J2000",
+                                             ToCoord);
+                        //stream<<sta::ConvertUnits(ToUnit,Inclination)<<"\t";
+                        LineData.append(sta::ConvertUnits(ToUnit,Inclination,"rad"));
                         }
+                        if(name=="RAAN")
+                        {
+                        double Ascending=calcKeplerianElements(Vector,arc->centralBody(),name,
+                                               MJDdate[index],
+                                               "EME J2000",
+                                               ToCoord);
+                        //stream<<sta::ConvertUnits(ToUnit,Ascending)<<"\t";
+                        LineData.append(sta::ConvertUnits(ToUnit,Ascending,"rad"));
+                        }
+                        if(name=="True Anomaly")
+                        {
+                        double TrueAnom=calcKeplerianElements(Vector,arc->centralBody(),name,
+                                              MJDdate[index],
+                                              "EME J2000",
+                                              ToCoord);
+                        //stream<<sta::ConvertUnits(ToUnit,TrueAnom)<<"\t";
+                        LineData.append(sta::ConvertUnits(ToUnit,TrueAnom,"rad"));
+                        }
+                        if(name=="Argument of Periapsis")
+                        {
+                        double Periapsis=calcKeplerianElements(Vector,arc->centralBody(),name,
+                                               MJDdate[index],
+                                               "EME J2000",
+                                               ToCoord);
+                        //stream<<sta::ConvertUnits(ToUnit,Periapsis)<<"\t";
+                        LineData.append(sta::ConvertUnits(ToUnit,Periapsis,"rad"));
+                        }
+                        if(name=="Semimajor Axis")
+                        {
+                        double SemAxis=calcKeplerianElements(Vector,arc->centralBody(),name,
+                                             MJDdate[index],
+                                             "EME J2000",
+                                             ToCoord);
+                        //stream<<sta::ConvertUnits(ToUnit,SemAxis)<<"\t";
+                        LineData.append(sta::ConvertUnits(ToUnit,SemAxis,"km"));
+                        }
+
+                    }
                     else if((name=="l")||
                            (name=="g")||
                            (name=="h")||
                            (name=="L")||
                            (name=="G")||
                            (name=="H"))
+                    {
+                        QString ToCoord=analysis::ReadCoordinateSys(Tree.at(a),SelParameters.at(i));
+                        sta::StateVector Vector[inumber];
+                        Vector[index]=arc->trajectorySample(j);
+
+                        if(name=="l")
                         {
-
-                                            QString ToCoord=analysis::ReadCoordinateSys(Tree.at(a),SelParameters.at(i));
-                            sta::StateVector Vector[inumber];
-                            Vector[index]=arc->trajectorySample(j);
-
-                            if(name=="l")
-                            {
-                            double Delaunay_l=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                   MJDdate[index],
-                                                   "EME J2000",
-                                                   ToCoord);
-                            //stream<<Delaunay_l<<"\t";
-                            LineData.append(Delaunay_l);
-                            }
-                            if(name=="g")
-                            {
-                            double Delaunay_g=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                   MJDdate[index],
-                                                   "EME J2000",
-                                                   ToCoord);
-                            //stream<<Delaunay_g<<"\t";
-                            LineData.append(Delaunay_g);
-                            }
-                            if(name=="h")
-                            {
-                            double Delaunay_h=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                   MJDdate[index],
-                                                   "EME J2000",
-                                                   ToCoord);
-                            //stream<<Delaunay_h<<"\t";
-                            LineData.append(Delaunay_h);
-                            }
-                            if(name=="L")
-                            {
-                            double Delaunay_L=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                   MJDdate[index],
-                                                   "EME J2000",
-                                                   ToCoord);
-                            //stream<<Delaunay_L<<"\t";
-                            LineData.append(Delaunay_L);
-                            }
-                            if(name=="G")
-                            {
-                            double Delaunay_G=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                   MJDdate[index],
-                                                   "EME J2000",
-                                                   ToCoord);
-                            //stream<<Delaunay_G<<"\t";
-                            LineData.append(Delaunay_G);
-                            }
-                            if(name=="H")
-                            {
-                            double Delaunay_H=calcDelaunayElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),name,
-                                                   MJDdate[index],
-                                                   "EME J2000",
-                                                   ToCoord);
-                            // stream<<Delaunay_H<<"\t";
-                            LineData.append(Delaunay_H);
-                            }
-                                        }
+                        double Delaunay_l=calcDelaunayElements(Vector[index],arc->centralBody(),name,
+                                               MJDdate[index],
+                                               "EME J2000",
+                                               ToCoord);
+                        //stream<<Delaunay_l<<"\t";
+                        LineData.append(Delaunay_l);
+                        }
+                        if(name=="g")
+                        {
+                        double Delaunay_g=calcDelaunayElements(Vector[index],arc->centralBody(),name,
+                                               MJDdate[index],
+                                               "EME J2000",
+                                               ToCoord);
+                        //stream<<Delaunay_g<<"\t";
+                        LineData.append(Delaunay_g);
+                        }
+                        if(name=="h")
+                        {
+                        double Delaunay_h=calcDelaunayElements(Vector[index],arc->centralBody(),name,
+                                               MJDdate[index],
+                                               "EME J2000",
+                                               ToCoord);
+                        //stream<<Delaunay_h<<"\t";
+                        LineData.append(Delaunay_h);
+                        }
+                        if(name=="L")
+                        {
+                        double Delaunay_L=calcDelaunayElements(Vector[index],arc->centralBody(),name,
+                                               MJDdate[index],
+                                               "EME J2000",
+                                               ToCoord);
+                        //stream<<Delaunay_L<<"\t";
+                        LineData.append(Delaunay_L);
+                        }
+                        if(name=="G")
+                        {
+                        double Delaunay_G=calcDelaunayElements(Vector[index],arc->centralBody(),name,
+                                               MJDdate[index],
+                                               "EME J2000",
+                                               ToCoord);
+                        //stream<<Delaunay_G<<"\t";
+                        LineData.append(Delaunay_G);
+                        }
+                        if(name=="H")
+                        {
+                        double Delaunay_H=calcDelaunayElements(Vector[index],arc->centralBody(),name,
+                                               MJDdate[index],
+                                               "EME J2000",
+                                               ToCoord);
+                        // stream<<Delaunay_H<<"\t";
+                        LineData.append(Delaunay_H);
+                        }
+                    }
                     else if((name=="Latitude")||
                            (name=="Longitude")||
                            (name=="Radial Distance")||
@@ -4194,9 +4191,9 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                             sta::CoordinateSystem EME2000("INERTIAL J2000");
                             ModifVector[index]=CoordinateSystem::convert(Vector[index],
                                                  MJDdate[index],
-                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                 arc->centralBody(),
                                                  EME2000,
-                                                 STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                 arc->centralBody(),
                                                  analysis::CoordSys(ToCoord));
                             double SphericalElements[6]; // tau, delta, r, V, gamma, chi
 
@@ -4222,7 +4219,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                             }
                             if (name=="Altitude")
                             {
-                            double radius=STA_SOLAR_SYSTEM->lookup("Earth")->meanRadius();
+                            double radius=arc->centralBody()->meanRadius();
                             double altitude=sta::ConvertUnits(Units,SphericalElements[2]-radius,"km");
                             LineData.append(altitude);
                             }
@@ -4255,7 +4252,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                             Vector[index]=arc->trajectorySample(j);
                             if(name=="e*sin(omegaBar)")
                             {
-                            double esin=calcEquinoctialElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"e*sin(omegaBar)",
+                            double esin=calcEquinoctialElements(Vector[index],arc->centralBody(),"e*sin(omegaBar)",
                                                 MJDdate[index],
                                                 "EME J2000",
                                                 ToCoord);
@@ -4265,7 +4262,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                             }
                             if(name=="e*cos(omegaBar)")
                             {
-                            double ecos=calcEquinoctialElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"e*cos(omegaBar)",
+                            double ecos=calcEquinoctialElements(Vector[index],arc->centralBody(),"e*cos(omegaBar)",
                                                 MJDdate[index],
                                                 "EME J2000",
                                                 ToCoord);
@@ -4275,7 +4272,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                             }
                             if(name=="tan(i/2)*sin(raan)")
                             {
-                            double etansin=calcEquinoctialElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"tan(i/2)*sin(raan)",
+                            double etansin=calcEquinoctialElements(Vector[index],arc->centralBody(),"tan(i/2)*sin(raan)",
                                                    MJDdate[index],
                                                    "EME J2000",
                                                    ToCoord);
@@ -4285,7 +4282,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                             }
                             if(name=="tan(i/2)*cos(raan)")
                             {
-                            double etancos=calcEquinoctialElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"tan(i/2)*cos(raan)",
+                            double etancos=calcEquinoctialElements(Vector[index],arc->centralBody(),"tan(i/2)*cos(raan)",
                                                    MJDdate[index],
                                                    "EME J2000",
                                                    ToCoord);
@@ -4295,7 +4292,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                             }
                             if(name=="Mean Longitude")
                             {
-                            double MeanLon=calcEquinoctialElements(Vector[index],STA_SOLAR_SYSTEM->lookup("Earth"),"Mean Longitude",
+                            double MeanLon=calcEquinoctialElements(Vector[index],arc->centralBody(),"Mean Longitude",
                                                    MJDdate[index],
                                                    "EME J2000",
                                                    ToCoord);
@@ -4389,21 +4386,31 @@ sta::CoordinateSystem analysis::CoordSys(QString Coordinate)
         return Coord;
     }
 }
-double analysis::calcKeplerianElements(sta::StateVector Vector,StaBody*Body,QString OrbElement,
-                       double mjd,
-                       QString FromCoordinate,
-                       QString ToCoordinate)
-{
-    /*
-  Calculates the keplerian elements of a certain orbit
-  Inputs:Vector-statevector for each time step,Body-pointer to the central Body (for the time being, only Earth is available),OrbElement- name of the element the user wishes to analyse ,mjd-time in Modified Julian Date,FromCoordinate- coordinate system of the data before transformation, ToCoordinate- coordinate system that shall appear as output)
-  Outputs: parameter to be displayed/analysed
+
+
+/** Calculates the Keplerian Elements of a certain orbit
+  * Inputs:
+  *     Vector-statevector for each time step
+  *     Body-pointer to the central Body
+  *     OrbElement- name of the element the user wishes to analyse
+  *     mjd-time in Modified Julian Date
+  *     FromCoordinate- coordinate system of the data before transformation,
+  *     ToCoordinate- coordinate system that shall appear as output)
+  *
+  * Outputs: parameter to be displayed/analysed
   */
+double analysis::calcKeplerianElements(const sta::StateVector& Vector,
+                                       const StaBody* Body,
+                                       const QString& OrbElement,
+                                       double mjd,
+                                       const QString& FromCoordinate,
+                                       const QString& ToCoordinate)
+{
     sta::StateVector ModifVector=CoordinateSystem::convert(Vector,
                                                            mjd,
-                                                           STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                           Body,
                                                            analysis::CoordSys(FromCoordinate),
-                                                           STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                           Body,
                                                            analysis::CoordSys(ToCoordinate));
     //double mu = Earth_GRAVITY_PARAMETER;
 
@@ -4440,21 +4447,31 @@ double analysis::calcKeplerianElements(sta::StateVector Vector,StaBody*Body,QStr
 
     return Element;
 }
-double analysis::calcDelaunayElements(sta::StateVector Vector,StaBody*Body,QString OrbElement,
-                      double mjd,
-                      QString FromCoordinate,
-                      QString ToCoordinate)
-{
-    /*
-Calculates the Delaunay Elements of a certain orbit
-  Inputs:Vector-statevector for each time step,Body-pointer to the central Body (for the time being, only Earth is available),OrbElement- name of the element the user wishes to analyse ,mjd-time in Modified Julian Date,FromCoordinate- coordinate system of the data before transformation, ToCoordinate- coordinate system that shall appear as output)
-  Outputs: parameter to be displayed/analysed
+
+
+/** Calculates the Delaunay Elements of a certain orbit
+  * Inputs:
+  *     Vector-statevector for each time step
+  *     Body-pointer to the central Body
+  *     OrbElement- name of the element the user wishes to analyse
+  *     mjd-time in Modified Julian Date
+  *     FromCoordinate- coordinate system of the data before transformation,
+  *     ToCoordinate- coordinate system that shall appear as output)
+  *
+  * Outputs: parameter to be displayed/analysed
   */
+double analysis::calcDelaunayElements(const sta::StateVector& Vector,
+                                      const StaBody* Body,
+                                      const QString& OrbElement,
+                                      double mjd,
+                                      const QString& FromCoordinate,
+                                      const QString& ToCoordinate)
+{
     sta::StateVector ModifVector=CoordinateSystem::convert(Vector,
                                                            mjd,
-                                                           STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                           Body,
                                                            analysis::CoordSys(FromCoordinate),
-                                                           STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                           Body,
                                                            analysis::CoordSys(ToCoordinate));
     double mu = Body->mu();
     //qDebug()<<mu-1000000<<"mu del";
@@ -4489,21 +4506,29 @@ Calculates the Delaunay Elements of a certain orbit
     return Element;
 }
 
-double analysis::calcEquinoctialElements(sta::StateVector Vector,StaBody*Body,QString OrbElement,
+
+/** Calculates the Equinoctial Elements of a certain orbit
+  *
+  * Inputs:Vector-statevector for each time step,
+  *        Body-pointer to the central Body
+  *        OrbElement- name of the element the user wishes to analyse
+  *        mjd-time in Modified Julian Date,
+  *        FromCoordinate- coordinate system of the data before transformation,
+  *        ToCoordinate- coordinate system that shall appear as output)
+  * Outputs: parameter to be displayed/analysed
+  */
+double analysis::calcEquinoctialElements(const sta::StateVector& Vector,
+                                         const StaBody* Body,
+                                         const QString& OrbElement,
                                          double mjd,
-                                         QString FromCoordinate,
-                                         QString ToCoordinate)
+                                         const QString& FromCoordinate,
+                                         const QString& ToCoordinate)
 {
-    /*
-Calculates the Equinoctial Elements of a certain orbit
-  Inputs:Vector-statevector for each time step,Body-pointer to the central Body (for the time being, only Earth is available),OrbElement- name of the element the user wishes to analyse ,mjd-time in Modified Julian Date,FromCoordinate- coordinate system of the data before transformation, ToCoordinate- coordinate system that shall appear as output)
-  Outputs: parameter to be displayed/analysed
-      */
     sta::StateVector ModifVector=CoordinateSystem::convert(Vector,
                                                            mjd,
-                                                           STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                           Body,
                                                            analysis::CoordSys(FromCoordinate),
-                                                           STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                           Body,
                                                            analysis::CoordSys(ToCoordinate));
     double mu = Body->mu();
     sta::EquinoctialElements EquinoctialElem=cartesianTOequinoctial(mu, ModifVector);
@@ -4552,7 +4577,7 @@ QList< QList<double> >  analysis::calcAccessTime(int countStop,int countStart, i
 
         MJDaccess.append(arc->trajectorySampleTime(j));
 
-int readTime=CovIndex;
+        int readTime=CovIndex;
         if(CovIndex<LineOfCoverageReport.size())
         {
 
@@ -4614,7 +4639,7 @@ int readTime=CovIndex;
                     }
                     CovIndex++;
                 }
-               else
+                else
                 {
 
                     AccessStep=0;
@@ -4628,8 +4653,7 @@ int readTime=CovIndex;
                     }
                     AccessNow=0;
                 }
-           //CovIndex++;
-           }
+            }
             else
             {
 

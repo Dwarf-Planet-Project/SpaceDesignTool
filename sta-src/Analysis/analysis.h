@@ -127,19 +127,26 @@ private:
     QList<ScenarioReceiverPayloadType*>RxSC;
     QList<ScenarioReceiverPayloadType*>RxGS;
     QList<ScenarioGroundStationEnvironment*>GSEnvironment;
-    double calcKeplerianElements(sta::StateVector Vector,StaBody*Body,QString OrbElement,
+    double calcKeplerianElements(
+                const sta::StateVector& Vector,
+                const StaBody* Body,
+                const QString& OrbElement,
 				 double mjd,
-				 QString FromCoordinate,
-				 QString ToCoordinate);
+                 const QString& FromCoordinate,
+                 const QString& ToCoordinate);
     sta::CoordinateSystem CoordSys(QString Coordinate);
-    double calcDelaunayElements(sta::StateVector Vector,StaBody*Body,QString OrbElement,
-				double mjd,
-				QString FromCoordinate,
-				QString ToCoordinate);
-    double calcEquinoctialElements(sta::StateVector Vector,StaBody*Body,QString OrbElement,
-				   double mjd,
-				   QString FromCoordinate,
-				   QString ToCoordinate);
+    double calcDelaunayElements(const sta::StateVector& Vector,
+                                const StaBody* Body,
+                                const QString& OrbElement,
+                                double mjd,
+                                const QString& FromCoordinate,
+                                const QString& ToCoordinate);
+    double calcEquinoctialElements(const sta::StateVector& Vector,
+                                   const StaBody* Body,
+                                   const QString& OrbElement,
+                                   double mjd,
+                                   const QString& FromCoordinate,
+                                   const QString& ToCoordinate);
 
 
 
