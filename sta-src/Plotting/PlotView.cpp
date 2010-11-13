@@ -336,6 +336,31 @@ PlotView::autoScale()
 
     if (!empty)
     {
+        // If the plotted values are all identical (or very close to
+        // that), the range will be nearly zero. If it *is* zero, we'll
+        // end up with division by zero later one; if it's extremely close
+        // to zero, the arithmetic won't blow up, but we'll likely end
+        // up plotting data that shows floating point roundoff errors
+        // rather than a flat line. We'll enforce a minimum range based
+        // on the values of min and max.
+        double minXRange = max(max(abs(minX), abs(maxX)) * 1.0e-12, 1.0e-30);
+        double minYRange = max(max(abs(minY), abs(maxY)) * 1.0e-12, 1.0e-30);
+
+        // If the ranges are less than the minima, expand them while maintaining
+        // the same middle point.
+        if (maxX - minX < minXRange)
+        {
+            double midX = (minX + maxX) * 0.5;
+            minX = midX - 0.5 * minXRange;
+            maxX = midX + 0.5 * minXRange;
+        }
+        if (maxY - minY < minYRange)
+        {
+            double midY = (minY + maxY) * 0.5;
+            minY = midY - 0.5 * minYRange;
+            maxY = midY + 0.5 * minYRange;
+        }
+
         setHorizontalScale(LinearPlotScale(minX, maxX));
         setVerticalScale(LinearPlotScale(minY, maxY));
     }
