@@ -180,6 +180,7 @@ private:
     bool m_reflectionsEnabled;
     bool m_glInitialized;
     bool m_shadowsInitialized;
+    bool m_sensorFovsEnabled;
 };
 
 #endif // _THREED_VIEW_H_

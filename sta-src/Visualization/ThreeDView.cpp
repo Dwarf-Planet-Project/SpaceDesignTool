@@ -141,13 +141,14 @@ struct ModelProperties
     QString modelFileName;
     float scale;
     Vector3d nadirDirection;
+    Vector3d leadingDirection;
 };
 
 static ModelProperties SpacecraftModels[] =
 {
-    { "default", "models/sorce.obj", 0.004f, -Vector3d::UnitY() },
-    { "iss",     "models/iss.3ds", 0.025f, Vector3d::UnitZ() },
-    { "xmm",     "models/xmm.3ds", 0.004, -Vector3d(0.0, 1.0, 1.0).normalized() },
+    { "default", "models/sorce.obj", 0.004f, -Vector3d::UnitY(),                    Vector3d::UnitX() },
+    { "iss",     "models/iss.3ds",   0.025f,  Vector3d::UnitZ(),                    Vector3d::UnitX() },
+    { "xmm",     "models/xmm.3ds",   0.004,  -Vector3d(0.0, 1.0, 1.0).normalized(), Vector3d::UnitX() },
 };
 
 
@@ -411,6 +412,26 @@ LookAt(const Vector3d& from, const Vector3d& to, const Vector3d& up)
 }
 
 
+// Orient spacecraft model so that the nadir direction of the model points in the local
+// x- direction and leading direction points in the direction of local +y.
+static Quaterniond
+SpacecraftOrientation(const Vector3d& nadirDirection, const Vector3d& leadingDirection)
+{
+    Vector3d xAxis = nadirDirection;
+    Vector3d zAxis = xAxis.cross(leadingDirection);
+    if (zAxis.isZero())
+    {
+        return Quaterniond::Identity();
+    }
+
+    zAxis.normalize();
+    Vector3d yAxis = zAxis.cross(xAxis);
+
+    Matrix3d m;
+    m << xAxis, yAxis, zAxis;
+    return Quaterniond(m).conjugate();
+}
+
 
 ThreeDView::ThreeDView(const QGLFormat& format, QWidget* parent) :
     QGLWidget(format, parent),
@@ -425,7 +446,8 @@ ThreeDView::ThreeDView(const QGLFormat& format, QWidget* parent) :
     m_shadowsEnabled(false),
     m_reflectionsEnabled(false),
     m_glInitialized(false),
-    m_shadowsInitialized(false)
+    m_shadowsInitialized(false),
+    m_sensorFovsEnabled(false)
 {
     m_textureLoader = counted_ptr<NetworkTextureLoader>(new NetworkTextureLoader(this, true));
     m_textureLoader->addLocalSearchPath("models");
@@ -1447,6 +1469,8 @@ ThreeDView::setEquatorialPlane(bool enabled)
 void
 ThreeDView::setSensorFovs(bool enabled)
 {
+    m_sensorFovsEnabled = enabled;
+
     foreach (Entity* e, m_scenarioSpaceObjects.values())
     {
         // Set visibility of trajectory visualizers for all arcs
@@ -1833,8 +1857,8 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
                 if (rotation == NULL)
                 {
                     // Create a fixed rotation model to orient the model in the right direction
-                    Quaterniond q;
-                    q.setFromTwoVectors(GetModelProperties(spaceObj->mission().first()->modelName()).nadirDirection, Vector3d::UnitX());
+                    const ModelProperties& props = GetModelProperties(spaceObj->mission().first()->modelName());
+                    Quaterniond q = SpacecraftOrientation(props.nadirDirection, props.leadingDirection);
                     rotation = new FixedRotationModel(q);
                 }
                 arc->setRotationModel(rotation);
@@ -1885,17 +1909,22 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
         arcStartTime += arc->duration();
     }
 
+    // Add a visualizer for the sensor FOV
     SensorVisualizer* sensor = new SensorVisualizer();
     sensor->setFrustumAngles(toRadians(5.0), toRadians(5.0));
-    sensor->setRange(25000.0);
+    sensor->setRange(35000.0);
     sensor->setSource(body);
     sensor->setOpacity(0.3f);
     sensor->setColor(Spectrum(0.2f, 0.5f, 1.0f));
     Quaterniond sensorRotation;
-    sensorRotation.setFromTwoVectors(Vector3d::UnitZ(), -Vector3d::UnitY());
+
+    // Get the nadir direction in the spacecraft's body fixed frame
+    Vector3d localNadir = body->chronology()->firstArc()->rotationModel()->orientation(0.0).conjugate() * Vector3d::UnitX();
+    sensorRotation.setFromTwoVectors(Vector3d::UnitZ(), localNadir);
+
     sensor->setSensorOrientation(sensorRotation);
     sensor->setTarget(findSolarSystemBody(spaceObj->mission().first()->centralBody()));
-    sensor->setVisibility(false);
+    sensor->setVisibility(m_sensorFovsEnabled);
     body->setVisualizer("sensor fov", sensor);
 
     return body;
