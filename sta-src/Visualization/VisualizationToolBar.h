@@ -93,6 +93,9 @@ signals:
     void linkSOToggled(bool enabled);
     void linkGOToggled(bool enabled);
 
+    void inertialObserver();
+    void bodyFixedObserver();
+
     void cameraViewpointChanged(const QString&);
 
 private:
@@ -110,6 +113,8 @@ private:
 
     QAction* m_enable2DViewAction;
     QAction* m_enable25DViewAction;
+
+    QAction* m_observerFrameAction;
 
     // Analysis (Claas Grohnfeldt, Steffen Peter)
     QMenu* m_analysisMenu;

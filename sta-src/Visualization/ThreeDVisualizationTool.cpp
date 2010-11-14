@@ -60,6 +60,8 @@ ThreeDVisualizationTool::ThreeDVisualizationTool(QWidget* parent, ViewActionGrou
     connect(m_toolBar, SIGNAL(saveImageRequested()),         this,    SLOT(saveImage()));
     connect(m_toolBar, SIGNAL(cameraViewpointChanged(QString)), m_view, SLOT(setCameraViewpoint(const QString&)));
     connect(m_toolBar, SIGNAL(sensorFovsToggled(bool)),      m_view,  SLOT(setSensorFovs(bool)));
+    connect(m_toolBar, SIGNAL(inertialObserver()),           m_view,  SLOT(setInertialObserver()));
+    connect(m_toolBar, SIGNAL(bodyFixedObserver()),          m_view,  SLOT(setBodyFixedObserver()));
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(m_view);

@@ -671,6 +671,8 @@ ThreeDView::drawOverlay()
 
     if (m_labelFont.isValid())
     {
+        float fontHeight = floor(m_labelFont->lookupGlyph('M')->size.y() * 1.5f);
+
         // Display the time
         QDateTime J2000(QDate(2000, 1, 1), QTime(12, 0, 0));
         J2000.setTimeSpec(Qt::UTC);
@@ -678,7 +680,16 @@ ThreeDView::drawOverlay()
         m_labelFont->bind();
         m_labelFont->render(currentDateTime.toString("dd MMM yyyy hh:mm:ss 'UTC'").toLatin1().data(), Vector2f(10.0f, viewHeight - 25.0f));
         m_labelFont->render(QString("JD %1").arg(2451545.0 + sta::secsToDays(m_currentTime), 0, 'f', 5).toLatin1().data(),
-                            Vector2f(10.0f, viewHeight - 40.0f));
+                            Vector2f(10.0f, viewHeight - 25.0f - fontHeight));
+
+        bool showDistance = true;
+        bool showSpeed = true;
+
+        unsigned int textRows = 0;
+        if (showDistance)
+            textRows++;
+        if (showSpeed)
+            textRows++;
 
         if (m_selectedSpacecraft)
         {
@@ -686,8 +697,11 @@ ThreeDView::drawOverlay()
             {
                 Entity* selectedBody = m_scenarioSpaceObjects.value(m_selectedSpacecraft);
                 if (selectedBody)
-                {                    
-                    m_labelFont->render(selectedBody->name().c_str(), Vector2f(10.0f, 25.0f));
+                {
+                    unsigned int row = textRows;
+                    m_labelFont->render(selectedBody->name().c_str(), Vector2f(10.0f, 10 + row * fontHeight));
+                    row--;
+
                     double beginning = selectedBody->chronology()->beginning();
                     if (m_currentTime >= beginning && m_currentTime < beginning + selectedBody->chronology()->duration())
                     {
@@ -698,14 +712,26 @@ ThreeDView::drawOverlay()
                         StateVector centerSv = centralBody->state(m_currentTime);
 
                         double r = (sv.position() - centerSv.position()).norm();
+                        double speed = (sv.velocity() - centerSv.velocity()).norm();
                         if (dynamic_cast<WorldGeometry*>(centralBody->geometry()))
                         {
                             WorldGeometry* globe = dynamic_cast<WorldGeometry*>(centralBody->geometry());
                             r -= globe->meanRadius();
                         }
 
-                        m_labelFont->render(QString("Distance to %1: %2 km").arg(centralBody->name().c_str()).arg(r, 0, 'f', 2).toLatin1().data(),
-                                            Vector2f(10.0f, 10.0f));
+                        if (showDistance)
+                        {
+                            m_labelFont->render(QString("Distance to %1: %2 km").arg(centralBody->name().c_str()).arg(r, 0, 'f', 2).toLatin1().data(),
+                                                Vector2f(10.0f, 10.0f + row * fontHeight));
+                            row--;
+                        }
+
+                        if (showSpeed)
+                        {
+                            m_labelFont->render(QString("Speed: %1 km/s").arg(speed, 0, 'f', 3).toLatin1().data(),
+                                                Vector2f(10.0f, 10.0f + row * fontHeight));
+                            row--;
+                        }
                     }
                 }
             }
@@ -897,6 +923,12 @@ ThreeDView::contextMenuEvent(QContextMenuEvent* event)
         QAction* sunDirectionAction   = menu->addAction("Show Sun Direction");
         QAction* earthDirectionAction = menu->addAction("Show Earth Direction");
 
+        menu->addSeparator();
+
+        QAction* centerAction         = menu->addAction(tr("%1 Centered Observer").arg(hit->name().c_str()));
+        QAction* fixedAction          = menu->addAction(tr("%1 Fixed Observer").arg(hit->name().c_str()));
+        QAction* rotatingAction       = menu->addAction(tr("%1 Rotating Observer").arg(hit->name().c_str()));
+
         bool hasBodyAxes = hit->visualizer("body axes") != NULL;
         bool hasFrameAxes = hit->visualizer("frame axes") != NULL;
         bool hasVelocityDirection = hit->visualizer("velocity") != NULL;
@@ -998,6 +1030,33 @@ ThreeDView::contextMenuEvent(QContextMenuEvent* event)
             else
             {
                 hit->removeVisualizer("earth direction");
+            }
+        }
+        else if (chosenAction == centerAction)
+        {
+            setObserverCenter(hit);
+            setInertialObserver();
+        }
+        else if (chosenAction == fixedAction)
+        {
+            setObserverCenter(hit);
+            setBodyFixedObserver();
+        }
+        else if (chosenAction == fixedAction)
+        {
+            setObserverCenter(hit);
+            setBodyFixedObserver();
+        }
+        else if (chosenAction == rotatingAction)
+        {
+            vesta::Arc* currentArc = hit->chronology()->activeArc(m_currentTime);
+            if (currentArc)
+            {
+                Entity* center = currentArc->center();
+                TwoBodyRotatingFrame* f = new TwoBodyRotatingFrame(hit, center);
+                setObserverCenter(center);
+                m_observer->updatePositionFrame(f, m_currentTime);
+                m_observer->updatePointingFrame(f, m_currentTime);
             }
         }
 
@@ -1518,6 +1577,7 @@ ThreeDView::gotoBody(const StaBody* body)
 
         // Position the observer on the sunlit side of the body
         m_observer->setCenter(e);
+        setInertialObserver();
         m_observer->setPosition((sun->position(m_currentTime) - e->position(m_currentTime)).normalized() * distance);
         m_observer->setOrientation(LookAt(Vector3d::Zero(), m_observer->position(), Vector3d::UnitZ()));
 
@@ -1658,6 +1718,7 @@ ThreeDView::setCameraViewpoint(const QString& viewName)
     }
 
     m_observer->setCenter(center);
+    setInertialObserver();
     m_observer->setPosition(offsetDirection * distance);
     m_observer->setOrientation(LookAt(Vector3d::Zero(), m_observer->position(), upDirection));
 
@@ -2316,3 +2377,33 @@ ThreeDView::setAmbientLight(float lightLevel)
     setViewChanged();
 }
 
+
+void
+ThreeDView::setInertialObserver()
+{
+    m_observer->updatePositionFrame(InertialFrame::equatorJ2000(), m_currentTime);
+    m_observer->updatePointingFrame(InertialFrame::equatorJ2000(), m_currentTime);
+}
+
+
+void
+ThreeDView::setBodyFixedObserver()
+{
+    BodyFixedFrame* f = new BodyFixedFrame(m_observer->center());
+    m_observer->updatePositionFrame(f, m_currentTime);
+    m_observer->updatePointingFrame(f, m_currentTime);
+}
+
+
+void
+ThreeDView::setObserverCenter(vesta::Entity* center)
+{
+    m_observer->updateCenter(center, m_currentTime);
+    if (dynamic_cast<BodyFixedFrame*>(m_observer->positionFrame()))
+    {
+        // Need to update the center of a body fixed frame
+        BodyFixedFrame* f = new BodyFixedFrame(center);
+        m_observer->updatePositionFrame(f, m_currentTime);
+        m_observer->updatePointingFrame(f, m_currentTime);
+    }
+}

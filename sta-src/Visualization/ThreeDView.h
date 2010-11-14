@@ -110,6 +110,9 @@ public slots:
    void setCurrentSkyLayer(int layerIndex);
    void setAmbientLight(float lightLevel);
 
+   void setInertialObserver();
+   void setBodyFixedObserver();
+
 protected:
     void initializeGL();
     void paintGL();
@@ -144,6 +147,8 @@ private:
     void clearScenarioObjects();
 
     void updateSolarSystemTrajectoryPlots();
+
+    void setObserverCenter(vesta::Entity* center);
 
 private:
     double m_currentTime;

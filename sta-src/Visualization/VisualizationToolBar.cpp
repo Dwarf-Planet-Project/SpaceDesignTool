@@ -144,6 +144,14 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     m_sensorFovsAction->setToolTip(tr("Show sensor FOVs"));
     m_sensorFovsAction->setCheckable(true);
 
+    m_observerFrameAction = new QAction(QIcon(":/icons/CoordinateSystem.png"), tr("Observer Frame"), this);
+    m_observerFrameAction->setToolTip(tr("Select observer reference frame"));
+    m_observerFrameAction->setMenu(new QMenu());
+    QAction* inertialAction = m_observerFrameAction->menu()->addAction("Inertial");
+    QAction* bodyFixedAction = m_observerFrameAction->menu()->addAction("Body-fixed");
+    connect(inertialAction, SIGNAL(triggered()), this, SIGNAL(inertialObserver()));
+    connect(bodyFixedAction, SIGNAL(triggered()), this, SIGNAL(bodyFixedObserver()));
+
     // Analysis (Claas Grohnfeldt, Steffen Peter)
     m_discretizationAction = new QAction(tr("Show Discretization"), this);
     m_discretizationAction->setCheckable(true);
@@ -257,6 +265,13 @@ VisualizationToolBar::configureFor3DView(ViewActionGroup* viewActions)
 
     addAction(m_cameraAction);
     configureCameraMenu(NULL);
+
+    // For now, omit observer frame menu; this function is handled in a more
+    // obvious way via the context menu.
+    /*
+    addAction(m_observerFrameAction);
+    addSeparator();
+    */
 
     // Add all actions and widgets to the toolbar
     addAction(m_gridAction);
