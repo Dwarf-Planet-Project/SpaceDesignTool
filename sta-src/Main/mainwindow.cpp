@@ -323,6 +323,23 @@ MainWindow::MainWindow(QWidget *parent)	:
     m_viewUpdateTimer = new QTimer(this);
     QObject::connect(m_viewUpdateTimer, SIGNAL(timeout()), SLOT(tick()));
     m_viewUpdateTimer->start(5);
+
+    QString initialFile = ":/untitled.stas";
+    const QStringList args = QCoreApplication::arguments();
+    if (args.count() == 2)
+    {
+        initialFile = args.at(1);
+    }
+    else
+    {
+        return;
+    }
+
+
+    if (!openScenarioFile(initialFile))
+    {
+        fileNew();
+    }
 }
 
 
@@ -1902,6 +1919,150 @@ void MainWindow::openFileFromAEvent(const QString& fileName)
     actionSat_to_Sat->setEnabled(m_scenario != NULL);
     actionSat_to_Ground->setEnabled(m_scenario != NULL);
     actionSystem_Engineering->setEnabled(m_scenario != NULL);
+    actionAnalyse->setDisabled(m_scenario != NULL);  // Do not enable analysis here. Do it after propagation
+
+}
+
+
+
+
+
+bool MainWindow::openScenarioFile(const QString &fileName)
+{
+    /*
+    if (!QFile::exists(fileName))
+    {
+        QMessageBox::critical(this, tr("Error"), tr("The scenario file does not exist."));
+        return false;
+    }
+    */
+
+    // Start the open file dialog in the same directory as last time
+    QString dir;
+    QSettings settings;
+    settings.beginGroup("Preferences");
+    if (settings.contains("OpenScenarioDir"))
+    {
+                dir = settings.value("OpenScenarioDir").toString();
+    }
+
+    if (!fileName.isEmpty())
+    {
+                QFile scenarioFile(fileName);
+                if (!scenarioFile.open(QIODevice::ReadOnly))
+                {
+                        QMessageBox::critical(this, tr("Error"), tr("Error opening file %1").arg(fileName));
+                }
+                else
+                {
+                        // Save the scenario file directory
+                        QFileInfo scenarioFileInfo(fileName);
+                        settings.setValue("OpenScenarioDir", scenarioFileInfo.absolutePath());
+
+                        if (!m_spaceScenarioSchema)
+                        {
+                                QFile schemaFile(SCHEMA_FILE);
+                                if (!schemaFile.open(QIODevice::ReadOnly))
+                                {
+                                        QMessageBox::critical(this, tr("Critical Error"), tr("Error opening space scenario schema file. Unable to load scenario."));
+                                        return false;
+                                }
+
+                                m_spaceScenarioSchema = new QXmlSchema;
+                                if (!m_spaceScenarioSchema->load(&schemaFile, QUrl::fromLocalFile(schemaFile.fileName())))
+                                {
+                                        QMessageBox::critical(this, tr("Critical Error"), tr("Error in space scenario schema file. Unable to load scenario."));
+                                        delete m_spaceScenarioSchema;
+                                        m_spaceScenarioSchema = NULL;
+                                        return false;
+                                }
+                        }
+
+                        QXmlSchemaValidator validator(*m_spaceScenarioSchema);
+                        if (!validator.validate(&scenarioFile))
+                        {
+
+                                QMessageBox::critical(this, tr("Scenario Load Error"), tr("Scenario is not a valid space scenario."));
+                                return false;
+                        }
+
+                        scenarioFile.reset();
+                        QDomDocument scenarioDoc;
+                        if (!scenarioDoc.setContent(&scenarioFile))
+                        {
+                                // This should not fail, since we just got done validating the xml file against the space
+                                // scenario schema.
+                                scenarioFile.close();
+                                QMessageBox::critical(this, tr("Scenario Load Error"), tr("Internal error occurred when loading space scenario."));
+                                return false;
+                        }
+
+                        scenarioFile.close();
+
+                        QDomElement rootElement = scenarioDoc.firstChildElement("tns:SpaceScenario");
+                        SpaceScenario* scenario = SpaceScenario::create(rootElement);
+                        if (!scenario)
+                        {
+                                QMessageBox::critical(this, tr("Scenario Load Error"), tr("Internal error (parser problem) occurred when loading space scenario."));
+                                return false;
+                        }
+
+                        // TODO: Probably should just call setScenario() here.
+                        clearViews();
+
+                        // Prohibit drops to the top level item
+                        QTreeWidgetItem* invisibleRoot = m_scenarioView->m_scenarioTree->invisibleRootItem();
+                        invisibleRoot->setFlags(invisibleRoot->flags() & ~Qt::ItemIsDropEnabled);
+
+                        QTreeWidgetItem* rootItem = new QTreeWidgetItem(m_scenarioView->m_scenarioTree);
+                        rootItem->setExpanded(true);
+                        rootItem->setText(0, "Space scenario");
+                        rootItem->setText(1, scenario->Name());
+                        rootItem->setFlags(rootItem->flags() & ~Qt::ItemIsDragEnabled);
+
+                        m_scenarioView->m_scenarioTree->addScenarioItems(rootItem, scenario);
+                        m_scenarioView->m_scenarioTree->addTopLevelItem(rootItem);
+
+                        // This sequence seems to be required to force the scenario view
+                        // widget to update (at least on Mac OS X)
+                        m_scenarioView->m_scenarioTree->update();
+                        m_scenarioView->setFocus();
+                        m_scenarioView->m_scenarioTree->setFocus();
+                }
+    }
+
+    settings.endGroup();
+
+    // Activating now the pull down menus
+    actionPropagate_Scenario->setEnabled(m_scenario != NULL);
+    actionPropagateCoverage->setEnabled(m_scenario != NULL);
+    actionSat_to_Sat->setEnabled(m_scenario != NULL);
+    actionSat_to_Ground->setEnabled(m_scenario != NULL);
+    actionSystem_Engineering->setEnabled(m_scenario != NULL);
+    actionAnalyse->setDisabled(m_scenario != NULL);  // Do not enable analysis here. Do it after propagation
+
+    return true;
+}
+
+
+
+void MainWindow::fileNew()
+{
+    SpaceScenario* scenario = new SpaceScenario();
+    scenario->setName("New scenario");
+
+    setScenario(scenario);
+
+    m_scenarioView->update();
+    m_scenarioView->setFocus();
+
+    // Activating now the pull down menus
+    actionPropagate_Scenario->setEnabled(m_scenario != NULL);
+    actionPropagateCoverage->setEnabled(m_scenario != NULL);
+    actionSat_to_Sat->setEnabled(m_scenario != NULL);
+    actionSat_to_Ground->setEnabled(m_scenario != NULL);
+    actionSystem_Engineering->setEnabled(m_scenario != NULL);
+    //actionAnalyse->setEnabled(m_scenario != NULL);
     actionAnalyse->setDisabled(m_scenario != NULL);  // Do not enable analysis here. Do it after propagation
 
 }

@@ -98,7 +98,11 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationVersion("3.0");
     QCoreApplication::setOrganizationDomain("STASB");  // Patched by Guillermo
 
-    QString ApplicationPath = QDir::currentPath ();
+    //QString ApplicationPath = QDir::currentPath ();
+    //QString ResourcesPath = ApplicationPath + "/sta-data";
+
+    QString ApplicationPath = QApplication::applicationFilePath();
+            ApplicationPath.truncate(ApplicationPath.lastIndexOf("/"));
     QString ResourcesPath = ApplicationPath + "/sta-data";
 
     ParseCommandLine();
@@ -138,13 +142,16 @@ int main(int argc, char *argv[])
     staResourcesPath = ResourcesPath;
 #endif
 
-    if (!QDir::setCurrent(staResourcesPath))
+
+    //if (!QDir::setCurrent(staResourcesPath))
+    if (!QDir::setCurrent(ResourcesPath))  // Patched by Guillermo
     {
         QMessageBox::warning(NULL, 
                              QObject::tr("STA Resources Not Found"),
                              QObject::tr("STA resources folder wasn't found. This probably means that STA was not properly installed"));
         exit(0);
     }
+
 
 
     // Initialize the astro core
@@ -187,6 +194,7 @@ int main(int argc, char *argv[])
 
     // end astro core initialization
 
+
     MainWindow* mainwindow = new MainWindow();
 
 #ifdef Q_WS_MAC
@@ -194,6 +202,7 @@ int main(int argc, char *argv[])
     QString fileToOpen = eventListener->file();
     mainwindow->openFileFromAEvent(fileToOpen);
 #endif
+
 
     mainwindow->show();
 

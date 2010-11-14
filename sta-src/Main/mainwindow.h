@@ -132,6 +132,9 @@ public:
 signals:
     void progressUpdate(const QString& s, int align, const QColor& c);
 
+private slots:
+    void fileNew();
+
 private:
     void showGroundTrackPlotTool();
     void replaceCurrentScenario(SpaceScenario* scenario, QString filename);
@@ -144,7 +147,8 @@ private:
     
     void clearViews();
 
-private:
+    bool openScenarioFile(const QString &fileName);
+
     SpaceScenario* m_scenario;
     PropagatedScenario* m_propagatedScenario;
     
