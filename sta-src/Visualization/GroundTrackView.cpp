@@ -146,7 +146,6 @@ GroundTrackView::GroundTrackView(QWidget* parent) :
         m_pixmap(NULL),
         m_pixmapOk(false),
         m_contextMenu(NULL),
-        m_showEntireTracks(true),
         m_showGrid(false),
         m_showEquator(false),
         m_showTicks(false),
@@ -280,13 +279,6 @@ void GroundTrackView::setCurrentTime(double mjd)
         m_currentTime = mjd;
         viewport()->update();
     }
-}
-
-
-void GroundTrackView::setShowEntireTracks(bool show)
-{
-    m_showEntireTracks = show;
-    viewport()->update();
 }
 
 
@@ -1560,16 +1552,11 @@ double
 
 void GroundTrackView::contextMenuEvent(QContextMenuEvent* event)
 {
+#if 0
     if (!m_contextMenu)
         m_contextMenu = new QMenu(this);
     m_contextMenu->clear();
 
-    QAction* entireAction = new QAction(tr("Show &Entire Tracks"), m_contextMenu);
-    entireAction->setCheckable(true);
-    entireAction->setChecked(m_showEntireTracks);
-    connect(entireAction, SIGNAL(triggered(bool)), this, SLOT(setShowEntireTracks(bool)));
-
-    m_contextMenu->addAction(entireAction);
     GroundTrackPlotTool* groundTrackPlotTool = qobject_cast<GroundTrackPlotTool*>(parent());
     Q_ASSERT(groundTrackPlotTool != NULL);
     if (groundTrackPlotTool)
@@ -1579,6 +1566,7 @@ void GroundTrackView::contextMenuEvent(QContextMenuEvent* event)
     }
 
     m_contextMenu->popup(event->globalPos());
+#endif
 }
 
 // Analysis (Claas Grohnfeldt, Steffen Peter)

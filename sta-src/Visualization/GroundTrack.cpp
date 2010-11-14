@@ -562,8 +562,6 @@ GroundTrack::draw(QPainter& painter,
     double altNow  = 0.0;
     bool activeNow = false;
 
-    bool showEntireTrack = false;
-
     float west = clipBox.min().x();
     float east = clipBox.max().x();
     float north = clipBox.max().y();
@@ -587,16 +585,12 @@ GroundTrack::draw(QPainter& painter,
         painter.setPen(pen);
 
         bool trackVisible = false;
-        if (segment->samples().empty() || (mjd <= segment->startTime() && !showEntireTrack))
+        if (segment->samples().empty() || (mjd <= segment->startTime()))
         {
             trackVisible = true;
         }
 
-        double endTime = std::numeric_limits<double>::infinity();
-        if (!showEntireTrack)
-        {
-            endTime = mjd;
-        }
+        double endTime = mjd;
 
         bool complete = trackVisible;
 
@@ -691,16 +685,11 @@ GroundTrack::drawDropLines(QPainter& painter,
                            const Eigen::AlignedBox<float, 3>& clipBox)
 {
     double mjd = endMjd;
-    bool showEntireTrack = false;
 
     float west = clipBox.min().x();
     float maxHeight = clipBox.max().z();
 
-    double endTime = std::numeric_limits<double>::infinity();
-    if (!showEntireTrack)
-    {
-        endTime = mjd;
-    }
+    double endTime = mjd;
 
     foreach (GroundTrackSegment* segment, segments)
     {
@@ -713,12 +702,8 @@ GroundTrack::drawDropLines(QPainter& painter,
         double startTime = 0.0;
         if (segment->sampleCount() > 0)
             startTime = segment->startTime();
-        int lastTick = segment->tickCount();
-        if (!showEntireTrack)
-        {
-            lastTick = std::min(lastTick,
+        int lastTick = std::min(lastTick,
                                 (int) std::ceil((endTime - startTime) / sta::secsToDays(tickInterval)));
-        }
 
         for (int i = 0; i < lastTick; i++)
         {

@@ -66,7 +66,6 @@ Q_OBJECT
     QPointF center() const { return m_center; }
     float zoomFactor() const { return m_zoomFactor; }
     double currentTime() const { return m_currentTime; }
-    bool showEntireTracks() const { return m_showEntireTracks; }
     bool showGrid() const { return m_showGrid; }
     bool showEquator() const { return m_showEquator; }
     bool showTicks() const { return m_showTicks; }
@@ -77,7 +76,6 @@ Q_OBJECT
 
  public slots:
     void setCurrentTime(double jd);
-    void setShowEntireTracks(bool show);
     void setShowGrid(bool show);
     void setShowEquator(bool show);
     void setShowTicks(bool show);
@@ -151,7 +149,6 @@ Q_OBJECT
     QList<GroundTrack*> m_groundTrackList;
     QVector<QPointF> m_trackPoints;
     QMenu* m_contextMenu;
-    bool m_showEntireTracks;
     bool m_showGrid;
     bool m_showEquator;
     bool m_showTicks;
