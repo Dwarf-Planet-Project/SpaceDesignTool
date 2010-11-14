@@ -143,16 +143,23 @@ int main(int argc, char *argv[])
 #endif
 
 
-    //if (!QDir::setCurrent(staResourcesPath))
-    if (!QDir::setCurrent(ResourcesPath))  // Patched by Guillermo
+#if defined(Q_WS_MAC)
+    if (!QDir::setCurrent(staResourcesPath))
     {
-        QMessageBox::warning(NULL, 
+        QMessageBox::warning(NULL,
                              QObject::tr("STA Resources Not Found"),
                              QObject::tr("STA resources folder wasn't found. This probably means that STA was not properly installed"));
         exit(0);
     }
-
-
+#else
+    if (!QDir::setCurrent(ResourcesPath))  // Patched by Guillermo
+    {
+        QMessageBox::warning(NULL,
+                             QObject::tr("STA Resources Not Found"),
+                             QObject::tr("STA resources folder wasn't found. This probably means that STA was not properly installed"));
+        exit(0);
+    }
+#endif
 
     // Initialize the astro core
     SolarSystemBodyDictionary::Create();
