@@ -24,6 +24,7 @@
 
 
 #include "canalysis.h"
+#include "Astro-Core/stamath.h"
 #include "Astro-Core/cartesianTOspherical.h"
 #include "Astro-Core/nedTOfixed.h"
 #include <QCheckBox>
@@ -84,7 +85,15 @@ ConstellationAnalysis::ConstellationAnalysis(PropagatedScenario* scenario, bool 
     {
         m_endTime = spaceObject->missionEndTime();
         m_startTime = spaceObject->missionStartTime();
-        m_anaSpaceObjectList.append(AnaSpaceObject(spaceObject, new Antenna(2.76, 3*3.14/8, 3.14/16)));
+
+        // Changed by Chris Laurel:
+        //   Calculate coverage for a nadir pointing antenna with a cone apex angle of
+        //   5 degrees. This matches what we currently use in the 3D view. BUT: in both
+        //   places we should be using information about the antenna from the space scenario.
+        m_anaSpaceObjectList << AnaSpaceObject(spaceObject, new Antenna(sta::degToRad(0.0), sta::degToRad(90.0), sta::degToRad(2.5)));
+
+        // Old values from Claas and Steffen:
+        //m_anaSpaceObjectList.append(AnaSpaceObject(spaceObject, new Antenna(2.76, 3*3.14/8, 3.14/16)));
     }
 
     // todo: samples have to depend on the scenario (but how??)
