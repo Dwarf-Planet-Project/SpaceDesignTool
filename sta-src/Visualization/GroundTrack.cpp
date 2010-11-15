@@ -42,14 +42,14 @@ using namespace Eigen;
 
 
 GroundTrack::GroundTrack() :
-    vehicle(NULL)
+    m_vehicle(NULL)
 {
 }
 
 
 GroundTrack::~GroundTrack()
 {
-    foreach (GroundTrackSegment* segment, segments)
+    foreach (GroundTrackSegment* segment, m_segments)
     {
         delete segment;
     }
@@ -162,7 +162,8 @@ computeGroundTrackTick(const SpaceObject* spaceObj, const StaBody* body, double 
 }
 
 
-GroundTrackSegment::GroundTrackSegment()
+GroundTrackSegment::GroundTrackSegment() :
+    m_missionArc(NULL)
 {
 }
 
@@ -183,15 +184,18 @@ GroundTrackSegment::clearTicks()
 
 /** Add ground track samples to cover the specified time window. Remove
   * old samples that fall outside of the time window.
+  *
+  * \param sampleSpacing the duration between ground track samples (in Julian days)
   */
 void
 GroundTrackSegment::updateSamples(SpaceObject* spaceObj,
                                   MissionArc* arc,
                                   const StaBody* body,
                                   double plotStartTime,
-                                  double plotEndTime)
+                                  double plotEndTime,
+                                  double sampleSpacing)
 {
-    double dt = 1.0 / 1440.0;
+    double dt = sampleSpacing;
     double windowStartTime = std::max(arc->beginning(), plotStartTime - dt);
     double windowEndTime = std::min(arc->ending(), plotEndTime + dt);
 
@@ -362,11 +366,9 @@ GroundTrack::draw2D(QPainter& painter,
 {
     double west = clipBox.min().x();
 
-    int arcIndex = 0;
-    foreach (GroundTrackSegment* segment, segments)
+    foreach (GroundTrackSegment* segment, m_segments)
     {
-        const MissionArc* arc = vehicle->mission().at(arcIndex);
-        arcIndex++;
+        const MissionArc* arc = segment->missionArc();
 
         if (endMjd <= arc->beginning() || startMjd >= arc->ending())
         {
@@ -375,7 +377,7 @@ GroundTrack::draw2D(QPainter& painter,
 
         if (segment->sampleCount() == 0)
         {
-            qDebug() << "Empty segment " << arcIndex << ", duration: " << arc->ending() - arc->beginning();
+            qDebug() << "Empty segment " << arc->arcName() << ", duration: " << arc->ending() - arc->beginning();
             continue;
         }
 
@@ -401,7 +403,7 @@ GroundTrack::draw2D(QPainter& painter,
         else
         {
             StateVector v;
-            if (vehicle->getStateVector(startMjd, *body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v))
+            if (m_vehicle->getStateVector(startMjd, *body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v))
             {
                 double altNow = 0.0;
                 planetographicCoords(v.position, body, &longNow, &latNow, &altNow);
@@ -425,7 +427,7 @@ GroundTrack::draw2D(QPainter& painter,
             if (segment->sample(i).mjd >= endMjd)
             {
                 StateVector v;
-                if (vehicle->getStateVector(endMjd, *body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v))
+                if (m_vehicle->getStateVector(endMjd, *body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v))
                 {
                     double alt = 0.0;
                     planetographicCoords(v.position, body, &long1, &lat1, &alt);
@@ -507,11 +509,9 @@ GroundTrack::drawTicks(QPainter& painter,
 {
     double west = clipBox.min().x();
 
-    int arcIndex = 0;
-    foreach (GroundTrackSegment* segment, segments)
+    foreach (GroundTrackSegment* segment, m_segments)
     {
-        const MissionArc* arc = vehicle->mission().at(arcIndex);
-        arcIndex++;
+        const MissionArc* arc = segment->missionArc();
 
         if (endMjd <= arc->beginning() || startMjd >= arc->ending())
         {
@@ -568,7 +568,7 @@ GroundTrack::draw(QPainter& painter,
     float south = clipBox.min().y();
     float maxHeight = clipBox.max().z();
 
-    if (vehicle->getStateVector(mjd, *body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v))
+    if (m_vehicle->getStateVector(mjd, *body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v))
     {
         planetographicCoords(v.position, body, &longNow, &latNow, &altNow);
         if (longNow < west)
@@ -576,7 +576,7 @@ GroundTrack::draw(QPainter& painter,
         activeNow = true;
     }
 
-    foreach (GroundTrackSegment* segment, segments)
+    foreach (GroundTrackSegment* segment, m_segments)
     {
         m_trackPoints.clear();
 
@@ -691,7 +691,7 @@ GroundTrack::drawDropLines(QPainter& painter,
 
     double endTime = mjd;
 
-    foreach (GroundTrackSegment* segment, segments)
+    foreach (GroundTrackSegment* segment, m_segments)
     {
         m_trackPoints.clear();
 
@@ -731,7 +731,7 @@ GroundTrack::drawDropLines(QPainter& painter,
 void
 GroundTrack::clearSamples()
 {
-    foreach (GroundTrackSegment* segment, segments)
+    foreach (GroundTrackSegment* segment, m_segments)
     {
         segment->clearSamples();
     }
@@ -741,7 +741,7 @@ GroundTrack::clearSamples()
 void
 GroundTrack::clearTicks()
 {
-    foreach (GroundTrackSegment* segment, segments)
+    foreach (GroundTrackSegment* segment, m_segments)
     {
         segment->clearTicks();
     }
@@ -759,11 +759,14 @@ void
 GroundTrack::updateSamples(SpaceObject* spaceObj, const StaBody* body, double plotStartTime, double plotEndTime)
 {
     unsigned int index = 0;
-    foreach (GroundTrackSegment* segment, segments)
+    foreach (GroundTrackSegment* segment, m_segments)
     {
         if (plotStartTime < segment->startTime() || plotEndTime > segment->endTime())
         {
-            segment->updateSamples(spaceObj, spaceObj->mission().at(index), body, plotStartTime, plotEndTime);
+            double maxSampleSpacing = (segment->missionArc()->ending() - segment->missionArc()->beginning()) / segment->missionArc()->trajectorySampleCount();
+            double sampleSpacing = std::min(maxSampleSpacing, 1.0 / 1440.0);
+
+            segment->updateSamples(spaceObj, spaceObj->mission().at(index), body, plotStartTime, plotEndTime, sampleSpacing);
         }
         index++;
     }
@@ -782,7 +785,7 @@ void
 GroundTrack::updateTicks(SpaceObject* spaceObj, const StaBody* body, double plotStartTime, double plotEndTime, double tickSpacing)
 {
     unsigned int index = 0;
-    foreach (GroundTrackSegment* segment, segments)
+    foreach (GroundTrackSegment* segment, m_segments)
     {
         if (plotStartTime < segment->firstTickTime() || plotEndTime > segment->lastTickTime())
         {

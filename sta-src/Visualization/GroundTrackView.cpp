@@ -241,11 +241,11 @@ void GroundTrackView::setScenario(PropagatedScenario* scenario)
 bool GroundTrackView::addGroundTrack(SpaceObject* vehicle)
 {
     GroundTrack* track = new GroundTrack();
-    track->vehicle = vehicle;
+    track->m_vehicle = vehicle;
 
     // Skip empty ground tracks
     computeGroundTrack(*track);
-    if (track->segments.size() == 0)
+    if (track->m_segments.size() == 0)
     {
         delete track;
         return false;
@@ -260,14 +260,15 @@ bool GroundTrackView::addGroundTrack(SpaceObject* vehicle)
 
 void GroundTrackView::computeGroundTrack(GroundTrack& track)
 {
-    track.segments.clear();
+    track.m_segments.clear();
 
-    foreach (MissionArc* arc, track.vehicle->mission())
+    foreach (MissionArc* arc, track.m_vehicle->mission())
     {
         GroundTrackSegment* segment = new GroundTrackSegment();
 
+        segment->setMissionArc(arc);
         segment->setColor(arc->arcTrajectoryColor());
-        track.segments << segment;
+        track.m_segments << segment;
     }
 }
 
@@ -598,8 +599,8 @@ void GroundTrackView::drawBackground(QPainter* painter, const QRectF& rect)
     // Update ground track for the current time
     foreach (GroundTrack* track, m_groundTrackList)
     {
-        track->updateSamples(track->vehicle, m_body, m_currentTime - m_trackDisplayDuration, m_currentTime);
-        track->updateTicks(track->vehicle, m_body, m_currentTime - m_trackDisplayDuration, m_currentTime, sta::secsToDays(m_tickInterval));
+        track->updateSamples(track->m_vehicle, m_body, m_currentTime - m_trackDisplayDuration, m_currentTime);
+        track->updateTicks(track->m_vehicle, m_body, m_currentTime - m_trackDisplayDuration, m_currentTime, sta::secsToDays(m_tickInterval));
     }
 
     if (m_projection == Oblique)
@@ -892,13 +893,13 @@ void GroundTrackView::paintObliqueView(QPainter& painter)
     foreach (GroundTrack* track, m_groundTrackList)
     {
         sta::StateVector v;
-        if (track->vehicle->getStateVector(m_currentTime, *m_body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v))
+        if (track->m_vehicle->getStateVector(m_currentTime, *m_body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v))
         {
             double longNow = 0.0;
             double latNow  = 0.0;
             double altNow  = 0.0;
             planetographicCoords(v.position, m_body, &longNow, &latNow, &altNow);
-            selectedSpacecraft = track->vehicle;
+            selectedSpacecraft = track->m_vehicle;
             selectedSpacecraftAltitude = altNow;
             break;
         }
@@ -959,7 +960,7 @@ void GroundTrackView::paintObliqueView(QPainter& painter)
         double latNow  = 0.0;
         double altNow  = 0.0;
         bool activeNow = false;
-        if (track->vehicle->getStateVector(m_currentTime, *m_body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v))
+        if (track->m_vehicle->getStateVector(m_currentTime, *m_body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v))
         {
             planetographicCoords(v.position, m_body, &longNow, &latNow, &altNow);
             if (longNow < m_west)
@@ -978,7 +979,7 @@ void GroundTrackView::paintObliqueView(QPainter& painter)
             track->drawDropLines(painter, m_body, m_currentTime - m_trackDisplayDuration, m_currentTime, m_tickInterval, proj, clipBox);
         }
 
-        foreach (GroundTrackSegment* segment, track->segments)
+        foreach (GroundTrackSegment* segment, track->m_segments)
         {
             // Draw an indicator at the current spacecraft subpoint
             if (!segment->samples().empty() &&
@@ -997,7 +998,7 @@ void GroundTrackView::paintObliqueView(QPainter& painter)
                 QTransform xform = painter.worldTransform();
                 painter.setWorldTransform(QTransform());
                 QPointF textOrigin = QPointF((float) longNow + labelOffset, (float) latNow + labelOffset) * xform;
-                painter.drawText(textOrigin, track->vehicle->name());       // Guillermo says: this is an attribute and should be removed
+                painter.drawText(textOrigin, track->m_vehicle->name());       // Guillermo says: this is an attribute and should be removed
                 painter.setWorldTransform(xform);
             }
         }
@@ -1255,13 +1256,13 @@ void GroundTrackView::paint2DView(QPainter& painter)
         double latNow  = 0.0;
         double altNow  = 0.0;
         bool activeNow = false;
-        if (track->vehicle->getStateVector(m_currentTime, *m_body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v))
+        if (track->m_vehicle->getStateVector(m_currentTime, *m_body, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &v))
         {
             planetographicCoords(v.position, m_body, &longNow, &latNow, &altNow);
             activeNow = true;
             if (!selectedSpacecraft)
             {
-                selectedSpacecraft = track->vehicle;
+                selectedSpacecraft = track->m_vehicle;
                 selectedSpacecraftAltitude = altNow;
             }
 
@@ -1282,7 +1283,7 @@ void GroundTrackView::paint2DView(QPainter& painter)
         {
             // This part has been patched by Guillermo to allow the change of color of the marker and the
             // name the the satellite as a fucntion of the color of the arc
-            foreach (GroundTrackSegment* segment, track->segments)
+            foreach (GroundTrackSegment* segment, track->m_segments)
             {
                 if (segment->includesTime(m_currentTime))
                 {
@@ -1298,7 +1299,7 @@ void GroundTrackView::paint2DView(QPainter& painter)
                     QTransform xform = painter.worldTransform();
                     painter.setWorldTransform(QTransform());
                     QPointF textOrigin = QPointF((float) longNow + labelOffset, (float) latNow + labelOffset) * xform;
-                    painter.drawText(textOrigin, track->vehicle->name());       // Guillermo says: this is an attribute and should be removed
+                    painter.drawText(textOrigin, track->m_vehicle->name());       // Guillermo says: this is an attribute and should be removed
                     painter.setWorldTransform(xform);
                 }
             }

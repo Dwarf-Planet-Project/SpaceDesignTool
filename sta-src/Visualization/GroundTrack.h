@@ -65,7 +65,7 @@ class GroundTrackSegment
 {
 public:
     GroundTrackSegment();
-    void updateSamples(SpaceObject* spaceObj, MissionArc* arc, const StaBody* body, double plotStartTime, double plotEndTime);
+    void updateSamples(SpaceObject* spaceObj, MissionArc* arc, const StaBody* body, double plotStartTime, double plotEndTime, double sampleSpacing);
     void clearSamples();
     void updateTicks(SpaceObject* spaceObj, MissionArc* arc, const StaBody* body, double plotStartTime, double plotEndTime, double tickInterval);
     void clearTicks();
@@ -78,6 +78,16 @@ public:
     void setColor(const QColor& color)
     {
         m_color = color;
+    }
+
+    MissionArc* missionArc() const
+    {
+        return m_missionArc;
+    }
+
+    void setMissionArc(MissionArc* missionArc)
+    {
+        m_missionArc = missionArc;
     }
 
     int sampleCount() const
@@ -115,6 +125,8 @@ public:
         return m_ticks[index];
     }
 
+    /** Get the segment start time (MJD)
+      */
     double startTime() const
     {
         if (m_samples.isEmpty())
@@ -127,6 +139,8 @@ public:
         }
     }
 
+    /** Get the segment end time (MJD)
+      */
     double endTime() const
     {
         if (m_samples.isEmpty())
@@ -169,6 +183,7 @@ public:
     }
 
 private:
+    MissionArc* m_missionArc;
     QColor m_color;
     QList<GroundTrackSample> m_samples;
     QList<GroundTrackTick> m_ticks;
@@ -191,8 +206,8 @@ public:
     void clearSamples();
     void clearTicks();
 
-    SpaceObject* vehicle;
-    QList<GroundTrackSegment*> segments;
+    SpaceObject* m_vehicle;
+    QList<GroundTrackSegment*> m_segments;
     QVector<QPointF> m_trackPoints;
 };
 
