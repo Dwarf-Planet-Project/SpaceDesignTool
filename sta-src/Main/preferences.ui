@@ -321,14 +321,17 @@
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>92</x>
        <y>270</y>
-       <width>71</width>
+       <width>97</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
       <string>Ambient light</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
     <widget class="QLabel" name="label_2">
@@ -360,9 +363,9 @@
     <widget class="QGroupBox" name="groupBox_4">
      <property name="geometry">
       <rect>
-       <x>90</x>
+       <x>60</x>
        <y>10</y>
-       <width>471</width>
+       <width>505</width>
        <height>181</height>
       </rect>
      </property>
@@ -370,82 +373,78 @@
       <string>Features</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_8">
-      <item row="0" column="0">
-       <layout class="QGridLayout" name="gridLayout_7">
-        <item row="0" column="0">
+      <item row="1" column="0">
+       <layout class="QGridLayout" name="gridLayout_7" columnstretch="0,0,0,0" columnminimumwidth="0,0,0,0">
+        <item row="0" column="1">
          <widget class="QCheckBox" name="atmospheres">
           <property name="text">
            <string>Atmospheres</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
+        <item row="1" column="1">
          <widget class="QCheckBox" name="clouds">
           <property name="text">
            <string>Clouds</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="0">
+        <item row="2" column="1">
          <widget class="QCheckBox" name="nightLigfhts">
           <property name="text">
            <string>Night lights</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="0">
+        <item row="3" column="1">
          <widget class="QCheckBox" name="shadows">
           <property name="text">
            <string>Shadows</string>
           </property>
          </widget>
         </item>
-        <item row="4" column="0">
+        <item row="4" column="1">
          <widget class="QCheckBox" name="reflections">
           <property name="text">
            <string>Reflections</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
+        <item row="0" column="3">
          <widget class="QCheckBox" name="stars">
           <property name="text">
            <string>Stars</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
+        <item row="1" column="3">
          <widget class="QCheckBox" name="celestialGrid">
           <property name="text">
            <string>Celestial grid</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
+        <item row="2" column="3">
          <widget class="QCheckBox" name="fieldOfView">
           <property name="text">
            <string>Field of view</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="1">
+        <item row="3" column="3">
          <widget class="QCheckBox" name="coordinateSystems">
           <property name="text">
            <string>Coordinate systems</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="2">
+        <item row="4" column="3">
          <widget class="QCheckBox" name="coverageAreas">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Coverage areas</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="QCheckBox" name="dataLayers">
-          <property name="text">
-           <string>Data layers</string>
           </property>
          </widget>
         </item>
@@ -456,9 +455,9 @@
     <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>200</y>
-       <width>241</width>
+       <x>56</x>
+       <y>212</y>
+       <width>513</width>
        <height>26</height>
       </rect>
      </property>
@@ -466,7 +465,7 @@
       <item>
        <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>Sky layer</string>
+         <string>Sky layer:</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -488,6 +487,74 @@
         <item>
          <property name="text">
           <string>IRAS/COBE (100 micron)</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>3D vision:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="comboBox3DVision">
+        <item>
+         <property name="text">
+          <string>Normal</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Cyan Red</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/colorDARKCYAN.png</normaloff>:/icons/colorDARKCYAN.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Red Cyan</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/colorRED.png</normaloff>:/icons/colorRED.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Green Magenta</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/colorGREEN.png</normaloff>:/icons/colorGREEN.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Magenta Green</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/colorDARKMAGENTA.png</normaloff>:/icons/colorDARKMAGENTA.png</iconset>
          </property>
         </item>
        </widget>
@@ -522,15 +589,11 @@
   <tabstop>nightLigfhts</tabstop>
   <tabstop>shadows</tabstop>
   <tabstop>reflections</tabstop>
-  <tabstop>stars</tabstop>
-  <tabstop>celestialGrid</tabstop>
-  <tabstop>fieldOfView</tabstop>
-  <tabstop>coordinateSystems</tabstop>
-  <tabstop>dataLayers</tabstop>
-  <tabstop>coverageAreas</tabstop>
   <tabstop>horizontalSliderAmbientLight</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../iconary/sta-icons.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBoxPreferences</sender>

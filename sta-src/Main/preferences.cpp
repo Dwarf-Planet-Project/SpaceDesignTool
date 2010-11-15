@@ -27,6 +27,7 @@
 
 #include "preferences.h"
 #include "ViewActionGroup.h"
+#include "Visualization/ThreeDView.h"
 
 
 Preferences::Preferences( QWidget * parent, Qt::WindowFlags f) : QDialog(parent,f)
@@ -71,6 +72,7 @@ void Preferences::connectViewActions(const ViewActionGroup* viewActions)
     connect(moonsTrajectories,      SIGNAL(clicked(bool)), viewActions->moonOrbitsAction(),            SLOT(setChecked(bool)));
     connect(planetsLabels,          SIGNAL(clicked(bool)), viewActions->planetLabelsAction(),          SLOT(setChecked(bool)));
     connect(skyLayerCombo,          SIGNAL(currentIndexChanged(int)), viewActions,                     SLOT(setSkyLayer(int)));
+    connect(comboBox3DVision,       SIGNAL(currentIndexChanged(int)), viewActions,                     SLOT(setStereoMode(StereoMode)));  // Guillermo
     connect(this, SIGNAL(ambientLightChanged(float)), viewActions, SLOT(setAmbientLight(float)));
 
     // Connect from view actions to dialog widgets
@@ -86,6 +88,7 @@ void Preferences::connectViewActions(const ViewActionGroup* viewActions)
     connect(viewActions->planetLabelsAction(),          SIGNAL(toggled(bool)), planetsLabels,          SLOT(setChecked(bool)));
     connect(viewActions->moonOrbitsAction(),            SIGNAL(toggled(bool)), moonsTrajectories,      SLOT(setChecked(bool)));
     connect(viewActions, SIGNAL(skyLayerChanged(int)), this, SLOT(setSkyLayer(int)));
+    connect(viewActions, SIGNAL(stereoModeChanged(StereoMode)), this, SLOT(setStereoMode(StereoMode))); // Guillermo
     connect(viewActions, SIGNAL(ambientLightChanged(float)), this, SLOT(setAmbientLight(float)));
 }
 

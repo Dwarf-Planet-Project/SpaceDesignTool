@@ -206,6 +206,9 @@ private:
     bool m_sensorFovsEnabled;
 
     StereoMode m_stereoMode;
+
+signals:
+    void stereoModeChanged(StereoMode mode);  // Guillermo
 };
 
 #endif // _THREED_VIEW_H_

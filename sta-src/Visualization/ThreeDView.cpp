@@ -2474,6 +2474,7 @@ ThreeDView::setStereoMode(StereoMode mode)
 {
     m_stereoMode = mode;
     setViewChanged();
+    emit stereoModeChanged(m_stereoMode);  // Guillermo
 }
 
 
