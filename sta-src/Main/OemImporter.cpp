@@ -384,7 +384,7 @@ OemImporter::loadScenario()
                     trajectory->CentralBody()->setName(center->name());
                     trajectory->setCoordinateSystem("INERTIAL J2000");
                     trajectory->ElementIdentifier()->setName(QString("%1 - %2").arg(objectName).arg(trajectoryIndex + 1));
-                    trajectory->ElementIdentifier()->setColorName("Green");
+                    trajectory->ElementIdentifier()->setColorName("Yellow");
 
                     sc->SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
                 }
