@@ -447,7 +447,8 @@ ThreeDView::ThreeDView(const QGLFormat& format, QWidget* parent) :
     m_reflectionsEnabled(false),
     m_glInitialized(false),
     m_shadowsInitialized(false),
-    m_sensorFovsEnabled(false)
+    m_sensorFovsEnabled(false),
+    m_stereoMode(NoStereo)
 {
     m_textureLoader = counted_ptr<NetworkTextureLoader>(new NetworkTextureLoader(this, true));
     m_textureLoader->addLocalSearchPath("models");
@@ -629,7 +630,65 @@ ThreeDView::paintGL()
         lighting.reflectionRegions().push_back(cameraRegion);
     }
 
-    m_renderer->renderView(&lighting, m_observer.ptr(), m_fov, viewport);
+    if (m_stereoMode == NoStereo)
+    {
+        m_renderer->renderView(&lighting, m_observer.ptr(), m_fov, viewport);
+    }
+    else
+    {
+        Quaterniond cameraOrientation = m_observer->absoluteOrientation(m_currentTime);
+        Vector3d cameraPosition = m_observer->absolutePosition(m_currentTime);
+        double eyeSeparation = m_observer->position().norm() / 50.0;
+        float focalPlaneDistance = eyeSeparation * 25.0f;
+        float nearDistance = 0.00001f;
+        float farDistance = 1.0e12f;
+        float y = tan(0.5f * m_fov) * nearDistance;
+        float x = y * viewport.aspectRatio();
+
+        float stereoOffset = float(eyeSeparation) * nearDistance / focalPlaneDistance;
+
+        PlanarProjection leftProjection(PlanarProjection::Perspective,  -x + float(stereoOffset), x, -y, y, nearDistance, farDistance);
+        PlanarProjection rightProjection(PlanarProjection::Perspective, -x, x -float(stereoOffset), -y, y, nearDistance, farDistance);
+
+        Vector3d leftEyePosition = cameraPosition + cameraOrientation * (Vector3d::UnitX() * -eyeSeparation);
+        Vector3d rightEyePosition = cameraPosition + cameraOrientation * (Vector3d::UnitX() * eyeSeparation);
+
+        switch (m_stereoMode)
+        {
+        case AnaglyphRedCyan:
+            glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE); break;
+        case AnaglyphCyanRed:
+            glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE); break;
+        case AnaglyphGreenMagenta:
+            glColorMask(GL_FALSE, GL_TRUE, GL_FALSE, GL_TRUE); break;
+        case AnaglyphMagentaGreen:
+            glColorMask(GL_TRUE, GL_FALSE, GL_TRUE, GL_TRUE); break;
+        default:
+            break;
+        }
+        m_renderer->renderView(&lighting, leftEyePosition, cameraOrientation, leftProjection, viewport);
+
+        glDepthMask(GL_TRUE);
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        switch (m_stereoMode)
+        {
+        case AnaglyphRedCyan:
+            glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE); break;
+        case AnaglyphCyanRed:
+            glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE); break;
+        case AnaglyphGreenMagenta:
+            glColorMask(GL_TRUE, GL_FALSE, GL_TRUE, GL_TRUE); break;
+        case AnaglyphMagentaGreen:
+            glColorMask(GL_FALSE, GL_TRUE, GL_FALSE, GL_TRUE); break;
+        default:
+            break;
+        }
+        m_renderer->renderView(&lighting, rightEyePosition, cameraOrientation, rightProjection, viewport);
+
+        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    }
+
 
     m_renderer->endViewSet();
 
@@ -1976,7 +2035,8 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
     sensor->setRange(35000.0);
     sensor->setSource(body);
     sensor->setOpacity(0.3f);
-    sensor->setColor(Spectrum(0.2f, 0.5f, 1.0f));
+    QColor sensorColor = spaceObj->mission().first()->arcTrajectoryColor();
+    sensor->setColor(Spectrum(sensorColor.redF(), sensorColor.greenF(), sensorColor.blueF()));
     Quaterniond sensorRotation;
 
     // Get the nadir direction in the spacecraft's body fixed frame
@@ -2406,4 +2466,12 @@ ThreeDView::setObserverCenter(vesta::Entity* center)
         m_observer->updatePositionFrame(f, m_currentTime);
         m_observer->updatePointingFrame(f, m_currentTime);
     }
+}
+
+
+void
+ThreeDView::setStereoMode(StereoMode mode)
+{
+    m_stereoMode = mode;
+    setViewChanged();
 }

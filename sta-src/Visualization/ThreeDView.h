@@ -78,6 +78,20 @@ public:
        return m_currentTime;
    }
 
+   enum StereoMode
+   {
+       NoStereo,
+       AnaglyphCyanRed,
+       AnaglyphRedCyan,
+       AnaglyphGreenMagenta,
+       AnaglyphMagentaGreen,
+   };
+
+   StereoMode stereoMode() const
+   {
+       return m_stereoMode;
+   }
+
 public slots:
    void setCurrentTime(double t);
    void tick(double dt);
@@ -112,6 +126,8 @@ public slots:
 
    void setInertialObserver();
    void setBodyFixedObserver();
+
+   void setStereoMode(StereoMode mode);
 
 protected:
     void initializeGL();
@@ -186,6 +202,8 @@ private:
     bool m_glInitialized;
     bool m_shadowsInitialized;
     bool m_sensorFovsEnabled;
+
+    StereoMode m_stereoMode;
 };
 
 #endif // _THREED_VIEW_H_
