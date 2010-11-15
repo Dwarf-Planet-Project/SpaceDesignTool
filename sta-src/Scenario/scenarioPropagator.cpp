@@ -397,6 +397,7 @@ void scenarioPropagatorReEntryVehicle(ScenarioREV* entryVehicle, PropagationFeed
     if(!trajectoryList.isEmpty())
     {
         SpaceObject* spaceObject = new SpaceObject();
+        spaceObject->setName(entryVehicle->Name());
 
         // Propagate all segments of the trajectory plan.
         foreach (QSharedPointer<ScenarioAbstractTrajectoryType> trajectory, trajectoryList)
