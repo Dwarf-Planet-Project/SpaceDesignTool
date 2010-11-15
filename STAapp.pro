@@ -755,8 +755,8 @@ SCHEMA_SOURCE = sta-data/schema/spacescenario/2.0
 SCHEMA_FILES = 
 TLEs_SOURCE = sta-data/TLEs
 TLEs_FILES = 
-EXAMPLES_SOURCE = sta-data/scenario-examples
-EXAMPLES_FILES = 
+#EXAMPLES_SOURCE = sta-data/scenario-examples
+#EXAMPLES_FILES =
 MACOSXIconFiles_SOURCE = iconary
 #MACOSXIconFiles_FILES =
 USERMANUAL_SOURCE = sta-data/help
@@ -793,8 +793,8 @@ macx {
     SCHEMA_FILES = $$join(FILES, " $$SCHEMA_SOURCE/", $$SCHEMA_SOURCE/)
     FILES = $$system(ls $$TLEs_SOURCE)
     TLEs_FILES = $$join(FILES, " $$TLEs_SOURCE/", $$TLEs_SOURCE/)
-    FILES = $$system(ls $$EXAMPLES_SOURCE)
-    EXAMPLES_FILES = $$join(FILES, " $$EXAMPLES_SOURCE/", $$EXAMPLES_SOURCE/)
+    #FILES = $$system(ls $$EXAMPLES_SOURCE)
+    #EXAMPLES_FILES = $$join(FILES, " $$EXAMPLES_SOURCE/", $$EXAMPLES_SOURCE/)
     FILES = $$system(ls $$USERMANUAL_SOURCE)
     USERMANUAL_FILES = $$join(FILES, " $$USERMANUAL_SOURCE/", $$USERMANUAL_SOURCE/)
     FILES = $$system(ls $$MACOSXIconFiles_SOURCE)
@@ -844,8 +844,8 @@ macx {
     BODIES.files = $$BODIES_FILES
     TLEs.path = Contents/Resources/STAResources/TLEs
     TLEs.files = $$TLEs_FILES
-    EXAMPLES.path = Contents/Resources/STAResources/scenario-examples
-    EXAMPLES.files = $$EXAMPLES_FILES
+    #EXAMPLES.path = Contents/Resources/STAResources/scenario-examples
+    #EXAMPLES.files = $$EXAMPLES_FILES
     SEMMISCELANEOUS.path = Contents/Resources/STAResources/data
     SEMMISCELANEOUS.files = $$SEMMISCELANEOUS_FILES
     USERMANUAL.path = Contents/Resources/STAResources/help
@@ -864,17 +864,15 @@ macx {
         SEMREPORTS \
         TLEs \
         SCHEMA \
-        EXAMPLES \
         SEMMISCELANEOUS \
         USERMANUAL \
-        MACOSXIconFiles
-    QMAKE_BUNDLE_DATA += \
         HEATRATES \
         AERODYNAMICS \
         RAMOUTPUT \
         VEHICLEWGS \
         ATMOSPHERES \
-        BODIES
+        BODIES \
+        MACOSXIconFiles
 
 }
 
@@ -885,7 +883,7 @@ macx {
 
 	# Next command has been moved to the Qt Projects Build Steps list
 	## Deploys Qt frameworks inside the MAC bundle but efficiently
-	#STAMACDEPLOY = $$system(macdeployqt ./STA.app/)
-	#message($$STAMACDEPLOY)
+    #STAMACDEPLOY = $$system(macdeployqt ./STA.app)
+    #message($$STAMACDEPLOY)
 }
 
