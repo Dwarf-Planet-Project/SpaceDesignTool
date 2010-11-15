@@ -147,7 +147,7 @@ private:
     
     void clearViews();
 
-    bool openScenarioFile(const QString &fileName);
+    void openScenarioFile(QString fileName);
 
     SpaceScenario* m_scenario;
     PropagatedScenario* m_propagatedScenario;
