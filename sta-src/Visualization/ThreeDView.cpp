@@ -2475,3 +2475,29 @@ ThreeDView::setStereoMode(StereoMode mode)
     m_stereoMode = mode;
     setViewChanged();
 }
+
+
+void
+ThreeDView::setVisibleTrajectoryPortion(double days)
+{
+    // Remove VESTA entities for all space and ground objects
+    foreach (Entity* e, m_scenarioSpaceObjects.values())
+    {
+        // Remove trajectory visualizers from central body
+        for (unsigned int arcIndex = 0; arcIndex < e->chronology()->arcCount(); ++arcIndex)
+        {
+            Visualizer* vis = e->chronology()->arc(arcIndex)->center()->visualizer(TrajectoryVisualizerTag(e, arcIndex));
+            if (vis)
+            {
+                TrajectoryGeometry* geom = dynamic_cast<TrajectoryGeometry*>(vis->geometry());
+                if (geom)
+                {
+                    geom->setDisplayedPortion(TrajectoryGeometry::WindowBeforeCurrentTime);
+                    geom->setWindowDuration(sta::daysToSecs(days));
+                }
+            }
+        }
+    }
+
+    setViewChanged();
+}

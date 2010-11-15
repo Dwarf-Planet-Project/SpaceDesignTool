@@ -63,6 +63,8 @@ ThreeDVisualizationTool::ThreeDVisualizationTool(QWidget* parent, ViewActionGrou
     connect(m_toolBar, SIGNAL(inertialObserver()),           m_view,  SLOT(setInertialObserver()));
     connect(m_toolBar, SIGNAL(bodyFixedObserver()),          m_view,  SLOT(setBodyFixedObserver()));
 
+    connect(m_toolBar, SIGNAL(visibleTrajectoryPortionChanged(double)), m_view, SLOT(setVisibleTrajectoryPortion(double)));
+
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(m_view);
     layout->addWidget(m_toolBar);

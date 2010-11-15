@@ -129,6 +129,8 @@ public slots:
 
    void setStereoMode(StereoMode mode);
 
+   void setVisibleTrajectoryPortion(double days);
+
 protected:
     void initializeGL();
     void paintGL();

@@ -75,6 +75,7 @@ private slots:
     void mapSetTickInterval();
     void mapBodyChanged(QString bodyName);
     void setCameraViewpoint(QAction* action);
+    void setTrajectoryPortion(QAction* action);
 
 signals:
     void bodyChanged(const StaBody* body);
@@ -97,6 +98,7 @@ signals:
     void bodyFixedObserver();
 
     void cameraViewpointChanged(const QString&);
+    void visibleTrajectoryPortionChanged(double days);
 
 private:
     QAction* createCameraMenuAction(const QString& label, const QString& iconName, const QString& name);
@@ -126,6 +128,7 @@ private:
     QAction* m_linkGOAction;
 
     QAction* m_cameraAction;
+    QAction* m_trajectoryVisiblePortionAction;
 };
 
 #endif // _PLOTTING_VISUALIZATION_TOOLBAR_H_

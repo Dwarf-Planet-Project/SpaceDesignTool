@@ -193,6 +193,10 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     m_cameraAction->setToolTip(tr("Select camera viewpoint"));
     m_cameraAction->setMenu(cameraMenu);
 
+    m_trajectoryVisiblePortionAction = new QAction(QIcon(":/icons/IconCLOCK.png"), tr("Trajectory Duration"), this);
+    m_trajectoryVisiblePortionAction->setMenu(new QMenu(this));
+    m_trajectoryVisiblePortionAction->setToolTip(tr("Visible trajectory portion"));
+
     // Set the initial state of the actions and widgets
     m_enable25DViewAction->setChecked(false);
     // Next line patch by Guillermo to set to false initial grid and equator
@@ -273,10 +277,45 @@ VisualizationToolBar::configureFor3DView(ViewActionGroup* viewActions)
     addSeparator();
     */
 
+    const double day = 24.0;
+    const double year = 365.25 * day;
+    double trajectoryPortions[] = {
+        1.0, 2.0, 3.0, 6.0, 12.0,
+        1*day, 2*day, 3*day, 5*day, 10*day, 30*day, 100*day,
+        1*year, 2*year, 5*year
+    };
+
+    QAction* entireAction = m_trajectoryVisiblePortionAction->menu()->addAction("Entire trajectory");
+    entireAction->setData(1000*year);
+
+    for (unsigned int i = 0; i < sizeof(trajectoryPortions) / sizeof(trajectoryPortions[0]); ++i)
+    {
+        double hours = trajectoryPortions[i];
+        QAction* action = m_trajectoryVisiblePortionAction->menu()->addAction(tr("1 hour"));
+        if (hours < day)
+        {
+            action->setText(tr("%1 hours").arg(hours));
+        }
+        else if (hours < year)
+        {
+            action->setText(tr("%1 days").arg(hours / day));
+        }
+        else
+        {
+            action->setText(tr("%1 years").arg(hours / year));
+        }
+        action->setData(hours / day);
+    }
+
+    connect(m_trajectoryVisiblePortionAction->menu(), SIGNAL(triggered(QAction*)), this, SLOT(setTrajectoryPortion(QAction*)));
+
     // Add all actions and widgets to the toolbar
+    addAction(m_trajectoryVisiblePortionAction);
     addAction(m_gridAction);
     addAction(m_equatorAction);
     addAction(m_sensorFovsAction);
+
+    addSeparator();
     addAction(m_saveImageAction);
 
     addViewSelectActions(viewActions->viewSelectGroup());
@@ -429,4 +468,10 @@ void VisualizationToolBar::disableAnalysisTools()
 void VisualizationToolBar::setCameraViewpoint(QAction* action)
 {
     emit cameraViewpointChanged(action->data().toString());
+}
+
+
+void VisualizationToolBar::setTrajectoryPortion(QAction* action)
+{
+    emit visibleTrajectoryPortionChanged(action->data().toDouble());
 }
