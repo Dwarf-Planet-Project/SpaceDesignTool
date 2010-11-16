@@ -1,5 +1,5 @@
 /*
- * $Revision: 553 $ $Date: 2010-11-06 17:58:51 +0100 (Sat, 06 Nov 2010) $
+ * $Revision: 557 $ $Date: 2010-11-16 16:24:20 +0100 (Tue, 16 Nov 2010) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -54,24 +54,6 @@ TrajectoryGeometry::render(RenderContext& rc, double clock) const
         return;
     }
 
-    const Frustum& frustum = rc.frustum();
-
-    // Get a high precision modelview matrix; the full transformation is stored at single precision,
-    // but the camera space position is stored at double precision.
-    Transform3d modelview = rc.modelview().cast<double>();
-    Vector3d t = rc.modelTranslation();
-    modelview.matrix().col(3) = Vector4d(t.x(), t.y(), t.z(), 1.0);
-
-    if (m_frame.isValid())
-    {
-        modelview = modelview * m_frame->orientation(clock);
-    }
-
-    // Set the model view matrix to identity, as the curveplot module performs all transformations in
-    // software using double precision.
-    rc.pushModelView();
-    rc.identityModelView();
-
     bool fade = false;
     double startTime = m_startTime;
     double endTime = m_endTime;
@@ -91,6 +73,39 @@ TrajectoryGeometry::render(RenderContext& rc, double clock) const
     default:
         break;
     }
+
+    // Abort now if there's nothing to draw
+    if (endTime <= startTime)
+    {
+        return;
+    }
+
+    // Skip drawing trajectories that are less than a pixel in size. This should be done by
+    // UniverseRenderer, except that visualizers (which is where TrajectoryGeometry is typically used)
+    // aren't size culled.
+    float projectedSize = (boundingSphereRadius() / float(rc.modelview().translation().norm())) / rc.pixelSize();
+    if (projectedSize < 0.5f)
+    {
+        return;
+    }
+
+    const Frustum& frustum = rc.frustum();
+
+    // Get a high precision modelview matrix; the full transformation is stored at single precision,
+    // but the camera space position is stored at double precision.
+    Transform3d modelview = rc.modelview().cast<double>();
+    Vector3d t = rc.modelTranslation();
+    modelview.matrix().col(3) = Vector4d(t.x(), t.y(), t.z(), 1.0);
+
+    if (m_frame.isValid())
+    {
+        modelview = modelview * m_frame->orientation(clock);
+    }
+
+    // Set the model view matrix to identity, as the curveplot module performs all transformations in
+    // software using double precision.
+    rc.pushModelView();
+    rc.identityModelView();
 
     glLineWidth(m_lineWidth);
     double subdivisionThreshold = rc.pixelSize() * 30.0;

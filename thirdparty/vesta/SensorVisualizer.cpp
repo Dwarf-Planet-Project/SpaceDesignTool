@@ -360,12 +360,41 @@ SensorFrustumGeometry::render(RenderContext& rc,
 
         m_frustumPoints.clear();
 
-        const unsigned int sections = 48;
+        const unsigned int sideDivisions = 12;
+        const unsigned int sections = 4 * sideDivisions;
         for (unsigned int i = 0; i < sections; ++i)
         {
-            double t = (double) i / (double) sections;
-            double theta = 2 * PI * t;
-            Vector3d r = Vector3d(horizontalSize * cos(theta), verticalSize * sin(theta), 1.0).normalized();
+            Vector3d r;
+            if (frustumShape() == SensorVisualizer::Elliptical)
+            {
+                double t = (double) i / (double) sections;
+                double theta = 2 * PI * t;
+
+                r = Vector3d(horizontalSize * cos(theta), verticalSize * sin(theta), 1.0).normalized();
+            }
+            else
+            {
+                if (i < sideDivisions)
+                {
+                    double t = i / double(sideDivisions);
+                    r = Vector3d((t - 0.5) * horizontalSize, -verticalSize * 0.5, 1.0).normalized();
+                }
+                else if (i < sideDivisions * 2)
+                {
+                    double t = (i - sideDivisions) / double(sideDivisions);
+                    r = Vector3d(horizontalSize * 0.5, (t - 0.5) * verticalSize, 1.0).normalized();
+                }
+                else if (i < sideDivisions * 3)
+                {
+                    double t = (i - sideDivisions * 2) / double(sideDivisions);
+                    r = Vector3d((0.5 - t) * horizontalSize, verticalSize * 0.5, 1.0).normalized();
+                }
+                else
+                {
+                    double t = (i - sideDivisions * 3) / double(sideDivisions);
+                    r = Vector3d(-horizontalSize * 0.5, (0.5 - t) * verticalSize, 1.0).normalized();
+                }
+            }
             r = m * r;
 
             double intersectDistance = m_range;
@@ -391,7 +420,7 @@ SensorFrustumGeometry::render(RenderContext& rc,
 
             glBegin(GL_TRIANGLE_FAN);
             glVertex3d(0.0, 0.0, 0.0);
-            for (int i = (int) m_frustumPoints.size() - 1; i > 0; --i)
+            for (int i = (int) m_frustumPoints.size() - 1; i >= 0; --i)
             {
                 glVertex3dv(m_frustumPoints[i].data());
             }
@@ -419,7 +448,7 @@ SensorFrustumGeometry::render(RenderContext& rc,
         {
             // Draw grid lines
             unsigned int ringCount = 8;
-            unsigned int rayCount = 8;
+            unsigned int rayCount = frustumShape() == SensorVisualizer::Rectangular ? 4 : 8;
 
             material.setOpacity(m_gridOpacity);
             rc.bindMaterial(&material);
