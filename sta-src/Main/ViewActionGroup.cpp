@@ -34,7 +34,8 @@
   */
 ViewActionGroup::ViewActionGroup() :
     m_ambientLight(0.0f),
-    m_currentSkyLayerIndex(0)
+    m_currentSkyLayerIndex(0),
+    m_stereoMode(0)
 {
     m_shadowsAction = new QAction(tr("Shadows"), this);
     m_shadowsAction->setCheckable(true);
@@ -142,5 +143,16 @@ ViewActionGroup::setSkyLayer(int layerIndex)
     {
         m_currentSkyLayerIndex = layerIndex;
         emit skyLayerChanged(m_currentSkyLayerIndex);
+    }
+}
+
+
+void
+ViewActionGroup::setStereoMode(int stereoMode)
+{
+    if (stereoMode != m_stereoMode)
+    {
+        m_stereoMode = stereoMode;
+        emit stereoModeChanged(m_stereoMode);
     }
 }

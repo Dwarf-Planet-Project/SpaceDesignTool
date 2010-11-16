@@ -314,6 +314,7 @@ MainWindow::MainWindow(QWidget *parent)	:
         connect(m_viewActions->planetLabelsAction(), SIGNAL(toggled(bool)), view, SLOT(setPlanetLabels(bool)));
         connect(m_viewActions, SIGNAL(ambientLightChanged(float)), view, SLOT(setAmbientLight(float)));
         connect(m_viewActions, SIGNAL(skyLayerChanged(int)), view, SLOT(setCurrentSkyLayer(int)));
+        connect(m_viewActions, SIGNAL(stereoModeChanged(int)), view, SLOT(setStereoMode(int)));
     }
 
     // Read saved window preferences
@@ -707,6 +708,7 @@ void MainWindow::preferencesSTA()
     staPreferencesWidget->activateWindow(); // Required to keep the modeless window alive
     staPreferencesWidget->setAmbientLight(m_viewActions->ambientLight());
     staPreferencesWidget->setSkyLayer(m_viewActions->currentSkyLayer());
+    staPreferencesWidget->setStereoMode(m_viewActions->stereoMode());
 }
 
 // Next lines created by Guillermo to handle the spawning of web browsers and e-mail clients, etc.

@@ -43,10 +43,12 @@ public:
 public slots:
     void setAmbientLight(float lightLevel);
     void setSkyLayer(int skyLayerIndex);
+    void setStereoMode(int stereoMode);
 
 signals:
     void ambientLightChanged(float lightLevel);
     void skyLayerChanged(int skyLayerIndex);
+    void stereoModeChanged(int stereoMode);
 
 protected slots:
 	void on_DialogPreferences_accepted();

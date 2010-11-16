@@ -109,13 +109,20 @@ public:
         return m_currentSkyLayerIndex;
     }
 
+    int stereoMode() const
+    {
+        return m_stereoMode;
+    }
+
 public slots:
     void setAmbientLight(float lightLevel);
     void setSkyLayer(int layerIndex);
+    void setStereoMode(int stereoMode);
 
 signals:
     void ambientLightChanged(float lightLevel);
     void skyLayerChanged(int layerIndex);
+    void stereoModeChanged(int stereoMode);
 
 private:
     QAction* m_shadowsAction;
@@ -136,5 +143,6 @@ private:
 
     float m_ambientLight;
     int m_currentSkyLayerIndex;
+    int m_stereoMode;
 };
 #endif // VIEW_ACTION_GROUP_H_

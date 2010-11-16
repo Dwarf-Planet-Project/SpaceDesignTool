@@ -80,11 +80,11 @@ public:
 
    enum StereoMode
    {
-       NoStereo,
-       AnaglyphCyanRed,
-       AnaglyphRedCyan,
-       AnaglyphGreenMagenta,
-       AnaglyphMagentaGreen,
+       NoStereo              = 0,
+       AnaglyphCyanRed       = 1,
+       AnaglyphRedCyan       = 2,
+       AnaglyphGreenMagenta  = 3,
+       AnaglyphMagentaGreen  = 4,
    };
 
    StereoMode stereoMode() const
@@ -127,7 +127,7 @@ public slots:
    void setInertialObserver();
    void setBodyFixedObserver();
 
-   void setStereoMode(StereoMode mode);
+   void setStereoMode(int mode);
 
    void setVisibleTrajectoryPortion(double days);
 
@@ -206,6 +206,11 @@ private:
     bool m_sensorFovsEnabled;
 
     StereoMode m_stereoMode;
+
+    bool m_rollLeftKey;
+    bool m_rollRightKey;
+    bool m_pitchDownKey;
+    bool m_pitchUpKey;
 
 signals:
     void stereoModeChanged(StereoMode mode);  // Guillermo

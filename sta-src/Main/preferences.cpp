@@ -72,7 +72,7 @@ void Preferences::connectViewActions(const ViewActionGroup* viewActions)
     connect(moonsTrajectories,      SIGNAL(clicked(bool)), viewActions->moonOrbitsAction(),            SLOT(setChecked(bool)));
     connect(planetsLabels,          SIGNAL(clicked(bool)), viewActions->planetLabelsAction(),          SLOT(setChecked(bool)));
     connect(skyLayerCombo,          SIGNAL(currentIndexChanged(int)), viewActions,                     SLOT(setSkyLayer(int)));
-    connect(comboBox3DVision,       SIGNAL(currentIndexChanged(int)), viewActions,                     SLOT(setStereoMode(StereoMode)));  // Guillermo
+    connect(comboBox3DVision,       SIGNAL(currentIndexChanged(int)), viewActions,                     SLOT(setStereoMode(int)));  // Guillermo
     connect(this, SIGNAL(ambientLightChanged(float)), viewActions, SLOT(setAmbientLight(float)));
 
     // Connect from view actions to dialog widgets
@@ -87,8 +87,8 @@ void Preferences::connectViewActions(const ViewActionGroup* viewActions)
     connect(viewActions->planetOrbitsAction(),          SIGNAL(toggled(bool)), planetsTrajectories,    SLOT(setChecked(bool)));
     connect(viewActions->planetLabelsAction(),          SIGNAL(toggled(bool)), planetsLabels,          SLOT(setChecked(bool)));
     connect(viewActions->moonOrbitsAction(),            SIGNAL(toggled(bool)), moonsTrajectories,      SLOT(setChecked(bool)));
-    connect(viewActions, SIGNAL(skyLayerChanged(int)), this, SLOT(setSkyLayer(int)));
-    connect(viewActions, SIGNAL(stereoModeChanged(StereoMode)), this, SLOT(setStereoMode(StereoMode))); // Guillermo
+    connect(viewActions, SIGNAL(skyLayerChanged(int)),  this, SLOT(setSkyLayer(int)));
+    connect(viewActions, SIGNAL(stereoModeChanged(int)), this, SLOT(setStereoMode(int))); // Guillermo
     connect(viewActions, SIGNAL(ambientLightChanged(float)), this, SLOT(setAmbientLight(float)));
 }
 
@@ -129,6 +129,14 @@ void Preferences::setSkyLayer(int skyLayerIndex)
     if (skyLayerIndex >= 0 && skyLayerIndex < skyLayerCombo->count())
     {
         skyLayerCombo->setCurrentIndex(skyLayerIndex);
+    }
+}
+
+void Preferences::setStereoMode(int stereoMode)
+{
+    if (stereoMode >= 0 && stereoMode < comboBox3DVision->count())
+    {
+        comboBox3DVision->setCurrentIndex(stereoMode);
     }
 }
 

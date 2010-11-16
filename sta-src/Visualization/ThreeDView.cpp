@@ -448,7 +448,11 @@ ThreeDView::ThreeDView(const QGLFormat& format, QWidget* parent) :
     m_glInitialized(false),
     m_shadowsInitialized(false),
     m_sensorFovsEnabled(false),
-    m_stereoMode(NoStereo)
+    m_stereoMode(NoStereo),
+    m_rollLeftKey(false),
+    m_rollRightKey(false),
+    m_pitchDownKey(false),
+    m_pitchUpKey(false)
 {
     m_textureLoader = counted_ptr<NetworkTextureLoader>(new NetworkTextureLoader(this, true));
     m_textureLoader->addLocalSearchPath("models");
@@ -473,6 +477,7 @@ ThreeDView::ThreeDView(const QGLFormat& format, QWidget* parent) :
     gotoBody(STA_SOLAR_SYSTEM->earth());
 
     setMouseTracking(true);
+    setFocusPolicy(Qt::ClickFocus);
 }
 
 
@@ -948,12 +953,49 @@ ThreeDView::wheelEvent(QWheelEvent* event)
 void
 ThreeDView::keyPressEvent(QKeyEvent* event)
 {
+    setViewChanged();
+    switch (event->key())
+    {
+    case Qt::Key_Left:
+        m_rollLeftKey = true;
+        break;
+    case Qt::Key_Right:
+        m_rollRightKey = true;
+        break;
+    case Qt::Key_Up:
+        m_pitchUpKey = true;
+        break;
+    case Qt::Key_Down:
+        m_pitchDownKey = true;
+        break;
+    default:
+        QWidget::keyPressEvent(event);
+        break;
+    }
 }
 
 
 void
 ThreeDView::keyReleaseEvent(QKeyEvent* event)
 {
+    switch (event->key())
+    {
+    case Qt::Key_Left:
+        m_rollLeftKey = false;
+        break;
+    case Qt::Key_Right:
+        m_rollRightKey = false;
+        break;
+    case Qt::Key_Up:
+        m_pitchUpKey = false;
+        break;
+    case Qt::Key_Down:
+        m_pitchDownKey = false;
+        break;
+    default:
+        QWidget::keyReleaseEvent(event);
+        break;
+    }
 }
 
 
@@ -1608,6 +1650,25 @@ ThreeDView::tick(double dt)
 {
     Vector3d lastPosition = m_observer->absolutePosition(m_currentTime);
     Quaterniond lastOrientation = m_observer->absoluteOrientation(m_currentTime);
+
+    const double KeyboardAccel = 3.0;
+    if (m_rollLeftKey)
+    {
+        m_controller->roll(dt * KeyboardAccel);
+    }
+    else if (m_rollRightKey)
+    {
+        m_controller->roll(-dt * KeyboardAccel);
+    }
+    else if (m_pitchUpKey)
+    {
+        m_controller->pitch(dt * KeyboardAccel);
+    }
+    else if (m_pitchDownKey)
+    {
+        m_controller->pitch(-dt * KeyboardAccel);
+    }
+
     m_controller->tick(dt);
     Vector3d newPosition = m_observer->absolutePosition(m_currentTime);
     Quaterniond newOrientation = m_observer->absoluteOrientation(m_currentTime);
@@ -2031,7 +2092,7 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
 
     // Add a visualizer for the sensor FOV
     SensorVisualizer* sensor = new SensorVisualizer();
-    sensor->setFrustumAngles(toRadians(5.0), toRadians(5.0));
+    sensor->setFrustumAngles(toRadians(5.0), toRadians(25.0));
     sensor->setRange(35000.0);
     sensor->setSource(body);
     sensor->setOpacity(0.3f);
@@ -2470,9 +2531,9 @@ ThreeDView::setObserverCenter(vesta::Entity* center)
 
 
 void
-ThreeDView::setStereoMode(StereoMode mode)
+ThreeDView::setStereoMode(int mode)
 {
-    m_stereoMode = mode;
+    m_stereoMode = (StereoMode) mode;
     setViewChanged();
     emit stereoModeChanged(m_stereoMode);  // Guillermo
 }
