@@ -690,7 +690,15 @@ macx:ICON = iconary/STAlogo.icns
 macx:QMAKE_CXXFLAGS_RELEASE = -ffast-math \
     -fexpensive-optimizations \
     -O3 \
-    -Bdynamic
+    -Bdynamic \
+    -ftree-vectorize
+
+macx {
+     QMAKE_CC = llvm-gcc
+     QMAKE_CXX = llvm-g++
+}
+
+
 
 linux-g++ { 
     QT += dbus
@@ -758,7 +766,7 @@ TLEs_FILES =
 #EXAMPLES_SOURCE = sta-data/scenario-examples
 #EXAMPLES_FILES =
 MACOSXIconFiles_SOURCE = iconary
-#MACOSXIconFiles_FILES =
+MACOSXIconFiles_FILES =
 USERMANUAL_SOURCE = sta-data/help
 USERMANUAL_FILES =
 
@@ -802,11 +810,13 @@ macx {
 }
 
 macx { 
+    message( "Warning: building on MAC OS X for x86 architecture only" )
     QT += dbus
     QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
     QMAKE_LFLAGS += -framework CoreFoundation
 
-    message( "Warning: building on MAC OS X for x86 architecture only" )
+    QMAKE_CC = llvm-gcc
+    QMAKE_CXX = llvm-g++
 
     CONFIG += x86
     INCLUDEPATH += $$MACOSX_LIBRARIES_DIR
@@ -854,7 +864,8 @@ macx {
     MACOSXIconFiles.files = $$MACOSXIconFiles_FILES
 
     QMAKE_BUNDLE_DATA += \
-        VIS3D \
+         MACOSXIconFiles \
+         VIS3D \
         CATALOGS \
         TEXTURES \
         MODELS \
@@ -871,15 +882,17 @@ macx {
         RAMOUTPUT \
         VEHICLEWGS \
         ATMOSPHERES \
-        BODIES \
-        MACOSXIconFiles
-
+        BODIES
 }
 
 ## MAC OS X specifics to load inside the bundle the Qt frameworks to avoid separated installation
 ## and make STA a droppable and callable application, MAC alike
 macx {
     QMAKE_INFO_PLIST= ./sta-data/macosx/Info.plist
+
+    # Killing the annoying bug of Apple when telling:
+    # ld: warning: directory '/tmp/qt-stuff-18929/source/qt-everywhere-opensource-src-4.7.0/lib' following -F not found
+    QMAKE_PRL_LIBS = -framework Qt<ModuleDep>
 
 	# Next command has been moved to the Qt Projects Build Steps list
 	## Deploys Qt frameworks inside the MAC bundle but efficiently

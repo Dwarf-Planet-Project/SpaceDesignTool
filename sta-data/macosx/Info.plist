@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleDisplayName</key>
+	<string>STA</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
 	<key>CFBundleIconFile</key>
 	<string>STAlogo.icns</string>
 	<key>CFBundlePackageType</key>
@@ -26,7 +30,25 @@
 	<array>
 		<dict>
 			<key>CFBundleTypeIconFile</key>
-			<string>STAscenarioICON.icns</string>
+			<string>STACabrianIconFileSTAB.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>STA bundle file</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>stab</string>
+			</array>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>stas</string>
+			</array>
+			<key>NSDocumentClass</key>
+			<string>Document</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeIconFile</key>
+			<string>STACabrianIconFileSTAS.icns</string>
 			<key>CFBundleTypeName</key>
 			<string>STA scenario file</string>
 			<key>CFBundleTypeRole</key>
@@ -42,8 +64,98 @@
 			<key>NSDocumentClass</key>
 			<string>Document</string>
 		</dict>
+		<dict>
+			<key>CFBundleTypeIconFile</key>
+			<string>STACabrianIconFileSTAA.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>STA attitude file</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>staa</string>
+			</array>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>stas</string>
+			</array>
+			<key>NSDocumentClass</key>
+			<string>Document</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeIconFile</key>
+			<string>STACabrianIconFileSTAD.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>STA database file</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>stad</string>
+			</array>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>stas</string>
+			</array>
+			<key>NSDocumentClass</key>
+			<string>Document</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeIconFile</key>
+			<string>STACabrianIconFileSTAM.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>STA miscelaneous file</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>stam</string>
+			</array>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>stas</string>
+			</array>
+			<key>NSDocumentClass</key>
+			<string>Document</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeIconFile</key>
+			<string>STACabrianIconFileSTAP.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>STA pipe file</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>stap</string>
+			</array>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>stas</string>
+			</array>
+			<key>NSDocumentClass</key>
+			<string>Document</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeIconFile</key>
+			<string>STACabrianIconFileSTAOEM.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>STA OEM file</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>oem</string>
+			</array>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>oem</string>
+			</array>
+			<key>NSDocumentClass</key>
+			<string>Document</string>
+		</dict>
 	</array>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2005-2010, STA Steering Board</string>
+	<string>Copyright © 2005-2011, STA Steering Board</string>
 </dict>
 </plist>
