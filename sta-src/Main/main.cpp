@@ -204,10 +204,18 @@ int main(int argc, char *argv[])
 
     MainWindow* mainwindow = new MainWindow();
 
-#ifdef Q_WS_MAC
+#if defined (Q_WS_MAC)
     eventListener->setMainWin(mainwindow);
     QString fileToOpen = eventListener->file();
     mainwindow->openFileFromAEvent(fileToOpen);
+#else
+    QString fileToOpen = ":/untitled.stas";
+    const QStringList args = QCoreApplication::arguments();
+    if (args.count() == 2)
+    {
+        fileToOpen = args.at(1);
+        mainwindow->openFileFromAEvent(fileToOpen);
+    }
 #endif
 
 

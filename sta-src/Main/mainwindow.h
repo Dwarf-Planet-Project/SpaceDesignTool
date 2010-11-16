@@ -147,8 +147,6 @@ private:
     
     void clearViews();
 
-    void openScenarioFile(QString fileName);
-
     SpaceScenario* m_scenario;
     PropagatedScenario* m_propagatedScenario;
     
