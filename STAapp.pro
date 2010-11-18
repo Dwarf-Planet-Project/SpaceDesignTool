@@ -699,7 +699,6 @@ macx {
 }
 
 
-
 linux-g++ { 
     QT += dbus
     QMAKE_CXXFLAGS_RELEASE = -ffast-math \

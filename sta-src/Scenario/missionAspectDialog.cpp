@@ -100,6 +100,8 @@ bool missionAspectDialog::loadValueArcModel(const QString arcModel)
         comboBoxModel->setCurrentIndex(1);
     else if (arcModel == "ISS")
         comboBoxModel->setCurrentIndex(2);
+    else if (arcModel == "Rosetta")
+        comboBoxModel->setCurrentIndex(3);
     else
         return false;
 

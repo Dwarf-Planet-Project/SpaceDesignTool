@@ -120,5 +120,9 @@
         <file>ComboCallisto.png</file>
         <file>IconBEAM.png</file>
         <file>IconPARTICIPANTS.png</file>
+        <file>STAModelsIcons-DEFAULT.png</file>
+        <file>STAModelsIcons-ISS.png</file>
+        <file>STAModelsIcons-ROSETTA.png</file>
+        <file>STAModelsIcons-XMM.png</file>
     </qresource>
 </RCC>

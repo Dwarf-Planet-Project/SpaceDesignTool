@@ -386,15 +386,36 @@
         <property name="text">
          <string>Default</string>
         </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/STAModelsIcons-DEFAULT.png</normaloff>:/icons/STAModelsIcons-DEFAULT.png</iconset>
+        </property>
        </item>
        <item>
         <property name="text">
          <string>XMM</string>
         </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/STAModelsIcons-XMM.png</normaloff>:/icons/STAModelsIcons-XMM.png</iconset>
+        </property>
        </item>
        <item>
         <property name="text">
          <string>ISS</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/STAModelsIcons-ISS.png</normaloff>:/icons/STAModelsIcons-ISS.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Rosetta</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/STAModelsIcons-ROSETTA.png</normaloff>:/icons/STAModelsIcons-ROSETTA.png</iconset>
         </property>
        </item>
       </widget>

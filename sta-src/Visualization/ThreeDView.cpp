@@ -149,6 +149,7 @@ static ModelProperties SpacecraftModels[] =
     { "default", "models/sorce.obj", 0.004f, -Vector3d::UnitY(),                    Vector3d::UnitX() },
     { "iss",     "models/iss.3ds",   0.025f,  Vector3d::UnitZ(),                    Vector3d::UnitX() },
     { "xmm",     "models/xmm.3ds",   0.004,  -Vector3d(0.0, 1.0, 1.0).normalized(), Vector3d::UnitX() },
+    { "rosetta", "models/rosetta.3ds",   0.004,  -Vector3d(0.0, 1.0, 1.0).normalized(), Vector3d::UnitX() },
 };
 
 
