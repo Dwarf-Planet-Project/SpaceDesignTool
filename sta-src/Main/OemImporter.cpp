@@ -65,7 +65,7 @@ OemImporter::OemImporter(QTextStream* stream) :
   *
   * The current implementation has the following limitations:
   *   - TIME_STANDARD must be TDB
-  *   - REF_FRAME must be EMEJ2000
+  *   - REF_FRAME must be EME2000 or ECLIP2000
   *   - CENTER_NAME must be an object with an ephemeris
   *
   * \return a pointer to a complete space scenario, or NULL if
@@ -88,6 +88,7 @@ OemImporter::loadScenario()
 
     QString objectName;
     StaBody* center = NULL;
+    sta::CoordinateSystemType coordSys = sta::COORDSYS_INVALID;
 
     QRegExp whiteSpaceRegExp("\\s+");
 
@@ -245,7 +246,15 @@ OemImporter::loadScenario()
                     if (kv.key == "REF_FRAME")
                     {
                         m_parserState = Oem_AfterRefFrame;
-                        if (kv.value != "EME2000")
+                        if (kv.value == "EME2000")
+                        {
+                            coordSys = sta::COORDSYS_EME_J2000;
+                        }
+                        else if (kv.value == "ECLIP2000")
+                        {
+                            coordSys = sta::COORDSYS_ECLIPTIC_J2000;
+                        }
+                        else
                         {
                             raiseError("Unsupported reference frame " + kv.value);
                         }
@@ -382,7 +391,7 @@ OemImporter::loadScenario()
                     int trajectoryIndex = sc->SCMission()->TrajectoryPlan()->AbstractTrajectory().size();
 
                     trajectory->CentralBody()->setName(center->name());
-                    trajectory->setCoordinateSystem("INERTIAL J2000");
+                    trajectory->setCoordinateSystem(sta::CoordinateSystem(coordSys).name());
                     trajectory->ElementIdentifier()->setName(QString("%1 - %2").arg(objectName).arg(trajectoryIndex + 1));
                     trajectory->ElementIdentifier()->setColorName("Yellow");
 
