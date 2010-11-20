@@ -41,6 +41,9 @@ class capsule_class {
         double *MachC_array;
         double *MachP_array;
         double *Cdc_array;
+        double *Clc_array;
+        double *Csc_array;
+
         double *Cdp_array;
         //------
         int NdatapointsC;                    //Number of datapoints in the interpolation file
@@ -53,8 +56,13 @@ class capsule_class {
         double Rn;                              //Nose radius
         //------
         void selectCdCprofile (QString);
+        void selectCsCprofile (QString);
+        void selectClCprofile (QString);
+
         void selectCdPprofile (QString);
         double cdc(double);
+        double clc(double);
+        double csc(double);
         double cdp(double);
         double flag;   //to detect errors in input parameters
 };

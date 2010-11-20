@@ -46,6 +46,9 @@ struct EntrySettings
     QString bodyname;
     QString modelname;
     QString CdCprofilename;
+    QString ClCprofilename;
+    QString CsCprofilename;
+
     QString CdPprofilename;
     QString integrator;
     QString propagator;

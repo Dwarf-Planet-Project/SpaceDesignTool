@@ -128,6 +128,9 @@ EntryTrajectory::EntryTrajectory(EntrySettings _settings)
     heatrate.selectBody(settings.bodyname);
     capsule.flag = 0;
     capsule.selectCdCprofile(settings.CdCprofilename);
+    capsule.selectClCprofile(settings.ClCprofilename);
+    capsule.selectCsCprofile(settings.CsCprofilename);
+
     //capsule.selectCdPprofile(settings.CdPprofilename);
     //capsule.Sp = settings.parachuteArea;
 

@@ -30,6 +30,7 @@
 #include <math.h>
 #include "BodyREM.h"
 #include <QDebug>
+#include "Astro-Core/stamath.h"
 
 using namespace std;
 
@@ -86,15 +87,30 @@ void BodyREM::updateGravity (sta::StateVector stateVector, Vector3d& gravity)
 //when adding the dipersion functionality!!
 void BodyREM::updateAero (sta::StateVector stateVector, VectorXd& state2, AtmosphereModel atmosphere, capsule_class capsule, Vector3d& aero, double& Cdc)
 {
-    double r, V, delta,local_altitude, rho, M, Cdp;
+    double r, V, delta,local_altitude, tau, rho, M,gamma,chi, Cdp, Clc, Csc;
 
     r = sqrt(pow(stateVector.position.x(),2) + pow(stateVector.position.y(),2) + pow(stateVector.position.z(),2));
     V = sqrt(pow(stateVector.velocity.x(),2) + pow(stateVector.velocity.y(),2) + pow(stateVector.velocity.z(),2));
     delta = atan2(stateVector.position.z(), sqrt(pow(stateVector.position.x(),2) + pow(stateVector.position.y(),2)));
+    tau = atan2(stateVector.position.y(),stateVector.position.x());
+    Vector3d VelocityR = stateVector.velocity;
+    Matrix3d Cvr;
+    Cvr=Eigen::AngleAxisd(delta+sta::Pi()/2, Vector3d::UnitY())*Eigen::AngleAxisd(-tau, Vector3d::UnitZ());
+    Matrix3d Crv;
+    Crv=Eigen::AngleAxisd(tau, Vector3d::UnitZ())*Eigen::AngleAxisd(-delta-sta::Pi()/2, Vector3d::UnitY());
+    Matrix3d Cvt;
+    Vector3d VelocityV =Cvr*VelocityR;
+    chi=atan2(VelocityV.y(),VelocityV.x());
+    gamma=-atan2(VelocityV.z(),sqrt(pow(VelocityV.x(),2)+pow(VelocityV.y(),2)));
+    Cvt=Eigen::AngleAxisd(chi, Vector3d::UnitZ())*Eigen::AngleAxisd(gamma, Vector3d::UnitY());
     local_altitude = altitude(r, delta);
     M = V / atmosphere.speedofsound(local_altitude);
+    //qDebug()<<M<<"Mach";
     rho = atmosphere.density(local_altitude);// * (1 + uncertainties.density);
     Cdc = capsule.cdc(M);// * (1 + uncertainties.cdcapsule);                             //This is where the capsule's cd value is updated, since it will be used in the heat rate calculation
+    Clc = capsule.clc(M);
+    Csc = capsule.csc(M);
+
     //------
     if (state2[7] < 0.5) {
         Cdp = 0.0;
@@ -103,10 +119,21 @@ void BodyREM::updateAero (sta::StateVector stateVector, VectorXd& state2, Atmosp
     else {
         Cdp = capsule.cdp(M);// * (1 + uncertainties.cdparachute);
     }
+    Vector3d FA=-0.5*rho*pow(V,2.0)*capsule.Sc*Vector3d(Cdc,Csc,Clc);
+    Vector3d aR;
+    aR=Crv*Cvt*FA/capsule.m;
+    //qDebug()<<Crv(0,0)<<Crv(0,1)<<Crv(0,2)<<Crv(1,0)<<Crv(1,1)<<Crv(1,2)<<Crv(2,0)<<Crv(2,1)<<Crv(2,2)<<"Crv";
+    //qDebug()<<Cvt(0,0)<<Cvt(0,1)<<Cvt(0,2)<<Cvt(1,0)<<Cvt(1,1)<<Cvt(1,2)<<Cvt(2,0)<<Cvt(2,1)<<Cvt(2,2)<<"Cvt";
+
+    //Vector
     //------
-    aero[0] = - 0.5 * rho * V * stateVector.velocity.x() * (Cdc*capsule.Sc + Cdp*capsule.Sp) / capsule.m;
-    aero[1] = - 0.5 * rho * V * stateVector.velocity.y() * (Cdc*capsule.Sc + Cdp*capsule.Sp) / capsule.m;
-    aero[2] = - 0.5 * rho * V * stateVector.velocity.z() * (Cdc*capsule.Sc + Cdp*capsule.Sp) / capsule.m;
+    //qDebug()<<chi*180/sta::Pi()<<gamma*180/sta::Pi()<<tau*180/sta::Pi()<<delta*180/sta::Pi()<<VelocityV.x()<<VelocityV.y()<<VelocityV.z()<<VelocityR.x()<<VelocityR.y()<<VelocityR.z();
+    aero[0] = aR.x();// - 0.5 * rho * V * stateVector.velocity.x() * (Cdc*capsule.Sc + Cdp*capsule.Sp) / capsule.m;
+    aero[1] = aR.y();//- 0.5 * rho * V * stateVector.velocity.y() * (Cdc*capsule.Sc + Cdp*capsule.Sp) / capsule.m;
+    aero[2] = aR.z();//- 0.5 * rho * V * stateVector.velocity.z() * (Cdc*capsule.Sc + Cdp*capsule.Sp) / capsule.m;
+    //qDebug()<<aero[0]<<aero[1]<<aero[2];
+    //qDebug()<<aR.x()<<aR.y()<<aR.z()<<" accels old new";
+    //qDebug()<<Cdc<<Clc<<Csc;
     //------ Calculate information in state2 ------
     state2[0] = rho;
     state2[1] = M;

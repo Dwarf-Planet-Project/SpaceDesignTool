@@ -53,10 +53,13 @@ EntrySettings createEntrySettings(ScenarioEntryArcType* entry, ScenarioREV* vehi
     settings.modelname="gram99.stad";//entry->Environment()->CentralBody()->atmosphere().append(".stad");
 
     settings.bodyname = entry->Environment()->CentralBody()->Name();
+    
     settings.propagator = entry->PropagationPosition()->propagator();
     settings.integrator = entry->PropagationPosition()->integrator();
     settings.stepsize = entry->PropagationPosition()->timeStep();
     settings.CdCprofilename = vehicle->REVSystem()->AeroThermodynamics()->AeroCoefFile()[0]->FileLocation();
+    settings.ClCprofilename = vehicle->REVSystem()->AeroThermodynamics()->AeroCoefFile()[2]->FileLocation();
+    settings.CsCprofilename = vehicle->REVSystem()->AeroThermodynamics()->AeroCoefFile()[1]->FileLocation();
     //settings.parachuteArea = vehicleProperties->aerodynamicProperties()->parachuteProperties()->surfaceArea();
     settings.parachuteDeployMach = 0;//vehicleProperties->aerodynamicProperties()->parachuteProperties()->deploymentMach();
     settings.maxloadfactor = entry->Constraints()->maxNormalLoad();
