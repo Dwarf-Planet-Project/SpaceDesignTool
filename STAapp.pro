@@ -643,10 +643,8 @@ LIBS += -lvesta -Lthirdparty/vesta/build
 
 # Add library path for static libraries
 win32-g++:LIBS += $$PWD/lib/win32-x86-gcc/cspice.a
-macx:LIBS += $$PWD/lib/mac/cspice.a
 
 INCLUDEPATH += include/spice
-
 
 DEFINES += EIGEN_USE_NEW_STDVECTOR
 
@@ -662,8 +660,7 @@ win32 {
     
     # Disable the regrettable min and max macros in windows.h
     DEFINES += NOMINMAX
-}
-win32-g++ { 
+
     # Work around alignment problems with MinGW. Fixed-size Eigen matrices
     # are sometimes allocated on the stack at unaligned addresses even though
     # __alignof e.g. Vector4d is 16. Until we figure out what's going on, we'll
@@ -684,23 +681,12 @@ win32-g++ {
 }
 
 
-# Application icon
-macx:ICON = iconary/STAlogo.icns
-
-macx:QMAKE_CXXFLAGS_RELEASE = -ffast-math \
-    -fexpensive-optimizations \
-    -O3 \
-    -Bdynamic \
-    -ftree-vectorize
-
-macx {
-     QMAKE_CC = llvm-gcc
-     QMAKE_CXX = llvm-g++
-}
-
-
 linux-g++ { 
+    # We use gcc newer versions to allow 64 bits compilations
+    QMAKE_CXX     >= g++-4.3
+    QMAKE_CC      >= gcc-4.3
     QT += dbus
+
     QMAKE_CXXFLAGS_RELEASE = -ffast-math \
         -fexpensive-optimizations \
         -O3 \
@@ -708,11 +694,7 @@ linux-g++ {
     INCLUDEPATH += $$LINUX_LIBRARIES_DIR
     INCLUDEPATH += /usr/include
     CXXFLAGS += -std=c++0x
-    QMAKE_CXX     >= g++-4.3
-    QMAKE_CC      >= gcc-4.3
-}
 
-linux-g++ {
     HARDWARE_PLATFORM = $$system(uname -a)
     contains( HARDWARE_PLATFORM, x86_64 ) {
         # 64-bit Linux
@@ -762,8 +744,6 @@ SCHEMA_SOURCE = sta-data/schema/spacescenario/2.0
 SCHEMA_FILES = 
 TLEs_SOURCE = sta-data/TLEs
 TLEs_FILES = 
-#EXAMPLES_SOURCE = sta-data/scenario-examples
-#EXAMPLES_FILES =
 MACOSXIconFiles_SOURCE = iconary
 MACOSXIconFiles_FILES =
 USERMANUAL_SOURCE = sta-data/help
@@ -771,6 +751,32 @@ USERMANUAL_FILES =
 
 # ############### MAC OS X bundle ########################
 macx { 
+     message( "Warning: building on MAC OS X for x86 architecture only" )
+     QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
+     CONFIG += x86
+
+     # Guillermo: we use LLVM in MAC OS X instead of gcc
+     QMAKE_CC = llvm-gcc
+     QMAKE_CXX = llvm-g++
+
+     QT += dbus
+
+     QMAKE_CFLAGS_RELEASE = -ffast-math \
+    -fexpensive-optimizations \
+    -O3 \
+    -Bdynamic \
+    -ftree-vectorize
+
+     QMAKE_CXXFLAGS_RELEASE = -ffast-math \
+    -fexpensive-optimizations \
+    -O3 \
+    -Bdynamic \
+    -ftree-vectorize
+
+    QMAKE_LFLAGS += -framework CoreFoundation
+
+    LIBS += $$PWD/lib/mac/cspice.a
+
     # Scan directories for files for Mac bundle
     FILES = $$system(ls $$VIS3D_SOURCE)
     VIS3D_FILES = $$join(FILES, " $$VIS3D_SOURCE/", $$VIS3D_SOURCE/)
@@ -800,24 +806,11 @@ macx {
     SCHEMA_FILES = $$join(FILES, " $$SCHEMA_SOURCE/", $$SCHEMA_SOURCE/)
     FILES = $$system(ls $$TLEs_SOURCE)
     TLEs_FILES = $$join(FILES, " $$TLEs_SOURCE/", $$TLEs_SOURCE/)
-    #FILES = $$system(ls $$EXAMPLES_SOURCE)
-    #EXAMPLES_FILES = $$join(FILES, " $$EXAMPLES_SOURCE/", $$EXAMPLES_SOURCE/)
     FILES = $$system(ls $$USERMANUAL_SOURCE)
     USERMANUAL_FILES = $$join(FILES, " $$USERMANUAL_SOURCE/", $$USERMANUAL_SOURCE/)
     FILES = $$system(ls $$MACOSXIconFiles_SOURCE)
     MACOSXIconFiles_FILES = $$join(FILES, " $$MACOSXIconFiles_SOURCE/", $$MACOSXIconFiles_SOURCE/)
-}
 
-macx { 
-    message( "Warning: building on MAC OS X for x86 architecture only" )
-    QT += dbus
-    QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
-    QMAKE_LFLAGS += -framework CoreFoundation
-
-    QMAKE_CC = llvm-gcc
-    QMAKE_CXX = llvm-g++
-
-    CONFIG += x86
     INCLUDEPATH += $$MACOSX_LIBRARIES_DIR
     FRAMEWORKS.path = Contents/Frameworks
     QMAKE_BUNDLE_DATA += FRAMEWORKS
@@ -853,8 +846,6 @@ macx {
     BODIES.files = $$BODIES_FILES
     TLEs.path = Contents/Resources/STAResources/TLEs
     TLEs.files = $$TLEs_FILES
-    #EXAMPLES.path = Contents/Resources/STAResources/scenario-examples
-    #EXAMPLES.files = $$EXAMPLES_FILES
     SEMMISCELANEOUS.path = Contents/Resources/STAResources/data
     SEMMISCELANEOUS.files = $$SEMMISCELANEOUS_FILES
     USERMANUAL.path = Contents/Resources/STAResources/help
@@ -863,8 +854,8 @@ macx {
     MACOSXIconFiles.files = $$MACOSXIconFiles_FILES
 
     QMAKE_BUNDLE_DATA += \
-         MACOSXIconFiles \
-         VIS3D \
+        MACOSXIconFiles \
+        VIS3D \
         CATALOGS \
         TEXTURES \
         MODELS \
@@ -882,11 +873,9 @@ macx {
         VEHICLEWGS \
         ATMOSPHERES \
         BODIES
-}
 
-## MAC OS X specifics to load inside the bundle the Qt frameworks to avoid separated installation
-## and make STA a droppable and callable application, MAC alike
-macx {
+    ## MAC OS X specifics to load inside the bundle the Qt frameworks to avoid separated installation
+    ## and make STA a droppable and callable application, MAC alike
     QMAKE_INFO_PLIST= ./sta-data/macosx/Info.plist
 
     # Killing the annoying bug of Apple when telling:
@@ -897,5 +886,8 @@ macx {
 	## Deploys Qt frameworks inside the MAC bundle but efficiently
     #STAMACDEPLOY = $$system(macdeployqt ./STA.app)
     #message($$STAMACDEPLOY)
+
+    # Application icon
+    #ICON = iconary/STAlogo.icns
 }
 
