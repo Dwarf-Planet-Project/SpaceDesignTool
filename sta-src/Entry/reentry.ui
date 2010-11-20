@@ -10,6 +10,12 @@
     <height>472</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>435</width>
+    <height>472</height>
+   </size>
+  </property>
   <property name="maximumSize">
    <size>
     <width>435</width>
@@ -23,29 +29,13 @@
    <iconset resource="../../iconary/sta-icons.qrc">
     <normaloff>:/icons/reentryVehicle.png</normaloff>:/icons/reentryVehicle.png</iconset>
   </property>
-  <widget class="QDialogButtonBox" name="buttonBox">
-   <property name="geometry">
-    <rect>
-     <x>88</x>
-     <y>436</y>
-     <width>341</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
   <widget class="QTabWidget" name="ReEntryTabWidgetEdit">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>10</y>
      <width>415</width>
-     <height>421</height>
+     <height>413</height>
     </rect>
    </property>
    <property name="currentIndex">
@@ -531,7 +521,7 @@
       <rect>
        <x>84</x>
        <y>12</y>
-       <width>310</width>
+       <width>311</width>
        <height>77</height>
       </rect>
      </property>
@@ -873,9 +863,9 @@
      <property name="geometry">
       <rect>
        <x>9</x>
-       <y>0</y>
+       <y>-4</y>
        <width>389</width>
-       <height>169</height>
+       <height>165</height>
       </rect>
      </property>
      <property name="title">
@@ -1015,7 +1005,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>167</y>
+       <y>160</y>
        <width>389</width>
        <height>221</height>
       </rect>
@@ -1326,7 +1316,7 @@
     <widget class="QWidget" name="gridLayoutWidget_4">
      <property name="geometry">
       <rect>
-       <x>24</x>
+       <x>12</x>
        <y>8</y>
        <width>385</width>
        <height>165</height>
@@ -1397,19 +1387,6 @@
         </property>
        </spacer>
       </item>
-      <item row="2" column="2">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
       <item row="0" column="0">
        <spacer name="verticalSpacer_2">
         <property name="orientation">
@@ -1426,6 +1403,48 @@
      </layout>
     </widget>
    </widget>
+  </widget>
+  <widget class="QWidget" name="horizontalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>11</x>
+     <y>432</y>
+     <width>413</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <item>
+     <widget class="QPushButton" name="pushButtonAspect">
+      <property name="text">
+       <string>Aspect</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer name="horizontalSpacer_4">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QDialogButtonBox" name="buttonBox">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="standardButtons">
+       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <tabstops>

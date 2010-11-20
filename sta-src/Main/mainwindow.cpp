@@ -989,6 +989,8 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
     // Process each participant
     foreach (QSharedPointer<ScenarioParticipantType> participant, scenario()->AbstractParticipant())
     {
+
+        /*
         // Hack to set different visual properties for each participant, so
         // that they can be distinguished in the 3D and ground track views.
         // The user should have control over this.
@@ -1004,14 +1006,15 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
         default: trajectoryColor = Qt::red; break;
         }
         ++colorIndex;
+        */
 
         // For space vehicles, we need to propagate trajectories
         if (dynamic_cast<ScenarioSC*>(participant.data()))
         {
-			ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
+            ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
             scenarioPropagatorSatellite(vehicle, feedback, propScenario, this);
         }
-        else if (dynamic_cast<ScenarioREV*>(participant.data()))//Added by Dominic to allow propagation of re-entry vehicle trajectories
+        else if (dynamic_cast<ScenarioREV*>(participant.data()))
         {
             ScenarioREV* entryVehicle = dynamic_cast<ScenarioREV*>(participant.data());
             scenarioPropagatorReEntryVehicle(entryVehicle, feedback, propScenario, this);
@@ -1024,7 +1027,7 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
         else if (dynamic_cast<ScenarioPoint*>(participant.data()))
         {
             ScenarioPoint* point = dynamic_cast<ScenarioPoint*>(participant.data());
-            scenarioPropagatorPoint(point, trajectoryColor, feedback, propScenario);
+            scenarioPropagatorPoint(point, feedback, propScenario, this);
         }
     }
 
@@ -1600,47 +1603,29 @@ void MainWindow::on_actionPropagateCoverage_triggered()
     // Process each participant
     foreach (QSharedPointer<ScenarioParticipantType> participant, scenario()->AbstractParticipant())
     {
-		// Hack to set different visual properties for each participant, so
-		// that they can be distinguished in the 3D and ground track views.
-		// The user should have control over this.
-		QColor trajectoryColor;
-		switch (colorIndex % 6)
-		{
-		case 0: trajectoryColor = Qt::yellow; break;
-		case 1: trajectoryColor = Qt::cyan; break;
-		case 2: trajectoryColor = Qt::green; break;
-		case 3: trajectoryColor = Qt::magenta; break;
-		case 4: trajectoryColor = QColor(128, 255, 64); break;
-		default: trajectoryColor = Qt::red; break;
-		}
-		++colorIndex;
 
-		// For space vehicles, we need to propagate trajectories
-		if (dynamic_cast<ScenarioSC*>(participant.data()))
-		{
-			ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
-
+        // For space vehicles, we need to propagate trajectories
+        if (dynamic_cast<ScenarioSC*>(participant.data()))
+        {
+            ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
             scenarioPropagatorSatellite(vehicle, feedback, propScenario, this);
-		}
+        }
+        else if (dynamic_cast<ScenarioREV*>(participant.data()))
+        {
+            ScenarioREV* entryVehicle = dynamic_cast<ScenarioREV*>(participant.data());
+            scenarioPropagatorReEntryVehicle(entryVehicle, feedback, propScenario, this);
+        }
+        else if (dynamic_cast<ScenarioGroundStation*>(participant.data()))
+        {
+            ScenarioGroundStation* groundElement = dynamic_cast<ScenarioGroundStation*>(participant.data());
+            scenarioPropagatorGroundElement(groundElement, feedback, propScenario, this);
+        }
+        else if (dynamic_cast<ScenarioPoint*>(participant.data()))
+        {
+            ScenarioPoint* point = dynamic_cast<ScenarioPoint*>(participant.data());
+            scenarioPropagatorPoint(point, feedback, propScenario, this);
+        }
 
-		else if (dynamic_cast<ScenarioREV*>(participant.data()))//Added by Dominic to allow propagation of re-entry vehicle trajectories
-		{
-			ScenarioREV* entryVehicle = dynamic_cast<ScenarioREV*>(participant.data());
-
-			scenarioPropagatorReEntryVehicle(entryVehicle,  trajectoryColor, feedback, propScenario);
-		}
-		else if (dynamic_cast<ScenarioGroundStation*>(participant.data()))
-		{
-			ScenarioGroundStation* groundElement = dynamic_cast<ScenarioGroundStation*>(participant.data());
-
-			scenarioPropagatorGroundElement(groundElement, trajectoryColor, feedback, propScenario);
-		}
-		else if (dynamic_cast<ScenarioPoint*>(participant.data()))
-		{
-			ScenarioPoint* point = dynamic_cast<ScenarioPoint*>(participant.data());
-
-			scenarioPropagatorPoint(point, trajectoryColor, feedback, propScenario);
-		}
     }
 
 
@@ -1680,46 +1665,29 @@ void MainWindow::on_actionSat_to_Sat_triggered()
     // Process each participant
     foreach (QSharedPointer<ScenarioParticipantType> participant, scenario()->AbstractParticipant())
     {
-		// Hack to set different visual properties for each participant, so
-		// that they can be distinguished in the 3D and ground track views.
-		// The user should have control over this.
-		QColor trajectoryColor;
-		switch (colorIndex % 6)
-		{
-		case 0: trajectoryColor = Qt::yellow; break;
-		case 1: trajectoryColor = Qt::cyan; break;
-		case 2: trajectoryColor = Qt::green; break;
-		case 3: trajectoryColor = Qt::magenta; break;
-		case 4: trajectoryColor = QColor(128, 255, 64); break;
-		default: trajectoryColor = Qt::red; break;
-		}
-		++colorIndex;
 
-		// For space vehicles, we need to propagate trajectories
-		if (dynamic_cast<ScenarioSC*>(participant.data()))
-		{
-			ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
+        // For space vehicles, we need to propagate trajectories
+        if (dynamic_cast<ScenarioSC*>(participant.data()))
+        {
+            ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
             scenarioPropagatorSatellite(vehicle, feedback, propScenario, this);
         }
+        else if (dynamic_cast<ScenarioREV*>(participant.data()))
+        {
+            ScenarioREV* entryVehicle = dynamic_cast<ScenarioREV*>(participant.data());
+            scenarioPropagatorReEntryVehicle(entryVehicle, feedback, propScenario, this);
+        }
+        else if (dynamic_cast<ScenarioGroundStation*>(participant.data()))
+        {
+            ScenarioGroundStation* groundElement = dynamic_cast<ScenarioGroundStation*>(participant.data());
+            scenarioPropagatorGroundElement(groundElement, feedback, propScenario, this);
+        }
+        else if (dynamic_cast<ScenarioPoint*>(participant.data()))
+        {
+            ScenarioPoint* point = dynamic_cast<ScenarioPoint*>(participant.data());
+            scenarioPropagatorPoint(point, feedback, propScenario, this);
+        }
 
-		else if (dynamic_cast<ScenarioREV*>(participant.data()))//Added by Dominic to allow propagation of re-entry vehicle trajectories
-		{
-			ScenarioREV* entryVehicle = dynamic_cast<ScenarioREV*>(participant.data());
-
-			scenarioPropagatorReEntryVehicle(entryVehicle,  trajectoryColor, feedback, propScenario);
-		}
-		else if (dynamic_cast<ScenarioGroundStation*>(participant.data()))
-		{
-			ScenarioGroundStation* groundElement = dynamic_cast<ScenarioGroundStation*>(participant.data());
-
-			scenarioPropagatorGroundElement(groundElement, trajectoryColor, feedback, propScenario);
-		}
-		else if (dynamic_cast<ScenarioPoint*>(participant.data()))
-		{
-			ScenarioPoint* point = dynamic_cast<ScenarioPoint*>(participant.data());
-
-			scenarioPropagatorPoint(point, trajectoryColor, feedback, propScenario);
-		}
     }
 
 
@@ -1759,20 +1727,6 @@ void MainWindow::on_actionSat_to_Ground_triggered()
     // Process each participant
     foreach (QSharedPointer<ScenarioParticipantType> participant, scenario()->AbstractParticipant())
     {
-        // Hack to set different visual properties for each participant, so
-        // that they can be distinguished in the 3D and ground track views.
-        // The user should have control over this.
-        QColor trajectoryColor;
-        switch (colorIndex % 6)
-        {
-        case 0: trajectoryColor = Qt::yellow; break;
-        case 1: trajectoryColor = Qt::cyan; break;
-        case 2: trajectoryColor = Qt::green; break;
-        case 3: trajectoryColor = Qt::magenta; break;
-        case 4: trajectoryColor = QColor(128, 255, 64); break;
-        default: trajectoryColor = Qt::red; break;
-        }
-        ++colorIndex;
 
         // For space vehicles, we need to propagate trajectories
         if (dynamic_cast<ScenarioSC*>(participant.data()))
@@ -1780,22 +1734,22 @@ void MainWindow::on_actionSat_to_Ground_triggered()
             ScenarioSC* vehicle = dynamic_cast<ScenarioSC*>(participant.data());
             scenarioPropagatorSatellite(vehicle, feedback, propScenario, this);
         }
-
-        else if (dynamic_cast<ScenarioREV*>(participant.data()))//Added by Dominic to allow propagation of re-entry vehicle trajectories
+        else if (dynamic_cast<ScenarioREV*>(participant.data()))
         {
             ScenarioREV* entryVehicle = dynamic_cast<ScenarioREV*>(participant.data());
-            scenarioPropagatorReEntryVehicle(entryVehicle,  trajectoryColor, feedback, propScenario);
+            scenarioPropagatorReEntryVehicle(entryVehicle, feedback, propScenario, this);
         }
         else if (dynamic_cast<ScenarioGroundStation*>(participant.data()))
         {
             ScenarioGroundStation* groundElement = dynamic_cast<ScenarioGroundStation*>(participant.data());
-            scenarioPropagatorGroundElement(groundElement, trajectoryColor, feedback, propScenario);
+            scenarioPropagatorGroundElement(groundElement, feedback, propScenario, this);
         }
         else if (dynamic_cast<ScenarioPoint*>(participant.data()))
         {
             ScenarioPoint* point = dynamic_cast<ScenarioPoint*>(participant.data());
-            scenarioPropagatorPoint(point, trajectoryColor, feedback, propScenario);
+            scenarioPropagatorPoint(point, feedback, propScenario, this);
         }
+
     }
 
     ConstellationAnalysis* analysisOfConstellations = new ConstellationAnalysis(propScenario, false, false, true);

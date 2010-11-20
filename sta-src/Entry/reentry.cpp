@@ -27,12 +27,15 @@
  Modified by Tiziana Sabatini  May 2009
  Modified by Valentino Zuccarelli on June 11th 2009 lines 533-534
  Modified by Tiziana Sabatini on July 2009 to add the perturbation layer
+ Modifief extensive by Guillermo to correct errors and provide aspect button November 2010
  */
 
 #include <iostream>
 #include <iomanip>
 #include <fstream>
 #include <QFile>
+
+
 #include "reentry.h"
 #include "Main/scenariotree.h"
 #include "Scenario/scenario.h"
@@ -42,6 +45,8 @@
 #include "Astro-Core/perturbations.h"
 #include "reentrystructures.h"
 #include "EntryTrajectory.h"
+#include "Scenario/missionAspectDialog.h"
+
 #include <QtDebug>
 
 
@@ -221,13 +226,14 @@ ReEntryDialog::~ReEntryDialog()
 
 bool ReEntryDialog::loadValues(ScenarioEntryArcType* reentry)
 {
+    ScenarioElementIdentifierType* arcIdentifier    = reentry->ElementIdentifier().data();
     ScenarioEnvironmentType* environment = reentry->Environment().data();
     ScenarioTimeLine* parameters = reentry->TimeLine().data();
     ScenarioPropagationPositionType* propagation = reentry->PropagationPosition().data();
     ScenarioInitialPositionType* initPosition = reentry->InitialPosition().data();
     ScenarioREVConstraintsType* constraints=reentry->Constraints().data();
 
-    if (loadValues(environment) && loadValues(parameters) && loadValues(propagation) && loadValues(constraints) && loadValues(initPosition,environment))
+    if (loadValues(arcIdentifier) && loadValues(environment) && loadValues(parameters) && loadValues(propagation) && loadValues(constraints) && loadValues(initPosition,environment))
     {
         return true;
     }
@@ -237,8 +243,50 @@ bool ReEntryDialog::loadValues(ScenarioEntryArcType* reentry)
     }
 }
 
+
+
+
+
+
+
+bool ReEntryDialog::loadValues(ScenarioElementIdentifierType* arcIdentifier)
+{
+    QString theArcName = arcIdentifier->Name();
+    entryAspect.loadValueArcName(theArcName);
+
+    QString theArcColor = arcIdentifier->colorName();
+    entryAspect.loadValueArcColor(theArcColor);
+
+    QString theArcModel = arcIdentifier->modelName();
+    entryAspect.loadValueArcModel(theArcModel);
+
+    return true;
+}
+
+
+
+bool ReEntryDialog::saveValues(ScenarioElementIdentifierType* arcIdentifier)
+{
+    // The arc name
+    QString theArcName = entryAspect.saveValueArcName();
+    arcIdentifier->setName(theArcName);
+
+    // The color
+    QString theColorName = entryAspect.saveValueArcColor();
+    arcIdentifier->setColorName(theColorName);
+
+    // The model
+    QString theModelName = entryAspect.saveValueArcModel();
+    arcIdentifier->setModelName(theModelName);
+
+    return true;
+}
+
+
+
 bool ReEntryDialog::saveValues(ScenarioEntryArcType* reentry)
 {
+    ScenarioElementIdentifierType* identifier    = reentry->ElementIdentifier().data();
     ScenarioEnvironmentType* environment   = reentry->Environment().data();
     ScenarioTimeLine* parameters             = reentry->TimeLine().data();
     ScenarioPropagationPositionType* propagation = reentry->PropagationPosition().data();
@@ -246,7 +294,7 @@ bool ReEntryDialog::saveValues(ScenarioEntryArcType* reentry)
     ScenarioREVConstraintsType* constraints=reentry->Constraints().data();
 
 
-    if (saveValues(environment) && saveValues(parameters) && saveValues(propagation) && saveValues(constraints) && saveValues(initPosition,environment))
+    if (saveValues(identifier) && saveValues(environment) && saveValues(parameters) && saveValues(propagation) && saveValues(constraints) && saveValues(initPosition,environment))
     {
         return true;
     }
@@ -1111,6 +1159,14 @@ bool PropagateEntryTrajectory(ScenarioREV* vehicle, ScenarioEntryArcType* entry,
 
     //QString propagator = entry->PropagationPosition()->propagator();
     //QString integrator = entry->PropagationPosition()->integrator();
+}
+
+
+
+
+void ReEntryDialog::on_pushButtonAspect_clicked()
+{
+    entryAspect.exec();
 }
 
 

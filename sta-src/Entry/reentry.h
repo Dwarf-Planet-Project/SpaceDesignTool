@@ -34,6 +34,8 @@
 #include "Loitering/loitering.h"
 #include "ui_reentry.h"
 
+#include "Scenario/missionAspectDialog.h"
+
 class ScenarioTree;
 class ScenarioEnvironment;
 class ScenarioReEntryTrajectory;
@@ -56,6 +58,8 @@ public:
     bool loadValues(ScenarioInitialPositionType* initPosition, ScenarioEnvironmentType* environment);
     bool loadValues(ScenarioEnvironmentType* environment);
     bool loadValues(ScenarioREVConstraintsType* constraints);
+
+    bool loadValues(ScenarioElementIdentifierType* arcIdentifier);
 /*
     bool loadValues(ScenarioProperties* vehicleproperties);
     bool loadValues(ScenarioSimulationMode* simulationmode);
@@ -76,11 +80,19 @@ public:
     bool saveValues(ScenarioWindowMode* windowmode);
     bool saveValues(ScenarioTrajectoryPropagation* propagation);
 
+    bool saveValues(ScenarioElementIdentifierType* arcIdentifier);
+
 
     double getLocalRadius(ScenarioEnvironmentType* environment, double latitude);
 
     TesseralBox* TesseralSpinBox;
     int m_tesserals;
+
+public:
+    missionAspectDialog entryAspect;
+
+protected slots:
+        void on_pushButtonAspect_clicked();
 
 };
 extern bool PropagateEntryTrajectory(ScenarioREV* vehicle, ScenarioEntryArcType* entry, QList<double>& sampleTimes,
