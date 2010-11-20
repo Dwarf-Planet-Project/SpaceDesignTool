@@ -30,28 +30,6 @@
    <iconset resource="../../iconary/sta-icons.qrc">
     <normaloff>:/icons/Loitering.png</normaloff>:/icons/Loitering.png</iconset>
   </property>
-  <widget class="QDialogButtonBox" name="buttonBox">
-   <property name="geometry">
-    <rect>
-     <x>305</x>
-     <y>460</y>
-     <width>341</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
   <widget class="QTabWidget" name="LoiteringTabsAssembly">
    <property name="geometry">
     <rect>
@@ -72,7 +50,7 @@
      <property name="geometry">
       <rect>
        <x>15</x>
-       <y>5</y>
+       <y>10</y>
        <width>286</width>
        <height>66</height>
       </rect>
@@ -1510,7 +1488,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
      <property name="geometry">
       <rect>
        <x>405</x>
-       <y>5</y>
+       <y>10</y>
        <width>201</width>
        <height>31</height>
       </rect>
@@ -1547,7 +1525,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
      <property name="geometry">
       <rect>
        <x>5</x>
-       <y>25</y>
+       <y>20</y>
        <width>616</width>
        <height>381</height>
       </rect>
@@ -2177,7 +2155,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
      <property name="geometry">
       <rect>
        <x>140</x>
-       <y>5</y>
+       <y>10</y>
        <width>356</width>
        <height>176</height>
       </rect>
@@ -2325,7 +2303,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
      <property name="geometry">
       <rect>
        <x>140</x>
-       <y>185</y>
+       <y>190</y>
        <width>356</width>
        <height>221</height>
       </rect>
@@ -2630,18 +2608,53 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
     </widget>
    </widget>
   </widget>
-  <widget class="QPushButton" name="pushButtonAspect">
+  <widget class="QWidget" name="horizontalLayoutWidget_2">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>460</y>
-     <width>81</width>
-     <height>32</height>
+     <y>455</y>
+     <width>626</width>
+     <height>36</height>
     </rect>
    </property>
-   <property name="text">
-    <string>Aspect</string>
-   </property>
+   <layout class="QHBoxLayout" name="horizontalLayoutLoiteringBottom">
+    <item>
+     <widget class="QPushButton" name="pushButtonAspect">
+      <property name="text">
+       <string>Aspect</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QDialogButtonBox" name="buttonBoxLoitering">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="standardButtons">
+       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <tabstops>
@@ -2688,7 +2701,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
   <tabstop>ExtCouplesComboBox</tabstop>
   <tabstop>IntegratorComboBox_2</tabstop>
   <tabstop>IntStepEdit_2</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>buttonBoxLoitering</tabstop>
   <tabstop>positionYEdit</tabstop>
   <tabstop>positionZEdit</tabstop>
   <tabstop>LoiteringTabsAssembly</tabstop>
@@ -2721,10 +2734,15 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
  </tabstops>
  <resources>
   <include location="../../iconary/sta-icons.qrc"/>
+  <include location="../../iconary/sta-icons.qrc"/>
+  <include location="../../iconary/sta-icons.qrc"/>
+  <include location="../../iconary/sta-icons.qrc"/>
+  <include location="../../iconary/sta-icons.qrc"/>
+  <include location="../../iconary/sta-icons.qrc"/>
  </resources>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>buttonBoxLoitering</sender>
    <signal>accepted()</signal>
    <receiver>LoiteringDialogClass</receiver>
    <slot>accept()</slot>
@@ -2740,7 +2758,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>buttonBoxLoitering</sender>
    <signal>rejected()</signal>
    <receiver>LoiteringDialogClass</receiver>
    <slot>reject()</slot>
