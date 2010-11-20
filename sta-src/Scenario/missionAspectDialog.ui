@@ -418,6 +418,15 @@
           <normaloff>:/icons/STAModelsIcons-ROSETTA.png</normaloff>:/icons/STAModelsIcons-ROSETTA.png</iconset>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Planck</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/STAModelsIcons-PLANCK.png</normaloff>:/icons/STAModelsIcons-PLANCK.png</iconset>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>

@@ -150,6 +150,7 @@ static ModelProperties SpacecraftModels[] =
     { "iss",     "models/iss.3ds",   0.025f,  Vector3d::UnitZ(),                    Vector3d::UnitX() },
     { "xmm",     "models/xmm.3ds",   0.004,  -Vector3d(0.0, 1.0, 1.0).normalized(), Vector3d::UnitX() },
     { "rosetta", "models/rosetta.3ds",   0.004,  -Vector3d(0.0, 1.0, 1.0).normalized(), Vector3d::UnitX() },
+    { "planck", "models/planck.3ds",   0.004,  -Vector3d(0.0, 1.0, 1.0).normalized(), Vector3d::UnitX() },
 };
 
 
