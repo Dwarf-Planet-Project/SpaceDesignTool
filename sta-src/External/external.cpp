@@ -460,10 +460,6 @@ PropagateExternalTrajectory(ScenarioExternalType* extTrajectory,
             {
                 qDebug() << "Times are not increasing! " <<  d.toString("yyyy-MM-ddThh:mm:ss.z")
                         << ", " << extTrajectory->TimeTags().at(index - 1).toString("yyyy-MM-ddThh:mm:ss.z");
-                for (unsigned int i = 0; i < extTrajectory->TimeTags().size(); i++)
-                {
-                    qDebug() << i << ": " << extTrajectory->TimeTags().at(i).toString("yyyy-MM-ddThh:mm:ss.z");
-                }
             }
             propFeedback.raiseError(QObject::tr("Times in external trajectory are not strictly increasing"));
             return true;
