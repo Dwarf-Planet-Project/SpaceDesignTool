@@ -1,0 +1,100 @@
+# Blender3D MTL File: xmm.blend
+# Material Count: 9
+newmtl 02_-_Default_aluminum02.png
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.320000 0.313726 0.332549
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd aluminum02.png
+
+
+newmtl dispositivos
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.718431 0.683922 0.605490
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+
+
+newmtl dispositivos_aluminum02.png
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.718431 0.683922 0.605490
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd aluminum02.png
+
+
+newmtl 03_-_Default_aluminum01texture
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.313726 0.307451 0.332549
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd aluminum01texture.jpeg
+
+
+newmtl 03_-_Default_Chro000.bmp
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.313726 0.307451 0.332549
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Chro000.bmp
+
+
+newmtl 02_-_Default_aluminum01texture
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.320000 0.313726 0.332549
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd aluminum01texture.jpeg
+
+
+newmtl tapas
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.404706 0.404706 0.417255
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd aluminum02.png
+
+
+newmtl tapas_aluminum02.png
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.404706 0.404706 0.417255
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd aluminum02.png
+
+
+newmtl 09_-_Default_solararraygeneric
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.263529 0.385882 0.461176
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd solararraygenerictexturebright.png
+
+

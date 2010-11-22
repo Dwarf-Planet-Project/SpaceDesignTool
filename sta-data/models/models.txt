@@ -1,0 +1,86 @@
+***************************************************************************
+*                 Space Trajectory Analysis (STA)                         *
+*                                                                         *
+*  The “Space Trajectory Analysis” or STA software suite is conceived as  *
+*  a research tool to support the analysis phase of a space mission       *
+*  having the ability to analyze, determine, simulate, and visualize      *
+*  a wide range of space trajectories.                                    *
+*                                                                         *
+*  One of the STA aims is to promote the exchange of technical ideas,     *
+*  and raise knowledge and competence in the areas of applied             *
+*  mathematics, space engineering, and informatics.                       *
+*                                                                         *
+*              Copyright (c) 2005-2011, STA Steering Board                *
+*                                                                         *
+*-------------------------------------------------------------------------*
+*                STA web site: http://sta.estec.esa.int                   *
+*                                                                         *
+*                                                                         *
+***************************************************************************
+
+
+LICENSE
+-------
+The models from the STA team are licensed under the EUPL v1.1
+
+
+CONTRIBUTIONS
+-------------
+
+The participants models in this folder have been contributed from the following sources:
+
+Model from the Celestia project:
+acrimsat.3ds
+amalthea.cmod
+bacchus.cmod
+castalia.cmod
+deimos.cmod
+epimetheus.cmod
+eros.cmod
+gaspra.cmod
+geographos.cmod
+golevka.cmod
+halley.cmod
+hubble.cmod
+hyperion.cmod
+ida.cmod
+janus.cmod
+kleopatra.cmod
+ky26.cmod
+larissa.cmod
+marsglobalsurvr.3ds
+pandora.cmod
+phobos.cmod
+phoebe.cmod
+prometheus.cmod
+proteus.cmod
+rosetta.3ds
+toutatis.cmod
+vesta.cmod
+huygens.3ds
+
+
+Models from NASA. Models of ACRIMSAT, SORCE, and accompanying textures are from
+NASA - JPL/Caltech:
+http://www.nasa.gov/multimedia/3d_resources/assets/acrimsat.html
+iss.3ds
+sorce.obj
+
+
+Models from the STA team:
+ariane5.3ds
+exomars.3ds
+planck.3ds
+soyuz.3ds
+xmm.3ds
+
+
+
+
+---------------------
+STA email address:
+---------------------
+  <space.trajectory.analyis@gmail.com>
+
+
+The STA Development Team

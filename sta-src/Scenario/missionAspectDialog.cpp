@@ -104,6 +104,16 @@ bool missionAspectDialog::loadValueArcModel(const QString arcModel)
         comboBoxModel->setCurrentIndex(3);
     else if (arcModel == "Planck")
         comboBoxModel->setCurrentIndex(4);
+    else if (arcModel == "Soyuz")
+        comboBoxModel->setCurrentIndex(5);
+    else if (arcModel == "ExoMars")
+        comboBoxModel->setCurrentIndex(6);
+    else if (arcModel == "Ariane 5")
+        comboBoxModel->setCurrentIndex(7);
+    else if (arcModel == "Station")
+        comboBoxModel->setCurrentIndex(8);
+    else if (arcModel == "Point")
+        comboBoxModel->setCurrentIndex(9);
     else
         return false;
 

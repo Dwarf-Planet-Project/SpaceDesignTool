@@ -125,5 +125,10 @@
         <file>STAModelsIcons-ROSETTA.png</file>
         <file>STAModelsIcons-XMM.png</file>
         <file>STAModelsIcons-PLANCK.png</file>
+        <file>STAModelsIcons-ARIANE5.png</file>
+        <file>STAModelsIcons-EXOMARS.png</file>
+        <file>STAModelsIcons-SOYUZ.png</file>
+        <file>STAModelsIcons-GROUNDSTATION.png</file>
+        <file>STAModelsIcons-POINT.png</file>
     </qresource>
 </RCC>

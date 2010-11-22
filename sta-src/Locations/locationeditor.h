@@ -29,6 +29,7 @@
 #include "ui_locationeditor.h"
 #include "Locations/environmentdialog.h"
 #include "Coverage/commanalysis.h"
+#include "Scenario/missionAspectDialog.h"
 
 class ScenarioLocationType;
 
@@ -42,4 +43,16 @@ public:
     
     bool loadValues(const ScenarioLocationType* location);
     bool saveValues(ScenarioLocationType* location);
+
+    bool loadValues(ScenarioElementIdentifierType* arcIdentifier);
+    bool saveValues(ScenarioElementIdentifierType* arcIdentifier);
+
+
+public:
+    missionAspectDialog locationAspect;
+
+protected slots:
+        void on_pushButtonAspect_clicked();
+
+
 };

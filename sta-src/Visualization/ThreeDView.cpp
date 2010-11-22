@@ -22,6 +22,7 @@
 /*
 ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
+ Modified by Guillermo Novewmber 2010 to include all 3DS models
  */
 
 
@@ -146,11 +147,16 @@ struct ModelProperties
 
 static ModelProperties SpacecraftModels[] =
 {
-    { "default", "models/sorce.obj", 0.004f, -Vector3d::UnitY(),                    Vector3d::UnitX() },
-    { "iss",     "models/iss.3ds",   0.025f,  Vector3d::UnitZ(),                    Vector3d::UnitX() },
-    { "xmm",     "models/xmm.3ds",   0.004,  -Vector3d(0.0, 1.0, 1.0).normalized(), Vector3d::UnitX() },
-    { "rosetta", "models/rosetta.3ds",   0.004,  -Vector3d(0.0, 1.0, 1.0).normalized(), Vector3d::UnitX() },
-    { "planck", "models/planck.3ds",   0.004,  -Vector3d(0.0, 1.0, 1.0).normalized(), Vector3d::UnitX() },
+    { "default",    "models/sorce.obj",           0.004f, -Vector3d::UnitY(),                    Vector3d::UnitX() },
+    { "iss",        "models/iss.3ds",             0.025f,  Vector3d::UnitZ(),                    Vector3d::UnitX() },
+    { "xmm",        "models/xmm.obj",             0.004,  -Vector3d(0.0, 1.0, 1.0).normalized(), Vector3d::UnitX() },
+    { "rosetta",    "models/rosetta.3ds",         0.004,  -Vector3d(0.0, 1.0, 1.0).normalized(), Vector3d::UnitX() },
+    { "planck",     "models/planck.3ds",          0.004,  -Vector3d(0.0, 1.0, 1.0).normalized(), Vector3d::UnitX() },
+    { "soyuz",      "models/soyuz.3ds",           0.004,  -Vector3d(0.0, 1.0, 1.0).normalized(), Vector3d::UnitX() },
+    { "exomars",    "models/exomars.3ds",         0.004,  -Vector3d::UnitY(),                    Vector3d::UnitX() },
+    { "ariane 5",   "models/ariane5.3ds",         0.004,  -Vector3d::UnitY(),                    Vector3d::UnitX() },
+    { "station",    "models/groundstation.3ds",   0.004,  -Vector3d::UnitY(),                    Vector3d::UnitX() },
+    { "point",      "models/point.3ds",           0.004,  -Vector3d::UnitY(),                    Vector3d::UnitX() }
 };
 
 

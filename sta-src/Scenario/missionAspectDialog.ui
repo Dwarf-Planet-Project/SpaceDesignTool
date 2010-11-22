@@ -427,6 +427,51 @@
           <normaloff>:/icons/STAModelsIcons-PLANCK.png</normaloff>:/icons/STAModelsIcons-PLANCK.png</iconset>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Soyuz</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/STAModelsIcons-SOYUZ.png</normaloff>:/icons/STAModelsIcons-SOYUZ.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>ExoMars</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/STAModelsIcons-EXOMARS.png</normaloff>:/icons/STAModelsIcons-EXOMARS.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Ariane 5</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/STAModelsIcons-ARIANE5.png</normaloff>:/icons/STAModelsIcons-ARIANE5.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Station</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/STAModelsIcons-GROUNDSTATION.png</normaloff>:/icons/STAModelsIcons-GROUNDSTATION.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Point</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../iconary/sta-icons.qrc">
+          <normaloff>:/icons/STAModelsIcons-POINT.png</normaloff>:/icons/STAModelsIcons-POINT.png</iconset>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>
