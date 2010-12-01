@@ -155,7 +155,7 @@ Scenario_GetTimeRange(ScenarioAbstractTrajectoryType* trajectory, QDateTime* sta
 
 
 // Convert a state vector to the coordinate system given by the specified name
-static StateVector ConvertStateVector(const StateVector& state, const QString& coordSys, double mjd)
+static StateVector ConvertStateVector(const StateVector& state, const QString& coordSys, const StaBody* center, double mjd)
 {
     sta::CoordinateSystemType toSystem = sta::COORDSYS_INVALID;
     if (coordSys == "Fixed")
@@ -178,9 +178,9 @@ static StateVector ConvertStateVector(const StateVector& state, const QString& c
 
     return CoordinateSystem::convert(state,
                                      mjd,
-                                     STA_SOLAR_SYSTEM->earth(),
+                                     center,
                                      sta::CoordinateSystem(sta::COORDSYS_EME_J2000),
-                                     STA_SOLAR_SYSTEM->earth(),
+                                     center,
                                      sta::CoordinateSystem(toSystem));
 }
 
@@ -1938,7 +1938,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
                     double mjd = MJDdate[index];
                     StateVector state = arc->trajectorySample(j);
-                    StateVector transformedState = ConvertStateVector(state, Coordinate, mjd);
+                    StateVector transformedState = ConvertStateVector(state, Coordinate, arc->centralBody(), mjd);
 
                     if (name == "x position")
                     {
@@ -2880,19 +2880,18 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
             numberOfRows = numberOfRows + 1;
             }
         }
-                else
+        else
         {
-                    stream<<"#######Beginning of time"<<" "<<(k+1)<<"######"<<"\r\n";
-                    stream<<"No data available for the chosen time interval, please check the options of the propagation"<<"\r\n";
-                    if(selectedTimes.size()==1)
-                    {
-                    QMessageBox Warning;
-                    Warning.setText("No data available for the selected time interval");
-                    Warning.exec();
-
-                 }
-                }
-            }
+            stream<<"#######Beginning of time"<<" "<<(k+1)<<"######"<<"\r\n";
+            stream<<"No data available for the chosen time interval, please check the options of the propagation"<<"\r\n";
+            if(selectedTimes.size()==1)
+            {
+                QMessageBox Warning;
+                Warning.setText("No data available for the selected time interval");
+                Warning.exec();
+             }
+        }
+        }
 
         stream<<"\r\n";
     }
@@ -3283,7 +3282,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
 
                         double mjd = MJDdate[index];
                         StateVector state = arc->trajectorySample(j);
-                        StateVector transformedState = ConvertStateVector(state, Coordinate, mjd);
+                        StateVector transformedState = ConvertStateVector(state, Coordinate, arc->centralBody(), mjd);
 
                         if (name == "x position")
                         {
