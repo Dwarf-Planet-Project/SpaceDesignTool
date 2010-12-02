@@ -39,6 +39,8 @@
 
 class QTemporaryFile;
 
+class ScenarioParticipantType;
+
 
 /*! A mission arc is a trajectory in a propagated scenario.
  */
@@ -99,7 +101,7 @@ private:
 class SpaceObject
 {
 public:
-    SpaceObject();
+    SpaceObject(ScenarioParticipantType* participant);
     ~SpaceObject();
 
     double missionStartTime() const { return m_missionStartTime; }
@@ -122,7 +124,10 @@ public:
     
     bool generateEphemerisFiles();
 
-
+    ScenarioParticipantType* participant() const
+    {
+        return m_participant;
+    }
     
 private:
     double m_missionStartTime;
@@ -132,6 +137,8 @@ private:
     QString m_name;
     QString m_modelFile;
     QColor m_trajectoryColor;
+
+    ScenarioParticipantType* m_participant;
 };
 
 

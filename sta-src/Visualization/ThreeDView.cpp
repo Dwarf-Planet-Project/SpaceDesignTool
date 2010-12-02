@@ -70,6 +70,8 @@
 #include "ThreeDView.h"
 
 #include <Main/propagatedscenario.h>
+#include <Scenario/staschema.h>
+
 #include <Astro-Core/date.h>
 #include <Astro-Core/stamath.h>
 #include <Astro-Core/stabody.h>
@@ -88,8 +90,6 @@
 using namespace vesta;
 using namespace Eigen;
 using namespace std;
-
-static double MJDBase = 2400000.5;
 
 static double
 yearsToSecs(double julianYears)
@@ -417,6 +417,17 @@ LookAt(const Vector3d& from, const Vector3d& to, const Vector3d& up)
     Matrix3d m;
     m << right, u, direction;
     return Quaterniond(m);
+}
+
+
+static string TrajectoryVisualizerTag(const Entity* spaceObj, unsigned int arcIndex)
+{
+    return string(QString("%1 - %2 trajectory").arg(qHash(spaceObj)).arg(arcIndex).toUtf8().data());
+}
+
+static string SensorVisualizerTag(unsigned int index)
+{
+    return string(QString("sensor fov %1").arg(index).toUtf8().data());
 }
 
 
@@ -1642,10 +1653,13 @@ ThreeDView::setSensorFovs(bool enabled)
     foreach (Entity* e, m_scenarioSpaceObjects.values())
     {
         // Set visibility of trajectory visualizers for all arcs
-        Visualizer* vis = e->visualizer("sensor fov");
-        if (vis)
+        for (unsigned int i = 0; i < 10; ++i)
         {
-            vis->setVisibility(enabled);
+            Visualizer* vis = e->visualizer(SensorVisualizerTag(i));
+            if (vis)
+            {
+                vis->setVisibility(enabled);
+            }
         }
     }
 
@@ -1987,12 +2001,6 @@ ThreeDView::pickObject(const QPoint& pos)
 }
 
 
-static string TrajectoryVisualizerTag(const Entity* spaceObj, unsigned int arcIndex)
-{
-    return string(QString("%1 - %2 trajectory").arg(qHash(spaceObj)).arg(arcIndex).toUtf8().data());
-}
-
-
 /** Create a VESTA body representing an STA SpaceObject.
   */
 Body*
@@ -2098,12 +2106,53 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
         arcStartTime += arc->duration();
     }
 
+    ScenarioSC* spacecraft = dynamic_cast<ScenarioSC*>(spaceObj->participant());
+    if (spacecraft)
+    {
+        unsigned int sensorIndex = 0;
+        foreach (QSharedPointer<ScenarioAbstractPayloadType> payload, spacecraft->SCMission()->PayloadSet()->AbstractPayload())
+        {
+            ScenarioTransmitterPayloadType* transmitter = dynamic_cast<ScenarioTransmitterPayloadType*>(payload.data());
+            if (transmitter)
+            {
+                // Add a visualizer for the sensor FOV
+                SensorVisualizer* sensor = new SensorVisualizer();
+                sensor->setFrustumAngles(toRadians(5.0), toRadians(5.0));
+                sensor->setRange(35000.0);
+                sensor->setSource(body);
+                sensor->setOpacity(0.3f);
+                sensor->setFrustumShape(SensorVisualizer::Elliptical);
+                QColor sensorColor = spaceObj->mission().first()->arcTrajectoryColor();
+                sensor->setColor(Spectrum(sensorColor.redF(), sensorColor.greenF(), sensorColor.blueF()));
+                Quaterniond sensorRotation;
+
+                // Get the nadir direction in the spacecraft's body fixed frame
+                Vector3d localNadir = body->chronology()->firstArc()->rotationModel()->orientation(0.0).conjugate() * Vector3d::UnitX();
+                double azimuth = transmitter->Transmitter()->PointingDirection()->azimuth();
+                double elevation = transmitter->Transmitter()->PointingDirection()->elevation();
+                Vector3d direction(cos(elevation) * cos(azimuth),
+                                   cos(elevation) * sin(azimuth),
+                                   sin(elevation));
+                sensorRotation.setFromTwoVectors(direction, localNadir);
+
+                sensor->setSensorOrientation(sensorRotation);
+                sensor->setTarget(findSolarSystemBody(spaceObj->mission().first()->centralBody()));
+                sensor->setVisibility(m_sensorFovsEnabled);
+                body->setVisualizer(SensorVisualizerTag(sensorIndex), sensor);
+
+                sensorIndex++;
+            }
+        }
+    }
+
+#if 0
     // Add a visualizer for the sensor FOV
     SensorVisualizer* sensor = new SensorVisualizer();
     sensor->setFrustumAngles(toRadians(5.0), toRadians(25.0));
     sensor->setRange(35000.0);
     sensor->setSource(body);
     sensor->setOpacity(0.3f);
+    sensor->setFrustumShape(SensorVisualizer::Elliptical);
     QColor sensorColor = spaceObj->mission().first()->arcTrajectoryColor();
     sensor->setColor(Spectrum(sensorColor.redF(), sensorColor.greenF(), sensorColor.blueF()));
     Quaterniond sensorRotation;
@@ -2116,6 +2165,7 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
     sensor->setTarget(findSolarSystemBody(spaceObj->mission().first()->centralBody()));
     sensor->setVisibility(m_sensorFovsEnabled);
     body->setVisualizer("sensor fov", sensor);
+#endif
 
     return body;
 }

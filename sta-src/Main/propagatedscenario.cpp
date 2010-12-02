@@ -219,9 +219,10 @@ MissionArc::generateEphemerisFile()
 
 /****** SpaceObject        ******/
 
-SpaceObject::SpaceObject() :
+SpaceObject::SpaceObject(ScenarioParticipantType* participant) :
     m_missionStartTime(sta::JdToMjd(sta::J2000)),
-    m_missionEndTime(sta::JdToMjd(sta::J2000))
+    m_missionEndTime(sta::JdToMjd(sta::J2000)),
+    m_participant(participant)
 {
 }
 

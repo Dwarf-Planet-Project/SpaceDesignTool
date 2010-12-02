@@ -1299,7 +1299,7 @@ void GroundTrackView::paint2DView(QPainter& painter)
                     QTransform xform = painter.worldTransform();
                     painter.setWorldTransform(QTransform());
                     QPointF textOrigin = QPointF((float) longNow + labelOffset, (float) latNow + labelOffset) * xform;
-                    painter.drawText(textOrigin, track->m_vehicle->name());       // Guillermo says: this is an attribute and should be removed
+                    painter.drawText(textOrigin, /*track->m_vehicle->name()*/ track->m_vehicle->participant()->Name());       // Guillermo says: this is an attribute and should be removed
                     painter.setWorldTransform(xform);
                 }
             }

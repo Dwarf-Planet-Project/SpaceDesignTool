@@ -67,7 +67,7 @@ USING_PART_OF_NAMESPACE_EIGEN;
 
 
 
-void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback feedback, PropagatedScenario* propScenario, QWidget* parent)
+void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedback, PropagatedScenario* propScenario, QWidget* parent)
 {
 	const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList = vehicle->SCMission()->TrajectoryPlan()->AbstractTrajectory();
     int numberOfArcs = trajectoryList.size();
@@ -78,7 +78,7 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback feedba
 	// the empty trajectory plan case has to be treated specially.
 	if (!trajectoryList.isEmpty())
 	{
-		SpaceObject* spaceObject = new SpaceObject();
+        SpaceObject* spaceObject = new SpaceObject(vehicle);
 		spaceObject->setName(vehicle->Name());
 
 		// Propagate all segments of the trajectory plan.
@@ -148,18 +148,6 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback feedba
 
 				if (feedback.status() != PropagationFeedback::PropagationOk)
 				{
-					// An error occurred during propagate. Clean up everything and return immediately.
-					// The current propagation results will not be replaced.
-					if (feedback.status() == PropagationFeedback::PropagationCanceled)
-					{
-                        int ret = QMessageBox::warning(parent, "Canceled", "Propagation was canceled.");
-					}
-					else
-					{
-                        int ret = QMessageBox::critical(parent, "Propagation Error", "Error during propagation");
-					}
-
-					delete propScenario;
 					return;
 				}
 
@@ -205,19 +193,7 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback feedba
 
 				if (feedback.status() != PropagationFeedback::PropagationOk)
 				{
-					// An error occurred during propagate. Clean up everything and return immediately.
-					// The current propagation results will not be replaced.
-					if (feedback.status() == PropagationFeedback::PropagationCanceled)
-					{
-                        int ret = QMessageBox::warning(parent, "Canceled", "Propagation was canceled.");
-					}
-					else
-					{
-                        int ret = QMessageBox::critical(parent, "Propagation Error", "Error during propagation");
-					}
-
-					delete propScenario;
-					return;
+                    return;
 				}
 
 				QString centralBodyName = "Earth";
@@ -344,18 +320,6 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback feedba
 
                 if (feedback.status() != PropagationFeedback::PropagationOk)
                 {
-                    // An error occurred during propagate. Clean up everything and return immediately.
-                    // The current propagation results will not be replaced.
-                    if (feedback.status() == PropagationFeedback::PropagationCanceled)
-                    {
-                        int ret = QMessageBox::warning(parent, "Canceled", "Propagation was canceled.");
-                    }
-                    else
-                    {
-                        int ret = QMessageBox::critical(parent, "Propagation Error", "Error during propagation");
-                    }
-
-                    delete propScenario;
                     return;
                 }
 
@@ -390,13 +354,13 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback feedba
 }
 
 
-void scenarioPropagatorReEntryVehicle(ScenarioREV* entryVehicle, PropagationFeedback feedback, PropagatedScenario* propScenario, QWidget* parent)
+void scenarioPropagatorReEntryVehicle(ScenarioREV* entryVehicle, PropagationFeedback& feedback, PropagatedScenario* propScenario, QWidget* parent)
 {
     const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList = entryVehicle->REVMission()->REVTrajectoryPlan()->AbstractTrajectory();
 
     if(!trajectoryList.isEmpty())
     {
-        SpaceObject* spaceObject = new SpaceObject();
+        SpaceObject* spaceObject = new SpaceObject(entryVehicle);
         spaceObject->setName(entryVehicle->Name());
 
         // Propagate all segments of the trajectory plan.
@@ -453,7 +417,78 @@ void scenarioPropagatorReEntryVehicle(ScenarioREV* entryVehicle, PropagationFeed
                 MissionsDefaults myMissionDefaults;
                 QColor trajectoryColor = myMissionDefaults.missionArcColorFromQt(arcColorName);
                 // Yellow for the time being
-                //arc->setArcTrajectoryColor("Yellow");
+                arc->setArcTrajectoryColor("Yellow");
+                //arc->setArcTrajectoryColor(trajectoryColor);
+                arc->setModelName(entry->ElementIdentifier()->modelName());
+                spaceObject->addMissionArc(arc);
+            }
+        }
+        propScenario->addSpaceObject(spaceObject);
+    }
+}
+
+
+
+
+void scenarioPropagatorReEntryVehicle(ScenarioREV* entryVehicle,  QColor trajectoryColor, PropagationFeedback& feedback, PropagatedScenario* propScenario)
+{
+    const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList = entryVehicle->REVMission()->REVTrajectoryPlan()->AbstractTrajectory();
+
+    if(!trajectoryList.isEmpty())
+    {
+        SpaceObject* spaceObject = new SpaceObject(entryVehicle);
+        spaceObject->setName(entryVehicle->Name());
+        spaceObject->setTrajectoryColor(trajectoryColor);
+        foreach (QSharedPointer<ScenarioAbstractTrajectoryType> trajectory, trajectoryList)
+        {
+            QList<double> sampleTimes;
+            QList<sta::StateVector> samples;
+
+            if (dynamic_cast<ScenarioEntryArcType*>(trajectory.data()))
+            {
+                ScenarioEntryArcType* entry = dynamic_cast<ScenarioEntryArcType*>(trajectory.data());
+                PropagateEntryTrajectory(entryVehicle, entry, sampleTimes, samples, feedback);
+                if (feedback.status() != PropagationFeedback::PropagationOk)
+                {
+                    // An error occurred during propagate. Clean up everything and return immediately.
+                    // The current propagation results will not be replaced.
+                    if (feedback.status() == PropagationFeedback::PropagationCanceled)
+                    {
+                        //QMessageBox::information(this, tr("Canceled"), tr("Propagation was canceled."));
+                    }
+                    else
+                    {
+                        //QMessageBox::critical(this, tr("Propagation Error"), tr("Error during propagation: %1").arg(feedback.errorString()));
+                    }
+
+                    delete propScenario;
+                    return;
+                }
+
+                QString centralBodyName = entry->Environment()->CentralBody()->Name();
+                StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+                if (!centralBody)
+                {
+                    //QMessageBox::warning(this, tr("Propagation Error"), tr("Unrecognized body '%1'").arg(centralBodyName));
+                    continue;
+                }
+
+                QString coordSysName = entry->InitialPosition()->CoordinateSystem();
+                sta::CoordinateSystem coordSys(coordSysName);
+                if (coordSys.type() == sta::COORDSYS_INVALID)
+                {
+                    //QMessageBox::warning(this, tr("Propagation Error"), tr("Unrecognized coordinate system '%1'").arg(coordSysName));
+                    continue;
+                }
+                MissionArc* arc = new MissionArc(centralBody,
+                                                 coordSys,
+                                                 sampleTimes,
+                                                 samples);
+                // Loading arc color, name, and model
+                arc->setArcName(entry->ElementIdentifier()->Name());
+                QString arcColorName = entry->ElementIdentifier()->colorName();
+                MissionsDefaults myMissionDefaults;
+                QColor trajectoryColor = myMissionDefaults.missionArcColorFromQt(arcColorName);
                 arc->setArcTrajectoryColor(trajectoryColor);
                 arc->setModelName(entry->ElementIdentifier()->modelName());
                 spaceObject->addMissionArc(arc);
@@ -466,7 +501,7 @@ void scenarioPropagatorReEntryVehicle(ScenarioREV* entryVehicle, PropagationFeed
 
 
 
-void scenarioPropagatorLaunchVehicle(ScenarioLV* vehicle,  QColor trajectoryColor, PropagationFeedback feedback, PropagatedScenario* propScenario, QWidget* parent)
+void scenarioPropagatorLaunchVehicle(ScenarioLV* vehicle,  QColor trajectoryColor, PropagationFeedback& feedback, PropagatedScenario* propScenario)
 {
     // Nothing for STA
 }
@@ -474,7 +509,7 @@ void scenarioPropagatorLaunchVehicle(ScenarioLV* vehicle,  QColor trajectoryColo
 
 
 
-void scenarioPropagatorGroundElement(ScenarioGroundStation* groundElement, PropagationFeedback feedback, PropagatedScenario* propScenario, QWidget* parent)
+void scenarioPropagatorGroundElement(ScenarioGroundStation* groundElement, PropagationFeedback& feedback, PropagatedScenario* propScenario, QWidget* parent)
 {
     QSharedPointer<ScenarioAbstract3DOFPositionType> position = groundElement->Location()->Abstract3DOFPosition();
     QSharedPointer<ScenarioGroundPositionType> groundPosition = qSharedPointerDynamicCast<ScenarioGroundPositionType>(position);
@@ -510,7 +545,34 @@ void scenarioPropagatorGroundElement(ScenarioGroundStation* groundElement, Propa
 }
 
 
-void scenarioPropagatorPoint(ScenarioPoint* aPoint, PropagationFeedback feedback, PropagatedScenario* propScenario, QWidget* parent)
+
+
+void scenarioPropagatorGroundElement(ScenarioGroundStation* groundElement,  QColor trajectoryColor, PropagationFeedback& feedback, PropagatedScenario* propScenario)
+{
+    QSharedPointer<ScenarioAbstract3DOFPositionType> position = groundElement->Location()->Abstract3DOFPosition();
+    QSharedPointer<ScenarioGroundPositionType> groundPosition = qSharedPointerDynamicCast<ScenarioGroundPositionType>(position);
+
+    if (!groundPosition.isNull())
+    {
+        StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(groundElement->Location()->CentralBody());
+        if (centralBody)
+        {
+            GroundObject* groundObject = new GroundObject();
+
+            groundObject->name = groundElement->Name();
+            groundObject->centralBody = centralBody;
+            groundObject->longitude = groundPosition->longitude();
+            groundObject->latitude = groundPosition->latitude();
+            groundObject->altitude = groundPosition->altitude();
+
+            propScenario->addGroundObject(groundObject);
+        }
+    }
+}
+
+
+
+void scenarioPropagatorPoint(ScenarioPoint* aPoint,  QColor trajectoryColor, PropagationFeedback& feedback, PropagatedScenario* propScenario)
 {
     QSharedPointer<ScenarioAbstract3DOFPositionType> position = aPoint->Location()->Abstract3DOFPosition();
     QSharedPointer<ScenarioGroundPositionType> groundPosition = qSharedPointerDynamicCast<ScenarioGroundPositionType>(position);
@@ -534,3 +596,27 @@ void scenarioPropagatorPoint(ScenarioPoint* aPoint, PropagationFeedback feedback
 
 }
 
+
+void scenarioPropagatorPoint(ScenarioPoint* aPoint,  PropagationFeedback& feedback, PropagatedScenario* propScenario)
+{
+    QSharedPointer<ScenarioAbstract3DOFPositionType> position = aPoint->Location()->Abstract3DOFPosition();
+    QSharedPointer<ScenarioGroundPositionType> groundPosition = qSharedPointerDynamicCast<ScenarioGroundPositionType>(position);
+    if (!groundPosition.isNull())
+    {
+        StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(aPoint->Location()->CentralBody());
+
+        if (centralBody)
+        {
+            GroundObject* groundObject = new GroundObject();
+
+            groundObject->name = aPoint->Name();
+            groundObject->centralBody = centralBody;
+            groundObject->longitude = groundPosition->longitude();
+            groundObject->latitude = groundPosition->latitude();
+            groundObject->altitude = groundPosition->altitude();
+
+            propScenario->addGroundObject(groundObject);
+        }
+    }
+
+}

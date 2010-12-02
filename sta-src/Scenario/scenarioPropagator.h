@@ -35,10 +35,19 @@
 #include <QColor>
 
 
-void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback feedback, PropagatedScenario* propScenario, QWidget* parent);
-void scenarioPropagatorReEntryVehicle(ScenarioREV* vehicle, PropagationFeedback feedback, PropagatedScenario* propScenario, QWidget* parent);
-void scenarioPropagatorGroundElement(ScenarioGroundStation* groundElement, PropagationFeedback feedback, PropagatedScenario* propScenario, QWidget* parent);
-void scenarioPropagatorPoint(ScenarioPoint* aPoint,  PropagationFeedback feedback, PropagatedScenario* propScenario, QWidget* parent);
+void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedback, PropagatedScenario* propScenario, QWidget* parent);
+void scenarioPropagatorReEntryVehicle(ScenarioREV* vehicle, PropagationFeedback& feedback, PropagatedScenario* propScenario, QWidget* parent);
+void scenarioPropagatorGroundElement(ScenarioGroundStation* groundElement, PropagationFeedback& feedback, PropagatedScenario* propScenario, QWidget* parent);
+void scenarioPropagatorPoint(ScenarioPoint* aPoint,  PropagationFeedback& feedback, PropagatedScenario* propScenario);
+
+
+void scenarioPropagatorReEntryVehicle(ScenarioREV* vehicle,  QColor trajectoryColor, PropagationFeedback& feedback, PropagatedScenario* propScenario);
+
+void scenarioPropagatorLaunchVehicle(ScenarioLV* entryVehicle,  QColor trajectoryColor, PropagationFeedback& feedback, PropagatedScenario* propScenario);
+
+void scenarioPropagatorGroundElement(ScenarioGroundStation* groundElement,  QColor trajectoryColor, PropagationFeedback& feedback, PropagatedScenario* propScenario);
+
+void scenarioPropagatorPoint(ScenarioPoint* aPoint,  QColor trajectoryColor, PropagationFeedback& feedback, PropagatedScenario* propScenario);
 
 
 #endif // _STA_SCENARIO_H_
