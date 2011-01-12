@@ -174,7 +174,9 @@ int main(int argc, char *argv[])
     }
     else
     {
-        qDebug() << "Failed to initialize SPICE system.";
+        qDebug() << "SPICE kernels for solar system ephemeris not located or incomplete. JPL DE405 ephemeris";
+        qDebug() << "will be instead. This is only a problem when analyzing missions to natural satellites";
+        qDebug() << "other than the Moon.";
 
         QString ephemerisFilename("ephemerides/de406_1800-2100.dat");
         QFile ephemerisFile(ephemerisFilename);
