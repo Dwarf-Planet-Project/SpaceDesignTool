@@ -1466,21 +1466,48 @@ void ScenarioTree::removeItem(QTreeWidgetItem* item)
   */
 void ScenarioTree::removeSelection()
 {
-#if OLDSCENARIO
     QModelIndexList selected = selectionModel()->selectedRows();
+    QTreeWidgetItem* item = NULL;
+    QModelIndex selectedIndex;
     if (!selected.isEmpty())
     {
-        QModelIndex index = selected.first();
-        QTreeWidgetItem* item = static_cast<QTreeWidgetItem*>(selected.first().internalPointer());
-        QTreeWidgetItem* parentItem = static_cast<QTreeWidgetItem*>(index.parent().internalPointer());
-        if (!item || !parentItem)
-            return;
+        selectedIndex = selected.first();
+        item = static_cast<QTreeWidgetItem*>(selected.first().internalPointer());
+    }
 
-        ScenarioObject* parentObject = objectForItem(parentItem);
-        if (parentObject->removeChild(index.row()))
+    if (!item)
+    {
+        // Nothing selected, so nothing to do
+        return;
+    }
+
+    ScenarioObject* obj = selectedObject();
+    Q_ASSERT(obj != NULL);
+
+    QTreeWidgetItem* parentItem = item->parent();
+    ScenarioObject* parentObj = objectForItem(parentItem);
+
+    int childIndex = parentItem->indexOfChild(item);
+
+    if (childIndex >= 0)
+    {
+        // Only mission arcs and participants may be removed
+        bool removed = false;
+        if (dynamic_cast<SpaceScenario*>(parentObj))
         {
-            model()->removeRow(index.row(), index.parent());
+            dynamic_cast<SpaceScenario*>(parentObj)->AbstractParticipant().removeAt(childIndex);
+            removed = true;
+        }
+        else if (dynamic_cast<ScenarioTrajectoryPlan*>(parentObj))
+        {
+            dynamic_cast<ScenarioTrajectoryPlan*>(parentObj)->AbstractTrajectory().removeAt(childIndex);
+            removed = true;
+        }
+
+        if (removed)
+        {
+            model()->removeRow(selectedIndex.row(), selectedIndex.parent());
+            clearSelection();
         }
     }
-#endif
 }
