@@ -449,6 +449,8 @@ static QByteArray deltaVFragment(const char* name)
 {    
     MissionsDefaults myMissionDefaults;
     ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
+    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
 
     QDomDocument doc;
     return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
