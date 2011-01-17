@@ -1367,7 +1367,7 @@ MainWindow::setFullScreen3D(bool enable)
 {
     if (enable)
     {
-        m_savedWindowState = saveState();
+        m_savedWindowState = saveState(STA_MAIN_WINDOW_VERSION);
         foreach (QObject* obj, this->children())
         {
             QDockWidget* dockWidget = qobject_cast<QDockWidget*>(obj);
@@ -1511,7 +1511,15 @@ void MainWindow::writeSettings()
         settings.setValue("Size", size());
         settings.setValue("Pos", pos());
     }
-    settings.setValue("State", saveState(STA_MAIN_WINDOW_VERSION));
+
+    if (isFullScreen())
+    {
+        settings.setValue("State", m_savedWindowState);
+    }
+    else
+    {
+        settings.setValue("State", saveState(STA_MAIN_WINDOW_VERSION));
+    }
     settings.setValue("Fullscreen", isFullScreen());
     settings.endGroup();
 
