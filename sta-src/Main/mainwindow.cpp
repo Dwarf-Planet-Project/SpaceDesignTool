@@ -411,6 +411,59 @@ void MainWindow::on_actionNewScenario_triggered()
 }
 
 
+// Check to see whether the specified scenario object has central bodies
+// that are valid. Returns true if everything is OK, false if a
+// central body doesn't exist or doesn't have an ephemeris.
+//
+bool CheckCentralBodies(QSharedPointer<ScenarioObject> obj)
+{
+    foreach (QSharedPointer<ScenarioObject> child, obj->children())
+    {
+        if (!child.dynamicCast<ScenarioCentralBodyType>().isNull())
+        {
+            QSharedPointer<ScenarioCentralBodyType> centralBody = child.dynamicCast<ScenarioCentralBodyType>();
+            const StaBody* body = STA_SOLAR_SYSTEM->lookup(centralBody->Name());
+            if (!body)
+            {
+                // Unknown central body
+                QMessageBox::warning(NULL, "Invalid central body", QString("Scenario has an unknown central body '%1'").arg(centralBody->Name()));
+                return false;
+            }
+            else if (body->ephemeris() == NULL)
+            {
+                // No ephemeris
+                QMessageBox::warning(NULL, "Missing ephemeris", QString("Scenario requires ephemeris for body '%1', but this ephemeris is not loaded").arg(centralBody->Name()));
+                return false;
+            }
+        }
+
+        // Recursively check child objects
+        if (!CheckCentralBodies(child))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+// Check to see whether the specified scenario has central bodies
+// that are valid. Returns true if everything is OK, false if a
+// central body doesn't exist or doesn't have an ephemeris.
+bool CheckScenarioCentralBodies(const SpaceScenario* scenario)
+{
+    foreach (QSharedPointer<ScenarioParticipantType> participant, scenario->AbstractParticipant())
+    {
+        if (!CheckCentralBodies(participant))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 //////////////////////////////////////////////////  Action to open an existing scenario ///////////////////////////////////
 void MainWindow::on_actionOpenScenario_triggered()
 {
@@ -512,6 +565,14 @@ void MainWindow::on_actionOpenScenario_triggered()
                     QMessageBox::critical(this, tr("Scenario Load Error"), tr("Internal error (parser problem) occurred when loading space scenario."));
                     return;
                 }
+            }
+
+            // Make sure that the necessary solar system ephemerides are loaded. This check can
+            // fail if SPICE solar system kernels are unavailable and the scenario involves a natural
+            // satellite other than the Earth's moon.
+            if (!CheckScenarioCentralBodies(scenario))
+            {
+                return;
             }
 
             // TODO: Probably should just call setScenario() here.
