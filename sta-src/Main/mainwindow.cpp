@@ -1428,7 +1428,10 @@ MainWindow::setFullScreen3D(bool enable)
 {
     if (enable)
     {
+        // Keep track of the window state before switching to fullscreen
+        // mode.
         m_savedWindowState = saveState(STA_MAIN_WINDOW_VERSION);
+
         foreach (QObject* obj, this->children())
         {
             QDockWidget* dockWidget = qobject_cast<QDockWidget*>(obj);
@@ -1555,6 +1558,9 @@ void MainWindow::readSettings()
 }
 
 
+/** Save the position of the windows and dock items before exiting. They
+ *  will be restored the next time the user runs STA.
+ */
 void MainWindow::writeSettings()
 {
     QSettings settings;
@@ -1573,6 +1579,8 @@ void MainWindow::writeSettings()
         settings.setValue("Pos", pos());
     }
 
+    // If the user exists during fullscreen mode, save the window state
+    // that was active *before* switching to fullscreen
     if (isFullScreen())
     {
         settings.setValue("State", m_savedWindowState);

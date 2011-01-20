@@ -1493,6 +1493,8 @@ void ScenarioTree::removeSelection()
     {
         // Only mission arcs and participants may be removed
         bool removed = false;
+
+        // Remove the item from the scenario
         if (dynamic_cast<SpaceScenario*>(parentObj))
         {
             dynamic_cast<SpaceScenario*>(parentObj)->AbstractParticipant().removeAt(childIndex);
@@ -1504,6 +1506,10 @@ void ScenarioTree::removeSelection()
             removed = true;
         }
 
+        // If we successfully removed the item from the scenario, then we'll
+        // remove it from the view widget. A future project is to change the
+        // way the tree view works so that it automatically reflects changes
+        // in the scenario.
         if (removed)
         {
             model()->removeRow(selectedIndex.row(), selectedIndex.parent());
