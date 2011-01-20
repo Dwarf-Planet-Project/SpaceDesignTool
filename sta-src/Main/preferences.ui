@@ -107,6 +107,9 @@
         </item>
         <item row="2" column="1">
          <widget class="QCheckBox" name="cometsTrajectories">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Comets</string>
           </property>
@@ -114,6 +117,9 @@
         </item>
         <item row="3" column="1">
          <widget class="QCheckBox" name="asteroidsTrajectories">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Asteroids</string>
           </property>
@@ -189,6 +195,9 @@
         </item>
         <item row="2" column="1">
          <widget class="QCheckBox" name="cometsLabels">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Comets</string>
           </property>
@@ -196,6 +205,9 @@
         </item>
         <item row="3" column="1">
          <widget class="QCheckBox" name="asteroidsLabels">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Asteroids</string>
           </property>
@@ -391,6 +403,9 @@
         </item>
         <item row="2" column="1">
          <widget class="QCheckBox" name="nightLigfhts">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Night lights</string>
           </property>
@@ -426,6 +441,9 @@
         </item>
         <item row="2" column="3">
          <widget class="QCheckBox" name="fieldOfView">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Field of view</string>
           </property>
@@ -433,6 +451,9 @@
         </item>
         <item row="3" column="3">
          <widget class="QCheckBox" name="coordinateSystems">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Coordinate systems</string>
           </property>
@@ -457,7 +478,7 @@
       <rect>
        <x>56</x>
        <y>212</y>
-       <width>513</width>
+       <width>531</width>
        <height>26</height>
       </rect>
      </property>
@@ -518,12 +539,12 @@
        <widget class="QComboBox" name="comboBox3DVision">
         <item>
          <property name="text">
-          <string>Normal</string>
+          <string>None</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Cyan Red</string>
+          <string>Cyan-Red Anaglyph</string>
          </property>
          <property name="icon">
           <iconset resource="../../iconary/sta-icons.qrc">
@@ -532,7 +553,7 @@
         </item>
         <item>
          <property name="text">
-          <string>Red Cyan</string>
+          <string>Red-Cyan Anaglyph</string>
          </property>
          <property name="icon">
           <iconset resource="../../iconary/sta-icons.qrc">
@@ -541,7 +562,7 @@
         </item>
         <item>
          <property name="text">
-          <string>Green Magenta</string>
+          <string>Green-Magenta Anaglyph</string>
          </property>
          <property name="icon">
           <iconset resource="../../iconary/sta-icons.qrc">
@@ -550,7 +571,7 @@
         </item>
         <item>
          <property name="text">
-          <string>Magenta Green</string>
+          <string>Magenta-Green Anaglyph</string>
          </property>
          <property name="icon">
           <iconset resource="../../iconary/sta-icons.qrc">
