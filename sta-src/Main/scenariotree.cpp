@@ -1491,7 +1491,7 @@ void ScenarioTree::removeSelection()
 
     if (childIndex >= 0)
     {
-        // Only mission arcs and participants may be removed
+        // Only mission arcs, participants, and payloads may be removed
         bool removed = false;
 
         // Remove the item from the scenario
@@ -1503,6 +1503,11 @@ void ScenarioTree::removeSelection()
         else if (dynamic_cast<ScenarioTrajectoryPlan*>(parentObj))
         {
             dynamic_cast<ScenarioTrajectoryPlan*>(parentObj)->AbstractTrajectory().removeAt(childIndex);
+            removed = true;
+        }
+        else if (dynamic_cast<ScenarioPayloadSet*>(parentObj))
+        {
+            dynamic_cast<ScenarioPayloadSet*>(parentObj)->AbstractPayload().removeAt(childIndex);
             removed = true;
         }
 

@@ -1147,7 +1147,9 @@ void MainWindow::on_menuEdit_aboutToShow()
     if (m_scenarioView->m_scenarioTree)
     {
         ScenarioObject* obj = m_scenarioView->m_scenarioTree->selectedObject();
-        if (dynamic_cast<ScenarioParticipantType*>(obj) || dynamic_cast<ScenarioAbstractTrajectoryType*>(obj))
+        if (dynamic_cast<ScenarioParticipantType*>(obj) ||
+            dynamic_cast<ScenarioAbstractTrajectoryType*>(obj) ||
+            dynamic_cast<ScenarioAbstractPayloadType*>(obj))
         {
             actionCut->setEnabled(true);
         }
