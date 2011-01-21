@@ -2130,8 +2130,10 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
                 {
                     sensor->setFrustumShape(SensorVisualizer::Rectangular);
                 }
-                sensor->setFrustumAngles(toRadians(transmitter->Transmitter()->Coverage()->FrustumAngle1()),
-                                         toRadians(transmitter->Transmitter()->Coverage()->FrustumAngle2()));
+                // Note that the angles in the transmitter element are *half* angles, so they must be
+                // doubled in order to get the right result with the sensor visualizer.
+                sensor->setFrustumAngles(toRadians(transmitter->Transmitter()->Coverage()->FrustumAngle1() * 2.0),
+                                         toRadians(transmitter->Transmitter()->Coverage()->FrustumAngle2() * 2.0));
                 QColor sensorColor = spaceObj->mission().first()->arcTrajectoryColor();
                 sensor->setColor(Spectrum(sensorColor.redF(), sensorColor.greenF(), sensorColor.blueF()));
                 Quaterniond sensorRotation;
