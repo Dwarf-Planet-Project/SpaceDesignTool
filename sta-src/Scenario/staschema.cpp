@@ -2141,11 +2141,61 @@ QList<QSharedPointer<ScenarioObject> >ScenarioRadarProperties::children() const
 
 
 
+// ScenarioCoverageType
+ScenarioCoverageType::ScenarioCoverageType() :
+    m_FrustumAngle1(0.0),
+    m_FrustumAngle2(0.0)
+{
+}
+
+ScenarioCoverageType* ScenarioCoverageType::create(const QDomElement& e)
+{
+    ScenarioCoverageType* v;
+    {
+        v = new ScenarioCoverageType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioCoverageType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+        m_FrustumShape = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_FrustumAngle1 = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_FrustumAngle2 = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioCoverageType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:FrustumShape", m_FrustumShape));
+    e.appendChild(createSimpleElement(doc, "tns:FrustumAngle1", m_FrustumAngle1));
+    e.appendChild(createSimpleElement(doc, "tns:FrustumAngle2", m_FrustumAngle2));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioCoverageType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
 // ScenarioAntennaType
 ScenarioAntennaType::ScenarioAntennaType()
 {
     m_PointingDirection = QSharedPointer<ScenarioPointingDirection>(new ScenarioPointingDirection());
     m_EMproperties = QSharedPointer<ScenarioEMproperties>(new ScenarioEMproperties());
+    m_Coverage = QSharedPointer<ScenarioCoverageType>(new ScenarioCoverageType());
 }
 
 ScenarioAntennaType* ScenarioAntennaType::create(const QDomElement& e)
@@ -2169,6 +2219,9 @@ bool ScenarioAntennaType::load(const QDomElement& e, QDomElement* next)
     if (next->tagName() == "tns:EMproperties")
         m_EMproperties = QSharedPointer<ScenarioEMproperties>(ScenarioEMproperties::create(*next));
     *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:Coverage")
+        m_Coverage = QSharedPointer<ScenarioCoverageType>(ScenarioCoverageType::create(*next));
+    *next = next->nextSiblingElement();
     return true;
 }
 
@@ -2187,6 +2240,12 @@ QDomElement ScenarioAntennaType::toDomElement(QDomDocument& doc, const QString& 
         QDomElement child = m_EMproperties->toDomElement(doc, tagName);
         e.appendChild(child);
     }
+    if (!m_Coverage.isNull())
+    {
+        QString tagName = "Coverage";
+        QDomElement child = m_Coverage->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
     return e;
 }
 
@@ -2195,6 +2254,7 @@ QList<QSharedPointer<ScenarioObject> >ScenarioAntennaType::children() const
     QList<QSharedPointer<ScenarioObject> > children;
     if (!m_PointingDirection.isNull()) children << m_PointingDirection;
     if (!m_EMproperties.isNull()) children << m_EMproperties;
+    if (!m_Coverage.isNull()) children << m_Coverage;
     return children;
 }
 
@@ -12745,6 +12805,11 @@ QDomElement CreateEulerBIElement(ScenarioEulerBIType* e, QDomDocument& doc)
 QDomElement CreateState12DOFElement(ScenarioState12DOF* e, QDomDocument& doc)
 {
     return e->toDomElement(doc, "State12DOF");
+}
+
+QDomElement CreateCoverageElement(ScenarioCoverageType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "Coverage");
 }
 
 QDomElement CreateEulerBLVLHElement(ScenarioEulerBLVLHType* e, QDomDocument& doc)

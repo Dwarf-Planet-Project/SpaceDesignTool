@@ -177,7 +177,7 @@
        <rect>
         <x>4</x>
         <y>24</y>
-        <width>221</width>
+        <width>282</width>
         <height>99</height>
        </rect>
       </property>
@@ -280,7 +280,7 @@
        <rect>
         <x>4</x>
         <y>24</y>
-        <width>250</width>
+        <width>253</width>
         <height>72</height>
        </rect>
       </property>
@@ -586,7 +586,7 @@
       </rect>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="CircularPage">
       <widget class="QWidget" name="layoutWidget">
@@ -690,7 +690,7 @@
       <rect>
        <x>168</x>
        <y>12</y>
-       <width>226</width>
+       <width>227</width>
        <height>95</height>
       </rect>
      </property>
@@ -778,11 +778,6 @@
             <height>30</height>
            </size>
           </property>
-          <item>
-           <property name="text">
-            <string>Circular</string>
-           </property>
-          </item>
           <item>
            <property name="text">
             <string>Rectangular</string>

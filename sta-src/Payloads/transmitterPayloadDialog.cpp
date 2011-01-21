@@ -108,6 +108,20 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* transm
     tilt=tilt*RAD2DEG;
     TiltLineEdit->setText(QString::number(tilt));
 
+    double frustumAngle1 = transmitterPayload->Transmitter()->Coverage()->FrustumAngle1();
+    double frustumAngle2 = transmitterPayload->Transmitter()->Coverage()->FrustumAngle2();
+    QString frustumShape = transmitterPayload->Transmitter()->Coverage()->FrustumShape().toLower();
+    HorAngleLineEdit->setText(QString::number(frustumAngle1));
+    VertAngleLineEdit->setText(QString::number(frustumAngle2));
+    if (frustumShape == "ellipse")
+    {
+        ConeShapeComboBox->setCurrentIndex(1);
+    }
+    else
+    {
+        ConeShapeComboBox->setCurrentIndex(0);
+    }
+
     double frequency=transmitterPayload->Budget()->FrequencyBand();
     frequency=frequency/1000000000;//from Hz to GHz
     FrequencyLineEdit->setText(QString::number(frequency));//This is the frequency taken from the budget!!
@@ -256,6 +270,18 @@ bool transmitterPayloadDialog::saveValues(ScenarioTransmitterPayloadType* transm
         transmitterPayload->Transmitter()->EMproperties()->setBeamType("Omni-directional");
     }
 
+    double frustumAngle1 = HorAngleLineEdit->text().toDouble();
+    double frustumAngle2 = VertAngleLineEdit->text().toDouble();
+    transmitterPayload->Transmitter()->Coverage()->setFrustumAngle1(frustumAngle1);
+    transmitterPayload->Transmitter()->Coverage()->setFrustumAngle2(frustumAngle2);
+    if (ConeShapeComboBox->currentIndex() == 0)
+    {
+        transmitterPayload->Transmitter()->Coverage()->setFrustumShape("rectangle");
+    }
+    else
+    {
+        transmitterPayload->Transmitter()->Coverage()->setFrustumShape("ellipse");
+    }
 
 
     return true;

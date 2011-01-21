@@ -67,6 +67,7 @@ class ScenarioTelescopeType;
 class ScenarioOpticalProperties;
 class ScenarioRadarType;
 class ScenarioRadarProperties;
+class ScenarioCoverageType;
 class ScenarioAntennaType;
 class ScenarioPointingDirection;
 class ScenarioEMproperties;
@@ -1535,6 +1536,38 @@ private:
 };
 
 
+// ScenarioCoverageType
+class ScenarioCoverageType : public ScenarioObject
+{
+public:
+    ScenarioCoverageType();
+    static ScenarioCoverageType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "CoverageType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QString FrustumShape() const
+    { return m_FrustumShape; }
+    void setFrustumShape(QString FrustumShape)
+    { m_FrustumShape = FrustumShape; }
+    double FrustumAngle1() const
+    { return m_FrustumAngle1; }
+    void setFrustumAngle1(double FrustumAngle1)
+    { m_FrustumAngle1 = FrustumAngle1; }
+    double FrustumAngle2() const
+    { return m_FrustumAngle2; }
+    void setFrustumAngle2(double FrustumAngle2)
+    { m_FrustumAngle2 = FrustumAngle2; }
+
+private:
+    QString m_FrustumShape;
+    double m_FrustumAngle1;
+    double m_FrustumAngle2;
+};
+
+
 // ScenarioAntennaType
 class ScenarioAntennaType : public ScenarioObject
 {
@@ -1555,10 +1588,15 @@ public:
     { return m_EMproperties; }
     void setEMproperties(QSharedPointer<ScenarioEMproperties> EMproperties)
     { m_EMproperties = EMproperties; }
+    QSharedPointer<ScenarioCoverageType> Coverage() const
+    { return m_Coverage; }
+    void setCoverage(QSharedPointer<ScenarioCoverageType> Coverage)
+    { m_Coverage = Coverage; }
 
 private:
     QSharedPointer<ScenarioPointingDirection> m_PointingDirection;
     QSharedPointer<ScenarioEMproperties> m_EMproperties;
+    QSharedPointer<ScenarioCoverageType> m_Coverage;
 };
 
 
@@ -7768,6 +7806,7 @@ QDomElement CreateOutputFilesElement(ScenarioOutputFiles* e, QDomDocument& doc);
 QDomElement CreateExternalElement(ScenarioExternalType* e, QDomDocument& doc);
 QDomElement CreateEulerBIElement(ScenarioEulerBIType* e, QDomDocument& doc);
 QDomElement CreateState12DOFElement(ScenarioState12DOF* e, QDomDocument& doc);
+QDomElement CreateCoverageElement(ScenarioCoverageType* e, QDomDocument& doc);
 QDomElement CreateEulerBLVLHElement(ScenarioEulerBLVLHType* e, QDomDocument& doc);
 QDomElement CreateLaunchPadElement(ScenarioLaunchPad* e, QDomDocument& doc);
 QDomElement CreateGroundStationElement(ScenarioGroundStation* e, QDomDocument& doc);

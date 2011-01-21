@@ -479,6 +479,10 @@ static QByteArray transmitterPayloadFragment(const char* name)
     transmitterPayload.Transmitter()->EMproperties()->setPolarisation("Linear");
     transmitterPayload.Transmitter()->EMproperties()->setBandWidth(32000000.0);//in Hz
 
+    transmitterPayload.Transmitter()->Coverage()->setFrustumShape("Ellipse");
+    transmitterPayload.Transmitter()->Coverage()->setFrustumAngle1(5.0);
+    transmitterPayload.Transmitter()->Coverage()->setFrustumAngle1(5.0);
+
     transmitterPayload.Transmitter()->setTransmittingPower(1000.0);
     transmitterPayload.Budget()->setFrequencyBand(14500000000.0);//It is in hertz!!
 
@@ -509,6 +513,10 @@ static QByteArray receiverPayloadFragment(const char* name)
     receiverPayload.Receiver()->EMproperties()->setTiltAngle(0);
     receiverPayload.Receiver()->EMproperties()->setPolarisation("Linear");
     receiverPayload.Receiver()->EMproperties()->setBandWidth(32000000.0);//in Hz
+
+    receiverPayload.Receiver()->Coverage()->setFrustumShape("Ellipse");
+    receiverPayload.Receiver()->Coverage()->setFrustumAngle1(5.0);
+    receiverPayload.Receiver()->Coverage()->setFrustumAngle1(5.0);
 
     receiverPayload.Receiver()->setDepointingLossRx(0);
     receiverPayload.Receiver()->setFeederLossRx(0);

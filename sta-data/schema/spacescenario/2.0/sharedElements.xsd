@@ -457,6 +457,15 @@
 		</sequence>
 	</complexType>
 
+    <complexType name="CoverageType">
+      <sequence>
+        <element name="FrustumShape" type="string"></element>
+        <element name="FrustumAngle1" type="double"></element>
+        <element name="FrustumAngle2" type="double"></element>
+      </sequence>
+    </complexType>
+
+    <element name="Coverage" type="tns:CoverageType"></element>
 
 	<element name="Antenna" type="tns:AntennaType" abstract="true"></element>
 
@@ -492,6 +501,7 @@
 					</sequence>
 				</complexType>
 			</element>
+            <element name="Coverage" type="tns:CoverageType"></element>
 		</sequence>
 	</complexType>
 

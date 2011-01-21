@@ -2117,11 +2117,21 @@ ThreeDView::createSpaceObject(const SpaceObject* spaceObj)
             {
                 // Add a visualizer for the sensor FOV
                 SensorVisualizer* sensor = new SensorVisualizer();
-                sensor->setFrustumAngles(toRadians(5.0), toRadians(5.0));
                 sensor->setRange(35000.0);
                 sensor->setSource(body);
                 sensor->setOpacity(0.3f);
-                sensor->setFrustumShape(SensorVisualizer::Elliptical);
+
+                // Set the frustum shape from the transmitter coverage information
+                if (transmitter->Transmitter()->Coverage()->FrustumShape().toLower() == "ellipse")
+                {
+                    sensor->setFrustumShape(SensorVisualizer::Elliptical);
+                }
+                else
+                {
+                    sensor->setFrustumShape(SensorVisualizer::Rectangular);
+                }
+                sensor->setFrustumAngles(toRadians(transmitter->Transmitter()->Coverage()->FrustumAngle1()),
+                                         toRadians(transmitter->Transmitter()->Coverage()->FrustumAngle2()));
                 QColor sensorColor = spaceObj->mission().first()->arcTrajectoryColor();
                 sensor->setColor(Spectrum(sensorColor.redF(), sensorColor.greenF(), sensorColor.blueF()));
                 Quaterniond sensorRotation;
