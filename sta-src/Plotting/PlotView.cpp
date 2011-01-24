@@ -119,6 +119,16 @@ void
 PlotView::paintEvent(QPaintEvent* /* event */)
 {
     QPainter painter(this);
+    paint(painter);
+}
+
+
+/** Draw the contents of the plot using the specified painter.
+  * The paint device could be the screen, printer, or SVG generator.
+  */
+void
+PlotView::paint(QPainter& painter)
+{
 
     painter.setRenderHint(QPainter::Antialiasing);
     painter.fillRect(0, 0, width(), height(), Qt::white);

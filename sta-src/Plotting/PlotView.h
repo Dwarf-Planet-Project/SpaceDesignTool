@@ -92,6 +92,7 @@ public:
     void setHorizontalScale(const PlotScale& scale);
     void setVerticalScale(const PlotScale& scale);
 
+    void paint(QPainter& painter);
 
 public slots:
     void setTitle(const QString& title);

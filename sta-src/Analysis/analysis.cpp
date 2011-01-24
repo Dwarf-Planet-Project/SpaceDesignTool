@@ -57,6 +57,7 @@
 #include <QDebug>
 #include <QGLWidget>
 #include <QMessageBox>
+#include <QPrinter>
 
 
 
@@ -5281,19 +5282,32 @@ void analysis::DisableUnavailableOptions()
 
 void analysis::saveImage2D()
 {
-
     QPixmap image = QPixmap::grabWindow(plotView2D->winId());
     QString fileName = QFileDialog::getSaveFileName(plotView2D,
-                            tr("Save Image"),
-                            "",
-                            tr("Images (*.png  *.jpg *.tif)"));
+                                                    tr("Save Image"),
+                                                    "",
+                                                    tr("Images (*.png  *.jpg *.tif *.pdf)"));
     if (!fileName.isEmpty())
     {
-    bool ok = image.save(fileName);
-    if (!ok)
-    {
-        QMessageBox::warning(this, tr("Save error"), tr("Error saving image to %1").arg(fileName));
-    }
+        if (fileName.toLower().endsWith(".pdf"))
+        {
+            // Save as a PDF file by printing to a file
+            QPrinter pdfPrinter;
+            pdfPrinter.setOrientation(QPrinter::Landscape);
+            pdfPrinter.setOutputFileName(fileName);
+            pdfPrinter.setOutputFormat(QPrinter::PdfFormat);
+
+            QPainter pdfPainter(&pdfPrinter);
+            this->plotView2D->paint(pdfPainter);
+        }
+        else
+        {
+            bool ok = image.save(fileName);
+            if (!ok)
+            {
+                QMessageBox::warning(this, tr("Save error"), tr("Error saving image to %1").arg(fileName));
+            }
+        }
     }
 }
 
