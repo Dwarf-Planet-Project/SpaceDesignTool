@@ -130,5 +130,8 @@
         <file>STAModelsIcons-SOYUZ.png</file>
         <file>STAModelsIcons-GROUNDSTATION.png</file>
         <file>STAModelsIcons-POINT.png</file>
+        <file>ComboEarthMoon.png</file>
+        <file>ComboInnerSolarSystem.png</file>
+        <file>ComboOuterSolarSystem.png</file>
     </qresource>
 </RCC>
