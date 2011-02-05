@@ -269,8 +269,8 @@ MainWindow::MainWindow(QWidget *parent)	:
 
     connect(actionCut, SIGNAL(triggered()), m_scenarioView->m_scenarioTree, SLOT(removeSelection()));
 
-    setUnifiedTitleAndToolBarOnMac(true);
-    //setUnifiedTitleAndToolBarOnMac(false);
+    //setUnifiedTitleAndToolBarOnMac(true);
+    setUnifiedTitleAndToolBarOnMac(false);
     //setAttribute(Qt::WA_DeleteOnClose);
 
     // Next line patched by Guillermo with the 'Cambrian' logo
@@ -400,6 +400,7 @@ void MainWindow::on_actionNewScenario_triggered()
     m_scenarioView->setFocus();
 
     // Activating now the pull down menus
+
     actionPropagate_Scenario->setEnabled(m_scenario != NULL);
     actionPropagateCoverage->setEnabled(m_scenario != NULL);
     actionSat_to_Sat->setEnabled(m_scenario != NULL);
@@ -407,6 +408,7 @@ void MainWindow::on_actionNewScenario_triggered()
     actionSystem_Engineering->setEnabled(m_scenario != NULL);
     //actionAnalyse->setEnabled(m_scenario != NULL);
     actionAnalyse->setDisabled(m_scenario != NULL);  // Do not enable analysis here. Do it after propagation
+
 
 }
 
@@ -1039,6 +1041,7 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
 {
     if (!scenario())
     {
+        qDebug() << "No scenario!!";
         return;
     }
 
@@ -1927,10 +1930,15 @@ void MainWindow::openFileFromAEvent(const QString& fileName)
 			m_scenarioView->m_scenarioTree->update();
 			m_scenarioView->setFocus();
 			m_scenarioView->m_scenarioTree->setFocus();
+
+            setScenario(scenario);
 		}
     }
 
     settings.endGroup();
+
+
+    //qDebug() << "Activating menus" << actionPropagate_Scenario->isEnabled();
 
     // Activating now the pull down menus
     actionPropagate_Scenario->setEnabled(m_scenario != NULL);
@@ -1942,7 +1950,7 @@ void MainWindow::openFileFromAEvent(const QString& fileName)
 
 }
 
-
+///////////////////////////////////  Create a new scenario ////////////////////////////////////////////
 void MainWindow::fileNew()
 {
     SpaceScenario* scenario = new SpaceScenario();
