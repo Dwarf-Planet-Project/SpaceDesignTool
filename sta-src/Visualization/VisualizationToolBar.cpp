@@ -265,10 +265,12 @@ VisualizationToolBar::configureFor3DView(ViewActionGroup* viewActions)
     clear();
 
     QAction* widgetAction = addWidget(m_bodySelectCombo);
-    widgetAction->setVisible(false);
+    widgetAction->setVisible(true);
+
 
     addAction(m_cameraAction);
     configureCameraMenu(NULL);
+    addSeparator();  // Guillermo says: in windows, it looks better to be separated from the combobox
 
     // For now, omit observer frame menu; this function is handled in a more
     // obvious way via the context menu.
@@ -315,8 +317,9 @@ VisualizationToolBar::configureFor3DView(ViewActionGroup* viewActions)
     addAction(m_equatorAction);
     addAction(m_sensorFovsAction);
 
-    addSeparator();
+
     addAction(m_saveImageAction);
+    addSeparator();  // Guillermo
 
     addViewSelectActions(viewActions->viewSelectGroup());
 }
@@ -354,9 +357,10 @@ VisualizationToolBar::configureCameraMenu(const PropagatedScenario* scenario)
 {
     m_cameraAction->menu()->clear();
 
-    createCameraMenuAction(tr("Earth"),  ":/icons/ComboEarth.png", "Earth");
-    createCameraMenuAction(tr("Moon"),   ":/icons/ComboMoon.png", "Moon");
-    createCameraMenuAction(tr("Earth-Moon System"), "", "Earth-Moon");
+    // Next lines patched by Guillermo to avoid duplication if planets on the 3D bar
+    //createCameraMenuAction(tr("Earth"),  ":/icons/ComboEarth.png", "Earth");
+    //createCameraMenuAction(tr("Moon"),   ":/icons/ComboMoon.png", "Moon");
+    createCameraMenuAction(tr("Earth-Moon System"), ":/icons/ComboEarthMoon.png", "Earth-Moon");
 
     if (scenario != NULL && !scenario->spaceObjects().isEmpty())
     {
@@ -367,26 +371,27 @@ VisualizationToolBar::configureCameraMenu(const PropagatedScenario* scenario)
         }
     }
 
+    // Next lines patched by Guillermo to avoid duplication if planets on the 3D bar
     m_cameraAction->menu()->addSeparator();
-    createCameraMenuAction(tr("Inner Solar System"), "", "Inner Solar System");
-    createCameraMenuAction(tr("Outer Solar System"), "", "Outer Solar System");
+    createCameraMenuAction(tr("Inner Solar System"), ":/icons/ComboInnerSolarSystem.png", "Inner Solar System");
+    createCameraMenuAction(tr("Outer Solar System"), ":/icons/ComboOuterSolarSystem.png", "Outer Solar System");
+    //m_cameraAction->menu()->addSeparator();
+    //createCameraMenuAction(tr("Mercury"), ":/icons/ComboMercury.png", "Mercury");
+    //createCameraMenuAction(tr("Venus"),   ":/icons/ComboVenus.png", "Venus");
+    //createCameraMenuAction(tr("Mars"),    ":/icons/ComboMars.png", "Mars");
+    //createCameraMenuAction(tr("Jupiter"), ":/icons/ComboJupiter.png", "Jupiter");
+    //createCameraMenuAction(tr("Saturn"),  ":/icons/ComboSaturn.png", "Saturn");
+    //createCameraMenuAction(tr("Uranus"),  ":/icons/ComboUranus.png", "Uranus");
+    //createCameraMenuAction(tr("Neptune"), ":/icons/ComboNeptune.png", "Neptune");
+    //createCameraMenuAction(tr("Pluto"),   ":/icons/ComboPluto.png", "Pluto");
     m_cameraAction->menu()->addSeparator();
-    createCameraMenuAction(tr("Mercury"), ":/icons/ComboMercury.png", "Mercury");
-    createCameraMenuAction(tr("Venus"),   ":/icons/ComboVenus.png", "Venus");
-    createCameraMenuAction(tr("Mars"),    ":/icons/ComboMars.png", "Mars");
-    createCameraMenuAction(tr("Jupiter"), ":/icons/ComboJupiter.png", "Jupiter");
-    createCameraMenuAction(tr("Saturn"),  ":/icons/ComboSaturn.png", "Saturn");
-    createCameraMenuAction(tr("Uranus"),  ":/icons/ComboUranus.png", "Uranus");
-    createCameraMenuAction(tr("Neptune"), ":/icons/ComboNeptune.png", "Neptune");
-    createCameraMenuAction(tr("Pluto"),   ":/icons/ComboPluto.png", "Pluto");
+    createCameraMenuAction(tr("Jupiter System"), ":/icons/ComboJupiter.png", "jupiter system");
+    createCameraMenuAction(tr("Saturn System"), ":/icons/ComboSaturn.png", "saturn system");
     m_cameraAction->menu()->addSeparator();
-    createCameraMenuAction(tr("Jupiter System"), "", "jupiter system");
-    createCameraMenuAction(tr("Saturn System"), "", "saturn system");
-    m_cameraAction->menu()->addSeparator();
-    createCameraMenuAction(tr("Io"),       ":/icons/ComboIo.png", "Io");
-    createCameraMenuAction(tr("Europa"),   ":/icons/ComboEuropa.png", "Europa");
-    createCameraMenuAction(tr("Ganymede"), ":/icons/ComboGanymede.png", "Ganymede");
-    createCameraMenuAction(tr("Callisto"), ":/icons/ComboCallisto.png", "Callisto");
+    //createCameraMenuAction(tr("Io"),       ":/icons/ComboIo.png", "Io");
+    //createCameraMenuAction(tr("Europa"),   ":/icons/ComboEuropa.png", "Europa");
+    //createCameraMenuAction(tr("Ganymede"), ":/icons/ComboGanymede.png", "Ganymede");
+    //createCameraMenuAction(tr("Callisto"), ":/icons/ComboCallisto.png", "Callisto");
 }
 
 
