@@ -77,7 +77,7 @@
 			</array>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
-				<string>stas</string>
+				<string>staa</string>
 			</array>
 			<key>NSDocumentClass</key>
 			<string>Document</string>
@@ -95,7 +95,7 @@
 			</array>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
-				<string>stas</string>
+				<string>stad</string>
 			</array>
 			<key>NSDocumentClass</key>
 			<string>Document</string>
@@ -113,7 +113,7 @@
 			</array>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
-				<string>stas</string>
+				<string>stam</string>
 			</array>
 			<key>NSDocumentClass</key>
 			<string>Document</string>
@@ -131,7 +131,7 @@
 			</array>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
-				<string>stas</string>
+				<string>stap</string>
 			</array>
 			<key>NSDocumentClass</key>
 			<string>Document</string>
