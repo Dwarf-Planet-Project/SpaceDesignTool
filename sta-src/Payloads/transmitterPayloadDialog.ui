@@ -165,7 +165,7 @@
       <rect>
        <x>256</x>
        <y>28</y>
-       <width>233</width>
+       <width>251</width>
        <height>171</height>
       </rect>
      </property>
@@ -175,83 +175,92 @@
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>4</x>
-        <y>24</y>
-        <width>282</width>
-        <height>99</height>
+        <x>6</x>
+        <y>26</y>
+        <width>229</width>
+        <height>91</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_6">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_4">
-           <item>
-            <widget class="QLabel" name="EfficiencyLabel">
-             <property name="text">
-              <string>Efficiency [%]</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="FrequencyLabel">
-             <property name="text">
-              <string>Frequency [GHz]</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="TypeBeamLabel">
-             <property name="text">
-              <string>Type of beam</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          <widget class="QLabel" name="EfficiencyLabel">
+           <property name="text">
+            <string>Efficiency [%]</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_3">
+          <widget class="QLabel" name="FrequencyLabel">
+           <property name="text">
+            <string>Frequency [GHz]</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="TypeBeamLabel">
+           <property name="text">
+            <string>Type of beam</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QLineEdit" name="EfficiencyLineEdit">
+           <property name="maximumSize">
+            <size>
+             <width>105</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="FrequencyLineEdit">
+           <property name="maximumSize">
+            <size>
+             <width>105</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="TypeBeamComboBox">
+           <property name="maximumSize">
+            <size>
+             <width>110</width>
+             <height>16777215</height>
+            </size>
+           </property>
            <item>
-            <widget class="QLineEdit" name="EfficiencyLineEdit">
-             <property name="text">
-              <string>0</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
+            <property name="text">
+             <string>Parabolic</string>
+            </property>
            </item>
-           <item>
-            <widget class="QLineEdit" name="FrequencyLineEdit">
-             <property name="text">
-              <string>0</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="TypeBeamComboBox">
-             <item>
-              <property name="text">
-               <string>Parabolic</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Omni-directional</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-          </layout>
+          </widget>
          </item>
         </layout>
        </item>

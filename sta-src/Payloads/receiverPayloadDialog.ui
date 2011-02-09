@@ -48,6 +48,9 @@
    </property>
   </widget>
   <widget class="QTabWidget" name="tabWidget">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -81,76 +84,90 @@
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>20</x>
+        <x>10</x>
         <y>40</y>
-        <width>221</width>
-        <height>131</height>
+        <width>251</width>
+        <height>90</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
+      <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout">
-           <item>
-            <widget class="QRadioButton" name="GainMaxRadioButton">
-             <property name="text">
-              <string>Gain Max. [dBi]</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-             <property name="autoRepeat">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QRadioButton" name="DiameterRadioButton">
-             <property name="text">
-              <string>Diameter [m]</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QRadioButton" name="BeamWidthRadioButton">
-             <property name="text">
-              <string>Beamwidth [deg]</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          <widget class="QRadioButton" name="GainMaxRadioButton">
+           <property name="text">
+            <string>Gain Max. [dBi]</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+           <property name="autoRepeat">
+            <bool>false</bool>
+           </property>
+          </widget>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
-           <item>
-            <widget class="QLineEdit" name="GainLineEdit">
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="DiameterLineEdit">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="BeamLineEdit">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          <widget class="QRadioButton" name="DiameterRadioButton">
+           <property name="text">
+            <string>Diameter [m]</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="BeamWidthRadioButton">
+           <property name="text">
+            <string>Beamwidth [deg]</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLineEdit" name="GainLineEdit">
+           <property name="maximumSize">
+            <size>
+             <width>106</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="DiameterLineEdit">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>106</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="BeamLineEdit">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>106</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -172,71 +189,80 @@
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>40</y>
-        <width>241</width>
-        <height>131</height>
+        <x>12</x>
+        <y>42</y>
+        <width>229</width>
+        <height>91</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_6">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_4">
-           <item>
-            <widget class="QLabel" name="EfficiencyLabel">
-             <property name="text">
-              <string>Efficiency [%]</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="FrequencyLabel">
-             <property name="text">
-              <string>Frequency [GHz]</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="TypeBeamLabel">
-             <property name="text">
-              <string>Type of beam</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          <widget class="QLabel" name="EfficiencyLabel">
+           <property name="text">
+            <string>Efficiency [%]</string>
+           </property>
+          </widget>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_3">
+          <widget class="QLabel" name="FrequencyLabel">
+           <property name="text">
+            <string>Frequency [GHz]</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="TypeBeamLabel">
+           <property name="text">
+            <string>Type of beam</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QLineEdit" name="EfficiencyLineEdit">
+           <property name="maximumSize">
+            <size>
+             <width>105</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="FrequencyLineEdit">
+           <property name="maximumSize">
+            <size>
+             <width>105</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="TypeBeamComboBox">
+           <property name="maximumSize">
+            <size>
+             <width>110</width>
+             <height>16777215</height>
+            </size>
+           </property>
            <item>
-            <widget class="QLineEdit" name="EfficiencyLineEdit">
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
+            <property name="text">
+             <string>Parabolic</string>
+            </property>
            </item>
-           <item>
-            <widget class="QLineEdit" name="FrequencyLineEdit">
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="TypeBeamComboBox">
-             <item>
-              <property name="text">
-               <string>Parabolic</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Omni-directional</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-          </layout>
+          </widget>
          </item>
         </layout>
        </item>
@@ -567,12 +593,15 @@
     </widget>
    </widget>
    <widget class="QWidget" name="PointingPage">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <attribute name="title">
      <string>Pointing</string>
     </attribute>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="enabled">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -693,7 +722,7 @@
       <rect>
        <x>175</x>
        <y>21</y>
-       <width>226</width>
+       <width>227</width>
        <height>95</height>
       </rect>
      </property>
@@ -728,7 +757,7 @@
         <item>
          <widget class="QLineEdit" name="ElLineEdit">
           <property name="enabled">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="maximumSize">
            <size>
@@ -754,7 +783,7 @@
         <item>
          <widget class="QLineEdit" name="AzLineEdit">
           <property name="enabled">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="maximumSize">
            <size>
@@ -778,11 +807,6 @@
             <height>30</height>
            </size>
           </property>
-          <item>
-           <property name="text">
-            <string>Circular</string>
-           </property>
-          </item>
           <item>
            <property name="text">
             <string>Rectangular</string>
