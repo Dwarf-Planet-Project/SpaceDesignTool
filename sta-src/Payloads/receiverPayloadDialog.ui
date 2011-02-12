@@ -73,9 +73,9 @@
      <property name="geometry">
       <rect>
        <x>16</x>
-       <y>12</y>
+       <y>48</y>
        <width>266</width>
-       <height>201</height>
+       <height>153</height>
       </rect>
      </property>
      <property name="title">
@@ -86,7 +86,7 @@
        <rect>
         <x>10</x>
         <y>40</y>
-        <width>251</width>
+        <width>249</width>
         <height>90</height>
        </rect>
       </property>
@@ -126,12 +126,6 @@
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
           <widget class="QLineEdit" name="GainLineEdit">
-           <property name="maximumSize">
-            <size>
-             <width>106</width>
-             <height>16777215</height>
-            </size>
-           </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
@@ -142,12 +136,6 @@
            <property name="enabled">
             <bool>false</bool>
            </property>
-           <property name="maximumSize">
-            <size>
-             <width>106</width>
-             <height>16777215</height>
-            </size>
-           </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
@@ -157,12 +145,6 @@
           <widget class="QLineEdit" name="BeamLineEdit">
            <property name="enabled">
             <bool>false</bool>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>106</width>
-             <height>16777215</height>
-            </size>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -178,9 +160,9 @@
      <property name="geometry">
       <rect>
        <x>300</x>
-       <y>12</y>
+       <y>48</y>
        <width>251</width>
-       <height>201</height>
+       <height>153</height>
       </rect>
      </property>
      <property name="title">
@@ -191,7 +173,7 @@
        <rect>
         <x>12</x>
         <y>42</y>
-        <width>229</width>
+        <width>230</width>
         <height>91</height>
        </rect>
       </property>
@@ -225,12 +207,6 @@
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
           <widget class="QLineEdit" name="EfficiencyLineEdit">
-           <property name="maximumSize">
-            <size>
-             <width>105</width>
-             <height>16777215</height>
-            </size>
-           </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
@@ -238,12 +214,6 @@
          </item>
          <item>
           <widget class="QLineEdit" name="FrequencyLineEdit">
-           <property name="maximumSize">
-            <size>
-             <width>105</width>
-             <height>16777215</height>
-            </size>
-           </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
@@ -251,12 +221,6 @@
          </item>
          <item>
           <widget class="QComboBox" name="TypeBeamComboBox">
-           <property name="maximumSize">
-            <size>
-             <width>110</width>
-             <height>16777215</height>
-            </size>
-           </property>
            <item>
             <property name="text">
              <string>Parabolic</string>
@@ -277,10 +241,10 @@
     <widget class="QGroupBox" name="PolarisationGroupBox">
      <property name="geometry">
       <rect>
-       <x>300</x>
-       <y>10</y>
-       <width>257</width>
-       <height>105</height>
+       <x>292</x>
+       <y>6</y>
+       <width>265</width>
+       <height>117</height>
       </rect>
      </property>
      <property name="font">
@@ -297,7 +261,7 @@
         <x>8</x>
         <y>24</y>
         <width>241</width>
-        <height>72</height>
+        <height>85</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -329,6 +293,11 @@
         <layout class="QVBoxLayout" name="verticalLayout_11">
          <item>
           <widget class="QComboBox" name="PolarisationComboBox">
+           <property name="font">
+            <font>
+             <kerning>false</kerning>
+            </font>
+           </property>
            <item>
             <property name="text">
              <string>Linear</string>
@@ -365,9 +334,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>128</y>
+       <y>124</y>
        <width>271</width>
-       <height>121</height>
+       <height>125</height>
       </rect>
      </property>
      <property name="title">
@@ -378,7 +347,7 @@
        <rect>
         <x>10</x>
         <y>24</y>
-        <width>261</width>
+        <width>253</width>
         <height>94</height>
        </rect>
       </property>
@@ -388,7 +357,7 @@
          <item>
           <widget class="QLabel" name="RxNoiseFigureLabel">
            <property name="text">
-            <string>Receiver Noise Figure[dB] </string>
+            <string>Receiver Noise[dB] </string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -398,17 +367,17 @@
          <item>
           <widget class="QLabel" name="RxFeederTmpLabel">
            <property name="text">
-            <string>Thermo. Temp. Feeder [K]</string>
+            <string>Th Temp Feeder [K]</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QLabel" name="RxTempLabel">
            <property name="text">
-            <string>Themo. Temp. Rx [K]</string>
+            <string>Th Temp Rx [K]</string>
            </property>
            <property name="alignment">
-            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
           </widget>
          </item>
@@ -455,9 +424,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
+       <y>4</y>
        <width>271</width>
-       <height>111</height>
+       <height>121</height>
       </rect>
      </property>
      <property name="title">
@@ -467,9 +436,9 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>20</y>
-        <width>261</width>
-        <height>91</height>
+        <y>26</y>
+        <width>253</width>
+        <height>85</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -481,7 +450,7 @@
             <string>Feeder Loss [dB]</string>
            </property>
            <property name="alignment">
-            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
           </widget>
          </item>
@@ -495,7 +464,10 @@
          <item>
           <widget class="QLabel" name="BandWidthLabel">
            <property name="text">
-            <string>BandWidth [MHz]</string>
+            <string>Bandwidth [MHz]</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
           </widget>
          </item>
@@ -535,10 +507,10 @@
     <widget class="QGroupBox" name="groupBox_2">
      <property name="geometry">
       <rect>
-       <x>304</x>
-       <y>130</y>
-       <width>253</width>
-       <height>101</height>
+       <x>296</x>
+       <y>124</y>
+       <width>261</width>
+       <height>121</height>
       </rect>
      </property>
      <property name="title">
@@ -605,7 +577,7 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>170</x>
+       <x>168</x>
        <y>120</y>
        <width>351</width>
        <height>101</height>
@@ -620,7 +592,7 @@
         <rect>
          <x>7</x>
          <y>1</y>
-         <width>211</width>
+         <width>233</width>
          <height>28</height>
         </rect>
        </property>
@@ -637,12 +609,6 @@
         </item>
         <item>
          <widget class="QLineEdit" name="ConeAngleLineEdit">
-          <property name="maximumSize">
-           <size>
-            <width>100</width>
-            <height>26</height>
-           </size>
-          </property>
           <property name="text">
            <string/>
           </property>
@@ -722,7 +688,7 @@
       <rect>
        <x>175</x>
        <y>21</y>
-       <width>227</width>
+       <width>238</width>
        <height>95</height>
       </rect>
      </property>
@@ -759,19 +725,6 @@
           <property name="enabled">
            <bool>false</bool>
           </property>
-          <property name="maximumSize">
-           <size>
-            <width>100</width>
-            <height>26</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <italic>false</italic>
-            <underline>false</underline>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
           <property name="text">
            <string>90</string>
           </property>
@@ -785,12 +738,6 @@
           <property name="enabled">
            <bool>false</bool>
           </property>
-          <property name="maximumSize">
-           <size>
-            <width>100</width>
-            <height>26</height>
-           </size>
-          </property>
           <property name="text">
            <string>0</string>
           </property>
@@ -801,12 +748,6 @@
         </item>
         <item>
          <widget class="QComboBox" name="ConeShapeComboBox">
-          <property name="maximumSize">
-           <size>
-            <width>120</width>
-            <height>30</height>
-           </size>
-          </property>
           <item>
            <property name="text">
             <string>Rectangular</string>
@@ -832,9 +773,9 @@
      <property name="geometry">
       <rect>
        <x>180</x>
-       <y>20</y>
+       <y>48</y>
        <width>201</width>
-       <height>151</height>
+       <height>125</height>
       </rect>
      </property>
      <layout class="QFormLayout" name="formLayout_2">
@@ -923,7 +864,6 @@
   <tabstop>RxNoiseFigureLineEdit</tabstop>
   <tabstop>RxFeederTmpLineEdit</tabstop>
   <tabstop>RxTempLineEdit</tabstop>
-  <tabstop>PolarisationComboBox</tabstop>
   <tabstop>TiltLineEdit</tabstop>
   <tabstop>ConstantTempRadioButton</tabstop>
   <tabstop>AntennaTempLineEdit</tabstop>

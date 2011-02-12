@@ -72,7 +72,7 @@
        <x>8</x>
        <y>28</y>
        <width>233</width>
-       <height>171</height>
+       <height>137</height>
       </rect>
      </property>
      <property name="title">
@@ -138,6 +138,9 @@
              <property name="enabled">
               <bool>false</bool>
              </property>
+             <property name="text">
+              <string/>
+             </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
@@ -147,6 +150,9 @@
             <widget class="QLineEdit" name="BeamLineEdit">
              <property name="enabled">
               <bool>false</bool>
+             </property>
+             <property name="text">
+              <string/>
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -166,7 +172,7 @@
        <x>256</x>
        <y>28</y>
        <width>251</width>
-       <height>171</height>
+       <height>137</height>
       </rect>
      </property>
      <property name="title">
@@ -190,7 +196,7 @@
             <string>Efficiency [%]</string>
            </property>
            <property name="alignment">
-            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
           </widget>
          </item>
@@ -217,12 +223,6 @@
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
           <widget class="QLineEdit" name="EfficiencyLineEdit">
-           <property name="maximumSize">
-            <size>
-             <width>105</width>
-             <height>16777215</height>
-            </size>
-           </property>
            <property name="text">
             <string>0</string>
            </property>
@@ -233,12 +233,6 @@
          </item>
          <item>
           <widget class="QLineEdit" name="FrequencyLineEdit">
-           <property name="maximumSize">
-            <size>
-             <width>105</width>
-             <height>16777215</height>
-            </size>
-           </property>
            <property name="text">
             <string>0</string>
            </property>
@@ -669,24 +663,10 @@
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_16">
           <item>
-           <widget class="QLineEdit" name="VertAngleLineEdit">
-            <property name="maximumSize">
-             <size>
-              <width>100</width>
-              <height>26</height>
-             </size>
-            </property>
-           </widget>
+           <widget class="QLineEdit" name="VertAngleLineEdit"/>
           </item>
           <item>
-           <widget class="QLineEdit" name="HorAngleLineEdit">
-            <property name="maximumSize">
-             <size>
-              <width>100</width>
-              <height>26</height>
-             </size>
-            </property>
-           </widget>
+           <widget class="QLineEdit" name="HorAngleLineEdit"/>
           </item>
          </layout>
         </item>
@@ -699,7 +679,7 @@
       <rect>
        <x>168</x>
        <y>12</y>
-       <width>227</width>
+       <width>238</width>
        <height>95</height>
       </rect>
      </property>
@@ -739,12 +719,6 @@
           <property name="enabled">
            <bool>true</bool>
           </property>
-          <property name="maximumSize">
-           <size>
-            <width>100</width>
-            <height>26</height>
-           </size>
-          </property>
           <property name="font">
            <font>
             <italic>false</italic>
@@ -765,12 +739,6 @@
           <property name="enabled">
            <bool>true</bool>
           </property>
-          <property name="maximumSize">
-           <size>
-            <width>100</width>
-            <height>26</height>
-           </size>
-          </property>
           <property name="text">
            <string>0</string>
           </property>
@@ -781,12 +749,6 @@
         </item>
         <item>
          <widget class="QComboBox" name="ConeShapeComboBox">
-          <property name="maximumSize">
-           <size>
-            <width>120</width>
-            <height>30</height>
-           </size>
-          </property>
           <item>
            <property name="text">
             <string>Rectangular</string>
@@ -812,7 +774,7 @@
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>28</y>
+       <y>48</y>
        <width>201</width>
        <height>128</height>
       </rect>
