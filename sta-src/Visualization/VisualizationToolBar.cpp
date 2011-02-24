@@ -206,7 +206,7 @@ VisualizationToolBar::VisualizationToolBar(const QString& title, QWidget* parent
     // Guillermo
     m_analysisAction->setVisible(false);
 
-    connect(m_bodySelectCombo,     SIGNAL(currentIndexChanged(QString)), this, SLOT(mapBodyChanged(QString)));
+    connect(m_bodySelectCombo,     SIGNAL(activated(QString)),           this, SLOT(mapBodyChanged(QString)));
     connect(m_gridAction,          SIGNAL(triggered(bool)),              this, SIGNAL(gridToggled(bool)));
     connect(m_equatorAction,       SIGNAL(triggered(bool)),              this, SIGNAL(equatorToggled(bool)));
     connect(m_terminatorAction,    SIGNAL(triggered(bool)),              this, SIGNAL(terminatorToggled(bool)));
