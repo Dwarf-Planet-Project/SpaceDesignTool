@@ -21,9 +21,9 @@
 
 
 
-CONFIG += debug_and_release
-CONFIG += release
-CONFIG += warn_off
+#CONFIG += debug_and_release
+#CONFIG += release
+#CONFIG += warn_off
 
 TEMPLATE = app
 
