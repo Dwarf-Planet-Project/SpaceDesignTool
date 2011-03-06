@@ -7,19 +7,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>651</width>
+    <width>655</width>
     <height>501</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>651</width>
+    <width>655</width>
     <height>501</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>651</width>
+    <width>655</width>
     <height>501</height>
    </size>
   </property>
@@ -35,7 +35,7 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>631</width>
+     <width>635</width>
      <height>441</height>
     </rect>
    </property>
@@ -722,13 +722,13 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
     </widget>
     <widget class="QGroupBox" name="groupBox_5">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
        <x>345</x>
        <y>90</y>
-       <width>266</width>
+       <width>276</width>
        <height>316</height>
       </rect>
      </property>
@@ -1521,651 +1521,624 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
     <attribute name="title">
      <string>Environment</string>
     </attribute>
-    <widget class="QGroupBox" name="groupBoxPerturbations">
+    <widget class="QFrame" name="frame_5">
      <property name="geometry">
       <rect>
-       <x>5</x>
-       <y>20</y>
-       <width>616</width>
-       <height>381</height>
+       <x>15</x>
+       <y>374</y>
+       <width>256</width>
+       <height>26</height>
       </rect>
      </property>
-     <property name="toolTip">
-      <string/>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
      </property>
-     <property name="title">
-      <string>Perturbations</string>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
      </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <widget class="QFrame" name="frame">
+     <widget class="QRadioButton" name="DebrisRadioButton">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>30</y>
-        <width>256</width>
-        <height>131</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <widget class="QWidget" name="layoutWidget">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>5</y>
-         <width>236</width>
-         <height>116</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <widget class="QRadioButton" name="GravityFieldRadioButton">
-          <property name="text">
-           <string>Gravity effects</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../iconary/sta-icons.qrc">
-            <normaloff>:/icons/Gravity_field_icon.png</normaloff>:/icons/Gravity_field_icon.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>30</width>
-            <height>30</height>
-           </size>
-          </property>
-          <property name="autoExclusive">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_4">
-          <item row="0" column="0">
-           <widget class="QLabel" name="GravLabel">
-            <property name="text">
-             <string>Model:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="ZonalsLabel">
-            <property name="text">
-             <string>Zonals: </string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QSpinBox" name="ZonalsSpinBox">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-            <property name="minimum">
-             <number>2</number>
-            </property>
-            <property name="maximum">
-             <number>70</number>
-            </property>
-            <property name="value">
-             <number>2</number>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="TesseralLabel">
-            <property name="text">
-             <string>Tesserals: </string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="GravityComboBox">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-     </widget>
-     <widget class="QFrame" name="frame_2">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>165</y>
-        <width>256</width>
-        <height>86</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <widget class="QWidget" name="layoutWidget_4">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>236</width>
-         <height>66</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="QRadioButton" name="AtmDragRadioButton">
-          <property name="text">
-           <string>Atmospheric Drag</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../iconary/sta-icons.qrc">
-            <normaloff>:/icons/Mydrag.png</normaloff>:/icons/Mydrag.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>40</width>
-            <height>40</height>
-           </size>
-          </property>
-          <property name="autoExclusive">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
-          <item>
-           <widget class="QLabel" name="AthmLabel_2">
-            <property name="text">
-             <string>Model: </string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="AtmosphereComboBox">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-     </widget>
-     <widget class="QFrame" name="frame_3">
-      <property name="geometry">
-       <rect>
-        <x>285</x>
-        <y>30</y>
-        <width>321</width>
-        <height>341</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <widget class="QWidget" name="layoutWidget_5">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>9</y>
-         <width>301</width>
-         <height>321</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_6">
-        <property name="leftMargin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QRadioButton" name="PertBodyRadioButton">
-          <property name="text">
-           <string>3rd Body</string>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normalon>:/icons/3rdbody_icon.png</normalon>
-           </iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>40</width>
-            <height>40</height>
-           </size>
-          </property>
-          <property name="autoExclusive">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QListWidget" name="BodyListWidget">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="selectionMode">
-             <enum>QAbstractItemView::ExtendedSelection</enum>
-            </property>
-            <item>
-             <property name="text">
-              <string>Sun</string>
-             </property>
-             <property name="font">
-              <font>
-               <italic>false</italic>
-              </font>
-             </property>
-             <property name="background">
-              <brush brushstyle="NoBrush">
-               <color alpha="255">
-                <red>0</red>
-                <green>0</green>
-                <blue>0</blue>
-               </color>
-              </brush>
-             </property>
-             <property name="icon">
-              <iconset resource="../../iconary/sta-icons.qrc">
-               <normaloff>:/icons/ComboSun.png</normaloff>:/icons/ComboSun.png</iconset>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Earth</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../../iconary/sta-icons.qrc">
-               <normaloff>:/icons/ComboEarth.png</normaloff>:/icons/ComboEarth.png</iconset>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Mercury</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../../iconary/sta-icons.qrc">
-               <normaloff>:/icons/ComboMercury.png</normaloff>:/icons/ComboMercury.png</iconset>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Venus</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../../iconary/sta-icons.qrc">
-               <normaloff>:/icons/ComboVenus.png</normaloff>:/icons/ComboVenus.png</iconset>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Mars</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../../iconary/sta-icons.qrc">
-               <normaloff>:/icons/ComboMars.png</normaloff>:/icons/ComboMars.png</iconset>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Jupiter</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../../iconary/sta-icons.qrc">
-               <normaloff>:/icons/ComboJupiter.png</normaloff>:/icons/ComboJupiter.png</iconset>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Saturn</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../../iconary/sta-icons.qrc">
-               <normaloff>:/icons/ComboSaturn.png</normaloff>:/icons/ComboSaturn.png</iconset>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Uranus</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../../iconary/sta-icons.qrc">
-               <normaloff>:/icons/ComboUranus.png</normaloff>:/icons/ComboUranus.png</iconset>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Neptune</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../../iconary/sta-icons.qrc">
-               <normaloff>:/icons/ComboNeptune.png</normaloff>:/icons/ComboNeptune.png</iconset>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Pluto</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../../iconary/sta-icons.qrc">
-               <normaloff>:/icons/ComboPluto.png</normaloff>:/icons/ComboPluto.png</iconset>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Moon</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../../iconary/sta-icons.qrc">
-               <normaloff>:/icons/ComboMoon.png</normaloff>:/icons/ComboMoon.png</iconset>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Deimos</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../../iconary/sta-icons.qrc">
-               <normaloff>:/icons/ComboDeimos.png</normaloff>:/icons/ComboDeimos.png</iconset>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Europa</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../../iconary/sta-icons.qrc">
-               <normaloff>:/icons/ComboEuropa.png</normaloff>:/icons/ComboEuropa.png</iconset>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Titan</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../../iconary/sta-icons.qrc">
-               <normaloff>:/icons/ComboTitan.png</normaloff>:/icons/ComboTitan.png</iconset>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Enceladus</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../../iconary/sta-icons.qrc">
-               <normaloff>:/icons/ComboEnceladus.png</normaloff>:/icons/ComboEnceladus.png</iconset>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Triton</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../../iconary/sta-icons.qrc">
-               <normaloff>:/icons/ComboTriton.png</normaloff>:/icons/ComboTriton.png</iconset>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout">
-            <item>
-             <widget class="QPushButton" name="AddPushButton">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>50</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>+</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="RemovePushButton">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>50</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>-</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QListWidget" name="PertBodyListWidget">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="selectionMode">
-             <enum>QAbstractItemView::ExtendedSelection</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-     </widget>
-     <widget class="QFrame" name="frame_4">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>255</y>
-        <width>256</width>
-        <height>86</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <property name="lineWidth">
-       <number>2</number>
-      </property>
-      <property name="midLineWidth">
-       <number>0</number>
-      </property>
-      <widget class="QRadioButton" name="SolarPressureRadioButton">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>5</y>
-         <width>161</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Solar Pressure</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../iconary/sta-icons.qrc">
-         <normaloff>:/icons/Solar_pressure_icon.png</normaloff>:/icons/Solar_pressure_icon.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>40</width>
-         <height>40</height>
-        </size>
-       </property>
-       <property name="autoExclusive">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QWidget" name="layoutWidget_2">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>45</y>
-         <width>116</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <item>
-         <widget class="QCheckBox" name="AlbedoCheckBox">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string>Albedo</string>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>55</width>
-            <height>55</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="IRCheckBox">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string>IR</string>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>55</width>
-            <height>55</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="layoutWidget">
-       <property name="geometry">
-        <rect>
-         <x>145</x>
-         <y>45</y>
-         <width>95</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <item>
-         <widget class="QLabel" name="CrLabel">
-          <property name="text">
-           <string>Cr:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QDoubleSpinBox" name="CrSpinBox">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="decimals">
-           <number>2</number>
-          </property>
-          <property name="maximum">
-           <double>1.000000000000000</double>
-          </property>
-          <property name="singleStep">
-           <double>0.010000000000000</double>
-          </property>
-          <property name="value">
-           <double>1.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </widget>
-     <widget class="QFrame" name="frame_5">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>345</y>
-        <width>256</width>
+        <y>0</y>
+        <width>201</width>
         <height>26</height>
        </rect>
       </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+      <property name="text">
+       <string>Micrometeoroids / Debris</string>
       </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
+      <property name="iconSize">
+       <size>
+        <width>40</width>
+        <height>40</height>
+       </size>
       </property>
-      <widget class="QRadioButton" name="DebrisRadioButton">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>0</y>
-         <width>146</width>
-         <height>26</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Micrometeoroids / Debris</string>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>40</width>
-         <height>40</height>
-        </size>
-       </property>
-       <property name="autoExclusive">
-        <bool>false</bool>
-       </property>
-      </widget>
+      <property name="autoExclusive">
+       <bool>false</bool>
+      </property>
      </widget>
-     <zorder>frame</zorder>
-     <zorder>frame_2</zorder>
-     <zorder>frame_3</zorder>
-     <zorder>frame_4</zorder>
-     <zorder>frame_5</zorder>
-     <zorder>GravityFieldRadioButton</zorder>
     </widget>
-    <zorder>groupBoxPerturbations</zorder>
-    <zorder>AtmosphereComboBox</zorder>
+    <widget class="QFrame" name="frame_3">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>15</y>
+       <width>321</width>
+       <height>386</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QWidget" name="layoutWidget_5">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>9</y>
+        <width>301</width>
+        <height>366</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QRadioButton" name="PertBodyRadioButton">
+         <property name="text">
+          <string>3rd Body</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normalon>:/icons/3rdbody_icon.png</normalon>
+          </iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>40</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="autoExclusive">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QListWidget" name="BodyListWidget">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="selectionMode">
+            <enum>QAbstractItemView::ExtendedSelection</enum>
+           </property>
+           <item>
+            <property name="text">
+             <string>Sun</string>
+            </property>
+            <property name="font">
+             <font>
+              <italic>false</italic>
+             </font>
+            </property>
+            <property name="background">
+             <brush brushstyle="NoBrush">
+              <color alpha="255">
+               <red>0</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </property>
+            <property name="icon">
+             <iconset resource="../../iconary/sta-icons.qrc">
+              <normaloff>:/icons/ComboSun.png</normaloff>:/icons/ComboSun.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Earth</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../iconary/sta-icons.qrc">
+              <normaloff>:/icons/ComboEarth.png</normaloff>:/icons/ComboEarth.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Mercury</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../iconary/sta-icons.qrc">
+              <normaloff>:/icons/ComboMercury.png</normaloff>:/icons/ComboMercury.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Venus</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../iconary/sta-icons.qrc">
+              <normaloff>:/icons/ComboVenus.png</normaloff>:/icons/ComboVenus.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Mars</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../iconary/sta-icons.qrc">
+              <normaloff>:/icons/ComboMars.png</normaloff>:/icons/ComboMars.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Jupiter</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../iconary/sta-icons.qrc">
+              <normaloff>:/icons/ComboJupiter.png</normaloff>:/icons/ComboJupiter.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Saturn</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../iconary/sta-icons.qrc">
+              <normaloff>:/icons/ComboSaturn.png</normaloff>:/icons/ComboSaturn.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Uranus</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../iconary/sta-icons.qrc">
+              <normaloff>:/icons/ComboUranus.png</normaloff>:/icons/ComboUranus.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Neptune</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../iconary/sta-icons.qrc">
+              <normaloff>:/icons/ComboNeptune.png</normaloff>:/icons/ComboNeptune.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Pluto</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../iconary/sta-icons.qrc">
+              <normaloff>:/icons/ComboPluto.png</normaloff>:/icons/ComboPluto.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Moon</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../iconary/sta-icons.qrc">
+              <normaloff>:/icons/ComboMoon.png</normaloff>:/icons/ComboMoon.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Deimos</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../iconary/sta-icons.qrc">
+              <normaloff>:/icons/ComboDeimos.png</normaloff>:/icons/ComboDeimos.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Europa</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../iconary/sta-icons.qrc">
+              <normaloff>:/icons/ComboEuropa.png</normaloff>:/icons/ComboEuropa.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Titan</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../iconary/sta-icons.qrc">
+              <normaloff>:/icons/ComboTitan.png</normaloff>:/icons/ComboTitan.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Enceladus</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../iconary/sta-icons.qrc">
+              <normaloff>:/icons/ComboEnceladus.png</normaloff>:/icons/ComboEnceladus.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Triton</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../iconary/sta-icons.qrc">
+              <normaloff>:/icons/ComboTriton.png</normaloff>:/icons/ComboTriton.png</iconset>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QPushButton" name="AddPushButton">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>50</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>+</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="RemovePushButton">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>50</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>-</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QListWidget" name="PertBodyListWidget">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="selectionMode">
+            <enum>QAbstractItemView::ExtendedSelection</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QFrame" name="frame">
+     <property name="geometry">
+      <rect>
+       <x>15</x>
+       <y>15</y>
+       <width>256</width>
+       <height>151</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QWidget" name="layoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>5</y>
+        <width>236</width>
+        <height>136</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QRadioButton" name="GravityFieldRadioButton">
+         <property name="text">
+          <string>Gravity effects</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/Gravity_field_icon.png</normaloff>:/icons/Gravity_field_icon.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>30</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="autoExclusive">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="0" column="0">
+          <widget class="QLabel" name="GravLabel">
+           <property name="text">
+            <string>Model:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="ZonalsLabel">
+           <property name="text">
+            <string>Zonals: </string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QSpinBox" name="ZonalsSpinBox">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="minimum">
+            <number>2</number>
+           </property>
+           <property name="maximum">
+            <number>70</number>
+           </property>
+           <property name="value">
+            <number>2</number>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="TesseralLabel">
+           <property name="text">
+            <string>Tesserals: </string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="GravityComboBox">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QFrame" name="frame_2">
+     <property name="geometry">
+      <rect>
+       <x>15</x>
+       <y>175</y>
+       <width>256</width>
+       <height>96</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QWidget" name="layoutWidget_4">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>236</width>
+        <height>77</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QRadioButton" name="AtmDragRadioButton">
+         <property name="text">
+          <string>Atmospheric Drag</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../iconary/sta-icons.qrc">
+           <normaloff>:/icons/Mydrag.png</normaloff>:/icons/Mydrag.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>40</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="autoExclusive">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLabel" name="AthmLabel_2">
+           <property name="text">
+            <string>Model: </string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="AtmosphereComboBox">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QFrame" name="frame_4">
+     <property name="geometry">
+      <rect>
+       <x>15</x>
+       <y>280</y>
+       <width>256</width>
+       <height>86</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <property name="lineWidth">
+      <number>2</number>
+     </property>
+     <property name="midLineWidth">
+      <number>0</number>
+     </property>
+     <widget class="QRadioButton" name="SolarPressureRadioButton">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>5</y>
+        <width>161</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Solar Pressure</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../iconary/sta-icons.qrc">
+        <normaloff>:/icons/Solar_pressure_icon.png</normaloff>:/icons/Solar_pressure_icon.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>40</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="autoExclusive">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>45</y>
+        <width>116</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="QCheckBox" name="AlbedoCheckBox">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Albedo</string>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>55</width>
+           <height>55</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="IRCheckBox">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>IR</string>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>55</width>
+           <height>55</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>145</x>
+        <y>45</y>
+        <width>95</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QLabel" name="CrLabel">
+         <property name="text">
+          <string>Cr:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDoubleSpinBox" name="CrSpinBox">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="decimals">
+          <number>2</number>
+         </property>
+         <property name="maximum">
+          <double>1.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.010000000000000</double>
+         </property>
+         <property name="value">
+          <double>1.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
    </widget>
    <widget class="QWidget" name="Propagation">
     <attribute name="title">
@@ -2175,13 +2148,13 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
      <property name="geometry">
       <rect>
        <x>140</x>
-       <y>10</y>
+       <y>25</y>
        <width>356</width>
-       <height>176</height>
+       <height>156</height>
       </rect>
      </property>
      <property name="title">
-      <string>Orbit Propagation</string>
+      <string>Trajectory Propagation</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_16">
       <item>
@@ -2189,7 +2162,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
         <item row="0" column="1">
          <widget class="QLabel" name="PropagatorLabel">
           <property name="text">
-           <string>Propagator Type: </string>
+           <string>Propagator: </string>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2206,7 +2179,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
         <item row="1" column="1">
          <widget class="QLabel" name="IntegratorLabel">
           <property name="text">
-           <string>IntegratorType: </string>
+           <string>Integrator: </string>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2237,61 +2210,8 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_11">
-          <property name="maximumSize">
-           <size>
-            <width>32</width>
-            <height>32</height>
-           </size>
-          </property>
-          <property name="autoFillBackground">
-           <bool>false</bool>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
-          </property>
-          <property name="lineWidth">
-           <number>0</number>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="pixmap">
-           <pixmap resource="../../iconary/sta-icons.qrc">:/icons/integrator.png</pixmap>
-          </property>
-          <property name="scaledContents">
-           <bool>true</bool>
-          </property>
-          <property name="margin">
-           <number>0</number>
-          </property>
-          <property name="indent">
-           <number>-1</number>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="label_12">
-          <property name="maximumSize">
-           <size>
-            <width>32</width>
-            <height>32</height>
-           </size>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="pixmap">
-           <pixmap resource="../../iconary/sta-icons.qrc">:/icons/compute.png</pixmap>
-          </property>
-          <property name="scaledContents">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="0">
-         <widget class="QLabel" name="label_10">
+         <widget class="QLabel" name="label_16">
           <property name="maximumSize">
            <size>
             <width>32</width>
@@ -2302,13 +2222,10 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap resource="../../iconary/sta-icons.qrc">:/icons/propagator.png</pixmap>
+           <pixmap resource="../../iconary/sta-icons.qrc">:/icons/CoordinateSystemBody.png</pixmap>
           </property>
           <property name="scaledContents">
            <bool>true</bool>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>
@@ -2318,14 +2235,14 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
     </widget>
     <widget class="QGroupBox" name="AttitudepropagationGroupBox">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
-       <x>140</x>
-       <y>190</y>
+       <x>135</x>
+       <y>210</y>
        <width>356</width>
-       <height>221</height>
+       <height>151</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -2336,290 +2253,78 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_17">
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_5">
-        <item>
-         <widget class="QComboBox" name="AttitudePropagationComboBox">
-          <property name="maximumSize">
-           <size>
-            <width>200</width>
-            <height>16777215</height>
-           </size>
+       <layout class="QGridLayout" name="gridLayout_14">
+        <item row="1" column="1">
+         <widget class="QLabel" name="IntegratorL">
+          <property name="text">
+           <string>Integrator:</string>
           </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLabel" name="IntStepLabel_2">
+          <property name="text">
+           <string>Integration step [s]:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QLineEdit" name="IntStepEdit_2">
+          <property name="text">
+           <string>0.0</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="PropagatorLabel_2">
+          <property name="text">
+           <string>Propagator: </string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QComboBox" name="PropagatorComboBox_2">
           <property name="sizeAdjustPolicy">
            <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
           </property>
-          <item>
-           <property name="text">
-            <string>Integration</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Interpolation</string>
-           </property>
-          </item>
          </widget>
         </item>
-        <item>
-         <widget class="QStackedWidget" name="stackedWidget_3">
-          <property name="currentIndex">
-           <number>0</number>
+        <item row="1" column="2">
+         <widget class="QComboBox" name="IntegratorComboBox_3">
+          <property name="sizeAdjustPolicy">
+           <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
           </property>
-          <widget class="QWidget" name="page_8">
-           <layout class="QHBoxLayout" name="horizontalLayout_14">
-            <item>
-             <layout class="QGridLayout" name="gridLayout_14">
-              <item row="1" column="1">
-               <widget class="QLabel" name="IntegratorL">
-                <property name="text">
-                 <string>IntegratorType:</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="2">
-               <widget class="QComboBox" name="IntegratorComboBox_2">
-                <property name="sizeAdjustPolicy">
-                 <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>Runge-Kutta 3-4</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Runge-Kutta 7-8</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLabel" name="IntStepLabel_2">
-                <property name="text">
-                 <string>Integration step [s]:</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="2">
-               <widget class="QLineEdit" name="IntStepEdit_2">
-                <property name="text">
-                 <string>0.0</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="2">
-               <widget class="QComboBox" name="ExtCouplesComboBox">
-                <property name="maximumSize">
-                 <size>
-                  <width>200</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="sizeAdjustPolicy">
-                 <enum>QComboBox::AdjustToContents</enum>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>None</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Gravity gradient</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Magnetic</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Atmospheric drag</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Solar pressure</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_13">
-                <property name="maximumSize">
-                 <size>
-                  <width>32</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="pixmap">
-                 <pixmap resource="../../iconary/sta-icons.qrc">:/icons/integrator.png</pixmap>
-                </property>
-                <property name="scaledContents">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_14">
-                <property name="maximumSize">
-                 <size>
-                  <width>32</width>
-                  <height>32</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="pixmap">
-                 <pixmap resource="../../iconary/sta-icons.qrc">:/icons/compute.png</pixmap>
-                </property>
-                <property name="scaledContents">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_18">
-                <property name="maximumSize">
-                 <size>
-                  <width>32</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="pixmap">
-                 <pixmap resource="../../iconary/sta-icons.qrc">:/icons/drag-force.png</pixmap>
-                </property>
-                <property name="scaledContents">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLabel" name="ExtCouplesLabel">
-                <property name="text">
-                 <string>External couples:</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="page_9">
-           <layout class="QHBoxLayout" name="horizontalLayout_15">
-            <item>
-             <layout class="QGridLayout" name="gridLayout_15">
-              <item row="0" column="1">
-               <widget class="QLabel" name="AttitudeFileLabel">
-                <property name="text">
-                 <string>Attitude File</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QLabel" name="InterpolationLabel">
-                <property name="text">
-                 <string>InterpolatorType</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="2">
-               <widget class="QComboBox" name="InterpolatorComboBox">
-                <property name="sizeAdjustPolicy">
-                 <enum>QComboBox::AdjustToContents</enum>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>LAGRANGE</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>HERMITE</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>POLYNOMIAL</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QLabel" name="OrderLabel">
-                <property name="text">
-                 <string>Order</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="2">
-               <widget class="QLineEdit" name="lineEdit_7">
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="2">
-               <widget class="QSpinBox" name="OrderSpinBox">
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_17">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="pixmap">
-                 <pixmap resource="../../iconary/sta-icons.qrc">:/icons/compute.png</pixmap>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_16">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="pixmap">
-                 <pixmap>:/icons/file.png</pixmap>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_15">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="pixmap">
-                 <pixmap resource="../../iconary/sta-icons.qrc">:/icons/AttitudeInterpolation.png</pixmap>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_15">
+          <property name="maximumSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="pixmap">
+           <pixmap resource="../../iconary/sta-icons.qrc">:/icons/CoordinateSystem.png</pixmap>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
        </layout>
@@ -2633,7 +2338,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
     <rect>
      <x>10</x>
      <y>455</y>
-     <width>626</width>
+     <width>636</width>
      <height>36</height>
     </rect>
    </property>
@@ -2717,9 +2422,6 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
   <tabstop>PropagatorComboBox</tabstop>
   <tabstop>IntegratorComboBox</tabstop>
   <tabstop>IntStepEdit</tabstop>
-  <tabstop>AttitudePropagationComboBox</tabstop>
-  <tabstop>ExtCouplesComboBox</tabstop>
-  <tabstop>IntegratorComboBox_2</tabstop>
   <tabstop>IntStepEdit_2</tabstop>
   <tabstop>buttonBoxLoitering</tabstop>
   <tabstop>positionYEdit</tabstop>
@@ -2748,9 +2450,6 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
   <tabstop>argOfPeriapsisEdit_7</tabstop>
   <tabstop>trueAnomalyEdit_7</tabstop>
   <tabstop>AngularVelocityXEdit_2</tabstop>
-  <tabstop>InterpolatorComboBox</tabstop>
-  <tabstop>lineEdit_7</tabstop>
-  <tabstop>OrderSpinBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../iconary/sta-icons.qrc"/>
