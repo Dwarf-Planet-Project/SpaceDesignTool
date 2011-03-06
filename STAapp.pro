@@ -884,8 +884,8 @@ macx {
 
 	# Next command has been moved to the Qt Projects Build Steps list
 	## Deploys Qt frameworks inside the MAC bundle but efficiently
-    #STAMACDEPLOY = $$system(macdeployqt ./STA.app)
-    #message($$STAMACDEPLOY)
+    STAMACDEPLOY = $$system(macdeployqt ../STA-build-desktop/STA.app)
+    message($$STAMACDEPLOY)
 
     # Application icon
     #ICON = iconary/STAlogo.icns
