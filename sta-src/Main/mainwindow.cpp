@@ -1455,7 +1455,7 @@ MainWindow::setFullScreen3D(bool enable)
     {
         m_threeDViewWidget->setToolBarVisible(true);
         showNormal();
-        restoreState(m_savedWindowState);
+        restoreState(m_savedWindowState, STA_MAIN_WINDOW_VERSION);
     }
 }
 
