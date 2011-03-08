@@ -1,26 +1,22 @@
-/*
- This program is free software; you can redistribute it and/or modify it under
- the terms of the European Union Public Licence - EUPL v.1.1 as published by
- the European Commission.
-
- This program is distributed in the hope that it will be useful, but WITHOUT
- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE. See the European Union Public Licence - EUPL v.1.1
- for more details.
-
- You should have received a copy of the European Union Public Licence - EUPL v.1.1
- along with this program.
-
- Further information about the European Union Public Licence - EUPL v.1.1 can
- also be found on the world wide web at http://ec.europa.eu/idabc/eupl
-
-*/
 
 /*
- ------ Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
-*/
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version.
 
-/*
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+details.
+
+You should have received a copy of the GNU Lesser General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place - Suite 330, Boston, MA 02111-1307, USA.
+Further information about the GNU Lesser General Public License can also be found on
+the world wide web at http://www.gnu.org.
+
+ ------ Copyright (C) 2009 European Space Agency (space.trajectory.analysis AT gmail.com) ----
  ------------------ Author: Valentino Zuccarelli  -------------------------------------------------
  ------------------ E-mail: (Valentino.Zuccarelli@gmail.com) ----------------------------
  */
@@ -103,9 +99,9 @@ cartesianTOrotating (int mode, const StaBody* firstbody, const StaBody* secondbo
        }
        //A=-1/cos(alfa)*((cartesian.position.x()/distance1-baricenter(0))*cos(beta)+(cartesian.position.y()/distance1-baricenter(1))*sin(beta));
        //B=1/(cos(beta)*sin(alfa))*((cartesian.position.y()/distance1-baricenter(1))*sin(alfa)+(cartesian.position.z()/distance1-baricenter(2))*sin(beta)*cos(alfa));
-       rotating.position.x()=(cartesian.position.x()*(cos(alfa)*cos(beta)-cos(i)*sin(alfa)*sin(beta))+cartesian.position.y()*(cos(alfa)*sin(beta)*cos(i)+sin(alfa)*cos(beta))+cartesian.position.z()*sin(i)*sin(alfa))/distance1+baricenter(0);
-       rotating.position.y()=(cartesian.position.x()*(-cos(i)*sin(alfa)*cos(beta)-cos(alfa)*sin(beta))+cartesian.position.y()*(cos(i)*cos(alfa)*cos(beta)-sin(alfa)*sin(beta))-cartesian.position.z()*(-sin(i)*cos(alfa)))/distance1;
-       rotating.position.z()=(cartesian.position.x()*(sin(i)*sin(beta))+cartesian.position.y()*(sin(i)*cos(beta))+cartesian.position.z()*cos(i))/distance1;
+       rotating.position.x()=(cartesian.position.x()*(cos(alfa)*cos(beta)-cos(i)*sin(alfa)*sin(beta))+cartesian.position.y()*(cos(alfa)*sin(beta)*cos(i)+sin(alfa)*cos(beta))+cartesian.position.z()*sin(i)*sin(beta))/distance1+baricenter(0);
+       rotating.position.y()=(cartesian.position.x()*(-cos(i)*sin(alfa)*cos(beta)-cos(alfa)*sin(beta))+cartesian.position.y()*(cos(i)*cos(alfa)*cos(beta)-sin(alfa)*sin(beta))+cartesian.position.z()*(sin(i)*cos(beta)))/distance1;
+       rotating.position.z()=(cartesian.position.x()*(sin(i)*sin(alfa))-cartesian.position.y()*(sin(i)*cos(alfa))+cartesian.position.z()*cos(i))/distance1;
    }
    else
    {
@@ -134,16 +130,16 @@ cartesianTOrotating (int mode, const StaBody* firstbody, const StaBody* secondbo
        }
        //A=-1/cos(alfa)*((cartesian.position.x()/distance1-baricenter(0))*cos(beta)+(cartesian.position.y()/distance1-baricenter(1))*sin(beta));
        //B=1/(cos(beta)*sin(alfa))*((cartesian.position.y()/distance1-baricenter(1))*sin(alfa)+(cartesian.position.z()/distance1-baricenter(2))*sin(beta)*cos(alfa));
-       rotating.position.x()=(cartesian.position.x()*(cos(alfa)*cos(beta)-cos(i)*sin(alfa)*sin(beta))+cartesian.position.y()*(cos(alfa)*sin(beta)*cos(i)+sin(alfa)*cos(beta))+cartesian.position.z()*sin(i)*sin(alfa))/distance1+baricenter(0);
-       rotating.position.y()=(cartesian.position.x()*(-cos(i)*sin(alfa)*cos(beta)-cos(alfa)*sin(beta))+cartesian.position.y()*(cos(i)*cos(alfa)*cos(beta)-sin(alfa)*sin(beta))-cartesian.position.z()*(-sin(i)*cos(alfa)))/distance1;
-       rotating.position.z()=(cartesian.position.x()*(sin(i)*sin(beta))+cartesian.position.y()*(sin(i)*cos(beta))+cartesian.position.z()*cos(i))/distance1;
-   }
+       rotating.position.x()=(cartesian.position.x()*(cos(alfa)*cos(beta)-cos(i)*sin(alfa)*sin(beta))+cartesian.position.y()*(cos(alfa)*sin(beta)*cos(i)+sin(alfa)*cos(beta))+cartesian.position.z()*sin(i)*sin(beta))/distance1+baricenter(0);
+       rotating.position.y()=(cartesian.position.x()*(-cos(i)*sin(alfa)*cos(beta)-cos(alfa)*sin(beta))+cartesian.position.y()*(cos(i)*cos(alfa)*cos(beta)-sin(alfa)*sin(beta))+cartesian.position.z()*(sin(i)*cos(beta)))/distance1;
+       rotating.position.z()=(cartesian.position.x()*(sin(i)*sin(alfa))-cartesian.position.y()*(sin(i)*cos(alfa))+cartesian.position.z()*cos(i))/distance1;
+       }
 
    //A=-1/cos(alfa)*((cartesian.velocity.x()/velocity1)*cos(beta)+(cartesian.velocity.y()/velocity1)*sin(beta));
    //B=1/(cos(beta)*sin(alfa))*((cartesian.velocity.y()/velocity1)*sin(alfa)+(cartesian.velocity.z()/velocity1)*sin(beta)*cos(alfa));
-   rotating.velocity.x()=(cartesian.velocity.x()*(cos(alfa)*cos(beta)-cos(i)*sin(alfa)*sin(beta))+cartesian.velocity.y()*(cos(alfa)*sin(beta)*cos(i)+sin(alfa)*cos(beta))+cartesian.velocity.z()*sin(i)*sin(alfa))/velocity1;
-   rotating.velocity.y()=(cartesian.velocity.x()*(-cos(i)*sin(alfa)*cos(beta)-cos(alfa)*sin(beta))+cartesian.velocity.y()*(cos(i)*cos(alfa)*cos(beta)-sin(alfa)*sin(beta))-cartesian.velocity.z()*(-sin(i)*cos(alfa)))/velocity1;
-   rotating.velocity.z()=(cartesian.velocity.x()*(sin(i)*sin(beta))+cartesian.velocity.y()*(sin(i)*cos(beta))+cartesian.velocity.z()*cos(i))/velocity1;
+   rotating.velocity.x()=(cartesian.velocity.x()*(cos(alfa)*cos(beta)-cos(i)*sin(alfa)*sin(beta))+cartesian.velocity.y()*(cos(alfa)*sin(beta)*cos(i)+sin(alfa)*cos(beta))+cartesian.velocity.z()*sin(i)*sin(beta))/velocity1;
+   rotating.velocity.y()=(cartesian.velocity.x()*(-cos(i)*sin(alfa)*cos(beta)-cos(alfa)*sin(beta))+cartesian.velocity.y()*(cos(i)*cos(alfa)*cos(beta)-sin(alfa)*sin(beta))+cartesian.velocity.z()*(sin(i)*cos(beta)))/velocity1;
+   rotating.velocity.z()=(cartesian.velocity.x()*(sin(i)*sin(alfa))-cartesian.velocity.y()*(sin(i)*cos(alfa))+cartesian.velocity.z()*cos(i))/velocity1;
 
    return rotating;
 
