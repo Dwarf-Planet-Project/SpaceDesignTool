@@ -557,6 +557,19 @@ ThreeDView::initializeGL()
     glDepthFunc(GL_LEQUAL);
     glEnable(GL_CULL_FACE);
 
+    // Disable shader stars on ATI Radeon X1600 cards, where they don't display correctly. The underlying
+    // cause may be an ATI driver bug or a problem in stars shader. If it's the latter, the following code
+    // should be removed once the bug is fixed.
+    StarsLayer* stars = dynamic_cast<StarsLayer*>(m_universe->layer("stars"));
+    if (stars)
+    {
+        QString renderer = QString::fromAscii(reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
+        if (renderer.contains("X1600"))
+        {
+            stars->setStyle(StarsLayer::PointStars);
+        }
+    }
+
     m_glInitialized = true;
 }
 
@@ -1505,7 +1518,7 @@ ThreeDView::initializeLayers()
     {
         StarsLayer* stars = new StarsLayer();
         stars->setStarCatalog(m_universe->starCatalog());
-        stars->setLimitingMagnitude(8.5);
+        stars->setLimitingMagnitude(7.0);
         m_universe->setLayer("stars", stars);
     }
 
