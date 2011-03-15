@@ -1,5 +1,5 @@
 #
-# $Revision: 536 $ $Date: 2010-10-15 16:29:55 -0700 (Fri, 15 Oct 2010) $
+# $Revision: 564 $ $Date: 2011-02-15 15:54:24 -0800 (Tue, 15 Feb 2011) $
 #
 # Copyright by Astos Solutions GmbH, Germany
 #
@@ -73,6 +73,7 @@ set (SRCS
     PrimitiveBatch.cpp
     QuadtreeTile.cpp
     RenderContext.cpp
+    SensorFrustumGeometry.cpp
     SensorVisualizer.cpp
     ShaderBuilder.cpp
     SkyImageLayer.cpp

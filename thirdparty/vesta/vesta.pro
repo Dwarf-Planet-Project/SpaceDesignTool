@@ -1,6 +1,7 @@
 TEMPLATE = lib
 
 CONFIG += static
+CONFIG += create_prl
 
 TARGET = vesta
 
@@ -55,6 +56,7 @@ VESTA_SOURCES = \
     $$VESTA_PATH/QuadtreeTile.cpp \
     $$VESTA_PATH/RenderContext.cpp \
     $$VESTA_PATH/LightingEnvironment.cpp \
+    $$VESTA_PATH/SensorFrustumGeometry.cpp \
     $$VESTA_PATH/SensorVisualizer.cpp \
     $$VESTA_PATH/ShaderBuilder.cpp \
     $$VESTA_PATH/SkyImageLayer.cpp \
@@ -142,6 +144,7 @@ VESTA_HEADERS = \
     $$VESTA_PATH/RenderContext.h \
     $$VESTA_PATH/LightingEnvironment.h \
     $$VESTA_PATH/RotationModel.h \
+    $$VESTA_PATH/SensorFrustumGeometry.h \
     $$VESTA_PATH/SensorVisualizer.h \
     $$VESTA_PATH/ShaderBuilder.h \
     $$VESTA_PATH/ShaderInfo.h \

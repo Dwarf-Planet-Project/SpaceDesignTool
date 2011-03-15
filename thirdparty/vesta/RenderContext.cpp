@@ -1,5 +1,5 @@
 /*
- * $Revision: 547 $ $Date: 2010-10-21 14:15:29 -0700 (Thu, 21 Oct 2010) $
+ * $Revision: 568 $ $Date: 2011-03-08 09:33:54 -0800 (Tue, 08 Mar 2011) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -28,6 +28,11 @@
 using namespace vesta;
 using namespace Eigen;
 using namespace std;
+
+// Set to true in order to enable a more physically correct specular highlights.
+static const bool PhongNormalization = false;
+
+static const float INV_PI = float(1.0 / PI);
 
 
 namespace vesta
@@ -600,7 +605,7 @@ void
 RenderContext::unbindVertexBuffer()
 {
     unbindVertexArray();
-    if (GLEW_ARB_vertex_buffer_object == GL_TRUE)
+    if (GLBufferObject::supported())
     {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
@@ -833,7 +838,7 @@ RenderContext::setFixedFunctionMaterial(const Material* material)
         // Currently assume that the first light source is at infinity (directional),
         // and the rest are local light sources. Set w for the light position appropriately:
         // OpenGL treats light sources with w == 0 as directional.
-        bool isLocal = lightIndex > 0;
+        bool isLocal = light.type == PointLight;
         lightPosition.w() = isLocal ? 1.0f : 0.0;
 
         glLightfv(GL_LIGHT0 + lightIndex, GL_POSITION, lightPosition.data());
@@ -868,12 +873,7 @@ computeShaderInfo(const Material* material,
     bool hasSpecular = false;
     bool lightingEnabled = true;
 
-    if (environment.m_activeLightCount == 0)
-    {
-        shaderInfo.setReflectanceModel(ShaderInfo::Emissive);
-        lightingEnabled = false;
-    }
-    else if (material->brdf() == Material::ParticulateVolume)
+    if (material->brdf() == Material::ParticulateVolume)
     {
         shaderInfo.setReflectanceModel(ShaderInfo::Particulate);
     }
@@ -905,9 +905,27 @@ computeShaderInfo(const Material* material,
 
     if (lightingEnabled)
     {
-        shaderInfo.setLightCount(environment.m_activeLightCount);
-        shaderInfo.setShadowCount(std::min(environment.m_activeLightCount, environment.m_shadowMapCount));
-        shaderInfo.setOmniShadowCount(std::min(environment.m_activeLightCount, environment.m_omniShadowMapCount));
+        unsigned int pointLightCount = 0;
+        unsigned int directionalLightCount = 0;
+        for (unsigned int i = 0; i < environment.m_activeLightCount; ++i)
+        {
+            if (environment.m_lights[i].type == RenderContext::DirectionalLight)
+            {
+                directionalLightCount++;
+            }
+            else
+            {
+                pointLightCount++;
+            }
+        }
+
+        assert(directionalLightCount <= ShaderInfo::MaxLightCount);
+        assert(pointLightCount       <= ShaderInfo::MaxLightCount);
+
+        shaderInfo.setDirectionalLightCount(directionalLightCount);
+        shaderInfo.setPointLightCount(pointLightCount);
+        shaderInfo.setShadowCount(std::min(directionalLightCount, environment.m_shadowMapCount));
+        shaderInfo.setOmniShadowCount(std::min(pointLightCount, environment.m_omniShadowMapCount));
     }
 
     // Set the texture properties for the shader. All textures
@@ -1022,7 +1040,8 @@ RenderContext::setShaderMaterial(const Material* material)
     }
     else
     {
-        shader->setConstant("color", material->diffuse());
+        float normFactor = PhongNormalization ? INV_PI : 1.0f;
+        shader->setConstant("color", material->diffuse() * normFactor);
     }
 
     shader->setConstant("opacity", material->opacity());
@@ -1075,7 +1094,10 @@ RenderContext::setShaderMaterial(const Material* material)
     Vector3f lightPositions[MaxLights];
     Vector3f lightColors[MaxLights];
     float lightAttenuations[MaxLights];
-    for (unsigned int lightIndex = 0; lightIndex < shaderInfo.lightCount(); ++lightIndex)
+
+    unsigned int pointLightCount = 0;
+    unsigned int directionalLightCount = 0;
+    for (unsigned int lightIndex = 0; lightIndex < m_environment.m_activeLightCount; ++lightIndex)
     {
         const Light& light = m_environment.m_lights[lightIndex];
 
@@ -1084,7 +1106,12 @@ RenderContext::setShaderMaterial(const Material* material)
         lightPositions[lightIndex] = Transform3f(inverseModelView) * light.position;
         if (light.type == DirectionalLight)
         {
+            directionalLightCount++;
             lightPositions[lightIndex].normalize();
+        }
+        else
+        {
+            pointLightCount++;
         }
         lightColors[lightIndex] = Vector3f(light.color.data());
 
@@ -1092,22 +1119,26 @@ RenderContext::setShaderMaterial(const Material* material)
         lightAttenuations[lightIndex] = light.attenuation * scale;
     }
 
-    //if (model == ShaderInfo::Lambert || model == ShaderInfo::BlinnPhong)
+    unsigned int totalLightCount = shaderInfo.pointLightCount() + shaderInfo.directionalLightCount();
     if (model != ShaderInfo::Emissive)
     {
-        shader->setConstantArray("lightPosition", lightPositions, shaderInfo.lightCount());
-        shader->setConstantArray("lightColor", lightColors,  shaderInfo.lightCount());
-        if (shaderInfo.lightCount() > 1)
+        shader->setConstantArray("lightPosition", lightPositions, totalLightCount);
+        shader->setConstantArray("lightColor", lightColors,  totalLightCount);
+        if (pointLightCount > 0)
         {
-            shader->setConstantArray("lightAttenuation", lightAttenuations,  shaderInfo.lightCount());
+            shader->setConstantArray("lightAttenuation", lightAttenuations, totalLightCount);
         }
         shader->setConstant("ambientLight", m_environment.m_ambientLight);
     }
 
     if (model == ShaderInfo::BlinnPhong)
     {
+        // Using Blinn-Phong normalization factor from http://www.farbrausch.de/~fg/articles/phong.pdf
+        float normFactor = PhongNormalization ? (material->phongExponent() + 8) * (INV_PI * 0.125f) : 1.0f;
+
         shader->setConstant("specularColor", material->specular());
         shader->setConstant("phongExponent", material->phongExponent());
+        shader->setConstant("phongNorm",     normFactor);
     }
 
     if (shaderInfo.hasFresnelFalloff())

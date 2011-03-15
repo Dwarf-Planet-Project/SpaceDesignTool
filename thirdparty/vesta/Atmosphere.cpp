@@ -314,7 +314,6 @@ static float sign(float x)
 
 // h is the viewer's height above the planet surface
 // atmRadius must be larger than planetRadius
-/*
 static float opticalPathLength(float planetRadius, float atmRadius, float h, float cosViewAngle)
 {
     // Gamma is 180 - view angle
@@ -335,7 +334,7 @@ static float opticalPathLength(float planetRadius, float atmRadius, float h, flo
         return r * cosGamma + sqrt(disc);
     }
 }
-*/
+
 
 // Analytic calculation of optical depth
 // Based on approximation from E. Bruneton and F. Neyret, "Precomputed Atmospheric Scattering" (2008)
@@ -465,7 +464,7 @@ Atmosphere::computeTransmittanceTable(unsigned int heightSamples,
 
     float maxHeight = transparentHeight();
     float minHeight = m_planetRadius * 1.0e-6f;
-    //const unsigned int integrationSteps = 20;
+    const unsigned int integrationSteps = 20;
 
     // Calculate the extinction coefficients. The are computed separately for Mie and Rayleigh
     // scattering particles since their densities will generally be described with different
@@ -651,8 +650,8 @@ Atmosphere::computeInscatterTable(unsigned int heightSamples,
                     // Compute the transmittance along the path to the sun
                     float sunPathLength = -r * cosPsi + sqrt(atmRadius * atmRadius - r * r * sinPsi2);
                     Vector3f sunXmit = transmittance(r, cosPsi, sunPathLength);
-                    //float d1 = opticalDepth(r, cosPsi, sunPathLength, m_rayleighScaleHeight, m_planetRadius);
-                    //float d2 = opticalDepth(r, cosPsi, sunPathLength, m_mieScaleHeight, m_planetRadius);
+                    float d1 = opticalDepth(r, cosPsi, sunPathLength, m_rayleighScaleHeight, m_planetRadius);
+                    float d2 = opticalDepth(r, cosPsi, sunPathLength, m_mieScaleHeight, m_planetRadius);
 
                     Vector3f xmit = sunXmit.cwise() * viewXmit;
                     inscatter.start<3>() += (exp(-s / m_rayleighScaleHeight) * stepLength) * xmit;
