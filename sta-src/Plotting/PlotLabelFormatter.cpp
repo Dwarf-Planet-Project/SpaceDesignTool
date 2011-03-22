@@ -29,9 +29,20 @@
 #include "Astro-Core/date.h"
 #include <vesta/GregorianDate.h>
 #include <QDateTime>
-#include <QDebug>
+#include <algorithm>
 
 using namespace vesta;
+using namespace std;
+
+
+static QDateTime toQDateTime(const GregorianDate& date)
+{
+    // Take some care with seconds, as Qt's QDateClass doesn't handle leap seconds
+    int seconds = min(date.second(), 59u);
+
+    return QDateTime(QDate(date.year(), date.month(), date.day()),
+                     QTime(date.hour(), date.minute(), seconds), Qt::UTC);
+}
 
 
 QString
@@ -54,19 +65,46 @@ DateLabelFormatter::format(double value) const
     double jd = sta::MjdToJd(value);
     GregorianDate utcDate = GregorianDate::UTCDateFromTDBJD(jd);
 
-    qDebug() << m_dateFormat << ", " << jd;
     switch (m_dateFormat)
     {
     case GregorianUTC:
         {
-            QDateTime d(QDate(utcDate.year(), utcDate.month(), utcDate.day()),
-                        QTime(utcDate.hour(), utcDate.minute(), utcDate.second()), Qt::UTC);
-            return d.toString("hh:mm:ss yyyy-MM-dd");
+            return toQDateTime(utcDate).toString("hh:mm:ss\nyyyy-MM-dd");
         }
         break;
-    case YearAndDayNumber:
-        return QString("%1%2").arg(utcDate.year() % 100, 2, 10, QChar('0')).arg((int) utcDate.dayOfYear(), 3, 10, QChar('0'));
+
+    case JulianUTC:
+        {
+            QDateTime d = toQDateTime(utcDate);
+            QString yyddd = QString("%1/%2").arg(utcDate.year() % 100, 2, 10, QChar('0')).arg((int) utcDate.dayOfYear(), 3, 10, QChar('0'));
+            return yyddd + d.toString(" hh:mm:ss");
+        }
         break;
+
+    case GregorianLocal:
+        {
+            QDateTime d = toQDateTime(utcDate).toLocalTime();
+            return d.toString("hh:mm:ss\nyyyy-MM-dd");
+        }
+        break;
+
+    case JulianLocal:
+        {
+            QDateTime d = toQDateTime(utcDate).toLocalTime();
+            QString yyddd = QString("%1/%2").arg(utcDate.year() % 100, 2, 10, QChar('0')).arg((int) utcDate.dayOfYear(), 3, 10, QChar('0'));
+            return yyddd + d.toString(" hh:mm:ss");
+        }
+        break;
+
+    case YearAndDayNumber:
+        return QString("%1/%2").arg(utcDate.year() % 100, 2, 10, QChar('0')).arg((int) utcDate.dayOfYear(), 3, 10, QChar('0'));
+        break;
+
+
+    case Elapsed:
+        return sta::MissionElapsedTime(value, 0.0);
+        break;
+
     default:
         return "";
     }

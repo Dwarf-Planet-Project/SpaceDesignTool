@@ -63,10 +63,17 @@ public:
 class DateLabelFormatter : public PlotLabelFormatter
 {
 public:
+    /** DateFormat gives the method that should be used for
+      * generating date strings.
+      */
     enum DateFormat
     {
-        GregorianUTC,
-        YearAndDayNumber,
+        GregorianUTC,      /** hh:mm:ss YYYY-MM-DD, example: 12:45:00 21-03-2011      */
+        YearAndDayNumber,  /** YYddd,               example: 11080 (80th day of 2011) */
+        JulianUTC,         /** YY/ddd hh:mm:ss      example: 11/080 12:45:00          */
+        GregorianLocal,    /** hh:mm:ss YYYY-MM-DD, example: 12:45:00 21-03-2011      */
+        JulianLocal,       /** YY/ddd hh:mm:ss      example: 11/080 12:45:00          */
+        Elapsed,           /** dd/hh:mm:ss          example: 02/12:00:00              */
     };
 
     DateLabelFormatter(DateFormat format) : m_dateFormat(format) {}
