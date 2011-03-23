@@ -29,7 +29,7 @@
 #include "ui_opticalPayloadDialog.h"
 #include <QDialog>
 
-#include "sta-src/Scenario/staschema.h"
+#include <Scenario/staschema.h>
 
 
 

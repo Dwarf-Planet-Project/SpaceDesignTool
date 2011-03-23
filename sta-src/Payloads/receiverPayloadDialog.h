@@ -26,8 +26,8 @@
 #define RECEIVERPAYLOADDIALOG_H
 
 #include "ui_receiverPayloadDialog.h"
+#include <Scenario/staschema.h>
 #include <QDialog>
-#include "sta-src/Scenario/staschema.h"
 #include <QObject>
 #include <QStackedWidget>
 #include <QtGui>

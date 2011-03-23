@@ -27,7 +27,7 @@
 #define TRANSMITTERPAYLOADDIALOG_H
 
 #include "ui_transmitterPayloadDialog.h"
-#include "sta-src/Scenario/staschema.h"
+#include <Scenario/staschema.h>
 #include <QDialog>
 #include <QObject>
 #include <QStackedWidget>
