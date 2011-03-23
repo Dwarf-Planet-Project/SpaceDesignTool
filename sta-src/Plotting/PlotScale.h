@@ -28,6 +28,7 @@
 #ifndef _PLOTTING_PLOTSCALE_H_
 #define _PLOTTING_PLOTSCALE_H_
 
+#include "PlotLabelFormatter.h"
 #include <QList>
 
 
@@ -38,7 +39,9 @@
 class PlotScale
 {
 public:
-    virtual ~PlotScale() {}
+    PlotScale();
+
+    virtual ~PlotScale();
 
     /** The scaled() method should map values in the visible area of a
       * plot to [0, 1]
@@ -50,13 +53,26 @@ public:
       */
     virtual double unscaled(double x) const = 0;
 
-    virtual PlotScale* clone() const = 0;
+    PlotScale* clone() const;
 
     /** Get a list of tick positions for this scale. This method will
       * return a list of between about 5 and 20 evenly spaced tick
       * positions at round numbers.
       */
     virtual QList<double> ticks() const = 0;
+
+    void setLabelFormatter(PlotLabelFormatter* formatter);
+
+    QString label(double value) const;
+
+protected:
+    /** This method must be overridden by PlotScale subclasses. It should
+      * copy all subclass-specific values to the new instance.
+      */
+    virtual PlotScale* cloneContents() const = 0;
+
+private:
+    PlotLabelFormatter* m_labelFormatter;
 };
 
 
@@ -82,7 +98,7 @@ public:
         return x * (m_maxValue - m_minValue) + m_minValue;
     }
 
-    virtual PlotScale* clone() const
+    virtual PlotScale* cloneContents() const
     {
         return new LinearPlotScale(m_minValue, m_maxValue);
     }

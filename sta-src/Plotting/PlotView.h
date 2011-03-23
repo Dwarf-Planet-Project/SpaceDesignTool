@@ -92,6 +92,9 @@ public:
     void setHorizontalScale(const PlotScale& scale);
     void setVerticalScale(const PlotScale& scale);
 
+    bool isEmpty() const;
+    void extrema(double& minX, double& minY, double& maxX, double& maxY) const;
+
     void paint(QPainter& painter);
 
 public slots:

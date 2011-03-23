@@ -20,6 +20,8 @@
 ######################################################################################
 
 
+CONFIG(release, debug|release):message(Release build)
+CONFIG(debug, debug|release):message(Debug build)
 
 #CONFIG += debug_and_release
 #CONFIG += release
@@ -362,20 +364,25 @@ VISUALIZATION_HEADERS = \
 # ############# Plotting Module ##############
 PLOT_SOURCES = \
     sta-src/Plotting/plottingtool.cpp \
+    sta-src/Plotting/PlotLabelFormatter.cpp \
     sta-src/Plotting/PlotScale.cpp \
     sta-src/Plotting/PlotStyle.cpp \
     sta-src/Plotting/PlotView.cpp \
     sta-src/Plotting/PlotView3D.cpp \
-    sta-src/Plotting/PlotGraphFromFile.cpp
+    sta-src/Plotting/PlotGraphFromFile.cpp \
+    sta-src/Plotting/TimePlotScale.cpp
 
 PLOT_HEADERS = \
     sta-src/Plotting/plottingtool.h \
     sta-src/Plotting/PlotDataSource.h \
+    sta-src/Plotting/PlotLabelFormatter.h \
     sta-src/Plotting/PlotScale.h \
     sta-src/Plotting/PlotStyle.h \
     sta-src/Plotting/PlotView.h \
     sta-src/Plotting/PlotView3D.h \
-    sta-src/Plotting/PlotGraphFromFile.h
+    sta-src/Plotting/PlotGraphFromFile.h \
+    sta-src/Plotting/TimePlotScale.h
+
 PLOT_FORMS = sta-src/Plotting/plottingtool.ui
 
 # ################ RAM ############

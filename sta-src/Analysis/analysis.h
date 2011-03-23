@@ -100,6 +100,8 @@ public slots:  // Added by Ana
     // void InsertingComboBox(int);
     // void AddDefaultTime();
 
+private:
+    void setPlotScales();
 
 private:
     SpaceScenario* m_scenario;

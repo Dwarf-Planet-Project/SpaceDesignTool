@@ -134,7 +134,7 @@ PlotView::paint(QPainter& painter)
     painter.fillRect(0, 0, width(), height(), Qt::white);
 
     const float maxLabelWidth = 100.0f;
-    const float labelHeight = 15.0f;
+    const float labelHeight = 2 * 15.0f;
     const float labelPlotSpacing = 5.0f; // space between axis labels and plot
 
     // Get the dimensions of the plot excluding the margins
@@ -197,7 +197,7 @@ PlotView::paint(QPainter& painter)
         float sx = float(m_horizontalScale->scaled(x)) * xscale + m_leftMargin;
         painter.drawText(QRectF(sx - maxLabelWidth / 2.0f, height() - m_bottomMargin + labelPlotSpacing, maxLabelWidth, labelHeight),
                          Qt::AlignHCenter | Qt::AlignTop,
-                         QString("%1").arg(x));
+                         m_horizontalScale->label(x));
     }
 
     foreach (double y, yTicks)
@@ -205,7 +205,7 @@ PlotView::paint(QPainter& painter)
         float sy = (1.0f - float(m_verticalScale->scaled(y))) * yscale + m_topMargin;
         painter.drawText(QRectF(0.0f, sy - labelHeight / 2.0f, m_leftMargin - labelPlotSpacing, labelHeight),
                          Qt::AlignVCenter | Qt::AlignRight,
-                         QString("%1").arg(y));
+                         m_verticalScale->label(y));
     }
 
     // Draw plots
@@ -305,6 +305,83 @@ PlotView::setVerticalScale(const PlotScale& scale)
 }
 
 
+/** Returns true if there is at least one non-empty data set for this
+  * plot.
+  */
+bool
+PlotView::isEmpty() const
+{
+    foreach (const Plot* p, m_plots)
+    {
+        if (p->data->getPointCount() > 0)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+/** Get the range of values of the plot data. Returns all zeros if the
+  * plot is empty.
+  */
+void
+PlotView::extrema(double &minX, double &minY, double &maxX, double &maxY) const
+{
+    if (isEmpty())
+    {
+        minX = 0;
+        minY = 0;
+        maxX = 0;
+        maxY = 0;
+        return;
+    }
+
+    minX =  numeric_limits<double>::infinity();
+    maxX = -numeric_limits<double>::infinity();
+    minY =  numeric_limits<double>::infinity();
+    maxY = -numeric_limits<double>::infinity();
+
+    foreach (const Plot* p, m_plots)
+    {
+        for (unsigned int i = 0; i < p->data->getPointCount(); ++i)
+        {
+            Vector2d v = p->data->getPoint(i);
+            minX = min(minX, v.x());
+            maxX = max(maxX, v.x());
+            minY = min(minY, v.y());
+            maxY = max(maxY, v.y());
+        }
+    }
+
+    // If the plotted values are all identical (or very close to
+    // that), the range will be nearly zero. If it *is* zero, we'll
+    // end up with division by zero later one; if it's extremely close
+    // to zero, the arithmetic won't blow up, but we'll likely end
+    // up plotting data that shows floating point roundoff errors
+    // rather than a flat line. We'll enforce a minimum range based
+    // on the values of min and max.
+    double minXRange = max(max(abs(minX), abs(maxX)) * 1.0e-12, 1.0e-30);
+    double minYRange = max(max(abs(minY), abs(maxY)) * 1.0e-12, 1.0e-30);
+
+    // If the ranges are less than the minima, expand them while maintaining
+    // the same middle point.
+    if (maxX - minX < minXRange)
+    {
+        double midX = (minX + maxX) * 0.5;
+        minX = midX - 0.5 * minXRange;
+        maxX = midX + 0.5 * minXRange;
+    }
+    if (maxY - minY < minYRange)
+    {
+        double midY = (minY + maxY) * 0.5;
+        minY = midY - 0.5 * minYRange;
+        maxY = midY + 0.5 * minYRange;
+    }
+}
+
+
 /** Automatically set the horizontal and vertical scales to ranges
   * just large enough to contain all plots. The scales are *not*
   * automatically updated if the plot data changes after autoScale()
@@ -320,6 +397,7 @@ PlotView::setVerticalScale(const PlotScale& scale)
 void
 PlotView::autoScale()
 {
+#if 0
     bool empty = true;
 
     double minX =  numeric_limits<double>::infinity();
@@ -371,6 +449,17 @@ PlotView::autoScale()
             maxY = midY + 0.5 * minYRange;
         }
 
+        setHorizontalScale(LinearPlotScale(minX, maxX));
+        setVerticalScale(LinearPlotScale(minY, maxY));
+    }
+#endif
+    if (!isEmpty())
+    {
+        double minX = 0.0;
+        double minY = 0.0;
+        double maxX = 0.0;
+        double maxY = 0.0;
+        extrema(minX, minY, maxX, maxY);
         setHorizontalScale(LinearPlotScale(minX, maxX));
         setVerticalScale(LinearPlotScale(minY, maxY));
     }

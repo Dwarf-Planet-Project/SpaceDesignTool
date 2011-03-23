@@ -29,6 +29,53 @@
 using namespace std;
 
 
+PlotScale::PlotScale() :
+    m_labelFormatter(NULL)
+{
+    m_labelFormatter = new NumericLabelFormatter();
+}
+
+
+PlotScale::~PlotScale()
+{
+    delete m_labelFormatter;
+}
+
+
+PlotScale*
+PlotScale::clone() const
+{
+    PlotScale* newScale = cloneContents();
+    newScale->setLabelFormatter(m_labelFormatter);
+
+    return newScale;
+}
+
+
+/** Set the label formatter for this scale. The default formatter
+  * simply returns the string representation of numeric values.
+  */
+void
+PlotScale::setLabelFormatter(PlotLabelFormatter *labelFormatter)
+{
+    if (labelFormatter != NULL)
+    {
+        delete m_labelFormatter;
+        m_labelFormatter = labelFormatter->clone();
+    }
+}
+
+
+/** Get the string label for a specified value. This label is appropriate
+  * to use for labeling ticks on an axis.
+  */
+QString
+PlotScale::label(double value) const
+{
+    return m_labelFormatter->format(value);
+}
+
+
 QList<double>
 LinearPlotScale::ticks() const
 {
@@ -69,4 +116,3 @@ LinearPlotScale::ticks() const
 
     return t;
 }
-

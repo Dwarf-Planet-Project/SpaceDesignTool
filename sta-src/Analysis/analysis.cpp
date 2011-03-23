@@ -41,6 +41,7 @@
 
 #include "Plotting/PlotView.h"
 #include "Plotting/PlotView3D.h"
+#include "Plotting/TimePlotScale.h"
 #include "Help/HelpBrowser.h"
 
 #include <cmath>
@@ -1324,6 +1325,94 @@ void analysis::Warnings(int i)
 }
 
 
+// Create an appropriate plot scale based on the parameter and units requested.
+// Right now, this function does special handling of time/data parameters and
+// assigns a simple linear scale for everything else.
+static
+PlotScale* CreatePlotScale(const QString& parameterName, const QString& units, double minValue, double maxValue)
+{
+    PlotScale* scale = NULL;
+
+    if (parameterName == "Time")
+    {
+        if (units == "Gregorian UTC")
+        {
+            scale = new TimePlotScale(minValue, maxValue);
+            DateLabelFormatter formatter(DateLabelFormatter::GregorianUTC);
+            scale->setLabelFormatter(&formatter);
+        }
+        else if (units == "Gregorian LCL")
+        {
+            scale = new TimePlotScale(minValue, maxValue);
+            DateLabelFormatter formatter(DateLabelFormatter::GregorianLocal);
+            scale->setLabelFormatter(&formatter);
+        }
+        else if (units == "Mission Elapsed")
+        {
+            scale = new TimePlotScale(minValue, maxValue);
+            DateLabelFormatter formatter(DateLabelFormatter::Elapsed);
+            scale->setLabelFormatter(&formatter);
+        }
+        else if (units == "Julian UTC")
+        {
+            scale = new TimePlotScale(minValue, maxValue);
+            DateLabelFormatter formatter(DateLabelFormatter::JulianUTC);
+            scale->setLabelFormatter(&formatter);
+        }
+        else if (units == "Julian LCL")
+        {
+            scale = new TimePlotScale(minValue, maxValue);
+            DateLabelFormatter formatter(DateLabelFormatter::JulianLocal);
+            scale->setLabelFormatter(&formatter);
+        }
+        else if (units == "YYDDD")
+        {
+            scale = new TimePlotScale(minValue, maxValue);
+            DateLabelFormatter formatter(DateLabelFormatter::YearAndDayNumber);
+            scale->setLabelFormatter(&formatter);
+        }
+    }
+
+    // If we didn't create a special scale, just use the default
+    if (!scale)
+    {
+        scale = new LinearPlotScale(minValue, maxValue);
+    }
+
+    return scale;
+}
+
+
+void analysis::setPlotScales()
+{
+    double minX = 0.0;
+    double minY = 0.0;
+    double maxX = 0.0;
+    double maxY = 0.0;
+    plotView2D->extrema(minX, minY, maxX, maxY);
+
+
+    QList<QTreeWidgetItem*> xSelection = treeWidgetXaxis->selectedItems();
+    QList<QTreeWidgetItem*> ySelection = treeWidgetYaxis->selectedItems();
+
+    QString xParamName = analysis::ReadParameter(xSelection.at(0));
+    QString yParamName = analysis::ReadParameter(ySelection.at(0));
+    QString xUnits = analysis::ReadUnits(treeWidgetXaxis, xSelection.at(0));
+    QString yUnits = analysis::ReadUnits(treeWidgetYaxis, ySelection.at(0));
+
+    PlotScale* xAxisScale = CreatePlotScale(xParamName, xUnits, minX, maxX);
+    PlotScale* yAxisScale = CreatePlotScale(yParamName, yUnits, minY, maxY);
+    plotView2D->setHorizontalScale(*xAxisScale);
+    plotView2D->setVerticalScale(*yAxisScale);
+
+    // Clean up; the PlotView keeps its own copies of the scales
+    delete xAxisScale;
+    delete yAxisScale;
+    //plotView2D->setHorizontalScale();
+    //plotView2D->autoScale();
+}
+
+
 void analysis::on_GeneratePushButton_clicked()
 {
     /*
@@ -1436,8 +1525,8 @@ void analysis::on_GeneratePushButton_clicked()
             plotView2D->setTitle(PlotTitle);
             plotView2D->setLeftLabel(DataStructure[1].ParameterTitles[0]);
             plotView2D->setBottomLabel(DataStructure[0].ParameterTitles[0]);
-            plotView2D->autoScale();
-            plotView2D->setMinimumSize(600, 400); // Rectangle
+            setPlotScales();
+            plotView2D->setMinimumSize(640, 480); // Rectangle
 
             QHBoxLayout *buttonLayout = new QHBoxLayout;
             buttonLayout->addStretch();
@@ -3316,108 +3405,30 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                     {
                         QString TimeCoordinate=analysis::ReadUnits(Tree.at(a),SelParameters.at(i));
 
-                        //Options of Time
-                        if(TimeCoordinate=="MJD")
+                        // Options of Time
+                        if (TimeCoordinate == "MJD")
                         {
                             LineData.append(MJDdate[index]);
                         }
-                        if(TimeCoordinate=="Julian Date")
+                        else if (TimeCoordinate == "Julian Date")
                         {
-                            JulianDate[index]=sta::MjdToJd(MJDdate[index]);
-                            LineData.append(JulianDate[index]);
+                            LineData.append(sta::MjdToJd(MJDdate[index]));
                         }
-                        if(TimeCoordinate=="Julian UTC") //not available to plot
+                        else if (TimeCoordinate == "Mission Elapsed")
                         {
-                            //format:DayOfYear/YY UTCTime
-                            JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
-                            TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
-                            int Year=TimeDateVector[index].date().year();
-                            QString YearPreLastDigit=QString::number(Year).at(2);
-                            QString YearLastDigit=QString::number(Year).at(3);
-                            QString DDD=sta::calendarToDayOfYear(TimeDateVector[index]);
-                            QString Time = TimeDateVector[index].time().toString(Qt::TextDate);
-                            //stream<<DayOfYear<<"/"<<YearPreLastDigit<<YearLastDigit<<" "<<TimeDateVector[index].time().hour()<<":"<<TimeDateVector[index].time().minute()<<":"<<TimeDateVector[index].time().second()<<"\t";
+                            // Generate times relative to the start epoch
+                            LineData.append(MJDdate[index] - StartEpoch);
                         }
-                        if(TimeCoordinate=="Gregorian LCL")  //not available to plot
+                        else if (TimeCoordinate == "Julian UTC"    ||
+                                 TimeCoordinate == "Gregorian LCL" ||
+                                 TimeCoordinate == "Gregorian UTC" ||
+                                 TimeCoordinate == "Julian LCL"    ||
+                                 TimeCoordinate == "YYDDD")
                         {
-                            QDateTime CurrentDate=QDateTime::currentDateTime();
-                            QDateTime CurrentUTC=CurrentDate.toUTC();
-                            double DisplayDate[inumber];
-                            QDateTime DisplayDateCalendar[inumber];
-                            double CurrentDateInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentDate));
-                            double CurrentUtcInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentUTC));
-
-                            if(CurrentUtcInMJD-CurrentDateInMJD<0)
-
-                            {
-                                DisplayDate[index]=MJDdate[index]+(CurrentDateInMJD-CurrentUtcInMJD)+0.00001;
-                            }
-                            else
-                            {
-                                DisplayDate[index]=MJDdate[index]-(CurrentUtcInMJD-CurrentDateInMJD)+0.00001;
-                            }
-                            DisplayDateCalendar[index]=sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]));
-
-                            QList<QString>Date= sta::TimeLayout(DisplayDateCalendar[index].date().day(),DisplayDateCalendar[index].date().month());
-                            QString Time=DisplayDateCalendar[index].time().toString(Qt::TextDate);
+                            // For all of these date types, we do nothing special here. The PlotView
+                            // class handles the formatting of dates
+                            LineData.append(MJDdate[index]);
                         }
-                        if(TimeCoordinate=="Gregorian UTC") // not available to plot
-                        {
-                            JulianDate[index]=sta::MjdToJd(MJDdate[index])+0.00001;
-                            TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
-                            QList<QString>Date=sta::TimeLayout(TimeDateVector[index].date().day(),TimeDateVector[index].date().month());
-                            QString Time=TimeDateVector[index].time().toString(Qt::TextDate);
-                        }
-                        if(TimeCoordinate=="Julian LCL") // not available to plot
-                        {
-                            QDateTime CurrentDate=QDateTime::currentDateTime();
-                            QDateTime CurrentUTC=CurrentDate.toUTC();
-                            double DisplayDate[inumber];
-                            QDateTime DisplayDateCalendar[inumber];
-                            double CurrentDateInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentDate));
-                            double CurrentUtcInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentUTC));
-
-                            if(CurrentUtcInMJD-CurrentDateInMJD<0)
-
-                            {
-                                DisplayDate[index]=MJDdate[index]+(CurrentDateInMJD-CurrentUtcInMJD)+0.00001;
-                            }
-                            else
-                            {
-                                DisplayDate[index]=MJDdate[index]-(CurrentUtcInMJD-CurrentDateInMJD)+0.00001;
-                            }
-                            DisplayDateCalendar[index]=sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]));
-
-                            QString DDD=sta::calendarToDayOfYear(sta::JdToCalendar(sta::MjdToJd(MJDdate[index]+0.00001)));
-                            int Year=(sta::JdToCalendar(sta::MjdToJd(MJDdate[index]))).date().year();
-                            QString YearPreLastDigit=QString::number(Year).at(2);
-                            QString YearLastDigit=QString::number(Year).at(3);
-
-                            QString Time=DisplayDateCalendar[index].time().toString(Qt::TextDate);
-                        }
-
-                        if(TimeCoordinate=="Mission Elapsed") //not available to plot
-                        {
-                            QString Elapsed= sta::MissionElapsedTime(MJDdate[index],StartEpoch);
-                        }
-                        if(TimeCoordinate=="YYDDD") //not available to plot
-                        {
-                            JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
-                            TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
-                            int Year=TimeDateVector[index].date().year();
-                            QDateTime FirstDayCurrentYear(QDate(Year,1,1),QTime(0,0,0));
-                            double StartYearTime=sta::JdToMjd(sta::CalendarToJd(FirstDayCurrentYear));
-                            QString YearPreLastDigit=QString::number(Year).at(2);
-                            QString YearLastDigit=QString::number(Year).at(3);
-
-                            DayOfYear[index]=sta::MjdToFromEpoch(StartYearTime,MJDdate[index],"Days")+1;
-                            QList<double>DDD=sta::DayOfYearToDDD(DayOfYear[index]);
-                        }
-
-                       /* if(TimeCoordinate=="GMT")
-                        {
-
-                        }*/
                     }
 
                     else if(name=="Epoch")
