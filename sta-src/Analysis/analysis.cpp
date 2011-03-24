@@ -176,6 +176,46 @@ static StateVector ConvertStateVector(const StateVector& state, const QString& c
     {
         toSystem = sta::COORDSYS_EME_B1950;
     }
+   /* else if (coordSys == "ICRF")
+    {
+        toSystem = sta::COORDSYS_ICRF;
+    }
+    else if (coordSys == "Mean of Date")
+    {
+        toSystem = sta::COORDSYS_MEAN_OF_DATE;
+    }
+    else if (coordSys == "Mean of Epoch")
+    {
+        toSystem = sta::COORDSYS_MEAN_OF_EPOCH;
+    }
+    else if (coordSys == "True of Date")
+    {
+        toSystem = sta::COORDSYS_TRUE_OF_DATE;
+    }
+    else if (coordSys == "True of Epoch")
+    {
+        toSystem = sta::COORDSYS_TRUE_OF_EPOCH;
+    }
+    else if (coordSys == "TEME of Date")
+    {
+        toSystem = sta::COORDSYS_TEME_OF_Date;
+    }
+    else if (coordSys == "TEME of Epoch")
+    {
+        toSystem = sta::COORDSYS_TEME_OF_EPOCH;
+    }
+    else if (coordSys == "Alignment at Epoch")
+    {
+        toSystem = sta::COORDSYS_ALIGN_AT_EPOCH;
+    }
+    else if (coordSys == "Rotating")
+    {
+        toSystem = sta::COORDSYS_ROT;
+    }
+    else if (coordSys == "Normalized Rotating")
+    {
+        toSystem = sta::COORDSYS_ROT_NORM;
+    }*/
     Q_ASSERT(toSystem != sta::COORDSYS_INVALID);
 
     return CoordinateSystem::convert(state,
@@ -1732,7 +1772,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
     QTreeWidgetItem*parameter=treeWidgetShowInReport->topLevelItem(i);
     QString name=parameter->text(0);
 
-        if(name=="Azimuth"||name=="Elevation"||name=="Range"||name=="Access Time")
+    if(name=="Azimuth"||name=="Elevation"||name=="Range"||name=="Access Time")
     {
 
         ReadCoverage=true;
@@ -1789,8 +1829,8 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
         double StopEpoch=arc->trajectorySampleTime(totalTime);
 
-            int CovIndex[4]; //line of Coverage Report for each parameter
-            CovIndex[0]=CovIndex[1]=CovIndex[2]=CovIndex[3]=1; //0-Azimuth, 1-Elevation, 2-Range, 3-Access Time
+        int CovIndex[4]; //line of Coverage Report for each parameter
+        CovIndex[0]=CovIndex[1]=CovIndex[2]=CovIndex[3]=1; //0-Azimuth, 1-Elevation, 2-Range, 3-Access Time
         int Comm1Index[6]; //line of Comminucation Report 1 for each parameter
         Comm1Index[0]=Comm1Index[1]=Comm1Index[2]=Comm1Index[3]=Comm1Index[4]=Comm1Index[5]=1;
         int Comm2Index[6];
@@ -1890,11 +1930,11 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
         }
         }
 
-            for (int k=0;k<selectedTimes.size();k++)
+        for (int k=0;k<selectedTimes.size();k++)
         {
         int ControlStart=0;
         int ControlStop=0;
-                if ((StartTime[k]>(StopEpoch+2*pow(10,-5)))||(StartTime[k]<=(StartEpoch-2*pow(10,-5))))
+        if ((StartTime[k]>(StopEpoch+2*pow(10,-5)))||(StartTime[k]<=(StartEpoch-2*pow(10,-5))))
         {
             ControlStart++;
         }
@@ -1909,9 +1949,8 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                 int AccessNow=0;
                 int AccessNumber=0;
 
-                if((ControlStart==0)&&(ControlStop==0))
-
-        {
+         if((ControlStart==0)&&(ControlStop==0))
+         {
             int i=0;
             while(( (arc->trajectorySampleTime(i)))<(StartTime[k]))
             {
@@ -1965,6 +2004,19 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
             double MJDdate[inumber];
             double JulianDate[inumber];
+            double TDBSeconds[inumber];
+            double TAIDate[inumber];
+            double TDTDate[inumber];
+            double JDTDT[inumber];
+            double JDGPS[inumber];
+            double JDTAI[inumber];
+            double GPSDate[inumber];
+            TimeConversions::GregorianDate GregUTC[inumber];
+            double GregSec[inumber];
+            double DateSec[inumber];
+            double OrbitalPeriod;
+            double EarthCanTime[inumber];
+
             QDateTime GregorianLCL[inumber];
             double CurrentJulianDate=sta::DateTimeTOjulian(QDateTime::currentDateTime());
             double JulianLCL[inumber];
@@ -2063,99 +2115,131 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                     QString TimeCoordinate=analysis::ReadCoordinateSys(treeWidgetShowInReport,parameter);
 
                     //Options of Time
-                    if(TimeCoordinate=="MJD")
+                    if(TimeCoordinate=="MJD")                               // Added by Ana
                     {
-                        stream<<MJDdate[index]<<"\t";
+                        JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
+                        GregUTC[index]=TimeConversions::GregorianDate::UTCDateFromTDBJD(JulianDate[index]);
+                        double JulUTC[inumber];
+                        double MjdUTC[inumber];
+                        JulUTC[index]= calendarTOjulian(GregUTC[index].year(), GregUTC[index].month(), GregUTC[index].day(), GregUTC[index].hour(), GregUTC[index].minute(),GregUTC[index].second());
+                        MjdUTC[index]=sta::JdToMjd(JulUTC[index]);
+                        stream<<MjdUTC[index]<<"\t";
+
                     }
-                    if(TimeCoordinate=="Julian Date")
+                    if(TimeCoordinate=="Julian TDB")                        // Added by Ana
                     {
                         JulianDate[index]=sta::MjdToJd(MJDdate[index]);
+
                         stream<<JulianDate[index]<<"\t";
                     }
-                    if(TimeCoordinate=="Julian UTC")
+                    if(TimeCoordinate=="YYDDD TDB")                         // Added by Ana
                     {
-                        //format:DayOfYear/YY UTCTime
-                        JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
-                        TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
-                        int Year=TimeDateVector[index].date().year();
-                                        QString YearPreLastDigit=QString::number(Year).at(2);
-                        QString YearLastDigit=QString::number(Year).at(3);
-                                        QString DDD=sta::calendarToDayOfYear(TimeDateVector[index]);
-
-                                        QString Time = TimeDateVector[index].time().toString(Qt::TextDate);
-                                        stream<<DDD<<"/"<<YearPreLastDigit<<YearLastDigit<<" "<<Time;
-                                    }
-                    if(TimeCoordinate=="Gregorian LCL")
-                    {
-                        QDateTime CurrentDate=QDateTime::currentDateTime();
-                        QDateTime CurrentUTC=CurrentDate.toUTC();
-                        double DisplayDate[inumber];
-                        QDateTime DisplayDateCalendar[inumber];
-                        double CurrentDateInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentDate));
-                        double CurrentUtcInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentUTC));
-
-                        if(CurrentUtcInMJD-CurrentDateInMJD<0)
-
-                        {
-                        DisplayDate[index]=MJDdate[index]+(CurrentDateInMJD-CurrentUtcInMJD)+0.00001;
-                        }
-                        else
-                        {
-                        DisplayDate[index]=MJDdate[index]-(CurrentUtcInMJD-CurrentDateInMJD)+0.00001;
-                        }
-                        DisplayDateCalendar[index]=sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]));
-
-                                        QList<QString>Date= sta::TimeLayout(DisplayDateCalendar[index].date().day(),DisplayDateCalendar[index].date().month());
-                                        QString Time=DisplayDateCalendar[index].time().toString(Qt::TextDate);
-                                        stream<<Date[0]<<"/"<<Date[1]<<"/"<<DisplayDateCalendar[index].date().year()<<" "<<Time<<"\t";
+//                      //format:DayOfYear/YY TDBTime
+//                      JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
+//                      TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
+//                      int Year=TimeDateVector[index].date().year();
+//                                      QString YearPreLastDigit=QString::number(Year).at(2);
+//                      QString YearLastDigit=QString::number(Year).at(3);
+//                                      QString DDD=sta::calendarToDayOfYear(TimeDateVector[index]);
+//                                      QString Time = TimeDateVector[index].time().toString(Qt::TextDate);
+//                                      stream<<DDD<<"/"<<YearPreLastDigit<<YearLastDigit<<" "<<Time;
                     }
-                    if(TimeCoordinate=="Gregorian UTC")
+                    if(TimeCoordinate=="Gregorian UTC")                     // Added by Ana. Corrected by Catarina
                     {
+                        // Convert MJD to Julian Date in TDB
+                        JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
+                        // Convert to gregorian UTC
+                        GregUTC[index]=TimeConversions::GregorianDate::UTCDateFromTDBJD(JulianDate[index]);
+                        // This is to patch Ana's code
+                        QDateTime DisplayDateCalendar[inumber];
 
+                         stream<<GregUTC[index].day()<<"/"<<GregUTC[index].month()<<"/"<<GregUTC[index].year()<<" "<<GregUTC[index].hour()<<":"<<GregUTC[index].minute()<<":"<<GregUTC[index].second()<<"\t";
+                    }
+                    if(TimeCoordinate=="Gregorian LCL")                     // Added by Catarina. Missing: Time zones
+                    {
+                          // Convert MJD to Julian Date in TDB
+                          JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
+                          // Convert to gregorian UTC
+                          GregUTC[index]=TimeConversions::GregorianDate::UTCDateFromTDBJD(JulianDate[index]);
+                          // Missing time zones
+
+                          // This is to patch Ana's code
+                          QDateTime DisplayDateCalendar[inumber];
+                          stream<<GregUTC[index].day()<<"/"<<GregUTC[index].month()<<"/"<<GregUTC[index].year()<<" "<<GregUTC[index].hour()<<":"<<GregUTC[index].minute()<<":"<<GregUTC[index].second()<<"\t";
+                    }
+                    if(TimeCoordinate=="Gregorian TDB")                     // Added by Ana. Corrected by Catarina
+                    {
                         JulianDate[index]=sta::MjdToJd(MJDdate[index])+0.00001;
                         TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
-                                        QList<QString>Date=sta::TimeLayout(TimeDateVector[index].date().day(),TimeDateVector[index].date().month());
-                                        QString Time=TimeDateVector[index].time().toString(Qt::TextDate);
-                                        stream<<Date[0]<<"/"<<Date[1]<<"/"<<TimeDateVector[index].date().year()<<" "<<Time<<"\t";
-
+                        QList<QString>Date=sta::TimeLayout(TimeDateVector[index].date().day(),TimeDateVector[index].date().month());
+                        QString Time=TimeDateVector[index].time().toString(Qt::TextDate);
+                        stream<<Date[0]<<"/"<<Date[1]<<"/"<<TimeDateVector[index].date().year()<<" "<<Time<<"\t";
                     }
-                    if(TimeCoordinate=="Julian LCL")
+                    if(TimeCoordinate=="Julian UTC")                        // Added by Ana. Corrected by Catarina
                     {
-                        QDateTime CurrentDate=QDateTime::currentDateTime();
-                        QDateTime CurrentUTC=CurrentDate.toUTC();
-                        double DisplayDate[inumber];
-                        QDateTime DisplayDateCalendar[inumber];
-                        double CurrentDateInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentDate));
-                        double CurrentUtcInMJD=sta::JdToMjd(sta::CalendarToJd(CurrentUTC));
+                        JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
+                        GregUTC[index]=TimeConversions::GregorianDate::UTCDateFromTDBJD(JulianDate[index]);
 
-                        if(CurrentUtcInMJD-CurrentDateInMJD<0)
-                        {
-                            DisplayDate[index]=MJDdate[index]+(CurrentDateInMJD-CurrentUtcInMJD)+0.00001;
-                        }
-                        else
-                        {
-                            DisplayDate[index]=MJDdate[index]-(CurrentUtcInMJD-CurrentDateInMJD)+0.00001;
-                        }
-                        DisplayDateCalendar[index]=sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]));
-
-                        //QString DDD=sta::calendarToDayOfYear(sta::JdToCalendar(sta::MjdToJd(MJDdate[index]+0.00001)));
-                        QString DDD=sta::calendarToDayOfYear(sta::JdToCalendar(sta::MjdToJd(DisplayDate[index]+0.00001)));
-
-                        int Year=(sta::JdToCalendar(sta::MjdToJd(MJDdate[index]))).date().year();
+                        QString DDD=sta::calendarToDayOfYear(sta::JdToCalendar(JulianDate[index]));
+                        int Year=GregUTC[index].year();
+                        //int Year=(sta::JdToCalendar(sta::MjdToJd(MJDdate[index]))).date().year();
                         QString YearPreLastDigit=QString::number(Year).at(2);
                         QString YearLastDigit=QString::number(Year).at(3);
 
-                        QString Time=DisplayDateCalendar[index].time().toString(Qt::TextDate);
-                        stream<<DDD<<"/"<<YearPreLastDigit<<YearLastDigit<<" "<<Time<<"\t";
+                        //QString Time=DisplayDateCalendar[index].time().toString(Qt::TextDate);
+                        stream<<DDD<<"/"<<YearPreLastDigit<<YearLastDigit<<" "<<GregUTC[index].hour()<<":"<<GregUTC[index].minute()<<":"<<GregUTC[index].second()<<"\t";
 
                     }
+                    if(TimeCoordinate=="Julian Date")                       // Added by Catarina
+                    {
+                        JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
+                        // Convert to Gregorian UTC
+                        GregUTC[index]=TimeConversions::GregorianDate::UTCDateFromTDBJD(JulianDate[index]);
+                        // Convert gregoUTC to JulianUTC
+                        double JulUTC[inumber];
+                        JulUTC[index]= calendarTOjulian(GregUTC[index].year(), GregUTC[index].month(), GregUTC[index].day(), GregUTC[index].hour(), GregUTC[index].minute(),GregUTC[index].second());
 
-                    if(TimeCoordinate=="Mission Elapsed")
+                        stream<<JulUTC[index]<<"\t";
+                    }
+                    if(TimeCoordinate=="Julian LCL")                        // Added by Catarina. Missing: time zones
+                    {
+                        JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
+                        // Convert to Gregorian UTC
+                        GregUTC[index]=TimeConversions::GregorianDate::UTCDateFromTDBJD(JulianDate[index]);
+                        // Convert gregoUTC to JulianUTC
+                        double JulUTC[inumber];
+                        JulUTC[index]= calendarTOjulian(GregUTC[index].year(), GregUTC[index].month(), GregUTC[index].day(), GregUTC[index].hour(), GregUTC[index].minute(),GregUTC[index].second());
+
+                        // Need to add time zones
+
+                        stream<<JulUTC[index]<<"\t";
+                    }
+                    if(TimeCoordinate=="Mission Elapsed")                   // Added by Ana
                     {
                         QString Elapsed= sta::MissionElapsedTime(MJDdate[index],StartEpoch);
                         stream<<Elapsed<<"\t";
                     }
-                    if(TimeCoordinate=="YYDDD")
+                    if(TimeCoordinate=="Days from Epoch")                   // Added by Catarina
+                    {
+                         double ElapsedTimeDays=sta::MjdToFromEpoch(StartEpoch,MJDdate[index],"Days");
+                         stream<<ElapsedTimeDays<<"\t";
+                     }
+                    if(TimeCoordinate=="Hours from Epoch")                  // Added by Catarina
+                    {
+                         double ElapsedTimeHours=sta::MjdToFromEpoch(StartEpoch,MJDdate[index],"Hours");
+                         stream<<ElapsedTimeHours<<"\t";
+                     }
+                    if(TimeCoordinate=="Minutes from Epoch")                // Added by Catarina
+                     {
+                         double ElapsedTimeMinutes=sta::MjdToFromEpoch(StartEpoch,MJDdate[index],"Minutes");
+                         stream<<ElapsedTimeMinutes<<"\t";
+                     }
+                    if(TimeCoordinate=="Seconds from Epoch")                // Added by Catarina
+                     {
+                         double ElapsedTimeSeconds=sta::MjdToFromEpoch(StartEpoch,MJDdate[index],"Seconds");
+                         stream<<ElapsedTimeSeconds<<"\t";
+                     }
+                    if(TimeCoordinate=="YYDDD TDB")                         // Added by Ana
                     {
                         JulianDate[index]=sta::MjdToJd(MJDdate[index]+0.00001);
                         TimeDateVector[index]=sta::JdToCalendar(JulianDate[index]);
@@ -2166,23 +2250,107 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                         QString YearLastDigit=QString::number(Year).at(3);
 
                         DayOfYear[index]=sta::MjdToFromEpoch(StartYearTime,MJDdate[index],"Days")+1;
-                                        QList<double>DDD=sta::DayOfYearToDDD(DayOfYear[index]);
-                                        stream<<YearPreLastDigit<<YearLastDigit;
-                                        for(int i=0;i<DDD.size();i++)
-                                        {
-                                            stream<<DDD[i];
-                                        }
-                                        stream<<"\t";
+                        QList<double>DDD=sta::DayOfYearToDDD(DayOfYear[index]);
+                        stream<<YearPreLastDigit<<YearLastDigit;
+                        for(int i=0;i<DDD.size();i++)
+                        {
+                            stream<<DDD[i];
+                        }
+                        stream<<"\t";
                     }
-
-                                    /*if(TimeCoordinate=="GMT")
+                    if(TimeCoordinate=="Gregorian TAI")                     // Added by Catarina
                     {
+                        //Convert from MJD to JD
+                        JulianDate[index]=sta::MjdToJd(MJDdate[index])+0.00001;
+                        // Convert from JD to JD in Seconds
+                        TDBSeconds[index]=sta::JdToSecJ2000(JulianDate[index]);
+                        //Convert seconds TDB to seconds TAI
+                        TAIDate[index]= convertTDBtoTAI(TDBSeconds[index]);
+                        //Convert the seconds back to JD or directly to Gregorian
+                        JDTAI[index]=sta::SecJ2000ToJd(TAIDate[index]);
+                        TimeDateVector[index]=sta::JdToCalendar(JDTAI[index]);
 
-                                    }*/
+                        QList<QString>Date=sta::TimeLayout(TimeDateVector[index].date().day(),TimeDateVector[index].date().month());
+                        QString Time=TimeDateVector[index].time().toString(Qt::TextDate);
+                        stream<<Date[0]<<"/"<<Date[1]<<"/"<<TimeDateVector[index].date().year()<<" "<<Time<<"\t";
+
+                   }
+                    if(TimeCoordinate=="Gregorian TDT")                     // Added by Catarina
+                    {
+                        //Convert from MJD to JD
+                        JulianDate[index]=sta::MjdToJd(MJDdate[index])+0.00001;
+                        // Convert from JD to JD in Seconds
+                        TDBSeconds[index]=sta::JdToSecJ2000(JulianDate[index]);
+                        //Convert seconds TDB to seconds TDT
+                        TDTDate[index]= convertTDBtoTT(TDBSeconds[index]);
+                        //Convert the seconds back to JD or directly to Gregorian
+                        JDTDT[index]=sta::SecJ2000ToJd(TDTDate[index]);
+                        TimeDateVector[index]=sta::JdToCalendar(JDTDT[index]);
+
+                        QList<QString>Date=sta::TimeLayout(TimeDateVector[index].date().day(),TimeDateVector[index].date().month());
+                        QString Time=TimeDateVector[index].time().toString(Qt::TextDate);
+                        stream<<Date[0]<<"/"<<Date[1]<<"/"<<TimeDateVector[index].date().year()<<" "<<Time<<"\t";
                     }
+                    if(TimeCoordinate=="Julian Ephemeris Date")             // Added by Catarina
+                    {
+                        //Convert from MJD to JD
+                        JulianDate[index]=sta::MjdToJd(MJDdate[index])+0.00001;
+                        // Convert from JD to JD in Seconds
+                        TDBSeconds[index]=sta::JdToSecJ2000(JulianDate[index]);
+                        //Convert seconds TDB to seconds TDT
+                        TDTDate[index]= convertTDBtoTT(TDBSeconds[index]);
+                        //Convert the seconds back to JD or directly to Gregorian
+                        JDTDT[index]=sta::SecJ2000ToJd(TDTDate[index]);
+                        stream<<JDTDT[index]<<"\t";
+                    }
+                    if(TimeCoordinate=="Gregorian GPS")                     // Added by Catarina
+                    {
+                        // GPS = TAI - 19s
+                        //Convert from MJD to JD
+                        JulianDate[index]=sta::MjdToJd(MJDdate[index])+0.00001;
+                        // Convert from JD to JD in Seconds
+                        TDBSeconds[index]=sta::JdToSecJ2000(JulianDate[index]);
+                        //Convert seconds TDB to seconds TDT
+                        GPSDate[index]=  convertTDBtoGPS(TDBSeconds[index]);
+                        //Convert the seconds back to JD or directly to Gregorian
+                        JDGPS[index]=sta::SecJ2000ToJd(GPSDate[index]);
+                        TimeDateVector[index]=sta::JdToCalendar(JDGPS[index]);
 
-                            if(name=="Epoch")
-                            {
+                        QList<QString>Date=sta::TimeLayout(TimeDateVector[index].date().day(),TimeDateVector[index].date().month());
+                        QString Time=TimeDateVector[index].time().toString(Qt::TextDate);
+                        stream<<Date[0]<<"/"<<Date[1]<<"/"<<TimeDateVector[index].date().year()<<" "<<Time<<"\t";
+                    }
+                    if(TimeCoordinate=="Julian GPS")                        // Added by Catarina
+                    {
+                        //Convert from MJD to JD
+                        JulianDate[index]=sta::MjdToJd(MJDdate[index])+0.00001;
+                        // Convert from JD to JD in Seconds
+                        TDBSeconds[index]=sta::JdToSecJ2000(JulianDate[index]);
+                        //Convert seconds TDB to seconds TDT
+                        GPSDate[index]=  convertTDBtoGPS(TDBSeconds[index]);
+                        //Convert the seconds back to JD or directly to Gregorian
+                        JDGPS[index]=sta::SecJ2000ToJd(GPSDate[index]);
+
+                        stream<<JDGPS[index]<<"\t";
+                    }
+                    if(TimeCoordinate=="Earth canonical time")              // Added by Catarina
+                    {
+                        // Earth canonical time = mjsdtoseconds[index]/orbitalperiod
+                        // Convert MJD date into Seconds
+                        DateSec[index]=sta::MjdToFromEpoch(StartEpoch, MJDdate[index], "Seconds");
+                        // Earth orbital period
+                        double Unit;
+                        Unit=sqrt(6378.137*6378.137*6378.137/398600.441);
+                        // Earth canonical time
+                        EarthCanTime[index] = DateSec[index]/Unit;
+                        stream<<EarthCanTime[index]<<"\t";
+                    }
+                    if(TimeCoordinate=="GMT")   {}                          // Added by Catarina - not working
+
+                }
+
+                if(name=="Epoch")
+                     {
                                 QWidget*Box=treeWidgetShowInReport->itemWidget(parameter,2);
                                 QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
                                 QString TimeUnits=ComboBox->currentText();
@@ -2219,9 +2387,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
                                 stream << sta::ConvertUnits(Units, state.position.norm(), "km") << "\t";
                             }
-
-
-                            if((name=="Azimuth")||(name=="Elevation")||(name=="Range"))
+                if((name=="Azimuth")||(name=="Elevation")||(name=="Range"))
                             {
                                 QString ToCoord=analysis::ReadCoordinateSys(treeWidgetShowInReport,parameter);
                                 QString ToUnit=analysis::ReadUnits(treeWidgetShowInReport,parameter);
@@ -2317,7 +2483,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
                                 if(Comm1Index[0]<LineOfComm1Report.size())
                 {
-                    QString Line=LineOfComm1Report.at(Comm1Index[0]);
+                 QString Line=LineOfComm1Report.at(Comm1Index[0]);
 
                     double TimeCommReport=(Line.section("\t",0,0)).toDouble();
                     double EIRP=(Line.section("\t",1,1)).toDouble();
@@ -4831,6 +4997,14 @@ QComboBox* analysis::CoordinateBox()
     CoordinateBox2->addItem(tr("Ecliptic J2000"),3);
     CoordinateBox2->addItem(tr("Rotating"),4);
     CoordinateBox2->addItem(tr("Rotating Norm."),5);
+    CoordinateBox2->addItem(tr("ICRF"),6);
+    CoordinateBox2->addItem(tr("Mean of Date"),7);
+    CoordinateBox2->addItem(tr("Mean of Epoch"),8);
+    CoordinateBox2->addItem(tr("True of Date"),9);
+    CoordinateBox2->addItem(tr("True of Epoch"),10);
+    CoordinateBox2->addItem(tr("TEME of Date"),11);
+    CoordinateBox2->addItem(tr("TEME of Epoch"),12);
+    CoordinateBox2->addItem(tr("Alignment at Epoch"),13);
 
     // Guillermo says: smaller font is better for the row
     //QFont font("Helvetica", 10); CoordinateBox2->setFont(font);
@@ -4846,16 +5020,27 @@ QComboBox*analysis::TimeFramesBox()
       Description: returns a combobox with all the time frames available
       */
     QComboBox*TimeBox=new QComboBox();
-    TimeBox->addItem(tr("MJD"));
-    TimeBox->addItem(tr("Julian Date"));
-    TimeBox->addItem(tr("Julian UTC"));
-    TimeBox->addItem(tr("Julian LCL"));
+    TimeBox->addItem(tr("Days from Epoch"));
+    TimeBox->addItem(tr("Hours from Epoch"));
+    TimeBox->addItem(tr("Minutes from Epoch"));
+    TimeBox->addItem(tr("Seconds from Epoch"));
+    TimeBox->addItem(tr("Earth canonical time"));
+    //TimeBox->addItem(tr("GMT"));                  // It's not implemented yet
+    TimeBox->addItem(tr("Gregorian GPS"));
+    //TimeBox->addItem(tr("Gregorian LCL"));        // It's not implemented yet
+    TimeBox->addItem(tr("Gregorian TAI"));
+    TimeBox->addItem(tr("Gregorian TDB"));
+    TimeBox->addItem(tr("Gregorian TDT"));
     TimeBox->addItem(tr("Gregorian UTC"));
-    TimeBox->addItem(tr("Gregorian LCL"));
-    TimeBox->addItem(tr("YYDDD"));
+    TimeBox->addItem(tr("Julian Ephemeris Date"));
+   // TimeBox->addItem(tr("Julian LCL"));           // It's not implemented yet
+    TimeBox->addItem(tr("Julian GPS"));
+    TimeBox->addItem(tr("Julian TDB"));
+    TimeBox->addItem(tr("Julian UTC"));
+    TimeBox->addItem(tr("Julian Date"));
     TimeBox->addItem(tr("Mission Elapsed"));
-    //TimeBox->addItem(tr("GMT"));
-
+    TimeBox->addItem(tr("MJD"));
+    TimeBox->addItem(tr("YYDDD TDB"));
 
     // Guillermo says: smaller font is better for the row
     //QFont font("Helvetica", 10); TimeBox->setFont(font);
