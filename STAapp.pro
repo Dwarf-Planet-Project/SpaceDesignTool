@@ -673,9 +673,10 @@ win32 {
     # __alignof e.g. Vector4d is 16. Until we figure out what's going on, we'll
     # just disable the assertions. Since Eigen never generates SSE2 instructions
     # for the g++ 3.4 compiler in MinGW, this should be harmless.
-    # message("Warning: Disabling Eigen unaligned memory assertion")
-    # DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
-    message("Enabling Eigen in Windows")
+    message("Warning: Disabling Eigen unaligned memory assertion and vectorization")
+    DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+    DEFINES += EIGEN_DONT_VECTORIZE
+    #message("Enabling Eigen in Windows")
     QMAKE_CXXFLAGS += -mincoming-stack-boundary=2
     QMAKE_CXXFLAGS_RELEASE = -ffast-math \
         -fexpensive-optimizations \

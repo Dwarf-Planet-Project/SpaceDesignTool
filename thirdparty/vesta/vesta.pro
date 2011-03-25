@@ -297,6 +297,11 @@ win32-g++ {
     # Disable min and max preprocessor on Win32 platform that interfere
     # with the C++ Standard Library template functions.
     DEFINES += NOMINMAX
+
+    message("Warning: Disabling Eigen unaligned memory assertion and vectorization")
+    DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+    DEFINES += EIGEN_DONT_VECTORIZE
+
 }
 
 
