@@ -176,10 +176,10 @@ static StateVector ConvertStateVector(const StateVector& state, const QString& c
     {
         toSystem = sta::COORDSYS_EME_B1950;
     }
-   else if (coordSys == "ICRF")
-    {
-        toSystem = sta::COORDSYS_ICRF;
-    }
+//   else if (coordSys == "ICRF")
+//    {
+//        toSystem = sta::COORDSYS_ICRF;
+//    }
 //    else if (coordSys == "Mean of Date")
 //    {
 //        toSystem = sta::COORDSYS_MEAN_OF_DATE;
@@ -4557,11 +4557,11 @@ sta::CoordinateSystem analysis::CoordSys(QString Coordinate)
         sta::CoordinateSystem Coord("ECLIPTIC");
         return Coord;
     }
-    if(Coordinate=="ICRF")
-    {
-        sta::CoordinateSystem Coord("ICRF");
-        return Coord;
-    }
+//    if(Coordinate=="ICRF")
+//    {
+//        sta::CoordinateSystem Coord("ICRF");
+//        return Coord;
+//    }
 
 
     if(Coordinate==" ")
@@ -5002,7 +5002,7 @@ QComboBox* analysis::CoordinateBox()
     CoordinateBox2->addItem(tr("EME B1950"),1);
     CoordinateBox2->addItem(tr("Fixed"),2);
     CoordinateBox2->addItem(tr("Ecliptic J2000"),3);
-    CoordinateBox2->addItem(tr("ICRF"),4);
+   // CoordinateBox2->addItem(tr("ICRF"),4);
 //    CoordinateBox2->addItem(tr("Rotating"),4);
 //    CoordinateBox2->addItem(tr("Rotating Norm."),5);
 //    CoordinateBox2->addItem(tr("ICRF"),6);
