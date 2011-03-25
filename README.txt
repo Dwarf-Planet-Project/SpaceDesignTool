@@ -13,10 +13,12 @@
 *              Copyright (c) 2005-2010, STA Steering Board                *
 *                                                                         *
 *-------------------------------------------------------------------------*
-*                STA web site: http://sta.estec.esa.int                   *
+*                STA web site: http://sta.forge.osor.eu                   *
 *                                                                         *
 *                                                                         *
 ***************************************************************************
+Last update March 2011
+
 
 CONTENTS
 --------
@@ -45,7 +47,6 @@ STA RESOURCES
 
 STA Source Code (OSOR):
   https://svn.forge.osor.eu/svn/sta/trunk
-
 [You need to be registered with the project to access the source repository]
 
 
@@ -66,7 +67,7 @@ Libraries and data used
 # STA uses the Eigen libraries. Eigen is a C++ template library for linear algebra that includes vectors, matrices, and related algorithms. 
 # STA is compatible with the NASA SPICE system for spacecraft and planetary information. SPICE was developed by Caltech/JPL under contract to NASA.
 # The star database (stars.dat) is derived from the ESA's HIPPARCOS star catalogue.
-# STA uses Celestia code and Celestia data. In particular, STA uses Celestia's rendering engine for the 3D view window, some its catalogs of stellar and planetary information, and some of its texture maps and 3D models of solar system bodies. For credits and authorship of these parts, please read the README, AUTHORS, and LICENSE files inside the celestia-src folder.
+# STA uses VESTA code and VESTA data. In particular, STA uses VESTA's rendering engine for the 3D view window, some its catalogs of stellar and planetary information, and some of its texture maps and 3D models of solar system bodies. VESAT is copyright of ASTOS Solutions GmbH.
 # STA uses Curveplot. Curveplot is a library for high precision plotting of piecewise cubic curves in OpenGL. It is distributed under the terms of the GNU Lesser Public License and is Copyright of Chris Laurel.
 # STA uses OpenGL Extension Wrangler Library GLEW. For credits and authorship of this library, please read the README file inside the GLEW folder.
 # STA uses the QwPlot3D programming library that provides 3D-widgets for plotting. The library is zlib licensed. QwPlot3D ic copyright of Michael Bieber
