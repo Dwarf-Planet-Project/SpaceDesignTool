@@ -2,7 +2,7 @@ Authors
 -------
 
   G. Ortega         <ESA> 
-  C. Laurel         <Celestia team>
+  C. Laurel         <Periapsis Visual>
   G. Schouten       <Delft University of Netherlands>
   T. Paulino        <ESA>
   I. Huertas        <Delft University of Netherlands>
@@ -16,7 +16,7 @@ Authors
   G. Ridolfi        <Delft University of Netherlands>
   A. Manno          <University of Palermo>
   A. Riccardi       <University of Milano>
-  A. Raposo         <Instituto Superior TŽcnico of Lisbon>
+  A. Raposo         <Instituto Superior Tecnico of Lisbon>
   R. Noriega        <Technical University of Madrid>
   O. Yilmaz         <University of Wuerzburg>
   C. Grohnfeldt     <University of Bremen>
@@ -24,8 +24,9 @@ Authors
   M. Di Perna       <Engenio>
   M. Massari        <Dinamica>
   R. Armellin       <Dinamica>
-  
-  
+  M. Scotti         <Politecnico di Milano>
+  D. Cardinha       <Instituto Superior Tecnico of Lisbon>
+  C. da Silva       <Instituto Superior Tecnico of Lisbon> 
 
 STA email address:
   <space.trajectory.analyis@gmail.com>
