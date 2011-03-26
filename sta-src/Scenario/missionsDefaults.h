@@ -21,6 +21,7 @@
 */
 /*
 ------------------ Author: Guillermo Ortega  -------------------------------------------
+Updated March 2011
 */
 
 #ifndef _MissionsDefaults_H_
@@ -40,21 +41,21 @@ class MissionsDefaults
 public:
     ~MissionsDefaults();
 
-     // Default platform and payloads for a generic mission
-     ScenarioSCSystemType MissionsDefaults_GenericPlatform();
-     ScenarioTransmitterPayloadType MissionsDefaults_GenericTransmitter();
-     ScenarioReceiverPayloadType MissionsDefaults_GenericReceiver();
-     ScenarioOpticalPayloadType MissionsDefaults_GenericOpticalPayload();
-     ScenarioRadarPayloadType MissionsDefaults_GenericRadarPayload();
+    // Default platform and payloads for a generic mission
+    ScenarioSCSystemType MissionsDefaults_GenericPlatform();
+    ScenarioTransmitterPayloadType MissionsDefaults_GenericTransmitter();
+    ScenarioReceiverPayloadType MissionsDefaults_GenericReceiver();
+    ScenarioOpticalPayloadType MissionsDefaults_GenericOpticalPayload();
+    ScenarioRadarPayloadType MissionsDefaults_GenericRadarPayload();
 
-     // Generic loitering satellite
-     ScenarioLoiteringType MissionsDefaults_GENERIC();
+    // Generic loitering satellite
+    ScenarioLoiteringType MissionsDefaults_GENERIC();
 
-     // Generic loitering satellite
-	 ScenarioLoiteringTLEType MissionsDefaults_GENERIC_TLE();
+    // Generic loitering satellite
+    ScenarioLoiteringTLEType MissionsDefaults_GENERIC_TLE();
 
-     // Generic deltaV maneuver
-     ScenarioDeltaVType MissionsDefaults_GENERIC_DELTAV();
+    // Generic deltaV maneuver
+    ScenarioDeltaVType MissionsDefaults_GENERIC_DELTAV();
 
 
     // Science
@@ -71,6 +72,9 @@ public:
 
     // Observation of the Earth
     ScenarioLoiteringType MissionsDefaults_Meteosat6();
+    ScenarioLoiteringType MissionsDefaults_Meteosat7();
+    ScenarioLoiteringType MissionsDefaults_Meteosat8();
+    ScenarioLoiteringType MissionsDefaults_Meteosat9();
     ScenarioLoiteringType MissionsDefaults_ERS2();
     ScenarioLoiteringType MissionsDefaults_ENVISAT();
     ScenarioLoiteringType MissionsDefaults_MSG();

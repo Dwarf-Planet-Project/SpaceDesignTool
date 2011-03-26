@@ -1,16 +1,4 @@
 /*
- This program is free software; you can redistribute it and/or modify it under
- the terms of the European Union Public Licence - EUPL v.1.1 as published by
- the European Commission.
-
- This program is distributed in the hope that it will be useful, but WITHOUT
- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE. See the European Union Public Licence - EUPL v.1.1
- for more details.
-
- You should have received a copy of the European Union Public Licence - EUPL v.1.1
- along with this program.
-
  Further information about the European Union Public Licence - EUPL v.1.1 can
  also be found on the world wide web at http://ec.europa.eu/idabc/eupl
  */
@@ -162,7 +150,7 @@ static QByteArray spaceVehicleFragment(const char* name, const char* vehicleType
 static QByteArray REVFragment(const char* name, const char* vehicleType)
 {
     ScenarioREV entryVehicle;
-    
+
     /*** fill in defaults ***/
     entryVehicle.ElementIdentifier()->setName(name);
 
@@ -345,11 +333,11 @@ static QByteArray loiteringFragment(const char* name)
 // Loitering for TLE elemennts fragment
 static QByteArray loiteringTLEFragment(const char* name)
 {
-	MissionsDefaults myMissionDefaults;
-	ScenarioLoiteringTLEType loiteringTLEDefault = myMissionDefaults.MissionsDefaults_GENERIC_TLE();
+    MissionsDefaults myMissionDefaults;
+    ScenarioLoiteringTLEType loiteringTLEDefault = myMissionDefaults.MissionsDefaults_GENERIC_TLE();
 
-	QDomDocument doc;
-	return fragmentText(CreateLoiteringTLEElement(&loiteringTLEDefault, doc)).toUtf8();
+    QDomDocument doc;
+    return fragmentText(CreateLoiteringTLEElement(&loiteringTLEDefault, doc)).toUtf8();
 }
 
 
@@ -426,27 +414,51 @@ static QByteArray spaceVehicleWithTrajectoryFragment(const char* name, const cha
     MissionsDefaults myMissionDefaults;
     ScenarioLoiteringType loiteringDefault;
 
+    QDomDocument doc;
+
     if (name == "XMM")
         loiteringDefault = myMissionDefaults.MissionsDefaults_XMM();
     else if (name == "MEX")
         loiteringDefault = myMissionDefaults.MissionsDefaults_MEX();
+    else if (name == "INTEGRAL")
+        loiteringDefault = myMissionDefaults.MissionsDefaults_INTEGRAL();
+    else if (name == "VEX")
+        loiteringDefault = myMissionDefaults.MissionsDefaults_VEX();
     else if (name == "Aeolus")
         loiteringDefault = myMissionDefaults.MissionsDefaults_Aeolus();
     else if (name == "Artemis")
         loiteringDefault = myMissionDefaults.MissionsDefaults_Artemis();
     else if (name == "ISS")
         loiteringDefault = myMissionDefaults.MissionsDefaults_ISS();
+    else if (name == "ENVISAT")
+        loiteringDefault = myMissionDefaults.MissionsDefaults_ENVISAT();
+    else if (name == "ERS-2")
+        loiteringDefault = myMissionDefaults.MissionsDefaults_ERS2();
+    else if (name == "Meteosat-6")
+        loiteringDefault = myMissionDefaults.MissionsDefaults_Meteosat6();
+    else if (name == "Meteosat-7")
+        loiteringDefault = myMissionDefaults.MissionsDefaults_Meteosat7();
+    else if (name == "Meteosat-8")
+        loiteringDefault = myMissionDefaults.MissionsDefaults_Meteosat8();
+    else if (name == "Meteosat-9")
+        loiteringDefault = myMissionDefaults.MissionsDefaults_Meteosat9();
+    else if (name == "CryoSAT")
+        loiteringDefault = myMissionDefaults.MissionsDefaults_Cryosat();
+
+
 
     sc->SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(&loiteringDefault));
-
-    QDomDocument doc;
     return fragmentText(CreateSCElement(sc, doc)).toUtf8();
+
+
 }
+
+
 
 
 ////////////////////////  Creating MANOEUVRES fragments /////////////////////////////////
 static QByteArray deltaVFragment(const char* name)
-{    
+{
     MissionsDefaults myMissionDefaults;
     ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
     myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
@@ -591,8 +603,7 @@ static void
 
 
 // New method by Guillermo to handle special satellites from ESA
-static void
-        addESASatelliteItem(QTreeWidgetItem* parent, const char* name)
+static void addESASatelliteItem(QTreeWidgetItem* parent, const char* name)
 {
     QTreeWidgetItem* myESASatelliteItem   = new QTreeWidgetItem(parent);
     myESASatelliteItem->setText(0, name);
@@ -832,9 +843,18 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
     // See the list of available satellites in the file "missionsDefaults.cpp"
     addESASatelliteItem(ESASatellitesItem, "XMM");
     addESASatelliteItem(ESASatellitesItem, "MEX");
+    addESASatelliteItem(ESASatellitesItem, "INTEGRAL");
+    addESASatelliteItem(ESASatellitesItem, "VEX");
     addESASatelliteItem(ESASatellitesItem, "Aeolus");
     addESASatelliteItem(ESASatellitesItem, "Artemis");
     addESASatelliteItem(ESASatellitesItem, "ISS");
+    addESASatelliteItem(ESASatellitesItem, "ENVISAT");
+    addESASatelliteItem(ESASatellitesItem, "ERS-2");
+    addESASatelliteItem(ESASatellitesItem, "Meteosat-6");
+    addESASatelliteItem(ESASatellitesItem, "Meteosat-7");
+    addESASatelliteItem(ESASatellitesItem, "Meteosat-8");
+    addESASatelliteItem(ESASatellitesItem, "Meteosat-9");
+    addESASatelliteItem(ESASatellitesItem, "CryoSAT");
 
     // The ESTRACK ground stations (LAT, LON, ALT)
     addGroundStationItem(ESAgroundStationsItem, "Cebreros",     "Earth",  40.45268986,  -4.36754881, 794.1);
