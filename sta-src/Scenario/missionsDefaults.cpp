@@ -241,7 +241,7 @@ ScenarioDeltaVType MissionsDefaults::MissionsDefaults_GENERIC_DELTAV()
     deltaV.setDeltaVx(1.0);
     deltaV.setDeltaVy(0.0);
     deltaV.setDeltaVz(0.0);
-    deltaV.setMagnitude(2.0);
+    deltaV.setMagnitude(200.0);
 
     return deltaV;
 }
@@ -898,9 +898,59 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Aeolus()
 
 ScenarioLoiteringType MissionsDefaults::MissionsDefaults_EarthCare()
 {
+
 }
 
-ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Sentinel1()
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Sentinel1A()
+{
+    ScenarioLoiteringType loitering;
+
+    loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
+    QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
+    initPos->setSemiMajorAxis(7064.23);
+    initPos->setInclination(98.1638);
+    initPos->setEccentricity(0.0006);
+    initPos->setRAAN(4.651);
+    initPos->setArgumentOfPeriapsis(0.0324);
+    initPos->setTrueAnomaly(2.56);
+    loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
+
+    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    QSharedPointer<ScenarioEulerBIType> initAtt(new ScenarioEulerBIType());
+    initAtt->setPhi(0.00000);
+    initAtt->setTheta(0.00000);
+    initAtt->setPsi(0.00000);
+    initAtt->setPhiDot(0.00000);
+    initAtt->setThetaDot(0.00000);
+    initAtt->setPsiDot(0.00000);
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+
+    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
+    loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
+    loitering.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
+    loitering.TimeLine()->setStepTime(60.0);
+
+    loitering.PropagationPosition()->setPropagator("TWO BODY");
+    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setTimeStep(60.0);
+
+    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setTimeStep(60.0);
+
+    loitering.Environment()->CentralBody()->setName("Earth");
+    loitering.Environment()->CentralBody()->GravityModel()->setModelName("EGM2008");
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(1);
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(1);
+
+    loitering.ElementIdentifier()->setName("Sentinel-1A loitering");
+    loitering.ElementIdentifier()->setTheOrder(1);
+    loitering.ElementIdentifier()->setModelName("Default");
+    loitering.ElementIdentifier()->setColorName("Green");
+
+    return loitering;
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Sentinel1B()
 {
 }
 
@@ -1103,7 +1153,8 @@ QList<QString> MissionsDefaults::esaDefaultLoiteringMissions()
             "METEOSAT7" <<
             "METEOSAT8" <<
             "METEOSAT9" <<
-            "CRYOSAT";
+            "CRYOSAT" <<
+            "SENTINEL1A";
 
     return myMissionsList;
 }

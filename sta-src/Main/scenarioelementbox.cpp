@@ -444,7 +444,8 @@ static QByteArray spaceVehicleWithTrajectoryFragment(const char* name, const cha
         loiteringDefault = myMissionDefaults.MissionsDefaults_Meteosat9();
     else if (name == "CryoSAT")
         loiteringDefault = myMissionDefaults.MissionsDefaults_Cryosat();
-
+    else if (name == "Sentinel-1A")
+        loiteringDefault = myMissionDefaults.MissionsDefaults_Sentinel1A();
 
 
     sc->SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(&loiteringDefault));
@@ -855,6 +856,7 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
     addESASatelliteItem(ESASatellitesItem, "Meteosat-8");
     addESASatelliteItem(ESASatellitesItem, "Meteosat-9");
     addESASatelliteItem(ESASatellitesItem, "CryoSAT");
+    addESASatelliteItem(ESASatellitesItem, "Sentinel-1A");
 
     // The ESTRACK ground stations (LAT, LON, ALT)
     addGroundStationItem(ESAgroundStationsItem, "Cebreros",     "Earth",  40.45268986,  -4.36754881, 794.1);
