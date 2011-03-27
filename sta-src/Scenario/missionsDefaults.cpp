@@ -1036,16 +1036,151 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Alphasat()
 
 ScenarioLoiteringType MissionsDefaults::MissionsDefaults_SmallGEO()
 {
+    ScenarioLoiteringType loitering;
+
+    loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
+    QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
+    initPos->setSemiMajorAxis(42169.48);
+    initPos->setInclination(1.0);
+    initPos->setEccentricity(0.0002);
+    initPos->setRAAN(9.0532);
+    initPos->setArgumentOfPeriapsis(121.74);
+    initPos->setTrueAnomaly(0.0);
+    loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
+
+    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    QSharedPointer<ScenarioEulerBIType> initAtt(new ScenarioEulerBIType());
+    initAtt->setPhi(0.00000);
+    initAtt->setTheta(0.00000);
+    initAtt->setPsi(0.00000);
+    initAtt->setPhiDot(0.00000);
+    initAtt->setThetaDot(0.00000);
+    initAtt->setPsiDot(0.00000);
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+
+    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
+    loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
+    loitering.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(8));
+    loitering.TimeLine()->setStepTime(60.0);
+
+    loitering.PropagationPosition()->setPropagator("TWO BODY");
+    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setTimeStep(60.0);
+
+    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setTimeStep(60.0);
+
+    loitering.Environment()->CentralBody()->setName("Earth");
+    loitering.Environment()->CentralBody()->GravityModel()->setModelName("EGM2008");
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(1);
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(1);
+
+    loitering.ElementIdentifier()->setName("SmallGEO loitering");
+    loitering.ElementIdentifier()->setTheOrder(1);
+    loitering.ElementIdentifier()->setModelName("Default");
+    loitering.ElementIdentifier()->setColorName("Yellow");
+
+    return loitering;
 }
 
 
 // TEC
 ScenarioLoiteringType MissionsDefaults::MissionsDefaults_PROBA1()
 {
+    ScenarioLoiteringType loitering;
+
+    loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
+    QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
+    initPos->setSemiMajorAxis(6371.0+551.0);
+    initPos->setInclination(97.9);
+    initPos->setEccentricity(0.0002);
+    initPos->setRAAN(9.0532);
+    initPos->setArgumentOfPeriapsis(121.74);
+    initPos->setTrueAnomaly(0.0);
+    loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
+
+    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    QSharedPointer<ScenarioEulerBIType> initAtt(new ScenarioEulerBIType());
+    initAtt->setPhi(0.00000);
+    initAtt->setTheta(0.00000);
+    initAtt->setPsi(0.00000);
+    initAtt->setPhiDot(0.00000);
+    initAtt->setThetaDot(0.00000);
+    initAtt->setPsiDot(0.00000);
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+
+    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
+    loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
+    loitering.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(8));
+    loitering.TimeLine()->setStepTime(60.0);
+
+    loitering.PropagationPosition()->setPropagator("TWO BODY");
+    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setTimeStep(60.0);
+
+    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setTimeStep(60.0);
+
+    loitering.Environment()->CentralBody()->setName("Earth");
+    loitering.Environment()->CentralBody()->GravityModel()->setModelName("EGM2008");
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(1);
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(1);
+
+    loitering.ElementIdentifier()->setName("PROBA-1 loitering");
+    loitering.ElementIdentifier()->setTheOrder(1);
+    loitering.ElementIdentifier()->setModelName("Default");
+    loitering.ElementIdentifier()->setColorName("Yellow");
+
+    return loitering;
 }
 
 ScenarioLoiteringType MissionsDefaults::MissionsDefaults_PROBA2()
 {
+    ScenarioLoiteringType loitering;
+
+    loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
+    QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
+    initPos->setSemiMajorAxis(6371.0+728.0);
+    initPos->setInclination(98.2);
+    initPos->setEccentricity(0.0002);
+    initPos->setRAAN(9.0532);
+    initPos->setArgumentOfPeriapsis(121.74);
+    initPos->setTrueAnomaly(0.0);
+    loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
+
+    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    QSharedPointer<ScenarioEulerBIType> initAtt(new ScenarioEulerBIType());
+    initAtt->setPhi(0.00000);
+    initAtt->setTheta(0.00000);
+    initAtt->setPsi(0.00000);
+    initAtt->setPhiDot(0.00000);
+    initAtt->setThetaDot(0.00000);
+    initAtt->setPsiDot(0.00000);
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+
+    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
+    loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
+    loitering.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(8));
+    loitering.TimeLine()->setStepTime(60.0);
+
+    loitering.PropagationPosition()->setPropagator("TWO BODY");
+    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setTimeStep(60.0);
+
+    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setTimeStep(60.0);
+
+    loitering.Environment()->CentralBody()->setName("Earth");
+    loitering.Environment()->CentralBody()->GravityModel()->setModelName("EGM2008");
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(1);
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(1);
+
+    loitering.ElementIdentifier()->setName("PROBA-2 loitering");
+    loitering.ElementIdentifier()->setTheOrder(1);
+    loitering.ElementIdentifier()->setModelName("Default");
+    loitering.ElementIdentifier()->setColorName("Yellow");
+
+    return loitering;
 }
 
 ScenarioLoiteringType MissionsDefaults::MissionsDefaults_PROBA3()
@@ -1154,7 +1289,10 @@ QList<QString> MissionsDefaults::esaDefaultLoiteringMissions()
             "METEOSAT8" <<
             "METEOSAT9" <<
             "CRYOSAT" <<
-            "SENTINEL1A";
+            "SENTINEL1A" <<
+            "SMALLGEO" <<
+            "PROBA1" <<
+            "PROBA2";
 
     return myMissionsList;
 }
