@@ -69,6 +69,20 @@
 		</complexType>
 	</element>
 
+	<element name="Region" substitutionGroup="tns:AbstractParticipant">
+		<complexType>
+			<complexContent>
+				<extension base="tns:ParticipantType">
+					<sequence>
+						<element name="ElementIdentifier" type="tns:ElementIdentifierType"></element>
+			            <element name="CentralBody" type="string"></element>
+				        <element name="Boundary" type="tns:ListOfDouble"></element>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+
 	<complexType name="LocationType">
 		<sequence>
 			<element name="CentralBody" type="string"></element>
