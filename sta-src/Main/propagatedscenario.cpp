@@ -462,6 +462,38 @@ double GroundObject::getRange(const SpaceObject *spacecraft, double t) const{
 
 }
 
+
+RegionObject::RegionObject(const QString& name, const StaBody* centralBody) :
+    m_name(name),
+    m_centralBody(centralBody),
+    m_color(Qt::white)
+{
+}
+
+
+RegionObject::~RegionObject()
+{
+}
+
+
+/** Set the boundary of the region. For any point in the boundary, the
+  * x coordinate is the longitude and y is the longitude. The boundary
+  * of a region must be convex.
+  */
+void
+RegionObject::setBoundary(const QList<Eigen::Vector2d>& boundary)
+{
+    m_boundary = boundary;
+}
+
+
+void
+RegionObject::setColor(const QColor& color)
+{
+    m_color = color;
+}
+
+
 /****** PropagatedScenario ******/
 
 /*! Create a new, empty propagated scenario.
@@ -507,4 +539,10 @@ PropagatedScenario::addGroundObject(GroundObject* groundObject)
     m_groundObjectList.append(groundObject);
 }
 
+
+void
+PropagatedScenario::addRegionObject(RegionObject* regionObject)
+{
+    m_regionObjectList.append(regionObject);
+}
 

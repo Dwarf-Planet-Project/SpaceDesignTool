@@ -130,6 +130,7 @@ Q_OBJECT
                                const StaBody* planet,
                                double minElevation,
                                double spacecraftAltitude);
+    void drawRegion(QPainter& painter, RegionObject* region);
     void drawSubsolarPoint(QPainter& painter, QColor color, float size);
     void drawDaylitRegion(QPainter& painter);
 

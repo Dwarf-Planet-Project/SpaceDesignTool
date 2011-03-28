@@ -162,6 +162,45 @@ public:
 };
 
 
+/** RegionObject represents a region from a scenario after propagation.
+  */
+class RegionObject
+{
+public:
+    RegionObject(const QString& name, const StaBody* centralBody);
+    ~RegionObject();
+
+    QString name() const
+    {
+        return m_name;
+    }
+
+    const StaBody* centralBody() const
+    {
+        return m_centralBody;
+    }
+
+    const QList<Eigen::Vector2d>& boundary() const
+    {
+        return m_boundary;
+    }
+
+    QColor color() const
+    {
+        return m_color;
+    }
+
+    void setBoundary(const QList<Eigen::Vector2d>& boundary);
+    void setColor(const QColor& color);
+
+private:
+    QString m_name;
+    const StaBody* m_centralBody;
+    QList<Eigen::Vector2d> m_boundary;
+    QColor m_color;
+};
+
+
 class PropagatedScenario
 {
 public:
@@ -170,7 +209,8 @@ public:
     
     const QList<SpaceObject*>& spaceObjects() const { return m_spaceObjectList; }
     const QList<GroundObject*>& groundObjects() const { return m_groundObjectList; }
-    
+    const QList<RegionObject*>& regionObjects() const { return m_regionObjectList; }
+
     /*! The start time of a propagated scenario is the earliest start time of
      *  any of the objects in the scenario.
      */
@@ -183,10 +223,12 @@ public:
     
     void addSpaceObject(SpaceObject* spaceObject);
     void addGroundObject(GroundObject* groundObject);
+    void addRegionObject(RegionObject* regionObject);
     
 private:
     QList<SpaceObject*> m_spaceObjectList;
     QList<GroundObject*> m_groundObjectList;
+    QList<RegionObject*> m_regionObjectList;
     double m_startTime;
     double m_endTime;
 };

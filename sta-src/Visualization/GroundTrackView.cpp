@@ -951,6 +951,17 @@ void GroundTrackView::paintObliqueView(QPainter& painter)
         }
     }
 
+    // Draw each region
+    foreach (RegionObject* region, m_scenario->regionObjects())
+    {
+        if (region->centralBody() == m_body)
+        {
+            QPen outlinePen(region->color());
+            painter.setPen(outlinePen);
+            drawRegion(painter, region);
+        }
+    }
+
     // Draw each ground track
     foreach (GroundTrack* track, m_groundTrackList)
     {
@@ -1309,6 +1320,16 @@ void GroundTrackView::paint2DView(QPainter& painter)
     // Draw the ground elements
     if (m_scenario)
     {
+        foreach (RegionObject* region, m_scenario->regionObjects())
+        {
+            if (region->centralBody() == m_body)
+            {
+                QPen outlinePen(region->color());
+                painter.setPen(outlinePen);
+                drawRegion(painter, region);
+            }
+        }
+
         foreach (GroundObject* groundObject, m_scenario->groundObjects())
         {
             // Only draw ground elements for the current body
@@ -1875,6 +1896,49 @@ GroundTrackView::drawCoverageFootprint(QPainter& painter,
         else
         {
         }
+
+        lastLongitude = longitude;
+        lastLatitude = latitude;
+    }
+
+    painter.drawLines(m_trackPoints);
+    m_trackPoints.clear();
+}
+
+
+void
+GroundTrackView::drawRegion(QPainter& painter,
+                            RegionObject* region)
+{
+    if (region->boundary().isEmpty())
+    {
+        return;
+    }
+
+    AlignedBox<float, 3> clipBox;
+    clipBox.min() = Vector3f(m_west, m_south, 0.0f);
+    clipBox.max() = Vector3f(m_east, m_north, 1.0f);
+
+    Vector2d lastPoint = region->boundary().last();
+    double lastLongitude = lastPoint.x();
+    double lastLatitude = lastPoint.y();
+    if (lastLongitude < m_west)
+    {
+        lastLongitude += 360.0;
+    }
+
+    m_trackPoints.clear();
+    foreach (Vector2d p, region->boundary())
+    {
+        double longitude = p.x();
+        double latitude = p.y();
+
+        if (longitude < m_west)
+        {
+            longitude += 360.0;
+        }
+
+        ClippedWrappedLine(clipBox, float(lastLongitude), float(lastLatitude), float(longitude), float(latitude), m_trackPoints);
 
         lastLongitude = longitude;
         lastLatitude = latitude;

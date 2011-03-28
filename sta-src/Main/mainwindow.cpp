@@ -1074,6 +1074,11 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
             ScenarioPoint* point = dynamic_cast<ScenarioPoint*>(participant.data());
             scenarioPropagatorPoint(point, Qt::yellow, feedback, propScenario);
         }
+        else if (dynamic_cast<ScenarioRegion*>(participant.data()))
+        {
+            ScenarioRegion* region = dynamic_cast<ScenarioRegion*>(participant.data());
+            scenarioPropagatorRegion(region, feedback, propScenario);
+        }
     }
 
     if (feedback.status() != PropagationFeedback::PropagationOk)

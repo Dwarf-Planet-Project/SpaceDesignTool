@@ -3256,6 +3256,61 @@ QList<QSharedPointer<ScenarioObject> >ScenarioPoint::children() const
 
 
 
+// ScenarioRegion
+ScenarioRegion::ScenarioRegion()
+{
+    m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(new ScenarioElementIdentifierType());
+}
+
+ScenarioRegion* ScenarioRegion::create(const QDomElement& e)
+{
+    ScenarioRegion* v;
+    {
+        v = new ScenarioRegion;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioRegion::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioParticipantType::load(e, next);
+    if (next->tagName() == "tns:ElementIdentifier")
+        m_ElementIdentifier = QSharedPointer<ScenarioElementIdentifierType>(ScenarioElementIdentifierType::create(*next));
+    *next = next->nextSiblingElement();
+        m_CentralBody = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_Boundary = parseDoubleList(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioRegion::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioParticipantType::toDomElement(doc, elementName);
+    if (!m_ElementIdentifier.isNull())
+    {
+        QString tagName = "ElementIdentifier";
+        QDomElement child = m_ElementIdentifier->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    e.appendChild(createSimpleElement(doc, "tns:CentralBody", m_CentralBody));
+    e.appendChild(createSimpleElement(doc, "tns:Boundary", m_Boundary));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioRegion::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_ElementIdentifier.isNull()) children << m_ElementIdentifier;
+    return children;
+}
+
+
+
+
 // ScenarioLocationType
 ScenarioLocationType::ScenarioLocationType()
 {
@@ -12623,6 +12678,8 @@ bool SpaceScenario::load(const QDomElement& e, QDomElement* next)
             v = QSharedPointer<ScenarioParticipantType>((ScenarioParticipantType*)ScenarioLaunchPad::create(*next));
         else if (next->tagName() == "tns:Point")
             v = QSharedPointer<ScenarioParticipantType>((ScenarioParticipantType*)ScenarioPoint::create(*next));
+        else if (next->tagName() == "tns:Region")
+            v = QSharedPointer<ScenarioParticipantType>((ScenarioParticipantType*)ScenarioRegion::create(*next));
         else if (next->tagName() == "tns:LV")
             v = QSharedPointer<ScenarioParticipantType>((ScenarioParticipantType*)ScenarioLV::create(*next));
         else if (next->tagName() == "tns:REV")
@@ -12650,6 +12707,8 @@ QDomElement SpaceScenario::toDomElement(QDomDocument& doc, const QString& elemen
             tagName = "LaunchPad";
         else if (dynamic_cast<ScenarioPoint*>(p.data()))
             tagName = "Point";
+        else if (dynamic_cast<ScenarioRegion*>(p.data()))
+            tagName = "Region";
         else if (dynamic_cast<ScenarioLV*>(p.data()))
             tagName = "LV";
         else if (dynamic_cast<ScenarioREV*>(p.data()))
@@ -12685,6 +12744,11 @@ QDomElement CreatePointElement(ScenarioPoint* e, QDomDocument& doc)
 QDomElement CreateOptimizationElement(ScenarioOptimization* e, QDomDocument& doc)
 {
     return e->toDomElement(doc, "Optimization");
+}
+
+QDomElement CreateRegionElement(ScenarioRegion* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "Region");
 }
 
 QDomElement CreateREVElement(ScenarioREV* e, QDomDocument& doc)
@@ -12777,14 +12841,14 @@ QDomElement CreateGroundPositionElement(ScenarioGroundPositionType* e, QDomDocum
     return e->toDomElement(doc, "GroundPosition");
 }
 
-QDomElement CreateLVElement(ScenarioLV* e, QDomDocument& doc)
-{
-    return e->toDomElement(doc, "LV");
-}
-
 QDomElement CreateInitialPositionElement(ScenarioInitialPositionType* e, QDomDocument& doc)
 {
     return e->toDomElement(doc, "InitialPosition");
+}
+
+QDomElement CreateLVElement(ScenarioLV* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "LV");
 }
 
 QDomElement CreateOutputFilesElement(ScenarioOutputFiles* e, QDomDocument& doc)

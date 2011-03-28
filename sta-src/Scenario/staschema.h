@@ -85,6 +85,7 @@ class ScenarioGroundStationEnvironment;
 class ScenarioRain;
 class ScenarioLaunchPad;
 class ScenarioPoint;
+class ScenarioRegion;
 class ScenarioLocationType;
 class ScenarioLV;
 class ScenarioLVProgramType;
@@ -2227,6 +2228,40 @@ private:
     QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
     QSharedPointer<ScenarioLocationType> m_Location;
     QSharedPointer<ScenarioPayloadSet> m_PayloadSet;
+};
+
+
+// ScenarioRegion
+class ScenarioRegion : public ScenarioParticipantType
+{
+public:
+    ScenarioRegion();
+    static ScenarioRegion* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "Region"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier() const
+    { return m_ElementIdentifier; }
+    void setElementIdentifier(QSharedPointer<ScenarioElementIdentifierType> ElementIdentifier)
+    { m_ElementIdentifier = ElementIdentifier; }
+    QString CentralBody() const
+    { return m_CentralBody; }
+    void setCentralBody(QString CentralBody)
+    { m_CentralBody = CentralBody; }
+    const QList<double>& Boundary() const
+    { return m_Boundary; }
+    QList<double>& Boundary()
+    { return m_Boundary; }
+    void setBoundary(QList<double> Boundary)
+    { m_Boundary = Boundary; }
+
+private:
+    QSharedPointer<ScenarioElementIdentifierType> m_ElementIdentifier;
+    QString m_CentralBody;
+    QList<double> m_Boundary;
 };
 
 
@@ -7782,6 +7817,7 @@ private:
 QDomElement CreatePayloadSetElement(ScenarioPayloadSet* e, QDomDocument& doc);
 QDomElement CreatePointElement(ScenarioPoint* e, QDomDocument& doc);
 QDomElement CreateOptimizationElement(ScenarioOptimization* e, QDomDocument& doc);
+QDomElement CreateRegionElement(ScenarioRegion* e, QDomDocument& doc);
 QDomElement CreateREVElement(ScenarioREV* e, QDomDocument& doc);
 QDomElement CreateLoiteringTLEElement(ScenarioLoiteringTLEType* e, QDomDocument& doc);
 QDomElement CreateReceiverPayloadElement(ScenarioReceiverPayloadType* e, QDomDocument& doc);
@@ -7800,8 +7836,8 @@ QDomElement CreateRadarPayloadElement(ScenarioRadarPayloadType* e, QDomDocument&
 QDomElement CreateTransmitterPayloadElement(ScenarioTransmitterPayloadType* e, QDomDocument& doc);
 QDomElement CreateTransmitterElement(ScenarioTransmitter* e, QDomDocument& doc);
 QDomElement CreateGroundPositionElement(ScenarioGroundPositionType* e, QDomDocument& doc);
-QDomElement CreateLVElement(ScenarioLV* e, QDomDocument& doc);
 QDomElement CreateInitialPositionElement(ScenarioInitialPositionType* e, QDomDocument& doc);
+QDomElement CreateLVElement(ScenarioLV* e, QDomDocument& doc);
 QDomElement CreateOutputFilesElement(ScenarioOutputFiles* e, QDomDocument& doc);
 QDomElement CreateExternalElement(ScenarioExternalType* e, QDomDocument& doc);
 QDomElement CreateEulerBIElement(ScenarioEulerBIType* e, QDomDocument& doc);

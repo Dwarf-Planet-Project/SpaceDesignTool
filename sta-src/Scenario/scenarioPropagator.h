@@ -39,6 +39,7 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
 void scenarioPropagatorReEntryVehicle(ScenarioREV* vehicle, PropagationFeedback& feedback, PropagatedScenario* propScenario, QWidget* parent);
 void scenarioPropagatorGroundElement(ScenarioGroundStation* groundElement, PropagationFeedback& feedback, PropagatedScenario* propScenario, QWidget* parent);
 void scenarioPropagatorPoint(ScenarioPoint* aPoint,  PropagationFeedback& feedback, PropagatedScenario* propScenario);
+void scenarioPropagatorRegion(ScenarioRegion* region, PropagationFeedback& feedback, PropagatedScenario* propScenario);
 
 
 void scenarioPropagatorReEntryVehicle(ScenarioREV* vehicle,  QColor trajectoryColor, PropagationFeedback& feedback, PropagatedScenario* propScenario);

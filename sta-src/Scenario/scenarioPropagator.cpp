@@ -620,3 +620,46 @@ void scenarioPropagatorPoint(ScenarioPoint* aPoint,  PropagationFeedback& feedba
     }
 
 }
+
+
+void
+scenarioPropagatorRegion(ScenarioRegion* region, PropagationFeedback& feedback, PropagatedScenario* propScenario)
+{
+    StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(region->CentralBody());
+
+    if (centralBody)
+    {
+        QList<Vector2d> boundary;
+
+        QList<double> boundaryData = region->Boundary();
+
+        // Each pair of values in the ScenarioRegion's boundary represents a point on the surface of
+        // the central body. Verify that we have an even number of values.
+        if (boundaryData.size() % 2 != 0)
+        {
+            return;
+        }
+
+        unsigned int pointCount = boundaryData.size() / 2;
+
+        // We need at least three points to define the region
+        if (pointCount < 3)
+        {
+            return;
+        }
+
+        for (unsigned int i = 0; i < pointCount; ++i)
+        {
+            // Note that while the surface coordinates of a boundary point appear in the
+            // order longitude first, latitude second, they are stored with longitude in
+            // the x component of the vector and latitude in y.
+            boundary << Vector2d(boundaryData[i * 2 + 1], boundaryData[i * 2]);
+        }
+
+        RegionObject* regionObject = new RegionObject(region->Name(), centralBody);
+        regionObject->setBoundary(boundary);
+        MissionsDefaults myMissionDefaults;
+        regionObject->setColor(myMissionDefaults.missionArcColorFromQt(region->ElementIdentifier()->colorName()));
+        propScenario->addRegionObject(regionObject);
+    }
+}
