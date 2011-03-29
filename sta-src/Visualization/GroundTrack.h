@@ -211,4 +211,4 @@ public:
     QVector<QPointF> m_trackPoints;
 };
 
-#endif _STA_VISUALIZATION_GROUND_TRACK_H_
+#endif // _STA_VISUALIZATION_GROUND_TRACK_H_

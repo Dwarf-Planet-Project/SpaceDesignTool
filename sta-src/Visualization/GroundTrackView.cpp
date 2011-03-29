@@ -153,19 +153,19 @@ GroundTrackView::GroundTrackView(QWidget* parent) :
         m_tickInterval(86400.0), // seconds
         m_body(NULL),
         m_trackDisplayDuration(1.0), // days
+        m_showAnalysis(true), // Analysis (Claas Grohnfeldt, Steffen Peter)
+        m_showDiscretization(false), // Analysis
+        m_showCoverageCurrent(false), // Analysis
+        m_showCoverageHistory(false), // Analysis
+        m_showSOLink(false), // Analysis
+        m_showGOLink(false), // Analysis
         m_zoomFactor(1.0f),
         m_center(0.0f, 0.0f),
         m_maxHeight(180.0f),
         m_lastMousePosition(0.0f, 0.0f),
         m_projection(Planar),
         m_scene(NULL),
-        m_maxHeightSlider(NULL),
-        m_showAnalysis(true), // Analysis (Claas Grohnfeldt, Steffen Peter)
-        m_showDiscretization(false), // Analysis
-        m_showCoverageCurrent(false), // Analysis
-        m_showCoverageHistory(false), // Analysis
-        m_showSOLink(false), // Analysis
-        m_showGOLink(false) // Analysis
+        m_maxHeightSlider(NULL)
 {
     setBody(STA_SOLAR_SYSTEM->lookup(STA_EARTH));
 
@@ -191,7 +191,6 @@ GroundTrackView::GroundTrackView(QWidget* parent) :
     m_maxHeightSlider->setRange(0, 1000);
     m_maxHeightSlider->setTickPosition(QSlider::TicksBothSides);
     m_maxHeightSlider->setTickInterval(100);
-    QGraphicsProxyWidget* sliderProxy = m_scene->addWidget(m_maxHeightSlider);
     QPalette palette;
     palette.setColor(m_maxHeightSlider->backgroundRole(), Qt::transparent);
     m_maxHeightSlider->setPalette(palette);
@@ -776,7 +775,6 @@ void GroundTrackView::paintObliqueView(QPainter& painter)
     // Add altitude lines
     const double maxAltLines = 10.0;
     double altLineSpacing = chooseGridSpacing(m_maxHeight, maxAltLines);
-    double altitude = 0.0;
 
     for (double altitude = 0; altitude < m_maxHeight + altLineSpacing; altitude += altLineSpacing)
     {
@@ -829,7 +827,6 @@ void GroundTrackView::paintObliqueView(QPainter& painter)
         double longitudeSpacingDeg = longitudeSpacing / 3600.0;
         double latitudeSpacingDeg = latitudeSpacing / 3600.0;
         float startLongitude = (float) (floor(m_west / longitudeSpacingDeg) + 1.0f) * longitudeSpacingDeg;
-        float endLatitude = (float) (floor(m_north / latitudeSpacingDeg) + 1.0f) * latitudeSpacingDeg;
         float startLatitude = (float) (floor(m_south / latitudeSpacingDeg) + 1.0f) * latitudeSpacingDeg;
 
         // Draw lines of longitude
@@ -854,23 +851,12 @@ void GroundTrackView::paintObliqueView(QPainter& painter)
     // Draw the Equator grid
     if (m_showEquator)
     {
-
-        double maxLongitudeLines = 10.0;
-        double longitudeSpacing = meridianSpacing(maxLongitudeLines);
-        double latitudeSpacing = longitudeSpacing; // identical to meridian spacing (for now)
-
         QColor boxLineColor(50, 50, 50, 100);
         QColor equatorColor(220, 220, 0, 100);
         QColor equatorColorOpaque = equatorColor;
         equatorColorOpaque.setAlpha(255);
         QPen equatorPen(equatorColor);
         painter.setPen(equatorPen);
-
-        double longitudeSpacingDeg = longitudeSpacing / 3600.0;
-        double latitudeSpacingDeg = latitudeSpacing / 3600.0;
-        float startLongitude = (float) (floor(m_west / longitudeSpacingDeg) + 1.0f) * longitudeSpacingDeg;
-        float endLatitude = 0.0f;
-        float startLatitude = 0.0f;
 
         float l = 0.0f;
         drawLine(painter, proj, Vector3f(m_east, l, 0.0f), Vector3f(m_west, l, 0.0f));
@@ -1193,10 +1179,6 @@ void GroundTrackView::paint2DView(QPainter& painter)
     // Draw the Equatorial grid
     if (m_showEquator)
     {
-        double maxLongitudeLines = 0.0;
-        double longitudeSpacing = 0.0f;
-        double latitudeSpacing = longitudeSpacing; // identical to meridian spacing (for now)
-
         // Leave some space at the edge of the view for labels
         float labelLeftMarginPixels = 20.0f;
         float labelTopMarginPixels = 20.0f;
@@ -1206,15 +1188,6 @@ void GroundTrackView::paint2DView(QPainter& painter)
         QTransform invXform = xform.inverted();
 
         QPointF topLeftWorld = (destRect.topLeft() + QPointF(labelLeftMarginPixels, labelTopMarginPixels)) * invXform;
-        double longitudeSpacingDeg = longitudeSpacing / 3600.0;
-        double latitudeSpacingDeg = latitudeSpacing / 3600.0;
-
-        // Calculate the start and end of long/lat lines so that a margin remains
-        // clear for labels.
-        float startLongitude = (float) (floor(topLeftWorld.x() / longitudeSpacingDeg) + 0.0f) * longitudeSpacingDeg;
-        float endLongitude = startLongitude + (float) longitudeSpacingDeg * maxLongitudeLines;
-        float endLatitude = 0.0f;
-        float startLatitude = 0.0f;
 
         QColor equatorColor(220, 220, 0, 100);
         QColor equatorColorOpaque = equatorColor;
