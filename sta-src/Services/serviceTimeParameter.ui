@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DialogServiceTimeParameterFrame</class>
+ <widget class="QFrame" name="DialogServiceTimeParameterFrame">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>195</width>
+    <height>26</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>195</width>
+    <height>26</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>195</width>
+    <height>26</height>
+   </size>
+  </property>
+  <property name="sizeIncrement">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>serviceTime</string>
+  </property>
+  <property name="windowOpacity">
+   <double>1.000000000000000</double>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
+  <property name="frameShape">
+   <enum>QFrame::NoFrame</enum>
+  </property>
+  <property name="frameShadow">
+   <enum>QFrame::Plain</enum>
+  </property>
+  <property name="lineWidth">
+   <number>0</number>
+  </property>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>195</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QComboBox" name="comboBoxTimeParameterChoice">
+      <property name="minimumSize">
+       <size>
+        <width>195</width>
+        <height>26</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>300</width>
+        <height>26</height>
+       </size>
+      </property>
+      <item>
+       <property name="text">
+        <string>Days from Epoch</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Hours from Epoch</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Minutes from Epoch</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Seconds from Epoch</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Earth canonical time</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>GMT</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Gregorian GPS</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Gregorian LCL</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Gregorian TAI</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Gregorian TDB</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Gregorian TDT</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Gregorian UTC</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Julian Ephemeris Date</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Julian LCL</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Julian GPS</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Julian TDB</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Julian UTC</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Julian Date</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Mission Elapsed</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Julian Date</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Julian UTC</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Julian LCL</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

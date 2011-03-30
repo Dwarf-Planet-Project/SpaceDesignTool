@@ -19,13 +19,13 @@
 #                                                                                    #
 ######################################################################################
 
+#CONFIG += debug_and_release
+#CONFIG += release
+#CONFIG += warn_off
 
 CONFIG(release, debug|release):message(Release build)
 CONFIG(debug, debug|release):message(Debug build)
 
-#CONFIG += debug_and_release
-#CONFIG += release
-#CONFIG += warn_off
 
 TEMPLATE = app
 
@@ -468,6 +468,13 @@ MANEUVERS_SOURCES = sta-src/Maneuvers/deltaVDialog.cpp
 MANEUVERS_HEADERS = sta-src/Maneuvers/deltaVDialog.h
 MANEUVERS_FORMS = sta-src/Maneuvers/deltaVDialog.ui
 
+# ############# Services module ###################
+SERVICES_SOURCES = sta-src/Services/serviceTimeParameter.cpp \
+                   sta-src/Services/serviceTimeUnit.cpp
+SERVICES_HEADERS = sta-src/Services/serviceTimeParameter.h \
+                   sta-src/Services/serviceTimeUnit.h
+SERVICES_FORMS = sta-src/Services/serviceTimeParameter.ui \
+                 sta-src/Services/serviceTimeUnit.ui
 
 # ########### GL extension wrangler ################
 GLEW_SOURCES = thirdparty/glew/src/glew.c
@@ -587,7 +594,8 @@ SOURCES = $$MAIN_SOURCES \
     $$ANALYSIS_SOURCES \
     $$COVERAGE_SOURCES \
     $$CONSTELLATIONS_SOURCES \
-    $$MANEUVERS_SOURCES
+    $$MANEUVERS_SOURCES \
+    $$SERVICES_SOURCES
 HEADERS = $$MAIN_HEADERS \
     $$ASTROCORE_HEADERS \
     $$SEM_HEADERS \
@@ -612,7 +620,8 @@ HEADERS = $$MAIN_HEADERS \
     $$ANALYSIS_HEADERS \
     $$COVERAGE_HEADERS \
     $$CONSTELLATIONS_HEADERS \
-    $$MANEUVERS_HEADERS
+    $$MANEUVERS_HEADERS \
+    $$SERVICES_HEADERS
 FORMS = $$MAIN_FORMS \
     $$ASTROCORE_FORMS \
     $$SEM_FORMS \
@@ -634,7 +643,8 @@ FORMS = $$MAIN_FORMS \
     $$ANALYSIS_FORMS \
     $$COVERAGE_FORMS \
     $$CONSTELLATIONS_FORMS \
-    $$MANEUVERS_FORMS
+    $$MANEUVERS_FORMS \
+    $$SERVICES_FORMS
 RESOURCES = \
     iconary/sta-icons.qrc
 UI_HEADERS_DIR = sta-src/ui/include
