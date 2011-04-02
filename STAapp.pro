@@ -251,9 +251,9 @@ LOCATIONS_FORMS = sta-src/Locations/locationeditor.ui \
     sta-src/Locations/environmentDialog.ui
 
 # ############# Rendezvous Module ##############
-#RENDEZVOUS_SOURCES = sta-src/RendezVous/rendezvous.cpp
-#RENDEZVOUS_HEADERS = sta-src/RendezVous/rendezvous.h
-#RENDEZVOUS_FORMS = sta-src/RendezVous/rendezvous.ui
+RENDEZVOUS_SOURCES = sta-src/RendezVous/rendezvous.cpp
+RENDEZVOUS_HEADERS = sta-src/RendezVous/rendezvous.h
+RENDEZVOUS_FORMS = sta-src/RendezVous/rendezvous.ui
 
 # ############# Coverage Module ##############
 COVERAGE_SOURCES = sta-src/Coverage/commanalysis.cpp \
@@ -302,21 +302,17 @@ SEM_FORMS = sta-src/SEM/sem.ui \
     sta-src/SEM/PowerGUI.ui \
     sta-src/SEM/DataCommGUI.ui
 
+
+# ############# Interplanetary Module ##############
+INTERPLANETARY_SOURCES = sta-src/Interplanetary/interplanetaryDialog.cpp
+INTERPLANETARY_HEADERS = sta-src/Interplanetary/interplanetaryDialog.h
+INTERPLANETARY_FORMS = sta-src/Interplanetary/interplanetaryDialog.ui
+
+
 # ############# 3-Body Module ##############
-#LAGRANGIAN_SOURCES = sta-src/Lagrangian/trajectoryprinting.cpp \
-#    sta-src/Lagrangian/halorbitcomputation.cpp \
-#    sta-src/Lagrangian/lagrangian.cpp \
-#    sta-src/Lagrangian/InizializeOptimizer.cpp \
-#    sta-src/Lagrangian/EvaluateModel.cpp \
-#    sta-src/Lagrangian/EarthMoonTransfer.cpp \
-#    sta-src/Lagrangian/lagrangianAdvanced.cpp
-#LAGRANGIAN_HEADERS = sta-src/Lagrangian/halorbitcomputation.h \
-#    sta-src/Lagrangian/trajectoryprinting.h \
-#    sta-src/Lagrangian/lagrangian.h \
-#    sta-src/Lagrangian/EarthMoonTransfer.h \
-#    sta-src/Lagrangian/lagrangianAdvanced.h
-#LAGRANGIAN_FORMS = sta-src/Lagrangian/lagrangian.ui \
-#    sta-src/Lagrangian/lagrangianAdvanced.ui
+LAGRANGIAN_SOURCES = sta-src/Lagrangian/lagrangianDialog.cpp
+LAGRANGIAN_HEADERS = sta-src/Lagrangian/lagrangianDialog.h
+LAGRANGIAN_FORMS = sta-src/Lagrangian/lagrangianDialog.ui
 
 # ############# Optimization ##############
 #OPTIMIZATION_SOURCES = sta-src/Optimization/pso1D.cpp \
@@ -580,9 +576,10 @@ SOURCES = $$MAIN_SOURCES \
     $$LOCATIONS_SOURCES \
     $$LOITERING_SOURCES \
     $$EXTERNAL_SOURCES \
-#    $$RENDEZVOUS_SOURCES \
+    $$RENDEZVOUS_SOURCES \
     $$RAM_SOURCES \
-#    $$LAGRANGIAN_SOURCES \
+    $$LAGRANGIAN_SOURCES \
+    $$INTERPLANETARY_SOURCES \
 #    $$OPTIMIZATION_SOURCES \
     $$CALCULATOR_SOURCES \
     $$GLEW_SOURCES \
@@ -607,8 +604,9 @@ HEADERS = $$MAIN_HEADERS \
     $$LOITERING_HEADERS \
     $$EXTERNAL_HEADERS \
     $$RAM_HEADERS \
-#    $$RENDEZVOUS_HEADERS \
-#    $$LAGRANGIAN_HEADERS \
+    $$RENDEZVOUS_HEADERS \
+    $$LAGRANGIAN_HEADERS \
+    $$INTERPLANETARY_HEADERS \
 #    $$OPTIMIZATION_HEADER \
     $$CALCULATOR_HEADERS \
     $$GLEW_HEADERS \
@@ -633,8 +631,9 @@ FORMS = $$MAIN_FORMS \
     $$CALCULATOR_FORMS \
     $$LOITERING_FORMS \
     $$EXTERNAL_FORMS \
-#    $$RENDEZVOUS_FORMS \
-#    $$LAGRANGIAN_FORMS \
+    $$RENDEZVOUS_FORMS \
+    $$LAGRANGIAN_FORMS \
+    $$INTERPLANETARY_FORMS \
     $$GLEW_FORMS \
     $$QWT3D_FORMS \
     $$NORAD_FORMS \
