@@ -413,6 +413,8 @@ static QByteArray spaceVehicleWithTrajectoryFragment(const char* name, const cha
 
     MissionsDefaults myMissionDefaults;
     ScenarioLoiteringType loiteringDefault;
+    ScenarioTransmitterPayloadType genericTransmitter;
+    ScenarioReceiverPayloadType genericReceiver;
 
     QDomDocument doc;
 
@@ -453,10 +455,14 @@ static QByteArray spaceVehicleWithTrajectoryFragment(const char* name, const cha
     else if (name == "PROBA-2")
         loiteringDefault = myMissionDefaults.MissionsDefaults_PROBA2();
 
+    genericTransmitter = myMissionDefaults.MissionsDefaults_GenericTransmitter();
+    genericReceiver = myMissionDefaults.MissionsDefaults_GenericReceiver();
+
     sc->SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(&loiteringDefault));
+    sc->SCMission()->PayloadSet()->AbstractPayload().append(QSharedPointer<ScenarioAbstractPayloadType>(&genericTransmitter));
+    sc->SCMission()->PayloadSet()->AbstractPayload().append(QSharedPointer<ScenarioAbstractPayloadType>(&genericReceiver));
+
     return fragmentText(CreateSCElement(sc, doc)).toUtf8();
-
-
 }
 
 
@@ -480,35 +486,10 @@ static QByteArray deltaVFragment(const char* name)
 // These lines added by Ricardo Noriega. Creates a Tx payload fragment representing a single payload and initialized the default values.
 static QByteArray transmitterPayloadFragment(const char* name)
 {
+    MissionsDefaults myMissionDefaults;
     ScenarioTransmitterPayloadType transmitterPayload;
 
-    // Guillermo says: addign a new for this payload
-    transmitterPayload.ElementIdentifier()->setName("transmitter");
-
-    double ElInit=(90*DEG2RAD);
-    transmitterPayload.Transmitter()->PointingDirection()->setElevation(ElInit);
-    transmitterPayload.Transmitter()->PointingDirection()->setAzimuth(0);
-
-    transmitterPayload.Transmitter()->EMproperties()->setEfficiency(55);
-    transmitterPayload.Transmitter()->EMproperties()->setTiltAngle(0);
-    transmitterPayload.Transmitter()->EMproperties()->setGainMax(30);
-    transmitterPayload.Transmitter()->EMproperties()->setDiameter(0);
-    transmitterPayload.Transmitter()->EMproperties()->setAngularBeamWidth(0);
-    transmitterPayload.Transmitter()->EMproperties()->setPolarisation("Linear");
-    transmitterPayload.Transmitter()->EMproperties()->setBandWidth(32000000.0);//in Hz
-
-    transmitterPayload.Transmitter()->Coverage()->setFrustumShape("Ellipse");
-    transmitterPayload.Transmitter()->Coverage()->setFrustumAngle1(5.0);
-    transmitterPayload.Transmitter()->Coverage()->setFrustumAngle1(5.0);
-
-    transmitterPayload.Transmitter()->setTransmittingPower(1000.0);
-    transmitterPayload.Budget()->setFrequencyBand(14500000000.0);//It is in hertz!!
-
-    transmitterPayload.Transmitter()->setDepointingLossTx(0);
-    transmitterPayload.Transmitter()->setFedderLossTx(0);
-
-    transmitterPayload.Transmitter()->Modulation()->setDataRate(16000000);//It's in Mbps
-    transmitterPayload.Transmitter()->Modulation()->setModulationType("BPSK");
+    transmitterPayload = myMissionDefaults.MissionsDefaults_GenericTransmitter();
 
     QDomDocument doc;
     return fragmentText(CreateTransmitterPayloadElement(&transmitterPayload, doc)).toUtf8();
@@ -518,34 +499,10 @@ static QByteArray transmitterPayloadFragment(const char* name)
 // These lines added by Ricardo Noriega. Creates a Rx payload fragment representing a single payload and initialized the default values.
 static QByteArray receiverPayloadFragment(const char* name)
 {
+    MissionsDefaults myMissionDefaults;
     ScenarioReceiverPayloadType receiverPayload;
 
-    // Guillermo says: addign a new for this payload
-    receiverPayload.ElementIdentifier()->setName("receiver");
-
-    double ElInit=(90*DEG2RAD);
-    receiverPayload.Receiver()->PointingDirection()->setElevation(ElInit);
-    receiverPayload.Receiver()->PointingDirection()->setAzimuth(0);
-    receiverPayload.Receiver()->EMproperties()->setEfficiency(55);
-    receiverPayload.Receiver()->EMproperties()->setGainMax(30);
-    receiverPayload.Receiver()->EMproperties()->setTiltAngle(0);
-    receiverPayload.Receiver()->EMproperties()->setPolarisation("Linear");
-    receiverPayload.Receiver()->EMproperties()->setBandWidth(32000000.0);//in Hz
-
-    receiverPayload.Receiver()->Coverage()->setFrustumShape("Ellipse");
-    receiverPayload.Receiver()->Coverage()->setFrustumAngle1(5.0);
-    receiverPayload.Receiver()->Coverage()->setFrustumAngle1(5.0);
-
-    receiverPayload.Receiver()->setDepointingLossRx(0);
-    receiverPayload.Receiver()->setFeederLossRx(0);
-
-    receiverPayload.Budget()->setFrequencyBand(14500000000.0);//It's in hertz
-
-    receiverPayload.Receiver()->SystemTemperature()->setRxNoiseFigure(1);
-    receiverPayload.Receiver()->SystemTemperature()->setThermoFeeder(290);
-    receiverPayload.Receiver()->SystemTemperature()->setThermoReveicer(290);
-
-    receiverPayload.Receiver()->SystemTemperature()->setChoiceTantenna("calculated");
+    receiverPayload = myMissionDefaults.MissionsDefaults_GenericReceiver();
 
     QDomDocument doc;
     return fragmentText(CreateReceiverPayloadElement(&receiverPayload, doc)).toUtf8();
@@ -556,30 +513,24 @@ static QByteArray receiverPayloadFragment(const char* name)
 // Guillermo on optical payloads
 static QByteArray opticalPayloadFragment(const char* name)
 {
+    MissionsDefaults myMissionDefaults;
     ScenarioOpticalPayloadType opticalPayload;
 
-    // Guillermo says: filling up defaults
-    opticalPayload.ElementIdentifier()->setName("telescope");
-    opticalPayload.Telescope()->OpticalProperties()->setDiameter(0.10);
-    opticalPayload.Telescope()->OpticalProperties()->setEfficiency(100.0);
+    opticalPayload = myMissionDefaults.MissionsDefaults_GenericOpticalPayload();
 
     QDomDocument doc;
     return fragmentText(CreateOpticalPayloadElement(&opticalPayload, doc)).toUtf8();
 }
 
+
+
 // Guillermo on optical payloads
 static QByteArray radarPayloadFragment(const char* name)
 {
+    MissionsDefaults myMissionDefaults;
     ScenarioRadarPayloadType radarPayload;
 
-    // Guillermo says: filling up defaults
-    radarPayload.ElementIdentifier()->setName("radar");
-    radarPayload.Radar()->RadarProperties()->setAngularBeamWidth(25.0);
-    radarPayload.Radar()->RadarProperties()->setDiameter(0.10);
-    radarPayload.Radar()->RadarProperties()->setEfficiency(100.0);
-    radarPayload.Radar()->RadarProperties()->setGainMax(30.0);
-    radarPayload.Radar()->RadarProperties()->setPolarisation("right");
-    radarPayload.Radar()->RadarProperties()->setTiltAngle(0.0);
+    radarPayload = myMissionDefaults.MissionsDefaults_GenericRadarPayload();
 
     QDomDocument doc;
     return fragmentText(CreateRadarPayloadElement(&radarPayload, doc)).toUtf8();
@@ -590,8 +541,7 @@ static QByteArray radarPayloadFragment(const char* name)
 //////////////////////////// Methods for manipulating pre-created PARTICIPANTS ////////////////////////////////
 
 ////  Guillermo: Ground stations (ESA, NASA, etc)
-static void
-        addGroundStationItem(QTreeWidgetItem* parent,
+static void addGroundStationItem(QTreeWidgetItem* parent,
                              const char* name,
                              const char* centralBody,
                              double latitude,
