@@ -31,6 +31,7 @@
 #include "Scenario/staschema.h"
 #include "Scenario/missionsDefaults.h"
 
+#include "Astro-Core/constants.h"
 
 
 
@@ -121,22 +122,122 @@ ScenarioSCSystemType MissionsDefaults::MissionsDefaults_GenericPlatform()
 
 ScenarioTransmitterPayloadType MissionsDefaults::MissionsDefaults_GenericTransmitter()
 {
+    ScenarioTransmitterPayloadType genericTransmitter;
 
+    genericTransmitter.ElementIdentifier()->setColorName("Yellow");
+    genericTransmitter.ElementIdentifier()->setModelName("Default");
+    genericTransmitter.ElementIdentifier()->setName("Transmitter #1");
+
+    genericTransmitter.Budget()->setDataRate(100.0);
+    genericTransmitter.Budget()->setFrequencyBand(13397312236.56);
+    genericTransmitter.Budget()->setMass(30.0);
+    genericTransmitter.Budget()->Power()->setPowerConsumptionInDaylight(1000.0);
+    genericTransmitter.Budget()->Power()->setPowerConsumptionInEclipse(700.0);
+    genericTransmitter.Budget()->Power()->setPowerOnPercentageInDaylight(10.0);
+    genericTransmitter.Budget()->Power()->setPowerOnPercentageInEclipse(90.0);
+    genericTransmitter.Budget()->Size()->setHeight(0.100);  // in meters
+    genericTransmitter.Budget()->Size()->setLength(0.100);
+    genericTransmitter.Budget()->Size()->setWidth(0.100);
+    genericTransmitter.Budget()->TemperatureRange()->setMaximumTemperature(40.0);
+    genericTransmitter.Budget()->TemperatureRange()->setMinimumTemperature(10.0);
+
+    genericTransmitter.Transmitter()->setDepointingLossTx(0.0);
+    genericTransmitter.Transmitter()->setTransmittingPower(1000.0);
+
+    genericTransmitter.Transmitter()->Coverage()->setFrustumAngle1(15.0);
+    genericTransmitter.Transmitter()->Coverage()->setFrustumAngle2(15.0);
+    genericTransmitter.Transmitter()->Coverage()->setFrustumShape("Rectangular");
+
+    genericTransmitter.Transmitter()->PointingDirection()->setAzimuth(0.0);
+    genericTransmitter.Transmitter()->PointingDirection()->setAzimuthDot(0.0);
+    genericTransmitter.Transmitter()->PointingDirection()->setElevation(90.0*DEG2RAD);
+    genericTransmitter.Transmitter()->PointingDirection()->setElevationDot(0.0);
+    genericTransmitter.Transmitter()->PointingDirection()->setReferenceSystem("LVLH");  // Not sure about this
+
+    genericTransmitter.Transmitter()->EMproperties()->setAngularBeamWidth(15.0);
+    genericTransmitter.Transmitter()->EMproperties()->setAreaEff(30.0);
+    genericTransmitter.Transmitter()->EMproperties()->setBandWidth(32346653.32);
+    genericTransmitter.Transmitter()->EMproperties()->setBeamType("Parabolic");
+    genericTransmitter.Transmitter()->EMproperties()->setDiameter(0.280622);
+    genericTransmitter.Transmitter()->EMproperties()->setEfficiency(55.0);
+    genericTransmitter.Transmitter()->EMproperties()->setGainMax(30.0);
+    genericTransmitter.Transmitter()->EMproperties()->setPolarisation("Linear");
+    genericTransmitter.Transmitter()->EMproperties()->setTiltAngle(0.0);
+
+    genericTransmitter.Transmitter()->setFedderLossTx(0.0);
+
+    genericTransmitter.Transmitter()->Modulation()->setDataRate(16654486.34);
+    genericTransmitter.Transmitter()->Modulation()->setModulationType("BPSK");
+
+    return genericTransmitter;
 }
+
+
+
+
 
 ScenarioReceiverPayloadType MissionsDefaults::MissionsDefaults_GenericReceiver()
-{
+{    
+    ScenarioReceiverPayloadType receiverPayload;
 
+    receiverPayload.ElementIdentifier()->setName("receiver");
+
+    double ElInit=(90*DEG2RAD);
+    receiverPayload.Receiver()->PointingDirection()->setElevation(ElInit);
+    receiverPayload.Receiver()->PointingDirection()->setAzimuth(0);
+    receiverPayload.Receiver()->EMproperties()->setEfficiency(55);
+    receiverPayload.Receiver()->EMproperties()->setGainMax(30);
+    receiverPayload.Receiver()->EMproperties()->setTiltAngle(0);
+    receiverPayload.Receiver()->EMproperties()->setPolarisation("Linear");
+    receiverPayload.Receiver()->EMproperties()->setBandWidth(32000000.0);//in Hz
+
+    receiverPayload.Receiver()->Coverage()->setFrustumShape("Ellipse");
+    receiverPayload.Receiver()->Coverage()->setFrustumAngle1(5.0);
+    receiverPayload.Receiver()->Coverage()->setFrustumAngle1(5.0);
+
+    receiverPayload.Receiver()->setDepointingLossRx(0);
+    receiverPayload.Receiver()->setFeederLossRx(0);
+
+    receiverPayload.Budget()->setFrequencyBand(14500000000.0);//It's in hertz
+
+    receiverPayload.Receiver()->SystemTemperature()->setRxNoiseFigure(1);
+    receiverPayload.Receiver()->SystemTemperature()->setThermoFeeder(290);
+    receiverPayload.Receiver()->SystemTemperature()->setThermoReveicer(290);
+
+    receiverPayload.Receiver()->SystemTemperature()->setChoiceTantenna("calculated");
+
+    return receiverPayload;
 }
+
+
+
 
 ScenarioOpticalPayloadType MissionsDefaults::MissionsDefaults_GenericOpticalPayload()
 {
+    ScenarioOpticalPayloadType genericTelescope;
 
+    genericTelescope.ElementIdentifier()->setName("telescope");
+    genericTelescope.Telescope()->OpticalProperties()->setDiameter(0.10);
+    genericTelescope.Telescope()->OpticalProperties()->setEfficiency(100.0);
+
+    return genericTelescope;
 }
+
+
 
 ScenarioRadarPayloadType MissionsDefaults::MissionsDefaults_GenericRadarPayload()
 {
+    ScenarioRadarPayloadType genericRadar;
 
+    genericRadar.ElementIdentifier()->setName("radar");
+    genericRadar.Radar()->RadarProperties()->setAngularBeamWidth(25.0);
+    genericRadar.Radar()->RadarProperties()->setDiameter(0.10);
+    genericRadar.Radar()->RadarProperties()->setEfficiency(100.0);
+    genericRadar.Radar()->RadarProperties()->setGainMax(30.0);
+    genericRadar.Radar()->RadarProperties()->setPolarisation("right");
+    genericRadar.Radar()->RadarProperties()->setTiltAngle(0.0);
+
+    return genericRadar;
 }
 
 
