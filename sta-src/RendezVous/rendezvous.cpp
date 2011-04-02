@@ -47,13 +47,13 @@ QTreeWidgetItem* invisibleRoot;
 QList<ScenarioSC*> spacevehicles;
 static bool flag, dragdropflag;
 
-RendezvousDialog::RendezvousDialog(ScenarioTree* parent) :
-    QDialog(parent)
+//RendezvousDialog::RendezvousDialog(ScenarioTree* parent) : QDialog(parent)
+RendezvousDialog::RendezvousDialog ( QWidget * parent, Qt::WindowFlags f) : QDialog(parent, f)
 {
 	flag = false;
 	dragdropflag = false;
 	
-	m_scenariotree = parent;
+    //m_scenariotree = parent;
 	
     setupUi(this);
     
@@ -141,8 +141,8 @@ RendezvousDialog::RendezvousDialog(ScenarioTree* parent) :
     
     //set up Target list
     
-    QTreeWidgetItem* spacescenarioItem = parent->topLevelItem(0);
-    SpaceScenario* spacescenario = dynamic_cast<SpaceScenario*> (parent->objectForItem(spacescenarioItem));
+    //QTreeWidgetItem* spacescenarioItem = parent->topLevelItem(0);
+    //SpaceScenario* spacescenario = dynamic_cast<SpaceScenario*> (parent->objectForItem(spacescenarioItem));
     
 #if OLDSCENARIO
 	if(spacescenario){
@@ -208,7 +208,7 @@ RendezvousDialog::RendezvousDialog(ScenarioTree* parent) :
 	ManoeuvresPlanTreeWidget->setItemDelegate(new TreeItemDelegate(ManoeuvresPlanTreeWidget));
 	ManoeuvresPlanTreeWidget->header()->setResizeMode(QHeaderView::ResizeToContents);
 	
-	m_manoeuvreplan = new ScenarioManoeuvrePlan(); 
+    //m_manoeuvreplan = new ScenarioManoeuvrePlan();
 	invisibleRoot = ManoeuvresPlanTreeWidget->invisibleRootItem();
 	ManoeuvresPlanTreeWidget->addTopLevelItem(invisibleRoot);
 	

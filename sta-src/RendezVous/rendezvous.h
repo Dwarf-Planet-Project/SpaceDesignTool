@@ -46,8 +46,10 @@ class RendezvousDialog : public QDialog, private Ui_RendezvousDialogClass
     Q_OBJECT
     
 public:
-    RendezvousDialog(ScenarioTree* parent=NULL);
+    //RendezvousDialog(ScenarioTree* parent=NULL);
+    RendezvousDialog(QWidget * parent = 0, Qt::WindowFlags f = 0);
     ~RendezvousDialog();
+
     ScenarioManoeuvre* manoeuvreForItem(QTreeWidgetItem* item) const;
     void writeInputFile();
     void reorderManoeuvrePlanTree();
