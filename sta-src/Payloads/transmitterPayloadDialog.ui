@@ -95,7 +95,7 @@
            <item>
             <widget class="QRadioButton" name="GainMaxRadioButton">
              <property name="text">
-              <string>Gain Max. [dBi]</string>
+              <string>Gain Max. [dBi]:</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -107,15 +107,18 @@
            </item>
            <item>
             <widget class="QRadioButton" name="DiameterRadioButton">
+             <property name="layoutDirection">
+              <enum>Qt::LeftToRight</enum>
+             </property>
              <property name="text">
-              <string>Diameter [m]</string>
+              <string>Diameter [m]:</string>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QRadioButton" name="BeamWidthRadioButton">
              <property name="text">
-              <string>Beamwidth [deg]</string>
+              <string>Beamwidth [deg]:</string>
              </property>
             </widget>
            </item>
@@ -169,9 +172,9 @@
     <widget class="QGroupBox" name="groupBox">
      <property name="geometry">
       <rect>
-       <x>256</x>
+       <x>260</x>
        <y>28</y>
-       <width>251</width>
+       <width>248</width>
        <height>137</height>
       </rect>
      </property>
@@ -183,7 +186,7 @@
        <rect>
         <x>6</x>
         <y>26</y>
-        <width>229</width>
+        <width>232</width>
         <height>91</height>
        </rect>
       </property>
@@ -193,7 +196,7 @@
          <item>
           <widget class="QLabel" name="EfficiencyLabel">
            <property name="text">
-            <string>Efficiency [%]</string>
+            <string>Efficiency [%]:</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -203,7 +206,7 @@
          <item>
           <widget class="QLabel" name="FrequencyLabel">
            <property name="text">
-            <string>Frequency [GHz]</string>
+            <string>Frequency [GHz]:</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -213,7 +216,10 @@
          <item>
           <widget class="QLabel" name="TypeBeamLabel">
            <property name="text">
-            <string>Type of beam</string>
+            <string>Type of beam:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
           </widget>
          </item>
@@ -283,7 +289,7 @@
        <rect>
         <x>4</x>
         <y>24</y>
-        <width>253</width>
+        <width>257</width>
         <height>72</height>
        </rect>
       </property>
@@ -293,7 +299,7 @@
          <item>
           <widget class="QLabel" name="TypePolLabel">
            <property name="text">
-            <string>Type</string>
+            <string>Type:</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -303,7 +309,7 @@
          <item>
           <widget class="QLabel" name="TiltLabel">
            <property name="text">
-            <string>Tilt Angle [deg]</string>
+            <string>Tilt Angle [deg]:</string>
            </property>
           </widget>
          </item>
@@ -372,7 +378,7 @@
          <item>
           <widget class="QLabel" name="TypeModLabel">
            <property name="text">
-            <string>Type</string>
+            <string>Type:</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -382,7 +388,7 @@
          <item>
           <widget class="QLabel" name="DataRateLabel">
            <property name="text">
-            <string>Data Rate [Mbps]</string>
+            <string>Data Rate [Mbps]:</string>
            </property>
           </widget>
          </item>
@@ -476,7 +482,7 @@
          <item>
           <widget class="QLabel" name="PowerLabel">
            <property name="text">
-            <string>Power [W]</string>
+            <string>Power [W]:</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -486,7 +492,7 @@
          <item>
           <widget class="QLabel" name="TxFeederLossLabel">
            <property name="text">
-            <string>Feeder Loss [dB]</string>
+            <string>Feeder Loss [dB]:</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -496,14 +502,14 @@
          <item>
           <widget class="QLabel" name="TxDepointingLossLabel">
            <property name="text">
-            <string>Depointing Loss [dB]</string>
+            <string>Depointing Loss [dB]:</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QLabel" name="BandWidthLabel">
            <property name="text">
-            <string>Bandwidth [MHz]</string>
+            <string>Bandwidth [MHz]:</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -584,7 +590,7 @@
       <rect>
        <x>84</x>
        <y>116</y>
-       <width>345</width>
+       <width>365</width>
        <height>69</height>
       </rect>
      </property>
@@ -637,7 +643,7 @@
         <rect>
          <x>4</x>
          <y>1</y>
-         <width>301</width>
+         <width>325</width>
          <height>62</height>
         </rect>
        </property>
@@ -647,14 +653,17 @@
           <item>
            <widget class="QLabel" name="VerAngleLabel">
             <property name="text">
-             <string>Vertical Half Angle [deg]</string>
+             <string>Vertical Half Angle [deg]:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QLabel" name="HorAngleLabel">
             <property name="text">
-             <string>Horizontal Half Angle [deg]</string>
+             <string>Horizontal Half Angle [deg]:</string>
             </property>
            </widget>
           </item>
@@ -663,10 +672,18 @@
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_16">
           <item>
-           <widget class="QLineEdit" name="VertAngleLineEdit"/>
+           <widget class="QLineEdit" name="VertAngleLineEdit">
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="HorAngleLineEdit"/>
+           <widget class="QLineEdit" name="HorAngleLineEdit">
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -679,7 +696,7 @@
       <rect>
        <x>168</x>
        <y>12</y>
-       <width>238</width>
+       <width>242</width>
        <height>95</height>
       </rect>
      </property>
@@ -689,14 +706,14 @@
         <item>
          <widget class="QLabel" name="ElevationLabel">
           <property name="text">
-           <string>Elevation [deg]</string>
+           <string>Elevation [deg]:</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QLabel" name="AzimuthLabel">
           <property name="text">
-           <string>Azimuth [deg]</string>
+           <string>Azimuth [deg]:</string>
           </property>
          </widget>
         </item>
@@ -788,40 +805,68 @@
         <property name="text">
          <string>Mass [Kg]: </string>
         </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="MassLineEdit"/>
+       <widget class="QLineEdit" name="MassLineEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="LengthLabel">
         <property name="text">
          <string>Length [m]: </string>
         </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QLineEdit" name="LengthLineEdit"/>
+       <widget class="QLineEdit" name="LengthLineEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="WidthLabel">
         <property name="text">
          <string>Width [m]: </string>
         </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QLineEdit" name="WidthLineEdit"/>
+       <widget class="QLineEdit" name="WidthLineEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
       <item row="3" column="0">
        <widget class="QLabel" name="HightLabel">
         <property name="text">
          <string>Hight [m]: </string>
         </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QLineEdit" name="HightLineEdit"/>
+       <widget class="QLineEdit" name="HightLineEdit">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

@@ -1,16 +1,4 @@
 /*
- This program is free software; you can redistribute it and/or modify it under
- the terms of the European Union Public Licence - EUPL v.1.1 as published by
- the European Commission.
-
- This program is distributed in the hope that it will be useful, but WITHOUT
- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE. See the European Union Public Licence - EUPL v.1.1
- for more details.
-
- You should have received a copy of the European Union Public Licence - EUPL v.1.1
- along with this program.
-
  Further information about the European Union Public Licence - EUPL v.1.1 can
  also be found on the world wide web at http://ec.europa.eu/idabc/eupl
  */
@@ -20,12 +8,16 @@
  ------------------ Author: Ricardo Noriega  ----------------------------------------------
  ------------------ email: ricardonor@gmail.com  ------------------------------------------
 
+ Patched by Guillermo on April 2011 t finish this up properly
+
  */
 
 #include "transmitterPayloadDialog.h"
-#include <QDebug>
+
 #include <Astro-Core/constants.h>
 #include <Coverage/commanalysis.h>
+
+#include <QDebug>
 
 
 int antennaRadioButtonTransmitter;
@@ -38,31 +30,32 @@ transmitterPayloadDialog::transmitterPayloadDialog( QWidget * parent, Qt::Window
 {
 	setupUi(this);
 
-        QDoubleValidator* positiveDoubleValidator = new QDoubleValidator(this);
-        positiveDoubleValidator->setBottom(0.0);
+    QDoubleValidator* positiveDoubleValidator = new QDoubleValidator(this);
+    positiveDoubleValidator->setBottom(0.0);
 
-        QDoubleValidator* efficiencyValidator = new QDoubleValidator(this);
-        efficiencyValidator->setBottom(0.0);
-        efficiencyValidator->setTop(100.0);
+    QDoubleValidator* efficiencyValidator = new QDoubleValidator(this);
+    efficiencyValidator->setBottom(0.0);
+    efficiencyValidator->setTop(100.0);
 
+    ElLineEdit->setValidator(positiveDoubleValidator);
+    TxFeederLossLineEdit->setValidator(positiveDoubleValidator);
+    TxDepointingLossLineEdit->setValidator(positiveDoubleValidator);
+    GainLineEdit->setValidator(positiveDoubleValidator);
+    DiameterLineEdit->setValidator(positiveDoubleValidator);
+    BeamLineEdit->setValidator(positiveDoubleValidator);
+    TiltLineEdit->setValidator(positiveDoubleValidator);
+    EfficiencyLineEdit->setValidator(efficiencyValidator);
+    FrequencyLineEdit->setValidator(positiveDoubleValidator);
+    PowerLineEdit->setValidator(positiveDoubleValidator);
+    DataRateLineEdit->setValidator(positiveDoubleValidator);
 
-
-        ElLineEdit->setValidator(positiveDoubleValidator);
-        TxFeederLossLineEdit->setValidator(positiveDoubleValidator);
-        TxDepointingLossLineEdit->setValidator(positiveDoubleValidator);
-        GainLineEdit->setValidator(positiveDoubleValidator);
-        DiameterLineEdit->setValidator(positiveDoubleValidator);
-        BeamLineEdit->setValidator(positiveDoubleValidator);
-        TiltLineEdit->setValidator(positiveDoubleValidator);
-        EfficiencyLineEdit->setValidator(efficiencyValidator);
-        FrequencyLineEdit->setValidator(positiveDoubleValidator);
-        PowerLineEdit->setValidator(positiveDoubleValidator);
-        DataRateLineEdit->setValidator(positiveDoubleValidator);
-
-        ConeAngleLineEdit->setValidator(positiveDoubleValidator);
-        HorAngleLineEdit->setValidator(positiveDoubleValidator);
-        VertAngleLineEdit->setValidator(positiveDoubleValidator);
+    ConeAngleLineEdit->setValidator(positiveDoubleValidator);
+    HorAngleLineEdit->setValidator(positiveDoubleValidator);
+    VertAngleLineEdit->setValidator(positiveDoubleValidator);
 }
+
+
+
 
 transmitterPayloadDialog::~transmitterPayloadDialog()
 {
@@ -81,15 +74,12 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* transm
     if(antennaRadioButtonTransmitter==2)
         BeamWidthRadioButton->toggle();
 
-
     double elevation=transmitterPayload->Transmitter()->PointingDirection()->elevation();
     elevation=elevation*RAD2DEG;
     if(elevation>90)
-        ElLineEdit->setText(QString::number(90));
+        ElLineEdit->setText(QString::number(90.0));
     else
         ElLineEdit->setText(QString::number(elevation));
-
-
 
     double azimuth=transmitterPayload->Transmitter()->PointingDirection()->azimuth();
     azimuth=azimuth*RAD2DEG;
@@ -140,46 +130,42 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* transm
     modType=transmitterPayload->Transmitter()->Modulation()->ModulationType();
 
 
-   if(modType=="BPSK")
-       i=0;
-   else if (modType=="DE-BPSK")
+    if(modType=="BPSK")
+        i=0;
+    else if (modType=="DE-BPSK")
         i=1;
-   else if (modType=="D-BPSK")
+    else if (modType=="D-BPSK")
         i=2;
-   else if (modType=="QPSK")
+    else if (modType=="QPSK")
         i=3;
-   else if (modType=="DE-QPSK")
+    else if (modType=="DE-QPSK")
         i=4;
-   else if (modType=="D-QPSK")
+    else if (modType=="D-QPSK")
         i=5;
-   else if (modType=="OQPSK")
+    else if (modType=="OQPSK")
         i=6;
-
-
 
     TypeModComboBox->setCurrentIndex(i);
 
+    antennaCalculations(transmitterPayload);
 
-     antennaCalculations(transmitterPayload);
+    //These lines allow the GUI to remember which choice the user did for the type of polarisation
+    if(polarisationTypeTransmitter=="Linear"){
+        TiltLineEdit->setEnabled(true);
+        PolarisationComboBox->setCurrentIndex(0);}
+    if(polarisationTypeTransmitter=="rightCircular"){
+        TiltLineEdit->setText(QString::number(45));
+        TiltLineEdit->setDisabled(true);
+        transmitterPayload->Transmitter()->EMproperties()->setTiltAngle(45*DEG2RAD);
+        PolarisationComboBox->setCurrentIndex(1);}
+    if(polarisationTypeTransmitter=="leftCircular"){
+        TiltLineEdit->setText(QString::number(45));
+        TiltLineEdit->setDisabled(true);
+        transmitterPayload->Transmitter()->EMproperties()->setTiltAngle(45*DEG2RAD);
+        PolarisationComboBox->setCurrentIndex(2);}
 
-     //These lines allow the GUI to remember which choice the user did for the type of polarisation
-     if(polarisationTypeTransmitter=="Linear"){
-         TiltLineEdit->setEnabled(true);
-         PolarisationComboBox->setCurrentIndex(0);}
-     if(polarisationTypeTransmitter=="rightCircular"){
-         TiltLineEdit->setText(QString::number(45));
-         TiltLineEdit->setDisabled(true);
-         transmitterPayload->Transmitter()->EMproperties()->setTiltAngle(45*DEG2RAD);
-         PolarisationComboBox->setCurrentIndex(1);}
-     if(polarisationTypeTransmitter=="leftCircular"){
-         TiltLineEdit->setText(QString::number(45));
-         TiltLineEdit->setDisabled(true);
-         transmitterPayload->Transmitter()->EMproperties()->setTiltAngle(45*DEG2RAD);
-         PolarisationComboBox->setCurrentIndex(2);}
-
-     //These lines allow the GUI to remember which choice the user did for the type of beam
-
-     if(beamTypeTx=="Parabolic"){
+    //These lines allow the GUI to remember which choice the user did for the type of beam
+    if(beamTypeTx=="Parabolic"){
         TypeBeamComboBox->setCurrentIndex(0);
         transmitterPayload->Transmitter()->EMproperties()->setBeamType("Parabolic");
         AntennaSizeGroupBox->setEnabled(true);
@@ -189,8 +175,25 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* transm
         AntennaSizeGroupBox->setDisabled(true);
     }
 
+
+    // Patched by Guillermo to load the budgets
+    double myMass = transmitterPayload->Budget()->Mass();
+    MassLineEdit->setText(QString::number(myMass));
+    double myLength = transmitterPayload->Budget()->Size()->Length();
+    LengthLineEdit->setText(QString::number(myLength));
+    double myWidth = transmitterPayload->Budget()->Size()->Width();
+    WidthLineEdit->setText(QString::number(myWidth));
+    double myHeight = transmitterPayload->Budget()->Size()->Height();
+    HightLineEdit->setText(QString::number(myHeight));
+
     return true;
 }
+
+
+
+
+
+
 
 // This is the function that load the values of the GUI into the XML schema
 bool transmitterPayloadDialog::saveValues(ScenarioTransmitterPayloadType* transmitterPayload)
@@ -198,9 +201,9 @@ bool transmitterPayloadDialog::saveValues(ScenarioTransmitterPayloadType* transm
 
     double elevation=ElLineEdit->text().toDouble();
     if(elevation<=90){
-    elevation=elevation*DEG2RAD;
+        elevation=elevation*DEG2RAD;
     }else{
-    elevation=90*DEG2RAD;
+        elevation=90*DEG2RAD;
     }
     transmitterPayload->Transmitter()->PointingDirection()->setElevation(elevation);
 
@@ -283,12 +286,22 @@ bool transmitterPayloadDialog::saveValues(ScenarioTransmitterPayloadType* transm
         transmitterPayload->Transmitter()->Coverage()->setFrustumShape("ellipse");
     }
 
+    // Patched by Guillermo to load the budgets
+    double myMass = MassLineEdit->text().toDouble();
+    transmitterPayload->Budget()->setMass(myMass);
+    double myLength = LengthLineEdit->text().toDouble();
+    transmitterPayload->Budget()->Size()->setLength(myLength);
+    double myWidth = WidthLineEdit->text().toDouble();
+    transmitterPayload->Budget()->Size()->setWidth(myWidth);
+    double myHeight = HightLineEdit->text().toDouble();
+    transmitterPayload->Budget()->Size()->setHeight(myHeight);
 
     return true;
 }
 
 
-void transmitterPayloadDialog::antennaCalculations(ScenarioTransmitterPayloadType* transmitterPayload){
+void transmitterPayloadDialog::antennaCalculations(ScenarioTransmitterPayloadType* transmitterPayload)
+{
 
     double Pi=3.141592;
     double lightSpeed=SPEED_OF_LIGHT;
@@ -350,200 +363,200 @@ void transmitterPayloadDialog::antennaCalculations(ScenarioTransmitterPayloadTyp
 
 void transmitterPayloadDialog::on_buttonBox_helpRequested()
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_buttonBox_clicked(QAbstractButton*)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 
 
 }
 
 void transmitterPayloadDialog::on_tabWidget_currentChanged(int)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_MassLineEdit_textChanged(const QString&)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_LengthLineEdit_textChanged(const QString&)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_WidthLineEdit_textChanged(const QString&)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_HightLineEdit_textChanged(const QString&)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_VertAngleLineEdit_textChanged(const QString&)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_HorAngleLineEdit_textChanged(const QString&)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_ConeAngleLineEdit_textChanged(const QString&)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_ElLineEdit_textChanged(const QString&)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_AzLineEdit_textChanged(const QString&)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_ConeShapeComboBox_activated(const QString&)
 {
 
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 
-       if(ConeShapeComboBox->currentText()=="Circular")
-            stackedWidget->setCurrentIndex(0);
-       else if(ConeShapeComboBox->currentText()=="Rectangular")
-            stackedWidget->setCurrentIndex(1);
+    if(ConeShapeComboBox->currentText()=="Circular")
+        stackedWidget->setCurrentIndex(0);
+    else if(ConeShapeComboBox->currentText()=="Rectangular")
+        stackedWidget->setCurrentIndex(1);
 }
 
 
 void transmitterPayloadDialog::on_PolarisationGroupBox_toggled(bool)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_PolarisationComboBox_activated(const QString&)
 {
-        if(PolarisationComboBox->currentText()=="Right Circular" || PolarisationComboBox->currentText()=="Left Circular")
-       {
-         TiltLineEdit->setText(QString::number(45));
-         TiltLineEdit->setDisabled(true);
-       }
-        if(PolarisationComboBox->currentText()=="Linear"){
-            TiltLineEdit->setText(QString::number(0));
-            TiltLineEdit->setEnabled(true);}
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    if(PolarisationComboBox->currentText()=="Right Circular" || PolarisationComboBox->currentText()=="Left Circular")
+    {
+        TiltLineEdit->setText(QString::number(45));
+        TiltLineEdit->setDisabled(true);
+    }
+    if(PolarisationComboBox->currentText()=="Linear"){
+        TiltLineEdit->setText(QString::number(0));
+        TiltLineEdit->setEnabled(true);}
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_TiltLineEdit_textChanged(const QString&)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_ModulationGroupBox_toggled(bool)
 {
-       //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_TypeModComboBox_activated(const QString&)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_DataRateLineEdit_textChanged(const QString&)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_EquipmentGroupBox_toggled(bool)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_PowerLineEdit_textChanged(const QString&)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_TxFeederLossLineEdit_textChanged(const QString&)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_TxDepointingLossLineEdit_textChanged(const QString&)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_AntennaSizeGroupBox_toggled(bool)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_GainMaxRadioButton_toggled(bool)
 {
-       //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 
 }
 
 void transmitterPayloadDialog::on_DiameterRadioButton_toggled(bool)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_BeamWidthRadioButton_toggled(bool)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_GainLineEdit_textChanged(const QString&)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_DiameterLineEdit_textChanged(const QString&)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_BeamLineEdit_textChanged(const QString&)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_groupBox_toggled(bool)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_EfficiencyLineEdit_textChanged(const QString&)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_FrequencyLineEdit_textChanged(const QString&)
 {
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 void transmitterPayloadDialog::on_TypeBeamComboBox_activated(const QString&)
 {
-        if(TypeBeamComboBox->currentText()=="Omni-directional")
-        {
-            GainLineEdit->setText(QString::number(0));
-            AntennaSizeGroupBox->setDisabled(1);
-        } else if(TypeBeamComboBox->currentText()=="Parabolic"){
-            AntennaSizeGroupBox->setEnabled(1);
-            GainLineEdit->setText(QString::number(30));
+    if(TypeBeamComboBox->currentText()=="Omni-directional")
+    {
+        GainLineEdit->setText(QString::number(0));
+        AntennaSizeGroupBox->setDisabled(1);
+    } else if(TypeBeamComboBox->currentText()=="Parabolic"){
+        AntennaSizeGroupBox->setEnabled(1);
+        GainLineEdit->setText(QString::number(30));
 
-        }
+    }
 
-        //qWarning("TODO: %s	%d",__FILE__,__LINE__);
+    //qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
 
 
