@@ -5184,9 +5184,10 @@ void analysis::ComboBoxOptions(QTreeWidgetItem*item)
     if(name=="Time")
     {
         //This group has been patched by Guillermo
-        //treeWidgetShowInReport->setItemWidget(item,1,TimeFramesBox());
-        //treeWidgetShowInReport->setItemWidget(item,2,NoUnitsBox());
+        treeWidgetShowInReport->setItemWidget(item,1,TimeFramesBox());
+        treeWidgetShowInReport->setItemWidget(item,2,NoUnitsBox());
        // Next lines oatched by Guillermo
+       /*
        treeWidgetShowInReport->setColumnWidth(0, 100);
        treeWidgetShowInReport->setColumnWidth(1, 200);
        treeWidgetShowInReport->setColumnWidth(2, 150);
@@ -5196,6 +5197,7 @@ void analysis::ComboBoxOptions(QTreeWidgetItem*item)
        DialogServiceTimeUnitFrame* serviceTimeUnitWidget = new DialogServiceTimeUnitFrame();
        treeWidgetShowInReport->setItemWidget(item,2,serviceTimeUnitWidget);
        serviceTimeUnitWidget->show();
+       */
     }
     if(name=="Epoch")
     {
