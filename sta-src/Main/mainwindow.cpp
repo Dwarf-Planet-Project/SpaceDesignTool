@@ -1,16 +1,4 @@
 /*
- This program is free software; you can redistribute it and/or modify it under
- the terms of the European Union Public Licence - EUPL v.1.1 as published by
- the European Commission.
-
- This program is distributed in the hope that it will be useful, but WITHOUT
- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE. See the European Union Public Licence - EUPL v.1.1
- for more details.
-
- You should have received a copy of the European Union Public Licence - EUPL v.1.1
- along with this program.
-
  Further information about the European Union Public Licence - EUPL v.1.1 can
  also be found on the world wide web at http://ec.europa.eu/idabc/eupl
  */
@@ -27,6 +15,7 @@
   Patched by Guillermo April 2010 to add analyis module
   Patched by Guillermo June 2010 to add constellations module
   Patched by Guillermo on June 2010 to all TLE propagation
+  Patched by Guillermo on April 2011 to add Interplanetary, Rendezvous and Lagrangian modules on the main window
 
 
  */
@@ -65,7 +54,9 @@
 //***************** OZGUN/
 
 #include "propagatedscenario.h"
-//#include "RendezVous/rendezvous.h"
+#include "RendezVous/rendezvous.h"
+#include "Lagrangian/lagrangianDialog.h"
+#include "Interplanetary/interplanetaryDialog.h"
 #include "Entry/reentry.h"
 #include "Loitering/loitering.h"
 #include "Loitering/loiteringTLE.h"
@@ -125,29 +116,29 @@ static const int SCENARIO_FILE_INDENT_LEVEL = 2;
 
 //MainWindow::MainWindow() :
 MainWindow::MainWindow(QWidget *parent)	:
-		m_scenario(NULL),
-		m_propagatedScenario(NULL),
-		m_scenarioView(NULL),
-		m_timelineWidget(NULL),
-		m_orbitPropagationDialog(NULL),
-		m_groundTrackPlotTool(NULL),
-		m_scenarioElementBox(NULL),
-		m_viewPanel(NULL),
+        m_scenario(NULL),
+        m_propagatedScenario(NULL),
+        m_scenarioView(NULL),
+        m_timelineWidget(NULL),
+        m_orbitPropagationDialog(NULL),
+        m_groundTrackPlotTool(NULL),
+        m_scenarioElementBox(NULL),
+        m_viewPanel(NULL),
 
-		m_rendezvousDialog(NULL),
-		m_reentryDialog(NULL),
-		m_loiteringDialog(NULL),
-		m_loiteringTLEDialog(NULL),
-		m_SEMVehicleDialog(NULL),
-		m_AnalysisDialog(NULL),
+        m_rendezvousDialog(NULL),
+        m_reentryDialog(NULL),
+        m_loiteringDialog(NULL),
+        m_loiteringTLEDialog(NULL),
+        m_SEMVehicleDialog(NULL),
+        m_AnalysisDialog(NULL),
 
-		m_threeDViewWidget(NULL),
+        m_threeDViewWidget(NULL),
 
-		m_spaceScenarioSchema(NULL),
+        m_spaceScenarioSchema(NULL),
 
-		m_viewActions(NULL),
+        m_viewActions(NULL),
 
-		m_lastTime(0.0)
+        m_lastTime(0.0)
 {
     setupUi(this);
     connect(actionQuit, SIGNAL(triggered()), QApplication::instance(), SLOT(closeAllWindows()));
@@ -362,7 +353,7 @@ SpaceScenario* MainWindow::scenario() const
  *  views. If a scenario was loaded already, it will be replaced.
  */
 void
-MainWindow::setScenario(SpaceScenario* scenario)
+        MainWindow::setScenario(SpaceScenario* scenario)
 {
     clearViews();
 
@@ -586,7 +577,7 @@ void MainWindow::on_actionOpenScenario_triggered()
 
             QTreeWidgetItem* rootItem = new QTreeWidgetItem(m_scenarioView->m_scenarioTree);
             rootItem->setExpanded(true);
-			rootItem->setText(0, "Space scenario");
+            rootItem->setText(0, "Space scenario");
             rootItem->setText(1, scenario->Name());
             rootItem->setFlags(rootItem->flags() & ~Qt::ItemIsDragEnabled);
 
@@ -729,7 +720,7 @@ void MainWindow::about()
 {
     /*
     QMessageBox::about(this, tr("About Application"),
-					   tr("STA 'Archean' v2.0, November 2009\n"
+                       tr("STA 'Archean' v2.0, November 2009\n"
                                                "  \n"
                                                "One of the STA aims is to promote the\n"
                                                "exchange of technical ideas, and raise\n"
@@ -774,8 +765,8 @@ void MainWindow::preferencesSTA()
 // Next lines created by Guillermo to handle the spawning of web browsers and e-mail clients, etc.
 
 void MainWindow::on_actionSTA_Web_triggered()
-		//Opens the given url in the appropriate web browser for the user's desktop environment,
-		// and returns true if successful; otherwise returns false.
+        //Opens the given url in the appropriate web browser for the user's desktop environment,
+        // and returns true if successful; otherwise returns false.
 {
     QDesktopServices::openUrl(STAwebSite);
 }
@@ -792,11 +783,11 @@ void MainWindow::on_actionSTA_Wiki_triggered()
     //QDesktopServices::openUrl(STAWiki);  // Not any longer a web site but a PDF inside the hundle
     /*
     QMessageBox::about(this, tr("User's Manual"),
-			     tr("\n"
-				"The STA User's maual is a PDF file\n"
-				 "STA-ARCHEAN-UM.pdf\n"
-				 "installed in your\n"
-				 "sta-data resources folder"));
+                 tr("\n"
+                "The STA User's maual is a PDF file\n"
+                 "STA-ARCHEAN-UM.pdf\n"
+                 "installed in your\n"
+                 "sta-data resources folder"));
     */
 
     //HelpBrowser::showPage("index.html");
@@ -811,7 +802,7 @@ void MainWindow::on_actionSTA_Wiki_triggered()
     browser->setWindowModality(Qt::NonModal);
     browser->show();
     browser->raise(); // Required to keep the modeless window alive
-    browser->activateWindow(); // Required to keep the modeless window alive 
+    browser->activateWindow(); // Required to keep the modeless window alive
 
 }
 
@@ -821,10 +812,10 @@ void MainWindow::on_actionSTA_User_s_Manual_triggered()
     //QDesktopServices::openUrl(STAUserManual);   // Not any longer a web site but a PDF inside the hundle
     /*
     QMessageBox::about(this, tr("User's Manual"),
-			     tr("STA 'Archean' v2.0, November 2009\n"
-				"The STA User's maual is a PDF file\n"
-				 "STA-ARCHEAN-UM.pdf installed in your\n"
-				 "sta-data resources folder"));
+                 tr("STA 'Archean' v2.0, November 2009\n"
+                "The STA User's maual is a PDF file\n"
+                 "STA-ARCHEAN-UM.pdf installed in your\n"
+                 "sta-data resources folder"));
      */
 
 }
@@ -849,191 +840,6 @@ void MainWindow::on_action3dViewPreferences_triggered()
 }
 
 
-// TODO:
-// Lagrangian trajectory propagation split out from main propagation
-// loop during conversion to new scenario object model. Fix this up
-// once we've got Lagrangian orbit support in the schema again.
-static void
-		PropagateLagrangian()
-{
-#if OLDSCENARIO
-    // Guillermo: Why in the name of the Lord is this code HERE?
-    if (Lagrmode==2)
-    {
-        QFile file_manifolds_settings ("3BMmanifolds_settings.stam");
-        if (!file_manifolds_settings.open(QIODevice::ReadOnly | QIODevice::Text))
-        {
-            QMessageBox::warning(NULL,
-								 QObject::tr("Manifolds not plotted"),
-								 QObject::tr("Manifolds settings data file %1 not found.").arg("3BMmanifolds_settings.stam"));
-            delete propScenario;
-            return;
-        }
-        QTextStream settings(&file_manifolds_settings);
-        int numberPositions, numberTrajectories, numberPositions2;
-
-        QList<double> singlemanifold_sampleTimes;
-        QList<sta::StateVector> singlemanifold_samples;
-        int  totalTraj=0;
-
-        while (sampleTimes.isEmpty()!=true)
-        {
-            int memory=-1; int kind=-1;
-            settings>>kind;
-            while (kind!=0)
-            {
-                if (kind==1) //information about the manifolds required
-                {
-                    memory=kind;
-                    settings>>numberTrajectories>>numberPositions>>numberPositions2;  //the number of trajectories for each manifold and the number of positions for each trajectory are read
-                    if (totalTraj==0)
-                        totalTraj=numberTrajectories;
-                    kind=numberPositions2;
-                    if (numberPositions2>4)
-                    {
-                        numberTrajectories=1;
-                    }
-                }
-                else if (kind==2)
-                {
-                    memory=kind;
-                    settings>>numberTrajectories>>numberPositions>>numberPositions2;
-                    if (totalTraj==0)
-                        totalTraj=numberTrajectories;
-                    kind=numberPositions2;
-                    if (numberPositions2>4)//the number of trajectories for each manifold and the number of positions for each trajectory are read
-                    {
-                        numberTrajectories=1;
-                    }
-                }
-                else if (kind==3)
-                {
-                    memory=kind;
-                    settings>>numberTrajectories>>numberPositions>>numberPositions2;
-                    if (totalTraj==0)
-                        totalTraj=numberTrajectories;
-                    kind=numberPositions2;
-                    if (numberPositions2>4)//the number of trajectories for each manifold and the number of positions for each trajectory are read
-                    {
-                        numberTrajectories=1;
-                    }
-                }
-                else if (kind==4)
-                {
-                    memory=kind;
-                    settings>>numberTrajectories>>numberPositions>>numberPositions2;
-                    if (totalTraj==0)
-                        totalTraj=numberTrajectories;
-                    kind=numberPositions2;
-                    if (numberPositions2>4)//the number of trajectories for each manifold and the number of positions for each trajectory are read
-                    {
-                        numberTrajectories=1;
-                    }
-                }
-                else if (kind>4)
-                {
-                    //the intersection with a main body is the stopping condition
-                    settings>>numberPositions2;
-                    numberPositions=kind;
-                    kind=numberPositions2;
-                    if (numberPositions2>4)//the number of trajectories for each manifold and the number of positions for each trajectory are read
-                    {
-                        numberTrajectories=1;
-                    }
-                }
-                else if (kind==0)
-                {
-                    break;
-                }
-                else
-                {
-                    QMessageBox::warning(NULL,
-                                         QObject::tr("Manifolds not plotted"),
-                                         QObject::tr("Wrong manifolds settings data file %1.").arg("3BMmanifolds_settings.stam"));
-                    delete propScenario;
-                    return;
-                }
-
-                for (int k=1;k<numberTrajectories+1; k++)
-                {
-                    if (totalTraj>0) //condition to plot also the halo orbit along with its manifolds
-                    {
-                        SpaceObject* spaceObject = new SpaceObject();
-                        spaceObject->setName("Halo");
-                        spaceObject->setModelFile(vehicle->appearance()->model());
-                        spaceObject->setTrajectoryColor(Qt::blue);
-                        for (int i=1;i<totalTraj+1;i++)
-                        {
-                            singlemanifold_sampleTimes.append(sampleTimes.takeFirst());
-                            singlemanifold_samples.append(samples.takeFirst());
-                        }
-                        MissionArc* arc = new MissionArc(trajectory->centralBody(),
-														 trajectory->coordinateSystem(),
-														 singlemanifold_sampleTimes,
-														 singlemanifold_samples);
-                        spaceObject->addMissionArc(arc);
-                        singlemanifold_sampleTimes.clear();
-                        singlemanifold_samples.clear();
-                        propScenario->addSpaceObject(spaceObject);
-                        totalTraj=-1;
-                    }
-
-                    SpaceObject* spaceObject = new SpaceObject();
-                    spaceObject->setName("");
-                    spaceObject->setModelFile(vehicle->appearance()->model());
-
-                    if (memory==1 || memory==3)
-                        spaceObject->setTrajectoryColor(Qt::green);
-                    else if(memory==2 || memory==4)
-                        spaceObject->setTrajectoryColor(Qt::red);
-
-                    for (int i=1;i<numberPositions+1;i++)
-                    {
-                        singlemanifold_sampleTimes.append(sampleTimes.takeFirst());
-                        singlemanifold_samples.append(samples.takeFirst());
-                    }
-
-                    MissionArc* arc = new MissionArc(trajectory->centralBody(),
-													 trajectory->coordinateSystem(),
-													 singlemanifold_sampleTimes,
-													 singlemanifold_samples);
-                    spaceObject->addMissionArc(arc);
-                    singlemanifold_sampleTimes.clear();
-                    singlemanifold_samples.clear();
-                    propScenario->addSpaceObject(spaceObject);
-                }
-            }
-        }
-        file_manifolds_settings.close();
-    }
-    if (Lagrmode==3||Lagrmode==4)
-    {
-        luna=1;
-		//condition to plot also the halo orbit along with the transfer orbit
-        QList<double> trajectoryLegTime;
-        QList<sta::StateVector> trajectoryLegSamples;
-		SpaceObject* spaceObject = new SpaceObject();
-		spaceObject->setName("Halo");
-		spaceObject->setModelFile(vehicle->appearance()->model());
-		spaceObject->setTrajectoryColor(Qt::blue);
-		for (int i=1;i<1001;i++)
-		{
-			trajectoryLegTime.append(sampleTimes.takeFirst());
-			trajectoryLegSamples.append(samples.takeFirst());
-		}
-		MissionArc* arc = new MissionArc(trajectory->centralBody(),
-										 trajectory->coordinateSystem(),
-										 trajectoryLegTime,
-										 trajectoryLegSamples);
-
-		spaceObject->addMissionArc(arc);
-		propScenario->addSpaceObject(spaceObject);
-    }
-#endif // OLDSCENARIO
-}
-
-
-int luna;
 
 
 ///////////////////////////////////////////  Action PROPAGATE ////////////////////////////////////////
@@ -1047,8 +853,6 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
 
     PropagationFeedback feedback;
     PropagatedScenario* propScenario = new PropagatedScenario();
-
-    int colorIndex = 0;
 
     // Process each participant
     foreach (QSharedPointer<ScenarioParticipantType> participant, scenario()->AbstractParticipant())
@@ -1074,11 +878,6 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
             ScenarioPoint* point = dynamic_cast<ScenarioPoint*>(participant.data());
             scenarioPropagatorPoint(point, Qt::yellow, feedback, propScenario);
         }
-        else if (dynamic_cast<ScenarioRegion*>(participant.data()))
-        {
-            ScenarioRegion* region = dynamic_cast<ScenarioRegion*>(participant.data());
-            scenarioPropagatorRegion(region, feedback, propScenario);
-        }
     }
 
     if (feedback.status() != PropagationFeedback::PropagationOk)
@@ -1099,7 +898,7 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
 void MainWindow::on_actionSystem_Engineering_triggered()
 {
     if (!scenario())
-		return;
+        return;
 
     //************************************************************ /OZGUN
     sem* SEMWidget = new sem(scenario(), this);  // Creating the widget as a tool and transferring the scenerio
@@ -1382,7 +1181,7 @@ void MainWindow::refreshCentralWidget(int tabIndex)
 
 
 void
-MainWindow::selectVisualization(QAction* action)
+        MainWindow::selectVisualization(QAction* action)
 {
     QString visName = action->text();
 
@@ -1414,7 +1213,7 @@ MainWindow::selectVisualization(QAction* action)
 
 
 void
-MainWindow::toggleGroundTrackView()
+        MainWindow::toggleGroundTrackView()
 {
     if (m_groundTrackPlotTool->parentWidget())
     {
@@ -1434,7 +1233,7 @@ MainWindow::toggleGroundTrackView()
 
 
 void
-MainWindow::setFullScreen3D(bool enable)
+        MainWindow::setFullScreen3D(bool enable)
 {
     if (enable)
     {
@@ -1667,7 +1466,7 @@ void MainWindow::on_actionPropagateCoverage_triggered()
 
     if (!scenario())
     {
-		return;
+        return;
     }
 
     PropagationFeedback feedback;
@@ -1720,20 +1519,13 @@ void MainWindow::on_actionPropagateCoverage_triggered()
 ///////////////////////////////////////////  Action PROPAGATE WITH COVERAGE BETWEE SATELLITES ////////////////////////////////////////
 void MainWindow::on_actionSat_to_Sat_triggered()
 {
-
     if (!scenario())
     {
-		return;
+        return;
     }
 
     PropagationFeedback feedback;
     PropagatedScenario* propScenario = new PropagatedScenario();
-
-    //extern int Lagrmode;
-
-    int Lagrmode = 99;	    //Guillermo says: take this thong out of here
-
-    int colorIndex = 0;
 
     // Process each participant
     foreach (QSharedPointer<ScenarioParticipantType> participant, scenario()->AbstractParticipant())
@@ -1778,6 +1570,50 @@ void MainWindow::on_actionSat_to_Sat_triggered()
 }  ///////////////////////////////////////////  End of Action PROPAGATE WITH COVERAGE BETWEEN SATELLITES ////////////////////////////////////////
 
 
+void MainWindow::on_actionCreateInterplanetaryPlan_triggered()
+{
+    interplanetaryDialog* myInterplanetaryPlanDialoge = new interplanetaryDialog(this);
+    myInterplanetaryPlanDialoge->exec();
+    myInterplanetaryPlanDialoge->setFocus();
+
+    // Activating now the pull down menus
+    actionPropagate_Scenario->setEnabled(m_scenario != NULL);
+    actionPropagateCoverage->setEnabled(m_scenario != NULL);
+    actionSat_to_Sat->setEnabled(m_scenario != NULL);
+    actionSat_to_Ground->setEnabled(m_scenario != NULL);
+    actionSystem_Engineering->setEnabled(m_scenario != NULL);
+    actionAnalyse->setEnabled(m_scenario != NULL);
+}
+
+
+
+void MainWindow::on_actionCreateLagrangianPlan_triggered()
+{
+    lagrangianDialog* myLagrangianPlanDialoge = new lagrangianDialog(this);
+    myLagrangianPlanDialoge->exec();
+    myLagrangianPlanDialoge->setFocus();
+
+    // Activating now the pull down menus
+    actionPropagate_Scenario->setEnabled(m_scenario != NULL);
+    actionPropagateCoverage->setEnabled(m_scenario != NULL);
+    actionSat_to_Sat->setEnabled(m_scenario != NULL);
+    actionSat_to_Ground->setEnabled(m_scenario != NULL);
+    actionSystem_Engineering->setEnabled(m_scenario != NULL);
+    actionAnalyse->setEnabled(m_scenario != NULL);
+}
+
+
+
+void MainWindow::on_actionCreateRendezvousPlan_triggered()
+{
+    RendezvousDialog* myRendezvousDialoge = new RendezvousDialog(this, Qt::Window);  // Creating the widget as a window
+    myRendezvousDialoge->show();
+    myRendezvousDialoge->raise();
+    myRendezvousDialoge->activateWindow();
+}
+
+
+
 
 ///////////////////////////////////////////  Action PROPAGATE WITH COVERAGE BETWEEN STATIONS AND SATELLITES ////////////////////////////////////////
 void MainWindow::on_actionSat_to_Ground_triggered()
@@ -1785,17 +1621,12 @@ void MainWindow::on_actionSat_to_Ground_triggered()
 
     if (!scenario())
     {
-		return;
+        return;
     }
 
     PropagationFeedback feedback;
     PropagatedScenario* propScenario = new PropagatedScenario();
 
-    //extern int Lagrmode;
-
-    int Lagrmode = 99;	    //Guillermo says: take this thong out of here
-
-    int colorIndex = 0;
 
     // Process each participant
     foreach (QSharedPointer<ScenarioParticipantType> participant, scenario()->AbstractParticipant())
@@ -1850,94 +1681,94 @@ void MainWindow::openFileFromAEvent(const QString& fileName)
     settings.beginGroup("Preferences");
     if (settings.contains("OpenScenarioDir"))
     {
-		dir = settings.value("OpenScenarioDir").toString();
+        dir = settings.value("OpenScenarioDir").toString();
     }
 
     if (!fileName.isEmpty())
     {
-		QFile scenarioFile(fileName);
-		if (!scenarioFile.open(QIODevice::ReadOnly))
-		{
+        QFile scenarioFile(fileName);
+        if (!scenarioFile.open(QIODevice::ReadOnly))
+        {
             QMessageBox::critical(this, tr("Error"), tr("opening file %1").arg(fileName));
-		}
-		else
-		{
-			// Save the scenario file directory
-			QFileInfo scenarioFileInfo(fileName);
-			settings.setValue("OpenScenarioDir", scenarioFileInfo.absolutePath());
+        }
+        else
+        {
+            // Save the scenario file directory
+            QFileInfo scenarioFileInfo(fileName);
+            settings.setValue("OpenScenarioDir", scenarioFileInfo.absolutePath());
 
-			if (!m_spaceScenarioSchema)
-			{
-				QFile schemaFile(SCHEMA_FILE);
-				if (!schemaFile.open(QIODevice::ReadOnly))
-				{
-					QMessageBox::critical(this, tr("Critical Error"), tr("Error opening space scenario schema file. Unable to load scenario."));
-					return;
-				}
+            if (!m_spaceScenarioSchema)
+            {
+                QFile schemaFile(SCHEMA_FILE);
+                if (!schemaFile.open(QIODevice::ReadOnly))
+                {
+                    QMessageBox::critical(this, tr("Critical Error"), tr("Error opening space scenario schema file. Unable to load scenario."));
+                    return;
+                }
 
-				m_spaceScenarioSchema = new QXmlSchema;
-				if (!m_spaceScenarioSchema->load(&schemaFile, QUrl::fromLocalFile(schemaFile.fileName())))
-				{
-					QMessageBox::critical(this, tr("Critical Error"), tr("Error in space scenario schema file. Unable to load scenario."));
-					delete m_spaceScenarioSchema;
-					m_spaceScenarioSchema = NULL;
-					return;
-				}
-			}
+                m_spaceScenarioSchema = new QXmlSchema;
+                if (!m_spaceScenarioSchema->load(&schemaFile, QUrl::fromLocalFile(schemaFile.fileName())))
+                {
+                    QMessageBox::critical(this, tr("Critical Error"), tr("Error in space scenario schema file. Unable to load scenario."));
+                    delete m_spaceScenarioSchema;
+                    m_spaceScenarioSchema = NULL;
+                    return;
+                }
+            }
 
-			QXmlSchemaValidator validator(*m_spaceScenarioSchema);
-			if (!validator.validate(&scenarioFile))
-			{
+            QXmlSchemaValidator validator(*m_spaceScenarioSchema);
+            if (!validator.validate(&scenarioFile))
+            {
 
-				QMessageBox::critical(this, tr("Scenario Load Error"), tr("Scenario is not a valid space scenario."));
-				return;
-			}
+                QMessageBox::critical(this, tr("Scenario Load Error"), tr("Scenario is not a valid space scenario."));
+                return;
+            }
 
-			scenarioFile.reset();
-			QDomDocument scenarioDoc;
-			if (!scenarioDoc.setContent(&scenarioFile))
-			{
-				// This should not fail, since we just got done validating the xml file against the space
-				// scenario schema.
-				scenarioFile.close();
-				QMessageBox::critical(this, tr("Scenario Load Error"), tr("Internal error occurred when loading space scenario."));
-				return;
-			}
+            scenarioFile.reset();
+            QDomDocument scenarioDoc;
+            if (!scenarioDoc.setContent(&scenarioFile))
+            {
+                // This should not fail, since we just got done validating the xml file against the space
+                // scenario schema.
+                scenarioFile.close();
+                QMessageBox::critical(this, tr("Scenario Load Error"), tr("Internal error occurred when loading space scenario."));
+                return;
+            }
 
-			scenarioFile.close();
+            scenarioFile.close();
 
-			QDomElement rootElement = scenarioDoc.firstChildElement("tns:SpaceScenario");
-			SpaceScenario* scenario = SpaceScenario::create(rootElement);
-			if (!scenario)
-			{
-				QMessageBox::critical(this, tr("Scenario Load Error"), tr("Internal error (parser problem) occurred when loading space scenario."));
-				return;
-			}
+            QDomElement rootElement = scenarioDoc.firstChildElement("tns:SpaceScenario");
+            SpaceScenario* scenario = SpaceScenario::create(rootElement);
+            if (!scenario)
+            {
+                QMessageBox::critical(this, tr("Scenario Load Error"), tr("Internal error (parser problem) occurred when loading space scenario."));
+                return;
+            }
 
-			// TODO: Probably should just call setScenario() here.
-			clearViews();
+            // TODO: Probably should just call setScenario() here.
+            clearViews();
 
-			// Prohibit drops to the top level item
-			QTreeWidgetItem* invisibleRoot = m_scenarioView->m_scenarioTree->invisibleRootItem();
-			invisibleRoot->setFlags(invisibleRoot->flags() & ~Qt::ItemIsDropEnabled);
+            // Prohibit drops to the top level item
+            QTreeWidgetItem* invisibleRoot = m_scenarioView->m_scenarioTree->invisibleRootItem();
+            invisibleRoot->setFlags(invisibleRoot->flags() & ~Qt::ItemIsDropEnabled);
 
-			QTreeWidgetItem* rootItem = new QTreeWidgetItem(m_scenarioView->m_scenarioTree);
-			rootItem->setExpanded(true);
-			rootItem->setText(0, "Space scenario");
-			rootItem->setText(1, scenario->Name());
-			rootItem->setFlags(rootItem->flags() & ~Qt::ItemIsDragEnabled);
+            QTreeWidgetItem* rootItem = new QTreeWidgetItem(m_scenarioView->m_scenarioTree);
+            rootItem->setExpanded(true);
+            rootItem->setText(0, "Space scenario");
+            rootItem->setText(1, scenario->Name());
+            rootItem->setFlags(rootItem->flags() & ~Qt::ItemIsDragEnabled);
 
-			m_scenarioView->m_scenarioTree->addScenarioItems(rootItem, scenario);
-			m_scenarioView->m_scenarioTree->addTopLevelItem(rootItem);
+            m_scenarioView->m_scenarioTree->addScenarioItems(rootItem, scenario);
+            m_scenarioView->m_scenarioTree->addTopLevelItem(rootItem);
 
-			// This sequence seems to be required to force the scenario view
-			// widget to update (at least on Mac OS X)
-			m_scenarioView->m_scenarioTree->update();
-			m_scenarioView->setFocus();
-			m_scenarioView->m_scenarioTree->setFocus();
+            // This sequence seems to be required to force the scenario view
+            // widget to update (at least on Mac OS X)
+            m_scenarioView->m_scenarioTree->update();
+            m_scenarioView->setFocus();
+            m_scenarioView->m_scenarioTree->setFocus();
 
             setScenario(scenario);
-		}
+        }
     }
 
     settings.endGroup();

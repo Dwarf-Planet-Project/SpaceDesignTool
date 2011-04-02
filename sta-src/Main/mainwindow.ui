@@ -50,7 +50,12 @@
      <string>Tools</string>
     </property>
     <addaction name="actionAnalyse"/>
+    <addaction name="separator"/>
     <addaction name="actionCreateConstellation"/>
+    <addaction name="actionCreateInterplanetaryPlan"/>
+    <addaction name="actionCreateLagrangianPlan"/>
+    <addaction name="actionCreateRendezvousPlan"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuCalculate">
     <property name="title">
@@ -350,6 +355,30 @@
   <action name="actionSat_to_Ground">
    <property name="text">
     <string>Sat-to-Ground</string>
+   </property>
+  </action>
+  <action name="actionCreateInterplanetaryPlan">
+   <property name="text">
+    <string>Interplanetary</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
+   </property>
+  </action>
+  <action name="actionCreateLagrangianPlan">
+   <property name="text">
+    <string>Lagrangian</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionCreateRendezvousPlan">
+   <property name="text">
+    <string>Rendezvous</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
  </widget>
