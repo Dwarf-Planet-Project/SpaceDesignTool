@@ -56,15 +56,11 @@ void rendezvousDialog::on_buttonBox_accepted()
 {
     // Create a new scenario
     SpaceScenario* scenario = new SpaceScenario();
-    scenario->setName("This is a demo");
+    scenario->setName("Rendezvous scenario");
 
     ScenarioSC* chaser = new ScenarioSC();
     chaser->setName("Chaser");
     chaser->ElementIdentifier()->setName("Chaser");
-
-    ScenarioSC* target = new ScenarioSC();
-    target->setName("Target");
-    target->ElementIdentifier()->setName("Target");
 
     // Create the initial position (Keplerian elements)
     ScenarioKeplerianElementsType* elements = new ScenarioKeplerianElementsType();
@@ -108,19 +104,49 @@ void rendezvousDialog::on_buttonBox_accepted()
 
     // Create the spacecraft loitering arc
     chaser->SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(loitering));
-
-    elements->setSemiMajorAxis(95000.0);
-    elements->setEccentricity(0.0045);
-    elements->setInclination(27.456);
-    elements->setRAAN(132.34);
-    elements->setArgumentOfPeriapsis(231.34);
-    elements->setTrueAnomaly(45.32);
-    loitering->InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(elements));
-
-    target->SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(loitering));
-
-    // Add the vehicles to the scenario
     scenario->AbstractParticipant().append(QSharedPointer<ScenarioParticipantType>(chaser));
+
+
+
+    ScenarioSC* target = new ScenarioSC();
+    target->setName("Target");
+    target->ElementIdentifier()->setName("Target");
+
+    // Create the initial position (Keplerian elements)
+    ScenarioKeplerianElementsType* elements2 = new ScenarioKeplerianElementsType();
+    elements2->setSemiMajorAxis(95000.0);
+    elements2->setEccentricity(0.0045);
+    elements2->setInclination(27.456);
+    elements2->setRAAN(132.34);
+    elements2->setArgumentOfPeriapsis(231.34);
+    elements2->setTrueAnomaly(45.32);
+
+    // Create the trajectory arc
+    ScenarioLoiteringType* loitering2 = new ScenarioLoiteringType();
+    loitering2->ElementIdentifier()->setName("loitering");
+    loitering2->ElementIdentifier()->setColorName("White");
+    loitering2->Environment()->CentralBody()->setName("Earth");
+    loitering2->InitialPosition()->setCoordinateSystem("INERTIAL J2000");
+    loitering2->PropagationPosition()->setTimeStep(60.0);
+    loitering2->PropagationPosition()->setPropagator("TWO BODY");
+    loitering2->PropagationPosition()->setIntegrator("RK4");
+    loitering2->InitialAttitude()->setCoordinateSystem("EULER 123");
+    loitering2->PropagationAttitude()->setIntegrator("");	// Not defined in STA yet
+    loitering2->PropagationAttitude()->setTimeStep(60.0);
+
+    // Time-line
+    loitering2->TimeLine()->setStartTime(TheCurrentDateAndTime);
+    loitering2->TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
+    loitering2->TimeLine()->setStepTime(60.0);
+
+    loitering2->InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(elements2));
+    loitering2->InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioAbstract6DOFAttitudeType>(initAtt));
+
+    // Create the spacecraft loitering arc
+    target->SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(loitering2));
+    scenario->AbstractParticipant().append(QSharedPointer<ScenarioParticipantType>(target));
+
+
 
     mainwindow->setScenario(scenario);
     return;
