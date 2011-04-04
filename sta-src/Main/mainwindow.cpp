@@ -54,7 +54,7 @@
 //***************** OZGUN/
 
 #include "propagatedscenario.h"
-#include "RendezVous/rendezvous.h"
+#include "RendezVous/rendezvousDialog.h"
 #include "Lagrangian/lagrangianDialog.h"
 #include "Interplanetary/interplanetaryDialog.h"
 #include "Entry/reentry.h"
@@ -80,9 +80,9 @@
 
 #include "Scenario/missionsDefaults.h"
 
-#ifdef TARGET_OS_MAC
-#include <Carbon/Carbon.h>
-#endif
+//#ifdef TARGET_OS_MAC
+//#include <Carbon/Carbon.h>
+//#endif
 
 #include <time.h>
 
@@ -1606,10 +1606,17 @@ void MainWindow::on_actionCreateLagrangianPlan_triggered()
 
 void MainWindow::on_actionCreateRendezvousPlan_triggered()
 {
-    RendezvousDialog* myRendezvousDialoge = new RendezvousDialog(this, Qt::Window);  // Creating the widget as a window
-    myRendezvousDialoge->show();
-    myRendezvousDialoge->raise();
-    myRendezvousDialoge->activateWindow();
+    rendezvousDialog* myRendezvousPlanDialoge = new rendezvousDialog(this);
+    myRendezvousPlanDialoge->exec();
+    myRendezvousPlanDialoge->setFocus();
+
+    // Activating now the pull down menus
+    actionPropagate_Scenario->setEnabled(m_scenario != NULL);
+    actionPropagateCoverage->setEnabled(m_scenario != NULL);
+    actionSat_to_Sat->setEnabled(m_scenario != NULL);
+    actionSat_to_Ground->setEnabled(m_scenario != NULL);
+    actionSystem_Engineering->setEnabled(m_scenario != NULL);
+    actionAnalyse->setEnabled(m_scenario != NULL);
 }
 
 
