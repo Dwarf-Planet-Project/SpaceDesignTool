@@ -15,16 +15,16 @@
 # also be found on the world wide web at http://ec.europa.eu/idabc/eupl              #
 #                                                                                    #
 #                                                                                    #
-# - Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) - #
+# - Copyright (C) 2011 STA Steering Board (space.trajectory.analysis AT gmail.com) - #
 #                                                                                    #
 ######################################################################################
 
-#CONFIG += debug_and_release
+CONFIG += debug_and_release
 #CONFIG += release
 #CONFIG += warn_off
 
-CONFIG(release, debug|release):message(Release build)
-CONFIG(debug, debug|release):message(Debug build)
+#CONFIG(release, debug|release):message(Release build)
+#CONFIG(debug, debug|release):message(Debug build)
 
 
 TEMPLATE = app
@@ -251,9 +251,9 @@ LOCATIONS_FORMS = sta-src/Locations/locationeditor.ui \
     sta-src/Locations/environmentDialog.ui
 
 # ############# Rendezvous Module ##############
-RENDEZVOUS_SOURCES = sta-src/RendezVous/rendezvous.cpp
-RENDEZVOUS_HEADERS = sta-src/RendezVous/rendezvous.h
-RENDEZVOUS_FORMS = sta-src/RendezVous/rendezvous.ui
+RENDEZVOUS_SOURCES = sta-src/RendezVous/rendezvousDialog.cpp
+RENDEZVOUS_HEADERS = sta-src/RendezVous/rendezvousDialog.h
+RENDEZVOUS_FORMS = sta-src/RendezVous/rendezvousDialog.ui
 
 # ############# Coverage Module ##############
 COVERAGE_SOURCES = sta-src/Coverage/commanalysis.cpp \
