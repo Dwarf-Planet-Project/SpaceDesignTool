@@ -306,6 +306,16 @@ win32-g++ {
 
 
 macx {
-    CONFIG += x86
-    # QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
+     #HARDWARE_PLATFORM = $$system(uname -a)
+     #contains( HARDWARE_PLATFORM, x86_64 ) {
+     #   # 64-bit Linux
+     #message("Warning: compiling a 64-bit binary in MAC OS X")
+     #CONFIG += x86_64
+     #} else {
+     #   # 32-bit Linux
+     #message("Warning: compiling a 32-bit binary in MAC OS X")
+     #CONFIG += x86
+     #}
+
+     CONFIG += x86
 }

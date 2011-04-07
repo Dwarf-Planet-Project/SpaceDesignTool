@@ -770,13 +770,26 @@ USERMANUAL_FILES =
 macx { 
      message( "Warning: building on MAC OS X for x86 architecture only" )
      QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
+
+     #HARDWARE_PLATFORM = $$system(uname -a)
+     #contains( HARDWARE_PLATFORM, x86_64 ) {
+     #   # 64-bit Linux
+     #message("Warning: compiling a 64-bit binary in MAC OS X")
+     #CONFIG += x86_64
+     #} else {
+     #   # 32-bit Linux
+     #message("Warning: compiling a 32-bit binary in MAC OS X")
+     #CONFIG += x86
+     #}
+
      CONFIG += x86
 
-     # Guillermo: we use LLVM in MAC OS X instead of gcc
+     # Guillermo: We need DBus for the report part of the ANALYSIS module only on MAC and Linux
+     QT += dbus
+
+     # Guillermo: we use LLVM in MAC OS X instead of gcc (2X fast compilation)
      QMAKE_CC = llvm-gcc
      QMAKE_CXX = llvm-g++
-
-     QT += dbus
 
      QMAKE_CFLAGS_RELEASE = -ffast-math \
     -fexpensive-optimizations \
@@ -790,9 +803,9 @@ macx {
     -Bdynamic \
     -ftree-vectorize
 
-    QMAKE_LFLAGS += -framework CoreFoundation
-
     LIBS += $$PWD/lib/mac/cspice.a
+
+    QMAKE_LFLAGS += -framework CoreFoundation
 
     # Scan directories for files for Mac bundle
     FILES = $$system(ls $$VIS3D_SOURCE)
