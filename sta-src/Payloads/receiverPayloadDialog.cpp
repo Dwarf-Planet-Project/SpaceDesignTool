@@ -96,6 +96,13 @@ bool receiverPayloadDialog::loadValues(ScenarioReceiverPayloadType* receiverPayl
     azimuth=azimuth*RAD2DEG;
     AzLineEdit->setText(QString::number(azimuth));
 
+    double coneAngle = receiverPayload->Receiver()->PointingDirection()->coneAngle();
+    coneAngle = coneAngle*RAD2DEG;
+    ConeAngleLineEdit->setText(QString::number(coneAngle));
+
+    int coneShape = receiverPayload->Receiver()->PointingDirection()->coneShape();
+    ConeShapeComboBox->setCurrentIndex(coneShape);
+
     //The cones are missing
     RxFeederLossLineEdit->setText(QString::number(receiverPayload->Receiver()->FeederLossRx()));
     RxDepointingLossLineEdit->setText(QString::number(receiverPayload->Receiver()->DepointingLossRx()));
@@ -182,9 +189,15 @@ bool receiverPayloadDialog::saveValues(ScenarioReceiverPayloadType* receiverPayl
     azimuth=azimuth*DEG2RAD;
     receiverPayload->Receiver()->PointingDirection()->setAzimuth(azimuth);
 
+    double coneAngle = ConeAngleLineEdit->text().toDouble();
+    coneAngle = coneAngle*DEG2RAD;
+    receiverPayload->Receiver()->PointingDirection()->setConeAngle(coneAngle);
+
+    int coneShape = ConeShapeComboBox->currentIndex();
+    receiverPayload->Receiver()->PointingDirection()->setConeShape(coneShape);
+
     //The cones are missing
     receiverPayload->Receiver()->EMproperties()->setEfficiency(EfficiencyLineEdit->text().toDouble());
-
     receiverPayload->Receiver()->EMproperties()->setGainMax(GainLineEdit->text().toDouble());
     receiverPayload->Receiver()->EMproperties()->setDiameter(DiameterLineEdit->text().toDouble());
     receiverPayload->Receiver()->EMproperties()->setAngularBeamWidth(BeamLineEdit->text().toDouble());

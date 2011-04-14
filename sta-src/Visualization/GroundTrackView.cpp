@@ -1352,24 +1352,24 @@ void GroundTrackView::paint2DView(QPainter& painter)
     if (m_showCoverageCurrent || m_showCoverageHistory)
     {
         // draw covered points
-        for (int i=0; i < m_analysis->m_anaSpaceObjectList.length(); i++)
+        for (int i=0; i < m_analysis->m_constellationStudySpaceObjectList.length(); i++)
         {
-            if (!(m_analysis->m_anaSpaceObjectList.at(i).coveragesample.back().curtime < m_currentTime ||
-                  m_analysis->m_anaSpaceObjectList.at(i).coveragesample.first().curtime > m_currentTime))
+            if (!(m_analysis->m_constellationStudySpaceObjectList.at(i).coveragesample.back().curtime < m_currentTime ||
+                  m_analysis->m_constellationStudySpaceObjectList.at(i).coveragesample.first().curtime > m_currentTime))
             {
                 CoverageSample tmpS;
                 tmpS.curtime = m_currentTime;
-                QList<CoverageSample>::const_iterator iter = qLowerBound(m_analysis->m_anaSpaceObjectList.at(i).coveragesample.begin(),
-                                                                         m_analysis->m_anaSpaceObjectList.at(i).coveragesample.end(),
+                QList<CoverageSample>::const_iterator iter = qLowerBound(m_analysis->m_constellationStudySpaceObjectList.at(i).coveragesample.begin(),
+                                                                         m_analysis->m_constellationStudySpaceObjectList.at(i).coveragesample.end(),
                                                                          tmpS,
                                                                          coverageSampleLessThan);
                 if (m_showCoverageHistory)
                 {
-                    drawCoverage(painter, m_analysis->m_anaSpaceObjectList.at(i).asocolor, false, iter->histpoints);
+                    drawCoverage(painter, m_analysis->m_constellationStudySpaceObjectList.at(i).asocolor, false, iter->histpoints);
                 }
                 if (m_showCoverageCurrent)
                 {
-                    drawCoverage(painter, m_analysis->m_anaSpaceObjectList.at(i).asocolor, true, iter->curpoints);
+                    drawCoverage(painter, m_analysis->m_constellationStudySpaceObjectList.at(i).asocolor, true, iter->curpoints);
                 }
             }
         }
@@ -1395,20 +1395,20 @@ void GroundTrackView::paint2DView(QPainter& painter)
         // Todo: merge m_showSOLink and m_showGOLink (it is too much code duplication)
         if (m_showSOLink)
         {
-            for (int i = 0; i < m_analysis->m_anaSpaceObjectList.length(); i++)
+            for (int i = 0; i < m_analysis->m_constellationStudySpaceObjectList.length(); i++)
             {
                 LinkSample tmpLS;
                 tmpLS.curtime = m_currentTime;
 
                 // search for closest time step of the Linksample
-                QList<LinkSample>::const_iterator iter = qLowerBound(m_analysis->m_anaSpaceObjectList.at(i).linksamples.begin(),
-                                                                     m_analysis->m_anaSpaceObjectList.at(i).linksamples.end(),
+                QList<LinkSample>::const_iterator iter = qLowerBound(m_analysis->m_constellationStudySpaceObjectList.at(i).linksamples.begin(),
+                                                                     m_analysis->m_constellationStudySpaceObjectList.at(i).linksamples.end(),
                                                                      tmpLS,
                                                                      linkSampleLessThan);
-                if (iter >= m_analysis->m_anaSpaceObjectList.at(i).linksamples.begin() &&
-                    iter < m_analysis->m_anaSpaceObjectList.at(i).linksamples.end())
+                if (iter >= m_analysis->m_constellationStudySpaceObjectList.at(i).linksamples.begin() &&
+                    iter < m_analysis->m_constellationStudySpaceObjectList.at(i).linksamples.end())
                 {
-                    SpaceObject* spaceObject1 = m_analysis->m_anaSpaceObjectList.at(i).m_spaceObject;
+                    SpaceObject* spaceObject1 = m_analysis->m_constellationStudySpaceObjectList.at(i).m_spaceObject;
                     // Calculate the current latitude and longitude of the vehicle
                     sta::StateVector v1;
                     double longNow1 = 0.0;
@@ -1429,10 +1429,10 @@ void GroundTrackView::paint2DView(QPainter& painter)
                             longNow1 += 360.0;
                     }
 
-                    //for (int j = 0; j < m_analysis->m_anaSpaceObjectList.at(i).linksamples.at(*iter).connection.length(); j++)
+                    //for (int j = 0; j < m_analysis->m_constellationStudySpaceObjectList.at(i).linksamples.at(*iter).connection.length(); j++)
                     for (int j = 0; j < iter->connection.length(); j++)
                     {
-                        //SpaceObject* spaceObject2 = m_analysis->m_anaSpaceObjectList.at(i).linksamples.at((int) iter).connection.at(j);
+                        //SpaceObject* spaceObject2 = m_analysis->m_constellationStudySpaceObjectList.at(i).linksamples.at((int) iter).connection.at(j);
                         SpaceObject* spaceObject2 = iter->connection.at(j);
                         sta::StateVector v2;
                         double longNow2 = 0.0;
@@ -1460,20 +1460,20 @@ void GroundTrackView::paint2DView(QPainter& painter)
         // Show Links between Ground Objects and Space Objects
         if (m_showGOLink)
         {
-            for (int i = 0; i < m_analysis->m_anaSpaceObjectList.length(); i++)
+            for (int i = 0; i < m_analysis->m_constellationStudySpaceObjectList.length(); i++)
             {
                 // linear search for time step (todo: replace by an efficient algorithm)
                 int iter = 0;
-                while ((iter < m_analysis->m_anaSpaceObjectList.at(i).groundlinksamples.length()-1) &&
-                       (m_analysis->m_anaSpaceObjectList.at(i).groundlinksamples.at(iter).curtime < m_currentTime))
+                while ((iter < m_analysis->m_constellationStudySpaceObjectList.at(i).groundlinksamples.length()-1) &&
+                       (m_analysis->m_constellationStudySpaceObjectList.at(i).groundlinksamples.at(iter).curtime < m_currentTime))
                 {
                     iter++;
                 }
-                if (iter == m_analysis->m_anaSpaceObjectList.at(i).groundlinksamples.length())
+                if (iter == m_analysis->m_constellationStudySpaceObjectList.at(i).groundlinksamples.length())
                 {
                     iter = 0; // Error
                 }
-                SpaceObject* spaceObject1 = m_analysis->m_anaSpaceObjectList.at(i).m_spaceObject;
+                SpaceObject* spaceObject1 = m_analysis->m_constellationStudySpaceObjectList.at(i).m_spaceObject;
                 // Calculate the current latitude and longitude of the vehicle
                 sta::StateVector v1;
                 double longNow1 = 0.0;
@@ -1493,9 +1493,9 @@ void GroundTrackView::paint2DView(QPainter& painter)
                     if (longNow1 < m_west)
                         longNow1 += 360.0;
                 }
-                for (int j = 0; j < m_analysis->m_anaSpaceObjectList.at(i).groundlinksamples.at(iter).connection.length(); j++)
+                for (int j = 0; j < m_analysis->m_constellationStudySpaceObjectList.at(i).groundlinksamples.at(iter).connection.length(); j++)
                 {
-                    GroundObject* groundObject = m_analysis->m_anaSpaceObjectList.at(i).groundlinksamples.at(iter).connection.at(j);
+                    GroundObject* groundObject = m_analysis->m_constellationStudySpaceObjectList.at(i).groundlinksamples.at(iter).connection.at(j);
                     /*sta::StateVector v2;
                     double longNow2 = 0.0;
                     double latNow2  = 0.0;
@@ -1565,14 +1565,14 @@ void GroundTrackView::contextMenuEvent(QContextMenuEvent* event)
 }
 
 // Analysis (Claas Grohnfeldt, Steffen Peter)
-void GroundTrackView::setAnalysis(ConstellationAnalysis* m_analysisOfConstellations)
+void GroundTrackView::setAnalysis(ConstellationStudy* m_studyOfConstellations)
 {
     m_showDiscretization = false;
     m_showCoverageCurrent = false;
     m_showCoverageHistory = false;
     m_showSOLink = false;
     m_showGOLink = false;
-    m_analysis = m_analysisOfConstellations;
+    m_analysis = m_studyOfConstellations;
 }
 
 

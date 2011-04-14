@@ -29,7 +29,8 @@
 #include "Scenario/staschema.h"
 #include "Main/propagatedscenario.h"
 #include "Plotting/PlotView.h"
-#include "Plotting/PlotView3D.h"
+#include "Plotting/PlotView3D.h"        
+#include "Constellations/cstudy.h"
 
 #include <QFont>
 #include <QDialog>
@@ -61,7 +62,7 @@ public:
 
     QList<AnalysisData> WriteDataStructure(QList<QTreeWidgetItem*> selected,QList<QTreeWidgetItem *> selectedTimes);
     void WriteReport(QList<QTreeWidgetItem*> selected,QList<QTreeWidgetItem *> selectedTimes);
-    void DisableUnavailableOptions();
+    void DisableUnavailableOptions(bool coverageTrigg);
     QString ReadParameter(QTreeWidgetItem*Item);
     QString ReadUnits(QTreeWidget*Tree,QTreeWidgetItem*Item);
     QString ReadCoordinateSys(QTreeWidget*Tree,QTreeWidgetItem*Item);
@@ -106,6 +107,7 @@ private:
 private:
     SpaceScenario* m_scenario;
     PropagatedScenario*m_propagatedScenario;
+    ConstellationStudy* m_studyOfConstellations;
     //PropagatedScenario*m_propagatedScenario;
     bool CheckIfMissionArc();
     void InsertComboBox();
@@ -115,7 +117,8 @@ private:
     QComboBox * TimeFramesBox();
     QComboBox * TimeUnitsBox();
     QComboBox * AngleUnitsBox();
-    QComboBox * DistanceUnitsBox();
+    QComboBox * DistanceUnitsBox();    
+    QComboBox * CoveredAreaUnitsBox();
     QComboBox * CoordinateBox();
     QComboBox * VelocityUnitsBox();
     QComboBox * NoUnitsBox();
@@ -156,4 +159,3 @@ private:
 
 
 #endif //analysis_H
-

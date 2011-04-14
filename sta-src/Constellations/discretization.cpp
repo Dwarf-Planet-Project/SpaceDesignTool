@@ -20,13 +20,12 @@
  ------ Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
 */
 
-// Authors: Class and Steffen
+// Authors: Claas Grohnfeldt and Steffen Peter
 
 
 /*
  ------------------ Author: Steffen Peter, Claas Grohnfeldt --------------------------------------------------
  ------------------ E-mail: (claasgr@math.uni-bremen.de, spezisteffen@gmx.de) --------------------------------
- Modified by ...
  */
 
 #include "Constellations/discretization.h"
@@ -34,14 +33,13 @@
 
 using namespace Eigen;
 
-DiscreteMesh::DiscreteMesh(const StaBody* body, int n)
+DiscreteMesh::DiscreteMesh(const StaBody* body, int n):
+        centralBody(body),
+        numberRows(n),
+        meshAsList(QList<DiscretizationPoint>()),
+        discreteMesh(new QList<DiscretizationPoint>[numberRows])
 {
-    centralBody = body;
-    numberRows = n;
-    meshAsList = QList<DiscretizationPoint>();
-    discreteMesh = new QList<DiscretizationPoint>[numberRows];
-    generateMesh(numberRows);
-
+        generateMesh(numberRows);
 }
 
 /** Generates a mesh consisting of discrete points in such a way
@@ -51,6 +49,7 @@ DiscreteMesh::DiscreteMesh(const StaBody* body, int n)
   */
 void DiscreteMesh::generateMesh(int numberRows)
 {
+    numberPoints = 0;
     int numberColumns[numberRows];
     float columnSpacing[numberRows];
     float latitudeValues[numberRows];
@@ -69,6 +68,7 @@ void DiscreteMesh::generateMesh(int numberRows)
         columnSpacing[k] = 360.0f / (float)numberColumns[k];
         for (int j = 0; j < numberColumns[k]; j++)
         {
+            numberPoints++;
             DiscretizationPoint p;
             p.latitude = latitudeValues[k];
             p.longitude = 180.0f - ((float)(j+1) - 0.5f) * columnSpacing[k];
@@ -98,11 +98,11 @@ void DiscreteMesh::generateMesh(int numberRows)
 
 
 
-    /*
+/*
     // create an individual mesh for Australia:
     // Abercorn
     DiscretizationPoint pAbercorn;
-    pAbercorn.latitude = 25.12f;
+    pAbercorn.latitude = -25.12f;
     pAbercorn.longitude = 151.05f;
     pAbercorn.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -112,7 +112,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAbercorn);
     // Aberdeen
     DiscretizationPoint pAberdeen;
-    pAberdeen.latitude = 32.09f;
+    pAberdeen.latitude = -32.09f;
     pAberdeen.longitude = 150.56f;
     pAberdeen.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -122,7 +122,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAberdeen);
     // Abington Reef
     DiscretizationPoint pAbington;
-    pAbington.latitude = 18.00f;
+    pAbington.latitude = -18.00f;
     pAbington.longitude = 149.35f;
     pAbington.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -132,7 +132,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAbington);
     // Abminga
     DiscretizationPoint pAbminga;
-    pAbminga.latitude = 26.08f;
+    pAbminga.latitude = -26.08f;
     pAbminga.longitude = 134.51f;
     pAbminga.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -142,7 +142,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAbminga);
     // Acraman, L.
     DiscretizationPoint pAcraman;
-    pAcraman.latitude = 32.02f;
+    pAcraman.latitude = -32.02f;
     pAcraman.longitude = 135.23f;
     pAcraman.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -152,7 +152,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAcraman);
     // Adaminaby
     DiscretizationPoint pAdaminaby;
-    pAdaminaby.latitude = 36.00f;
+    pAdaminaby.latitude = -36.00f;
     pAdaminaby.longitude = 148.45f;
     pAdaminaby.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -162,7 +162,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAdaminaby);
     // Adavale
     DiscretizationPoint pAdavale;
-    pAdavale.latitude = 25.52f;
+    pAdavale.latitude = -25.52f;
     pAdavale.longitude = 144.32f;
     pAdavale.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -172,7 +172,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAdavale);
     // Adelaide
     DiscretizationPoint pAdelaide;
-    pAdelaide.latitude = 34.52f;
+    pAdelaide.latitude = -34.52f;
     pAdelaide.longitude = 138.30f;
     pAdelaide.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -182,7 +182,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAdelaide);
     // Adelaide River
     DiscretizationPoint pAdelaideRiver;
-    pAdelaideRiver.latitude = 13.15f;
+    pAdelaideRiver.latitude = -13.15f;
     pAdelaideRiver.longitude = 131.07f;
     pAdelaideRiver.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -192,7 +192,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAdelaideRiver);
     // Adele I.
     DiscretizationPoint pAdele;
-    pAdele.latitude = 15.32f;
+    pAdele.latitude = -15.32f;
     pAdele.longitude = 123.09f;
     pAdele.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -202,7 +202,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAdele);
     // Adieu, C.
     DiscretizationPoint pAdieuC;
-    pAdieuC.latitude = 32.00f;
+    pAdieuC.latitude = -32.00f;
     pAdieuC.longitude = 132.10f;
     pAdieuC.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -212,7 +212,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAdieuC);
     // Adieu Pt.
     DiscretizationPoint pAdieuPt;
-    pAdieuPt.latitude = 15.14f;
+    pAdieuPt.latitude = -15.14f;
     pAdieuPt.longitude = 124.35f;
     pAdieuPt.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -222,7 +222,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAdieuPt);
     // Admiralty G.
     DiscretizationPoint pAdmiralty;
-    pAdmiralty.latitude = 14.20f;
+    pAdmiralty.latitude = -14.20f;
     pAdmiralty.longitude = 125.55f;
     pAdmiralty.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -232,7 +232,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAdmiralty);
     // Agnew
     DiscretizationPoint pAgnew;
-    pAgnew.latitude = 28.01f;
+    pAgnew.latitude = -28.01f;
     pAgnew.longitude = 120.31f;
     pAgnew.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -242,7 +242,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAgnew);
     // Aileron
     DiscretizationPoint pAileron;
-    pAileron.latitude = 22.39f;
+    pAileron.latitude = -22.39f;
     pAileron.longitude = 133.20f;
     pAileron.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -252,7 +252,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAileron);
     // Airlie Beach
     DiscretizationPoint pAirlieBeach;
-    pAirlieBeach.latitude = 20.16f;
+    pAirlieBeach.latitude = -20.16f;
     pAirlieBeach.longitude = 148.43f;
     pAirlieBeach.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -262,7 +262,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAirlieBeach);
     // Alawoone
     DiscretizationPoint pAlawoone;
-    pAlawoone.latitude = 34.45f;
+    pAlawoone.latitude = -34.45f;
     pAlawoone.longitude = 140.30f;
     pAlawoone.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -272,7 +272,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAlawoone);
     // Albacutya, L.
     DiscretizationPoint pAlbacutya;
-    pAlbacutya.latitude = 35.45f;
+    pAlbacutya.latitude = -35.45f;
     pAlbacutya.longitude = 141.58f;
     pAlbacutya.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -282,7 +282,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAlbacutya);
     // Albany
     DiscretizationPoint pAlbany;
-    pAlbany.latitude = 35.01f;
+    pAlbany.latitude = -35.01f;
     pAlbany.longitude = 117.58f;
     pAlbany.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -292,7 +292,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAlbany);
     // Albatross B.
     DiscretizationPoint pAlbatross;
-    pAlbatross.latitude = 12.45f;
+    pAlbatross.latitude = -12.45f;
     pAlbatross.longitude = 141.30f;
     pAlbatross.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -302,7 +302,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAlbatross);
     // Albert, L.
     DiscretizationPoint pAlbert;
-    pAlbert.latitude = 35.30f;
+    pAlbert.latitude = -35.30f;
     pAlbert.longitude = 139.10f;
     pAlbert.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -312,7 +312,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAlbert);
     // Albert Edward Ra.
     DiscretizationPoint pAlbertEdwardRa;
-    pAlbertEdwardRa.latitude = 18.17f;
+    pAlbertEdwardRa.latitude = -18.17f;
     pAlbertEdwardRa.longitude = 127.57f;
     pAlbertEdwardRa.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -322,7 +322,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAlbertEdwardRa);
     // Albury-Wodonga
     DiscretizationPoint pAlburyWodonga;
-    pAlburyWodonga.latitude = 36.03f;
+    pAlburyWodonga.latitude = -36.03f;
     pAlburyWodonga.longitude = 146.56f;
     pAlburyWodonga.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -332,7 +332,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAlburyWodonga);
     // Alexander, Mt.
     DiscretizationPoint pAlexander;
-    pAlexander.latitude = 28.58f;
+    pAlexander.latitude = -28.58f;
     pAlexander.longitude = 120.16f;
     pAlexander.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -342,7 +342,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAlexander);
     // Alexandra
     DiscretizationPoint pAlexandra;
-    pAlexandra.latitude = 37.08f;
+    pAlexandra.latitude = -37.08f;
     pAlexandra.longitude = 145.40f;
     pAlexandra.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -352,7 +352,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAlexandra);
     // Alexandrina, L.
     DiscretizationPoint pAlexandrina;
-    pAlexandrina.latitude = 35.25f;
+    pAlexandrina.latitude = -35.25f;
     pAlexandrina.longitude = 139.10;
     pAlexandrina.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -362,7 +362,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAlexandrina);
     // Alice, Queens
     DiscretizationPoint pAliceQueens;
-    pAliceQueens.latitude = 24.02f;
+    pAliceQueens.latitude = -24.02f;
     pAliceQueens.longitude = 144.50f;
     pAliceQueens.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -372,7 +372,7 @@ void DiscreteMesh::generateMesh(int numberRows)
     meshAsList.append(pAliceQueens);
     // Alice Springs
     DiscretizationPoint pAliceSprings;
-    pAliceSprings.latitude = 23.40f;
+    pAliceSprings.latitude = -23.40f;
     pAliceSprings.longitude = 133.50f;
     pAliceSprings.seen = new bool[36];
     for(int jj=0; jj<36; jj++)
@@ -380,5 +380,5 @@ void DiscreteMesh::generateMesh(int numberRows)
         pAliceSprings.seen[jj]=false;
     }
     meshAsList.append(pAliceSprings);
-    */
+*/
 }

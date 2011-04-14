@@ -36,7 +36,7 @@
 
 // Analysis (Claas Grohnfeldt, Steffen Peter)
 #include <QMenu>
-#include "Constellations/canalysis.h"
+#include "Constellations/cstudy.h"
 
 
 class StaBody;
@@ -58,7 +58,7 @@ public:
    void configureCameraMenu(const PropagatedScenario* scenario);
 
     // Analysis (Claas Grohnfeldt, Steffen Peter)
-   void enableAnalysisTools(ConstellationAnalysis* analysisOfConstellations);
+   void enableAnalysisTools(ConstellationStudy* studyOfConstellations);
    void disableAnalysisTools();
 
    QAction* gridAction() const

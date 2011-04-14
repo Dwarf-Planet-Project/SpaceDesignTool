@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
         exit(0);
     }
 #else
-    if (!QDir::setCurrent(ResourcesPath))  // Patched by Guillermo
+    if (!QDir::setCurrent(staResourcesPath))  // Patched by Guillermo
     {
         QMessageBox::warning(NULL,
                              QObject::tr("STA Resources Not Found"),

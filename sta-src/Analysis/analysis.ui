@@ -26,7 +26,7 @@
    <string>Analysis</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../../iconary/sta-icons.qrc">
     <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -144,9 +144,6 @@
               <attribute name="headerMinimumSectionSize">
                <number>30</number>
               </attribute>
-              <attribute name="headerMinimumSectionSize">
-               <number>30</number>
-              </attribute>
               <column>
                <property name="text">
                 <string>Participants and Mission Arcs</string>
@@ -212,21 +209,6 @@
                <number>35</number>
               </attribute>
               <attribute name="headerShowSortIndicator" stdset="0">
-               <bool>false</bool>
-              </attribute>
-              <attribute name="headerStretchLastSection">
-               <bool>true</bool>
-              </attribute>
-              <attribute name="headerDefaultSectionSize">
-               <number>120</number>
-              </attribute>
-              <attribute name="headerMinimumSectionSize">
-               <number>35</number>
-              </attribute>
-              <attribute name="headerShowSortIndicator" stdset="0">
-               <bool>false</bool>
-              </attribute>
-              <attribute name="headerHighlightSections">
                <bool>false</bool>
               </attribute>
               <attribute name="headerStretchLastSection">
@@ -352,9 +334,6 @@
                   <attribute name="headerMinimumSectionSize">
                    <number>35</number>
                   </attribute>
-                  <attribute name="headerMinimumSectionSize">
-                   <number>35</number>
-                  </attribute>
                   <column>
                    <property name="text">
                     <string>Parameter</string>
@@ -365,12 +344,22 @@
                     <string>Analysis</string>
                    </property>
                    <property name="icon">
-                    <iconset>
+                    <iconset resource="../../iconary/sta-icons.qrc">
                      <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
                    </property>
                    <item>
                     <property name="text">
                      <string>Time</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Covered Area</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Time from epoch</string>
                     </property>
                    </item>
                    <item>
@@ -1431,15 +1420,6 @@
                 <attribute name="headerStretchLastSection">
                  <bool>true</bool>
                 </attribute>
-                <attribute name="headerMinimumSectionSize">
-                 <number>35</number>
-                </attribute>
-                <attribute name="headerHighlightSections">
-                 <bool>false</bool>
-                </attribute>
-                <attribute name="headerStretchLastSection">
-                 <bool>true</bool>
-                </attribute>
                 <column>
                  <property name="text">
                   <string>Parameter</string>
@@ -1506,21 +1486,6 @@
                 <attribute name="headerStretchLastSection">
                  <bool>true</bool>
                 </attribute>
-                <attribute name="headerDefaultSectionSize">
-                 <number>122</number>
-                </attribute>
-                <attribute name="headerMinimumSectionSize">
-                 <number>35</number>
-                </attribute>
-                <attribute name="headerShowSortIndicator" stdset="0">
-                 <bool>true</bool>
-                </attribute>
-                <attribute name="headerHighlightSections">
-                 <bool>true</bool>
-                </attribute>
-                <attribute name="headerStretchLastSection">
-                 <bool>true</bool>
-                </attribute>
                 <column>
                  <property name="text">
                   <string>X-parameter</string>
@@ -1541,12 +1506,17 @@
                   <string>Analysis</string>
                  </property>
                  <property name="icon">
-                  <iconset>
+                  <iconset resource="../../iconary/sta-icons.qrc">
                    <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
                  </property>
                  <item>
                   <property name="text">
                    <string>Time</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Covered Area</string>
                   </property>
                  </item>
                  <item>
@@ -2628,18 +2598,6 @@
                 <attribute name="headerStretchLastSection">
                  <bool>true</bool>
                 </attribute>
-                <attribute name="headerDefaultSectionSize">
-                 <number>122</number>
-                </attribute>
-                <attribute name="headerMinimumSectionSize">
-                 <number>35</number>
-                </attribute>
-                <attribute name="headerShowSortIndicator" stdset="0">
-                 <bool>true</bool>
-                </attribute>
-                <attribute name="headerStretchLastSection">
-                 <bool>true</bool>
-                </attribute>
                 <column>
                  <property name="text">
                   <string>Y-parameter</string>
@@ -2660,12 +2618,17 @@
                   <string>Analysis</string>
                  </property>
                  <property name="icon">
-                  <iconset>
+                  <iconset resource="../../iconary/sta-icons.qrc">
                    <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
                  </property>
                  <item>
                   <property name="text">
                    <string>Time</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Covered Area</string>
                   </property>
                  </item>
                  <item>
@@ -3794,15 +3757,6 @@
                 <attribute name="headerShowSortIndicator" stdset="0">
                  <bool>true</bool>
                 </attribute>
-                <attribute name="headerDefaultSectionSize">
-                 <number>122</number>
-                </attribute>
-                <attribute name="headerMinimumSectionSize">
-                 <number>35</number>
-                </attribute>
-                <attribute name="headerShowSortIndicator" stdset="0">
-                 <bool>true</bool>
-                </attribute>
                 <column>
                  <property name="text">
                   <string>Z-parameter</string>
@@ -3823,12 +3777,17 @@
                   <string>Analysis</string>
                  </property>
                  <property name="icon">
-                  <iconset>
+                  <iconset resource="../../iconary/sta-icons.qrc">
                    <normaloff>:/icons/CoordinateSystemBody.png</normaloff>:/icons/CoordinateSystemBody.png</iconset>
                  </property>
                  <item>
                   <property name="text">
                    <string>Time</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Covered Area</string>
                   </property>
                  </item>
                  <item>
@@ -5006,7 +4965,9 @@
   <tabstop>treeWidgetYaxis</tabstop>
   <tabstop>treeWidgetXaxis</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../iconary/sta-icons.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>pushButton</sender>

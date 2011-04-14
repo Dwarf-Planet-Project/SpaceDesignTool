@@ -50,6 +50,7 @@ class SpaceScenario;
 class ScenarioElementBox;
 class TimelineWidget;
 class PropagatedScenario;
+class ConstellationStudy;
 
 class RendezvousDialog;
 class ReEntryDialog;

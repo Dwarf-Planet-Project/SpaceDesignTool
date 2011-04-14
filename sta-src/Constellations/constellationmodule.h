@@ -35,7 +35,7 @@
 #include "ui_constellationwizard.h"
 //#include "Main/propagatedscenario.h"
 #include "Astro-Core/stabody.h"
-#include "canalysis.h"
+#include "cstudy.h"
 #include "discretization.h"
 #include <QList>
 

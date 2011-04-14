@@ -442,17 +442,14 @@ CONSTELLATIONS_SOURCES = sta-src/Constellations/cwizard.cpp \
     sta-src/Constellations/constellationwizard.cpp \
     sta-src/Constellations/constellationmodule.cpp \
     sta-src/Constellations/discretization.cpp \
-    sta-src/Constellations/canalysis.cpp \
-    sta-src/Constellations/analysisprop.cpp
+    sta-src/Constellations/cstudy.cpp
 CONSTELLATIONS_HEADERS = sta-src/Constellations/cwizard.h \
     sta-src/Constellations/constellationwizard.h \
     sta-src/Constellations/constellationmodule.h \
     sta-src/Constellations/discretization.h \
-    sta-src/Constellations/canalysis.h \
-    sta-src/Constellations/analysisprop.h
+    sta-src/Constellations/cstudy.h
 CONSTELLATIONS_FORMS = sta-src/Constellations/cwizard.ui \
-    sta-src/Constellations/constellationwizard.ui \
-    sta-src/Constellations/analysisprop.ui
+    sta-src/Constellations/constellationwizard.ui
 
 # ############# Help Browser Module ##############
 HELPBROWSER_SOURCES = sta-src/Help/HelpBrowser.cpp
@@ -920,4 +917,6 @@ macx {
     # Application icon
     #ICON = iconary/STAlogo.icns
 }
-
+CONFIG( debug, debug|release ) {
+    win32-g++:DEFINES += EIGEN_DONT_VECTORIZE EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+}

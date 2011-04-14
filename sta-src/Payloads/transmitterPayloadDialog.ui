@@ -782,7 +782,19 @@
       </item>
      </layout>
     </widget>
-   </widget>
+    <widget class="QCheckBox" name="observationCheckBox">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>101</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Observation</string>
+     </property>
+    </widget></widget>
    <widget class="QWidget" name="BudgetPage">
     <attribute name="title">
      <string>Budget</string>

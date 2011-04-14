@@ -43,4 +43,3 @@ STAapp.depends = vesta
 vesta.subdir = thirdparty/vesta
 
 schema2cpp.subdir = tools/schema2cpp
-

@@ -73,7 +73,6 @@
 #include "about.h"
 
 // Constellations
-#include "Constellations/canalysis.h"
 #include "Constellations/constellationwizard.h"
 
 #include "ui_mainwindow.h"
@@ -878,6 +877,11 @@ void MainWindow::on_actionPropagate_Scenario_triggered()
             ScenarioPoint* point = dynamic_cast<ScenarioPoint*>(participant.data());
             scenarioPropagatorPoint(point, Qt::yellow, feedback, propScenario);
         }
+        else if (dynamic_cast<ScenarioRegion*>(participant.data()))
+        {
+            ScenarioRegion* region = dynamic_cast<ScenarioRegion*>(participant.data());
+            scenarioPropagatorRegion(region, feedback, propScenario);
+        }
     }
 
     if (feedback.status() != PropagationFeedback::PropagationOk)
@@ -1502,14 +1506,16 @@ void MainWindow::on_actionPropagateCoverage_triggered()
 
 
     // Guillermo says; for the time being we call a estrange ANALYSIS method on the constellations module
-    ConstellationAnalysis* analysisOfConstellations = new ConstellationAnalysis(propScenario, true, false, false);
+    propScenario->setCoverageTriggered();
+    propScenario->setStudyOfConstellations();
+    ConstellationStudy* studyOfConstellations = new ConstellationStudy(propScenario, true, false, false);
 
     if (propScenario)
     {
         setPropagatedScenario(propScenario);
         if (m_groundTrackPlotTool)
         {
-            m_groundTrackPlotTool->setAnalysis(analysisOfConstellations);
+            m_groundTrackPlotTool->setAnalysis(studyOfConstellations);
         }
     }
 
@@ -1556,14 +1562,14 @@ void MainWindow::on_actionSat_to_Sat_triggered()
     }
 
 
-    ConstellationAnalysis* analysisOfConstellations = new ConstellationAnalysis(propScenario, false, true, false);
+    ConstellationStudy* studyOfConstellations = new ConstellationStudy(propScenario, false, true, false);
 
     if (propScenario)
     {
         setPropagatedScenario(propScenario);
         if (m_groundTrackPlotTool)
         {
-            m_groundTrackPlotTool->setAnalysis(analysisOfConstellations);
+            m_groundTrackPlotTool->setAnalysis(studyOfConstellations);
         }
     }
 
@@ -1663,14 +1669,14 @@ void MainWindow::on_actionSat_to_Ground_triggered()
 
     }
 
-    ConstellationAnalysis* analysisOfConstellations = new ConstellationAnalysis(propScenario, false, false, true);
+    ConstellationStudy* studyOfConstellations = new ConstellationStudy(propScenario, false, false, true);
 
     if (propScenario)
     {
         setPropagatedScenario(propScenario);
         if (m_groundTrackPlotTool)
         {
-            m_groundTrackPlotTool->setAnalysis(analysisOfConstellations);
+            m_groundTrackPlotTool->setAnalysis(studyOfConstellations);
         }
     }
 

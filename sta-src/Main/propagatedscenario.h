@@ -37,6 +37,7 @@
 #include <Astro-Core/inertialTOfixed.h>
 #include <Astro-Core/constants.h>
 
+class ConstellationStudy;
 class QTemporaryFile;
 
 class ScenarioParticipantType;
@@ -65,6 +66,7 @@ public:
     QString ephemerisFile() const { return m_ephemerisFile; }
     double beginning() const { return m_beginning; }
     double ending() const { return m_ending; }
+    QList<double> sampleTimes() { return m_sampleTimes; }
 
     bool getStateVector(double mjd, sta::StateVector* result) const;
     int trajectorySampleCount() const;
@@ -93,7 +95,34 @@ private:
 	QColor m_ArcTrajectoryColor;
 };
 
+// Claas and Steffen: Structure that represents Transmitter or Receiver Data
+// this class is necessary to consider Antennas during studying constellations
 
+class PSAntennaObject
+{
+public:
+    PSAntennaObject();
+    ~PSAntennaObject();
+
+    double getAzimuth();
+    double getElevation();
+    int getConeShape();
+    double getConeAngle();
+    bool getObservationChecked();
+
+    void setAzimuth(double az);
+    void setElevation(double el);
+    void setConeShape(int cs);
+    void setConeAngle(double ca);
+    void setObservationChecked(bool oc);
+
+private:
+    double m_azimuth;
+    double m_elevation;
+    int m_coneShape;
+    double m_coneAngle;
+    bool m_observationChecked;
+};
 
 // A SpaceObject instance represents an object that has
 // an integrated trajectory through space.
@@ -107,6 +136,8 @@ public:
     double missionStartTime() const { return m_missionStartTime; }
     double missionEndTime() const { return m_missionEndTime; }
     const QList<MissionArc*>& mission() const { return m_missionArcs; }
+    const QList<PSAntennaObject*>& receiver() const{ return m_receiver; }
+    const QList<PSAntennaObject*>& transmitter() const{ return m_transmitter; }
 
     QString name() const { return m_name; }
     void setName(const QString& name) { m_name = name; }
@@ -116,7 +147,9 @@ public:
     void setTrajectoryColor(QColor color) { m_trajectoryColor = color; }
     
     void addMissionArc(MissionArc* arc);
-    
+    void addReceiver(PSAntennaObject* rec);
+    void addTransmitter(PSAntennaObject* tra);
+
     bool getStateVector(double mjd,
                         const StaBody& center,
                         const sta::CoordinateSystem& coordSys,
@@ -132,7 +165,9 @@ public:
 private:
     double m_missionStartTime;
     double m_missionEndTime;
-	QList<MissionArc*> m_missionArcs;
+    QList<MissionArc*> m_missionArcs;
+    QList<PSAntennaObject*> m_receiver;
+    QList<PSAntennaObject*> m_transmitter;
     
     QString m_name;
     QString m_modelFile;
@@ -154,11 +189,21 @@ public:
     double azimuthAngle(const SpaceObject* spacecraft, double t) const;
     double getRange(const SpaceObject* spacecraft, double t) const;
 
+    const QList<PSAntennaObject*>& receiver() const{ return m_receiver; }
+    const QList<PSAntennaObject*>& transmitter() const{ return m_transmitter; }
+
+    void addReceiver(PSAntennaObject* rec);
+    void addTransmitter(PSAntennaObject* tra);
+
     QString name;
     const StaBody* centralBody;
     double longitude;  // degrees
     double latitude;   // degrees
     double altitude;   // meters
+
+private:
+    QList<PSAntennaObject*> m_receiver;
+    QList<PSAntennaObject*> m_transmitter;
 };
 
 
@@ -221,6 +266,12 @@ public:
      */
     double endTime() const { return m_endTime; }
     
+    bool coverageTriggered() const {return m_coverageTriggered;}
+    void setCoverageTriggered() {m_coverageTriggered = true;}
+    ConstellationStudy*studyOfConstellations() {return m_studyOfConstellations;}
+    //void setStudyOfConstellations() {m_studyOfConstellations = new ConstellationStudy(propScenario, true, false, false);}
+    void setStudyOfConstellations();
+
     void addSpaceObject(SpaceObject* spaceObject);
     void addGroundObject(GroundObject* groundObject);
     void addRegionObject(RegionObject* regionObject);
@@ -231,6 +282,8 @@ private:
     QList<RegionObject*> m_regionObjectList;
     double m_startTime;
     double m_endTime;
+    bool m_coverageTriggered;
+    ConstellationStudy*m_studyOfConstellations;
 };
 
 #endif // _STA_PROPAGATED_SCENARIO_H_

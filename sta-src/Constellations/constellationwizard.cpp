@@ -15,19 +15,13 @@
 
 
 #include "Constellations/constellationwizard.h"
-
 #include "Constellations/constellationmodule.h"
-
 #include "Scenario/scenarioPropagator.h"
 #include "Scenario/missionsDefaults.h"
-
 #include "Loitering/loitering.h"
-
 #include "Astro-Core/stamath.h"
-
 #include "Main/mainwindow.h"
 #include "Main/scenariotree.h"
-
 #include <QMessageBox>
 #include <QDebug>
 #include <iostream>

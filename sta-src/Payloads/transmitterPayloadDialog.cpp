@@ -74,6 +74,9 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* transm
     if(antennaRadioButtonTransmitter==2)
         BeamWidthRadioButton->toggle();
 
+    // Observation? yes or no
+    observationCheckBox->setChecked(transmitterPayload->Transmitter()->getObservationChecked());
+
     double elevation=transmitterPayload->Transmitter()->PointingDirection()->elevation();
     elevation=elevation*RAD2DEG;
     if(elevation>90)
@@ -84,6 +87,13 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* transm
     double azimuth=transmitterPayload->Transmitter()->PointingDirection()->azimuth();
     azimuth=azimuth*RAD2DEG;
     AzLineEdit->setText(QString::number(azimuth));
+
+    double coneAngle = transmitterPayload->Transmitter()->PointingDirection()->coneAngle();
+    coneAngle = coneAngle*RAD2DEG;
+    ConeAngleLineEdit->setText(QString::number(coneAngle));
+
+    int coneShape = transmitterPayload->Transmitter()->PointingDirection()->coneShape();
+    ConeShapeComboBox->setCurrentIndex(coneShape);
 
     TxFeederLossLineEdit->setText(QString::number(transmitterPayload->Transmitter()->FedderLossTx()));
     TxDepointingLossLineEdit->setText(QString::number(transmitterPayload->Transmitter()->DepointingLossTx()));
@@ -199,6 +209,9 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* transm
 bool transmitterPayloadDialog::saveValues(ScenarioTransmitterPayloadType* transmitterPayload)
 {
 
+    // Observation? yes or no
+    transmitterPayload->Transmitter()->setObservationChecked(observationCheckBox->isChecked());
+
     double elevation=ElLineEdit->text().toDouble();
     if(elevation<=90){
         elevation=elevation*DEG2RAD;
@@ -210,6 +223,13 @@ bool transmitterPayloadDialog::saveValues(ScenarioTransmitterPayloadType* transm
     double azimuth=AzLineEdit->text().toDouble();
     azimuth=azimuth*DEG2RAD;
     transmitterPayload->Transmitter()->PointingDirection()->setAzimuth(azimuth);
+
+    double coneAngle = ConeAngleLineEdit->text().toDouble();
+    coneAngle = coneAngle*DEG2RAD;
+    transmitterPayload->Transmitter()->PointingDirection()->setConeAngle(coneAngle);
+
+    int coneShape = ConeShapeComboBox->currentIndex();
+    transmitterPayload->Transmitter()->PointingDirection()->setConeShape(coneShape);
 
     transmitterPayload->Transmitter()->EMproperties()->setGainMax(GainLineEdit->text().toDouble());
     transmitterPayload->Transmitter()->EMproperties()->setDiameter(DiameterLineEdit->text().toDouble());

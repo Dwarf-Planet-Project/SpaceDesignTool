@@ -75,10 +75,10 @@ GroundTrackPlotTool::~GroundTrackPlotTool()
 
 
 // Analysis (Claas Grohnfeldt, Steffen Peter)
-void GroundTrackPlotTool::setAnalysis(ConstellationAnalysis* analysisOfConstellations)
+void GroundTrackPlotTool::setAnalysis(ConstellationStudy* studyOfConstellations)
 {
-    m_toolBar->enableAnalysisTools(analysisOfConstellations);
-    m_view->setAnalysis(analysisOfConstellations);
+    m_toolBar->enableAnalysisTools(studyOfConstellations);
+    m_view->setAnalysis(studyOfConstellations);
 }
 
 

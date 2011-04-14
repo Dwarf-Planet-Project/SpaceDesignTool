@@ -51,7 +51,7 @@ public:
 
     GroundTrackView* view() const { return m_view; }
 
-    void setAnalysis(ConstellationAnalysis* analysisOfConstellations);
+    void setAnalysis(ConstellationStudy* studyOfConstellations);
 
     VisualizationToolBar* toolBar() const
     {

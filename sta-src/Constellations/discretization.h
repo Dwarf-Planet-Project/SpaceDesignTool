@@ -49,6 +49,8 @@ class DiscreteMesh
         void generateMesh(int numberRows);
         const StaBody* centralBody;
         int numberRows;
+        double singleArea;
+        int numberPoints;
 
         QList<DiscretizationPoint> *discreteMesh;
         QList<DiscretizationPoint> meshAsList;

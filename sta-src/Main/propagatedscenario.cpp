@@ -36,6 +36,7 @@
 #include <Astro-Core/RotationState.h>
 #include <Astro-Core/Interpolators.h>
 #include <Astro-Core/stamath.h>
+#include "Constellations/cstudy.h"
 
 using namespace sta;
 using namespace Eigen;
@@ -216,6 +217,69 @@ MissionArc::generateEphemerisFile()
     return true;
 }
 
+/****** PSAntennaObject    ******/
+
+PSAntennaObject::PSAntennaObject():
+        m_azimuth(0.0),
+        m_elevation(0.0),
+        m_coneShape(0),
+        m_coneAngle(0.0),
+        m_observationChecked(false)
+{
+}
+
+PSAntennaObject::~PSAntennaObject()
+{
+}
+
+double PSAntennaObject::getAzimuth()
+{
+    return m_azimuth;
+}
+
+double PSAntennaObject::getElevation()
+{
+    return m_elevation;
+}
+
+int PSAntennaObject::getConeShape()
+{
+    return m_coneShape;
+}
+
+double PSAntennaObject::getConeAngle()
+{
+    return m_coneAngle;
+}
+
+bool PSAntennaObject::getObservationChecked()
+{
+    return m_observationChecked;
+}
+
+void PSAntennaObject::setAzimuth(double az)
+{
+    m_azimuth = az;
+}
+
+void PSAntennaObject::setElevation(double el)
+{
+    m_elevation = el;
+}
+
+void PSAntennaObject::setConeShape(int cs)
+{
+    m_coneShape = cs;
+}
+
+void PSAntennaObject::setConeAngle(double ca)
+{
+    m_coneAngle = ca;
+}
+void PSAntennaObject::setObservationChecked(bool oc)
+{
+    m_observationChecked = oc;
+}
 
 /****** SpaceObject        ******/
 
@@ -249,7 +313,17 @@ SpaceObject::addMissionArc(MissionArc* arc)
     m_missionArcs.append(arc);
 }
 
+void
+SpaceObject::addReceiver(PSAntennaObject* rec)
+{
+    m_receiver.append(rec);
+}
 
+void
+SpaceObject::addTransmitter(PSAntennaObject* tra)
+{
+    m_transmitter.append(tra);
+}
 
 /*! Return the state vector for this space vehicle at the specified time.
  *  @param mjd: a modified Julian Date, TDB
@@ -462,6 +536,17 @@ double GroundObject::getRange(const SpaceObject *spacecraft, double t) const{
 
 }
 
+void
+GroundObject::addReceiver(PSAntennaObject* rec)
+{
+    m_receiver.append(rec);
+}
+
+void
+GroundObject::addTransmitter(PSAntennaObject* tra)
+{
+    m_transmitter.append(tra);
+}
 
 RegionObject::RegionObject(const QString& name, const StaBody* centralBody) :
     m_name(name),
@@ -500,7 +585,9 @@ RegionObject::setColor(const QColor& color)
  */
 PropagatedScenario::PropagatedScenario() :
     m_startTime(sta::JdToMjd(sta::J2000)),
-    m_endTime(sta::JdToMjd(sta::J2000))
+    m_endTime(sta::JdToMjd(sta::J2000)),
+    m_coverageTriggered(false),
+    m_studyOfConstellations(NULL)
 {
 }
 
@@ -518,6 +605,11 @@ PropagatedScenario::~PropagatedScenario()
     }
 }
 
+void
+PropagatedScenario::setStudyOfConstellations()
+{
+    m_studyOfConstellations = new ConstellationStudy(this, true, false, false);
+}
 
 void
 PropagatedScenario::addSpaceObject(SpaceObject* spaceObject)
@@ -545,4 +637,3 @@ PropagatedScenario::addRegionObject(RegionObject* regionObject)
 {
     m_regionObjectList.append(regionObject);
 }
-

@@ -2266,7 +2266,9 @@ ScenarioPointingDirection::ScenarioPointingDirection() :
     m_azimuth(0.0),
     m_elevation(0.0),
     m_azimuthDot(0.0),
-    m_elevationDot(0.0)
+    m_elevationDot(0.0),
+    m_coneAngle(0.0),
+    m_coneShape(0)
 {
 }
 
@@ -2636,7 +2638,8 @@ QList<QSharedPointer<ScenarioObject> >ScenarioTemperatureRange::children() const
 ScenarioTransmitter::ScenarioTransmitter() :
     m_FedderLossTx(0.0),
     m_DepointingLossTx(0.0),
-    m_TransmittingPower(0.0)
+    m_TransmittingPower(0.0),
+    m_observationChecked(false)
 {
     m_Modulation = QSharedPointer<ScenarioModulation>(new ScenarioModulation());
 }

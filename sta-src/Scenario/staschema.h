@@ -1633,6 +1633,14 @@ public:
     { return m_elevationDot; }
     void setElevationDot(double elevationDot)
     { m_elevationDot = elevationDot; }
+    int coneShape() const
+    { return m_coneShape; }
+    void setConeShape(int coneShape)
+    { m_coneShape = coneShape; }
+    double coneAngle() const
+    { return m_coneAngle; }
+    void setConeAngle(double coneAngle)
+    { m_coneAngle = coneAngle; }
 
 private:
     QString m_referenceSystem;
@@ -1640,6 +1648,8 @@ private:
     double m_elevation;
     double m_azimuthDot;
     double m_elevationDot;
+    double m_coneAngle;
+    int m_coneShape;
 };
 
 
@@ -1876,12 +1886,17 @@ public:
     { return m_Modulation; }
     void setModulation(QSharedPointer<ScenarioModulation> Modulation)
     { m_Modulation = Modulation; }
+    bool getObservationChecked()
+    { return m_observationChecked; }
+    void setObservationChecked(bool oc)
+    { m_observationChecked = oc; }
 
 private:
     double m_FedderLossTx;
     double m_DepointingLossTx;
     double m_TransmittingPower;
     QSharedPointer<ScenarioModulation> m_Modulation;
+    bool m_observationChecked;
 };
 
 

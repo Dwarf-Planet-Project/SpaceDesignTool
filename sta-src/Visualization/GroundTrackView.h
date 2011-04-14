@@ -30,7 +30,7 @@
 #define _STA_VISUALIZATION_GROUND_TRACK_VIEW_H_
 
 #include "GroundTrack.h"
-#include "Constellations/canalysis.h"
+#include "Constellations/cstudy.h"
 #include "Astro-Core/stabody.h"
 
 #include <QWidget>
@@ -72,7 +72,7 @@ Q_OBJECT
     double tickInterval() const { return m_tickInterval; }
 
     // Analysis (Claas Grohnfeldt, Steffen Peter)
-    void setAnalysis(ConstellationAnalysis* analysisOfConstellations);
+    void setAnalysis(ConstellationStudy* studyOfConstellations);
 
  public slots:
     void setCurrentTime(double jd);
@@ -141,7 +141,7 @@ Q_OBJECT
  private:
     PropagatedScenario* m_scenario;
     // Analysis (Claas Grohnfeldt, Steffen Peter)
-    ConstellationAnalysis* m_analysis;
+    ConstellationStudy* m_analysis;
 
 
     double m_currentTime;

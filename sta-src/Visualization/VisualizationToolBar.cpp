@@ -422,7 +422,7 @@ void VisualizationToolBar::mapBodyChanged(QString bodyName)
 
 // Analysis (Claas Grohnfeldt, Steffen Peter)
 // Procedure to create and show the Analysis Toolbar
-void VisualizationToolBar::enableAnalysisTools(ConstellationAnalysis* analysisOfConstellations)
+void VisualizationToolBar::enableAnalysisTools(ConstellationStudy* studyOfConstellations)
 {
     // reset
     m_analysisAction->setVisible(false);
@@ -438,24 +438,24 @@ void VisualizationToolBar::enableAnalysisTools(ConstellationAnalysis* analysisOf
     m_coverageCurrentAction->setChecked(false);
     m_coverageHistoryAction->setChecked(false);
     // set
-    if (analysisOfConstellations != NULL)
+    if (studyOfConstellations != NULL)
     {
-        if (!analysisOfConstellations->m_anaSpaceObjectList.at(0).linksamples.isEmpty()) // link SO
+        if (!studyOfConstellations->m_constellationStudySpaceObjectList.at(0).linksamples.isEmpty()) // link SO
         {
             m_linkSOAction->setVisible(true);
             m_analysisAction->setVisible(true);
         }
-        if (!analysisOfConstellations->m_anaSpaceObjectList.at(0).groundlinksamples.isEmpty()) // link GO
+        if (!studyOfConstellations->m_constellationStudySpaceObjectList.at(0).groundlinksamples.isEmpty()) // link GO
         {
             m_linkGOAction->setVisible(true);
             m_analysisAction->setVisible(true);
         }
-        if(!analysisOfConstellations->m_discreteMesh->meshAsList.isEmpty()) // discretization
+        if(!studyOfConstellations->m_discreteMesh->meshAsList.isEmpty()) // discretization
         {
             m_discretizationAction->setVisible(true);
             m_analysisAction->setVisible(true);
         }
-        if(!analysisOfConstellations->m_anaSpaceObjectList.at(0).coveragesample.isEmpty()) // coverage
+        if(!studyOfConstellations->m_constellationStudySpaceObjectList.at(0).coveragesample.isEmpty()) // coverage
         {
             m_coverageCurrentAction->setVisible(true);
             m_coverageHistoryAction->setVisible(true);
