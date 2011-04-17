@@ -34,6 +34,13 @@ TARGET = STA
 QT += opengl
 QT += xml xmlpatterns
 QT += network
+QT += qt3support
+QT += svg
+
+CONFIG += assistant
+CONFIG += designer
+CONFIG += qt warn_off thread
+
 
 
 
@@ -44,6 +51,7 @@ LINUX_LIBRARIES_DIR = thirdparty/linux
 QWT3D_DIR = thirdparty/qwtplot3d
 EIGEN_DIR = thirdparty/Eigen
 QTVESTA_DIR = thirdparty/qtvesta
+QTIPLOT_DIR = thirdparty/qtiplot
 
 # ################### Main files ################################
 MAIN_SOURCES = \
@@ -400,11 +408,13 @@ RAM_FORMS = sta-src/RAM/parametrizedgeometry.ui \
 
 # ################ Analysis ############
 ANALYSIS_SOURCES = sta-src/Analysis/analysis.cpp \
-		   sta-src/Analysis/AnalysisPlot.cpp \
-		   sta-src/Analysis/analysisTable.cpp
+           sta-src/Analysis/AnalysisPlot.cpp \
+           sta-src/Analysis/analysisTable.cpp \
+           sta-src/Analysis/qtiplotmain.cpp
 ANALYSIS_HEADERS = sta-src/Analysis/analysis.h\
-		    sta-src/Analysis/AnalysisPlot.h \
-		   sta-src/Analysis/analysisTable.h
+            sta-src/Analysis/AnalysisPlot.h \
+           sta-src/Analysis/analysisTable.h \
+           sta-src/Analysis/qtiplotmain.h
 ANALYSIS_FORMS = sta-src/Analysis/analysis.ui
 
 # ################ Payloads ############
@@ -436,6 +446,7 @@ SCENARIO_HEADERS = sta-src/Scenario/staschema.h \
     sta-src/Scenario/missionsDefaults.h \
     sta-src/Scenario/missionAspectDialog.h
 SCENARIO_FORMS = sta-src/Scenario/missionAspectDialog.ui
+
 
 # ############# Constellations Module ##############
 CONSTELLATIONS_SOURCES = sta-src/Constellations/cwizard.cpp \
@@ -559,7 +570,6 @@ QTVESTA_HEADERS = \
     $$QTVESTA_DIR/WMSTiledMap.h \
     $$QTVESTA_DIR/MultiWMSTiledMap.h
 
-
 DEFINES += GLEW_STATIC
 
 # ############### All app sources, headers, and forms ############
@@ -641,23 +651,29 @@ FORMS = $$MAIN_FORMS \
     $$CONSTELLATIONS_FORMS \
     $$MANEUVERS_FORMS \
     $$SERVICES_FORMS
+
 RESOURCES = \
     iconary/sta-icons.qrc
+
 UI_HEADERS_DIR = sta-src/ui/include
 UI_SOURCES_DIR = sta-src/ui/src
+
 INCLUDEPATH += .
 INCLUDEPATH += sta-src
+INCLUDEPATH += include/spice
 INCLUDEPATH += thirdparty
 INCLUDEPATH += thirdparty/glew/include
 INCLUDEPATH += thirdparty/qwtplot3d/include
 INCLUDEPATH += thirdparty/noradtle
+INCLUDEPATH += thirdparty/qtiplot
+INCLUDEPATH += thirdparty/qtiplot/qtiplot/src
+INCLUDEPATH += thirdparty/qtiplot/3rdparty/qwt/src
+INCLUDEPATH += thirdparty/qtiplot/3rdparty/liborigin
+INCLUDEPATH += thirdparty/qtiplot/3rdparty/gsl
+INCLUDEPATH += thirdparty/qtiplot/3rdparty/gsl/include
+INCLUDEPATH += thirdparty/qtiplot/3rdparty/muparser/include
 
 LIBS += -lvesta -Lthirdparty/vesta/build
-
-# Add library path for static libraries
-win32-g++:LIBS += $$PWD/lib/win32-x86-gcc/cspice.a
-
-INCLUDEPATH += include/spice
 
 DEFINES += EIGEN_USE_NEW_STDVECTOR
 
@@ -689,9 +705,40 @@ win32 {
         -O3 \
         -Bdynamic
 
+    #DEFINES += QT_DLL QT_THREAD_SUPPORT
+
+    LIBS += $$PWD/lib/win32-x86-gcc/cspice.a
+
+    # Case of static libs
+    #LIBS += $$PWD/lib/win32-x86-gcc/libqtiplot.a
+    #LIBS += $$PWD/lib/win32-x86-gcc/libQtAssistantClient4.a
+    #LIBS += $$PWD/lib/win32-x86-gcc/libmuparser.a
+    #LIBS += $$PWD/lib/win32-x86-gcc/libgsl.dll
+    #LIBS += $$PWD/lib/win32-x86-gcc/libgslcblas.dll
+    #LIBS += $$PWD/lib/win32-x86-gcc/libzdll.a
+    #LIBS += $$PWD/lib/win32-x86-gcc/libqwt.a
+    #LIBS += $$PWD/lib/win32-x86-gcc/libqwt5.a
+    #LIBS += $$PWD/lib/win32-x86-gcc/libqwtmathml5.a
+    #LIBS += $$PWD/lib/win32-x86-gcc/libqwtplot3d.a
+
+    # Case of dynamic libs
+    LIBS += $$PWD/lib/win32-x86-gcc/qtiplot.dll
+    LIBS += $$PWD/lib/win32-x86-gcc/muparser.dll
+    LIBS += $$PWD/lib/win32-x86-gcc/qwtplot3d.dll
+    #LIBS += $$PWD/lib/win32-x86-gcc/qwtmathml5.dll
+    LIBS += $$PWD/lib/win32-x86-gcc/qwt5.dll
+    LIBS += $$PWD/lib/win32-x86-gcc/libgsl.dll
+    LIBS += $$PWD/lib/win32-x86-gcc/libgslcblas.dll
+    LIBS += $$PWD/lib/win32-x86-gcc/zlib1.dll
+    #LIBS += $$PWD/lib/win32-x86-gcc/msvcrt.dll
+    LIBS += $$PWD/lib/win32-x86-gcc/QtAssistantClient4.dll
+
+
     # The below libraries are already included automatically by Qt, but they need to appear
     # *after* libvesta on the command line. This seems to work pretty well.
     LIBS += -lopengl32 -lglu32
+
+
 }
 
 
@@ -785,8 +832,8 @@ macx {
      QT += dbus
 
      # Guillermo: we use LLVM in MAC OS X instead of gcc (2X fast compilation)
-     QMAKE_CC = llvm-gcc
-     QMAKE_CXX = llvm-g++
+     QMAKE_CC = llvm-gcc -arch i386
+     QMAKE_CXX = llvm-g++ -arch i386
 
      QMAKE_CFLAGS_RELEASE = -ffast-math \
     -fexpensive-optimizations \
@@ -801,6 +848,13 @@ macx {
     -ftree-vectorize
 
     LIBS += $$PWD/lib/mac/cspice.a
+    LIBS += $$PWD/lib/mac/libmuparser.a
+    LIBS += $$PWD/lib/mac/libgslcblas.a
+    LIBS += $$PWD/lib/mac/libgsl.a
+    LIBS += $$PWD/lib/mac/libz.a
+    LIBS += $$PWD/lib/mac/libqwt.a
+    LIBS += $$PWD/lib/mac/libqwtplot3d.a
+    LIBS += $$PWD/lib/mac/libqtiplot.a
 
     QMAKE_LFLAGS += -framework CoreFoundation
 
@@ -907,16 +961,14 @@ macx {
 
     # Killing the annoying bug of Apple when telling:
     # ld: warning: directory '/tmp/qt-stuff-18929/source/qt-everywhere-opensource-src-4.7.0/lib' following -F not found
-    QMAKE_PRL_LIBS = -framework Qt<ModuleDep>
+    #QMAKE_PRL_LIBS = -framework Qt<ModuleDep>
 
 	# Next command has been moved to the Qt Projects Build Steps list
 	## Deploys Qt frameworks inside the MAC bundle but efficiently
-    STAMACDEPLOY = $$system(macdeployqt ../STA-build-desktop/STA.app)
-    message($$STAMACDEPLOY)
+    #STAMACDEPLOY = $$system(macdeployqt ../STA-build-desktop/STA.app)
+    #message($$STAMACDEPLOY)
 
     # Application icon
     #ICON = iconary/STAlogo.icns
 }
-CONFIG( debug, debug|release ) {
-    win32-g++:DEFINES += EIGEN_DONT_VECTORIZE EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
-}
+

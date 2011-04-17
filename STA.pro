@@ -34,12 +34,14 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     vesta \
-    STAapp \
-    schema2cpp
+    qtiplot \
+    STAapp
+#    schema2cpp
 
 STAapp.file = ./STAapp.pro
 STAapp.depends = vesta
 
 vesta.subdir = thirdparty/vesta
+qtiplot.subdir = thirdparty/qtiplot
+#schema2cpp.subdir = tools/schema2cpp
 
-schema2cpp.subdir = tools/schema2cpp
