@@ -8128,6 +8128,13 @@ void ApplicationWindow::analysisMenuAboutToShow()
 		analysisMenu->addAction(actionFitLinear);
         analysisMenu->addAction(actionShowFitDialog);
 	}
+
+
+    // Next code is patched by Guillermo to allow the activation of the UPA module
+    analysisMenu->insertSeparator();
+    analysisMenu->addAction(actionUncertaintyPropagationAnalysis);
+
+
     reloadCustomActions();
 }
 
@@ -11731,6 +11738,10 @@ void ApplicationWindow::createActions()
 
 	actionSmoothFFT = new QAction(tr("&FFT Filter..."), this);
 	connect(actionSmoothFFT, SIGNAL(activated()), this, SLOT(showSmoothFFTDialog()));
+
+    // Next lines patched by Guillermo to allow UPA action
+    actionUncertaintyPropagationAnalysis = new QAction(tr("&UPA"), this);
+    connect(actionUncertaintyPropagationAnalysis, SIGNAL(activated()), this, SLOT(upa()));
 
 	actionSmoothAverage = new QAction(tr("Moving Window &Average..."), this);
 	connect(actionSmoothAverage, SIGNAL(activated()), this, SLOT(showSmoothAverageDialog()));

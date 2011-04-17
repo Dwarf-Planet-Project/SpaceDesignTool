@@ -1247,6 +1247,7 @@ private:
 	QAction *actionColorMap, *actionContourMap, *actionGrayMap;
 	QAction *actionDeleteFitTables, *actionShowGridDialog, *actionTimeStamp;
 	QAction *actionSmoothSavGol, *actionSmoothFFT, *actionSmoothAverage, *actionFFT;
+    QAction *actionUncertaintyPropagationAnalysis;
 	QAction *actionLowPassFilter, *actionHighPassFilter, *actionBandPassFilter, *actionBandBlockFilter;
 	QAction *actionSortTable, *actionSortSelection, *actionNormalizeSelection;
 	QAction *actionNormalizeTable, *actionConvolute, *actionDeconvolute, *actionCorrelate, *actionAutoCorrelate;
