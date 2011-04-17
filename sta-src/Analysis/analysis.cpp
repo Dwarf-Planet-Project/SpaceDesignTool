@@ -43,10 +43,11 @@
 #include "Plotting/PlotView3D.h"
 #include "Plotting/TimePlotScale.h"
 #include "Help/HelpBrowser.h"
-#include "Constellations/cstudy.h"
 
 #include "Services/serviceTimeParameter.h"
 #include "Services/serviceTimeUnit.h"
+
+#include "Analysis/qtiplotmain.h"
 
 #include <cmath>
 
@@ -74,6 +75,7 @@ class HelpBrowser;
 
 // Format for date/time strings shown to user when selecting a time range
 static const QString TimeRangeSelectionDateFormat = "d/M/yyyy hh:mm:ss";
+
 
 // ***** Scenario helper functions *****
 
@@ -242,17 +244,11 @@ static bool IsPlanetDistanceField(const QString& fieldName)
 analysis::analysis(SpaceScenario*scenario, PropagatedScenario*propagatedScenario,QWidget * parent, Qt::WindowFlags f) : QDialog(parent,f)
 {
     setupUi(this);
-
     m_scenario=new SpaceScenario(*scenario);
     m_propagatedScenario=new PropagatedScenario(*propagatedScenario);
 
-    if(m_propagatedScenario->coverageTriggered())
-    {
-        m_studyOfConstellations=new ConstellationStudy(*propagatedScenario->studyOfConstellations());
-    }
-
     readScenario();
-    DisableUnavailableOptions(m_propagatedScenario->coverageTriggered());
+    DisableUnavailableOptions();
     //connect(treeWidgetReportOptions, SIGNAL(activated(int)), this, SLOT(addParameter(QTreeWidgetItem*)));
     connect(AddParameterPushButton, SIGNAL(clicked()), this, SLOT(addParameter()));
     connect(RemoveParameterPushButton, SIGNAL(clicked()), this, SLOT(removeParameter()));
@@ -1472,7 +1468,6 @@ void analysis::on_GeneratePushButton_clicked()
     -there are no time intervals selected
     -the selected parameters, in the plotting option, are not correct (number or type of parameters selected)
     */
-
     QString AnalysisFormat=ComboBoxAnalysisFormat->currentText();
 
     QList<QTreeWidgetItem *> selected=TreeWidgetMissionArc->selectedItems();
@@ -1541,6 +1536,7 @@ void analysis::on_GeneratePushButton_clicked()
     {
         DataStructure=WriteDataStructure(selected,selectedTimes);
     }
+
     // Show the report: spreadsheet, 2D, or 3D
     if(AnalysisFormat=="2D")
     {
@@ -2064,7 +2060,6 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                         }
                     }
                     //other parameters
-
                     for(int j=countStart[k];j<=countStop[k];j++)
                     {
                         int index=j-countStart[k];
@@ -2980,6 +2975,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                                                          ToCoord);
                                     stream<<sta::ConvertUnits(ToUnit,SemAxis,"km")<<"\t";
                                 }
+
                             }
                             if((name=="l")||(name=="g")||(name=="h")||(name=="L")||(name=="G")||(name=="H"))
                             {
@@ -3034,16 +3030,6 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                                                            "EME J2000",
                                                                            ToCoord);
                                     stream<<Delaunay_H<<"\t";
-                                }
-                            }
-                            if(name=="Covered Area" && m_propagatedScenario->coverageTriggered())
-                            {
-                                QString Units=analysis::ReadUnits(treeWidgetShowInReport,parameter);
-                                if(Units == "km^2")
-                                {
-                                    stream<<m_studyOfConstellations->m_constellationStudySpaceObjectList.at(MParentIndex.at(z)).coveragesample.at(index).coveredArea<<"\t";
-                                }else{
-                                    stream<<m_studyOfConstellations->m_constellationStudySpaceObjectList.at(MParentIndex.at(z)).coveragesample.at(index).coveredAreaInPerCent<<"\t";
                                 }
                             }
                             if((name=="Latitude")||(name=="Longitude")||(name=="Radial Distance")||(name=="Flight Path Angle")||(name=="Heading Angle")||(name=="Velocity Modulus")||(name=="Altitude"))
@@ -3186,6 +3172,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
         QString analysisFileOutput = ResourcesPathOutput + "/" + "analysisReport.txt";
         QString analysisFileOutputURL = "file:///" + analysisFileOutput;
 
+        /*
         //SpreadSheet* resultsSheet = new SpreadSheet(numberOfRows + 5, numberOfColumns);
         SpreadSheet* resultsSheet = new SpreadSheet(numberOfRows, numberOfColumns);
         resultsSheet->setupContents(analysisFileOutput);
@@ -3196,9 +3183,11 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
         resultsSheet->activateWindow();
         resultsSheet->show();
         resultsSheet->raise();
+        */
 
-        // Guillermo says: next line to used any more since we have now a spreadsheet table
-        //QDesktopServices::openUrl(QUrl(analysisFileOutputURL));
+        // Guillermo says: this actually calls QtiPlot
+        qtiplotmain* mycallQtiplotFrame = new qtiplotmain(false, analysisFileOutput, this);
+
     }
 }
 
@@ -4370,16 +4359,6 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                         LineData.append(Delaunay_H);
                                     }
                                 }
-                                if(name=="Covered Area" && m_propagatedScenario->coverageTriggered())
-                                {
-                                    QString Units=analysis::ReadUnits(Tree.at(a),SelParameters.at(i));
-                                    if(Units == "km^2")
-                                    {
-                                        LineData.append(m_studyOfConstellations->m_constellationStudySpaceObjectList.at(MParentIndex.at(z)).coveragesample.at(index).coveredArea);
-                                    }else{
-                                        LineData.append(m_studyOfConstellations->m_constellationStudySpaceObjectList.at(MParentIndex.at(z)).coveragesample.at(index).coveredAreaInPerCent);
-                                    }
-                                }
                                 else if((name=="Latitude")||
                                         (name=="Longitude")||
                                         (name=="Radial Distance")||
@@ -5137,19 +5116,6 @@ QComboBox* analysis::DistanceUnitsBox()
 
     return DistanceBox;
 }
-QComboBox* analysis::CoveredAreaUnitsBox()
-{
-    /*
-      Description: returns a combobox with the units "%" and "km^2"
-      */
-    QComboBox*CoveredAreaBox=new QComboBox();
-    CoveredAreaBox->addItem(tr("km^2"),0);
-    CoveredAreaBox->addItem(tr("%"),1);
-
-    CoveredAreaBox->setMaximumHeight(22);
-
-    return CoveredAreaBox;
-}
 QComboBox* analysis::NoUnitsBox()
 {
     /*
@@ -5312,14 +5278,9 @@ void analysis::ComboBoxOptions(QTreeWidgetItem*item)
        (name=="l")||(name=="g")||(name=="h")
 
         )
-    {
+        {
         treeWidgetShowInReport->setItemWidget(item,1,CoordinateBox());
         treeWidgetShowInReport->setItemWidget(item,2,AngleUnitsBox());
-    }
-    if(name=="Covered Area" && m_propagatedScenario->coverageTriggered())
-    {
-        treeWidgetShowInReport->setItemWidget(item,1,NoUnitsBox());
-        treeWidgetShowInReport->setItemWidget(item,2,CoveredAreaUnitsBox());
     }
     if((name=="EIRP")||(name=="Received Frequency")||(name=="Doppler Shift")||(name=="Received Power")||(name=="Flux Density")||(name=="Overlap Bandwidth Factor")||
        (name=="Free Space Loss")||(name=="Oxygen Loss")||(name=="Water Vapour Loss")||(name=="Rain Loss")||(name=="Atmospheric Loss")||(name=="Propagation Loss")||
@@ -5441,11 +5402,6 @@ void
         treeWidget->setItemWidget(item,1,CoordinateBox());
         treeWidget->setItemWidget(item,2,AngleUnitsBox());
     }
-    if(name=="Covered Area" && m_propagatedScenario->coverageTriggered())
-    {
-        treeWidget->setItemWidget(item,1,NoUnitsBox());
-        treeWidget->setItemWidget(item,2,CoveredAreaUnitsBox());
-    }
 }
 
 
@@ -5483,7 +5439,8 @@ void analysis::PlotComboBox()
     }
 }
 
-void analysis::DisableUnavailableOptions(bool coverageTrigg)
+
+void analysis::DisableUnavailableOptions()
 {
     QList<QTreeWidget*>Tree;
     Tree.append(treeWidgetReportOptions);
@@ -5510,10 +5467,7 @@ void analysis::DisableUnavailableOptions(bool coverageTrigg)
                         topItem->setDisabled(true);
                         topItem->child(k)->setDisabled(true);
                     }
-                    if(topItem->child(k)->text(0)=="Covered Area" && !coverageTrigg)
-                    {
-                        topItem->child(k)->setDisabled(true);
-                    }
+
                     for (int l=0;l<topItem->child(k)->childCount();l++)
                     {
                         QTreeWidgetItem*item=topItem->child(k)->child(l);
@@ -5524,7 +5478,9 @@ void analysis::DisableUnavailableOptions(bool coverageTrigg)
                             topItem->child(k)->setDisabled(true);
                         }
 
-                        if((topItem->child(k)->text(0)=="Pass Times")||(topItem->child(k)->text(0)=="Ecliptic Crossing Times")||(topItem->child(k)->text(0)=="Covariance"))
+                        if(
+                                (topItem->child(k)->text(0)=="Pass Times")||(topItem->child(k)->text(0)=="Ecliptic Crossing Times")||(topItem->child(k)->text(0)=="Covariance"))
+
                         {
                             Tree.at(a)->setItemWidget(item,1,TimeFramesBox());
                             Tree.at(a)->setItemWidget(item,2,TimeUnitsBox());
@@ -5537,9 +5493,13 @@ void analysis::DisableUnavailableOptions(bool coverageTrigg)
                             item->setDisabled(true);
                         }
                     }
+
+
                 }
             }
+
         }
+
     }
 }
 
