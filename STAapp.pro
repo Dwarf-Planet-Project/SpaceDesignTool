@@ -767,6 +767,14 @@ linux-g++ {
     message("Warning: compiling a 32-bit linux version with >= gcc v4.3")
     LIBS += -L$$PWD/lib/linux-x86
     LIBS += -lcspice
+
+    LIBS += $$PWD/lib/linux-x86/libqwt.so.5.2.2
+    LIBS += $$PWD/lib/linux-x86/libqwtplot3d.so.1.0.0
+    LIBS += $$PWD/lib/linux-x86/libqtiplot.so.1.0.0
+
+    LIBS += -lmuparser
+    LIBS += -lgsl -lgslcblas
+
     }
 }
 

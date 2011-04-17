@@ -88,12 +88,12 @@ INCLUDEPATH       += $$PWD/3rdparty/zlib123/include
 ##################### Linux (Mac OS X) ######################################
 
 # statically link against libraries in 3rdparty
-#unix:LIBS         += $$PWD/3rdparty/muparser/lib/libmuparser.a
-#unix:LIBS         += $$PWD/3rdparty/qwtplot3d/lib/libqwtplot3d.a
-#unix:LIBS         += $$PWD/3rdparty/qwt/lib/libqwt.a
-#unix:LIBS         += $$PWD/3rdparty/gsl/lib/libgsl.a
-#unix:LIBS         += $$PWD/3rdparty/gsl/lib/libgslcblas.a
-#unix:LIBS         += $$PWD/3rdparty/zlib123/lib/libz.a
+#linux:LIBS         += $$PWD/3rdparty/muparser/lib/libmuparser.a
+linux:LIBS         += ../../lib/linux-x86/libqwtplot3d.so.1.0.0
+linux:LIBS         += ../../lib/linux-x86/libqwt.so.5.2.2
+#linux:LIBS         += $$PWD/3rdparty/gsl/lib/libgsl.a
+#linux:LIBS         += $$PWD/3rdparty/gsl/lib/libgslcblas.a
+#linux:LIBS         += $$PWD/3rdparty/zlib123/lib/libz.a
 
 mac:LIBS         += ../../lib/mac/libmuparser.a
 mac:LIBS         += ../../lib/mac/libqwtplot3d.a
@@ -103,10 +103,10 @@ mac:LIBS         += ../../lib/mac/libgslcblas.a
 mac:LIBS         += ../../lib/mac/libz.a
 
 # dynamically link against dependencies if they are installed system-wide
-#unix:LIBS         += -lmuparser
-#unix:LIBS         += -lqwtplot3d
-#unix:LIBS         += -lqwt
-#unix:LIBS         += -lgsl -lgslcblas
+linux:LIBS         += -lmuparser
+#linux:LIBS         += -lqwtplot3d
+#linux:LIBS         += -lqwt
+linux:LIBS         += -lgsl -lgslcblas
 
 ##################### Windows ###############################################
 
