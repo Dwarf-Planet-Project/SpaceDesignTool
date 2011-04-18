@@ -27,6 +27,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "ScaleEngine.h"
+#include <climits>
 
 QwtScaleTransformation* ScaleEngine::transformation() const
 {
