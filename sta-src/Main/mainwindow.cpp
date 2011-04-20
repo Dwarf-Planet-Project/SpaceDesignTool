@@ -1612,7 +1612,8 @@ void MainWindow::on_actionCreateLagrangianPlan_triggered()
 
 void MainWindow::on_actionCreateRendezvousPlan_triggered()
 {
-    rendezvousDialog* myRendezvousPlanDialoge = new rendezvousDialog(this);
+    //ALONSO.- Changes in definition of RVDialog. scenario and propagated scenario are needed
+    rendezvousDialog* myRendezvousPlanDialoge = new rendezvousDialog(m_scenario,m_propagatedScenario,this);
     myRendezvousPlanDialoge->exec();
     myRendezvousPlanDialoge->setFocus();
 

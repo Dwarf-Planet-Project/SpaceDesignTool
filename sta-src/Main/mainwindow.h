@@ -77,6 +77,8 @@ public:
 
     SpaceScenario* scenario() const;
     void setScenario(SpaceScenario* scenario);
+    //ALONSO.- Needed for RV propagation. To discuss.
+    void setPropagatedScenario(PropagatedScenario* scenario);
 
 public:
     void readSettings();
@@ -146,7 +148,7 @@ private:
     void showGroundTrackPlotTool();
     void replaceCurrentScenario(SpaceScenario* scenario, QString filename);
     void configureTimeline(PropagatedScenario* scenario);
-    void setPropagatedScenario(PropagatedScenario* scenario);
+
 
     void initAppDataDirectory();
 
