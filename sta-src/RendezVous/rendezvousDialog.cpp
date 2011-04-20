@@ -23,137 +23,142 @@
 /*
  ------------------ Author: Guillermo Ortega  -------------------------------------------------
  ------------------ European Space Agency ----------------------------
-
+ Modified by: J Alonso.
+ ETSIA
+ Changes : Support new Ordovican specs.
  */
-
-
 
 
 #include "rendezvousDialog.h"
 
-#include "Scenario/scenarioPropagator.h"
-#include "Scenario/missionsDefaults.h"
+#include <QMessageBox>
 
-#include "Loitering/loitering.h"
-
-#include "Astro-Core/stamath.h"
-
-#include "Main/mainwindow.h"
-#include "Main/scenariotree.h"
-
-
-
-rendezvousDialog::rendezvousDialog(MainWindow* parent) : mainwindow(parent)
+rendezvousDialog::rendezvousDialog(SpaceScenario* scenario,PropagatedScenario*
+                          propScenario,MainWindow* parent) : mainwindow(parent)
 {
 	setupUi(this);
+
+    //In this method, propagated scenario is loaded.
+  if(interfXML.loadRVScenario(scenario,propScenario)){
+      if (!interfXML.manPlan.plan.isEmpty())
+      {
+          for(int i=0;i<interfXML.manPlan.plan.size();i++)
+            this->testTextEditChaser->append(interfXML.manPlan.plan[i].getName());
+      }
+
+      this->generatePB->setDisabled(true);
+      this->testTextEditChaser->append(interfXML.getPropagatedTrajectory(0));
+      this->testTextEditTarget->append(interfXML.getPropagatedTrajectory(1));
+
+
+    }
+    else{
+        this->generatePB->setEnabled(true);
+    }
+
+
+
+
+
+  //Connect
+  connect(generatePB, SIGNAL(pressed()),this,SLOT(generateScenario()));
+  connect(propagatePB, SIGNAL(pressed()),this,SLOT(propagate()));
+  connect(deltaVPB, SIGNAL(pressed()),this,SLOT(addDeltaV()));
+  connect(freeDriftPB, SIGNAL(pressed()),this,SLOT(addFreeDrift()));
 }
 
 rendezvousDialog::~rendezvousDialog()
 {
 }
 
+
+void rendezvousDialog::generateScenario(){
+    // Create a new scenario
+    SpaceScenario* scenario=new SpaceScenario();
+    ScenarioSC* chaser=new ScenarioSC();
+    ScenarioSC* target=new ScenarioSC();
+    PropagatedScenario* propScenario=new PropagatedScenario();
+
+    interfXML.createRVscenario(scenario,chaser,target,propScenario);
+    //Adds manoeuvre plan.
+    //interfXML.addManPlan();
+
+    mainwindow->setScenario(interfXML.getScenario());
+    //Needed for cleaning previous data.
+    //mainwindow->setPropagatedScenario(NULL);
+
+}
+
+void rendezvousDialog::propagate(){
+    //Set to disabled until propagation policy stablished.
+
+    /*PropagatedScenario* propScenario = new PropagatedScenario();
+    interfXML.setPropagatedScenario(propScenario);*/
+
+    PropagationFeedback feedbackChaser,feedbackTarget;
+
+    PropagatedScenario* mPropagatedScenario=new PropagatedScenario(*(interfXML.getPropagatedScenario()));
+    //Chaser propagation
+    ScenarioSC* mChaser=interfXML.getChaser();
+    scenarioPropagatorSatellite(mChaser, feedbackChaser, mPropagatedScenario, this);
+    //Target propagation
+    ScenarioSC* mTarget=interfXML.getTarget();
+    scenarioPropagatorSatellite(mTarget, feedbackTarget,mPropagatedScenario, this);
+
+    if ( (feedbackChaser.status() != PropagationFeedback::PropagationOk) &&
+         (feedbackTarget.status() != PropagationFeedback::PropagationOk))
+    {
+        QMessageBox::critical(this, tr("Propagation Error."), tr("Propagation failed: %1").arg(feedbackChaser.errorString()));
+        QMessageBox::critical(this, tr("Propagation Error."), tr("Propagation failed: %1").arg(feedbackTarget.errorString()));
+        //delete propScenario;
+        //setPropagatedScenario works in private.
+        //mainwindow->setPropagatedScenario(NULL);
+    }
+    else
+    {
+       // mainwindow->setPropagatedScenario(interfXML.getPropagatedScenario());
+
+    }
+
+    //TEMPORAL 0 for chaser, 1 for target
+
+
+    this->testTextEditChaser->append(interfXML.getPropagatedTrajectory(0));
+
+    this->testTextEditTarget->append(interfXML.getPropagatedTrajectory(1));
+}
+
+
 void rendezvousDialog::on_buttonBox_accepted()
 {
-    // Create a new scenario
-    SpaceScenario* scenario = new SpaceScenario();
-    scenario->setName("Rendezvous scenario");
 
-    ScenarioSC* chaser = new ScenarioSC();
-    chaser->setName("Chaser");
-    chaser->ElementIdentifier()->setName("Chaser");
-
-    // Create the initial position (Keplerian elements)
-    ScenarioKeplerianElementsType* elements = new ScenarioKeplerianElementsType();
-    elements->setSemiMajorAxis(87000.0);
-    elements->setEccentricity(0.0045);
-    elements->setInclination(27.456);
-    elements->setRAAN(132.34);
-    elements->setArgumentOfPeriapsis(231.34);
-    elements->setTrueAnomaly(45.32);
-
-    // Create the initial attitude (Euler elements)
-    ScenarioEulerBIType*  initAtt = new ScenarioEulerBIType();
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-
-    // Create the trajectory arc
-    ScenarioLoiteringType* loitering = new ScenarioLoiteringType();
-    loitering->ElementIdentifier()->setName("loitering");
-    loitering->ElementIdentifier()->setColorName("Yellow");
-    loitering->Environment()->CentralBody()->setName("Earth");
-    loitering->InitialPosition()->setCoordinateSystem("INERTIAL J2000");
-    loitering->PropagationPosition()->setTimeStep(60.0);
-    loitering->PropagationPosition()->setPropagator("TWO BODY");
-    loitering->PropagationPosition()->setIntegrator("RK4");
-    loitering->InitialAttitude()->setCoordinateSystem("EULER 123");
-    loitering->PropagationAttitude()->setIntegrator("");	// Not defined in STA yet
-    loitering->PropagationAttitude()->setTimeStep(60.0);
-
-    // Time-line
-    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
-    loitering->TimeLine()->setStartTime(TheCurrentDateAndTime);
-    loitering->TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
-    loitering->TimeLine()->setStepTime(60.0);
-
-    loitering->InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(elements));
-    loitering->InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioAbstract6DOFAttitudeType>(initAtt));
-
-    // Create the spacecraft loitering arc
-    chaser->SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(loitering));
-    scenario->AbstractParticipant().append(QSharedPointer<ScenarioParticipantType>(chaser));
-
-
-
-    ScenarioSC* target = new ScenarioSC();
-    target->setName("Target");
-    target->ElementIdentifier()->setName("Target");
-
-    // Create the initial position (Keplerian elements)
-    ScenarioKeplerianElementsType* elements2 = new ScenarioKeplerianElementsType();
-    elements2->setSemiMajorAxis(95000.0);
-    elements2->setEccentricity(0.0045);
-    elements2->setInclination(27.456);
-    elements2->setRAAN(132.34);
-    elements2->setArgumentOfPeriapsis(231.34);
-    elements2->setTrueAnomaly(45.32);
-
-    // Create the trajectory arc
-    ScenarioLoiteringType* loitering2 = new ScenarioLoiteringType();
-    loitering2->ElementIdentifier()->setName("loitering");
-    loitering2->ElementIdentifier()->setColorName("White");
-    loitering2->Environment()->CentralBody()->setName("Earth");
-    loitering2->InitialPosition()->setCoordinateSystem("INERTIAL J2000");
-    loitering2->PropagationPosition()->setTimeStep(60.0);
-    loitering2->PropagationPosition()->setPropagator("TWO BODY");
-    loitering2->PropagationPosition()->setIntegrator("RK4");
-    loitering2->InitialAttitude()->setCoordinateSystem("EULER 123");
-    loitering2->PropagationAttitude()->setIntegrator("");	// Not defined in STA yet
-    loitering2->PropagationAttitude()->setTimeStep(60.0);
-
-    // Time-line
-    loitering2->TimeLine()->setStartTime(TheCurrentDateAndTime);
-    loitering2->TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
-    loitering2->TimeLine()->setStepTime(60.0);
-
-    loitering2->InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(elements2));
-    loitering2->InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioAbstract6DOFAttitudeType>(initAtt));
-
-    // Create the spacecraft loitering arc
-    target->SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(loitering2));
-    scenario->AbstractParticipant().append(QSharedPointer<ScenarioParticipantType>(target));
-
-
-
-    mainwindow->setScenario(scenario);
     return;
 }
 
 void rendezvousDialog::on_buttonBox_rejected()
 {
-	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+
+    qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
+
+void rendezvousDialog::addDeltaV(){
+    RVManoeuvreDescriptor m1;
+    m1.descriptor=DELTA_V;
+    interfXML.manPlan.plan.append(m1);
+    generateScenario();
+
+}
+
+void rendezvousDialog::addFreeDrift(){
+    RVManoeuvreDescriptor m1;
+    m1.descriptor=FREE_DRIFT;
+    interfXML.manPlan.plan.append(m1);
+    generateScenario();
+}
+
+
+
+//Drag and drop management
+
+
 

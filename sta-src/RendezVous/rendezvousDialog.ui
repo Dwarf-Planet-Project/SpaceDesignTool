@@ -6,61 +6,648 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>658</width>
-    <height>523</height>
+    <width>619</width>
+    <height>564</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Dialog</string>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
-  <widget class="QDialogButtonBox" name="buttonBox">
-   <property name="geometry">
-    <rect>
-     <x>280</x>
-     <y>480</y>
-     <width>341</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>248</x>
-     <y>232</y>
-     <width>249</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Place here your work !!</string>
-   </property>
-  </widget>
+  <property name="acceptDrops">
+   <bool>true</bool>
+  </property>
+  <property name="windowTitle">
+   <string>RendezVous Wizard</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QToolBox" name="toolBox">
+       <widget class="QWidget" name="toolBoxPage1">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>599</width>
+          <height>430</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>Target and Chaser initial data</string>
+        </attribute>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QFrame" name="frame_2">
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+           <widget class="QLabel" name="label_6">
+            <property name="geometry">
+             <rect>
+              <x>11</x>
+              <y>11</y>
+              <width>221</width>
+              <height>29</height>
+             </rect>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>18</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Chaser Initial Data</string>
+            </property>
+           </widget>
+          </widget>
+         </item>
+         <item>
+          <widget class="QFrame" name="frame">
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+           <widget class="QLabel" name="label_5">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>10</y>
+              <width>628</width>
+              <height>29</height>
+             </rect>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>18</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Target Initial Data</string>
+            </property>
+           </widget>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="toolBoxPage2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>599</width>
+          <height>430</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>INFO (Perturbations in future)</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string>Temporal Layout-- CHASER PROPAGATED DATA</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="label_8">
+           <property name="text">
+            <string>Temporal Layout-- TARGET PROPAGATED DATA</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QTextEdit" name="testTextEditChaser"/>
+         </item>
+         <item row="1" column="1">
+          <widget class="QTextEdit" name="testTextEditTarget"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="toolBoxPage3">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>599</width>
+          <height>430</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>Manoeuvre Plan</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="font">
+            <font>
+             <pointsize>18</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Manoeuvre List </string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="label">
+           <property name="font">
+            <font>
+             <pointsize>18</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Scheduled Manoeuvres</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="ManoeuvresTreeDrag" name="manoeuvreTree">
+           <property name="minimumSize">
+            <size>
+             <width>219</width>
+             <height>370</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>219</width>
+             <height>370</height>
+            </size>
+           </property>
+           <column>
+            <property name="text">
+             <string>Select manoeuvre (d&amp;d not available yet)</string>
+            </property>
+           </column>
+           <item>
+            <property name="text">
+             <string>Free Drift</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Single Boost</string>
+            </property>
+            <item>
+             <property name="text">
+              <string>Tangential</string>
+             </property>
+             <property name="flags">
+              <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Radial</string>
+             </property>
+             <property name="flags">
+              <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Lateral</string>
+             </property>
+             <property name="flags">
+              <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Full DeltaV</string>
+             </property>
+            </item>
+           </item>
+           <item>
+            <property name="text">
+             <string>Two pulse transfers</string>
+            </property>
+            <item>
+             <property name="text">
+              <string>Tangential Boost Transfers</string>
+             </property>
+             <item>
+              <property name="text">
+               <string>Along x-axis</string>
+              </property>
+              <property name="flags">
+               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Hohmann Transfer</string>
+              </property>
+              <property name="flags">
+               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>90 degrees fly-around</string>
+              </property>
+              <property name="flags">
+               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+              </property>
+             </item>
+            </item>
+            <item>
+             <property name="text">
+              <string>Radial boost Transfers</string>
+             </property>
+             <item>
+              <property name="text">
+               <string>Transfer along x-axis</string>
+              </property>
+              <property name="flags">
+               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>90 degrees radial fly-around</string>
+              </property>
+              <property name="flags">
+               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>360 degrees radial fly-around</string>
+              </property>
+              <property name="flags">
+               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+              </property>
+             </item>
+            </item>
+           </item>
+           <item>
+            <property name="text">
+             <string>Constant force trajectories</string>
+            </property>
+            <item>
+             <property name="text">
+              <string>Hold Points outside V-bar</string>
+             </property>
+             <property name="flags">
+              <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Straight lines trajectories</string>
+             </property>
+             <item>
+              <property name="text">
+               <string>V-bar</string>
+              </property>
+              <property name="flags">
+               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>R-bar</string>
+              </property>
+              <property name="flags">
+               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+              </property>
+             </item>
+            </item>
+            <item>
+             <property name="text">
+              <string>Constant force transfers</string>
+             </property>
+             <item>
+              <property name="text">
+               <string>Tangential</string>
+              </property>
+              <property name="flags">
+               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Radial</string>
+              </property>
+              <property name="flags">
+               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+              </property>
+             </item>
+            </item>
+           </item>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QToolBox" name="toolBox_2">
+           <property name="currentIndex">
+            <number>2</number>
+           </property>
+           <widget class="QWidget" name="page_1">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>356</width>
+              <height>296</height>
+             </rect>
+            </property>
+            <attribute name="label">
+             <string>Phasing Stage</string>
+            </attribute>
+            <widget class="QTableWidget" name="tableWidget">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>10</y>
+               <width>341</width>
+               <height>281</height>
+              </rect>
+             </property>
+             <row>
+              <property name="text">
+               <string>NAME</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>INIT TIME</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>END TIME</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>INIT POS</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>END POS</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>DELTAV</string>
+              </property>
+             </row>
+             <column>
+              <property name="text">
+               <string>1</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>2</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>3</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>4</string>
+              </property>
+             </column>
+            </widget>
+           </widget>
+           <widget class="QWidget" name="page_2">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>356</width>
+              <height>296</height>
+             </rect>
+            </property>
+            <attribute name="label">
+             <string>Long Range Stage</string>
+            </attribute>
+            <widget class="QTableWidget" name="tableWidget_2">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>0</y>
+               <width>341</width>
+               <height>281</height>
+              </rect>
+             </property>
+             <row>
+              <property name="text">
+               <string>NAME</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>INIT TIME</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>END TIME</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>INIT POS</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>END POS</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>DELTAV</string>
+              </property>
+             </row>
+             <column>
+              <property name="text">
+               <string>1</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>2</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>3</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>4</string>
+              </property>
+             </column>
+            </widget>
+           </widget>
+           <widget class="QWidget" name="page_3">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>356</width>
+              <height>296</height>
+             </rect>
+            </property>
+            <attribute name="label">
+             <string>Close Range Stage</string>
+            </attribute>
+            <widget class="ScheduledTableManoeuvres" name="tableWidget_3">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>0</y>
+               <width>341</width>
+               <height>281</height>
+              </rect>
+             </property>
+             <row>
+              <property name="text">
+               <string>NAME</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>INIT TIME</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>END TIME</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>INIT POS</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>END POS</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>DELTAV</string>
+              </property>
+             </row>
+             <column>
+              <property name="text">
+               <string>1</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>2</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>3</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>4</string>
+              </property>
+             </column>
+            </widget>
+           </widget>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>Aspect</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="generatePB">
+       <property name="text">
+        <string>Generate Scenario</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="propagatePB">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Propagate</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="deltaVPB">
+       <property name="text">
+        <string>DeltaV</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="freeDriftPB">
+       <property name="text">
+        <string>FreeDrift</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ManoeuvresTreeDrag</class>
+   <extends>QTreeWidget</extends>
+   <header location="global">.\sta-src\RendezVous\manoeuvrestreedrag.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ScheduledTableManoeuvres</class>
+   <extends>QTableWidget</extends>
+   <header location="global">.\sta-src\RendezVous\scheduledtablemanoeuvres.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>rendezvousDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
@@ -73,6 +660,22 @@
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>rendezvousDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
      <y>274</y>
     </hint>
    </hints>

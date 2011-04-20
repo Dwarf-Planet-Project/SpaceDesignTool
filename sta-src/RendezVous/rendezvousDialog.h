@@ -31,27 +31,43 @@
 #ifndef RENDEZVOUSDIALOG_H
 #define RENDEZVOUSDIALOG_H
 
-#include "ui_rendezvousDialog.h"
 
-#include "Main/scenariotree.h"
-#include "Main/mainwindow.h"
-#include "Scenario/scenario.h"
+#include "RVXMLInterface.h"
 
+#include "ManoeuvresTreeDrag.h"
 
 #include <QDialog>
+#include <QTreeWidget>
+#include "ui_rendezvousDialog.h"
+class MainWindow;
 
-class rendezvousDialog : public QDialog , private Ui::rendezvousDialog
+
+
+
+class rendezvousDialog : public QDialog , private Ui_rendezvousDialog
 {
 Q_OBJECT
 public:
-	rendezvousDialog(MainWindow* parent);
+
+        rendezvousDialog(SpaceScenario*,PropagatedScenario*,MainWindow* parent);
 	~rendezvousDialog();
-protected slots:
-	void on_buttonBox_accepted();
-	void on_buttonBox_rejected();
+
+
 
 private:
+
     MainWindow* mainwindow;
-	
+    RVXMLInterface interfXML;
+ protected slots:
+        //Manoeuvre tree drag and drop
+
+        void propagate();
+        void on_buttonBox_accepted();
+	void on_buttonBox_rejected();
+        void generateScenario();
+        void addDeltaV();
+        void addFreeDrift();
+
+
 };
 #endif //RENDEZVOUSDIALOG_H
