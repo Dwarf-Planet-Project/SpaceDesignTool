@@ -599,7 +599,11 @@ SOURCES = $$MAIN_SOURCES \
     $$COVERAGE_SOURCES \
     $$CONSTELLATIONS_SOURCES \
     $$MANEUVERS_SOURCES \
-    $$SERVICES_SOURCES
+    $$SERVICES_SOURCES \
+    sta-src/RendezVous/scheduledtablemanoeuvres.cpp \
+    sta-src/RendezVous/RVXMLInterface.cpp \
+    sta-src/RendezVous/RVManoeuvres.cpp \
+    sta-src/RendezVous/manoeuvrestreedrag.cpp
 HEADERS = $$MAIN_HEADERS \
     $$ASTROCORE_HEADERS \
     $$SEM_HEADERS \
@@ -626,7 +630,12 @@ HEADERS = $$MAIN_HEADERS \
     $$COVERAGE_HEADERS \
     $$CONSTELLATIONS_HEADERS \
     $$MANEUVERS_HEADERS \
-    $$SERVICES_HEADERS
+    $$SERVICES_HEADERS \
+    sta-src/RendezVous/scheduledtablemanoeuvres.h \
+    sta-src/RendezVous/RVXMLInterface.h \
+    sta-src/RendezVous/RVManoeuvres.h \
+    sta-src/RendezVous/RVconstants.h \
+    sta-src/RendezVous/manoeuvrestreedrag.h
 FORMS = $$MAIN_FORMS \
     $$ASTROCORE_FORMS \
     $$SEM_FORMS \
@@ -738,7 +747,30 @@ win32 {
     # *after* libvesta on the command line. This seems to work pretty well.
     LIBS += -lopengl32 -lglu32
 
+    # Copy DLLs to target path
+    WIN_DLL_PATH = $$PWD/lib/win32-x86-gcc
+    EXTRA_BINFILES += \
+        $$WIN_DLL_PATH/qtiplot.dll \
+        $$WIN_DLL_PATH/muparser.dll \
+        $$WIN_DLL_PATH/qwtplot3d.dll \
+        $$WIN_DLL_PATH/qwt5.dll \
+        $$WIN_DLL_PATH/libgsl.dll \
+        $$WIN_DLL_PATH/libgslcblas.dll \
+        $$WIN_DLL_PATH/zlib1.dll \
+        $$WIN_DLL_PATH/QtAssistantClient4.dll
 
+    CONFIG(debug, debug|release) {
+        DESTDIR_WIN = $$OUT_PWD/debug
+    } else {
+        DESTDIR_WIN = $$OUT_PWD/release
+    }
+
+    # Convert forward slashes to backslashes for Windows shell commands
+    EXTRA_BINFILES ~= s,/,\\,g
+    DESTDIR_WIN ~= s,/,\\,g
+    for(FILE,EXTRA_BINFILES) {
+        QMAKE_POST_LINK +=$$quote(copy /y $${FILE} $${DESTDIR_WIN}$$escape_expand(\\n\\t))
+    }
 }
 
 
@@ -767,14 +799,6 @@ linux-g++ {
     message("Warning: compiling a 32-bit linux version with >= gcc v4.3")
     LIBS += -L$$PWD/lib/linux-x86
     LIBS += -lcspice
-
-    LIBS += $$PWD/lib/linux-x86/libqwt.so.5.2.2
-    LIBS += $$PWD/lib/linux-x86/libqwtplot3d.so.1.0.0
-    LIBS += $$PWD/lib/linux-x86/libqtiplot.so.1.0.0
-
-    LIBS += -lmuparser
-    LIBS += -lgsl -lgslcblas
-
     }
 }
 
@@ -979,4 +1003,3 @@ macx {
     # Application icon
     #ICON = iconary/STAlogo.icns
 }
-
