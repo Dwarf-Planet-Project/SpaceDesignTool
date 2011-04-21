@@ -638,12 +638,12 @@
   <customwidget>
    <class>ManoeuvresTreeDrag</class>
    <extends>QTreeWidget</extends>
-   <header location="global">.\sta-src\RendezVous\manoeuvrestreedrag.h</header>
+   <header location="global">./sta-src/RendezVous/manoeuvrestreedrag.h</header>
   </customwidget>
   <customwidget>
    <class>ScheduledTableManoeuvres</class>
    <extends>QTableWidget</extends>
-   <header location="global">.\sta-src\RendezVous\scheduledtablemanoeuvres.h</header>
+   <header location="global">./sta-src/RendezVous/scheduledtablemanoeuvres.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
