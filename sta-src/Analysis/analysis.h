@@ -61,7 +61,7 @@ public:
 
     QList<AnalysisData> WriteDataStructure(QList<QTreeWidgetItem*> selected,QList<QTreeWidgetItem *> selectedTimes);
     void WriteReport(QList<QTreeWidgetItem*> selected,QList<QTreeWidgetItem *> selectedTimes);
-    void DisableUnavailableOptions();
+    void DisableUnavailableOptions(bool coverageTrigg);
     QString ReadParameter(QTreeWidgetItem*Item);
     QString ReadUnits(QTreeWidget*Tree,QTreeWidgetItem*Item);
     QString ReadCoordinateSys(QTreeWidget*Tree,QTreeWidgetItem*Item);
@@ -105,8 +105,8 @@ private:
 
 private:
     SpaceScenario* m_scenario;
-    PropagatedScenario*m_propagatedScenario;
-    //PropagatedScenario*m_propagatedScenario;
+    PropagatedScenario* m_propagatedScenario;
+    ConstellationStudy* m_studyOfConstellations;
     bool CheckIfMissionArc();
     void InsertComboBox();
     void ComboBoxOptions(QTreeWidgetItem*);
@@ -118,6 +118,7 @@ private:
     QComboBox * DistanceUnitsBox();
     QComboBox * CoordinateBox();
     QComboBox * VelocityUnitsBox();
+    QComboBox * CoveredAreaUnitsBox();
     QComboBox * NoUnitsBox();
     QList<MissionArc*> m_missionArcs;
     QList<SpaceObject*> m_spaceObjectList;

@@ -62,7 +62,7 @@ double getfmean(double arg, double e, double mean);
 // antennas stick always on transmitter
 bool visibility(SpaceObject* transmitter, SpaceObject* receiver, const StaBody* body, double currentTime, QList<Antenna*> antennas);
 bool visibility(SpaceObject* transmitter, GroundObject* receiver, const StaBody* body, double currentTime, QList<Antenna*> antennas);
-bool visibility(GroundObject* transmitter, SpaceObject* receiver, const StaBody* body, double currentTime, Antenna* gAntenna);
+bool visibility(GroundObject* transmitter, SpaceObject* receiver, const StaBody* body, double currentTime, QList<Antenna*> antennas);
 bool visibility(SpaceObject* transmitter, DiscretizationPoint receiver, const StaBody* body, double currentTime, Antenna* obsAntenna);
 QList<DiscretizationPoint> visiblePoints(SpaceObject* spObject, QList<DiscretizationPoint> allMeshPoints,const StaBody* body, double currentTime, Antenna* obsAntenna);
 

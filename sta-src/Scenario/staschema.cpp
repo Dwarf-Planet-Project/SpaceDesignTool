@@ -2306,6 +2306,16 @@ bool ScenarioPointingDirection::load(const QDomElement& e, QDomElement* next)
         m_elevationDot = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
     }
+    if (next->tagName() == "tns:coneAngle")
+    {
+        m_coneAngle = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    if (next->tagName() == "tns:coneShape")
+    {
+        m_coneShape = parseInt(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
     return true;
 }
 
@@ -2317,6 +2327,8 @@ QDomElement ScenarioPointingDirection::toDomElement(QDomDocument& doc, const QSt
     e.appendChild(createSimpleElement(doc, "tns:elevation", m_elevation));
     e.appendChild(createSimpleElement(doc, "tns:azimuthDot", m_azimuthDot));
     e.appendChild(createSimpleElement(doc, "tns:elevationDot", m_elevationDot));
+    e.appendChild(createSimpleElement(doc, "tns:coneAngle", m_coneAngle));
+    e.appendChild(createSimpleElement(doc, "tns:coneShape", m_coneShape));
     return e;
 }
 
@@ -2639,7 +2651,7 @@ ScenarioTransmitter::ScenarioTransmitter() :
     m_FedderLossTx(0.0),
     m_DepointingLossTx(0.0),
     m_TransmittingPower(0.0),
-    m_observationChecked(false)
+    m_ObservationChecked(false)
 {
     m_Modulation = QSharedPointer<ScenarioModulation>(new ScenarioModulation());
 }
@@ -2659,6 +2671,11 @@ ScenarioTransmitter* ScenarioTransmitter::create(const QDomElement& e)
 bool ScenarioTransmitter::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioAntennaType::load(e, next);
+    if (next->tagName() == "tns:ObservationChecked")
+    {
+        m_ObservationChecked = parseBoolean(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
         m_FedderLossTx = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
         m_DepointingLossTx = parseDouble(next->firstChild().toText().data());
@@ -2674,6 +2691,7 @@ bool ScenarioTransmitter::load(const QDomElement& e, QDomElement* next)
 QDomElement ScenarioTransmitter::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioAntennaType::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:ObservationChecked", m_ObservationChecked));
     e.appendChild(createSimpleElement(doc, "tns:FedderLossTx", m_FedderLossTx));
     e.appendChild(createSimpleElement(doc, "tns:DepointingLossTx", m_DepointingLossTx));
     e.appendChild(createSimpleElement(doc, "tns:TransmittingPower", m_TransmittingPower));

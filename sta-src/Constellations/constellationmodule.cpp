@@ -396,7 +396,7 @@ bool visibility(SpaceObject* transmitter, GroundObject* receiver, const StaBody*
         return false;
     }
 }
-bool visibility(GroundObject* transmitter, SpaceObject* receiver, const StaBody* body, double currentTime, Antenna* gAntenna)
+bool visibility(GroundObject* transmitter, SpaceObject* receiver, const StaBody* body, double currentTime, QList<Antenna*> antennas)
 {
     sta::StateVector vReceiver;
     receiver->getStateVector(currentTime, *body, sta::CoordinateSystem(sta::COORDSYS_EME_J2000), &vReceiver);
@@ -418,8 +418,17 @@ bool visibility(GroundObject* transmitter, SpaceObject* receiver, const StaBody*
         rotation << Vector3d(-cosaz*sinel,-sinaz*sinel,cosel),
                     Vector3d(-sinaz,cosaz,0.0),
                     Vector3d(-cosaz*cosel,-cosel*sinaz,-sinel);
+        // check for each antenna
+        foreach(Antenna* antenna, antennas)
+        {
+            if (antenna->hasInCone(vReceiver.position, vTransmitterPos, rotation))
+            {
+                return true;
+            }
+        }
+        return false;
         // check for Groundstation antenna
-        return (gAntenna->hasInCone(vReceiver.position, vTransmitterPos, rotation));
+        //return (gAntenna->hasInCone(vReceiver.position, vTransmitterPos, rotation));
     } else {
         return false;
     }
@@ -480,8 +489,18 @@ bool visibility(SpaceObject* transmitter, DiscretizationPoint receiver, const St
         rotation << Vector3d(-costh*cosaz*sinel-sinth*sinaz,-costh*sinaz*sinel+sinth*cosaz,costh*cosel),
                     Vector3d(sinth*cosaz*sinel-costh*sinaz,sinth*sinaz*sinel+costh*cosaz,-sinth*cosel),
                     Vector3d(-cosaz*cosel,-cosel*sinaz,-sinel);
-        // check for observation antenna
-        return obsAntenna->hasInCone(vReceiverPos, vTransmitter.position, rotation);
+
+        return (obsAntenna->hasInCone(vReceiverPos, vTransmitter.position, rotation));
+
+        // check for each antenna
+        /*foreach(Antenna* antenna, antennas)
+        {
+            if (antenna->hasInCone(vReceiverPos, vTransmitter.position, rotation))
+            {
+                return true;
+            }
+        }
+        return false;*/
     } else {
         return false;
     }

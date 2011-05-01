@@ -379,7 +379,7 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
                 {
                     psAntennaObject->setConeShape(0);
                 }
-                psAntennaObject->setObservationChecked(tra->getObservationChecked());
+                psAntennaObject->setObservationChecked(tra->ObservationChecked());
                 spaceObject->addTransmitter(psAntennaObject);
             }
         }
@@ -573,6 +573,40 @@ void scenarioPropagatorGroundElement(ScenarioGroundStation* groundElement, Propa
             QColor trajectoryColor = myMissionDefaults.missionArcColorFromQt(stationColorName);
             QString arcModelName = groundElement->ElementIdentifier()->modelName();
 
+            // Claas and Steffen : Add Transmitter and Receiver to the structure to study constellations
+            const QList<QSharedPointer<ScenarioAbstractPayloadType> >& payloadList = groundElement->PayloadSet()->AbstractPayload();
+            foreach (QSharedPointer<ScenarioAbstractPayloadType> payload, payloadList)
+            {
+                if (dynamic_cast<ScenarioReceiverPayloadType*>(payload.data()))    // Receiver
+                {
+                    ScenarioReceiver* rec = dynamic_cast<ScenarioReceiverPayloadType*>(payload.data())->Receiver().data();
+                    PSAntennaObject* psAntennaObject = new PSAntennaObject();
+                    psAntennaObject->setAzimuth(rec->PointingDirection()->azimuth());
+                    psAntennaObject->setElevation(rec->PointingDirection()->elevation());
+                    psAntennaObject->setConeAngle(rec->PointingDirection()->coneAngle());
+                    psAntennaObject->setConeShape(rec->PointingDirection()->coneShape());
+                    groundObject->addReceiver(psAntennaObject);
+                }
+                if (dynamic_cast<ScenarioTransmitterPayloadType*>(payload.data())) // Transmitter
+                {
+                    ScenarioTransmitter* tra = dynamic_cast<ScenarioTransmitterPayloadType*>(payload.data())->Transmitter().data();
+                    PSAntennaObject* psAntennaObject = new PSAntennaObject();
+                    psAntennaObject->setAzimuth(tra->PointingDirection()->azimuth());
+                    psAntennaObject->setElevation(tra->PointingDirection()->elevation());
+                    psAntennaObject->setConeAngle(sta::degToRad(tra->Coverage()->FrustumAngle2()));
+                    if (tra->Coverage()->FrustumShape()=="ellipse")
+                    {
+                        psAntennaObject->setConeShape(1);
+                    }
+                    else
+                    {
+                        psAntennaObject->setConeShape(0);
+                    }
+                    psAntennaObject->setObservationChecked(tra->ObservationChecked());
+                    groundObject->addTransmitter(psAntennaObject);
+                }
+            }
+
             propScenario->addGroundObject(groundObject);
         }
         else
@@ -633,7 +667,7 @@ void scenarioPropagatorGroundElement(ScenarioGroundStation* groundElement,  QCol
                     {
                         psAntennaObject->setConeShape(0);
                     }
-                    psAntennaObject->setObservationChecked(tra->getObservationChecked());
+                    psAntennaObject->setObservationChecked(tra->ObservationChecked());
                     groundObject->addTransmitter(psAntennaObject);
                 }
             }

@@ -1886,17 +1886,17 @@ public:
     { return m_Modulation; }
     void setModulation(QSharedPointer<ScenarioModulation> Modulation)
     { m_Modulation = Modulation; }
-    bool getObservationChecked()
-    { return m_observationChecked; }
-    void setObservationChecked(bool oc)
-    { m_observationChecked = oc; }
+    bool ObservationChecked() const
+    { return m_ObservationChecked; }
+    void setObservationChecked(bool ObservationChecked)
+    { m_ObservationChecked = ObservationChecked; }
 
 private:
     double m_FedderLossTx;
     double m_DepointingLossTx;
     double m_TransmittingPower;
     QSharedPointer<ScenarioModulation> m_Modulation;
-    bool m_observationChecked;
+    bool m_ObservationChecked;
 };
 
 

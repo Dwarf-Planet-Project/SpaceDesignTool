@@ -169,6 +169,8 @@ ScenarioTransmitterPayloadType MissionsDefaults::MissionsDefaults_GenericTransmi
     genericTransmitter.Transmitter()->Modulation()->setDataRate(16654486.34);
     genericTransmitter.Transmitter()->Modulation()->setModulationType("BPSK");
 
+    genericTransmitter.Transmitter()->setObservationChecked(false);
+
     return genericTransmitter;
 }
 

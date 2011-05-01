@@ -47,6 +47,8 @@
 #include "Services/serviceTimeParameter.h"
 #include "Services/serviceTimeUnit.h"
 
+#include "Constellations/cstudy.h"
+
 #include "Analysis/qtiplotmain.h"
 
 #include <cmath>
@@ -246,9 +248,13 @@ analysis::analysis(SpaceScenario*scenario, PropagatedScenario*propagatedScenario
     setupUi(this);
     m_scenario=new SpaceScenario(*scenario);
     m_propagatedScenario=new PropagatedScenario(*propagatedScenario);
+    if(m_propagatedScenario->coverageTriggered())
+    {
+        m_studyOfConstellations=new ConstellationStudy(*propagatedScenario->studyOfConstellations());
+    }
 
     readScenario();
-    DisableUnavailableOptions();
+    DisableUnavailableOptions(m_propagatedScenario->coverageTriggered());
     //connect(treeWidgetReportOptions, SIGNAL(activated(int)), this, SLOT(addParameter(QTreeWidgetItem*)));
     connect(AddParameterPushButton, SIGNAL(clicked()), this, SLOT(addParameter()));
     connect(RemoveParameterPushButton, SIGNAL(clicked()), this, SLOT(removeParameter()));
@@ -3032,6 +3038,16 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     stream<<Delaunay_H<<"\t";
                                 }
                             }
+                            if(name=="Covered Area" && m_propagatedScenario->coverageTriggered())
+                            {
+                                QString Units=analysis::ReadUnits(treeWidgetShowInReport,parameter);
+                                if(Units == "km^2")
+                                {
+                                    stream<<m_studyOfConstellations->m_constellationStudySpaceObjectList.at(MParentIndex.at(z)).coveragesample.at(index).coveredArea<<"\t";
+                                }else{
+                                    stream<<m_studyOfConstellations->m_constellationStudySpaceObjectList.at(MParentIndex.at(z)).coveragesample.at(index).coveredAreaInPerCent<<"\t";
+                                }
+                            }
                             if((name=="Latitude")||(name=="Longitude")||(name=="Radial Distance")||(name=="Flight Path Angle")||(name=="Heading Angle")||(name=="Velocity Modulus")||(name=="Altitude"))
                             {
                                 QString ToCoord=analysis::ReadCoordinateSys(treeWidgetShowInReport,parameter);
@@ -4359,6 +4375,16 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                         LineData.append(Delaunay_H);
                                     }
                                 }
+                                if(name=="Covered Area" && m_propagatedScenario->coverageTriggered())
+                                {
+                                    QString Units=analysis::ReadUnits(Tree.at(a),SelParameters.at(i));
+                                    if(Units == "km^2")
+                                    {
+                                        LineData.append(m_studyOfConstellations->m_constellationStudySpaceObjectList.at(MParentIndex.at(z)).coveragesample.at(index).coveredArea);
+                                    }else{
+                                        LineData.append(m_studyOfConstellations->m_constellationStudySpaceObjectList.at(MParentIndex.at(z)).coveragesample.at(index).coveredAreaInPerCent);
+                                    }
+                                }
                                 else if((name=="Latitude")||
                                         (name=="Longitude")||
                                         (name=="Radial Distance")||
@@ -5116,6 +5142,19 @@ QComboBox* analysis::DistanceUnitsBox()
 
     return DistanceBox;
 }
+QComboBox* analysis::CoveredAreaUnitsBox()
+{
+    /*
+      Description: returns a combobox with the units "%" and "km^2"
+      */
+    QComboBox*CoveredAreaBox=new QComboBox();
+    CoveredAreaBox->addItem(tr("km^2"),0);
+    CoveredAreaBox->addItem(tr("%"),1);
+
+    CoveredAreaBox->setMaximumHeight(22);
+
+    return CoveredAreaBox;
+}
 QComboBox* analysis::NoUnitsBox()
 {
     /*
@@ -5282,6 +5321,11 @@ void analysis::ComboBoxOptions(QTreeWidgetItem*item)
         treeWidgetShowInReport->setItemWidget(item,1,CoordinateBox());
         treeWidgetShowInReport->setItemWidget(item,2,AngleUnitsBox());
     }
+    if(name=="Covered Area" && m_propagatedScenario->coverageTriggered())
+    {
+        treeWidgetShowInReport->setItemWidget(item,1,NoUnitsBox());
+        treeWidgetShowInReport->setItemWidget(item,2,CoveredAreaUnitsBox());
+    }
     if((name=="EIRP")||(name=="Received Frequency")||(name=="Doppler Shift")||(name=="Received Power")||(name=="Flux Density")||(name=="Overlap Bandwidth Factor")||
        (name=="Free Space Loss")||(name=="Oxygen Loss")||(name=="Water Vapour Loss")||(name=="Rain Loss")||(name=="Atmospheric Loss")||(name=="Propagation Loss")||
        (name=="G/T")||(name=="C/No")||(name=="C/N")||(name=="Eb/No")||(name=="BER"))
@@ -5402,6 +5446,11 @@ void
         treeWidget->setItemWidget(item,1,CoordinateBox());
         treeWidget->setItemWidget(item,2,AngleUnitsBox());
     }
+    else if(name=="Covered Area" && m_propagatedScenario->coverageTriggered())
+    {
+        treeWidget->setItemWidget(item,1,NoUnitsBox());
+        treeWidget->setItemWidget(item,2,CoveredAreaUnitsBox());
+    }
 }
 
 
@@ -5440,7 +5489,7 @@ void analysis::PlotComboBox()
 }
 
 
-void analysis::DisableUnavailableOptions()
+void analysis::DisableUnavailableOptions(bool coverageTrigg)
 {
     QList<QTreeWidget*>Tree;
     Tree.append(treeWidgetReportOptions);
@@ -5467,7 +5516,10 @@ void analysis::DisableUnavailableOptions()
                         topItem->setDisabled(true);
                         topItem->child(k)->setDisabled(true);
                     }
-
+                    if(topItem->child(k)->text(0)=="Covered Area" && !coverageTrigg)
+                    {
+                        topItem->child(k)->setDisabled(true);
+                    }
                     for (int l=0;l<topItem->child(k)->childCount();l++)
                     {
                         QTreeWidgetItem*item=topItem->child(k)->child(l);

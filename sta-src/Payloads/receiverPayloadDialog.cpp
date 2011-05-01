@@ -43,7 +43,7 @@ receiverPayloadDialog::receiverPayloadDialog( QWidget * parent, Qt::WindowFlags 
         efficiencyValidator->setTop(100.0);
 
         QDoubleValidator* elevationValidator = new QDoubleValidator(this);
-        elevationValidator->setRange(0, 90, 2);
+        elevationValidator->setRange(-90, 90, 2);
 
         ElLineEdit->setValidator(elevationValidator);
 
@@ -88,6 +88,8 @@ bool receiverPayloadDialog::loadValues(ScenarioReceiverPayloadType* receiverPayl
 
     if(elevation>90)
         ElLineEdit->setText(QString::number(90));
+    else if (elevation < -90)
+        ElLineEdit->setText(QString::number(-90));
     else
         ElLineEdit->setText(QString::number(elevation));
 

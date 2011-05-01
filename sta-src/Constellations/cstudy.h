@@ -153,7 +153,7 @@ class ConstellationStudySpaceObject
         QList<LinkSample> linksamples;
         QList<GroundLinkSample> groundlinksamples;
         QList<CoverageSample> coveragesample;
-        Antenna* observation;
+        QList<Antenna*> observation;
         QList<Antenna*> visibilityR;
         QList<Antenna*> visibilityT;
         QColor asocolor;

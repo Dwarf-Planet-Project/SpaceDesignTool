@@ -483,6 +483,8 @@
 						<element name="elevation" type="double"></element>
 						<element name="azimuthDot" type="double" minOccurs="0"></element>
 						<element name="elevationDot" type="double" minOccurs="0"></element>
+                                                <element name="coneAngle" type="double" minOccurs="0"></element>
+                                                <element name="coneShape" type="integer" minOccurs="0"></element>
 					</sequence>
 				</complexType>
 			</element>
@@ -547,6 +549,7 @@
 			<complexContent>
 				<extension base="tns:AntennaType">
 					<sequence>
+                                                <element name="ObservationChecked" type="boolean" minOccurs="0"></element>
 						<element name="FedderLossTx" type="double"></element>
 						<element name="DepointingLossTx" type="double"></element>
 						<element name="TransmittingPower" type="double"></element>

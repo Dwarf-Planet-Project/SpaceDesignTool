@@ -37,7 +37,13 @@ transmitterPayloadDialog::transmitterPayloadDialog( QWidget * parent, Qt::Window
     efficiencyValidator->setBottom(0.0);
     efficiencyValidator->setTop(100.0);
 
-    ElLineEdit->setValidator(positiveDoubleValidator);
+    // changed this to range -90, 90 to turn antennas also in direction of space (need it for ground stations with antennas)
+    QDoubleValidator* elevationValidator = new QDoubleValidator(this);
+    elevationValidator->setRange(-90, 90, 2);
+
+    ElLineEdit->setValidator(elevationValidator);
+    //ElLineEdit->setValidator(positiveDoubleValidator);
+
     TxFeederLossLineEdit->setValidator(positiveDoubleValidator);
     TxDepointingLossLineEdit->setValidator(positiveDoubleValidator);
     GainLineEdit->setValidator(positiveDoubleValidator);
@@ -75,12 +81,14 @@ bool transmitterPayloadDialog::loadValues(ScenarioTransmitterPayloadType* transm
         BeamWidthRadioButton->toggle();
 
     // Observation? yes or no
-    observationCheckBox->setChecked(transmitterPayload->Transmitter()->getObservationChecked());
+    observationCheckBox->setChecked(transmitterPayload->Transmitter()->ObservationChecked());
 
     double elevation=transmitterPayload->Transmitter()->PointingDirection()->elevation();
     elevation=elevation*RAD2DEG;
     if(elevation>90)
         ElLineEdit->setText(QString::number(90.0));
+    else if (elevation<-90)
+        ElLineEdit->setText(QString::number(-90.0));
     else
         ElLineEdit->setText(QString::number(elevation));
 

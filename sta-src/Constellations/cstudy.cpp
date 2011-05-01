@@ -27,13 +27,14 @@
 #include "Astro-Core/cartesianTOspherical.h"
 #include "Astro-Core/nedTOfixed.h"
 #include <QCheckBox>
+#include <QMessageBox>
 
 ConstellationStudySpaceObject::ConstellationStudySpaceObject(SpaceObject* spaceObject):
         m_spaceObject(spaceObject),
         linksamples(QList<LinkSample>()),
         groundlinksamples(QList<GroundLinkSample>()),
         coveragesample(QList<CoverageSample>()),
-        observation(NULL), //Claas: observation Antenna is set initially (if you don't want one, set obsAnt == NULL in function call)
+        observation(QList<Antenna*>()),
         visibilityR(QList<Antenna*>()),
         visibilityT(QList<Antenna*>()),
         m_chosen(true)
@@ -60,20 +61,13 @@ ConstellationStudySpaceObject::ConstellationStudySpaceObject(SpaceObject* spaceO
                     antennaObject->getConeAngle(),
                     antennaObject->getConeShape()));
         }
-
-    }
-
-    // Declaration of observation antennas (take the first Transmitter with checked "observation" box)
-    foreach (PSAntennaObject* antennaObject, antennaObjectListT)
-    {
-        if (antennaObject->getObservationChecked())
+        else
         {
-            observation = new Antenna(
-                    antennaObject->getAzimuth(),
-                    antennaObject->getElevation(),
-                    antennaObject->getConeAngle(),
-                    antennaObject->getConeShape());
-            break;
+            observation.append(new Antenna(
+                antennaObject->getAzimuth(),
+                antennaObject->getElevation(),
+                antennaObject->getConeAngle(),
+                antennaObject->getConeShape()));
         }
     }
 
@@ -144,10 +138,13 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                 int numberRows = 80;
                 m_discreteMesh = new DiscreteMesh(m_body,numberRows);
             }
+            //QMessageBox::warning(NULL,"",QObject::tr("%1").arg(m_sampleTimes.length()));
             foreach(double currentTime, m_sampleTimes)
             {
                 CoverageSample coveragesample;
-                if (m_calcCoverage){
+                CoverageSample coveragesampleTmp; //we need this if we have more than 1 observation Antenna
+                if (m_calcCoverage)
+                {
                     // add for each time sample and space object
 
                     // coverage
@@ -161,9 +158,24 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                     coveragesample.firstPoints = new int[m_discreteMesh->numberRows];
                     coveragesample.anyPointSeen = false;
 
-                    // check if there is any observation antenna
-                    if(m_constellationStudySpaceObjectList.at(i).observation)
+                    coveragesampleTmp.histpoints.clear();
+
+                    // for each observation Antenna do
+                    foreach(Antenna* curObservationAntenna, m_constellationStudySpaceObjectList.at(i).observation)
+                    //if(m_constellationStudySpaceObjectList.at(i).observation)
                     {
+
+                        /*if (currentTime > m_sampleTimes.at(m_sampleTimes.length()-103))
+                        {
+                            QMessageBox::warning(NULL,"",QObject::tr("antenna"));
+                        }*/
+                    coveragesampleTmp.curtime = currentTime;
+                    coveragesampleTmp.curpoints.clear();
+                    coveragesampleTmp.lowestRow = m_discreteMesh->numberRows;
+                    coveragesampleTmp.highestRow = -1;
+                    coveragesampleTmp.firstPoints = new int[m_discreteMesh->numberRows];
+                    coveragesampleTmp.anyPointSeen = false;
+
 
                     int ntemp = m_constellationStudySpaceObjectList.at(i).coveragesample.length();
                     // first time step: all points are checked whether they are in the observation
@@ -176,14 +188,14 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
 
               // Algorithm 1:
                     //search in meshAsList (slow, but fail-safe)>>>>>>>>>>>>
-                    /*
+/*
                     if (ntemp == 0)
                     {
                         for(int k=0; k<m_discreteMesh->meshAsList.length(); k++)
                         {
-                            if(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->meshAsList.at(k), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation))
+                            if(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->meshAsList.at(k), m_body, currentTime, curObservationAntenna))
                             {
-                                coveragesample.curpoints.append(m_discreteMesh->meshAsList.at(k));
+                                coveragesampleTmp.curpoints.append(m_discreteMesh->meshAsList.at(k));
                                 if(m_constellationStudySpaceObjectList.length()<=36)
                                 {
                                     if(!m_discreteMesh->meshAsList.at(k).seen[i])
@@ -191,31 +203,39 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                                         DiscretizationPoint p = m_discreteMesh->meshAsList.takeAt(k);
                                         p.seen[i]= true;
                                         m_discreteMesh->meshAsList.insert(k,p);
-                                        coveragesample.histpoints.append(m_discreteMesh->meshAsList.at(k));
+                                        coveragesampleTmp.histpoints.append(m_discreteMesh->meshAsList.at(k));
                                     }
-                                }else
+                                }
+                                else
                                 {
                                     QMessageBox::warning(NULL,"","Number of satellites is bounded by 36");
                                 }
                             }
                         }
                     }else{
-                        coveragesample.histpoints.append(m_constellationStudySpaceObjectList.at(i).coveragesample.at(ntemp-1).histpoints);
+                        if (coveragesampleTmp.histpoints.isEmpty())
+                        {
+                            coveragesampleTmp.histpoints.append(m_constellationStudySpaceObjectList.at(i).coveragesample.at(ntemp-1).histpoints);
+                        }
                         for(int k=0; k<m_discreteMesh->meshAsList.length(); k++)
                         {
-                            if(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->meshAsList.at(k), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation))
+
+                            if(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->meshAsList.at(k), m_body, currentTime, curObservationAntenna))
                             {
-                                coveragesample.curpoints.append(m_discreteMesh->meshAsList.at(k));
+                                coveragesampleTmp.curpoints.append(m_discreteMesh->meshAsList.at(k));
                                 if(!m_discreteMesh->meshAsList.at(k).seen[i])
                                 {
                                     DiscretizationPoint p = m_discreteMesh->meshAsList.takeAt(k);
                                     p.seen[i]=true;
                                     m_discreteMesh->meshAsList.insert(k,p);
-                                    coveragesample.histpoints.append(m_discreteMesh->meshAsList.at(k));
+                                    coveragesampleTmp.histpoints.append(m_discreteMesh->meshAsList.at(k));
                                 }
                             }
+
                         }
+
                     }*/
+
 
                     // <<<<<<<<<<< search in meshAsList (slow, but fail-safe)
                     /*
@@ -227,30 +247,33 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                         {
                             for(int column=0; column<m_discreteMesh->discreteMesh[row].count(); column++)
                             {
-                                if(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation))
+                                if(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, curObservationAntenna))
                                 {
-                                    coveragesample.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                    coveragesampleTmp.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                     if(!m_discreteMesh->discreteMesh[row].at(column).seen[i])
                                     {
                                         m_discreteMesh->discreteMesh[row].at(column).seen[i]=true;
-                                        coveragesample.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                        coveragesampleTmp.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                     }
                                 }
                             }
                         }
                     }else{
-                        coveragesample.histpoints.append(m_constellationStudySpaceObjectList.at(i).coveragesample.at(ntemp-1).histpoints);
+                        if (coveragesampleTmp.histpoints.isEmpty())
+                        {
+                            coveragesampleTmp.histpoints.append(m_constellationStudySpaceObjectList.at(i).coveragesample.at(ntemp-1).histpoints);
+                        }
                         for(int row=0; row<m_discreteMesh->numberRows; row++)
                         {
                             for(int column=0; column<m_discreteMesh->discreteMesh[row].count(); column++)
                             {
-                                if(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation))
+                                if(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, curObservationAntenna))
                                 {
-                                    coveragesample.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                    coveragesampleTmp.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                     if(!m_discreteMesh->discreteMesh[row].at(column).seen[i])
                                     {
                                         m_discreteMesh->discreteMesh[row].at(column).seen[i]=true;
-                                        coveragesample.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                        coveragesampleTmp.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                     }
                                 }
                             }
@@ -272,7 +295,7 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                         {
                             int column = 0;
                             while(column < m_discreteMesh->discreteMesh[row].count()
-                                  && !visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation))
+                                  && !visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, curObservationAntenna))
                             {
                                 column++;
                             }
@@ -280,7 +303,7 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                             {
                                 rowInView = true;
                                 lowestRowFound = true;
-                                coveragesample.lowestRow = row;
+                                coveragesampleTmp.lowestRow = row;
                             }else{
                                 row++;
                             }
@@ -293,42 +316,42 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                                 rowInView = false;
                                 int column = 0;
                                 while(column < m_discreteMesh->discreteMesh[row].count()
-                                      && !visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation))
+                                      && !visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, curObservationAntenna))
                                 {
                                     column++;
                                 }
                                 if(column < m_discreteMesh->discreteMesh[row].count())
                                 {
                                     rowInView = true;
-                                    coveragesample.firstPoints[row] = column;
+                                    coveragesampleTmp.firstPoints[row] = column;
                                     if(column == 0)
                                     {
                                         int tempColumn = m_discreteMesh->discreteMesh[row].count() - 1;
-                                        while(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(tempColumn), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation)
+                                        while(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(tempColumn), m_body, currentTime, curObservationAntenna)
                                               && tempColumn > 0)
                                         {
-                                            coveragesample.firstPoints[row] = tempColumn;
+                                            coveragesampleTmp.firstPoints[row] = tempColumn;
                                             column = tempColumn;
                                             tempColumn--;
                                         }
                                     }
-                                    coveragesample.highestRow = row;
-                                    coveragesample.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                    coveragesampleTmp.highestRow = row;
+                                    coveragesampleTmp.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                     if(!m_discreteMesh->discreteMesh[row].at(column).seen[i])
                                     {
                                         m_discreteMesh->discreteMesh[row].at(column).seen[i]=true;
-                                        coveragesample.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                        coveragesampleTmp.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                     }
                                     column = (column+1) % m_discreteMesh->discreteMesh[row].count();
                                     int columnCounter = 1;
                                     while (columnCounter < m_discreteMesh->discreteMesh[row].count()
-                                           && visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation) )
+                                           && visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, curObservationAntenna) )
                                     {
-                                        coveragesample.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                        coveragesampleTmp.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                         if(!m_discreteMesh->discreteMesh[row].at(column).seen[i])
                                         {
                                             m_discreteMesh->discreteMesh[row].at(column).seen[i]=true;
-                                            coveragesample.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                            coveragesampleTmp.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                         }
                                         columnCounter++;
                                         column = (column+1) % m_discreteMesh->discreteMesh[row].count();
@@ -337,9 +360,12 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                                 row++;
                             }
                         }
-                        if (lowestRowFound) coveragesample.anyPointSeen = true;
+                        if (lowestRowFound) coveragesampleTmp.anyPointSeen = true;
                     }else{
-                        coveragesample.histpoints.append(m_constellationStudySpaceObjectList.at(i).coveragesample.at(ntemp-1).histpoints);
+                        if (coveragesampleTmp.histpoints.isEmpty())
+                        {
+                            coveragesampleTmp.histpoints.append(m_constellationStudySpaceObjectList.at(i).coveragesample.at(ntemp-1).histpoints);
+                        }
                         bool lowestRowFound = false;
                         if(m_constellationStudySpaceObjectList.at(i).coveragesample.at(ntemp-1).anyPointSeen)
                         {
@@ -351,37 +377,37 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                                 bool rowInView = false;
                                 int column = m_constellationStudySpaceObjectList.at(i).coveragesample.at(ntemp-1).firstPoints[row];
                                 int columnCounter = 0;
-                                if(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation))
+                                if(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, curObservationAntenna))
                                 { // search to the left
                                     rowInView = true;
-                                    coveragesample.firstPoints[row]=column;
+                                    coveragesampleTmp.firstPoints[row]=column;
                                     if(!lowestRowFound)
                                     {
-                                        coveragesample.lowestRow = row;
+                                        coveragesampleTmp.lowestRow = row;
                                         lowestRowFound = true;
                                     }
-                                    coveragesample.highestRow = row;
-                                    coveragesample.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                    coveragesampleTmp.highestRow = row;
+                                    coveragesampleTmp.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                     if(!m_discreteMesh->discreteMesh[row].at(column).seen[i])
                                     {
                                         m_discreteMesh->discreteMesh[row].at(column).seen[i]=true;
-                                        coveragesample.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                        coveragesampleTmp.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                     }
                                     column -= 1;
                                     if(column<0)
                                     {
                                         column += m_discreteMesh->discreteMesh[row].count();
                                     }
-                                    while(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation)
+                                    while(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, curObservationAntenna)
                                           && columnCounter < m_discreteMesh->discreteMesh[row].count() )
                                     {
                                         columnCounter++;
-                                        coveragesample.firstPoints[row]=column;
-                                        coveragesample.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                        coveragesampleTmp.firstPoints[row]=column;
+                                        coveragesampleTmp.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                         if(!m_discreteMesh->discreteMesh[row].at(column).seen[i])
                                         {
                                             m_discreteMesh->discreteMesh[row].at(column).seen[i]=true;
-                                            coveragesample.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                            coveragesampleTmp.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                         }
                                         column -= 1;
                                         if(column<0)
@@ -390,22 +416,22 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                                         }
                                     }
                                     column = (m_constellationStudySpaceObjectList.at(i).coveragesample.at(ntemp-1).firstPoints[row]+1) % m_discreteMesh->discreteMesh[row].count();
-                                    while(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation) &&
+                                    while(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, curObservationAntenna) &&
                                           columnCounter < m_discreteMesh->discreteMesh[row].count() )
                                     {
                                         columnCounter++;
-                                        coveragesample.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                        coveragesampleTmp.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                         if(!m_discreteMesh->discreteMesh[row].at(column).seen[i])
                                         {
                                             m_discreteMesh->discreteMesh[row].at(column).seen[i]=true;
-                                            coveragesample.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                            coveragesampleTmp.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                         }
                                         column = (column+1) % m_discreteMesh->discreteMesh[row].count();
                                     }
                                 }else{ // search to the right
                                     column = (column+1) % m_discreteMesh->discreteMesh[row].count();
                                     columnCounter++;
-                                    while(!visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation)
+                                    while(!visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, curObservationAntenna)
                                           && columnCounter < m_discreteMesh->discreteMesh[row].count() )
                                     {
                                         columnCounter++;
@@ -414,29 +440,29 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                                     if(columnCounter < m_discreteMesh->discreteMesh[row].count())
                                     {
                                         rowInView = true;
-                                        coveragesample.highestRow = row;
-                                        coveragesample.firstPoints[row]=column;
+                                        coveragesampleTmp.highestRow = row;
+                                        coveragesampleTmp.firstPoints[row]=column;
                                         if(!lowestRowFound)
                                         {
-                                            coveragesample.lowestRow = row;
+                                            coveragesampleTmp.lowestRow = row;
                                             lowestRowFound = true;
                                         }
-                                        coveragesample.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                        coveragesampleTmp.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                         if(!m_discreteMesh->discreteMesh[row].at(column).seen[i])
                                         {
                                             m_discreteMesh->discreteMesh[row].at(column).seen[i]=true;
-                                            coveragesample.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                            coveragesampleTmp.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                         }
                                         column = (column+1) % m_discreteMesh->discreteMesh[row].count();
                                         columnCounter++;
-                                        while(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation) &&
+                                        while(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, curObservationAntenna) &&
                                               columnCounter < m_discreteMesh->discreteMesh[row].count() )
                                         {
-                                            coveragesample.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                            coveragesampleTmp.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                             if(!m_discreteMesh->discreteMesh[row].at(column).seen[i])
                                             {
                                                 m_discreteMesh->discreteMesh[row].at(column).seen[i]=true;
-                                                coveragesample.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                                coveragesampleTmp.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                             }
                                             column = (column+1) % m_discreteMesh->discreteMesh[row].count();
                                             columnCounter++;
@@ -445,7 +471,7 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                                 }
                             }
                             // search new lowest and highest row respectively if not already found
-                            if(lowestRowFound && coveragesample.highestRow == oldHighestRow && oldHighestRow < m_discreteMesh->numberRows-1)
+                            if(lowestRowFound && coveragesampleTmp.highestRow == oldHighestRow && oldHighestRow < m_discreteMesh->numberRows-1)
                             {
                                 // search in the next higher row
                                 int row = oldHighestRow + 1;
@@ -455,30 +481,30 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                                     rowInView = false;
                                     for(int column=0; column<m_discreteMesh->discreteMesh[row].count(); column++)
                                     {
-                                        if(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation))
+                                        if(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, curObservationAntenna))
                                         {
                                             if(!rowInView)
                                             {
                                                 rowInView = true;
-                                                coveragesample.firstPoints[row] = column;
+                                                coveragesampleTmp.firstPoints[row] = column;
                                                 if(column == 0)
                                                 {
                                                     int tempColumn = m_discreteMesh->discreteMesh[row].count() - 1;
-                                                    while(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(tempColumn), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation)
+                                                    while(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(tempColumn), m_body, currentTime, curObservationAntenna)
                                                           && tempColumn > 0)
                                                     {
-                                                        coveragesample.firstPoints[row] = tempColumn;
+                                                        coveragesampleTmp.firstPoints[row] = tempColumn;
                                                         tempColumn--;
                                                     }
                                                 }
-                                                coveragesample.highestRow = row;
+                                                coveragesampleTmp.highestRow = row;
 
                                             }
-                                            coveragesample.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                            coveragesampleTmp.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                             if(!m_discreteMesh->discreteMesh[row].at(column).seen[i])
                                             {
                                                 m_discreteMesh->discreteMesh[row].at(column).seen[i]=true;
-                                                coveragesample.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                                coveragesampleTmp.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                             }
                                         }
                                     }
@@ -487,8 +513,8 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                             }
                             if (lowestRowFound)
                             {
-                                coveragesample.anyPointSeen = true;
-                                if (coveragesample.lowestRow == oldLowestRow && oldLowestRow > 0){
+                                coveragesampleTmp.anyPointSeen = true;
+                                if (coveragesampleTmp.lowestRow == oldLowestRow && oldLowestRow > 0){
                                     // search in the next lower row
                                     int row = oldLowestRow -1;
                                     bool rowInView = true;
@@ -497,29 +523,29 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                                         rowInView = false;
                                         for(int column=0; column<m_discreteMesh->discreteMesh[row].count(); column++)
                                         {
-                                            if(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation))
+                                            if(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, curObservationAntenna))
                                             {
                                                 if(!rowInView)
                                                 {
                                                     rowInView = true;
-                                                    coveragesample.firstPoints[row] = column;
+                                                    coveragesampleTmp.firstPoints[row] = column;
                                                     if(column == 0)
                                                     {
                                                         int tempColumn = m_discreteMesh->discreteMesh[row].count() - 1;
-                                                        while(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(tempColumn), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation)
+                                                        while(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(tempColumn), m_body, currentTime, curObservationAntenna)
                                                               && tempColumn > 0)
                                                         {
-                                                            coveragesample.firstPoints[row] = tempColumn;
+                                                            coveragesampleTmp.firstPoints[row] = tempColumn;
                                                             tempColumn--;
                                                         }
                                                     }
-                                                    coveragesample.lowestRow = row;
+                                                    coveragesampleTmp.lowestRow = row;
                                                 }
-                                                coveragesample.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                                coveragesampleTmp.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                                 if(!m_discreteMesh->discreteMesh[row].at(column).seen[i])
                                                 {
                                                     m_discreteMesh->discreteMesh[row].at(column).seen[i]=true;
-                                                    coveragesample.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                                    coveragesampleTmp.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                                 }
                                             }
                                         }
@@ -535,7 +561,7 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                                 {
                                     int column = 0;
                                     while(column < m_discreteMesh->discreteMesh[row].count()
-                                          && !visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation))
+                                          && !visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, curObservationAntenna))
                                     {
                                         column++;
                                     }
@@ -543,7 +569,7 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                                     {
                                         rowInView = true;
                                         lowestRowFound = true;
-                                        coveragesample.lowestRow = row;
+                                        coveragesampleTmp.lowestRow = row;
                                     }else{
                                         row++;
                                     }
@@ -556,42 +582,42 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                                         rowInView = false;
                                         int column = 0;
                                         while(column < m_discreteMesh->discreteMesh[row].count()
-                                              && !visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation))
+                                              && !visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, curObservationAntenna))
                                         {
                                             column++;
                                         }
                                         if(column < m_discreteMesh->discreteMesh[row].count())
                                         {
                                             rowInView = true;
-                                            coveragesample.firstPoints[row] = column;
+                                            coveragesampleTmp.firstPoints[row] = column;
                                             if(column == 0)
                                             {
                                                 int tempColumn = m_discreteMesh->discreteMesh[row].count() - 1;
-                                                while(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(tempColumn), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation)
+                                                while(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(tempColumn), m_body, currentTime, curObservationAntenna)
                                                       && tempColumn > 0)
                                                 {
-                                                    coveragesample.firstPoints[row] = tempColumn;
+                                                    coveragesampleTmp.firstPoints[row] = tempColumn;
                                                     column = tempColumn;
                                                     tempColumn--;
                                                 }
                                             }
-                                            coveragesample.highestRow = row;
-                                            coveragesample.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                            coveragesampleTmp.highestRow = row;
+                                            coveragesampleTmp.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                             if(!m_discreteMesh->discreteMesh[row].at(column).seen[i])
                                             {
                                                 m_discreteMesh->discreteMesh[row].at(column).seen[i]=true;
-                                                coveragesample.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                                coveragesampleTmp.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                             }
                                             column = (column+1) % m_discreteMesh->discreteMesh[row].count();
                                             int columnCounter = 1;
                                             while (columnCounter < m_discreteMesh->discreteMesh[row].count()
-                                                   && visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation) )
+                                                   && visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, curObservationAntenna) )
                                             {
-                                                coveragesample.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                                coveragesampleTmp.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                                 if(!m_discreteMesh->discreteMesh[row].at(column).seen[i])
                                                 {
                                                     m_discreteMesh->discreteMesh[row].at(column).seen[i]=true;
-                                                    coveragesample.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                                    coveragesampleTmp.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                                 }
                                                 columnCounter++;
                                                 column = (column+1) % m_discreteMesh->discreteMesh[row].count();
@@ -600,7 +626,7 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                                         row++;
                                     }
                                 }
-                                if (lowestRowFound) coveragesample.anyPointSeen = true;
+                                if (lowestRowFound) coveragesampleTmp.anyPointSeen = true;
                             }
                         }
                         else{
@@ -612,7 +638,7 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                             {
                                 int column = 0;
                                 while(column < m_discreteMesh->discreteMesh[row].count()
-                                      && !visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation))
+                                      && !visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, curObservationAntenna))
                                 {
                                     column++;
                                 }
@@ -620,7 +646,7 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                                 {
                                     rowInView = true;
                                     lowestRowFound = true;
-                                    coveragesample.lowestRow = row;
+                                    coveragesampleTmp.lowestRow = row;
                                 }else{
                                     row++;
                                 }
@@ -633,42 +659,42 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                                     rowInView = false;
                                     int column = 0;
                                     while(column < m_discreteMesh->discreteMesh[row].count()
-                                          && !visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation))
+                                          && !visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, curObservationAntenna))
                                     {
                                         column++;
                                     }
                                     if(column < m_discreteMesh->discreteMesh[row].count())
                                     {
                                         rowInView = true;
-                                        coveragesample.firstPoints[row] = column;
+                                        coveragesampleTmp.firstPoints[row] = column;
                                         if(column == 0)
                                         {
                                             int tempColumn = m_discreteMesh->discreteMesh[row].count() - 1;
-                                            while(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(tempColumn), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation)
+                                            while(visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(tempColumn), m_body, currentTime, curObservationAntenna)
                                                   && tempColumn > 0)
                                             {
-                                                coveragesample.firstPoints[row] = tempColumn;
+                                                coveragesampleTmp.firstPoints[row] = tempColumn;
                                                 column = tempColumn;
                                                 tempColumn--;
                                             }
                                         }
-                                        coveragesample.highestRow = row;
-                                        coveragesample.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                        coveragesampleTmp.highestRow = row;
+                                        coveragesampleTmp.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                         if(!m_discreteMesh->discreteMesh[row].at(column).seen[i])
                                         {
                                             m_discreteMesh->discreteMesh[row].at(column).seen[i]=true;
-                                            coveragesample.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                            coveragesampleTmp.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                         }
                                         column = (column+1) % m_discreteMesh->discreteMesh[row].count();
                                         int columnCounter = 1;
                                         while (columnCounter < m_discreteMesh->discreteMesh[row].count()
-                                               && visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, m_constellationStudySpaceObjectList.at(i).observation) )
+                                               && visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_discreteMesh->discreteMesh[row].at(column), m_body, currentTime, curObservationAntenna) )
                                         {
-                                            coveragesample.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                            coveragesampleTmp.curpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                             if(!m_discreteMesh->discreteMesh[row].at(column).seen[i])
                                             {
                                                 m_discreteMesh->discreteMesh[row].at(column).seen[i]=true;
-                                                coveragesample.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
+                                                coveragesampleTmp.histpoints.append(m_discreteMesh->discreteMesh[row].at(column));
                                             }
                                             columnCounter++;
                                             column = (column+1) % m_discreteMesh->discreteMesh[row].count();
@@ -677,15 +703,40 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                                     row++;
                                 }
                             }
-                            if (lowestRowFound) coveragesample.anyPointSeen = true;
+                            if (lowestRowFound) coveragesampleTmp.anyPointSeen = true;
                         }
                     }
 
                     // <<<<<<<<<<<<<<< search directly in discreteMesh
                     //                 optimized -> faster
 
-                    }
 
+                    // restore coveragesampleTmp and add values to coveragesample
+                    /*if (currentTime > m_sampleTimes.at(m_sampleTimes.length()-103))
+                    {
+                        QMessageBox::warning(NULL,"",QObject::tr("restoring los"));
+                    }*/
+                    coveragesample.anyPointSeen &= coveragesampleTmp.anyPointSeen;
+                    /*if (currentTime > m_sampleTimes.at(m_sampleTimes.length()-103))
+                    {
+                        QMessageBox::warning(NULL,"",QObject::tr("restoring los"));
+                    }*/
+                    coveragesample.curpoints.append(coveragesampleTmp.curpoints);
+                    /*if (currentTime > m_sampleTimes.at(m_sampleTimes.length()-103))
+                    {
+                        QMessageBox::warning(NULL,"",QObject::tr("restoring los"));
+                    }*/
+
+                    //delete coveragesample.firstPoints;
+                    //if (currentTime > m_sampleTimes.at(m_sampleTimes.length()-103))
+                    //{
+                    //    QMessageBox::warning(NULL,"",QObject::tr("%1").arg(coveragesampleTmp.histpoints.length()));
+                    //}
+                    //coveragesampleTmp.histpoints.clear();
+
+
+                    }
+                    coveragesample.histpoints.append(coveragesampleTmp.histpoints);
 
                     // covered area in per cent
                     coveragesample.coveredAreaInPerCent = 100.*( ((double)(coveragesample.curpoints.length())) / (double)m_discreteMesh->numberPoints  );
@@ -695,11 +746,16 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
 //                    QMessageBox::warning(this,tr("Parameters"),tr("Middle radius must be larger than rear radius"));
 //                    QMessageBox::warning(NULL,tr("covered area in per cent: '%1'").arg(coveragesample.coveredAreaInPerCent));
 
+                    /*if (currentTime > m_sampleTimes.at(m_sampleTimes.length()-103))
+                    {
+                        QMessageBox::warning(NULL,"",QObject::tr("prozente ausgerechnet"));
+                    }*/
                 }
-
+                //QMessageBox::warning(NULL,"","done2");
                 // the existing connections to other space objects
                 LinkSample linksample;
-                if (m_calcSOLink){
+                if (m_calcSOLink)
+                {
                     linksample.curtime = currentTime;
                     linksample.connection = QList<SpaceObject*>();
                     for (int j = 0; j < m_constellationStudySpaceObjectList.length(); j++)
@@ -720,18 +776,47 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                 // add for each time sample and space Object
                 // the existing connections to other ground objects
                 GroundLinkSample groundlinksample;
-                if (m_calcGOLink){
+                if (m_calcGOLink)
+                {
                     groundlinksample.curtime = currentTime;
                     groundlinksample.connection = QList<GroundObject*>();
                     for (int j = 0; j < m_scenario->groundObjects().length(); j++)
                     {
                         GroundObject* groundObject = m_scenario->groundObjects().at(j);
+                        QList<Antenna*> gReceiver = QList<Antenna*>();
+                        //QMessageBox::warning(NULL,QObject::tr("Error:"),QObject::tr("anzahl antennen %1").arg(groundObject->receiver().length()));
+                        for (int k = 0; k<groundObject->receiver().length(); k++)
+                        {
+                            //QMessageBox::warning(NULL,QObject::tr("Error:"),QObject::tr("antenne"));
+                            PSAntennaObject* psa = groundObject->receiver().at(k);
+                            //QMessageBox::warning(NULL,QObject::tr("Error:"),QObject::tr("receiver antenne %1 %2 %3 %4").arg(psa->getAzimuth()).arg(psa->getElevation()).arg(psa->getConeShape()).arg(psa->getConeAngle()));
+                            gReceiver.append(new Antenna(psa->getAzimuth(),psa->getElevation(),psa->getConeAngle(),psa->getConeShape()));
+                        }
+                        QList<Antenna*> gTransmitter = QList<Antenna*>();
+                        for (int k = 0; k<groundObject->transmitter().length(); k++)
+                        {
+                            //QMessageBox::warning(NULL,QObject::tr("Error:"),QObject::tr("antenne"));
+                            PSAntennaObject* psa = groundObject->transmitter().at(k);
+                            //QMessageBox::warning(NULL,QObject::tr("Error:"),QObject::tr("transmitter antenne %1 %2 %3 %4").arg(psa->getAzimuth()).arg(psa->getElevation()).arg(psa->getConeShape()).arg(psa->getConeAngle()));
+                            gTransmitter.append(new Antenna(psa->getAzimuth(),psa->getElevation(),psa->getConeAngle(),psa->getConeShape()));
+                        }
+
                         m_body = m_constellationStudySpaceObjectList.at(i).m_spaceObject->mission().at(0)->centralBody();
-                        Antenna* gAntenna = new Antenna(0.0, -3.14/2, 9*3.14/20,0);
-                        if ((visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, groundObject, m_body, currentTime, m_constellationStudySpaceObjectList.at(i).visibilityT) &&
-                            visibility(groundObject, m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_body, currentTime, gAntenna)) ||
-                            (visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, groundObject, m_body, currentTime, m_constellationStudySpaceObjectList.at(i).visibilityR) &&
-                                                        visibility(groundObject, m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_body, currentTime, gAntenna)))
+                        //Antenna* gAntenna = new Antenna(0.0, -3.14/2, 9*3.14/20,0);
+                        bool a1 = visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, groundObject, m_body, currentTime, m_constellationStudySpaceObjectList.at(i).visibilityT);
+                        bool a2 = visibility(groundObject, m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_body, currentTime, gReceiver);
+                        bool a3 = visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, groundObject, m_body, currentTime, m_constellationStudySpaceObjectList.at(i).visibilityR);
+                        bool a4 = visibility(groundObject, m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_body, currentTime, gTransmitter);
+                        //if (a1 && a2 && a3 && a4) QMessageBox::warning(NULL,QObject::tr("Error:"),QObject::tr("verbindung"));
+                        //if (a1 && a2) QMessageBox::warning(NULL,QObject::tr("Error:"),QObject::tr("verbindung 12"));
+                        //if (a3 && a4) QMessageBox::warning(NULL,QObject::tr("Error:"),QObject::tr("verbindung 34"));
+
+
+
+                        if (visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, groundObject, m_body, currentTime, m_constellationStudySpaceObjectList.at(i).visibilityT) &&
+                            visibility(groundObject, m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_body, currentTime, gReceiver) &&
+                            visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, groundObject, m_body, currentTime, m_constellationStudySpaceObjectList.at(i).visibilityR) &&
+                            visibility(groundObject, m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_body, currentTime, gTransmitter))
                         {
                             groundlinksample.connection.append(groundObject);
                         }
@@ -748,6 +833,7 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                     tmpASO.groundlinksamples.append(groundlinksample);
                 }
                 m_constellationStudySpaceObjectList.insert(i,tmpASO);
+                //QMessageBox::warning(NULL,"","done3");
 
             }
         }
