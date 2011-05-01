@@ -29,7 +29,6 @@
 #include "Main/propagatedscenario.h"
 #include "Constellations/constellationmodule.h"
 #include "Constellations/discretization.h"
-#include <QMessageBox>
 #include <QObject>
 
 //using namespace Eigen;

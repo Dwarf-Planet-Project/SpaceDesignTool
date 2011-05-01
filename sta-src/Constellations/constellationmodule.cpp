@@ -31,7 +31,6 @@
 
 #include "Constellations/constellationmodule.h"
 #include <QtDebug>
-#include <QMessageBox>
 #include <math.h>
 #include "Astro-Core/stamath.h"
 #include "Astro-Core/nedTOfixed.h"
@@ -205,7 +204,6 @@ bool flowerConstellation(int np, int nd, int ns, double om, double inc, double h
     {
         mean[k-1] = mean[k-2] + (sqrt(muCB/pow(a,3))+dotm)*(omega[k-2]-omega[k-1])/(omegaCB+dotomega);
         mean[k-1] = fmod(mean[k-1],2*sta::Pi());
-        //QMessageBox::warning(NULL,QObject::tr("Error:"),QObject::tr("%1  %2").arg(mean[k-1]).arg(mean[k-2]));
         // bisection to get eccentricity
         double l = 0.0;
         double fl = getfmean(l,e,mean[k-1]); //l-e*sin(l)-mean[k-1];
@@ -231,7 +229,6 @@ bool flowerConstellation(int np, int nd, int ns, double om, double inc, double h
                 fl = fa;
             }
         }
-        //QMessageBox::warning(NULL,QObject::tr("Error:"),QObject::tr("%1  %2").arg(ecce[k-1]).arg(ecce[k-2]));
         kepler[k-1].param[5] = 2*atan(sqrt((1+e)/(1-e))*tan(ecce[k-1]/2))*180.0/sta::Pi();
     }
     return true;

@@ -138,7 +138,6 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                 int numberRows = 80;
                 m_discreteMesh = new DiscreteMesh(m_body,numberRows);
             }
-            //QMessageBox::warning(NULL,"",QObject::tr("%1").arg(m_sampleTimes.length()));
             foreach(double currentTime, m_sampleTimes)
             {
                 CoverageSample coveragesample;
@@ -165,10 +164,6 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                     //if(m_constellationStudySpaceObjectList.at(i).observation)
                     {
 
-                        /*if (currentTime > m_sampleTimes.at(m_sampleTimes.length()-103))
-                        {
-                            QMessageBox::warning(NULL,"",QObject::tr("antenna"));
-                        }*/
                     coveragesampleTmp.curtime = currentTime;
                     coveragesampleTmp.curpoints.clear();
                     coveragesampleTmp.lowestRow = m_discreteMesh->numberRows;
@@ -712,26 +707,10 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
 
 
                     // restore coveragesampleTmp and add values to coveragesample
-                    /*if (currentTime > m_sampleTimes.at(m_sampleTimes.length()-103))
-                    {
-                        QMessageBox::warning(NULL,"",QObject::tr("restoring los"));
-                    }*/
                     coveragesample.anyPointSeen &= coveragesampleTmp.anyPointSeen;
-                    /*if (currentTime > m_sampleTimes.at(m_sampleTimes.length()-103))
-                    {
-                        QMessageBox::warning(NULL,"",QObject::tr("restoring los"));
-                    }*/
                     coveragesample.curpoints.append(coveragesampleTmp.curpoints);
-                    /*if (currentTime > m_sampleTimes.at(m_sampleTimes.length()-103))
-                    {
-                        QMessageBox::warning(NULL,"",QObject::tr("restoring los"));
-                    }*/
 
                     //delete coveragesample.firstPoints;
-                    //if (currentTime > m_sampleTimes.at(m_sampleTimes.length()-103))
-                    //{
-                    //    QMessageBox::warning(NULL,"",QObject::tr("%1").arg(coveragesampleTmp.histpoints.length()));
-                    //}
                     //coveragesampleTmp.histpoints.clear();
 
 
@@ -746,12 +725,7 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
 //                    QMessageBox::warning(this,tr("Parameters"),tr("Middle radius must be larger than rear radius"));
 //                    QMessageBox::warning(NULL,tr("covered area in per cent: '%1'").arg(coveragesample.coveredAreaInPerCent));
 
-                    /*if (currentTime > m_sampleTimes.at(m_sampleTimes.length()-103))
-                    {
-                        QMessageBox::warning(NULL,"",QObject::tr("prozente ausgerechnet"));
-                    }*/
                 }
-                //QMessageBox::warning(NULL,"","done2");
                 // the existing connections to other space objects
                 LinkSample linksample;
                 if (m_calcSOLink)
@@ -784,34 +758,20 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                     {
                         GroundObject* groundObject = m_scenario->groundObjects().at(j);
                         QList<Antenna*> gReceiver = QList<Antenna*>();
-                        //QMessageBox::warning(NULL,QObject::tr("Error:"),QObject::tr("anzahl antennen %1").arg(groundObject->receiver().length()));
                         for (int k = 0; k<groundObject->receiver().length(); k++)
                         {
-                            //QMessageBox::warning(NULL,QObject::tr("Error:"),QObject::tr("antenne"));
                             PSAntennaObject* psa = groundObject->receiver().at(k);
-                            //QMessageBox::warning(NULL,QObject::tr("Error:"),QObject::tr("receiver antenne %1 %2 %3 %4").arg(psa->getAzimuth()).arg(psa->getElevation()).arg(psa->getConeShape()).arg(psa->getConeAngle()));
                             gReceiver.append(new Antenna(psa->getAzimuth(),psa->getElevation(),psa->getConeAngle(),psa->getConeShape()));
                         }
                         QList<Antenna*> gTransmitter = QList<Antenna*>();
                         for (int k = 0; k<groundObject->transmitter().length(); k++)
                         {
-                            //QMessageBox::warning(NULL,QObject::tr("Error:"),QObject::tr("antenne"));
                             PSAntennaObject* psa = groundObject->transmitter().at(k);
-                            //QMessageBox::warning(NULL,QObject::tr("Error:"),QObject::tr("transmitter antenne %1 %2 %3 %4").arg(psa->getAzimuth()).arg(psa->getElevation()).arg(psa->getConeShape()).arg(psa->getConeAngle()));
                             gTransmitter.append(new Antenna(psa->getAzimuth(),psa->getElevation(),psa->getConeAngle(),psa->getConeShape()));
                         }
 
                         m_body = m_constellationStudySpaceObjectList.at(i).m_spaceObject->mission().at(0)->centralBody();
                         //Antenna* gAntenna = new Antenna(0.0, -3.14/2, 9*3.14/20,0);
-                        bool a1 = visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, groundObject, m_body, currentTime, m_constellationStudySpaceObjectList.at(i).visibilityT);
-                        bool a2 = visibility(groundObject, m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_body, currentTime, gReceiver);
-                        bool a3 = visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, groundObject, m_body, currentTime, m_constellationStudySpaceObjectList.at(i).visibilityR);
-                        bool a4 = visibility(groundObject, m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_body, currentTime, gTransmitter);
-                        //if (a1 && a2 && a3 && a4) QMessageBox::warning(NULL,QObject::tr("Error:"),QObject::tr("verbindung"));
-                        //if (a1 && a2) QMessageBox::warning(NULL,QObject::tr("Error:"),QObject::tr("verbindung 12"));
-                        //if (a3 && a4) QMessageBox::warning(NULL,QObject::tr("Error:"),QObject::tr("verbindung 34"));
-
-
 
                         if (visibility(m_constellationStudySpaceObjectList.at(i).m_spaceObject, groundObject, m_body, currentTime, m_constellationStudySpaceObjectList.at(i).visibilityT) &&
                             visibility(groundObject, m_constellationStudySpaceObjectList.at(i).m_spaceObject, m_body, currentTime, gReceiver) &&
@@ -833,7 +793,6 @@ ConstellationStudy::ConstellationStudy(PropagatedScenario* scenario, bool m_calc
                     tmpASO.groundlinksamples.append(groundlinksample);
                 }
                 m_constellationStudySpaceObjectList.insert(i,tmpASO);
-                //QMessageBox::warning(NULL,"","done3");
 
             }
         }
