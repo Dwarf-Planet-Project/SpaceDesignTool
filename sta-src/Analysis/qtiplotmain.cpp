@@ -31,20 +31,127 @@
 
 
 #include <QApplication>
+#include <QDebug>
 #include "qtiplotmain.h"
 #include "thirdparty/qtiplot/qtiplot/src/ApplicationWindow.h"
 
 
 
-qtiplotmain::qtiplotmain(bool factorySettings, QString myFile, QWidget *parent)
-: QMainWindow(parent)
+QtiPlotMain::QtiPlotMain(bool factorySettings, QWidget *parent) :
+    QMainWindow(parent),
+    m_appWindow(NULL)
 {
-    ApplicationWindow *mw = new ApplicationWindow(factorySettings);
-    mw->restoreApplicationGeometry();
-    mw->open(myFile, factorySettings, true);
+    initQtiPlot();
 };
 
-qtiplotmain::~qtiplotmain()
-{
 
+QtiPlotMain::~QtiPlotMain()
+{
+    delete m_appWindow;
 };
+
+
+void
+QtiPlotMain::createReport(AnalysisResult *analysis)
+{
+    if (!m_appWindow)
+    {
+        initQtiPlot();
+    }
+
+    Table* t = m_appWindow->newTable(analysis->title(), analysis->rowCount(), analysis->columnCount());
+    for (int i = 0; i < analysis->columnCount(); ++i)
+    {
+        t->setColName(i, analysis->columnName(i));
+    }
+
+    const QVariantList data = analysis->data();
+    for (int row = 0; row < analysis->rowCount(); ++row)
+    {
+        for (int col = 0; col < analysis->columnCount(); ++col)
+        {
+            t->setText(row, col, data.at(row * analysis->columnCount() + col).toString());
+        }
+    }
+}
+
+
+void
+QtiPlotMain::qtiClosed()
+{
+    m_appWindow = NULL;
+}
+
+
+void
+QtiPlotMain::initQtiPlot()
+{
+    m_appWindow = new ApplicationWindow(false);
+    m_appWindow->restoreApplicationGeometry();
+    connect(m_appWindow, SIGNAL(destroyed()), this, SLOT(qtiClosed()));
+}
+
+
+AnalysisResult::AnalysisResult(unsigned int columnCount)
+{
+    Q_ASSERT(columnCount > 0);
+    for (unsigned int i = 0; i < columnCount; ++i)
+    {
+        m_columnNames << "";
+    }
+}
+
+
+void
+AnalysisResult::appendRow(const QVariantList& values)
+{
+    if (values.count() == columnCount())
+    {
+        m_data << values;
+    }
+}
+
+int
+AnalysisResult::columnCount() const
+{
+    return m_columnNames.count();
+}
+
+
+int
+AnalysisResult::rowCount() const
+{
+    return m_data.count() / columnCount();
+}
+
+
+void
+AnalysisResult::setTitle(const QString& title)
+{
+    m_title = title;
+}
+
+
+QString
+AnalysisResult::columnName(int column) const
+{
+    if (column >= 0 && column < columnCount())
+    {
+        return m_columnNames.at(column);
+    }
+    else
+    {
+        return "";
+    }
+}
+
+
+void
+AnalysisResult::setColumnName(int column, const QString& name)
+{
+    if (column >= 0 && column < columnCount())
+    {
+        m_columnNames[column] = name;
+    }
+}
+

@@ -104,7 +104,7 @@ QList<QSharedPointer<ScenarioAbstractTrajectoryType> >
   * Return true if the mission arc is valid and has a non-zero duration.
   */
 bool
-        Scenario_GetTimeRange(ScenarioAbstractTrajectoryType* trajectory, QDateTime* startTime, QDateTime* endTime, double* stepTime)
+Scenario_GetTimeRange(ScenarioAbstractTrajectoryType* trajectory, QDateTime* startTime, QDateTime* endTime, double* stepTime)
 {
     // TODO: This function only exists because TimeLine isn't a property of the base
     // trajectory class. This is probably appropriate, as future trajectory types (e.g. rendezvous)
@@ -243,11 +243,19 @@ static bool IsPlanetDistanceField(const QString& fieldName)
 /***** End helper functions *****/
 
 
-analysis::analysis(SpaceScenario*scenario, PropagatedScenario*propagatedScenario,QWidget * parent, Qt::WindowFlags f) : QDialog(parent,f)
+analysis::analysis(SpaceScenario*scenario,
+                   PropagatedScenario* propagatedScenario,
+                   QWidget* parent,
+                   Qt::WindowFlags f) :
+    QDialog(parent,f),
+    m_scenario(NULL),
+    m_propagatedScenario(NULL),
+    m_studyOfConstellations(NULL),
+    m_qtiPlotFrame(NULL)
 {
     setupUi(this);
-    m_scenario=new SpaceScenario(*scenario);
-    m_propagatedScenario=new PropagatedScenario(*propagatedScenario);
+    m_scenario = new SpaceScenario(*scenario);
+    m_propagatedScenario = new PropagatedScenario(*propagatedScenario);
     if(m_propagatedScenario->coverageTriggered())
     {
         m_studyOfConstellations=new ConstellationStudy(*propagatedScenario->studyOfConstellations());
@@ -1814,6 +1822,31 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
     stream<<"Report generated on"<<"\t"<<ReportDateTime.date().day()<<"/"<<ReportDateTime.date().month()<<"/"<<ReportDateTime.date().year()<<" "<<"at"<<" "<<ReportDateTime.time().hour()<<":"<<ReportDateTime.time().minute()<<":"<<ReportDateTime.time().second()<<"\r\n";
     int CStart, CStop;
 
+    // Get the column names for the analysis result
+    QStringList columnNames;
+    for (int itemIndex = 0; itemIndex < treeWidgetShowInReport->topLevelItemCount(); itemIndex++)
+    {
+        QString name = analysis::ReadParameter(treeWidgetShowInReport->topLevelItem(itemIndex));
+        if (name != "Access Time")
+        {
+            QString Unit = analysis::ReadUnits(treeWidgetShowInReport,treeWidgetShowInReport->topLevelItem(itemIndex));
+            columnNames << QString("%1 (%2)").arg(name, Unit);
+        }
+        else
+        {
+            columnNames << "Access Number" << "Start Time (MJD)" << "Stop Time (MJD)" << "Duration of each access (seconds)";
+        }
+    }
+
+    // Create the analysis result structure; output from the analysis will be dumped
+    // here and passed to QtiPlot.
+    AnalysisResult analysisResult(columnNames.count());
+    analysisResult.setTitle("STA Results");
+    for (int i = 0; i < columnNames.count(); ++i)
+    {
+        analysisResult.setColumnName(i, columnNames.at(i));
+    }
+
     for(int z=0;z<MParentIndex.size();z++)
     {
 
@@ -1994,7 +2027,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                             // Guillermo patched the following line
                             //stream<<"\t"<<name<<"("<<Unit<<")"<<"\t";
                             stream << name << " (" << Unit << ") " << "\t";
-                            numberOfColumns = numberOfColumns +1;
+                            numberOfColumns++;
 
                             if(i==((treeWidgetShowInReport->topLevelItemCount())-1))
                             {
@@ -2006,6 +2039,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                             stream<<name<<"\r\n";
                             stream<<"Access Number"<<"\t"<<"Start Time (MJD)"<<"\t"<<"Stop Time (MJD)"<<"\t"<<"Duration of each access (seconds)"<<"\r\n";
                             numberOfColumns=4;
+
                             if(i==((treeWidgetShowInReport->topLevelItemCount())-1))
                             {
                                 stream<<"\r\n";
@@ -2034,12 +2068,15 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                     QDateTime TimeDateVector[inumber];
                     double DayOfYear[inumber];
 
+                    QVariantList analysisRow;
+
                     //Access Time calculation
                     for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++)
                     {
 
                         QTreeWidgetItem*parameter=treeWidgetShowInReport->topLevelItem(i);
                         QString name=parameter->text(0);
+
                         if(name=="Access Time")
                         {
 
@@ -2054,6 +2091,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                 {
                                     j=j+1;
                                     stream<<List.at(n)<<"\t";
+                                    analysisRow << List.at(n);
 
                                     //if(n==List.size()-1)
                                     if(j%4==0)
@@ -2119,6 +2157,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                 }
 
                                 stream << sta::ConvertUnits(Units,outputValue, "km") << "\t";
+                                analysisRow << sta::ConvertUnits(Units,outputValue, "km");
                             }
                             if(name=="Time")
                             {
@@ -2133,6 +2172,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     double julUTC= calendarTOjulian(gregUTC.year(), gregUTC.month(), gregUTC.day(), gregUTC.hour(), gregUTC.minute(),gregUTC.second());
                                     double mjdUTC=sta::JdToMjd(julUTC);
                                     stream<<mjdUTC<<"\t";
+                                    analysisRow << mjdUTC;
 
                                 }
                                 if(TimeCoordinate=="Julian TDB")                        // Added by Ana
@@ -2140,6 +2180,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     double julianDate=sta::MjdToJd(MJDdate[index]+0.00001);
 
                                     stream<<julianDate<<"\t";
+                                    analysisRow << julianDate;
                                 }
                                 if(TimeCoordinate=="YYDDD TDB")                         // Added by Ana
                                 {
@@ -2163,6 +2204,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     QDateTime DisplayDateCalendar[inumber];
 
                                     stream<<gregUTC.day()<<"/"<<gregUTC.month()<<"/"<<gregUTC.year()<<" "<<gregUTC.hour()<<":"<<gregUTC.minute()<<":"<<gregUTC.second()<<"\t";
+                                    analysisRow << gregUTC.toString().c_str();
                                 }
                                 if(TimeCoordinate=="Gregorian LCL")                     // Added by Catarina. Missing: Time zones
                                 {
@@ -2176,6 +2218,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     QDateTime DisplayDateCalendar[inumber];
                                     // For now it is shown in UTC
                                     stream<<gregUTC.day()<<"/"<<gregUTC.month()<<"/"<<gregUTC.year()<<" "<<gregUTC.hour()<<":"<<gregUTC.minute()<<":"<<gregUTC.second()<<"\t";
+                                    analysisRow << gregUTC.toString().c_str();
                                 }
                                 if(TimeCoordinate=="Gregorian TDB")                     // Added by Ana. Corrected by Catarina
                                 {
@@ -2184,6 +2227,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     QList<QString>Date=sta::TimeLayout(dateTime.date().day(),dateTime.date().month());
                                     QString Time=dateTime.time().toString(Qt::TextDate);
                                     stream<<Date[0]<<"/"<<Date[1]<<"/"<<dateTime.date().year()<<" "<<Time<<"\t";
+                                    analysisRow << dateTime.toString();
                                 }
                                 if(TimeCoordinate=="Julian UTC")                        // Added by Ana. Corrected by Catarina
                                 {
@@ -2198,6 +2242,12 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
                                     //QString Time=DisplayDateCalendar[index].time().toString(Qt::TextDate);
                                     stream<<DDD<<"/"<<YearPreLastDigit<<YearLastDigit<<" "<<gregUTC.hour()<<":"<<gregUTC.minute()<<":"<<gregUTC.second()<<"\t";
+                                    analysisRow << QString("%1/%2 %3:%4:%5").
+                                                      arg(DDD).
+                                                      arg(QString::number(Year).mid(2, 2)).
+                                                      arg(gregUTC.hour(), 2, 10, QChar('0')).
+                                                      arg(gregUTC.minute(), 2, 10, QChar('0')).
+                                                      arg(gregUTC.second(), 2, 10, QChar('0'));
 
                                 }
                                 if(TimeCoordinate=="Julian Date")                       // Added by Catarina
@@ -2210,6 +2260,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     double julUTC= calendarTOjulian(gregUTC.year(), gregUTC.month(), gregUTC.day(), gregUTC.hour(), gregUTC.minute(),gregUTC.second());
 
                                     stream<<julUTC<<"\t";
+                                    analysisRow << julUTC;
                                 }
                                 if(TimeCoordinate=="Julian LCL")                        // Added by Catarina. Missing: time zones
                                 {
@@ -2223,31 +2274,37 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     // Need to add time zones. For now it's in UTC
 
                                     stream<<julUTC<<"\t";
+                                    analysisRow << julUTC;
                                 }
                                 if(TimeCoordinate=="Mission Elapsed")                   // Added by Ana
                                 {
                                     QString Elapsed= sta::MissionElapsedTime(MJDdate[index],StartEpoch);
                                     stream<<Elapsed<<"\t";
+                                    analysisRow << Elapsed;
                                 }
                                 if(TimeCoordinate=="Days from Epoch")                   // Added by Catarina
                                 {
                                     double ElapsedTimeDays=sta::MjdToFromEpoch(StartEpoch,MJDdate[index],"Days");
                                     stream<<ElapsedTimeDays<<"\t";
+                                    analysisRow << ElapsedTimeDays;
                                 }
                                 if(TimeCoordinate=="Hours from Epoch")                  // Added by Catarina
                                 {
                                     double ElapsedTimeHours=sta::MjdToFromEpoch(StartEpoch,MJDdate[index],"Hours");
                                     stream<<ElapsedTimeHours<<"\t";
+                                    analysisRow << ElapsedTimeHours;
                                 }
                                 if(TimeCoordinate=="Minutes from Epoch")                // Added by Catarina
                                 {
                                     double ElapsedTimeMinutes=sta::MjdToFromEpoch(StartEpoch,MJDdate[index],"Minutes");
                                     stream<<ElapsedTimeMinutes<<"\t";
+                                    analysisRow << ElapsedTimeMinutes;
                                 }
                                 if(TimeCoordinate=="Seconds from Epoch")                // Added by Catarina
                                 {
                                     double ElapsedTimeSeconds=sta::MjdToFromEpoch(StartEpoch,MJDdate[index],"Seconds");
                                     stream<<ElapsedTimeSeconds<<"\t";
+                                    analysisRow << ElapsedTimeSeconds;
                                 }
                                 if(TimeCoordinate=="YYDDD TDB")                         // Added by Ana
                                 {
@@ -2268,6 +2325,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                         stream<<DDD[i];
                                     }
                                     stream<<"\t";
+                                    analysisRow << "FIX THIS!";
                                 }
                                 if(TimeCoordinate=="Gregorian TAI")                     // Added by Catarina
                                 {
@@ -2284,7 +2342,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     QList<QString>Date=sta::TimeLayout(dateTime.date().day(),dateTime.date().month());
                                     QString Time=dateTime.time().toString(Qt::TextDate);
                                     stream<<Date[0]<<"/"<<Date[1]<<"/"<<dateTime.date().year()<<" "<<Time<<"\t";
-
+                                    analysisRow << "FIX THIS!";
                                 }
                                 if(TimeCoordinate=="Gregorian TDT")                     // Added by Catarina
                                 {
@@ -2301,6 +2359,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     QList<QString>Date=sta::TimeLayout(dateTime.date().day(),dateTime.date().month());
                                     QString Time=dateTime.time().toString(Qt::TextDate);
                                     stream<<Date[0]<<"/"<<Date[1]<<"/"<<dateTime.date().year()<<" "<<Time<<"\t";
+                                    analysisRow << "FIX THIS!";
                                 }
                                 if(TimeCoordinate=="Julian Ephemeris Date")             // Added by Catarina
                                 {
@@ -2313,6 +2372,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     //Convert the seconds back to JD or directly to Gregorian
                                     double jdTDT=sta::SecJ2000ToJd(TDTDate);
                                     stream<<jdTDT<<"\t";
+                                    analysisRow << jdTDT;
                                 }
                                 if(TimeCoordinate=="Gregorian GPS")                     // Added by Catarina
                                 {
@@ -2330,6 +2390,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     QList<QString>Date=sta::TimeLayout(dateTime.date().day(),dateTime.date().month());
                                     QString Time=dateTime.time().toString(Qt::TextDate);
                                     stream<<Date[0]<<"/"<<Date[1]<<"/"<<dateTime.date().year()<<" "<<Time<<"\t";
+                                    analysisRow << "FIX THIS!";
                                 }
                                 if(TimeCoordinate=="Julian GPS")                        // Added by Catarina
                                 {
@@ -2343,6 +2404,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     double jdGPS=sta::SecJ2000ToJd(gpsDate);
 
                                     stream<<jdGPS<<"\t";
+                                    analysisRow << jdGPS;
                                 }
                                 if(TimeCoordinate=="Earth canonical time")              // Added by Catarina
                                 {
@@ -2355,6 +2417,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     // Earth canonical time
                                     double EarthCanTime = dateSec/Unit;
                                     stream<<EarthCanTime<<"\t";
+                                    analysisRow << EarthCanTime;
                                 }
                                 if(TimeCoordinate=="GMT")   {}                          // Added by Catarina - not working
 
@@ -2384,6 +2447,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                 {
                                     stream<<ElapsedTime<<"\t";
                                 }
+                                analysisRow << ElapsedTime;
                             }
                             else if (IsPlanetDistanceField(name))
                             {
@@ -2397,6 +2461,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                 spaceObj->getStateVector(mjd, *body, CoordinateSystem(COORDSYS_EME_J2000), &state);
 
                                 stream << sta::ConvertUnits(Units, state.position.norm(), "km") << "\t";
+                                analysisRow << sta::ConvertUnits(Units, state.position.norm(), "km");
                             }
                             if((name=="Azimuth")||(name=="Elevation")||(name=="Range"))
                             {
@@ -2417,6 +2482,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                         {
 
                                             stream<<sta::ConvertUnits(ToUnit,Azimuth,"deg")<<"\t";
+                                            analysisRow <<sta::ConvertUnits(ToUnit,Azimuth,"deg");
                                             CovIndex[0]++;
                                         }
 
@@ -2424,6 +2490,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                         {
 
                                             stream<<"No visibility"<<"\t";
+                                            analysisRow << "No visibility";
                                             //CovIndex[0]++;
                                         }
 
@@ -2431,6 +2498,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     else
                                     {
                                         stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
                                     }
                                 }
                                 if(name=="Elevation")
@@ -2446,18 +2514,21 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                         if(fabs(MJDdate[index]-TimeCovReport)<10e-6)
                                         {
                                             stream<<sta::ConvertUnits(ToUnit,Elevation,"deg")<<"\t";
+                                            analysisRow << sta::ConvertUnits(ToUnit, Elevation, "deg");
                                             CovIndex[1]++;
                                         }
 
                                         else
                                         {
                                             stream<<"No visibility"<<"\t";
+                                            analysisRow << "No visibility";
                                         }
 
                                     }
                                     else
                                     {
                                         stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
                                     }
                                 }
                                 if(name=="Range")
@@ -2472,12 +2543,14 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                         if(fabs(MJDdate[index]-TimeCovReport)<10e-6)
                                         {
                                             stream<<sta::ConvertUnits(ToUnit,Range,"km")<<"\t";
+                                            analysisRow<<sta::ConvertUnits(ToUnit,Range,"km");
                                             CovIndex[2]++;
                                         }
 
                                         else
                                         {
                                             stream<<"No visibility"<<"\t";
+                                            analysisRow << "No visibility";
                                         }
 
 
@@ -2486,6 +2559,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     else
                                     {
                                         stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
                                     }
                                 }
                             }
@@ -2502,18 +2576,21 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
                                     {
                                         stream<<EIRP<<"\t";
+                                        analysisRow << EIRP;
                                         Comm1Index[0]++;
                                     }
 
                                     else
                                     {
                                         stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
                                     }
 
                                 }
                                 else
                                 {
                                     stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
                                 }
                             }
                             if(name=="Received Frequency")
@@ -2529,18 +2606,21 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
                                     {
                                         stream<<RcvFreq<<"\t";
+                                        analysisRow<<RcvFreq;
                                         Comm1Index[1]++;
                                     }
 
                                     else
                                     {
                                         stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
                                     }
 
                                 }
                                 else
                                 {
                                     stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
                                 }
                             }
                             if(name=="Doppler Shift")
@@ -2556,18 +2636,21 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
                                     {
                                         stream<<RcvFreq<<"\t";
+                                        analysisRow<<RcvFreq;
                                         Comm1Index[2]++;
                                     }
 
                                     else
                                     {
                                         stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
                                     }
 
                                 }
                                 else
                                 {
                                     stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
                                 }
                             }
                             if(name=="Received Power")
@@ -2583,18 +2666,21 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
                                     {
                                         stream<<RcvFreq<<"\t";
+                                        analysisRow<<RcvFreq;
                                         Comm1Index[3]++;
                                     }
 
                                     else
                                     {
                                         stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
                                     }
 
                                 }
                                 else
                                 {
                                     stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
                                 }
                             }
                             if(name=="Flux Density")
@@ -2609,18 +2695,21 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
                                     {
                                         stream<<FluxDensity<<"\t";
+                                        stream<<FluxDensity<<"\t";
                                         Comm1Index[4]++;
                                     }
 
                                     else
                                     {
                                         stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
                                     }
 
                                 }
                                 else
                                 {
                                     stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
                                 }
                             }
                             if(name=="Overlap Bandwidth Factor")
@@ -2635,17 +2724,20 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
                                     {
                                         stream<<OvBWF<<"\t";
+                                        analysisRow << OvBWF;
                                         Comm1Index[5]++;
                                     }
 
                                     else
                                     {
                                         stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
                                     }
                                 }
                                 else
                                 {
                                     stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
                                 }
                             }
                             if(name=="Free Space Loss")
@@ -2663,18 +2755,21 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
                                     {
                                         stream<<FSL<<"\t";
+                                        analysisRow << FSL;
                                         Comm2Index[0]++;
                                     }
 
                                     else
                                     {
                                         stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
                                     }
 
                                 }
                                 else
                                 {
                                     stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
                                 }
                             }
                             if(name=="Oxygen Loss")
@@ -2688,17 +2783,20 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
                                     {
                                         stream<<OxLoss<<"\t";
+                                        analysisRow << OxLoss;
                                         Comm2Index[1]++;
                                     }
 
                                     else
                                     {
                                         stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
                                     }
                                 }
                                 else
                                 {
                                     stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
                                 }
                             }
                             if(name=="Water Vapour Loss")
@@ -2712,17 +2810,20 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
                                     {
                                         stream<<WVLoss<<"\t";
+                                        analysisRow << WVLoss;
                                         Comm2Index[2]++;
                                     }
 
                                     else
                                     {
                                         stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
                                     }
                                 }
                                 else
                                 {
                                     stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
                                 }
                             }
                             if(name=="Rain Loss")
@@ -2736,17 +2837,20 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
                                     {
                                         stream<<RainLoss<<"\t";
+                                        analysisRow << RainLoss;
                                         Comm2Index[3]++;
                                     }
 
                                     else
                                     {
                                         stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
                                     }
                                 }
                                 else
                                 {
                                     stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
                                 }
                             }
                             if(name=="Atmospheric Loss")
@@ -2760,17 +2864,20 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
                                     {
                                         stream<<AtmLoss<<"\t";
+                                        analysisRow << AtmLoss;
                                         Comm2Index[4]++;
                                     }
 
                                     else
                                     {
                                         stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
                                     }
                                 }
                                 else
                                 {
                                     stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
                                 }
                             }
                             if(name=="Propagation Loss")
@@ -2784,17 +2891,20 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
                                     {
                                         stream<<PropLoss<<"\t";
+                                        analysisRow << PropLoss;
                                         Comm2Index[5]++;
                                     }
 
                                     else
                                     {
                                         stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
                                     }
                                 }
                                 else
                                 {
                                     stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
                                 }
                             }
                             if (name=="G/T")
@@ -2808,17 +2918,20 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
                                     {
                                         stream<<GT<<"\t";
+                                        analysisRow << GT;
                                         Comm3Index[0]++;
                                     }
 
                                     else
                                     {
                                         stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
                                     }
                                 }
                                 else
                                 {
                                     stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
                                 }
                             }
                             if(name=="C/No")
@@ -2832,17 +2945,20 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
                                     {
                                         stream<<CNo<<"\t";
+                                        analysisRow << CNo;
                                         Comm3Index[1]++;
                                     }
 
                                     else
                                     {
                                         stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
                                     }
                                 }
                                 else
                                 {
                                     stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
                                 }
                             }
                             if(name=="C/N")
@@ -2856,17 +2972,20 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
                                     {
                                         stream<<CN<<"\t";
+                                        analysisRow << CN;
                                         Comm3Index[2]++;
                                     }
 
                                     else
                                     {
                                         stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
                                     }
                                 }
                                 else
                                 {
                                     stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
                                 }
                             }
                             if(name=="Eb/No")
@@ -2880,17 +2999,20 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
                                     {
                                         stream<<EbNo<<"\t";
+                                        analysisRow << EbNo;
                                         Comm3Index[3]++;
                                     }
 
                                     else
                                     {
                                         stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
                                     }
                                 }
                                 else
                                 {
                                     stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
                                 }
                             }
                             if(name=="BER")
@@ -2904,17 +3026,20 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
                                     {
                                         stream<<BER<<"\t";
+                                        analysisRow << BER;
                                         Comm3Index[4]++;
                                     }
 
                                     else
                                     {
                                         stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
                                     }
                                 }
                                 else
                                 {
                                     stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
                                 }
                             }
                             if(name=="Eccentricity")
@@ -2928,6 +3053,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                                                           "EME J2000",
                                                                           ToCoord);
                                 stream<<Eccentricity<<"\t";
+                                analysisRow << Eccentricity;
                             }
                             if((name=="Inclination")||
                                (name=="RAAN")||
@@ -2948,6 +3074,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                                                              "EME J2000",
                                                                              ToCoord);
                                     stream<<sta::ConvertUnits(ToUnit,Inclination,"rad")<<"\t";
+                                    analysisRow << sta::ConvertUnits(ToUnit,Inclination,"rad");
                                 }
                                 if(name=="RAAN")
                                 {
@@ -2956,6 +3083,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                                                            "EME J2000",
                                                                            ToCoord);
                                     stream<<sta::ConvertUnits(ToUnit,Ascending,"rad")<<"\t";
+                                    analysisRow << sta::ConvertUnits(ToUnit, Ascending, "rad");
                                 }
                                 if(name=="True Anomaly")
                                 {
@@ -2964,6 +3092,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                                                           "EME J2000",
                                                                           ToCoord);
                                     stream<<sta::ConvertUnits(ToUnit,TrueAnom,"rad")<<"\t";
+                                    analysisRow << sta::ConvertUnits(ToUnit, TrueAnom, "rad");
                                 }
                                 if(name=="Argument of Periapsis")
                                 {
@@ -2972,6 +3101,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                                                            "EME J2000",
                                                                            ToCoord);
                                     stream<<sta::ConvertUnits(ToUnit,Periapsis,"rad")<<"\t";
+                                    analysisRow << sta::ConvertUnits(ToUnit, Periapsis, "rad");
                                 }
                                 if(name=="Semimajor Axis")
                                 {
@@ -2980,6 +3110,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                                                          "EME J2000",
                                                                          ToCoord);
                                     stream<<sta::ConvertUnits(ToUnit,SemAxis,"km")<<"\t";
+                                    analysisRow << sta::ConvertUnits(ToUnit, SemAxis, "rad");
                                 }
 
                             }
@@ -2996,6 +3127,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                                                            "EME J2000",
                                                                            ToCoord);
                                     stream<<Delaunay_l<<"\t";
+                                    analysisRow << Delaunay_l;
                                 }
                                 if(name=="g")
                                 {
@@ -3004,6 +3136,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                                                            "EME J2000",
                                                                            ToCoord);
                                     stream<<Delaunay_g<<"\t";
+                                    analysisRow << Delaunay_g;
                                 }
                                 if(name=="h")
                                 {
@@ -3012,6 +3145,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                                                            "EME J2000",
                                                                            ToCoord);
                                     stream<<Delaunay_h<<"\t";
+                                    analysisRow << Delaunay_h;
                                 }
                                 if(name=="L")
                                 {
@@ -3020,6 +3154,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                                                            "EME J2000",
                                                                            ToCoord);
                                     stream<<Delaunay_L<<"\t";
+                                    analysisRow << Delaunay_L;
                                 }
                                 if(name=="G")
                                 {
@@ -3028,6 +3163,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                                                            "EME J2000",
                                                                            ToCoord);
                                     stream<<Delaunay_G<<"\t";
+                                    analysisRow << Delaunay_G;
                                 }
                                 if(name=="H")
                                 {
@@ -3036,6 +3172,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                                                            "EME J2000",
                                                                            ToCoord);
                                     stream<<Delaunay_H<<"\t";
+                                    analysisRow << Delaunay_H;
                                 }
                             }
                             if(name=="Covered Area" && m_propagatedScenario->coverageTriggered())
@@ -3071,31 +3208,37 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                 if(name=="Latitude")
                                 {
                                     stream<<sta::ConvertUnits(Units,SphericalElements[1],"rad")<<"\t";
+                                    analysisRow<<sta::ConvertUnits(Units,SphericalElements[1],"rad");
                                 }
                                 if(name=="Longitude")
                                 {
                                     stream<<sta::ConvertUnits(Units,SphericalElements[0],"rad")<<"\t";
+                                    analysisRow<<sta::ConvertUnits(Units,SphericalElements[0],"rad");
                                 }
                                 if(name=="Radial Distance")
                                 {
                                     stream<<sta::ConvertUnits(Units,SphericalElements[2],"km")<<"\t";
+                                    analysisRow<<sta::ConvertUnits(Units,SphericalElements[2],"km");
                                 }
                                 if(name=="Altitude")
                                 {
                                     stream<<sta::ConvertUnits(Units,SphericalElements[2]-arc->centralBody()->meanRadius(),"km")<<"\t";
+                                    analysisRow<<sta::ConvertUnits(Units,SphericalElements[2]-arc->centralBody()->meanRadius(),"km");
                                 }
                                 if(name=="Flight Path Angle")
                                 {
                                     stream<<sta::ConvertUnits(Units,SphericalElements[4],"rad")<<"\t";
+                                    analysisRow<<sta::ConvertUnits(Units,SphericalElements[4],"rad");
                                 }
                                 if(name=="Heading Angle")
                                 {
                                     stream<<sta::ConvertUnits(Units,SphericalElements[5],"rad")<<"\t";
+                                    analysisRow<<sta::ConvertUnits(Units,SphericalElements[5],"rad");
                                 }
                                 if(name=="Velocity Modulus")
                                 {
-
                                     stream<<sta::ConvertUnits(Units,SphericalElements[3],"km/s")<<"\t";
+                                    analysisRow<<sta::ConvertUnits(Units,SphericalElements[3],"km/s");
                                 }
                             }
 
@@ -3114,6 +3257,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                                                         ToCoord);
                                     //stream<<sta::ConvertUnits(Units,esin)<<"\t";
                                     stream<<esin<<"\t";
+                                    analysisRow << esin;
                                 }
                                 if(name=="e*cos(omegaBar)")
                                 {
@@ -3123,6 +3267,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                                                         ToCoord);
                                     // stream<<sta::ConvertUnits(Units,ecos)<<"\t";
                                     stream<<ecos<<"\t";
+                                    analysisRow << ecos;
                                 }
                                 if(name=="tan(i/2)*sin(raan)")
                                 {
@@ -3132,6 +3277,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                                                            ToCoord);
                                     // stream<<sta::ConvertUnits(Units,etansin)<<"\t";
                                     stream<<etansin<<"\t";
+                                    analysisRow << etansin;
                                 }
                                 if(name=="tan(i/2)*cos(raan)")
                                 {
@@ -3141,6 +3287,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                                                            ToCoord);
                                     //stream<<sta::ConvertUnits(Units,etancos)<<"\t";
                                     stream<<etancos<<"\t";
+                                    analysisRow << etancos;
                                 }
                                 if(name=="Mean Longitude")
                                 {
@@ -3150,10 +3297,13 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                                                            ToCoord);
                                     //stream<<sta::ConvertUnits(Units,MeanLon)<<"\t";
                                     stream<<MeanLon<<"\t";
+                                    analysisRow << MeanLon;
                                 }
                             }
                         }
                         stream<<"\r\n";
+                        analysisResult.appendRow(analysisRow);
+                        analysisRow.clear();
                         numberOfRows = numberOfRows + 1;
                     }
                 }
@@ -3175,35 +3325,24 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
     }
 
     file.close();
-    if(CStart!=0||CStop!=0)
+
+    if (CStart != 0 || CStop != 0)
     {
         QMessageBox Warning;
         Warning.setText("No data available for the selected time interval");
         Warning.exec();
     }
-    if(CStart==0&&CStop==0) //added by Ana to prevent crashing in report
+    else
     {
-        // Patched by Guillermo to allow read of files in MAC and Linux
-        QString ResourcesPathOutput = QDir::currentPath ();
-        QString analysisFileOutput = ResourcesPathOutput + "/" + "analysisReport.txt";
-        QString analysisFileOutputURL = "file:///" + analysisFileOutput;
+        // Call QtiPlot to create a table from the analysis results
+        QtiPlotMain* qtiPlot = findChild<QtiPlotMain*>("QTIPLOT");
+        if (!qtiPlot)
+        {
+            qtiPlot = new QtiPlotMain(false, this);
+            qtiPlot->setName("QTIPLOT");
+        }
 
-        /*
-        //SpreadSheet* resultsSheet = new SpreadSheet(numberOfRows + 5, numberOfColumns);
-        SpreadSheet* resultsSheet = new SpreadSheet(numberOfRows, numberOfColumns);
-        resultsSheet->setupContents(analysisFileOutput);
-        resultsSheet->setWindowIcon(QPixmap(":/icons/CoordinateSystemBody.png"));
-        resultsSheet->setWindowTitle("Analsyis report");
-        resultsSheet->resize(640, 420);
-        resultsSheet->setWindowModality(Qt::NonModal);
-        resultsSheet->activateWindow();
-        resultsSheet->show();
-        resultsSheet->raise();
-        */
-
-        // Guillermo says: this actually calls QtiPlot
-        qtiplotmain* mycallQtiplotFrame = new qtiplotmain(false, analysisFileOutput, this);
-
+        qtiPlot->createReport(&analysisResult);
     }
 }
 

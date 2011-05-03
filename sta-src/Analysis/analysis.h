@@ -38,6 +38,8 @@
 #include <QObject>
 
 
+class QtiPlotMain;
+
 class analysis : public QDialog , private Ui::analysisDialogClass
 {
     Q_OBJECT
@@ -102,16 +104,18 @@ public slots:  // Added by Ana
 
 private:
     void setPlotScales();
-
-private:
-    SpaceScenario* m_scenario;
-    PropagatedScenario* m_propagatedScenario;
-    ConstellationStudy* m_studyOfConstellations;
     bool CheckIfMissionArc();
     void InsertComboBox();
     void ComboBoxOptions(QTreeWidgetItem*);
     void SetPlotComboBox(const QString& name, QTreeWidget* treeWidget, QTreeWidgetItem* item);
     void PlotComboBox();
+
+private:
+    SpaceScenario* m_scenario;
+    PropagatedScenario* m_propagatedScenario;
+    ConstellationStudy* m_studyOfConstellations;
+    QtiPlotMain* m_qtiPlotFrame;
+
     QComboBox * TimeFramesBox();
     QComboBox * TimeUnitsBox();
     QComboBox * AngleUnitsBox();
@@ -150,9 +154,6 @@ private:
                                    double mjd,
                                    const QString& FromCoordinate,
                                    const QString& ToCoordinate);
-
-
-
 };
 
 
