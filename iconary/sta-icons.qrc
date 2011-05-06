@@ -77,7 +77,6 @@
         <file>TicksButton.png</file>
         <file>external.png</file>
         <file>STAlogo.png</file>
-        <file>STAsplash.png</file>
         <file>ParticipantCOMMUNICATIONS.png</file>
         <file>ParticipantENTRYVEHICLE.png</file>
         <file>ParticipantPOINT.png</file>
@@ -133,5 +132,6 @@
         <file>ComboEarthMoon.png</file>
         <file>ComboInnerSolarSystem.png</file>
         <file>ComboOuterSolarSystem.png</file>
+        <file>STAsplash.png</file>
     </qresource>
 </RCC>
