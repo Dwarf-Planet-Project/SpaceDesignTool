@@ -1227,4 +1227,3 @@ TimeConversions::GregorianDate::toString(Format format) const
         return "";
     }
 }
-

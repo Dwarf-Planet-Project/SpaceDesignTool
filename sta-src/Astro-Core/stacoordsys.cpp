@@ -24,15 +24,256 @@
  ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
  */
-
+#include "Analysis/analysis.h"
 #include "stacoordsys.h"
 #include "stamath.h"
 #include "RotationState.h"
 #include "stabody.h"
+#include "calendarTOjulian.h"
 
 using namespace sta;
 using namespace Eigen;
+/*
+ ICRF Transformation matrix:
+ The transformation matrix between ICRF and EMEJ2000 is taken from:
+ "The coordinate frames of the US space object catalogs", John H. Seago, David A. Vallado,AIAA 2000-4025
+ This transformation is from Ecliptic J2000 to ICRF*/
 
+static double J2000_to_ICRFCoeffs[9] =
+{1,             0.000273e-8,         -9.740996e-8,
+-0.000273e-8,        1,             -1.324146e-8,
+9.740996e-8,    1.324146e-8,                1};
+
+static const Matrix3d J2000_to_ICRF_mat(J2000_to_ICRFCoeffs);
+static const Matrix3d ICRF_to_J2000_mat=J2000_to_ICRF_mat.conjugate();
+static Quaterniond J2000_to_ICRF(J2000_to_ICRF_mat);
+static Quaterniond ICRF_to_J2000 = J2000_to_ICRF.conjugate();
+
+// ======================= PRECESSION matrix ===================================
+//Formulas for precession taken from: "Satellite Orbits: models, methods and applications",
+//Montenbruck O., Gill E., Springer, 2005
+Matrix3d PrecessionMatrix(double mjd)
+{
+        double julianTDB = sta::MjdToJd(mjd+0.00001);
+        double julianSeconds = JdToSecJ2000(julianTDB);
+        double julianTT_seconds = convertTDBtoTT(julianSeconds);
+        double julianTT = SecJ2000ToJd(julianTT_seconds);
+        double T = (julianTT-2451545.0)/36525.0;
+
+    // Precession angles
+    double zeta = 2306.2181*T + 0.30188*T*T + 0.017998*T*T*T; //seconds
+    double vartheta = 2004.3109*T - 0.42665*T*T - 0.041833*T*T*T;
+    double z = zeta + 0.79280*T*T + 0.000205*T*T*T;
+
+    zeta = sta::degToRad(zeta/3600);  //radians
+    vartheta = sta::degToRad(vartheta/3600);
+    z = sta::degToRad(z/3600);
+
+    static double PrecessionCoeffs[9]=
+    {
+        -sin(z)*sin(zeta)+cos(z)*cos(vartheta)*cos(zeta), cos(z)*sin(zeta)+sin(z)*cos(vartheta)*cos(zeta),sin(vartheta)*cos(zeta),
+        -sin(z)*cos(zeta)-cos(z)*cos(vartheta)*sin(zeta) , cos(z)*cos(zeta)-sin(z)*cos(vartheta)*sin(zeta),-sin(vartheta)*sin(zeta),
+        -cos(z)*sin(vartheta),-sin(z)*sin(vartheta),cos(vartheta)
+    };
+
+    static const Matrix3d Precession_mat(PrecessionCoeffs);     // Convert the array into a matrix
+    return Precession_mat;
+
+
+}
+
+//==================================================================================
+
+//================================ NUTATION matrix =================================
+//Formulas for nutation taken from: "Satellite Orbits: models, methods and applications", Montenbruck O., Gill E., Springer, 2005
+Matrix3d NutationMatrix(double mjd)
+{
+    double julianTDB = sta::MjdToJd(mjd+0.00001);
+    double julianSeconds = JdToSecJ2000(julianTDB);
+    double julianTT_seconds = convertTDBtoTT(julianSeconds);
+    double julianTT = SecJ2000ToJd(julianTT_seconds);
+    double T = (julianTT-2451545.0)/36525.0;
+
+    struct NutationTable
+    {
+        int p_l;
+        int p_ll;
+        int p_D;
+        int  p_F;
+        int p_Omg;
+        double delta_psi_const;
+        double delta_psi_T;
+        double delta_eps_const;
+        double delta_eps_T;
+    };
+    // p_l, p_ll, p_D, p_F, p_Omg, delta_psi_const, delta_psi_T, delta_eps_const, delta_eps_T
+    static NutationTable nutationAngles[106]=
+    {
+        {0,0,0,0,1,    -171996,    -174.2,    92025,    8.9},
+        {0,0,0,0,2,     2062,      0.2,       -895,     0.5},
+        {-2,0,2,0,1,    46,         0,          -24,         0},
+        {2,0,-2,0,0,    11,         0,            0,         0},
+        {-2,0,2,0,2,    -3,         0,            1,         0},
+        {1,-1,0,-1,0,   -3,         0,            0,         0},
+        {0,-2,2,-2,1,   -2,         0,            1,         0},
+        {2,0,-2,0,1,     1,         0,            0,         0},
+        {0,0,2,-2,2,    -13187,   -1.6,        5736,    -3.1},
+        {0,1,0,0,0,      1426,    -3.4,         54,     -0.1},
+        {0,1,2,-2,2,    -517,      1.2,        224,     -0.6},
+        {0,-1,2,-2,2,    217,     -0.5,        -95,      0.3},
+        {0,0,2,-2,1,     129,      0.1,        -70,         0},
+        {2,0,0,-2,0,      48,       0,            1,          0},
+        {0,0,2,-2,0,     -22,       0,            0,          0},
+        {0,2,0,0,0,       17,     -0.1,         0,          0},
+        {0,1,0,0,1,      -15,       0,            9,          0},
+        {0,2,2,-2,2,     -16,       0.1,        7,          0},
+        {0,-1,0,0,1,     -12,       0,            6,          0},
+        {-2,0,0,2,1,     -6,        0,            3,          0},
+        {0,-1,2,-2,1,    -5,        0,            3,          0},
+        {2,0,0,-2,1,      4,        0,           -2,          0},
+        {0,1,2,-2,1,      4,        0,           -2,          0},
+        {1,0,0,-1,0,     -4,        0,            0,          0},
+        {2,1,0,-2,0,      1,        0,            0,          0},
+        {0,0,-2,2,1,      1,        0,            0,          0},
+        {0,1,-2,2,0,     -1,        0,            0,          0},
+        {0,1,0,0,2,       1,        0,            0,          0},
+        {-1,0,0,1,1,      1,        0,            0,          0},
+        {0,1,2,-2,0,     -1,        0,            0,          0},
+        {0,0,2,0,2,     -2274,   -0.2,         977,       -0.5},
+        {1,0,0,0,0,      712,     0.1,          -7,         0},
+        {0,0,2,0,1,     -386,    -0.4,         200,         0},
+        {1,0,2,0,2,     -301,       0,           129,       -0.1},
+        {1,0,0,-2,0,    -158,       0,          -1,           0},
+        {-1,0,2,0,2,    123,        0,          -53,          0},
+        {0,0,0,2,0,     63,         0,          -2,           0},
+        {1,0,0,0,1,     63,     0.1,          -33,          0},
+        {-1,0,0,0,1,    -58,    -0.1,         32,           0},
+        {-1,0,2,2,2,    -59,        0,          26,           0},
+        {1,0,2,0,1,     -51,        0,          27,           0},
+        {0,0,2,2,2,     -38,        0,          16,           0},
+        {2,0,0,0,0,     29,         0,          -1,           0},
+        {1,0,2,-2,2,    29,         0,          -12,          0},
+        {2,0,2,0,2,     -31,        0,          13,           0},
+        {0,0,2,0,0,     26,         0,          -1,           0},
+        {-1,0,2,0,1,    21,         0,          -10,          0},
+        {-1,0,0,2,1,    16,         0,          -8,           0},
+        {1,0,0,-2,1,    -13,        0,          7,            0},
+        {-1,0,2,2,1,    -10,        0,          5,            0},
+        {1,1,0,-2,0,    -7,         0,          0,            0},
+        {0,1,2,0,2,     7,          0,          -3,           0},
+        {0,-1,2,0,2,    -7,         0,          3,            0},
+        {1,0,2,2,2,     -8,         0,          3,            0},
+        {1,0,0,0,0,     6,          0,          0,            0},
+        {2,0,2,-2,2,    6,          0,          -3,             0},
+        {0,0,0,2,1,     -6,         0,          3,              0},
+        {0,0,2,2,1,     -7,         0,          3,              0},
+        {1,0,2,-2,1,     6,         0,          -3,             0},
+        {0,0,0,-2,1,     -5,        0,          3,              0},
+        {1,-1,0,0,0,     5,         0,          0,              0},
+        {2,0,2,0,1,     -5,         0,          3,              0},
+        {0,1,0,-2,0,    -4,         0,          0,              0},
+        {1,0,-2,0,0,     4,         0,          0,              0},
+        {0,0,0,1,0,     -4,         0,          0,              0},
+        {1,1,0,0,0,     -3,         0,          0,              0},
+        {1,0,2,0,0,     3,          0,          0,              0},
+        {1,-1,2,0,2,    -3,         0,          1,              0},
+        {-1,-1,2,2,2,   -3,         0,          1,              0},
+        {-2,0,0,0,1,    -2,         0,          1,              0},
+        {3,0,2,0,2,     -3,         0,          1,              0},
+        {0,-1,2,2,2,    -3,         0,          1,              0},
+        {1,1,2,0,2,      2,         0,          -1,             0},
+        {-1,0,2,-2,1,   -2,         0,          1,              0},
+        {2,0,0,0,1,      2,         0,          -1,             0},
+        {1,0,0,0,2,     -2,         0,          1,              0},
+        {3,0,0,0,0,     2,          0,          0,              0},
+        {0,0,2,1,2,     2,          0,          -1,             0},
+        {-1,0,0,0,2,    1,          0,          -1,             0},
+        {1,0,0,-4,0,    -1,         0,          0,              0},
+        {-2,0,2,2,2,    1,          0,          -1,             0},
+        {-1,0,2,4,2,    -2,         0,          1,              0},
+        {2,0,0,-4,0,    -1,         0,          0,              0},
+        {1,1,2,-2,2,    1,          0,          -1,             0},
+        {1,0,2,2,1,     -1,         0,          1,              0},
+        {-2,0,2,4,2,    -1,         0,          1,              0},
+        {-1,0,4,0,2,    1,          0,          0,              0},
+        {1,-1,0,-2,0,   1,          0,          0,              0},
+        {2,0,2,-2,1,    1,          0,          -1,             0},
+        {2,0,2,2,2,     -1,         0,          0,              0},
+        {1,0,0,2,1,     -1,         0,          0,              0},
+        {0,0,4,-2,2,    1,          0,          0,              0},
+        {3,0,2,-2,2,    1,          0,          0,              0},
+        {1,0,2,-2,0,    -1,         0,          0,              0},
+        {0,1,2,0,1,     1,          0,          0,              0},
+        {-1,-1,0,2,1,   1,          0,          0,              0},
+        {0,0,-2,0,1,    -1,         0,          0,              0},
+        {0,0,2,-1,2,    -1,         0,          0,              0},
+        {0,1,0,2,0,     -1,         0,          0,              0},
+        {1,0,-2,-2,0,   -1,         0,          0,              0},
+        {0,-1,2,0,1,    -1,         0,          0,              0},
+        {1,1,0,-2,1,    -1,         0,          0,              0},
+        {1,0,-2,2,0,    -1,         0,          0,              0},
+        {2,0,0,2,0,     1,          0,          0,              0},
+        {0,0,2,4,2,     -1,         0,          0,              0},
+        {0,1,0,1,0,     1,          0,          0,              0},
+};
+
+    // All the angles are in radians
+    double  l =134*3600+57*60+46.733 + (477198*3600+52*60+2.633)*T + (31.310)*T*T + (0.064)*T*T*T;
+    double  ll =357*3600+31*60+39.804 +(35999*3600+3*60+1.224)*T -(0.577)*T*T - (0.012)*T*T*T;
+    double  F = 93*3600+16*60+18.877 + (483202*3600+1*60+3.137)*T - (13.257)*T*T + (0.011)*T*T*T;
+    double  D = 297*3600+51*60+1.307 + (445267*3600+6*60+41.328)*T - (6.891)*T*T + (0.019)*T*T*T;
+    double  Omg =125*3600+2*60+40.280 - (1934*3600+8*60+10.539)*T + (7.455)*T*T + (0.008)*T*T*T;
+
+    double delta_eps=0;
+    double delta_psi=0;
+    for(int i=0; i< 106; i++)
+    {
+        double phi = nutationAngles[i].p_l*l + nutationAngles[i].p_ll*ll + nutationAngles[i].p_F*F
+                     + nutationAngles[i].p_D*D + nutationAngles[i].p_Omg*Omg;
+        phi = sta::degToRad(phi/3600);
+        delta_eps = delta_eps + (nutationAngles[i].delta_eps_const + nutationAngles[i].delta_eps_T*T)*sta::degToRad(1/3600)*cos(phi);
+        delta_psi = delta_psi + (nutationAngles[i].delta_psi_const + nutationAngles[i].delta_psi_T*T)*sta::degToRad(1/3600)*sin(phi);
+    }
+
+
+    double eps = sta::degToRad(23.43929111-(46.8150/3600)*T-(0.00059/3600)*T*T+(0.001813/3600)*T*T*T);
+
+//    delta_eps = sta::degToRad(delta_eps);
+//    delta_psi = sta::degToRad(delta_psi);
+
+    double eps_l = eps + delta_eps;
+
+
+    // Nutation matrix
+    static double NutationCoeffs[9]=
+    {
+        cos(delta_psi),  cos(eps_l)*sin(delta_psi),  sin(eps_l)*sin(delta_psi),
+        -cos(eps)*sin(delta_psi),   cos(eps)*cos(eps_l)*cos(delta_psi)+sin(eps)*sin(eps_l),cos(eps)*sin(eps_l)*cos(delta_psi)-sin(eps)*cos(eps_l),
+        -sin(eps)*sin(delta_psi),sin(eps)*cos(eps_l)*cos(delta_psi)-cos(eps)*sin(eps_l),sin(eps)*sin(eps_l)*cos(delta_psi)+cos(eps)*cos(eps_l)
+    };
+
+//    static double NutationCoeffs[9]=
+//    {
+//        cos(delta_psi),  -cos(eps)*sin(delta_psi),   -sin(eps)*sin(delta_psi),
+//        cos(eps_l)*sin(delta_psi), cos(eps)*cos(eps_l)*cos(delta_psi)+sin(eps)*sin(eps_l), sin(eps)*cos(eps_l)*cos(delta_psi)-cos(eps)*sin(eps_l),
+//        sin(eps_l)*sin(delta_psi), cos(eps)*sin(eps_l)*cos(delta_psi)-sin(eps)*cos(eps_l), sin(eps)*sin(eps_l)*cos(delta_psi)+cos(eps)*cos(eps_l)
+//    };
+    static const Matrix3d Nutation_mat(NutationCoeffs);
+    return Nutation_mat;
+}
+//==================================================================================
+
+// ---------TEST----------
+//static double NutationCoeffs[9]=
+//{
+//    1, 0.000075, 0.000033,
+//    -0.000075, 1, -0.000015,
+//    -0.000033, 0.000015, 1
+//};
+//static const Matrix3d J2000_to_Nutation_mat(NutationCoeffs);
+//static const Matrix3d Nutation_to_J2000_mat=J2000_to_Nutation_mat.conjugate();
+//static Quaterniond J2000_to_Nutation(J2000_to_Nutation_mat);
+//static Quaterniond Nutation_to_J2000 = J2000_to_Nutation.conjugate();
 
 /*
 Constants from SPICE's Frames Required Reading document
@@ -83,10 +324,15 @@ CoordinateSystem::CoordinateSystem(QString name) :
         m_type = COORDSYS_ECLIPTIC_J2000;
     else if (name == "PLANETO FIXED")
         m_type = COORDSYS_BODYFIXED;
-    else if (name == "ROTATING")
-        m_type = COORDSYS_ROT;
-    else if (name == "ROTATING NORMALIZED")
-        m_type = COORDSYS_ROT_NORM;
+    else if (name == "ICRF")
+        m_type = COORDSYS_ICRF;
+    else if (name == "Mean of Date")
+        m_type = COORDSYS_MEAN_OF_DATE;
+    else if (name == "True of Date")
+        m_type = COORDSYS_TRUE_OF_DATE;
+    else if (name == "Mean of Epoch")
+        m_type = COORDSYS_MEAN_OF_EPOCH;
+
 }
 
 
@@ -106,10 +352,15 @@ CoordinateSystem::name() const
         return "ECLIPTIC";
     case COORDSYS_BODYFIXED:
         return "PLANETO FIXED";
-    case COORDSYS_ROT:
-        return "ROTATING";
-    case COORDSYS_ROT_NORM:
-        return "ROTATING NORMALIZED";
+    case COORDSYS_ICRF:
+        return "ICRF";
+    case  COORDSYS_MEAN_OF_DATE:
+        return "Mean of Date";
+    case COORDSYS_TRUE_OF_DATE:
+      return "True of Date";
+    case COORDSYS_MEAN_OF_EPOCH:
+      return "Mean of Epoch";
+
     case COORDSYS_INVALID:
     default:
         return "INVALID";
@@ -126,8 +377,8 @@ CoordinateSystem::toEmeJ2000(const StateVector& v) const
 {
     Q_ASSERT(isInertial());
 
-    if (m_type == COORDSYS_EME_J2000)
-        return v;
+//    if (m_type == COORDSYS_EME_J2000)
+//        return v;
 
     Matrix3d rotation;
     switch (m_type)
@@ -141,10 +392,10 @@ CoordinateSystem::toEmeJ2000(const StateVector& v) const
     case COORDSYS_ECLIPTIC_J2000:
         rotation = Ecliptic_to_Equator_mat;
         break;
-
+    case COORDSYS_ICRF:
+        rotation = ICRF_to_J2000_mat;
+        break;
     case COORDSYS_BODYFIXED:
-    case COORDSYS_ROT:
-    case COORDSYS_ROT_NORM:
     default:
         rotation = Matrix3d::Identity();
         break;
@@ -163,8 +414,8 @@ CoordinateSystem::fromEmeJ2000(const StateVector& v) const
 {
     Q_ASSERT(isInertial());
 
-    if (m_type == COORDSYS_EME_J2000)
-        return v;
+//    if (m_type == COORDSYS_EME_J2000)
+//        return v;
 
     Matrix3d rotation;
     switch (m_type)
@@ -180,8 +431,9 @@ CoordinateSystem::fromEmeJ2000(const StateVector& v) const
         break;
 
     case COORDSYS_BODYFIXED:
-    case COORDSYS_ROT:
-    case COORDSYS_ROT_NORM:
+    case COORDSYS_ICRF:
+        rotation = J2000_to_ICRF_mat;
+        break;
     default:
         rotation = Matrix3d::Identity();
         break;
@@ -224,7 +476,6 @@ static StateVector emeJ2000ToBodyFixed(const StateVector& state,
     return StateVector(r * state.position, r * state.velocity + w.cross(r*state.position));
 }
 
-
 /*! Convert a state vector from this coordinate system to
  *  the Earth Mean Equator J2000.0 system.
  *  (Only works for inertial and body fixed systems.)
@@ -234,7 +485,56 @@ CoordinateSystem::toEmeJ2000(const StateVector& v, const StaBody* center, double
 {
     Q_ASSERT(isInertial() || m_type == COORDSYS_BODYFIXED);
     if (m_type == COORDSYS_BODYFIXED)
-        return bodyFixedToEmeJ2000(v, center, mjd);
+        return bodyFixedToEmeJ2000(v, center,mjd);
+
+    else if (m_type == COORDSYS_MEAN_OF_DATE)
+    {
+        //calculates the precession matrix to transform from ICRF to Mean of Date
+        Matrix3d rotation = PrecessionMatrix(mjd);
+        // calculates the precession matrix to transform from Mean of Date to ICRF
+       rotation = rotation.conjugate();
+        // r (MoD) = P(MoD to ICRF) * T (ICRF to J2000)
+        rotation = ICRF_to_J2000_mat*rotation;
+        return StateVector(rotation * v.position, rotation * v.velocity);
+    }
+
+    else if (m_type == COORDSYS_MEAN_OF_EPOCH)
+    {
+        //calculates the precession matrix to transform from ICRF to Mean of Date
+        Matrix3d rotation = PrecessionMatrix(mjd);
+        // calculates the precession matrix to transform from Mean of Date to ICRF
+       rotation = rotation.conjugate();
+        // r (MoD) = P(MoD to ICRF) * T (ICRF to J2000)
+        rotation = ICRF_to_J2000_mat*rotation;
+        return StateVector(rotation * v.position, rotation * v.velocity);
+    }
+
+    //This transformation does not have the correct results, because it depends on Mean of date. And this RF
+    //is still giving wrong results... Still don't know why...
+    else if (m_type == COORDSYS_TRUE_OF_DATE)
+    {
+       // calculates de nutation matrix
+       Matrix3d nutation = NutationMatrix(mjd);
+       nutation = nutation.conjugate();
+       // calculates the precession matrix
+      Matrix3d precession = PrecessionMatrix(mjd);
+      precession = precession.conjugate();
+       // N = transformation from True of Date to Mean of Date
+       // P = transformation from Mean of Date to ICRF
+       // T = transformation from ICRF to EME J2000
+       // r (ToD) = N * P * T    -> the rotations are made from right to left
+       Matrix3d rotation = ICRF_to_J2000_mat*precession*nutation*Ecliptic_to_Equator_mat;
+
+       return StateVector(rotation * v.position, rotation * v.velocity);
+    }
+
+//    else if (m_type == COORDSYS_TRUE_OF_DATE)
+//    {
+//        Matrix3d nutation = Nutation_to_J2000_mat;
+//        Matrix3d precession = PrecessionMatrix(mjd);
+//        Matrix3d rotation = precession*nutation*Ecliptic_to_Equator_mat;
+//        return StateVector(rotation * v.position, rotation * v.velocity);
+//    }
     else
         return toEmeJ2000(v);
 }
@@ -250,6 +550,48 @@ CoordinateSystem::fromEmeJ2000(const StateVector& v, const StaBody* center, doub
     Q_ASSERT(isInertial() || m_type == COORDSYS_BODYFIXED);
     if (m_type == COORDSYS_BODYFIXED)
         return emeJ2000ToBodyFixed(v, center, mjd);
+
+    else if (m_type == COORDSYS_MEAN_OF_DATE)
+    {
+        // calculates the precession matrix to transform from ICRF to Mean of Date
+        Matrix3d rotation = PrecessionMatrix(mjd);
+        // r (MoD) = P(ICRF to MoD) * T (J2000 to ICRF)
+        rotation = rotation*J2000_to_ICRF_mat;
+        return StateVector(rotation * v.position, rotation * v.velocity);
+
+    }
+    else if (m_type == COORDSYS_MEAN_OF_EPOCH)
+    {
+        // calculates the precession matrix to transform from ICRF to Mean of Date
+        Matrix3d rotation = PrecessionMatrix(mjd);
+        // r (MoD) = P(ICRF to MoD) * T (J2000 to ICRF)
+        rotation = rotation*J2000_to_ICRF_mat*Ecliptic_to_Equator_mat;
+        return StateVector(rotation * v.position, rotation * v.velocity);
+
+    }
+
+//    This transformation does not have the correct results, because it depends on Mean of date. And this RF
+//    is still giving wrong results... Still don't know why...
+    else if (m_type == COORDSYS_TRUE_OF_DATE)
+    {
+       // Calculates the nutation matrix
+       Matrix3d nutation = NutationMatrix(mjd);
+       // Calculates the precession matrix
+       Matrix3d precession = PrecessionMatrix(mjd);
+       // N = transformation from Mean of Date to True of Date
+       // P = transformation from ICRF to Mean of Date
+       // T = transformation from EME J2000 to ICRF
+       // r (ToD) = N * P * T    -> the rotations are made from right to left
+        Matrix3d rotation =nutation*precession *J2000_to_ICRF_mat*Ecliptic_to_Equator_mat;
+       return StateVector(rotation * v.position, rotation * v.velocity);
+    }
+//    else if (m_type == COORDSYS_TRUE_OF_DATE)
+//    {
+//        Matrix3d nutation = Nutation_to_J2000_mat;
+//        Matrix3d precession = PrecessionMatrix(mjd);
+//        Matrix3d rotation = nutation*precession;
+//        return StateVector(rotation * v.position, rotation * v.velocity);
+//    }
     else
         return fromEmeJ2000(v);
 }
@@ -321,8 +663,9 @@ Matrix3d CoordinateSystem::rotToEmeJ2000()
         break;
 
     case COORDSYS_BODYFIXED:
-    case COORDSYS_ROT:
-    case COORDSYS_ROT_NORM:
+    case COORDSYS_ICRF:
+        rotation = ICRF_to_J2000_mat;
+        break;
     default:
         rotation = Matrix3d::Identity();
         break;
@@ -349,8 +692,10 @@ Matrix3d CoordinateSystem::rotFromEmeJ2000()
         break;
 
     case COORDSYS_BODYFIXED:
-    case COORDSYS_ROT:
-    case COORDSYS_ROT_NORM:
+    case COORDSYS_ICRF:
+        rotation = J2000_to_ICRF_mat;
+        break;
+
     default:
         rotation = Matrix3d::Identity();
         break;

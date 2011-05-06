@@ -46,6 +46,9 @@
 // import most common Eigen types
 USING_PART_OF_NAMESPACE_EIGEN
 
+Matrix3d PrecessionMatrix(double mjd);
+Matrix3d NutationMatrix(double mjd);
+
 class StaBody;
 
 namespace sta
@@ -58,6 +61,11 @@ namespace sta
         COORDSYS_EME_B1950,       /*! Inertial, Earth mean equator of B1950 */
         COORDSYS_ECLIPTIC_J2000,  /*! Ecliptic, J2000 */
         COORDSYS_BODYFIXED,
+        COORDSYS_MEAN_OF_DATE,    /*! Mean of Date */
+        COORDSYS_TRUE_OF_DATE,    /*! True of Date */
+        COORDSYS_MEAN_OF_EPOCH,   /*! Mean of Epoch*/
+        COORDSYS_ICRF,            /*! ICRF, International Celestial Reference Frame */
+
         COORDSYS_INVALID,
     };
 
@@ -86,9 +94,13 @@ namespace sta
         {
             return m_type == COORDSYS_EME_J2000 ||
                    m_type == COORDSYS_EME_B1950 ||
+                   m_type == COORDSYS_ICRF      ||
+                   m_type == COORDSYS_MEAN_OF_DATE ||
+                   m_type == COORDSYS_TRUE_OF_DATE ||
+                   m_type == COORDSYS_MEAN_OF_EPOCH ||
                    m_type == COORDSYS_ECLIPTIC_J2000;
         }
-    
+
         /*! Return the coordinate system type. */
         CoordinateSystemType type() const { return m_type; }
 
@@ -99,6 +111,7 @@ namespace sta
 
         StateVector toEmeJ2000(const StateVector& v, const StaBody* center, double mjd) const;
         StateVector fromEmeJ2000(const StateVector& v, const StaBody* center, double mjd) const;
+
 
         static StateVector convert(const StateVector& state,
                                    double mjd,
@@ -115,9 +128,14 @@ namespace sta
                 Vector3d omegaToEmeJ2000(const StaBody* center, double mjd);
                 Vector3d omegaFromEmeJ2000(const StaBody* center, double mjd);
 
+
+
     private:
         CoordinateSystemType m_type;
+
     };
+
 };
+
 
 #endif // _ASTROCORE_STACOORDSYS_H_

@@ -40,6 +40,15 @@ double convertTAItoTDB(double taiSec);
 double convertTAItoTT(double taiSec);
 double convertTTtoTDB(double ttSec);
 double convertTDBtoGPS(double tdbSec);
+
+double convertToMJDUTC(double mjd[], int num);              //Added by Catarina
+double convertToJulianTDB(double mjd[], int num);           //Added by Catarina
+double convertToJulianDate(double mjd[], int num);          //Added by Catarina
+double convertToJulianEphDate(double mjd[], int num);       //Added by Catarina
+double convertToJulianGPS(double mjd[], int num);           //Added by Catarina
+//double convertToEarthCanTime(double mjd[], int num);        //Added by Catarina
+
+
 namespace sta
 {
     int MjdToElapsed(double StartEpoch, int ArrayIndex); //added by Ana
@@ -57,7 +66,9 @@ namespace sta
     QString calendarToDayOfYear(QDateTime DateTime); //added by Ana
     QList<QString> TimeLayout(int day, int month); //added by Ana
     QList<double> DayOfYearToDDD(double DayOfYear);//added by Ana
-   QString MissionElapsedTime(double Date, double StartEpoch);//added by Ana
+    QString MissionElapsedTime(double Date, double StartEpoch);//added by Ana
+
+//    double convertToMJDUTC(double *MJDdate, int index);
 
 
     template <typename T> T secsToDays(T secs)
@@ -128,7 +139,6 @@ namespace TimeConversions
                       TimeScale timeScale = TimeScale_UTC);
 
         GregorianDate& operator=(const GregorianDate& other);
-
         int year() const
         {
             return m_year;
@@ -169,6 +179,8 @@ namespace TimeConversions
             return m_timeScale;
         }
 
+
+
         /** Change the time scale of this date. No conversion is applied, thus
           * calling this method with a different time scale means that the time
           * object will represent a different instant.
@@ -199,6 +211,7 @@ namespace TimeConversions
         static GregorianDate TDBDateFromTDBJD(double tdbjd);
         static GregorianDate UTCDateFromTDBSec(double tdbsec);
         static GregorianDate TDBDateFromTDBSec(double tdbsec);
+        static GregorianDate convertToGregLCL(double mjd[], int num);       //Added by Catarina
 
     private:
         int m_year;
@@ -211,6 +224,7 @@ namespace TimeConversions
         TimeScale m_timeScale;
 
         static LeapSecondTable* s_DefaultLeapSecondTable;
+
     };
 
 

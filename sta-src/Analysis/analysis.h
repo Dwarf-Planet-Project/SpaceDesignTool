@@ -53,6 +53,7 @@ public:
     int InputsControl(QList<QTreeWidget*>tree);
     void Warnings(int i);
 
+
     struct AnalysisData
     {
 	QString GenerationTime;
