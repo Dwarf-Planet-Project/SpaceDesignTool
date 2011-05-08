@@ -34,7 +34,7 @@
 
 #include "RVXMLInterface.h"
 
-#include "ManoeuvresTreeDrag.h"
+#include "manoeuvrestreedrag.h"
 
 #include <QDialog>
 #include <QTreeWidget>
