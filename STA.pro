@@ -25,8 +25,6 @@ message(Qt is installed in $$[QT_INSTALL_PREFIX])
 #CONFIG += Release
 #CONFIG += warn_off
 
-#target.path =
-#INSTALLS += target
 
 TARGET = STA
 
@@ -34,13 +32,12 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     vesta \
+    qtiplot \
     STAapp
-#    schema2cpp
 
 STAapp.file = ./STAapp.pro
 STAapp.depends = vesta
 
 vesta.subdir = thirdparty/vesta
 qtiplot.subdir = thirdparty/qtiplot
-#schema2cpp.subdir = tools/schema2cpp
 
