@@ -19,7 +19,7 @@
 #                                                                                    #
 ######################################################################################
 
-CONFIG += debug_and_release
+#CONFIG += debug_and_release
 #CONFIG += release
 #CONFIG += warn_off
 
@@ -259,8 +259,17 @@ LOCATIONS_FORMS = sta-src/Locations/locationeditor.ui \
     sta-src/Locations/environmentDialog.ui
 
 # ############# Rendezvous Module ##############
-RENDEZVOUS_SOURCES = sta-src/RendezVous/rendezvousDialog.cpp
-RENDEZVOUS_HEADERS = sta-src/RendezVous/rendezvousDialog.h
+RENDEZVOUS_SOURCES = sta-src/RendezVous/rendezvousDialog.cpp \
+    sta-src/RendezVous/scheduledtablemanoeuvres.cpp \
+    sta-src/RendezVous/RVXMLInterface.cpp \
+    sta-src/RendezVous/RVManoeuvres.cpp \
+    sta-src/RendezVous/manoeuvrestreedrag.cpp
+RENDEZVOUS_HEADERS = sta-src/RendezVous/rendezvousDialog.h \
+    sta-src/RendezVous/scheduledtablemanoeuvres.h \
+    sta-src/RendezVous/RVXMLInterface.h \
+    sta-src/RendezVous/RVManoeuvres.h \
+    sta-src/RendezVous/RVconstants.h \
+    sta-src/RendezVous/manoeuvrestreedrag.h
 RENDEZVOUS_FORMS = sta-src/RendezVous/rendezvousDialog.ui
 
 # ############# Coverage Module ##############
@@ -465,7 +474,7 @@ CONSTELLATIONS_FORMS = sta-src/Constellations/cwizard.ui \
 # ############# Help Browser Module ##############
 HELPBROWSER_SOURCES = sta-src/Help/HelpBrowser.cpp
 HELPBROWSER_HEADERS = sta-src/Help/HelpBrowser.h
-HELPBROWSER_FORMS = 
+HELPBROWSER_FORMS =
 
 # ############# Maneuvers module ##############
 MANEUVERS_SOURCES = sta-src/Maneuvers/deltaVDialog.cpp
@@ -599,11 +608,7 @@ SOURCES = $$MAIN_SOURCES \
     $$COVERAGE_SOURCES \
     $$CONSTELLATIONS_SOURCES \
     $$MANEUVERS_SOURCES \
-    $$SERVICES_SOURCES \
-    sta-src/RendezVous/scheduledtablemanoeuvres.cpp \
-    sta-src/RendezVous/RVXMLInterface.cpp \
-    sta-src/RendezVous/RVManoeuvres.cpp \
-    sta-src/RendezVous/manoeuvrestreedrag.cpp
+    $$SERVICES_SOURCES
 HEADERS = $$MAIN_HEADERS \
     $$ASTROCORE_HEADERS \
     $$SEM_HEADERS \
@@ -630,12 +635,7 @@ HEADERS = $$MAIN_HEADERS \
     $$COVERAGE_HEADERS \
     $$CONSTELLATIONS_HEADERS \
     $$MANEUVERS_HEADERS \
-    $$SERVICES_HEADERS \
-    sta-src/RendezVous/scheduledtablemanoeuvres.h \
-    sta-src/RendezVous/RVXMLInterface.h \
-    sta-src/RendezVous/RVManoeuvres.h \
-    sta-src/RendezVous/RVconstants.h \
-    sta-src/RendezVous/manoeuvrestreedrag.h
+    $$SERVICES_HEADERS
 FORMS = $$MAIN_FORMS \
     $$ASTROCORE_FORMS \
     $$SEM_FORMS \
@@ -686,7 +686,8 @@ LIBS += -lvesta -Lthirdparty/vesta/build
 
 DEFINES += EIGEN_USE_NEW_STDVECTOR
 
-win32 { 
+########################################## Windows ######################################################
+win32 {
     # SPICE support
     # SOURCES += $$SPICE_SOURCES
     # HEADERS += $$SPICE_HEADERS
@@ -695,7 +696,7 @@ win32 {
 
     RC_FILE = sta-src/sta.rc
     DEFINES += _CRT_SECURE_NO_WARNINGS
-    
+
     # Disable the regrettable min and max macros in windows.h
     DEFINES += NOMINMAX
 
@@ -774,10 +775,11 @@ win32 {
 }
 
 
-linux-g++ { 
-    # We use gcc newer versions to allow 64 bits compilations
-    QMAKE_CXX     >= g++-4.3
-    QMAKE_CC      >= gcc-4.3
+
+
+
+############################################# Linux #######################################################
+linux-g++ {
     QT += dbus
 
     QMAKE_CXXFLAGS_RELEASE = -ffast-math \
@@ -791,18 +793,30 @@ linux-g++ {
     HARDWARE_PLATFORM = $$system(uname -a)
     contains( HARDWARE_PLATFORM, x86_64 ) {
         # 64-bit Linux
-    message("Warning: compiling a 64-bit linux version with >= gcc v4.3")
+    message("Warning: compiling a 64-bit linux version")
     LIBS += -L$$PWD/lib/linux-x64
     LIBS += -lcspice
+    LIBS += -lgsl
+    LIBS += -lgslcblas
+    LIBS += $$PWD/lib/linux-x64/libqwt.so.5.2.2
+    LIBS += $$PWD/lib/linux-x64/libqwtplot3d.so.1.0.0
+    LIBS += $$PWD/lib/linux-x64/libqtiplot.so.1.0.0
     } else {
         # 32-bit Linux
-    message("Warning: compiling a 32-bit linux version with >= gcc v4.3")
+    message("Warning: compiling a 32-bit linux version")
     LIBS += -L$$PWD/lib/linux-x86
     LIBS += -lcspice
+    LIBS += -lgsl
+    LIBS += -lgslcblas
+    LIBS += $$PWD/lib/linux-x86/libqwt.so.5.2.2
+    LIBS += $$PWD/lib/linux-x86/libqwtplot3d.so.1.0.0
+    LIBS += $$PWD/lib/linux-x86/libqtiplot.so.1.0.0
     }
 }
 
-# ################## Package files ###################
+
+
+# ######################################## MAC OS X bundle ##################################################
 VIS3D_SOURCE = sta-data/vis3d
 VIS3D_FILES =
 SEMMISCELANEOUS_SOURCE = sta-data/data
@@ -812,38 +826,38 @@ SEMMISCELANEOUS_FILES = $$SEMMISCELANEOUS_SOURCE/EclipseDetailedReport.stad \
 EPHEMERIS_SOURCE = sta-data/ephemerides
 EPHEMERIS_FILES = sta-data/ephemerides/de406_1800-2100.dat
 TEXTURE_SOURCE = sta-data/textures/medres
-TEXTURE_FILES = 
+TEXTURE_FILES =
 MODEL_SOURCE = sta-data/models
-MODEL_FILES = 
+MODEL_FILES =
 ESTIMATIONS_SOURCE = sta-data/data/Estimations
-ESTIMATIONS_FILES = 
+ESTIMATIONS_FILES =
 MATERIALS_SOURCE = sta-data/data/MaterialDatabase
-MATERIALS_FILES = 
+MATERIALS_FILES =
 SEMREPORTS_SOURCE = sta-data/data/SystemsEngineeringReports
-SEMREPORTS_FILES = 
+SEMREPORTS_FILES =
 HEATRATE_SOURCE = sta-data/data/heatrates
-HEATRATE_FILES = 
+HEATRATE_FILES =
 AERO_SOURCE = sta-data/data/aerodynamics
-AERO_FILES = 
+AERO_FILES =
 RAMOUTPUT_SOURCE = sta-data/data/ramoutput
-RAMOUTPUT_FILES = 
+RAMOUTPUT_FILES =
 VEHICLEWGS_SOURCE = sta-data/data/vehiclewgs
-VEHICLEWGS_FILES = 
+VEHICLEWGS_FILES =
 ATMOSPHERES_SOURCE = sta-data/data/atmospheres
-ATMOSPHERES_FILES = 
+ATMOSPHERES_FILES =
 BODIES_SOURCE = sta-data/data/bodies
-BODIES_FILES = 
+BODIES_FILES =
 SCHEMA_SOURCE = sta-data/schema/spacescenario/2.0
-SCHEMA_FILES = 
+SCHEMA_FILES =
 TLEs_SOURCE = sta-data/TLEs
-TLEs_FILES = 
+TLEs_FILES =
 MACOSXIconFiles_SOURCE = iconary
 MACOSXIconFiles_FILES =
 USERMANUAL_SOURCE = sta-data/help
 USERMANUAL_FILES =
 
-# ############### MAC OS X bundle ########################
-macx { 
+
+macx {
      message( "Warning: building on MAC OS X for x86 architecture only" )
      QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
 
@@ -995,8 +1009,8 @@ macx {
     # ld: warning: directory '/tmp/qt-stuff-18929/source/qt-everywhere-opensource-src-4.7.0/lib' following -F not found
     #QMAKE_PRL_LIBS = -framework Qt<ModuleDep>
 
-	# Next command has been moved to the Qt Projects Build Steps list
-	## Deploys Qt frameworks inside the MAC bundle but efficiently
+        # Next command has been moved to the Qt Projects Build Steps list
+        ## Deploys Qt frameworks inside the MAC bundle but efficiently
     #STAMACDEPLOY = $$system(macdeployqt ../STA-build-desktop/STA.app)
     #message($$STAMACDEPLOY)
 
