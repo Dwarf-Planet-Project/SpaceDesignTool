@@ -688,6 +688,9 @@ DEFINES += EIGEN_USE_NEW_STDVECTOR
 
 ########################################## Windows ######################################################
 win32 {
+    # Removing teh SSL support to allow proper compilation in Windows
+    DEFINES += QT_NO_SSL
+
     # SPICE support
     # SOURCES += $$SPICE_SOURCES
     # HEADERS += $$SPICE_HEADERS
