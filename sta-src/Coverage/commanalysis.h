@@ -64,12 +64,12 @@ private:
 
     ///////////////////////////// PRIVATE FUNCTIONS NOT TO BE USED OUTSIDE THIS CLASS /////////////////////////////////////
     
-    double DopplerShift();
-    double FreeSpaceLoss();
+    QList<double> getDopplerShiftList(int numberOfRows);
+    QList<double> getFreeSpaceLossList(int numberOfRows);
     double OxygenSpecificAttenuation(double frequency); //Here I pass the frequency as argument coz It has to be the groundStation frequency...I don't know how to get the parent object yet!
     double WaterVapourSpecificAttenuation(double frequency, double latitude, double longitude);
-    double AtmosphericAttenuation(double frequency, double wpSpecAtt, double oxSpecAtt);
-    double RainAttenuation(double latitude, double longitude);
+    QList<double> getAtmosphericAttenuation(double frequency, double wpSpecAtt, double oxSpecAtt, int numberOfRows);
+    QList<double> getRainAttenuation(double latitude, double longitude, int numberOfRows);
     double SystemTempCalculations();
     double Modulations(double EbNo);
 
