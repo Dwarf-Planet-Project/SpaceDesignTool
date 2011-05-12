@@ -27,6 +27,7 @@
 #include "Scenario/scenario.h"
 #include "Main/propagatedscenario.h"
 #include "Main/scenariotree.h"
+#include "Main/findDataFolder.h"
 #include "Astro-Core/statevector.h"
 #include "Astro-Core/date.h"
 #include "Astro-Core/stacoordsys.h"
@@ -67,7 +68,9 @@
 #include <QMessageBox>
 #include <QPrinter>
 
-
+#ifdef Q_WS_MAC
+#include <CoreFoundation/CFBundle.h>
+#endif
 
 
 class ScenarioTree;
@@ -699,70 +702,6 @@ int analysis::ObjectsIndex(QStringList AllObjects, int Index, QString ObjectType
 }
 
 
-/*
-
-void analysis::on_buttonBox_helpRequested()
-{
-    qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void analysis::on_buttonBox_clicked(QAbstractButton*)
-{
-    qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void analysis::on_buttonBox_destroyed(QObject*)
-{
-    qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void analysis::on_buttonBox_destroyed()
-{
-    qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void analysis::on_buttonBox_customContextMenuRequested(const QPoint&)
-{
-    qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void analysis::on_buttonBox_accepted()
-{
-    qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-void analysis::on_buttonBox_rejected()
-{
-    qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-
-*/
-
-/*
-
-void Analysis::on_groupBoxAnalysisFormat_toggled(bool)
-{
-
-}
-*/
-/*void analysis::on_ComboBoxAnalysisFormat_activated(const QString&)
-{
-
-}*/
-
-/*
-void analysis::on_groupBoxParameters_toggled(bool)
-{
-
-}
-
-void analysis::on_groupBoxTimeSpecifications_toggled(bool)
-{
-
-}
-*/
-
-
 bool analysis::CheckIfMissionArc()
 {
     /*
@@ -1155,25 +1094,6 @@ void analysis::on_DeleteTimePushButton_clicked()
         delete selectedTimes.at(i);
     }
 }
-
-//void Analysis::on_groupBoxReport_toggled(bool)
-//{
-//	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-//}
-
-//void Analysis::on_AddParameterPushButton_clicked()
-//{
-//      qWarning("TODO: %s	%d",__FILE__,__LINE__);
-//}
-//void Analysis::on_RemoveParameterPushButton_clicked()
-//{
-//	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-//}
-
-/*void analysis::on_groupBoxPlotAxesSettings_toggled(bool)
-{
-    qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}*/
 
 
 int analysis::InputsControl(QList<QTreeWidget*>tree)
@@ -1687,6 +1607,9 @@ void analysis::on_GeneratePushButton_clicked()
 
 void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetItem *> selectedTimes)
 {
+    // Identifying the resources path
+    QString staResourcesPath = findDataFolder();
+
     /*
   generates and displays the report with the user-specified data
   Inputs: selected- list of the selected lines in the scenario tree of the AM GUI, selectedTimes- list of the selected time intervals
@@ -1742,8 +1665,6 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
             int TxParentTy=selected.at(t)->child(0)->text(0).toInt();
 
-
-
             if(TxParentTy==0)
             {
                 indGS=TxParentIndex;
@@ -1797,7 +1718,8 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
             ReadCoverage=true;
         }
-        if((name=="Equivalent Isotropical Radiated Power")||(name=="Received Frequency")||(name=="Doppler Shift")||(name=="Received Power")||(name=="Flux Density")||(name=="Overlap Bandwidth Factor"))
+        //if((name=="Equivalent Isotropical Radiated Power")||(name=="Received Frequency")||(name=="Doppler Shift")||(name=="Received Power")||(name=="Flux Density")||(name=="Overlap Bandwidth Factor"))
+        if((name=="EIRP")||(name=="Received Frequency")||(name=="Doppler Shift")||(name=="Received Power")||(name=="Flux Density")||(name=="Overlap Bandwidth Factor"))
         {
             ReadCommunication1=true;
         }
@@ -1809,9 +1731,8 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
             ReadCommunication3=true;
     }
 
-    // Patched by Guillermo to allow read of files in MAc and Linux
-    QString ResourcesPath = QDir::currentPath ();
-    QString analysisFile = ResourcesPath + "/" + "analysisReport.txt";
+    // Patched by Guillermo to allow read of files in MAC and Linux
+    QString analysisFile = staResourcesPath + "/" + "analysisReport.txt";
     QFile file(analysisFile);
     file.open(QIODevice::WriteOnly);
     QTextStream stream(&file);
@@ -1893,17 +1814,14 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
 
             if(ReadCoverage==true)
             {
-
                 CoverageAnalysis covAna=CoverageAnalysis(m_propagatedScenario, indSC, indGS, indMissionArc);
                 covAna.reportAER();
-                QString Path = QDir::currentPath ();
-                QString CoverageFile = Path + "/" + "reportCov1.txt";
-                //QFile file(analysisFile);
+                // Patched by Guillermo to allow read of files in MAC and Linux
+                QString CoverageFile = staResourcesPath + "/" + "reportCov1.txt";
                 QFile Coverage(CoverageFile);
 
                 if(Coverage.open(QIODevice::ReadOnly ))
                 {
-
                     QTextStream text(&Coverage);
                     while(!text.atEnd())
                     {
@@ -1913,14 +1831,14 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                     Coverage.close();
                 }
             }
+
+            ReadCommunication1 = true; ReadCommunication2 = false;  ReadCommunication3 = false;
             if(ReadCommunication1==true)
             {
-
-                CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
+                CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc, TxParentType, RxParentType);
                 commAnalysis.CommReports();
-                QString Path = QDir::currentPath ();
-                QString Comm1File = Path + "/" + "reportComm1.txt";
-
+                // Patched by Guillermo to allow read of files in MAC and Linux
+                QString Comm1File = staResourcesPath + "/" + "reportComm1.txt";
                 QFile Communication1(Comm1File);
 
                 if(Communication1.open(QIODevice::ReadOnly ))
@@ -1938,9 +1856,8 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
             {
                 CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
                 commAnalysis.CommReports();
-                QString Path = QDir::currentPath ();
-                QString Comm2File = Path + "/" + "reportComm2.txt";
-
+                // Patched by Guillermo to allow read of files in MAC and Linux
+                QString Comm2File = staResourcesPath + "/" + "reportComm2.txt";
                 QFile Communication2(Comm2File);
 
                 if(Communication2.open(QIODevice::ReadOnly ))
@@ -1958,9 +1875,8 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
             {
                 CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
                 commAnalysis.CommReports();
-                QString Path = QDir::currentPath ();
-                QString Comm3File = Path + "/" + "reportComm3.txt";
-
+                // Patched by Guillermo to allow read of files in MAC and Linux
+                QString Comm3File = staResourcesPath + "/" + "reportComm3.txt";
                 QFile Communication3(Comm3File);
 
                 if(Communication3.open(QIODevice::ReadOnly ))
@@ -2572,14 +2488,12 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                             }
                             if(name=="Received Power")
                             {
-
                                 if(Comm1Index[3]<LineOfComm1Report.size())
                                 {
                                     QString Line=LineOfComm1Report.at(Comm1Index[3]);
 
                                     double TimeCommReport=(Line.section("\t",0,0)).toDouble();
                                     double RcvFreq=(Line.section("\t",4,4)).toDouble();
-
                                     if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
                                     {
                                         stream<<RcvFreq<<"\t";
@@ -2602,7 +2516,6 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                             }
                             if(name=="Flux Density")
                             {
-
                                 if(Comm1Index[4]<LineOfComm1Report.size())
                                 {
                                     QString Line=LineOfComm1Report.at(Comm1Index[4]);
@@ -2612,7 +2525,7 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                     if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
                                     {
                                         stream<<FluxDensity<<"\t";
-                                        stream<<FluxDensity<<"\t";
+                                        analysisRow<<FluxDensity;
                                         Comm1Index[4]++;
                                     }
 
@@ -3271,6 +3184,10 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
       generates the data structure to send the information to the plotting module
       Inputs: selected- list of the selected lines in the scenario tree of the AM GUI, selectedTimes- list of the selected time intervals
       */
+
+    // Identifying the resources path
+    QString staResourcesPath = findDataFolder();
+
     QList<AnalysisData>DataStructure;
     //QList<QString>Titles;
     //QList<double>LineData;
@@ -3320,12 +3237,8 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
         {
 
             TxParentIndex=selected.at(t)->child(1)->text(0).toInt();
-
             TxArrayIndex=selected.at(t)->child(2)->text(0).toInt();
-
             int TxParentTy=selected.at(t)->child(0)->text(0).toInt();
-
-
 
             if(TxParentTy==0)
             {
@@ -3350,17 +3263,14 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
             int RxParentTy=(selected.at(t)->child(0)->text(0)).toInt();
             if(RxParentTy==0)
             {
-
                 indGS=RxParentIndex;
                 Receiver=RxGS.at(RxArrayIndex);
                 Environment=GSEnvironment.at(indGS);
                 RxParentType=false;
-
             }
             //indGS=0;
             if(RxParentTy==1)
             {
-
                 indSC=RxParentIndex;
                 Receiver=RxSC.at(RxArrayIndex);
                 RxParentType=true;
@@ -3447,12 +3357,9 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                 QStringList LineOfComm3Report;
                 if(ReadCoverage==true)
                 {
-
                     CoverageAnalysis covAna=CoverageAnalysis(m_propagatedScenario, indSC, indGS, indMissionArc);
                     covAna.reportAER();
-                    QString Path = QDir::currentPath ();
-                    QString CoverageFile = Path + "/" + "reportCov1.txt";
-
+                    QString CoverageFile = staResourcesPath + "/" + "reportCov1.txt";
                     QFile Coverage(CoverageFile);
 
                     if(Coverage.open(QIODevice::ReadOnly ))
@@ -3468,15 +3375,10 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                 }
                 if(ReadCommunication1==true)
                 {
-
-
                     CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
-
                     commAnalysis.CommReports();
 
-                    QString Path = QDir::currentPath ();
-                    QString Comm1File = Path + "/" + "reportComm1.txt";
-
+                    QString Comm1File = staResourcesPath + "/" + "reportComm1.txt";
                     QFile Communication1(Comm1File);
 
                     if(Communication1.open(QIODevice::ReadOnly ))
@@ -3488,16 +3390,13 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                             LineOfComm1Report.append(Communication1Line);
                         }
                         Communication1.close();
-
                     }
                 }
                 if(ReadCommunication2==true)
                 {
                     CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
                     commAnalysis.CommReports();
-                    QString Path = QDir::currentPath ();
-                    QString Comm2File = Path + "/" + "reportComm2.txt";
-
+                    QString Comm2File = staResourcesPath + "/" + "reportComm2.txt";
                     QFile Communication2(Comm2File);
 
                     if(Communication2.open(QIODevice::ReadOnly ))
@@ -3515,8 +3414,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                 {
                     CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
                     commAnalysis.CommReports();
-                    QString Path = QDir::currentPath ();
-                    QString Comm3File = Path + "/" + "reportComm3.txt";
+                    QString Comm3File = staResourcesPath + "/" + "reportComm3.txt";
 
                     QFile Communication3(Comm3File);
 
@@ -3546,9 +3444,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                     }
 
                     if((ControlStop==0)&&(ControlStop==0)) // there is enought data to continue calculations
-
                     {
-
                         int i=0;
                         while(( (arc->trajectorySampleTime(i)))<(StartTime[k]))
                         {
