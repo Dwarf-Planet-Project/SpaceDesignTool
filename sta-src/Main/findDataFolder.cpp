@@ -26,7 +26,7 @@
  */
 
 #include <QString>
-
+#include <QDir>
 
 #ifdef Q_WS_MAC
 #include <CoreFoundation/CFBundle.h>
