@@ -74,7 +74,8 @@ MAIN_SOURCES = \
     sta-src/Main/about.cpp \
     sta-src/Main/preferences.cpp \
     sta-src/Main/ViewActionGroup.cpp \
-    sta-src/Main/OemImporter.cpp
+    sta-src/Main/OemImporter.cpp \
+    sta-src/Main/findDataFolder.cpp
 
 MAIN_HEADERS = \
     sta-src/Main/initialstateeditor.h \
@@ -98,7 +99,8 @@ MAIN_HEADERS = \
     sta-src/Main/about.h \
     sta-src/Main/preferences.h \
     sta-src/Main/ViewActionGroup.h \
-    sta-src/Main/OemImporter.h
+    sta-src/Main/OemImporter.h \
+    sta-src/Main/findDataFolder.h
 
 MAIN_FORMS = sta-src/Main/initialstateeditor.ui \
     sta-src/Main/mainwindow.ui \
@@ -858,6 +860,8 @@ MACOSXIconFiles_SOURCE = iconary
 MACOSXIconFiles_FILES =
 USERMANUAL_SOURCE = sta-data/help
 USERMANUAL_FILES =
+MAPS_SOURCE = sta-data/data/maps
+MAPS_FILES =
 
 
 macx {
@@ -940,6 +944,8 @@ macx {
     USERMANUAL_FILES = $$join(FILES, " $$USERMANUAL_SOURCE/", $$USERMANUAL_SOURCE/)
     FILES = $$system(ls $$MACOSXIconFiles_SOURCE)
     MACOSXIconFiles_FILES = $$join(FILES, " $$MACOSXIconFiles_SOURCE/", $$MACOSXIconFiles_SOURCE/)
+    FILES = $$system(ls $$MAPS_SOURCE)
+    MAPS_FILES = $$join(FILES, " $$MAPS_SOURCE/", $$MAPS_SOURCE/)
 
     INCLUDEPATH += $$MACOSX_LIBRARIES_DIR
     FRAMEWORKS.path = Contents/Frameworks
@@ -982,6 +988,8 @@ macx {
     USERMANUAL.files = $$USERMANUAL_FILES
     MACOSXIconFiles.path = Contents/Resources
     MACOSXIconFiles.files = $$MACOSXIconFiles_FILES
+    MAPS.path = Contents/Resources/STAResources/data/maps
+    MAPS.files = $$MAPS_FILES
 
     QMAKE_BUNDLE_DATA += \
         MACOSXIconFiles \
@@ -1002,7 +1010,8 @@ macx {
         RAMOUTPUT \
         VEHICLEWGS \
         ATMOSPHERES \
-        BODIES
+        BODIES \
+        MAPS
 
     ## MAC OS X specifics to load inside the bundle the Qt frameworks to avoid separated installation
     ## and make STA a droppable and callable application, MAC alike
