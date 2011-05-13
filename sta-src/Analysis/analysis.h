@@ -73,22 +73,11 @@ public:
     PlotView3D* plotView3D;
 
 protected slots:
-    //void on_groupBoxAnalysisFormat_toggled(bool);
-    //void on_ComboBoxAnalysisFormat_activated(const QString&);
-    //void on_groupBoxParameters_toggled(bool);
-    //void on_groupBoxTimeSpecifications_toggled(bool);
+
     void on_AddDefaultPushButton_clicked();
-    //void on_AddNewPushButton_clicked();
     void on_EditTimePushButton_clicked();
     void on_DeleteTimePushButton_clicked();
-    //void on_groupBoxReport_toggled(bool);
-    //void on_AddParameterPushButton_clicked();
-    //void on_RemoveParameterPushButton_clicked();
-    //void on_groupBoxPlotAxesSettings_toggled(bool);
     void on_GeneratePushButton_clicked();
-    //void on_TotalHelpPushButton_clicked();  // Guillermo says: Why is this required? Can you used my action?
-    // void on_ClosePushButton_clicked();   // Guillermo says: not needed any more
-    //Guillermo
     void raiseHelp();
     void saveImage2D();
     void saveImage3D();
@@ -98,10 +87,7 @@ public slots:  // Added by Ana
     void addParameter(); //clicked
     void removeParameter();//clicked
     void enableReportOption(int i);
-    //void SetTimeUnits(int i);
-    //void PlotComboBox(QList<QTreeWidgetItem*>List, int i);
-    // void InsertingComboBox(int);
-    // void AddDefaultTime();
+
 
 private:
     void setPlotScales();
@@ -135,26 +121,9 @@ private:
     QList<ScenarioReceiverPayloadType*>RxSC;
     QList<ScenarioReceiverPayloadType*>RxGS;
     QList<ScenarioGroundStationEnvironment*>GSEnvironment;
-    double calcKeplerianElements(
-                const sta::StateVector& Vector,
-                const StaBody* Body,
-                const QString& OrbElement,
-				 double mjd,
-                 const QString& FromCoordinate,
-                 const QString& ToCoordinate);
-    sta::CoordinateSystem CoordSys(QString Coordinate);
-    double calcDelaunayElements(const sta::StateVector& Vector,
-                                const StaBody* Body,
-                                const QString& OrbElement,
-                                double mjd,
-                                const QString& FromCoordinate,
-                                const QString& ToCoordinate);
-    double calcEquinoctialElements(const sta::StateVector& Vector,
-                                   const StaBody* Body,
-                                   const QString& OrbElement,
-                                   double mjd,
-                                   const QString& FromCoordinate,
-                                   const QString& ToCoordinate);
+
+
+
 };
 
 

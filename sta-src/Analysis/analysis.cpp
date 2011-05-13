@@ -37,6 +37,7 @@
 #include "Astro-Core/cartesianTOorbital.h"
 #include "Astro-Core/cartesianTOspherical.h"
 #include "Astro-Core/date.h"
+#include "Astro-Core/calculateElements.h"
 #include "Coverage/commanalysis.h"
 #include "Coverage/coverageanalysis.h"
 
@@ -3029,7 +3030,8 @@ void analysis::WriteReport(QList<QTreeWidgetItem *> selected,QList<QTreeWidgetIt
                                                                              arc->centralBody(),
                                                                              EME2000,
                                                                              arc->centralBody(),
-                                                                             analysis::CoordSys(ToCoord));
+                                                                             //analysis::CoordSys(ToCoord));
+                                                                             CoordSys(ToCoord));
                                 double SphericalElements[6]; // tau, delta, r, V, gamma, chi
                                 cartesianTOspherical(ModifVector[index].position.x(),ModifVector[index].position.y(),ModifVector[index].position.z(),
                                                      ModifVector[index].velocity.x(),ModifVector[index].velocity.y(),ModifVector[index].velocity.z(),
@@ -4363,7 +4365,7 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
                                                                                  arc->centralBody(),
                                                                                  EME2000,
                                                                                  arc->centralBody(),
-                                                                                 analysis::CoordSys(ToCoord));
+                                                                                 CoordSys(ToCoord)); //analysis::CoordSys(ToCoord));
                                     double SphericalElements[6]; // tau, delta, r, V, gamma, chi
 
                                     cartesianTOspherical(ModifVector[index].position.x(),ModifVector[index].position.y(),ModifVector[index].position.z(),
@@ -4514,240 +4516,10 @@ QList< analysis::AnalysisData> analysis::WriteDataStructure(QList<QTreeWidgetIte
     return DataStructure;
 }
 
-/*void analysis::on_TotalHelpPushButton_clicked()
-{
-    qWarning("TODO: %s	%d",__FILE__,__LINE__);
-}
-*/
-/*void analysis::on_ClosePushButton_clicked()
-{
-    this->close();
-
-}*/
-sta::CoordinateSystem analysis::CoordSys(QString Coordinate)
-{
-    /*
-  returns the name of the output coordinate system that shall be sent to the function that performs the transformation
-*/
-    if(Coordinate=="EME J2000")
-    {
-        sta::CoordinateSystem Coord("INERTIAL J2000");
-        return Coord;
-    }
-    if(Coordinate=="EME B1950")
-    {
-        sta::CoordinateSystem Coord("INERTIAL B1950");
-        return Coord;
-    }
-    if(Coordinate=="Fixed")
-    {
-        sta::CoordinateSystem Coord("PLANETO FIXED");
-        return Coord;
-    }
-    if(Coordinate=="Ecliptic J2000")
-    {
-        sta::CoordinateSystem Coord("ECLIPTIC");
-        return Coord;
-    }
-        if(Coordinate=="ICRF")
-        {
-            sta::CoordinateSystem Coord("ICRF");
-            return Coord;
-        }
-        if(Coordinate=="Mean of Date")
-        {
-            sta::CoordinateSystem Coord("Mean of Date");
-            return Coord;
-        }
-        if(Coordinate=="True of Date")
-        {
-            sta::CoordinateSystem Coord("True of Date");
-            return Coord;
-        }
 
 
 
-    if(Coordinate==" ")
-    {
-        sta::CoordinateSystem Coord("INVALID");
-        return Coord;
-    }
-}
 
-
-/** Calculates the Keplerian Elements of a certain orbit
-  * Inputs:
-  *     Vector-statevector for each time step
-  *     Body-pointer to the central Body
-  *     OrbElement- name of the element the user wishes to analyse
-  *     mjd-time in Modified Julian Date
-  *     FromCoordinate- coordinate system of the data before transformation,
-  *     ToCoordinate- coordinate system that shall appear as output)
-  *
-  * Outputs: parameter to be displayed/analysed
-  */
-double analysis::calcKeplerianElements(const sta::StateVector& Vector,
-                                       const StaBody* Body,
-                                       const QString& OrbElement,
-                                       double mjd,
-                                       const QString& FromCoordinate,
-                                       const QString& ToCoordinate)
-{
-    sta::StateVector ModifVector=CoordinateSystem::convert(Vector,
-                                                           mjd,
-                                                           Body,
-                                                           analysis::CoordSys(FromCoordinate),
-                                                           Body,
-                                                           analysis::CoordSys(ToCoordinate));
-    //double mu = Earth_GRAVITY_PARAMETER;
-
-    double mu=Body->mu();
-
-
-    sta::KeplerianElements KepElemList=cartesianTOorbital(mu, ModifVector);
-
-    double Element=0;
-    if(OrbElement=="Eccentricity")
-    {
-        Element=KepElemList.Eccentricity;
-    }
-    if(OrbElement=="Inclination")
-    {
-        Element=KepElemList.Inclination;
-    }
-    if(OrbElement=="Semimajor Axis")
-    {
-        Element=KepElemList.SemimajorAxis;
-    }
-    if(OrbElement=="RAAN")
-    {
-        Element=KepElemList.AscendingNode;
-    }
-    if(OrbElement=="Argument of Periapsis")
-    {
-        Element=KepElemList.ArgumentOfPeriapsis;
-    }
-    if(OrbElement=="True Anomaly")
-    {
-        Element=KepElemList.TrueAnomaly;
-    }
-
-    return Element;
-}
-
-
-/** Calculates the Delaunay Elements of a certain orbit
-  * Inputs:
-  *     Vector-statevector for each time step
-  *     Body-pointer to the central Body
-  *     OrbElement- name of the element the user wishes to analyse
-  *     mjd-time in Modified Julian Date
-  *     FromCoordinate- coordinate system of the data before transformation,
-  *     ToCoordinate- coordinate system that shall appear as output)
-  *
-  * Outputs: parameter to be displayed/analysed
-  */
-double analysis::calcDelaunayElements(const sta::StateVector& Vector,
-                                      const StaBody* Body,
-                                      const QString& OrbElement,
-                                      double mjd,
-                                      const QString& FromCoordinate,
-                                      const QString& ToCoordinate)
-{
-    sta::StateVector ModifVector=CoordinateSystem::convert(Vector,
-                                                           mjd,
-                                                           Body,
-                                                           analysis::CoordSys(FromCoordinate),
-                                                           Body,
-                                                           analysis::CoordSys(ToCoordinate));
-    double mu = Body->mu();
-    //qDebug()<<mu-1000000<<"mu del";
-    sta::DelaunayElements DelaunayElem=cartesianTOdelaunay(mu, ModifVector);
-
-    double Element=0;
-    if(OrbElement=="l")
-    {
-        Element=DelaunayElem.l;
-    }
-    if(OrbElement=="g")
-    {
-        Element=DelaunayElem.g;
-    }
-    if(OrbElement=="h")
-    {
-        Element=DelaunayElem.h;
-    }
-    if(OrbElement=="L")
-    {
-        Element=(DelaunayElem.L);
-    }
-    if(OrbElement=="G")
-    {
-        Element=DelaunayElem.G;
-    }
-    if(OrbElement=="H")
-    {
-        Element=DelaunayElem.H;
-    }
-
-    return Element;
-}
-
-
-/** Calculates the Equinoctial Elements of a certain orbit
-  *
-  * Inputs:Vector-statevector for each time step,
-  *        Body-pointer to the central Body
-  *        OrbElement- name of the element the user wishes to analyse
-  *        mjd-time in Modified Julian Date,
-  *        FromCoordinate- coordinate system of the data before transformation,
-  *        ToCoordinate- coordinate system that shall appear as output)
-  * Outputs: parameter to be displayed/analysed
-  */
-double analysis::calcEquinoctialElements(const sta::StateVector& Vector,
-                                         const StaBody* Body,
-                                         const QString& OrbElement,
-                                         double mjd,
-                                         const QString& FromCoordinate,
-                                         const QString& ToCoordinate)
-{
-    sta::StateVector ModifVector=CoordinateSystem::convert(Vector,
-                                                           mjd,
-                                                           Body,
-                                                           analysis::CoordSys(FromCoordinate),
-                                                           Body,
-                                                           analysis::CoordSys(ToCoordinate));
-    double mu = Body->mu();
-    sta::EquinoctialElements EquinoctialElem=cartesianTOequinoctial(mu, ModifVector);
-
-    double Element=0;
-    if(OrbElement=="Semimajor Axis")
-    {
-        Element=EquinoctialElem.SemimajorAxis;
-    }
-    if(OrbElement=="e*cos(omegaBar)")
-    {
-        Element=EquinoctialElem.ecos;
-    }
-    if(OrbElement=="e*sin(omegaBar)")
-    {
-        Element=EquinoctialElem.esin;
-    }
-    if(OrbElement=="Mean Longitude")
-    {
-        Element=EquinoctialElem.MeanLon;
-    }
-    if(OrbElement=="tan(i/2)*sin(raan)")
-    {
-        Element=EquinoctialElem.tansin;
-    }
-    if(OrbElement=="tan(i/2)*cos(raan)")
-    {
-        Element=EquinoctialElem.tancos;
-    }
-
-    return Element;
-}
 
 QList< QList<double> >  analysis::calcAccessTime(int countStop,int countStart, int AccessNumber, int AccessStep, int AccessNow,int CovIndex,QStringList LineOfCoverageReport,MissionArc*arc)
 {
