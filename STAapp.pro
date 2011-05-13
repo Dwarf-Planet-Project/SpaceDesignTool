@@ -163,7 +163,9 @@ ASTROCORE_SOURCES = sta-src/Astro-Core/calendarTOjulian.cpp \
     sta-src/Astro-Core/surfaceVelocity.cpp \
     sta-src/Astro-Core/EclipseDuration.cpp \
     sta-src/Astro-Core/bodyTOwind.cpp \
-    sta-src/Astro-Core/nedTOfixed.cpp
+    sta-src/Astro-Core/nedTOfixed.cpp \
+    sta-src/Astro-Core/calculateElements.cpp
+
 ASTROCORE_HEADERS = sta-src/Astro-Core/calendarTOjulian.h \
     sta-src/Astro-Core/date.h \
     sta-src/Astro-Core/EarthRotationState.h \
@@ -214,7 +216,9 @@ ASTROCORE_HEADERS = sta-src/Astro-Core/calendarTOjulian.h \
     sta-src/Astro-Core/surfaceVelocity.h \
     sta-src/Astro-Core/EclipseDuration.h \
     sta-src/Astro-Core/bodyTOwind.h \
-    sta-src/Astro-Core/nedTOfixed.h
+    sta-src/Astro-Core/nedTOfixed.h \
+    sta-src/Astro-Core/calculateElements.h
+
 ASTROCORE_FORMS = sta-src/Astro-Core/trajectorypropagation.ui
 
 # ############# Entry module ##################
