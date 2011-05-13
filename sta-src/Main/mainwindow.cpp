@@ -161,7 +161,7 @@ MainWindow::MainWindow(QWidget *parent)	:
     // Scenario view dock item
     QDockWidget* scenarioViewDock = new QDockWidget(tr("Scenario View"), this);
     scenarioViewDock->setObjectName("sta-scenario-view");
-    scenarioViewDock->setAllowedAreas(Qt::LeftDockWidgetArea);
+    //scenarioViewDock->setAllowedAreas(Qt::LeftDockWidgetArea);
 
     m_scenarioView = new ScenarioView(this);
     scenarioViewDock->setWidget(m_scenarioView);
@@ -171,7 +171,7 @@ MainWindow::MainWindow(QWidget *parent)	:
     // Scenario element box dock item
     QDockWidget* scenarioElementDock = new QDockWidget(tr("Scenario Element Box"), this);
     scenarioElementDock->setObjectName("sta-scenario-element-box");
-    scenarioElementDock->setAllowedAreas(Qt::LeftDockWidgetArea);
+    //scenarioElementDock->setAllowedAreas(Qt::LeftDockWidgetArea);
     scenarioElementDock->setFloating(false);
     //scenarioElementDock->setAutoFillBackground(true);
 
