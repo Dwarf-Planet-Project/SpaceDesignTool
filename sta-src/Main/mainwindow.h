@@ -59,7 +59,7 @@ class LoiteringTLEDialog;
 class ExternalDialog;
 class AboutDialog;
 class SEMVehicleDialog;
-class AnalysisDialog;
+class QtiPlotMain;
 class STAcalculator;
 
 class ViewActionGroup;
@@ -167,7 +167,6 @@ private:
     ThreeDVisualizationTool* m_threeDViewWidget;
     STAcalculator* STAcalculatorWidget;
     ScenarioElementBox* m_scenarioElementBox;
-    //QTabWidget* m_viewPanel;
     QStackedWidget* m_viewPanel;
 
     RendezvousDialog* m_rendezvousDialog;
@@ -175,7 +174,8 @@ private:
     LoiteringDialog* m_loiteringDialog;
     LoiteringTLEDialog* m_loiteringTLEDialog;
     SEMVehicleDialog* m_SEMVehicleDialog;
-    AnalysisDialog* m_AnalysisDialog;
+
+    QtiPlotMain* m_qtiPlotFrame;
 
     QTimer* m_viewUpdateTimer;
     QTime m_intervalChangeTime;

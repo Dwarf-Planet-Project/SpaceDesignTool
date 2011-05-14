@@ -381,28 +381,27 @@ VISUALIZATION_HEADERS = \
     sta-src/Visualization/VisualizationToolBar.h
 
 # ############# Plotting Module ##############
-PLOT_SOURCES = \
-    sta-src/Plotting/plottingtool.cpp \
-    sta-src/Plotting/PlotLabelFormatter.cpp \
-    sta-src/Plotting/PlotScale.cpp \
-    sta-src/Plotting/PlotStyle.cpp \
-    sta-src/Plotting/PlotView.cpp \
-    sta-src/Plotting/PlotView3D.cpp \
-    sta-src/Plotting/PlotGraphFromFile.cpp \
-    sta-src/Plotting/TimePlotScale.cpp
-
-PLOT_HEADERS = \
-    sta-src/Plotting/plottingtool.h \
-    sta-src/Plotting/PlotDataSource.h \
-    sta-src/Plotting/PlotLabelFormatter.h \
-    sta-src/Plotting/PlotScale.h \
-    sta-src/Plotting/PlotStyle.h \
-    sta-src/Plotting/PlotView.h \
-    sta-src/Plotting/PlotView3D.h \
-    sta-src/Plotting/PlotGraphFromFile.h \
-    sta-src/Plotting/TimePlotScale.h
-
-PLOT_FORMS = sta-src/Plotting/plottingtool.ui
+#PLOT_SOURCES = \
+#    sta-src/Plotting/plottingtool.cpp \
+#    sta-src/Plotting/PlotLabelFormatter.cpp \
+#    sta-src/Plotting/PlotScale.cpp \
+#    sta-src/Plotting/PlotStyle.cpp \
+#    sta-src/Plotting/PlotView.cpp \
+#    sta-src/Plotting/PlotView3D.cpp \
+#    sta-src/Plotting/PlotGraphFromFile.cpp \
+#    sta-src/Plotting/TimePlotScale.cpp
+#
+#PLOT_HEADERS = \
+#    sta-src/Plotting/plottingtool.h \
+#    sta-src/Plotting/PlotDataSource.h \
+#    sta-src/Plotting/PlotLabelFormatter.h \
+#    sta-src/Plotting/PlotScale.h \
+#    sta-src/Plotting/PlotStyle.h \
+#    sta-src/Plotting/PlotView3D.h \
+#    sta-src/Plotting/PlotGraphFromFile.h \
+#    sta-src/Plotting/TimePlotScale.h
+#
+#PLOT_FORMS = sta-src/Plotting/plottingtool.ui
 
 # ################ RAM ############
 RAM_SOURCES = sta-src/RAM/parametrization.cpp \
@@ -422,15 +421,18 @@ RAM_FORMS = sta-src/RAM/parametrizedgeometry.ui \
     sta-src/RAM/aerodynamicmethods.ui
 
 # ################ Analysis ############
-ANALYSIS_SOURCES = sta-src/Analysis/analysis.cpp \
-           sta-src/Analysis/AnalysisPlot.cpp \
-           sta-src/Analysis/analysisTable.cpp \
+ANALYSIS_SOURCES = \
+           #sta-src/Analysis/analysis.cpp \
+           #sta-src/Analysis/AnalysisPlot.cpp \
+           #sta-src/Analysis/analysisTable.cpp \
            sta-src/Analysis/qtiplotmain.cpp
-ANALYSIS_HEADERS = sta-src/Analysis/analysis.h\
-            sta-src/Analysis/AnalysisPlot.h \
-           sta-src/Analysis/analysisTable.h \
+ANALYSIS_HEADERS = \
+           #sta-src/Analysis/analysis.h\
+           #sta-src/Analysis/AnalysisPlot.h \
+           #sta-src/Analysis/analysisTable.h \
            sta-src/Analysis/qtiplotmain.h
-ANALYSIS_FORMS = sta-src/Analysis/analysis.ui
+ANALYSIS_FORMS = \
+           #sta-src/Analysis/analysis.ui
 
 # ################ Payloads ############
 PAYLOAD_SOURCES = sta-src/Payloads/transmitterPayloadDialog.cpp \
@@ -502,62 +504,7 @@ GLEW_HEADERS = thirdparty/glew/include/GL/glew.h \
     thirdparty/glew/include/GL/wglew.h
 
 
-# ############# QwtPlot3d main ####################
-QWT3D_SOURCES += $$QWT3D_DIR/src/qwt3d_axis.cpp \
-    $$QWT3D_DIR/src/qwt3d_color.cpp \
-    $$QWT3D_DIR/src/qwt3d_coordsys.cpp \
-    $$QWT3D_DIR/src/qwt3d_drawable.cpp \
-    $$QWT3D_DIR/src/qwt3d_mousekeyboard.cpp \
-    $$QWT3D_DIR/src/qwt3d_movements.cpp \
-    $$QWT3D_DIR/src/qwt3d_lighting.cpp \
-    $$QWT3D_DIR/src/qwt3d_colorlegend.cpp \
-    $$QWT3D_DIR/src/qwt3d_plot.cpp \
-    $$QWT3D_DIR/src/qwt3d_label.cpp \
-    $$QWT3D_DIR/src/qwt3d_types.cpp \
-    $$QWT3D_DIR/src/qwt3d_enrichment_std.cpp \
-    $$QWT3D_DIR/src/qwt3d_autoscaler.cpp \
-    $$QWT3D_DIR/src/qwt3d_io_reader.cpp \
-    $$QWT3D_DIR/src/qwt3d_io.cpp \
-    $$QWT3D_DIR/src/qwt3d_scale.cpp
-QWT3D_SOURCES += $$QWT3D_DIR/src/qwt3d_gridmapping.cpp \
-    $$QWT3D_DIR/src/qwt3d_parametricsurface.cpp \
-    $$QWT3D_DIR/src/qwt3d_function.cpp
-QWT3D_SOURCES += $$QWT3D_DIR/src/qwt3d_surfaceplot.cpp \
-    $$QWT3D_DIR/src/qwt3d_gridplot.cpp \
-    $$QWT3D_DIR/src/qwt3d_meshplot.cpp
-QWT3D_HEADERS += $$QWT3D_DIR/include/qwt3d_color.h \
-    $$QWT3D_DIR/include/qwt3d_global.h \
-    $$QWT3D_DIR/include/qwt3d_types.h \
-    $$QWT3D_DIR/include/qwt3d_axis.h \
-    $$QWT3D_DIR/include/qwt3d_coordsys.h \
-    $$QWT3D_DIR/include/qwt3d_drawable.h \
-    $$QWT3D_DIR/include/qwt3d_helper.h \
-    $$QWT3D_DIR/include/qwt3d_label.h \
-    $$QWT3D_DIR/include/qwt3d_openglhelper.h \
-    $$QWT3D_DIR/include/qwt3d_colorlegend.h \
-    $$QWT3D_DIR/include/qwt3d_plot.h \
-    $$QWT3D_DIR/include/qwt3d_enrichment.h \
-    $$QWT3D_DIR/include/qwt3d_enrichment_std.h \
-    $$QWT3D_DIR/include/qwt3d_autoscaler.h \
-    $$QWT3D_DIR/include/qwt3d_autoptr.h \
-    $$QWT3D_DIR/include/qwt3d_io.h \
-    $$QWT3D_DIR/include/qwt3d_io_reader.h \
-    $$QWT3D_DIR/include/qwt3d_scale.h \
-    $$QWT3D_DIR/include/qwt3d_portability.h
-QWT3D_HEADERS += $$QWT3D_DIR/include/qwt3d_mapping.h \
-    $$QWT3D_DIR/include/qwt3d_gridmapping.h \
-    $$QWT3D_DIR/include/qwt3d_parametricsurface.h \
-    $$QWT3D_DIR/include/qwt3d_function.h
-QWT3D_HEADERS += $$QWT3D_DIR/include/qwt3d_surfaceplot.h \
-    $$QWT3D_DIR/include/qwt3d_volumeplot.h \
-    $$QWT3D_DIR/include/qwt3d_graphplot.h \
-    $$QWT3D_DIR/include/qwt3d_multiplot.h
 
-# ############# QwtPlot3d gl2ps support ##############
-QWT3D_HEADERS += $$QWT3D_DIR/3rdparty/gl2ps/gl2ps.h \
-    $$QWT3D_DIR/include/qwt3d_io_gl2ps.h
-QWT3D_SOURCES += $$QWT3D_DIR/src/qwt3d_io_gl2ps.cpp \
-    $$QWT3D_DIR/3rdparty/gl2ps/gl2ps.c
 
 # ############# TLEs support ##############
 NORAD_HEADERS += thirdparty/noradtle/norad.h
@@ -605,7 +552,7 @@ SOURCES = $$MAIN_SOURCES \
 #    $$OPTIMIZATION_SOURCES \
     $$CALCULATOR_SOURCES \
     $$GLEW_SOURCES \
-    $$QWT3D_SOURCES \
+#    $$QWT3D_SOURCES \
     $$QTVESTA_SOURCES \
     $$NORAD_SOURCES \
     $$HELPBROWSER_SOURCES \
@@ -632,7 +579,7 @@ HEADERS = $$MAIN_HEADERS \
 #    $$OPTIMIZATION_HEADER \
     $$CALCULATOR_HEADERS \
     $$GLEW_HEADERS \
-    $$QWT3D_HEADERS \
+#    $$QWT3D_HEADERS \
     $$QTVESTA_HEADERS \
     $$NORAD_HEADERS \
     $$HELPBROWSER_HEADERS \
@@ -657,7 +604,7 @@ FORMS = $$MAIN_FORMS \
     $$LAGRANGIAN_FORMS \
     $$INTERPLANETARY_FORMS \
     $$GLEW_FORMS \
-    $$QWT3D_FORMS \
+#    $$QWT3D_FORMS \
     $$NORAD_FORMS \
     $$HELPBROWSER_FORMS \
     $$PAYLOAD_FORMS \

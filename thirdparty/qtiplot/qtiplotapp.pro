@@ -80,6 +80,10 @@ INCLUDEPATH       += $$PWD/3rdparty/qwt/src
 INCLUDEPATH       += $$PWD/3rdparty/liborigin
 INCLUDEPATH       += $$PWD/3rdparty/gsl/include
 INCLUDEPATH       += $$PWD/3rdparty/zlib123/include
+INCLUDEPATH       += ../
+INCLUDEPATH       += ../../sta-src
+INCLUDEPATH       += ../../sta-src/ui/include
+
 
 ##################### 3rd PARTY LIBRARIES SECTION ###########################
 #!!! Warning: You must modify these paths according to your computer settings
@@ -222,7 +226,6 @@ unix: man.files += $$PWD/qtiplot.1
 ###################### HEADERS ##############################################
 
 HEADERS  += \
-            #qtiplot/src/qtiplotmain.h \
             qtiplot/src/ApplicationWindow.h \
             qtiplot/src/globals.h\
             qtiplot/src/Table.h \
@@ -263,11 +266,11 @@ HEADERS  += \
             qtiplot/src/PlotWizard.h \
             qtiplot/src/LineNumberDisplay.h \
             qtiplot/src/PenStyleBox.h \
+            qtiplot/src/analysisParametersChoice.h \
 
 ###################### SOURCES ##############################################
 
 SOURCES  += \
-            #qtiplot/src/qtiplotmain.cpp \
             qtiplot/src/ApplicationWindow.cpp \
             qtiplot/src/Table.cpp \
             qtiplot/src/SetColValuesDialog.cpp \
@@ -305,6 +308,10 @@ SOURCES  += \
             qtiplot/src/PlotWizard.cpp \
             qtiplot/src/LineNumberDisplay.cpp \
             qtiplot/src/PenStyleBox.cpp \
+            qtiplot/src/analysisParametersChoice.cpp \
+
+   FORMS += qtiplot/src/analysisParametersChoice.ui \
+
 
 ###############################################################
 ##################### Compression (zlib123) ###################

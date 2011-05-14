@@ -44,7 +44,9 @@
 #include <Eigen/Sparse>
 
 // import most common Eigen types
-USING_PART_OF_NAMESPACE_EIGEN
+//USING_PART_OF_NAMESPACE_EIGEN
+typedef Eigen::Matrix< double, 3, 3 > 	Matrix3d;
+typedef Eigen::Matrix< double, 3, 1 > 	Vector3d;
 
 Matrix3d PrecessionMatrix(double mjd);
 Matrix3d NutationMatrix(double mjd);
@@ -93,12 +95,12 @@ namespace sta
         bool isInertial() const
         {
             return m_type == COORDSYS_EME_J2000 ||
-                   m_type == COORDSYS_EME_B1950 ||
-                   m_type == COORDSYS_ICRF      ||
-                   m_type == COORDSYS_MEAN_OF_DATE ||
-                   m_type == COORDSYS_TRUE_OF_DATE ||
-                   m_type == COORDSYS_MEAN_OF_EPOCH ||
-                   m_type == COORDSYS_ECLIPTIC_J2000;
+                    m_type == COORDSYS_EME_B1950 ||
+                    m_type == COORDSYS_ICRF      ||
+                    m_type == COORDSYS_MEAN_OF_DATE ||
+                    m_type == COORDSYS_TRUE_OF_DATE ||
+                    m_type == COORDSYS_MEAN_OF_EPOCH ||
+                    m_type == COORDSYS_ECLIPTIC_J2000;
         }
 
         /*! Return the coordinate system type. */
@@ -120,13 +122,13 @@ namespace sta
                                    const StaBody* toCenter,
                                    const CoordinateSystem& toSys);
         Matrix3d rotToEmeJ2000();
-                Matrix3d rotFromEmeJ2000();
+        Matrix3d rotFromEmeJ2000();
 
-                Matrix3d rotToEmeJ2000(const StaBody* center, double mjd);
-                Matrix3d rotFromEmeJ2000(const StaBody* center, double mjd);
+        Matrix3d rotToEmeJ2000(const StaBody* center, double mjd);
+        Matrix3d rotFromEmeJ2000(const StaBody* center, double mjd);
 
-                Vector3d omegaToEmeJ2000(const StaBody* center, double mjd);
-                Vector3d omegaFromEmeJ2000(const StaBody* center, double mjd);
+        Vector3d omegaToEmeJ2000(const StaBody* center, double mjd);
+        Vector3d omegaFromEmeJ2000(const StaBody* center, double mjd);
 
 
 

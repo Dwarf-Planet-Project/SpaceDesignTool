@@ -32,9 +32,15 @@
 
 #include <QMainWindow>
 #include <QVariantList>
+#include <QSignalMapper>
+
+#include "Scenario/staschema.h"
+#include "Main/propagatedscenario.h"
+
 
 
 class ApplicationWindow;
+class SpaceScenario;
 
 /** AnalyisResult is a simple container for data produced during an
   * analysis. After creation, the AnalysisResult structure is passed
@@ -75,9 +81,14 @@ class QtiPlotMain: public QMainWindow
     Q_OBJECT
 public:
     QtiPlotMain(bool factorySettings, QWidget *parent = 0);
+    void passTheSTAscenarioToQtiPlotMain(SpaceScenario* scenario, PropagatedScenario* propagatedScenario);
     void createReport(AnalysisResult* analysis);
 
     ~QtiPlotMain();
+
+public:
+     QSignalMapper *signalMapper;
+
 
 private slots:
     void qtiClosed();
@@ -87,5 +98,9 @@ private:
 
 private:
     ApplicationWindow* m_appWindow;
+    SpaceScenario* m_scenario;
+    PropagatedScenario* m_propagatedScenario;
+
+
 };
 

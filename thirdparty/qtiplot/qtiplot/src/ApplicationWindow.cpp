@@ -9,6 +9,15 @@
 	                       knut.franke*gmx.de
 	Description          : QtiPlot's main window
 
+    This file has been extensive patched by Guillermo as to accomodate the
+    required changes to load the main window from the STA analysis function
+
+    The changes are as follows:
+
+
+
+
+
  ***************************************************************************/
 
 /***************************************************************************
@@ -174,6 +183,11 @@
 
 #include <gsl/gsl_statistics.h>
 
+#include "analysisParametersChoice.h"
+
+#include <QDebug>
+
+
 using namespace Qwt3D;
 
 extern "C"
@@ -181,6 +195,8 @@ extern "C"
 void file_compress(char  *file, char  *mode);
 void file_uncompress(char  *file);
 }
+
+
 
 ApplicationWindow::ApplicationWindow(bool factorySettings)
 : QMainWindow(), scripted(ScriptingLangManager::newEnv(this))
@@ -191,8 +207,8 @@ ApplicationWindow::ApplicationWindow(bool factorySettings)
 
 void ApplicationWindow::init(bool factorySettings)
 {
-    setWindowTitle(tr("Analysis - untitled"));
-    setObjectName("main Analysis application");
+    setWindowTitle(tr("STA analysis - untitled"));
+    //setObjectName("STA Analysis");
 	initGlobalConstants();
 	QPixmapCache::setCacheLimit(20*QPixmapCache::cacheLimit ());
 
@@ -286,6 +302,21 @@ void ApplicationWindow::init(bool factorySettings)
 	undoStackWindow->setWidget(d_undo_view);
 	undoStackWindow->hide();
 
+    ////////////////////////////////// Code added by Guillermo
+    // First we cret a widget that is dockable
+    QDockWidget* analysisParametersChoiceDock = new QDockWidget(tr("Parameters"), this);
+    analysisParametersChoiceDock->setObjectName("sta-analysis-choice-box");
+    //analysisParametersChoiceDock->setAllowedAreas(Qt::RightDockWidgetArea);
+    analysisParametersChoiceDock->setMinimumWidth(200);
+    analysisParametersChoiceDock->setFloating(false);
+    analysisParametersChoiceDock->setAutoFillBackground(true);
+    // Then we fill the widget with another widget that will contain the window we wish
+    m_analysisParametersChoice = new analysisParametersChoice(this);
+    analysisParametersChoiceDock->setWidget(m_analysisParametersChoice);
+    addDockWidget(Qt::RightDockWidgetArea, analysisParametersChoiceDock);
+    analysisParametersChoiceDock->setVisible(true);
+    //////////////////////////////////// End of the code added by Guillermo
+
 	// Needs to be done after initialization of dock windows,
 	// because we now use QDockWidget::toggleViewAction()
 	createActions();
@@ -362,6 +393,10 @@ void ApplicationWindow::init(bool factorySettings)
     loadCustomActions();
     initCompleter();
 }
+
+
+
+
 
 void ApplicationWindow::initWindow()
 {
@@ -15792,4 +15827,11 @@ void ApplicationWindow::showFrequencyCountDialog()
     if (validRows < 2)
         QMessageBox::warning(this, tr("Analysis - Column selection error"),
         tr("Please select exactly one column and more than one non empty cell!"));
+}
+
+
+void ApplicationWindow::loadTheSTAscenarioIntoQtiPlot(SpaceScenario* scenario, PropagatedScenario* propagatedScenario)
+{
+    qDebug() << "--------> loadTheSTAscenarioIntoQtiPlot got the data" << endl;
+    m_analysisParametersChoice->loadTheSTAscenario(scenario, propagatedScenario);
 }

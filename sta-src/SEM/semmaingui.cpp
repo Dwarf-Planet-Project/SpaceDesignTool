@@ -37,9 +37,9 @@
 #include "structuregui.h"
 #include "thermalgui.h"
 
-#include "Plotting/plottingtool.h"
-#include "Plotting/PlotGraphFromFile.h"
-#include "Plotting/PlotView.h"
+//#include "Plotting/plottingtool.h"
+//#include "Plotting/PlotGraphFromFile.h"
+//#include "Plotting/PlotView.h"
 
 SemMainGUI::SemMainGUI(ScenarioSC* SCVehicle,
                        QString missionArc,
@@ -826,13 +826,14 @@ void SemMainGUI::on_ThermalGraphPushButton_2_clicked()
         FileNameWithExtension = ("SCTemperatureTimeFunction.stad");
         QDialog plotDialog(this);
         QVBoxLayout* layout = new QVBoxLayout(&plotDialog);
+        /*
         PlotView* plotView = new PlotView(&plotDialog);
         layout->addWidget(plotView);
         plotDialog.setLayout(layout);
 
         qWarning("TODO: %s	%d",__FILE__,__LINE__);
 
-        PlotGraphFromFile* Data = new PlotGraphFromFile();
+        //PlotGraphFromFile* Data = new PlotGraphFromFile();
         qWarning("TODO: %s	%d",__FILE__,__LINE__);
         Data->setPoints(FileNameWithExtension);
         qWarning("TODO: %s	%d",__FILE__,__LINE__);
@@ -845,6 +846,7 @@ void SemMainGUI::on_ThermalGraphPushButton_2_clicked()
         plotView->autoScale();
         plotView->setMinimumSize(500,500);
         plotDialog.exec();
+        */
     }
 	qWarning("TODO: %s	%d",__FILE__,__LINE__);
 }
@@ -989,6 +991,7 @@ void SemMainGUI::on_PowerGraphPushButton_clicked()
     {
         QDialog plotDialog(this);
         QVBoxLayout* layout = new QVBoxLayout(&plotDialog);
+        /*
         PlotView* plotView = new PlotView(&plotDialog);
         layout->addWidget(plotView);
         plotDialog.setLayout(layout);
@@ -1008,6 +1011,7 @@ void SemMainGUI::on_PowerGraphPushButton_clicked()
         plotView->autoScale();
         plotView->setMinimumSize(500,500);
         plotDialog.exec();
+        */
     }
 
         qWarning("TODO: %s	%d",__FILE__,__LINE__);

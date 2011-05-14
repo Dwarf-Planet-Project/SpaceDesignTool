@@ -31,8 +31,14 @@
 
 
 #include <QApplication>
+#include <QSignalMapper>
 #include <QDebug>
+
 #include "qtiplotmain.h"
+#include "qtiplot/src/analysisParametersChoice.h"
+#include "Scenario/staschema.h"
+#include "Main/propagatedscenario.h"
+
 #include "thirdparty/qtiplot/qtiplot/src/ApplicationWindow.h"
 
 
@@ -89,6 +95,9 @@ QtiPlotMain::initQtiPlot()
     m_appWindow = new ApplicationWindow(false);
     m_appWindow->restoreApplicationGeometry();
     connect(m_appWindow, SIGNAL(destroyed()), this, SLOT(qtiClosed()));
+
+    //QSignalMapper *signalMapper = new QSignalMapper(this);
+    //connect(signalMapper, SIGNAL(mapped(int)), this, SIGNAL(digitClicked(int)));
 }
 
 
@@ -153,5 +162,15 @@ AnalysisResult::setColumnName(int column, const QString& name)
     {
         m_columnNames[column] = name;
     }
+}
+
+
+
+void QtiPlotMain::passTheSTAscenarioToQtiPlotMain(SpaceScenario* scenario, PropagatedScenario* propagatedScenario)
+{
+    //m_scenario = new SpaceScenario(*scenario);
+    //m_propagatedScenario = new PropagatedScenario(*propagatedScenario);
+    qDebug() << "----------------> QtiPlotMain is about to pass the data" <<endl;
+    m_appWindow->loadTheSTAscenarioIntoQtiPlot(scenario, propagatedScenario);
 }
 

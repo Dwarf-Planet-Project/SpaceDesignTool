@@ -31,7 +31,11 @@
 #include <QXmlSchema>
 #include <QXmlSchemaValidator>
 
+#include <time.h>
+
 #include "mainwindow.h"
+#include "ui_mainwindow.h"
+
 #include "Main/preferences.h"
 #include "scenarioelementbox.h"
 #include "scenarioview.h"
@@ -65,25 +69,12 @@
 #include "exportdialog.h"
 
 #include "Calculator/STAcalculator.h"
-
 #include "Help/HelpBrowser.h"
-
 #include "OemImporter.h"
-
 #include "about.h"
-
-// Constellations
-#include "Constellations/constellationwizard.h"
-
-#include "ui_mainwindow.h"
-
+#include "Constellations/constellationwizard.h"  // Constellations
 #include "Scenario/missionsDefaults.h"
-
-//#ifdef TARGET_OS_MAC
-//#include <Carbon/Carbon.h>
-//#endif
-
-#include <time.h>
+#include "Analysis/qtiplotmain.h"
 
 
 using namespace std;
@@ -129,7 +120,7 @@ MainWindow::MainWindow(QWidget *parent)	:
         m_loiteringDialog(NULL),
         m_loiteringTLEDialog(NULL),
         m_SEMVehicleDialog(NULL),
-        m_AnalysisDialog(NULL),
+        //m_AnalysisDialog(NULL),
 
         m_threeDViewWidget(NULL),
 
@@ -184,7 +175,7 @@ MainWindow::MainWindow(QWidget *parent)	:
     QDockWidget* timelineDock = new QDockWidget(tr("Timeline View"), this);
     timelineDock->setFeatures(timelineDock->features() | QDockWidget::DockWidgetVerticalTitleBar);
     timelineDock->setObjectName("sta-timeline");
-    timelineDock->setAllowedAreas(Qt::BottomDockWidgetArea);
+    //timelineDock->setAllowedAreas(Qt::BottomDockWidgetArea);
     timelineDock->setFloating(false);
 
     m_timelineWidget = new TimelineWidget(this);
@@ -314,20 +305,6 @@ MainWindow::MainWindow(QWidget *parent)	:
     m_viewUpdateTimer = new QTimer(this);
     QObject::connect(m_viewUpdateTimer, SIGNAL(timeout()), SLOT(tick()));
     m_viewUpdateTimer->start(5);
-
-    /*
-    QString initialFile = ":/untitled.stas";
-    const QStringList args = QCoreApplication::arguments();
-    if (args.count() == 2)
-    {
-        initialFile = args.at(1);
-        openScenarioFile(initialFile);
-    }
-    else
-    {
-        return;
-    }
-    */
 
 }
 
@@ -931,11 +908,25 @@ void MainWindow::on_actionAnalyse_triggered()
         return;
     }
 
-    analysis* AnalysisWidget = new analysis(m_scenario,m_propagatedScenario, this, Qt::Window);
-    AnalysisWidget->show();
+    m_qtiPlotFrame = new QtiPlotMain(false, this);
+    m_qtiPlotFrame->setName("STA Analysis");
+    m_qtiPlotFrame->passTheSTAscenarioToQtiPlotMain(m_scenario, m_propagatedScenario);
 
-    //AnalysisWidget->raise(); // Required to keep the modeless window alive
-    //AnalysisWidget->activateWindow(); // Required to keep the modeless window alive
+    // Call QtiPlot to create a table from the analysis results
+    /*
+    QtiPlotMain *qtiPlot = findChild<QtiPlotMain*>("STA Analysis");
+    if (!qtiPlot)
+    {
+        qtiPlot = new QtiPlotMain(false, this);
+        qtiPlot->setName("STA Analysis");
+    }
+    */
+
+
+
+    //analysis* AnalysisWidget = new analysis(m_scenario,m_propagatedScenario, this, Qt::Window);
+    //AnalysisWidget->show();
+
 }	///////////////////////////////////////////  End of Action ANALYZE ////////////////////////////////////////
 
 
