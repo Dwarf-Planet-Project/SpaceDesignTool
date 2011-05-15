@@ -1478,6 +1478,8 @@ void analysis::on_GeneratePushButton_clicked()
     {
         if(DataStructure.size()==2)
         {
+            // Well, do nothing now
+            /*
             int numberOfLines=0;
             int numberOfParameters=1; //one parameter per axis
 
@@ -1528,6 +1530,7 @@ void analysis::on_GeneratePushButton_clicked()
             window2D->show();
             window2D->raise(); // Required to keep the modeless window alive
             window2D->activateWindow(); // Required to keep the modeless window alive
+            */
         }
         else
         {
@@ -1538,6 +1541,8 @@ void analysis::on_GeneratePushButton_clicked()
     }
     else if(AnalysisFormat=="3D")
     {
+        // Well, do nothing
+        /*
         int numberOfLines=0;
         int numberOfParameters=1; //one parameter per axis
 
@@ -1602,6 +1607,7 @@ void analysis::on_GeneratePushButton_clicked()
             PlotWarning.setText("Invalid selection of parameters to be plotted");
             PlotWarning.exec();
         }
+        */
     }
 }
 

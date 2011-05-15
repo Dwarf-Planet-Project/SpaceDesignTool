@@ -35,12 +35,11 @@
 #include <QDebug>
 
 #include "qtiplotmain.h"
-#include "qtiplot/src/analysisParametersChoice.h"
+#include "analysisParametersChoice.h"
 #include "Scenario/staschema.h"
 #include "Main/propagatedscenario.h"
 
 #include "thirdparty/qtiplot/qtiplot/src/ApplicationWindow.h"
-
 
 
 QtiPlotMain::QtiPlotMain(bool factorySettings, QWidget *parent) :
@@ -166,11 +165,10 @@ AnalysisResult::setColumnName(int column, const QString& name)
 
 
 
-void QtiPlotMain::passTheSTAscenarioToQtiPlotMain(SpaceScenario* scenario, PropagatedScenario* propagatedScenario)
+void
+QtiPlotMain::passTheSTAscenarioToQtiPlotMain(SpaceScenario* scenario, PropagatedScenario* propagatedScenario)
 {
-    //m_scenario = new SpaceScenario(*scenario);
-    //m_propagatedScenario = new PropagatedScenario(*propagatedScenario);
-    qDebug() << "----------------> QtiPlotMain is about to pass the data" <<endl;
+    //qDebug() << "----------------> QtiPlotMain is about to pass the data" <<endl;
     m_appWindow->loadTheSTAscenarioIntoQtiPlot(scenario, propagatedScenario);
 }
 

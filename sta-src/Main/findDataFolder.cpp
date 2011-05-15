@@ -74,7 +74,7 @@ QString findDataFolder()
     }
 #else
     // Not Windows or Mac
-    staResourcesPath = ResourcesPath;
+    staResourcesPath = "./sta-data";
 #endif
 
     return staResourcesPath;

@@ -25,6 +25,7 @@
  Patched by Guillermo as to change the Splash screen of HADEAN, etc.
  Modified by Guillermo October 2009 to include new ARCHEAN v2.0 Splash Screen
  Patched by Guillermo July 2010 to alow drag files into the app icon
+ Patched by Guillermo on May 2011 to find the file path automatically.
 
  */
 
@@ -58,6 +59,8 @@
 #include "Astro-Core/stabody.h"
 #include "Astro-Core/jplephemeris.h"
 #include "Astro-Core/SpiceEphemeris.h"
+#include "findDataFolder.h"
+
 #include "main.h"
 #include "mainwindow.h"
 
@@ -75,8 +78,8 @@ bool EventOccurredBlock = false;
 
 
 int main(int argc, char *argv[])
-{  
-    QTextStream out (stdout);
+{
+    //QTextStream out (stdout);
 
     QApplication* app = new QApplication(argc,argv);
     //////////// Handling of drag and drop events ////////////////
@@ -95,52 +98,19 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("STA");
     QCoreApplication::setOrganizationName("stasb");    // 'stasb' means STA Steering Board
     QCoreApplication::setOrganizationDomain("org");  // Patched by Guillermo
-    QCoreApplication::setApplicationVersion("3.0");
+    QCoreApplication::setApplicationVersion("4.0");
     QCoreApplication::setOrganizationDomain("STASB");  // Patched by Guillermo
 
     //QString ApplicationPath = QDir::currentPath ();
     //QString ResourcesPath = ApplicationPath + "/sta-data";
 
-    QString ApplicationPath = QApplication::applicationFilePath();
-            ApplicationPath.truncate(ApplicationPath.lastIndexOf("/"));
-    QString ResourcesPath = ApplicationPath + "/sta-data";
+    //QString ApplicationPath = QApplication::applicationFilePath();
+    //        ApplicationPath.truncate(ApplicationPath.lastIndexOf("/"));
+    //QString ResourcesPath = ApplicationPath + "/sta-data";
 
     ParseCommandLine();
-    
-    QString staResourcesPath;
 
-#if defined(Q_WS_MAC)
-    // On the Mac, load resources from the app bundle
-    CFURLRef appUrlRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-    CFStringRef macPath = CFURLCopyFileSystemPath(appUrlRef,
-                                                  kCFURLPOSIXPathStyle);
-    const char *pathPtr = CFStringGetCStringPtr(macPath,
-                                                CFStringGetSystemEncoding());
-    staResourcesPath = QString(pathPtr) + "/Contents/Resources/STAResources";
-    CFRelease(appUrlRef);
-    CFRelease(macPath);
-#elif defined(Q_WS_WIN)
-    // On Windows, we have two choices for the resource location. If this
-    // is a development version, load them from sta-data. For an installed
-    // version of the software, we'll load resources from the app data directory.
-    if (QDir("./sta-data").exists())
-    {
-        staResourcesPath = "./sta-data";
-    }
-    else if (QDir("../sta-data").exists())
-    {
-        // QtCreator builds in the debug/ or release/ directory
-        staResourcesPath = "../sta-data";
-    }
-    else
-    {
-        // staResourcesPath = QDir::home().filePath("STA");
-        staResourcesPath = "./resources";
-    }
-#else
-    // Not Windows or Mac
-    staResourcesPath = ResourcesPath;
-#endif
+    QString staResourcesPath = findDataFolder();
 
 
 #if defined(Q_WS_MAC)
@@ -251,34 +221,34 @@ bool EventListener::eventFilter(QObject*, QEvent* event)
 
     if (!EventOccurred)
     {
-	int t = event->type();
-	if ( (t>=QEvent::MouseButtonPress && t<=QEvent::KeyRelease) || (t>=QEvent::HoverEnter && t<=QEvent::HoverMove) )
-	    EventOccurred = true;
-	//out << "Event occured " << endl;
+        int t = event->type();
+        if ( (t>=QEvent::MouseButtonPress && t<=QEvent::KeyRelease) || (t>=QEvent::HoverEnter && t<=QEvent::HoverMove) )
+            EventOccurred = true;
+        //out << "Event occured " << endl;
     }
 
 #ifdef Q_WS_MAC
     if (event->type() == QEvent::FileOpen)
     {
-	//out << "QEvent::FileOpen " << endl;
-	QString filename = static_cast<QFileOpenEvent*>(event)->file();
+        //out << "QEvent::FileOpen " << endl;
+        QString filename = static_cast<QFileOpenEvent*>(event)->file();
 
-	if (pMainWindow)
-	{
-	    if (QApplication::activeModalWidget() == NULL)
-	    {
-		pMainWindow->openFileFromAEvent(filename);
-		//out << "File dropped " << endl;
-	    }
-	    else
-	    {
-		return true; // ignore file open events while a modal dialog is displayed
-	    }
-	}
-	else
-	{
-	    pFile = filename;
-	}
+        if (pMainWindow)
+        {
+            if (QApplication::activeModalWidget() == NULL)
+            {
+                pMainWindow->openFileFromAEvent(filename);
+                //out << "File dropped " << endl;
+            }
+            else
+            {
+                return true; // ignore file open events while a modal dialog is displayed
+            }
+        }
+        else
+        {
+            pFile = filename;
+        }
     }
 
 #endif

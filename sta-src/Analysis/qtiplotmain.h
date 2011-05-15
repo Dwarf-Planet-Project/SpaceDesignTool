@@ -97,9 +97,9 @@ private:
     void initQtiPlot();
 
 private:
-    ApplicationWindow* m_appWindow;
     SpaceScenario* m_scenario;
     PropagatedScenario* m_propagatedScenario;
+    ApplicationWindow* m_appWindow;
 
 
 };

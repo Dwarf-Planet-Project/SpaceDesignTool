@@ -7,11 +7,12 @@
  ------ Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
  ------------------ Author: Ricardo Noriega  ----------------------------------------------
  ------------------ email: ricardonor@gmail.com  ------------------------------------------
-
+File extensively patch by Guillermo on May 2011
  */
 
 
 #include "coverageanalysis.h"
+#include "Main/findDataFolder.h"
 
 #include <QDebug>
 
@@ -37,41 +38,7 @@ CoverageAnalysis::CoverageAnalysis(PropagatedScenario * propagatedScenario,
 void CoverageAnalysis::reportAER()
 {
 
-    QString staResourcesPath;
-
-#if defined(Q_WS_MAC)
-    // On the Mac, load resources from the app bundle
-    CFURLRef appUrlRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-    CFStringRef macPath = CFURLCopyFileSystemPath(appUrlRef,
-                                                  kCFURLPOSIXPathStyle);
-    const char *pathPtr = CFStringGetCStringPtr(macPath,
-                                                CFStringGetSystemEncoding());
-    staResourcesPath = QString(pathPtr) + "/Contents/Resources/STAResources";
-    CFRelease(appUrlRef);
-    CFRelease(macPath);
-#elif defined(Q_WS_WIN)
-    // On Windows, we have two choices for the resource location. If this
-    // is a development version, load them from sta-data. For an installed
-    // version of the software, we'll load resources from the app data directory.
-    if (QDir("./sta-data").exists())
-    {
-        staResourcesPath = "./sta-data";
-    }
-    else if (QDir("../sta-data").exists())
-    {
-        // QtCreator builds in the debug/ or release/ directory
-        staResourcesPath = "../sta-data";
-    }
-    else
-    {
-        // staResourcesPath = QDir::home().filePath("STA");
-        staResourcesPath = "./resources";
-    }
-#else
-    // Not Windows or Mac
-    staResourcesPath = ResourcesPath;
-#endif
-
+    QString staResourcesPath = findDataFolder();
 
     QFile reportCov1(staResourcesPath + "/" + "reportCov1.txt");
     reportCov1.open(QIODevice::WriteOnly|QIODevice::ReadWrite);
