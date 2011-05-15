@@ -72,6 +72,9 @@ QT += svg
 #!!! Warning: You must modify these paths according to your computer settings
 #############################################################################
 
+INCLUDEPATH       += ../
+INCLUDEPATH       += ../../sta-src
+INCLUDEPATH       += ../../sta-src/ui/include
 INCLUDEPATH       += $$PWD
 INCLUDEPATH       += $$PWD/qtiplot/src
 INCLUDEPATH       += $$PWD/3rdparty/muparser/include
@@ -80,9 +83,7 @@ INCLUDEPATH       += $$PWD/3rdparty/qwt/src
 INCLUDEPATH       += $$PWD/3rdparty/liborigin
 INCLUDEPATH       += $$PWD/3rdparty/gsl/include
 INCLUDEPATH       += $$PWD/3rdparty/zlib123/include
-INCLUDEPATH       += ../
-INCLUDEPATH       += ../../sta-src
-INCLUDEPATH       += ../../sta-src/ui/include
+
 
 
 ##################### 3rd PARTY LIBRARIES SECTION ###########################
@@ -137,13 +138,16 @@ linux:LIBS         += -lgsl -lgslcblas
 
 win32:LIBS        += ../../lib/win32-x86-gcc/muparser.dll
 win32:LIBS        += ../../lib/win32-x86-gcc/qwtplot3d.dll
-win32:LIBS        += ../../lib/win32-x86-gcc/qwtmathml5.dll
+#win32:LIBS        += ../../lib/win32-x86-gcc/qwtmathml5.dll
 win32:LIBS        += ../../lib/win32-x86-gcc/qwt5.dll
 win32:LIBS        += ../../lib/win32-x86-gcc/libgsl.dll
 win32:LIBS        += ../../lib/win32-x86-gcc/libgslcblas.dll
 win32:LIBS        += ../../lib/win32-x86-gcc/zlib1.dll
 win32:LIBS        += ../../lib/win32-x86-gcc/msvcrt.dll
 win32:LIBS        += ../../lib/win32-x86-gcc/QtAssistantClient4.dll
+
+#win32:LIBS        += C:/STA/trunk/thirdparty/qtiplot/release/analysisParametersChoice.o
+#win32:LIBS        += C:/STA/trunk/thirdparty/qtiplot/release/moc_analysisParametersChoice.o
 
 #############################################################################
 ###################### BASIC PROJECT PROPERTIES #############################
@@ -226,6 +230,13 @@ unix: man.files += $$PWD/qtiplot.1
 ###################### HEADERS ##############################################
 
 HEADERS  += \
+            ../../sta-src/Scenario/staschema.h \
+            ../../sta-src/Scenario/scenario.h \
+            ../../sta-src/Scenario/stascenarioutil.h \
+            ../../sta-src/Astro-Core/cartesianTOorbital.h \
+            ../../sta-src/Astro-Core/orbitalTOcartesian.h \
+            ../../sta-src/Astro-Core/trueAnomalyTOmeanAnomaly.h \
+            ../../sta-src/Analysis/analysisParametersChoice.h \
             qtiplot/src/ApplicationWindow.h \
             qtiplot/src/globals.h\
             qtiplot/src/Table.h \
@@ -266,11 +277,18 @@ HEADERS  += \
             qtiplot/src/PlotWizard.h \
             qtiplot/src/LineNumberDisplay.h \
             qtiplot/src/PenStyleBox.h \
-            qtiplot/src/analysisParametersChoice.h \
+
 
 ###################### SOURCES ##############################################
 
 SOURCES  += \
+            ../../sta-src/Scenario/staschema.cpp \
+            ../../sta-src/Scenario/scenario.cpp \
+            ../../sta-src/Scenario/stascenarioutil.cpp \
+            ../../sta-src/Astro-Core/cartesianTOorbital.cpp \
+            ../../sta-src/Astro-Core/orbitalTOcartesian.cpp \
+            ../../sta-src/Astro-Core/trueAnomalyTOmeanAnomaly.cpp \
+            ../../sta-src/Analysis/analysisParametersChoice.cpp \
             qtiplot/src/ApplicationWindow.cpp \
             qtiplot/src/Table.cpp \
             qtiplot/src/SetColValuesDialog.cpp \
@@ -308,9 +326,10 @@ SOURCES  += \
             qtiplot/src/PlotWizard.cpp \
             qtiplot/src/LineNumberDisplay.cpp \
             qtiplot/src/PenStyleBox.cpp \
-            qtiplot/src/analysisParametersChoice.cpp \
 
-   FORMS += qtiplot/src/analysisParametersChoice.ui \
+
+   FORMS += \
+            ../../sta-src/Analysis/analysisParametersChoice.ui
 
 
 ###############################################################

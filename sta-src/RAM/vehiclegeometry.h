@@ -43,6 +43,9 @@
 using namespace Eigen;
 using std::string;
 
+typedef Eigen::Matrix< double, 3, 3 > 	MyMatrix3d;
+typedef Eigen::Matrix< double, 3, 1 > 	MyVector3d;
+
 
 class VehicleGeometry
 {
@@ -73,11 +76,11 @@ public:
     void CalculateGlobalCharacteristics();
     void WriteWGSfile();
     //void GenerateVehicleGeometry();
-    Vector3d** MakeBluntedCone(double* params, int Nlines, int Npoints);
-    Vector3d** MakeCapsule(double* params, int Nlines, int Npoints);
-    Vector3d** MakeBiCone(double* params, int Nlines, int Npoints);
-    Vector3d** GeneratePartialCone(double R1, double R2, double thc, double xstart, int nx, int nphi);
-    Vector3d** GeneratePartialSphere(double R, double ths, double xstart, int nx, int nphi);
+    MyVector3d** MakeBluntedCone(double* params, int Nlines, int Npoints);
+    MyVector3d** MakeCapsule(double* params, int Nlines, int Npoints);
+    MyVector3d** MakeBiCone(double* params, int Nlines, int Npoints);
+    MyVector3d** GeneratePartialCone(double R1, double R2, double thc, double xstart, int nx, int nphi);
+    MyVector3d** GeneratePartialSphere(double R, double ths, double xstart, int nx, int nphi);
     void UpdateParts(bool SplitBoolArr[]);
     int AutomaticMethodSelection(int** SelectedMethods, const PartAnalysis::SelectionStruct * SelectionParameters,bool ConcavityIgnore,int** defaultMethods);
     void ShadowDetermination();

@@ -52,27 +52,27 @@ PartGeometry::PartGeometry(double* Points , QString _name, int HeaderInts[], dou
     Npoints=HeaderInts[2];
     LocSym=HeaderInts[3];
     GlobSym=HeaderInts[4];
-    Rotate = AngleAxisd(HeaderDoubles[2]*sta::Pi()/180, Vector3d::UnitZ())*AngleAxisd(HeaderDoubles[1]*sta::Pi()/180,Vector3d::UnitY())*AngleAxisd(HeaderDoubles[0]*sta::Pi()/180, Vector3d::UnitX());
-    Translate=Vector3d(HeaderDoubles[3],HeaderDoubles[4],HeaderDoubles[5]);
-    Vector3d ScaleVector=Vector3d(HeaderDoubles[6],HeaderDoubles[7],HeaderDoubles[8]);
+    Rotate = AngleAxisd(HeaderDoubles[2]*sta::Pi()/180, MyVector3d::UnitZ())*AngleAxisd(HeaderDoubles[1]*sta::Pi()/180,MyVector3d::UnitY())*AngleAxisd(HeaderDoubles[0]*sta::Pi()/180, MyVector3d::UnitX());
+    Translate=MyVector3d(HeaderDoubles[3],HeaderDoubles[4],HeaderDoubles[5]);
+    MyVector3d ScaleVector=MyVector3d(HeaderDoubles[6],HeaderDoubles[7],HeaderDoubles[8]);
     Scale=ScaleVector.asDiagonal();
-    PointsVec=new Vector3d* [Nlines];
+    PointsVec=new MyVector3d* [Nlines];
 
     for(i=0;i<Nlines;i++)
     {
-        PointsVec[i]=new Vector3d[Npoints];
+        PointsVec[i]=new MyVector3d[Npoints];
     }
 
     for(i=0;i<Nlines;i++)
     {
         for(j=0;j<Npoints;j++)
         {
-            PointsVec[i][j]=Vector3d(Points[3*j+3*(Npoints*i)],Points[3*j+3*(Npoints*i)+1],Points[3*j+3*(Npoints*i)+2]);
+            PointsVec[i][j]=MyVector3d(Points[3*j+3*(Npoints*i)],Points[3*j+3*(Npoints*i)+1],Points[3*j+3*(Npoints*i)+2]);
         }
     }
 }
 
-PartGeometry::PartGeometry(Vector3d** Points, int _Nlines, int _Npoints)//Constructor for making a part from parametrization
+PartGeometry::PartGeometry(MyVector3d** Points, int _Nlines, int _Npoints)//Constructor for making a part from parametrization
 {
     ErrorInt=0;
     reversed=1;
@@ -88,11 +88,11 @@ PartGeometry::PartGeometry(Vector3d** Points, int _Nlines, int _Npoints)//Constr
     for(i=0;i<Npoints;i++)
         xRear+=Points[_Nlines-1][i].x();
     xRear/=Npoints;
-    PointsVec=new Vector3d*[Nlines];
+    PointsVec=new MyVector3d*[Nlines];
 
     for(i=0;i<Nlines-1;i++)
     {
-        PointsVec[i]=new Vector3d[Npoints];
+        PointsVec[i]=new MyVector3d[Npoints];
         for(j=0;j<Npoints;j++)
             PointsVec[i][j]=Points[i][j];
     }
@@ -101,11 +101,11 @@ PartGeometry::PartGeometry(Vector3d** Points, int _Nlines, int _Npoints)//Constr
         delete[] Points[i];
     }
     delete[] Points;
-    PointsVec[Nlines-1]=new Vector3d[Npoints];
+    PointsVec[Nlines-1]=new MyVector3d[Npoints];
 
     for(i=0;i<Npoints;i++)
     {
-        PointsVec[Nlines-1][i]=Vector3d(xRear,0,0);
+        PointsVec[Nlines-1][i]=MyVector3d(xRear,0,0);
     }
 }
 
@@ -122,10 +122,10 @@ PartGeometry::PartGeometry(const PartGeometry & PartIn)//Copy constructor
     Npoints=PartIn.Npoints;
     idNumber=PartIn.idNumber;
     ErrorInt=PartIn.ErrorInt;
-    PointsVec=new Vector3d* [Nlines];
+    PointsVec=new MyVector3d* [Nlines];
     for(i=0;i<Nlines;i++)
     {
-        PointsVec[i]=new Vector3d[Npoints];
+        PointsVec[i]=new MyVector3d[Npoints];
     }
 
     for(i=0;i<Nlines;i++)
@@ -168,10 +168,10 @@ PartGeometry::PartGeometry(const PartAnalysis & SplitPart,int Type)//Constructor
             name.append("-rear");
             Npoints=SplitPart.Npoints-(SplitPart.SplitIndexTop-SplitPart.SplitIndexBottom)-1;
         }
-        PointsVec=new Vector3d* [Nlines];
+        PointsVec=new MyVector3d* [Nlines];
         for(i=0;i<Nlines;i++)
         {
-            PointsVec[i]=new Vector3d[Npoints];
+            PointsVec[i]=new MyVector3d[Npoints];
         }
         int index;
         for(i=0;i<Nlines;i++)
@@ -207,10 +207,10 @@ PartGeometry::PartGeometry(const PartAnalysis & SplitPart,int Type)//Constructor
             name.append("-rear");
         }
 
-        PointsVec=new Vector3d* [Nlines];
+        PointsVec=new MyVector3d* [Nlines];
         for(i=0;i<Nlines;i++)
         {
-            PointsVec[i]=new Vector3d[Npoints];
+            PointsVec[i]=new MyVector3d[Npoints];
         }
         int index;
         for(i=0;i<Nlines;i++)
@@ -280,7 +280,7 @@ void PartGeometry::Mirror(int idType)//applies .wgs header symmetry operation
     {
         MirrorMat<<-1,0,0,0,1,0,0,0,1;
     }
-    Vector3d test;
+    MyVector3d test;
     for(i=0;i<Nlines;i++)
     {
         for(j=0;j<Npoints;j++)
@@ -296,23 +296,23 @@ void PartGeometry::PanelCalculations()//Calculates the panel centroid, normal an
 {
     int i;
     int j;
-    Centroid=new Vector3d* [Nlines-1];
-    Normal=new Vector3d* [Nlines-1];
+    Centroid=new MyVector3d* [Nlines-1];
+    Normal=new MyVector3d* [Nlines-1];
     Area=new double* [Nlines-1];
     Cp=new double* [Nlines-1];
     theta=new double* [Nlines-1];
 
     for(i=0;i<Nlines-1;i++)
     {
-        Centroid[i]=new Vector3d[Npoints-1];
-        Normal[i]=new Vector3d[Npoints-1];
+        Centroid[i]=new MyVector3d[Npoints-1];
+        Normal[i]=new MyVector3d[Npoints-1];
         Area[i]=new double[Npoints-1];
         Cp[i]=new double [Npoints-1];
         theta[i]=new double [Npoints-1];
     }
-    Vector3d P31;
-    Vector3d P42;
-    Vector3d testnorm;
+    MyVector3d P31;
+    MyVector3d P42;
+    MyVector3d testnorm;
     for(i=0;i<Nlines-1;i++)
     {
         for(j=0;j<Npoints-1;j++)
@@ -384,7 +384,7 @@ double PartGeometry::PointMean(int Component, int Index) //Determines the mean v
 {
     int i;
     double mean=0;
-    Vector3d Point;
+    MyVector3d Point;
     for(i=0;i<Nlines;i++)
     {
         Point=PointsVec[i][Index];
@@ -398,7 +398,7 @@ double PartGeometry::LineMean(int Component, int Line) //Determines the mean val
                                                         //of the Line-th contour, averaged over all points on the contour
 {
     double mean=0;
-    Vector3d Point;
+    MyVector3d Point;
     for(int i=0;i<Npoints;i++)
     {
         Point=PointsVec[Line][i];
@@ -411,7 +411,7 @@ double PartGeometry::LineMean(int Component, int Line) //Determines the mean val
 double PartGeometry::LineVariance(int Component, int Line, double MeanLine)
 {
     double Variance=0;
-    Vector3d Point;
+    MyVector3d Point;
     for(int i=0;i<Npoints;i++)
     {
         Point=PointsVec[Line][i];
@@ -424,9 +424,9 @@ double PartGeometry::LineVariance(int Component, int Line, double MeanLine)
 int PartGeometry::ProjPanelOrientation(int i, int j)
 {
     int CCW;
-    Vector3d P1;
-    Vector3d P2;
-    Vector3d P3;
+    MyVector3d P1;
+    MyVector3d P2;
+    MyVector3d P3;
     P1=PointsVec[i][j];
     P2=PointsVec[i][j+1];
     P3=PointsVec[i+1][j+1];
@@ -441,7 +441,7 @@ int PartGeometry::ProjPanelOrientation(int i, int j)
 
 }
 */
-bool PartGeometry::PointsMatch(Vector3d Point1, Vector3d Point2)//Functions to determine if two points are 'equal' to an accuracy of 1E-6 times the length of the part
+bool PartGeometry::PointsMatch(MyVector3d Point1, MyVector3d Point2)//Functions to determine if two points are 'equal' to an accuracy of 1E-6 times the length of the part
 {
     bool out;
     double margin=(xmax-xmin)/1E6;
@@ -507,10 +507,10 @@ PlanarPartAnalysis::PlanarPartAnalysis(const PartGeometry & PartToAnalyze,const 
     LCCpoints=Nlines-1;
     //Allocate all variables:
     xMean=new double[LCClines];
-    LatCC=new Vector3d* [LCClines];
+    LatCC=new MyVector3d* [LCClines];
     for(i=0;i<LCClines;i++)
     {
-        LatCC[i]=new Vector3d [LCCpoints];
+        LatCC[i]=new MyVector3d [LCCpoints];
     }
     LineProj=new double*[LCClines];
     alphaSel=new double*[LCClines];
@@ -556,10 +556,10 @@ FusiformPartAnalysis::FusiformPartAnalysis(const PartGeometry & PartToAnalyze,co
     LCClines=Nlines-1;
     LCCpoints=Npoints-1;
     xMean=new double[LCClines];
-    LatCC=new Vector3d* [LCClines];
+    LatCC=new MyVector3d* [LCClines];
     for(i=0;i<Nlines-1;i++)
     {
-        LatCC[i]=new Vector3d [Npoints-1];
+        LatCC[i]=new MyVector3d [Npoints-1];
     }
 
     LineProj=new double*[LCClines];
@@ -751,10 +751,10 @@ void PlanarPartAnalysis::OrderPlanarLCCs()
 
 void FusiformPartAnalysis::SetInclination()
 {
-    Vector3d Vinf;
+    MyVector3d Vinf;
 
     double cosdel;
-    Vinf=Vector3d(1,0,0);
+    Vinf=MyVector3d(1,0,0);
     thetaSel=new double* [LCClines];
     for(int i=0;i<LCClines;i++)
     {
@@ -772,10 +772,10 @@ void FusiformPartAnalysis::SetInclination()
 
 void PlanarPartAnalysis::SetInclination()
 {
-    Vector3d Vinf;
+    MyVector3d Vinf;
 
     double cosdel;
-    Vinf=Vector3d(1,0,0);
+    Vinf=MyVector3d(1,0,0);
     thetaSel=new double* [LCClines];
     for(int i=0;i<LCClines;i++)
     {

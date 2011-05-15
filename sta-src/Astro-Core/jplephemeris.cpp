@@ -29,14 +29,20 @@
  */
 
 #include <Eigen/Core>
+//#include "Eigen/src/Core/Map.h"
 #include <QtCore>
 #include <QDataStream>
 #include <QIODevice>
 #include "date.h"
 #include "jplephemeris.h"
 
+
+
 using namespace Eigen;
 using namespace std;
+
+typedef Eigen::Matrix< double, 3, 3 > 	MyMatrix3d;
+typedef Eigen::Matrix< double, 3, 1 > 	MyVector3d;
 
 static const unsigned int DE200RecordSize    =  826;
 static const unsigned int DE405RecordSize    = 1018;
@@ -199,7 +205,7 @@ sta::JPLEphemeris::getPlanetStateVector(JPLEphemItem planet, double tjd) const
     // Solar system barycenter is the origin
     if (planet == JPLEph_SSB)
     {
-        return StateVector(Vector3d(0.0, 0.0, 0.0), Vector3d(0.0, 0.0, 0.0));
+        return StateVector(MyVector3d(0.0, 0.0, 0.0), MyVector3d(0.0, 0.0, 0.0));
     }
 
     // The position of the Earth must be computed from the positions of the
@@ -281,8 +287,8 @@ sta::JPLEphemeris::getPlanetStateVector(JPLEphemItem planet, double tjd) const
 
     // Note that Eigen uses column-major storage, so we need to transpose the coefficient
     // matrix.
-    Vector3d position = Map<MatrixXd>(coeffs, nCoeffs, 3).transpose() * Map<MatrixXd>(positionTerms, nCoeffs, 1);
-    Vector3d velocity = Map<MatrixXd>(coeffs, nCoeffs, 3).transpose() * Map<MatrixXd>(velocityTerms, nCoeffs, 1);
+    MyVector3d position = Map<MatrixXd>(coeffs, nCoeffs, 3).transpose() * Map<MatrixXd>(positionTerms, nCoeffs, 1);
+    MyVector3d velocity = Map<MatrixXd>(coeffs, nCoeffs, 3).transpose() * Map<MatrixXd>(velocityTerms, nCoeffs, 1);
 
     return StateVector(position, velocity * (velocityScale / 86400.0));
 }

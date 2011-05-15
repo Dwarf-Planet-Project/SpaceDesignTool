@@ -425,14 +425,16 @@ ANALYSIS_SOURCES = \
            #sta-src/Analysis/analysis.cpp \
            #sta-src/Analysis/AnalysisPlot.cpp \
            #sta-src/Analysis/analysisTable.cpp \
+           sta-src/Analysis/analysisParametersChoice.cpp \
            sta-src/Analysis/qtiplotmain.cpp
 ANALYSIS_HEADERS = \
            #sta-src/Analysis/analysis.h\
            #sta-src/Analysis/AnalysisPlot.h \
            #sta-src/Analysis/analysisTable.h \
+           sta-src/Analysis/analysisParametersChoice.h \
            sta-src/Analysis/qtiplotmain.h
 ANALYSIS_FORMS = \
-           #sta-src/Analysis/analysis.ui
+           sta-src/Analysis/analysisParametersChoice.ui
 
 # ################ Payloads ############
 PAYLOAD_SOURCES = sta-src/Payloads/transmitterPayloadDialog.cpp \

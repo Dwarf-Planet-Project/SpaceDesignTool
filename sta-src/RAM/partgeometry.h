@@ -41,6 +41,9 @@
 #include <sstream>
 //#include "aerodynamicmethods.h"
 
+typedef Eigen::Matrix< double, 3, 3 > 	MyMatrix3d;
+typedef Eigen::Matrix< double, 3, 1 > 	MyVector3d;
+
 
 using namespace Eigen;
 
@@ -53,7 +56,7 @@ class PartGeometry
 public:
     PartGeometry();//Default Constructor
     PartGeometry(double* Points, QString name, int* HeaderInts, double* HeaderDoubles);//Constructor from data read from .wgs file
-    PartGeometry(Vector3d** Points, int Nlines, int Npoints);
+    PartGeometry(MyVector3d** Points, int Nlines, int Npoints);
     PartGeometry(const PartGeometry & PartIn);//Copy Construtor
     PartGeometry(const PartAnalysis & SplitPart,int Type);//Constructor of split part
     PartGeometry(const FusiformPartAnalysis & SplitPart,int Type);//Constructor of split part
@@ -61,7 +64,7 @@ public:
 
     virtual ~PartGeometry();
     void deAllocateArrays();
-    bool PointsMatch(Vector3d Point1, Vector3d Point2);
+    bool PointsMatch(MyVector3d Point1, MyVector3d Point2);
     void Mirror(int idType);//Mirrors given part
     void PanelCalculations();//Calculates normals, areas and centroid locations of panels
     void TransformPart();//Apply .wgs rotation, translation and scaling operations
@@ -87,9 +90,9 @@ public:
     bool BluntFront;
     int CurvatureType;
 
-    Vector3d** PointsVec;
-    Vector3d** Centroid;
-    Vector3d** Normal;
+    MyVector3d** PointsVec;
+    MyVector3d** Centroid;
+    MyVector3d** Normal;
 
     double** Area;
     //double** ShadowedFraction;
@@ -111,9 +114,9 @@ protected:
 
 private:
 
-    Matrix3d Rotate;
-    Matrix3d Scale;
-    Vector3d Translate;
+    MyMatrix3d Rotate;
+    MyMatrix3d Scale;
+    MyVector3d Translate;
 
 };
 
@@ -147,7 +150,7 @@ protected:
     int sign(double n);
     bool DetermineLineCurvatureType(int n);
     double LineAlphaChange(int n);
-    Vector3d** LatCC;
+    MyVector3d** LatCC;
     double** thetaSel;
     double** alphaSel;//Inclination of yz-projected panels w.r.t. xy plane.
     double** LineProj;//Projection of panel sizes onto yz-plane (LatCC indices)

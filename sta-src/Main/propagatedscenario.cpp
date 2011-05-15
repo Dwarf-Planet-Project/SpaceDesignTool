@@ -41,6 +41,9 @@
 using namespace sta;
 using namespace Eigen;
 
+typedef Eigen::Matrix< double, 3, 3 > 	MyMatrix3d;
+typedef Eigen::Matrix< double, 3, 1 > 	MyVector3d;
+
 
 /****** MissionArc ******/
 
@@ -420,12 +423,12 @@ GroundObject::elevationAngle(const SpaceObject* spacecraft, double t) const
     sta::StateVector spacecraftState;
 
     spacecraft->getStateVector(t, *centralBody, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &spacecraftState);
-    Vector3d stationPos = centralBody->planetographicToCartesian(latitude, longitude, 0.0);
+    MyVector3d stationPos = centralBody->planetographicToCartesian(latitude, longitude, 0.0);
 
     // TODO: should use ellipsoid normal
-    Vector3d up = stationPos.normalized();
+    MyVector3d up = stationPos.normalized();
 
-    Vector3d toSpacecraft = (spacecraftState.position - stationPos).normalized();
+    MyVector3d toSpacecraft = (spacecraftState.position - stationPos).normalized();
     double cosAngle = up.dot(toSpacecraft);
     double angleFromZenith;
 
@@ -456,11 +459,11 @@ double GroundObject::azimuthAngle(const SpaceObject *spacecraft, double t) const
     sta::StateVector spacecraftState;
 
     spacecraft->getStateVector(t, *centralBody, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &spacecraftState);
-    Vector3d stationPos = centralBody->planetographicToCartesian(latitude, longitude, 0.0);
+    MyVector3d stationPos = centralBody->planetographicToCartesian(latitude, longitude, 0.0);
 
     // TODO: should use ellipsoid normal
 
-    Vector3d toSpacecraft = (spacecraftState.position - stationPos);
+    MyVector3d toSpacecraft = (spacecraftState.position - stationPos);
 
     //Some parameters
     double lat=latitude*DEG2RAD;
@@ -524,11 +527,11 @@ double GroundObject::getRange(const SpaceObject *spacecraft, double t) const{
     sta::StateVector spacecraftState;
 
     spacecraft->getStateVector(t, *centralBody, sta::CoordinateSystem(sta::COORDSYS_BODYFIXED), &spacecraftState);
-    Vector3d stationPos = centralBody->planetographicToCartesian(latitude, longitude, 0.0);
+    MyVector3d stationPos = centralBody->planetographicToCartesian(latitude, longitude, 0.0);
 
     // TODO: should use ellipsoid normal
 
-    Vector3d toSpacecraft = (spacecraftState.position - stationPos);
+    MyVector3d toSpacecraft = (spacecraftState.position - stationPos);
 
     double range=toSpacecraft.norm();
 

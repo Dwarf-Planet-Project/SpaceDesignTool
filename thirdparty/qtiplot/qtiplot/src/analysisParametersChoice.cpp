@@ -45,7 +45,7 @@
 #include <QPrinter>
 
 #include "analysisParametersChoice.h"
-#include "../../../sta-src/Analysis/qtiplotmain.h"
+#include "Analysis/qtiplotmain.h"
 
 #include "Scenario/staschema.h"
 #include "Main/propagatedscenario.h"
@@ -82,7 +82,7 @@ void analysisParametersChoice::loadTheSTAscenario(SpaceScenario* scenario, Propa
 
     qDebug() << "--------> loadTheSTAscenario got the data" << endl;
 
-
+/*
 
     foreach (QSharedPointer<ScenarioParticipantType> participant, m_scenario->AbstractParticipant())
     {
@@ -368,5 +368,7 @@ void analysisParametersChoice::loadTheSTAscenario(SpaceScenario* scenario, Propa
             AllObjects.append("GroundObject");
         }
     }
+
+    */
 
 }

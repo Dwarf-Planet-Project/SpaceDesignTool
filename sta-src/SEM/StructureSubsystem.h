@@ -33,6 +33,9 @@
 using namespace Eigen;
 using namespace std;
 
+typedef Eigen::Matrix< double, 3, 3 > 	MyMatrix3d;
+typedef Eigen::Matrix< double, 3, 1 > 	MyVector3d;
+
 #define NumberOfPayloads 4
 
 enum Shape{Undefined=0, Cube, Cylindrical, Spherical};
@@ -48,7 +51,7 @@ struct NaturalFreq
 struct PayloadStructureInfo
 {
     QString Name;
-    Vector3d PayloadStructure;
+    MyVector3d PayloadStructure;
     double   PayloadVolume;
     double   PayloadMass;
 };
@@ -130,7 +133,7 @@ public:
       */
     void CalculateAndSetSpacecraftDimension();
     void setSpacecraftDimension(double width, double height, double length);
-    Vector3d getSpacecraftDimension();
+    MyVector3d getSpacecraftDimension();
 
     // It includes the system margin of 20% has to implement database
     void CalculateAndSetSCMass();
@@ -139,11 +142,11 @@ public:
 
     void CalculateAndSetMomentsOfInertia();
     void setMomentsOfInertia(double x,double y,double z);
-    Vector3d getMomentsOfInertia();
+    MyVector3d getMomentsOfInertia();
 
     void CalculateAndSetSecondMomentsOfArea();
     void setSecondMomentsOfArea(double x,double y,double z);
-    Vector3d getSecondMomentsOfArea();
+    MyVector3d getSecondMomentsOfArea();
 
     void setSCShape(Shape DefinedShape);
     void setSCShape(QString Shape);
@@ -160,7 +163,7 @@ public:
 
     void setPayloadsStructure(int      Index,
                               QString Name,
-                              Vector3d PayloadStructure,
+                              MyVector3d PayloadStructure,
                               double   PayloadVolume,
                               double   PayloadMass);
     PayloadStructureInfo* getPayloadStructure();
@@ -215,7 +218,7 @@ private:
     *           y->height
     *           z->length
     */
-    Vector3d SCSizing;
+    MyVector3d SCSizing;
    // double   SCVolume;
     MassDetails SCMassDetails;
     MassEstimate SCMassEstimatePercentages;
@@ -229,8 +232,8 @@ private:
     * They only represent value of the moment of the body on the specified
     * plane.
     */
-    Vector3d MomentsOfInertia;
-    Vector3d SecondMomentsOfArea;
+    MyVector3d MomentsOfInertia;
+    MyVector3d SecondMomentsOfArea;
     Shape SCShape;
     NaturalFreq NaturalFrequency;
 

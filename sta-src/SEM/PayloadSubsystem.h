@@ -33,6 +33,9 @@
 using namespace std;
 using namespace Eigen;
 
+typedef Eigen::Matrix< double, 3, 3 > 	MyMatrix3d;
+typedef Eigen::Matrix< double, 3, 1 > 	MyVector3d;
+
 //#define NumberOfPayloads 4
 
 //------------------------- Structures ---------------------------------//
@@ -69,7 +72,7 @@ public:
     double getPayloadLength();
 
     void setPayloadDimensions(double Width, double Height, double Length);
-    Vector3d getPayloadDimensions();
+    MyVector3d getPayloadDimensions();
 
     void setPayloadMass(double Mass);
     double getPayloadMass();
@@ -140,7 +143,7 @@ private:
     *             y->height
     *             z->length
     */
-    Vector3d PayloadDimensions;
+    MyVector3d PayloadDimensions;
 //    double PayloadWidth;
 //    double PayloadHeight;
 //    double PayloadLength;

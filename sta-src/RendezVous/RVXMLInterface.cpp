@@ -388,7 +388,7 @@ QString RVXMLInterface::getPropagatedTrajectory(int order){
     MissionArc* arc=spaceObj->mission().first();
 
     sta::StateVector* result=new sta::StateVector();
-    Vector3d vector;
+    MyVector3d vector;
     double x,y,z;
 
     QString temp1,temp2,temp3;

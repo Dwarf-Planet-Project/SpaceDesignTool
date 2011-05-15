@@ -48,9 +48,9 @@ EclipseDuration::EclipseDuration()
 {
 }
 
-bool EclipseDuration::IsSpacecraftInUmbra(Vector3d StarCoordinates,
-                                          Vector3d PlanetCoordinates,
-                                          Vector3d SpacecraftCoordinates)
+bool EclipseDuration::IsSpacecraftInUmbra(MyVector3d StarCoordinates,
+                                          MyVector3d PlanetCoordinates,
+                                          MyVector3d SpacecraftCoordinates)
 {
 //    //Planet-Star Information has to be gathered from Stabody.h
 //    double m_PlanetMeanDiameter = 2;
@@ -62,9 +62,9 @@ bool EclipseDuration::IsSpacecraftInUmbra(Vector3d StarCoordinates,
     double UmbralSubtendedAngle = asin(m_PlanetMeanDiameter
                                        /(2*UmbralApexToPlanetCenterDistance));
 
-    Vector3d PlanetSpacecraftVector
+    MyVector3d PlanetSpacecraftVector
             = SpacecraftCoordinates - PlanetCoordinates;
-    Vector3d UnitPlanetStarVector
+    MyVector3d UnitPlanetStarVector
             = (StarCoordinates - PlanetCoordinates).normalized();   // r_s
 
     // Check if Spacecraft is on the Star Side of the planet
@@ -73,9 +73,9 @@ bool EclipseDuration::IsSpacecraftInUmbra(Vector3d StarCoordinates,
         return false;
     }
 
-    Vector3d SCProjectionOnPlanetStarCenterPlaneVector
+    MyVector3d SCProjectionOnPlanetStarCenterPlaneVector
             = PlanetSpacecraftVector.dot(UnitPlanetStarVector) * UnitPlanetStarVector;
-    Vector3d PlanetStarCenterPlaneToSCVector
+    MyVector3d PlanetStarCenterPlaneToSCVector
             = PlanetSpacecraftVector - SCProjectionOnPlanetStarCenterPlaneVector;
 
     double PlanetStarPlaneToUmbraTerminatorDistance
@@ -89,9 +89,9 @@ bool EclipseDuration::IsSpacecraftInUmbra(Vector3d StarCoordinates,
         return false;
 }
 
-bool EclipseDuration::IsSpacecraftInPenumbra(Vector3d StarCoordinates,
-                                             Vector3d PlanetCoordinates,
-                                             Vector3d SpacecraftCoordinates)
+bool EclipseDuration::IsSpacecraftInPenumbra(MyVector3d StarCoordinates,
+                                             MyVector3d PlanetCoordinates,
+                                             MyVector3d SpacecraftCoordinates)
 {
 //    //Planet-Star Information has to be gathered from Stabody.h
 //    double m_PlanetMeanDiameter = 2 * m_Planet;
@@ -103,9 +103,9 @@ bool EclipseDuration::IsSpacecraftInPenumbra(Vector3d StarCoordinates,
     double PenumbralSubtendedAngle
             = asin(m_PlanetMeanDiameter/(2*PenumbralApexToPlanetCenterDistance));
 
-    Vector3d PlanetSpacecraftVector
+    MyVector3d PlanetSpacecraftVector
             = SpacecraftCoordinates - PlanetCoordinates;
-    Vector3d UnitPlanetStarVector
+    MyVector3d UnitPlanetStarVector
             = (StarCoordinates - PlanetCoordinates).normalized();   // r_s
 
     // Check if Spacecraft is on the Star Side of the planet
@@ -114,9 +114,9 @@ bool EclipseDuration::IsSpacecraftInPenumbra(Vector3d StarCoordinates,
         return false;
     }
 
-    Vector3d SCProjectionOnPlanetStarCenterPlaneVector
+    MyVector3d SCProjectionOnPlanetStarCenterPlaneVector
             = PlanetSpacecraftVector.dot(UnitPlanetStarVector) * UnitPlanetStarVector;
-    Vector3d PlanetStarCenterPlaneToSCVector
+    MyVector3d PlanetStarCenterPlaneToSCVector
             = PlanetSpacecraftVector - SCProjectionOnPlanetStarCenterPlaneVector;
 
     double PlanetStarPlaneToPenumbraTerminatorDistance
@@ -152,7 +152,7 @@ void EclipseDuration::StarLightTimeFunction(QList<double> &sampleTimes,
     QTextStream EclipseStarLightStream(&EclipseStarLight);
     EclipseStarLightStream.setRealNumberPrecision(16);
 
-//    Vector3d  PlanetCoordinates;
+//    MyVector3d  PlanetCoordinates;
 //    PlanetCoordinates.setZero(3);
 
     int i;

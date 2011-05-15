@@ -141,7 +141,7 @@ SpiceEphemeris::stateVector(const StaBody* body,
     // Avoid calling SPICE with an out of range time value
     if (!checkCoverage(body, et) || !checkCoverage(center, et))
     {
-        return StateVector(Vector3d::Zero(), Vector3d::Zero());
+        return StateVector(MyVector3d::Zero(), MyVector3d::Zero());
     }
 
     // Call SPICE to get the geometric state (i.e. not corrected for aberration or light
@@ -149,7 +149,7 @@ SpiceEphemeris::stateVector(const StaBody* body,
     // System bodies are identical to NAIF ids, so no translation is required.
     spkgeo_c(body->id(), et, "j2000", center->id(), state, &lightTime);
 
-    return StateVector(Vector3d(state[0], state[1], state[2]), Vector3d(state[3], state[4], state[5]));
+    return StateVector(MyVector3d(state[0], state[1], state[2]), MyVector3d(state[3], state[4], state[5]));
 }
 
 

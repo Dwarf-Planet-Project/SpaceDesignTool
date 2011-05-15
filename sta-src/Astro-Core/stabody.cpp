@@ -36,6 +36,9 @@
 using namespace sta;
 using namespace Eigen;
 
+typedef Eigen::Matrix< double, 3, 3 > 	MyMatrix3d;
+typedef Eigen::Matrix< double, 3, 1 > 	MyVector3d;
+
 SolarSystemBodyDictionary* SolarSystemBodyDictionary::s_instance = NULL;
 
 struct RotationalElements
@@ -142,17 +145,17 @@ struct GravitationalAttributes
 //   ftp://naif.jpl.nasa.gov/pub/naif/generic_kernels
 struct GravitationalAttributes SSGravitationalAttributes[] =
 {
-    { STA_EARTH,     Vector3d(1.082616e-3, -2.53881-6, -1.65597e-6) },
-    { STA_MERCURY,   Vector3d(6.0e-5,       0.0,       0.0   ) },
-    { STA_VENUS,     Vector3d(4.458e-006,   0.0,       0.0   ) },
-    { STA_MARS,      Vector3d(1.96045e-3,   3.6e-5,    0.0   ) },
-    { STA_JUPITER,   Vector3d(1.4736e-2,    0.0,      -5.8e-4) },
-    { STA_SATURN,    Vector3d(1.6298e-2,    0.0,      -1.0e-3) },
-    { STA_URANUS,    Vector3d(3.34343e-3,   0.0,       0.0   ) },
-    { STA_NEPTUNE,   Vector3d(3.411e-3,     0.0,       0.0   ) },
-    { STA_PLUTO,     Vector3d(0.0,          0.0,       0.0   ) },
-    { STA_SUN,       Vector3d(0.0,          0.0,       0.0   ) },
-    { STA_MOON,      Vector3d(203.986e-006, 0.0,       0.0   ) },
+    { STA_EARTH,     MyVector3d(1.082616e-3, -2.53881-6, -1.65597e-6) },
+    { STA_MERCURY,   MyVector3d(6.0e-5,       0.0,       0.0   ) },
+    { STA_VENUS,     MyVector3d(4.458e-006,   0.0,       0.0   ) },
+    { STA_MARS,      MyVector3d(1.96045e-3,   3.6e-5,    0.0   ) },
+    { STA_JUPITER,   MyVector3d(1.4736e-2,    0.0,      -5.8e-4) },
+    { STA_SATURN,    MyVector3d(1.6298e-2,    0.0,      -1.0e-3) },
+    { STA_URANUS,    MyVector3d(3.34343e-3,   0.0,       0.0   ) },
+    { STA_NEPTUNE,   MyVector3d(3.411e-3,     0.0,       0.0   ) },
+    { STA_PLUTO,     MyVector3d(0.0,          0.0,       0.0   ) },
+    { STA_SUN,       MyVector3d(0.0,          0.0,       0.0   ) },
+    { STA_MOON,      MyVector3d(203.986e-006, 0.0,       0.0   ) },
 };
 
 
@@ -163,7 +166,7 @@ AddSolarSystemBody(QHash<StaBodyId, StaBody*>& dict,
                    StaBodyId id,
                    const QString& name,
                    double mu,
-                   const Vector3d& radii,
+                   const MyVector3d& radii,
                    double linearV,
                    double distance,
                    double orbitalPeriod,
@@ -190,7 +193,7 @@ AddSolarSystemBody(QHash<StaBodyId, StaBody*>& dict,
                    double orbitalPeriod,
                    double inclination)
 {
-    AddSolarSystemBody(dict, nameIndex, id, name, mu, Vector3d(eqPolarRadii.x(), eqPolarRadii.x(), eqPolarRadii.y()),linearV, distance, orbitalPeriod, inclination);
+    AddSolarSystemBody(dict, nameIndex, id, name, mu, MyVector3d(eqPolarRadii.x(), eqPolarRadii.x(), eqPolarRadii.y()),linearV, distance, orbitalPeriod, inclination);
 }
 
 
@@ -207,7 +210,7 @@ AddSolarSystemBody(QHash<StaBodyId, StaBody*>& dict,
                    double orbitalPeriod,
                    double inclination)
 {
-    AddSolarSystemBody(dict, nameIndex, id, name, mu, Vector3d(radius, radius, radius), linearV, distance, orbitalPeriod, inclination);
+    AddSolarSystemBody(dict, nameIndex, id, name, mu, MyVector3d(radius, radius, radius), linearV, distance, orbitalPeriod, inclination);
 }
 
 
@@ -251,23 +254,23 @@ InitSolarSystemBodyDictionary(QHash<StaBodyId, StaBody*>& dict, QHash<QString, S
 
     AddSolarSystemBody(dict, nameIndex, STA_MOON,      "Moon",  4902.801,        1737.4,                            1.023,      384399,     27.3217,      5.145);
 
-    AddSolarSystemBody(dict, nameIndex, STA_PHOBOS,    "Phobos",  85.22834344572990e-5,     Vector3d(13.4, 11.2, 9.2),           0,     9380,          0.31910,  1.075);
-    AddSolarSystemBody(dict, nameIndex, STA_DEIMOS,    "Deimos", 119.9192772100721e-6,      Vector3d( 7.5,  6.1, 5.2),           0,    23459,          1.26244,  1.79);
+    AddSolarSystemBody(dict, nameIndex, STA_PHOBOS,    "Phobos",  85.22834344572990e-5,     MyVector3d(13.4, 11.2, 9.2),           0,     9380,          0.31910,  1.075);
+    AddSolarSystemBody(dict, nameIndex, STA_DEIMOS,    "Deimos", 119.9192772100721e-6,      MyVector3d( 7.5,  6.1, 5.2),           0,    23459,          1.26244,  1.79);
 
-    AddSolarSystemBody(dict, nameIndex, STA_IO,        "Io",       5960.981613781674,       Vector3d(1829.4,  1819.3,  1815.7),  0,    421800,         1.7692,   0.47);
-    AddSolarSystemBody(dict, nameIndex, STA_EUROPA,    "Europa",   3200.988724107317,       Vector3d(1564.13, 1561.23, 1560.93), 0,    670900,         3.551,    0.47);
-    AddSolarSystemBody(dict, nameIndex, STA_GANYMEDE,  "Ganymede", 9886.997387719448,       Vector3d(2632.4,  2632.29, 2623.35), 0,    1070400,        7.155,    0.47);
-    AddSolarSystemBody(dict, nameIndex, STA_CALLISTO,  "Callisto", 7180.972962701350,       Vector3d(2409.4,  2409.2,  2409.3),  0,    1882700,       16.69,     0.47);
+    AddSolarSystemBody(dict, nameIndex, STA_IO,        "Io",       5960.981613781674,       MyVector3d(1829.4,  1819.3,  1815.7),  0,    421800,         1.7692,   0.47);
+    AddSolarSystemBody(dict, nameIndex, STA_EUROPA,    "Europa",   3200.988724107317,       MyVector3d(1564.13, 1561.23, 1560.93), 0,    670900,         3.551,    0.47);
+    AddSolarSystemBody(dict, nameIndex, STA_GANYMEDE,  "Ganymede", 9886.997387719448,       MyVector3d(2632.4,  2632.29, 2623.35), 0,    1070400,        7.155,    0.47);
+    AddSolarSystemBody(dict, nameIndex, STA_CALLISTO,  "Callisto", 7180.972962701350,       MyVector3d(2409.4,  2409.2,  2409.3),  0,    1882700,       16.69,     0.47);
 
-    AddSolarSystemBody(dict, nameIndex, STA_MIMAS,     "Mimas",       2.5026538541303731,   Vector3d(207.4,196.8,190.6 ),      0,      185540,         0.9417,    0);
-    AddSolarSystemBody(dict, nameIndex, STA_ENCELADUS, "Enceladus",   7.210753192578406,    Vector3d(256.3,247.3,244.6 ),      0,      238020,         1.370218,  0);
-    AddSolarSystemBody(dict, nameIndex, STA_TETHYS,    "Tethys",     41.22399120522562,     Vector3d(540.5,531.1,527.5 ),      0,      294670,         1.8879,    0);
-    AddSolarSystemBody(dict, nameIndex, STA_DIONE,     "Dione",      73.11575812534798,     Vector3d(563.8,561.0,560.3 ),      0,      377420,         2.7370,    0);
-    AddSolarSystemBody(dict, nameIndex, STA_RHEA,      "Rhea",      153.9434658935521,      Vector3d(767.2,762.5,763.1 ),      0,      527070,         4.5167,    0);
+    AddSolarSystemBody(dict, nameIndex, STA_MIMAS,     "Mimas",       2.5026538541303731,   MyVector3d(207.4,196.8,190.6 ),      0,      185540,         0.9417,    0);
+    AddSolarSystemBody(dict, nameIndex, STA_ENCELADUS, "Enceladus",   7.210753192578406,    MyVector3d(256.3,247.3,244.6 ),      0,      238020,         1.370218,  0);
+    AddSolarSystemBody(dict, nameIndex, STA_TETHYS,    "Tethys",     41.22399120522562,     MyVector3d(540.5,531.1,527.5 ),      0,      294670,         1.8879,    0);
+    AddSolarSystemBody(dict, nameIndex, STA_DIONE,     "Dione",      73.11575812534798,     MyVector3d(563.8,561.0,560.3 ),      0,      377420,         2.7370,    0);
+    AddSolarSystemBody(dict, nameIndex, STA_RHEA,      "Rhea",      153.9434658935521,      MyVector3d(767.2,762.5,763.1 ),      0,      527070,         4.5167,    0);
     AddSolarSystemBody(dict, nameIndex, STA_TITAN,     "Titan",    8978.138877124944,       2575,                           5.58,      1221870,        15.945421, 0.33);
-    AddSolarSystemBody(dict, nameIndex, STA_HYPERION,  "Hyperion",    0.372092758433870,    Vector3d(164, 130, 107 ),          0,      1508800,        21.28,     0);
-    AddSolarSystemBody(dict, nameIndex, STA_IAPETUS,   "Iapetus",   120.5175109354886,      Vector3d(747.1, 749.0, 712.6 ),    0,      3560840,        79.33,     0);
-    AddSolarSystemBody(dict, nameIndex, STA_PHOEBE,    "Phoebe",      0.5531033330031904,   Vector3d(108.6, 107.7, 101.5 ),    0,      12947780,       550.31,    0);
+    AddSolarSystemBody(dict, nameIndex, STA_HYPERION,  "Hyperion",    0.372092758433870,    MyVector3d(164, 130, 107 ),          0,      1508800,        21.28,     0);
+    AddSolarSystemBody(dict, nameIndex, STA_IAPETUS,   "Iapetus",   120.5175109354886,      MyVector3d(747.1, 749.0, 712.6 ),    0,      3560840,        79.33,     0);
+    AddSolarSystemBody(dict, nameIndex, STA_PHOEBE,    "Phoebe",      0.5531033330031904,   MyVector3d(108.6, 107.7, 101.5 ),    0,      12947780,       550.31,    0);
 
     AddSolarSystemBody(dict, nameIndex, STA_TRITON,    "Triton", 1427.9,           1352.6,                         -4.39,       354759,     5.876854,   157.345);
 }
@@ -332,8 +335,8 @@ SolarSystemBodyDictionary::Create()
             body->gravityModel().setZonals(att.zonals);
         }
     }
-    //s_instance->lookup(STA_EARTH)->gravityModel().setZonals(Vector3d(1.08263e-03, 2.54e-06, 1.61e-06));
-    //s_instance->lookup(STA_MARS)->gravityModel().setZonals(Vector3d(1.96045e-3, 0.0, 0.0));
+    //s_instance->lookup(STA_EARTH)->gravityModel().setZonals(MyVector3d(1.08263e-03, 2.54e-06, 1.61e-06));
+    //s_instance->lookup(STA_MARS)->gravityModel().setZonals(MyVector3d(1.96045e-3, 0.0, 0.0));
 
     // Set rotation states for Solar System bodies
     s_instance->lookup(STA_EARTH)->setRotationState(new EarthRotationState());
@@ -473,14 +476,14 @@ StaBody::orientation(double mjd, sta::CoordinateSystemType /* coordSys */) const
  *  frame of the body. Latitude and longitude are given in degrees, altitude is in
  *  kilometers.
  */
-Vector3d
+MyVector3d
 StaBody::planetographicToCartesian(double latitude, double longitude, double altitude) const
 {
     // TODO: This approximation assumes the body is spherical. Need a point-to-ellipse
     // distance function to do this right.
     double longitudeRad = sta::degToRad(longitude);
     double latitudeRad = sta::degToRad(latitude);
-    Vector3d normPosition(cos(latitudeRad) * cos(longitudeRad),
+    MyVector3d normPosition(cos(latitudeRad) * cos(longitudeRad),
                           cos(latitudeRad) * sin(longitudeRad),
                           sin(latitudeRad));
 

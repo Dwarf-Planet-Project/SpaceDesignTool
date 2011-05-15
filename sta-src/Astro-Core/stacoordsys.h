@@ -45,11 +45,11 @@
 
 // import most common Eigen types
 //USING_PART_OF_NAMESPACE_EIGEN
-typedef Eigen::Matrix< double, 3, 3 > 	Matrix3d;
-typedef Eigen::Matrix< double, 3, 1 > 	Vector3d;
+typedef Eigen::Matrix< double, 3, 3 > 	MyMatrix3d;
+typedef Eigen::Matrix< double, 3, 1 > 	MyVector3d;
 
-Matrix3d PrecessionMatrix(double mjd);
-Matrix3d NutationMatrix(double mjd);
+MyMatrix3d PrecessionMatrix(double mjd);
+MyMatrix3d NutationMatrix(double mjd);
 
 class StaBody;
 
@@ -121,14 +121,14 @@ namespace sta
                                    const CoordinateSystem& fromSys,
                                    const StaBody* toCenter,
                                    const CoordinateSystem& toSys);
-        Matrix3d rotToEmeJ2000();
-        Matrix3d rotFromEmeJ2000();
+        MyMatrix3d rotToEmeJ2000();
+        MyMatrix3d rotFromEmeJ2000();
 
-        Matrix3d rotToEmeJ2000(const StaBody* center, double mjd);
-        Matrix3d rotFromEmeJ2000(const StaBody* center, double mjd);
+        MyMatrix3d rotToEmeJ2000(const StaBody* center, double mjd);
+        MyMatrix3d rotFromEmeJ2000(const StaBody* center, double mjd);
 
-        Vector3d omegaToEmeJ2000(const StaBody* center, double mjd);
-        Vector3d omegaFromEmeJ2000(const StaBody* center, double mjd);
+        MyVector3d omegaToEmeJ2000(const StaBody* center, double mjd);
+        MyVector3d omegaFromEmeJ2000(const StaBody* center, double mjd);
 
 
 

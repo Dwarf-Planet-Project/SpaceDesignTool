@@ -471,8 +471,8 @@ PropagateExternalTrajectory(ScenarioExternalType* extTrajectory,
 
         if (jd != lastJd)
         {
-            Vector3d position(states[index * 6    ], states[index * 6 + 1], states[index * 6 + 2]);
-            Vector3d velocity(states[index * 6 + 3], states[index * 6 + 4], states[index * 6 + 5]);
+            MyVector3d position(states[index * 6    ], states[index * 6 + 1], states[index * 6 + 2]);
+            MyVector3d velocity(states[index * 6 + 3], states[index * 6 + 4], states[index * 6 + 5]);
 
             sampleTimes << sta::JdToMjd(jd);
             samples << sta::StateVector(position, velocity);

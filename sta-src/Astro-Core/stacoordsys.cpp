@@ -33,6 +33,10 @@
 
 using namespace sta;
 using namespace Eigen;
+
+typedef Eigen::Matrix< double, 3, 3 > 	MyMatrix3d;
+typedef Eigen::Matrix< double, 3, 1 > 	MyVector3d;
+
 /*
  ICRF Transformation matrix:
  The transformation matrix between ICRF and EMEJ2000 is taken from:
@@ -44,15 +48,15 @@ static double J2000_to_ICRFCoeffs[9] =
 -0.000273e-8,        1,             -1.324146e-8,
 9.740996e-8,    1.324146e-8,                1};
 
-static const Matrix3d J2000_to_ICRF_mat(J2000_to_ICRFCoeffs);
-static const Matrix3d ICRF_to_J2000_mat=J2000_to_ICRF_mat.conjugate();
+static const MyMatrix3d J2000_to_ICRF_mat(J2000_to_ICRFCoeffs);
+static const MyMatrix3d ICRF_to_J2000_mat=J2000_to_ICRF_mat.conjugate();
 static Quaterniond J2000_to_ICRF(J2000_to_ICRF_mat);
 static Quaterniond ICRF_to_J2000 = J2000_to_ICRF.conjugate();
 
 // ======================= PRECESSION matrix ===================================
 //Formulas for precession taken from: "Satellite Orbits: models, methods and applications",
 //Montenbruck O., Gill E., Springer, 2005
-Matrix3d PrecessionMatrix(double mjd)
+MyMatrix3d PrecessionMatrix(double mjd)
 {
         double julianTDB = sta::MjdToJd(mjd+0.00001);
         double julianSeconds = JdToSecJ2000(julianTDB);
@@ -76,7 +80,7 @@ Matrix3d PrecessionMatrix(double mjd)
         -cos(z)*sin(vartheta),-sin(z)*sin(vartheta),cos(vartheta)
     };
 
-    static const Matrix3d Precession_mat(PrecessionCoeffs);     // Convert the array into a matrix
+    static const MyMatrix3d Precession_mat(PrecessionCoeffs);     // Convert the array into a matrix
     return Precession_mat;
 
 
@@ -86,7 +90,7 @@ Matrix3d PrecessionMatrix(double mjd)
 
 //================================ NUTATION matrix =================================
 //Formulas for nutation taken from: "Satellite Orbits: models, methods and applications", Montenbruck O., Gill E., Springer, 2005
-Matrix3d NutationMatrix(double mjd)
+MyMatrix3d NutationMatrix(double mjd)
 {
     double julianTDB = sta::MjdToJd(mjd+0.00001);
     double julianSeconds = JdToSecJ2000(julianTDB);
@@ -258,7 +262,7 @@ Matrix3d NutationMatrix(double mjd)
 //        cos(eps_l)*sin(delta_psi), cos(eps)*cos(eps_l)*cos(delta_psi)+sin(eps)*sin(eps_l), sin(eps)*cos(eps_l)*cos(delta_psi)-cos(eps)*sin(eps_l),
 //        sin(eps_l)*sin(delta_psi), cos(eps)*sin(eps_l)*cos(delta_psi)-sin(eps)*cos(eps_l), sin(eps)*sin(eps_l)*cos(delta_psi)+cos(eps)*cos(eps_l)
 //    };
-    static const Matrix3d Nutation_mat(NutationCoeffs);
+    static const MyMatrix3d Nutation_mat(NutationCoeffs);
     return Nutation_mat;
 }
 //==================================================================================
@@ -270,8 +274,8 @@ Matrix3d NutationMatrix(double mjd)
 //    -0.000075, 1, -0.000015,
 //    -0.000033, 0.000015, 1
 //};
-//static const Matrix3d J2000_to_Nutation_mat(NutationCoeffs);
-//static const Matrix3d Nutation_to_J2000_mat=J2000_to_Nutation_mat.conjugate();
+//static const MyMatrix3d J2000_to_Nutation_mat(NutationCoeffs);
+//static const MyMatrix3d Nutation_to_J2000_mat=J2000_to_Nutation_mat.conjugate();
 //static Quaterniond J2000_to_Nutation(J2000_to_Nutation_mat);
 //static Quaterniond Nutation_to_J2000 = J2000_to_Nutation.conjugate();
 
@@ -291,11 +295,11 @@ Jay Lieske, ``Expressions for the Precession  Quantities
 */
 
 static const Quaterniond B1950_to_J2000 =
-    Quaterniond(AngleAxis<double>(arcsecToRad(1153.04066200330), Vector3d::UnitZ())) *
-    Quaterniond(AngleAxis<double>(arcsecToRad(-1002.26108439117), Vector3d::UnitY())) *
-    Quaterniond(AngleAxis<double>(arcsecToRad(1152.84248596724), Vector3d::UnitZ()));
-static const Matrix3d B1950_to_J2000_mat = B1950_to_J2000.toRotationMatrix();
-static const Matrix3d J2000_to_B1950_mat = B1950_to_J2000.conjugate().toRotationMatrix();
+    Quaterniond(AngleAxis<double>(arcsecToRad(1153.04066200330), MyVector3d::UnitZ())) *
+    Quaterniond(AngleAxis<double>(arcsecToRad(-1002.26108439117), MyVector3d::UnitY())) *
+    Quaterniond(AngleAxis<double>(arcsecToRad(1152.84248596724), MyVector3d::UnitZ()));
+static const MyMatrix3d B1950_to_J2000_mat = B1950_to_J2000.toRotationMatrix();
+static const MyMatrix3d J2000_to_B1950_mat = B1950_to_J2000.conjugate().toRotationMatrix();
 
 /*
 ECLIPTIC J2000:
@@ -305,9 +309,9 @@ p. 114, equation 3.222-1:
 e0 = 23 26' 21".448 - 46".8150 T - 0".00059 T^2 + 0".001813 T^3
 */
 static const Quaterniond Equator_to_Ecliptic =
-    Quaterniond(AngleAxis<double>(degToRad(-23.439291111), Vector3d::UnitX())); //patched by Ana (June 2010)
-static const Matrix3d Equator_to_Ecliptic_mat = Equator_to_Ecliptic.toRotationMatrix();
-static const Matrix3d Ecliptic_to_Equator_mat = Equator_to_Ecliptic.conjugate().toRotationMatrix();
+    Quaterniond(AngleAxis<double>(degToRad(-23.439291111), MyVector3d::UnitX())); //patched by Ana (June 2010)
+static const MyMatrix3d Equator_to_Ecliptic_mat = Equator_to_Ecliptic.toRotationMatrix();
+static const MyMatrix3d Ecliptic_to_Equator_mat = Equator_to_Ecliptic.conjugate().toRotationMatrix();
 
 
 /*! Create a coordinate system with the specified name. The name
@@ -380,11 +384,11 @@ CoordinateSystem::toEmeJ2000(const StateVector& v) const
 //    if (m_type == COORDSYS_EME_J2000)
 //        return v;
 
-    Matrix3d rotation;
+    MyMatrix3d rotation;
     switch (m_type)
     {
     case COORDSYS_EME_J2000:
-        rotation = Matrix3d::Identity();
+        rotation = MyMatrix3d::Identity();
         break;
     case COORDSYS_EME_B1950:
         rotation = B1950_to_J2000_mat;
@@ -397,7 +401,7 @@ CoordinateSystem::toEmeJ2000(const StateVector& v) const
         break;
     case COORDSYS_BODYFIXED:
     default:
-        rotation = Matrix3d::Identity();
+        rotation = MyMatrix3d::Identity();
         break;
     }
 
@@ -417,11 +421,11 @@ CoordinateSystem::fromEmeJ2000(const StateVector& v) const
 //    if (m_type == COORDSYS_EME_J2000)
 //        return v;
 
-    Matrix3d rotation;
+    MyMatrix3d rotation;
     switch (m_type)
     {
     case COORDSYS_EME_J2000:
-        rotation = Matrix3d::Identity();
+        rotation = MyMatrix3d::Identity();
         break;
     case COORDSYS_EME_B1950:
         rotation = J2000_to_B1950_mat;
@@ -435,7 +439,7 @@ CoordinateSystem::fromEmeJ2000(const StateVector& v) const
         rotation = J2000_to_ICRF_mat;
         break;
     default:
-        rotation = Matrix3d::Identity();
+        rotation = MyMatrix3d::Identity();
         break;
     }
 
@@ -448,8 +452,8 @@ static StateVector bodyFixedToEmeJ2000(const StateVector& state,
                                        double mjd)
 {
     const RotationState* rotation = center->rotationState();
-    Matrix3d r = Matrix3d::Identity();
-    Vector3d w = Vector3d::Zero();
+    MyMatrix3d r = MyMatrix3d::Identity();
+    MyVector3d w = MyVector3d::Zero();
     if (rotation)
     {
         r = rotation->orientation(mjd).toRotationMatrix();
@@ -465,8 +469,8 @@ static StateVector emeJ2000ToBodyFixed(const StateVector& state,
                                        double mjd)
 {
     const RotationState* rotation = center->rotationState();
-    Matrix3d r = Matrix3d::Identity();
-    Vector3d w = Vector3d::Zero();
+    MyMatrix3d r = MyMatrix3d::Identity();
+    MyVector3d w = MyVector3d::Zero();
     if (rotation)
     {
         r = rotation->orientation(mjd).conjugate().toRotationMatrix();
@@ -490,7 +494,7 @@ CoordinateSystem::toEmeJ2000(const StateVector& v, const StaBody* center, double
     else if (m_type == COORDSYS_MEAN_OF_DATE)
     {
         //calculates the precession matrix to transform from ICRF to Mean of Date
-        Matrix3d rotation = PrecessionMatrix(mjd);
+        MyMatrix3d rotation = PrecessionMatrix(mjd);
         // calculates the precession matrix to transform from Mean of Date to ICRF
        rotation = rotation.conjugate();
         // r (MoD) = P(MoD to ICRF) * T (ICRF to J2000)
@@ -501,7 +505,7 @@ CoordinateSystem::toEmeJ2000(const StateVector& v, const StaBody* center, double
     else if (m_type == COORDSYS_MEAN_OF_EPOCH)
     {
         //calculates the precession matrix to transform from ICRF to Mean of Date
-        Matrix3d rotation = PrecessionMatrix(mjd);
+        MyMatrix3d rotation = PrecessionMatrix(mjd);
         // calculates the precession matrix to transform from Mean of Date to ICRF
        rotation = rotation.conjugate();
         // r (MoD) = P(MoD to ICRF) * T (ICRF to J2000)
@@ -514,25 +518,25 @@ CoordinateSystem::toEmeJ2000(const StateVector& v, const StaBody* center, double
     else if (m_type == COORDSYS_TRUE_OF_DATE)
     {
        // calculates de nutation matrix
-       Matrix3d nutation = NutationMatrix(mjd);
+       MyMatrix3d nutation = NutationMatrix(mjd);
        nutation = nutation.conjugate();
        // calculates the precession matrix
-      Matrix3d precession = PrecessionMatrix(mjd);
+      MyMatrix3d precession = PrecessionMatrix(mjd);
       precession = precession.conjugate();
        // N = transformation from True of Date to Mean of Date
        // P = transformation from Mean of Date to ICRF
        // T = transformation from ICRF to EME J2000
        // r (ToD) = N * P * T    -> the rotations are made from right to left
-       Matrix3d rotation = ICRF_to_J2000_mat*precession*nutation*Ecliptic_to_Equator_mat;
+       MyMatrix3d rotation = ICRF_to_J2000_mat*precession*nutation*Ecliptic_to_Equator_mat;
 
        return StateVector(rotation * v.position, rotation * v.velocity);
     }
 
 //    else if (m_type == COORDSYS_TRUE_OF_DATE)
 //    {
-//        Matrix3d nutation = Nutation_to_J2000_mat;
-//        Matrix3d precession = PrecessionMatrix(mjd);
-//        Matrix3d rotation = precession*nutation*Ecliptic_to_Equator_mat;
+//        MyMatrix3d nutation = Nutation_to_J2000_mat;
+//        MyMatrix3d precession = PrecessionMatrix(mjd);
+//        MyMatrix3d rotation = precession*nutation*Ecliptic_to_Equator_mat;
 //        return StateVector(rotation * v.position, rotation * v.velocity);
 //    }
     else
@@ -554,7 +558,7 @@ CoordinateSystem::fromEmeJ2000(const StateVector& v, const StaBody* center, doub
     else if (m_type == COORDSYS_MEAN_OF_DATE)
     {
         // calculates the precession matrix to transform from ICRF to Mean of Date
-        Matrix3d rotation = PrecessionMatrix(mjd);
+        MyMatrix3d rotation = PrecessionMatrix(mjd);
         // r (MoD) = P(ICRF to MoD) * T (J2000 to ICRF)
         rotation = rotation*J2000_to_ICRF_mat;
         return StateVector(rotation * v.position, rotation * v.velocity);
@@ -563,7 +567,7 @@ CoordinateSystem::fromEmeJ2000(const StateVector& v, const StaBody* center, doub
     else if (m_type == COORDSYS_MEAN_OF_EPOCH)
     {
         // calculates the precession matrix to transform from ICRF to Mean of Date
-        Matrix3d rotation = PrecessionMatrix(mjd);
+        MyMatrix3d rotation = PrecessionMatrix(mjd);
         // r (MoD) = P(ICRF to MoD) * T (J2000 to ICRF)
         rotation = rotation*J2000_to_ICRF_mat*Ecliptic_to_Equator_mat;
         return StateVector(rotation * v.position, rotation * v.velocity);
@@ -575,21 +579,21 @@ CoordinateSystem::fromEmeJ2000(const StateVector& v, const StaBody* center, doub
     else if (m_type == COORDSYS_TRUE_OF_DATE)
     {
        // Calculates the nutation matrix
-       Matrix3d nutation = NutationMatrix(mjd);
+       MyMatrix3d nutation = NutationMatrix(mjd);
        // Calculates the precession matrix
-       Matrix3d precession = PrecessionMatrix(mjd);
+       MyMatrix3d precession = PrecessionMatrix(mjd);
        // N = transformation from Mean of Date to True of Date
        // P = transformation from ICRF to Mean of Date
        // T = transformation from EME J2000 to ICRF
        // r (ToD) = N * P * T    -> the rotations are made from right to left
-        Matrix3d rotation =nutation*precession *J2000_to_ICRF_mat*Ecliptic_to_Equator_mat;
+        MyMatrix3d rotation =nutation*precession *J2000_to_ICRF_mat*Ecliptic_to_Equator_mat;
        return StateVector(rotation * v.position, rotation * v.velocity);
     }
 //    else if (m_type == COORDSYS_TRUE_OF_DATE)
 //    {
-//        Matrix3d nutation = Nutation_to_J2000_mat;
-//        Matrix3d precession = PrecessionMatrix(mjd);
-//        Matrix3d rotation = nutation*precession;
+//        MyMatrix3d nutation = Nutation_to_J2000_mat;
+//        MyMatrix3d precession = PrecessionMatrix(mjd);
+//        MyMatrix3d rotation = nutation*precession;
 //        return StateVector(rotation * v.position, rotation * v.velocity);
 //    }
     else
@@ -644,16 +648,16 @@ CoordinateSystem::convert(const StateVector& state,
 }
 // ACT AVT
 
-Matrix3d CoordinateSystem::rotToEmeJ2000()
+MyMatrix3d CoordinateSystem::rotToEmeJ2000()
 {
     Q_ASSERT(isInertial());
 
 
-    Matrix3d rotation;
+    MyMatrix3d rotation;
     switch (m_type)
     {
     case COORDSYS_EME_J2000:
-        rotation = Matrix3d::Identity();
+        rotation = MyMatrix3d::Identity();
         break;
     case COORDSYS_EME_B1950:
         rotation = B1950_to_J2000_mat;
@@ -667,22 +671,22 @@ Matrix3d CoordinateSystem::rotToEmeJ2000()
         rotation = ICRF_to_J2000_mat;
         break;
     default:
-        rotation = Matrix3d::Identity();
+        rotation = MyMatrix3d::Identity();
         break;
     }
 
     return rotation;
 }
 
-Matrix3d CoordinateSystem::rotFromEmeJ2000()
+MyMatrix3d CoordinateSystem::rotFromEmeJ2000()
 {
     Q_ASSERT(isInertial());
 
-    Matrix3d rotation;
+    MyMatrix3d rotation;
     switch (m_type)
     {
     case COORDSYS_EME_J2000:
-        rotation = Matrix3d::Identity();
+        rotation = MyMatrix3d::Identity();
         break;
     case COORDSYS_EME_B1950:
         rotation = J2000_to_B1950_mat;
@@ -697,7 +701,7 @@ Matrix3d CoordinateSystem::rotFromEmeJ2000()
         break;
 
     default:
-        rotation = Matrix3d::Identity();
+        rotation = MyMatrix3d::Identity();
         break;
     }
     return rotation;
@@ -706,11 +710,11 @@ Matrix3d CoordinateSystem::rotFromEmeJ2000()
 
 
 
-static Matrix3d rotBodyFixedToEmeJ2000(const StaBody* center, double mjd)
+static MyMatrix3d rotBodyFixedToEmeJ2000(const StaBody* center, double mjd)
 {
     const RotationState* rotation = center->rotationState();
-    Matrix3d r = Matrix3d::Identity();
-    Vector3d w = Vector3d::Zero();
+    MyMatrix3d r = MyMatrix3d::Identity();
+    MyVector3d w = MyVector3d::Zero();
     if (rotation)
     {
         r = rotation->orientation(mjd).toRotationMatrix();
@@ -721,11 +725,11 @@ static Matrix3d rotBodyFixedToEmeJ2000(const StaBody* center, double mjd)
 }
 
 
-static Matrix3d rotEmeJ2000ToBodyFixed(const StaBody* center, double mjd)
+static MyMatrix3d rotEmeJ2000ToBodyFixed(const StaBody* center, double mjd)
 {
     const RotationState* rotation = center->rotationState();
-    Matrix3d r = Matrix3d::Identity();
-    Vector3d w = Vector3d::Zero();
+    MyMatrix3d r = MyMatrix3d::Identity();
+    MyVector3d w = MyVector3d::Zero();
     if (rotation)
     {
         r = rotation->orientation(mjd).conjugate().toRotationMatrix();
@@ -735,11 +739,11 @@ static Matrix3d rotEmeJ2000ToBodyFixed(const StaBody* center, double mjd)
     return r;
 }
 
-static Vector3d omegaBodyFixedToEmeJ2000(const StaBody* center, double mjd)
+static MyVector3d omegaBodyFixedToEmeJ2000(const StaBody* center, double mjd)
 {
     const RotationState* rotation = center->rotationState();
-    Matrix3d r = Matrix3d::Identity();
-    Vector3d w = Vector3d::Zero();
+    MyMatrix3d r = MyMatrix3d::Identity();
+    MyVector3d w = MyVector3d::Zero();
     if (rotation)
     {
         r = rotation->orientation(mjd).toRotationMatrix();
@@ -750,11 +754,11 @@ static Vector3d omegaBodyFixedToEmeJ2000(const StaBody* center, double mjd)
 }
 
 
-static Vector3d omegaEmeJ2000ToBodyFixed(const StaBody* center, double mjd)
+static MyVector3d omegaEmeJ2000ToBodyFixed(const StaBody* center, double mjd)
 {
     const RotationState* rotation = center->rotationState();
-    Matrix3d r = Matrix3d::Identity();
-    Vector3d w = Vector3d::Zero();
+    MyMatrix3d r = MyMatrix3d::Identity();
+    MyVector3d w = MyVector3d::Zero();
     if (rotation)
     {
         r = rotation->orientation(mjd).conjugate().toRotationMatrix();
@@ -765,7 +769,7 @@ static Vector3d omegaEmeJ2000ToBodyFixed(const StaBody* center, double mjd)
 }
 
 
-Matrix3d CoordinateSystem::rotToEmeJ2000(const StaBody* center, double mjd)
+MyMatrix3d CoordinateSystem::rotToEmeJ2000(const StaBody* center, double mjd)
 {
     Q_ASSERT(isInertial() || m_type == COORDSYS_BODYFIXED);
     if (m_type == COORDSYS_BODYFIXED)
@@ -775,7 +779,7 @@ Matrix3d CoordinateSystem::rotToEmeJ2000(const StaBody* center, double mjd)
 
 }
 
-Matrix3d CoordinateSystem::rotFromEmeJ2000(const StaBody* center, double mjd)
+MyMatrix3d CoordinateSystem::rotFromEmeJ2000(const StaBody* center, double mjd)
 {
     Q_ASSERT(isInertial() || m_type == COORDSYS_BODYFIXED);
     if (m_type == COORDSYS_BODYFIXED)
@@ -784,22 +788,22 @@ Matrix3d CoordinateSystem::rotFromEmeJ2000(const StaBody* center, double mjd)
         return rotFromEmeJ2000();
 }
 
-Vector3d CoordinateSystem::omegaToEmeJ2000(const StaBody* center, double mjd)
+MyVector3d CoordinateSystem::omegaToEmeJ2000(const StaBody* center, double mjd)
 {
     Q_ASSERT(isInertial() || m_type == COORDSYS_BODYFIXED);
     if (m_type == COORDSYS_BODYFIXED)
         return omegaBodyFixedToEmeJ2000(center, mjd);
     else
-        return Vector3d::Zero();
+        return MyVector3d::Zero();
 
 }
 
-Vector3d CoordinateSystem::omegaFromEmeJ2000(const StaBody* center, double mjd)
+MyVector3d CoordinateSystem::omegaFromEmeJ2000(const StaBody* center, double mjd)
 {
     Q_ASSERT(isInertial() || m_type == COORDSYS_BODYFIXED);
     if (m_type == COORDSYS_BODYFIXED)
         return omegaEmeJ2000ToBodyFixed(center, mjd);
     else
-        return Vector3d::Zero();
+        return MyVector3d::Zero();
 }
 

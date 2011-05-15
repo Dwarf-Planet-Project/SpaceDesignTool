@@ -30,10 +30,13 @@
 #include "Astro-Core/stabody.h"
 
 #include <Eigen/Core>
-using namespace Eigen;
+//using namespace Eigen;
 
 #include <iostream>
 using namespace std;
+
+typedef Eigen::Matrix< double, 3, 3 > 	MyMatrix3d;
+typedef Eigen::Matrix< double, 3, 1 > 	MyVector3d;
 
 
 /* You need to give coordinates of the Planet, Star and
@@ -70,12 +73,12 @@ private:
     /*
       Star Coordinates
     */
-    bool IsSpacecraftInUmbra(Vector3d StarCoordinates,
-                             Vector3d PlanetCoordinate,
-                             Vector3d SpacecraftCoordinate);
-    bool IsSpacecraftInPenumbra(Vector3d StarCoordinates,
-                                Vector3d PlanetCoordinate,
-                                Vector3d SpacecraftCoordinate);
+    bool IsSpacecraftInUmbra(MyVector3d StarCoordinates,
+                             MyVector3d PlanetCoordinate,
+                             MyVector3d SpacecraftCoordinate);
+    bool IsSpacecraftInPenumbra(MyVector3d StarCoordinates,
+                                MyVector3d PlanetCoordinate,
+                                MyVector3d SpacecraftCoordinate);
     double m_PlanetMeanDiameter;
     double m_StarMeanDiameter;
 };
