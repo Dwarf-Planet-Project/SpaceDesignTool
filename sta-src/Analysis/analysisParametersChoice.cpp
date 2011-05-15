@@ -293,7 +293,8 @@ void analysisParametersChoice::loadTheSTAscenario(SpaceScenario* scenario, Propa
             GSitem->setText(0,participant.data()->Name());
             GSitem->setIcon(0, QIcon(":/icons/ParticipantSTATION.png"));
 
-            QTreeWidgetItem*PayloadSet=new QTreeWidgetItem(GSitem);
+            QTreeWidgetItem* PayloadSet = new QTreeWidgetItem(GSitem);
+            PayloadSet->setExpanded(true);
             PayloadSet->setText(0,"Payload Set");
 
             ScenarioGroundStation* station = dynamic_cast<ScenarioGroundStation*>(participant.data());
