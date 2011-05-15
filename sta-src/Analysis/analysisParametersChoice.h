@@ -34,23 +34,24 @@
 
 #include "ui_analysisParametersChoice.h"
 
-#include <QTabWidget>
 #include <QFont>
 #include <QDialog>
 #include<QComboBox>
 #include <QTreeWidgetItem>
 #include <QObject>
+#include <QWidget>
 
 #include "Scenario/staschema.h"
 #include "Main/propagatedscenario.h"
 
-class analysisParametersChoice : public QTabWidget , private Ui::analysisParametersChoiceTabWidget
+
+
+class analysisParametersChoice : public QWidget , private Ui::analysisParametersChoiceTabWidget
 {
-    Q_OBJECT
+Q_OBJECT
 public:
     analysisParametersChoice( QWidget * parent = NULL);
-	~analysisParametersChoice();
-
+    ~analysisParametersChoice();
     void loadTheSTAscenario(SpaceScenario* scenario, PropagatedScenario* propagatedScenario);
 
 protected slots:
@@ -67,8 +68,10 @@ private:
     SpaceScenario* m_scenario;
     PropagatedScenario* m_propagatedScenario;
 
-	
+
 };
+
+
 #endif //ANALYSISPARAMETERSCHOICE_H
 
 

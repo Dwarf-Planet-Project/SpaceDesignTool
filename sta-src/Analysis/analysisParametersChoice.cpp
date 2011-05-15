@@ -51,10 +51,9 @@
 #include "Main/propagatedscenario.h"
 
 
-
-analysisParametersChoice::analysisParametersChoice( QWidget * parent) : QTabWidget(parent)
+analysisParametersChoice::analysisParametersChoice( QWidget * parent) : QWidget(parent)
 {
-	setupUi(this);
+    setupUi(this);
 }
 
 analysisParametersChoice::~analysisParametersChoice()
