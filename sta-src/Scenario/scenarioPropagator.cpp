@@ -48,7 +48,7 @@
 #include "Astro-Core/date.h"
 #include "Astro-Core/EclipseDuration.h"
 
-#include "Plotting/plottingtool.h"
+//#include "Plotting/plottingtool.h"
 
 #include "Loitering/loitering.h"
 #include "Loitering/loiteringTLE.h"

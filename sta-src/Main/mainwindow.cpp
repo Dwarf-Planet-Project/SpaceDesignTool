@@ -65,7 +65,7 @@
 #include "Loitering/loitering.h"
 #include "Loitering/loiteringTLE.h"
 #include "SEM/sem.h"
-#include "Analysis/analysis.h"
+//#include "Analysis/analysis.h"
 #include "exportdialog.h"
 
 #include "Calculator/STAcalculator.h"

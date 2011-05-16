@@ -24,12 +24,15 @@
  ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
  */
-#include "Analysis/analysis.h"
+//#include "Analysis/analysis.h"
 #include "stacoordsys.h"
 #include "stamath.h"
 #include "RotationState.h"
 #include "stabody.h"
 #include "calendarTOjulian.h"
+
+#include "Scenario/staschema.h"
+#include "Main/propagatedscenario.h"
 
 using namespace sta;
 using namespace Eigen;
