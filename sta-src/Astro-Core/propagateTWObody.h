@@ -96,6 +96,22 @@ sta::StateVector propagateTWObody(double mu,
 // 
 // 
 
+/**
+ * Function: Computes Universal coefficients needed for the Kepler propagator
+ * Source: Vallado, Fundamentals of Astrodynamics and Applications
+ */
+void computeCoefficients(double psi, double& c2, double& c3);
+
+/**
+ * Function: Propagates the trajectory, by solving Kepler's problem. (Two body propagator)
+ * Source: Vallado, Fundamentals of Astrodynamics and Applications
+ * @param mu The central body's gravity parameter.
+ * @param initialState The state vector before propagation
+ * @param dt The timestep [s]
+ * @return The propagated state vector
+ */
+sta::StateVector propagateKEPLER(double mu, sta::StateVector initialState, double dt);
+
 #endif // _ASTROCORE_PROPAGATE_TWO_BODY_H_
 
 
