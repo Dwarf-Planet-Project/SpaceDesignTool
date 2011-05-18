@@ -480,7 +480,161 @@ static QByteArray deltaVFragment(const char* name)
     return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
 }
 
+///New manouvres fragments created by Cesar Bernal for the RvD module
 
+static QByteArray tangentialDeltaVFragment(const char* name)
+{
+    MissionsDefaults myMissionDefaults;
+    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
+    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+
+    QDomDocument doc;
+    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+}
+
+static QByteArray radialDeltaVFragment(const char* name)
+{
+    MissionsDefaults myMissionDefaults;
+    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
+    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+
+    QDomDocument doc;
+    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+}
+
+static QByteArray lateralDeltaVFragment(const char* name)
+{
+    MissionsDefaults myMissionDefaults;
+    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
+    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+
+    QDomDocument doc;
+    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+}
+
+static QByteArray tboostXaxisFragment(const char* name)
+{
+    MissionsDefaults myMissionDefaults;
+    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
+    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+
+    QDomDocument doc;
+    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+}
+
+static QByteArray tboostHohmannFragment(const char* name)
+{
+    MissionsDefaults myMissionDefaults;
+    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
+    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+
+    QDomDocument doc;
+    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+}
+
+static QByteArray tboost90Fragment(const char* name)
+{
+    MissionsDefaults myMissionDefaults;
+    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
+    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+
+    QDomDocument doc;
+    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+}
+
+static QByteArray rboostXaxisFragment(const char* name)
+{
+    MissionsDefaults myMissionDefaults;
+    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
+    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+
+    QDomDocument doc;
+    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+}
+
+static QByteArray rboost90Fragment(const char* name)
+{
+    MissionsDefaults myMissionDefaults;
+    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
+    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+
+    QDomDocument doc;
+    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+}
+
+static QByteArray rboost360Fragment(const char* name)
+{
+    MissionsDefaults myMissionDefaults;
+    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
+    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+
+    QDomDocument doc;
+    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+}
+
+static QByteArray fCstHoldFragment(const char* name)
+{
+    MissionsDefaults myMissionDefaults;
+    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
+    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+
+    QDomDocument doc;
+    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+}
+
+static QByteArray fCstVbarFragment(const char* name)
+{
+    MissionsDefaults myMissionDefaults;
+    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
+    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+
+    QDomDocument doc;
+    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+}
+
+static QByteArray fCstRbarFragment(const char* name)
+{
+    MissionsDefaults myMissionDefaults;
+    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
+    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+
+    QDomDocument doc;
+    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+}
+
+static QByteArray fCstTangFragment(const char* name)
+{
+    MissionsDefaults myMissionDefaults;
+    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
+    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+
+    QDomDocument doc;
+    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+}
+
+static QByteArray fCstRadFragment(const char* name)
+{
+    MissionsDefaults myMissionDefaults;
+    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
+    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+
+    QDomDocument doc;
+    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+}
 
 ////////////////////////  Creating PAYLOADS fragments /////////////////////////////////
 // These lines added by Ricardo Noriega. Creates a Tx payload fragment representing a single payload and initialized the default values.
@@ -714,11 +868,115 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
     /////////// Creating the widgets for the different manoeuvres
 
     QTreeWidgetItem* deltaVItem      = new QTreeWidgetItem(maneuversItem);
-    deltaVItem->setText(0, tr("deltaV"));
+    deltaVItem->setText(0, tr("DeltaV"));
     deltaVItem->setIcon(0, QIcon(":/icons/engine.png"));
     setDragAndDropInfo(deltaVItem,
                        MISSION_ARC_MIME_TYPE,
                        deltaVFragment("deltaV 1"));
+
+    ///New manouvres created by Cesar Bernal for the RvD module
+
+    QTreeWidgetItem* tangentialDeltaVItem      = new QTreeWidgetItem(maneuversItem);
+    tangentialDeltaVItem->setText(0, tr("DeltaVt"));
+    tangentialDeltaVItem->setIcon(0, QIcon(":/icons/engine.png"));
+    setDragAndDropInfo(tangentialDeltaVItem,
+                       MISSION_ARC_MIME_TYPE,
+                       tangentialDeltaVFragment("deltaV 1"));
+
+    QTreeWidgetItem* radialDeltaVItem      = new QTreeWidgetItem(maneuversItem);
+    radialDeltaVItem->setText(0, tr("DeltaVr"));
+    radialDeltaVItem->setIcon(0, QIcon(":/icons/engine.png"));
+    setDragAndDropInfo(radialDeltaVItem,
+                       MISSION_ARC_MIME_TYPE,
+                       radialDeltaVFragment("deltaV 1"));
+
+    QTreeWidgetItem* lateralDeltaVItem      = new QTreeWidgetItem(maneuversItem);
+    lateralDeltaVItem->setText(0, tr("DeltaVl"));
+    lateralDeltaVItem->setIcon(0, QIcon(":/icons/engine.png"));
+    setDragAndDropInfo(lateralDeltaVItem,
+                       MISSION_ARC_MIME_TYPE,
+                       lateralDeltaVFragment("deltaV 1"));
+
+    QTreeWidgetItem* tboostXaxisItem      = new QTreeWidgetItem(maneuversItem);
+    tboostXaxisItem->setText(0, tr("TboostXaxis"));
+    tboostXaxisItem->setIcon(0, QIcon(":/icons/engine.png"));
+    setDragAndDropInfo(tboostXaxisItem,
+                       MISSION_ARC_MIME_TYPE,
+                       tboostXaxisFragment("TboostXaxis"));
+
+    QTreeWidgetItem* tboostHohmannItem      = new QTreeWidgetItem(maneuversItem);
+    tboostHohmannItem->setText(0, tr("TboostHohmann"));
+    tboostHohmannItem->setIcon(0, QIcon(":/icons/engine.png"));
+    setDragAndDropInfo(tboostHohmannItem,
+                       MISSION_ARC_MIME_TYPE,
+                       tboostHohmannFragment("TboostHohmann"));
+
+    QTreeWidgetItem* tboost90Item      = new QTreeWidgetItem(maneuversItem);
+    tboost90Item->setText(0, tr("Tboost90"));
+    tboost90Item->setIcon(0, QIcon(":/icons/engine.png"));
+    setDragAndDropInfo(tboost90Item,
+                       MISSION_ARC_MIME_TYPE,
+                       tboost90Fragment("Tboost90"));
+
+    QTreeWidgetItem* rboostXaxisItem      = new QTreeWidgetItem(maneuversItem);
+    rboostXaxisItem->setText(0, tr("RboostXaxis"));
+    rboostXaxisItem->setIcon(0, QIcon(":/icons/engine.png"));
+    setDragAndDropInfo(rboostXaxisItem,
+                       MISSION_ARC_MIME_TYPE,
+                       rboostXaxisFragment("RboostXaxis"));
+
+    QTreeWidgetItem* rboost90Item      = new QTreeWidgetItem(maneuversItem);
+    rboost90Item->setText(0, tr("Rboost90"));
+    rboost90Item->setIcon(0, QIcon(":/icons/engine.png"));
+    setDragAndDropInfo(rboost90Item,
+                       MISSION_ARC_MIME_TYPE,
+                       rboost90Fragment("Rboost90"));
+
+    QTreeWidgetItem* rboost360Item      = new QTreeWidgetItem(maneuversItem);
+    rboost360Item->setText(0, tr("Rboost360"));
+    rboost360Item->setIcon(0, QIcon(":/icons/engine.png"));
+    setDragAndDropInfo(rboost360Item,
+                       MISSION_ARC_MIME_TYPE,
+                       rboost360Fragment("Rboost360"));
+
+    QTreeWidgetItem* fCstHoldItem      = new QTreeWidgetItem(maneuversItem);
+    fCstHoldItem->setText(0, tr("FCstHold"));
+    fCstHoldItem->setIcon(0, QIcon(":/icons/engine.png"));
+    setDragAndDropInfo(fCstHoldItem,
+                       MISSION_ARC_MIME_TYPE,
+                       fCstHoldFragment("FCstHold"));
+
+    QTreeWidgetItem* fCstVbarItem      = new QTreeWidgetItem(maneuversItem);
+    fCstVbarItem->setText(0, tr("FCstVbar"));
+    fCstVbarItem->setIcon(0, QIcon(":/icons/engine.png"));
+    setDragAndDropInfo(fCstVbarItem,
+                       MISSION_ARC_MIME_TYPE,
+                       fCstVbarFragment("FCstVbar"));
+
+    QTreeWidgetItem* fCstRbarItem      = new QTreeWidgetItem(maneuversItem);
+    fCstRbarItem->setText(0, tr("FCstRbar"));
+    fCstRbarItem->setIcon(0, QIcon(":/icons/engine.png"));
+    setDragAndDropInfo(fCstRbarItem,
+                       MISSION_ARC_MIME_TYPE,
+                       fCstRbarFragment("FCstRbar"));
+
+    QTreeWidgetItem* fCstTangItem      = new QTreeWidgetItem(maneuversItem);
+    fCstTangItem->setText(0, tr("FCstTang"));
+    fCstTangItem->setIcon(0, QIcon(":/icons/engine.png"));
+    setDragAndDropInfo(fCstTangItem,
+                       MISSION_ARC_MIME_TYPE,
+                       fCstTangFragment("FCstTang"));
+
+    QTreeWidgetItem* fCstRadItem      = new QTreeWidgetItem(maneuversItem);
+    fCstRadItem->setText(0, tr("FCstRad"));
+    fCstRadItem->setIcon(0, QIcon(":/icons/engine.png"));
+    setDragAndDropInfo(fCstRadItem,
+                       MISSION_ARC_MIME_TYPE,
+                       fCstRadFragment("FCstRad"));
+
+
+
+
 
 
     ///////////////////// Creating now the mission arcs: ascent, loitering, fly-by, re-entry, rendezvous

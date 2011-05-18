@@ -445,6 +445,34 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
     if (elementName == "tns:DeltaV")
         trajectory = ScenarioDeltaVType::create(element);  // Guillermo says: creating the maneuver as a trajectory arc
 
+    ///New manouvres created by Cesar Bernal for the RvD module
+    else if (elementName == "tns:TangencialDeltaV")
+        trajectory = ScenarioTangentialDeltaVType::create(element);
+    else if (elementName == "tns:RadialDeltaV")
+        trajectory = ScenarioRadialDeltaVType::create(element);
+    else if (elementName == "tns:LateralDeltaV")
+        trajectory = ScenarioLateralDeltaVType::create(element);
+    else if (elementName == "tns:TboostXaxis")
+        trajectory = ScenarioTboostXaxisType::create(element);
+    else if (elementName == "tns:TboostHohmann")
+        trajectory = ScenarioTboostHohmannType::create(element);
+    else if (elementName == "tns:Tboost90")
+        trajectory = ScenarioTboost90Type::create(element);
+    else if (elementName == "tns:RboostXaxis")
+        trajectory = ScenarioRboostXaxisType::create(element);
+    else if (elementName == "tns:Rboost90")
+            trajectory = ScenarioRboost90Type::create(element);
+    else if (elementName == "tns:FCstHold")
+            trajectory = ScenarioFCstHoldType::create(element);
+    else if (elementName == "tns:FCstVbar")
+            trajectory = ScenarioFCstVbarType::create(element);
+    else if (elementName == "tns:FCstRbar")
+            trajectory = ScenarioFCstRbarType::create(element);
+    else if (elementName == "tns:FCstTang")
+            trajectory = ScenarioFCstTangType::create(element);
+    else if (elementName == "tns:FCstRad")
+            trajectory = ScenarioFCstRadType::create(element);
+
 
 
 
@@ -565,6 +593,9 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
             return false;
         }
     }
+
+
+
     else if (trajectory && elementName == "tns:EntryArc") // Added by Dominic to drop entry trajectory
     {
         ScenarioObject* parentObject = objectForItem(parent);

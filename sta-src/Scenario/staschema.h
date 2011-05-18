@@ -180,6 +180,20 @@ class ScenarioLagrangianType;
 class ScenarioFlyByType;
 class ScenarioExternalType;
 class ScenarioDeltaVType;
+class ScenarioTangentialDeltaVType;
+class ScenarioRadialDeltaVType;
+class ScenarioLateralDeltaVType;
+class ScenarioTboostXaxisType;
+class ScenarioTboostHohmannType;
+class ScenarioTboost90Type;
+class ScenarioRboostXaxisType;
+class ScenarioRboost90Type;
+class ScenarioRboost360Type;
+class ScenarioFCstHoldType;
+class ScenarioFCstVbarType;
+class ScenarioFCstRbarType;
+class ScenarioFCstTangType;
+class ScenarioFCstRadType;
 class ScenarioSCSystemType;
 class ScenarioSystemBudgets;
 class ScenarioMassOfSystem;
@@ -1633,14 +1647,6 @@ public:
     { return m_elevationDot; }
     void setElevationDot(double elevationDot)
     { m_elevationDot = elevationDot; }
-    int coneShape() const
-    { return m_coneShape; }
-    void setConeShape(int coneShape)
-    { m_coneShape = coneShape; }
-    double coneAngle() const
-    { return m_coneAngle; }
-    void setConeAngle(double coneAngle)
-    { m_coneAngle = coneAngle; }
 
 private:
     QString m_referenceSystem;
@@ -1648,8 +1654,6 @@ private:
     double m_elevation;
     double m_azimuthDot;
     double m_elevationDot;
-    double m_coneAngle;
-    int m_coneShape;
 };
 
 
@@ -1886,17 +1890,12 @@ public:
     { return m_Modulation; }
     void setModulation(QSharedPointer<ScenarioModulation> Modulation)
     { m_Modulation = Modulation; }
-    bool ObservationChecked() const
-    { return m_ObservationChecked; }
-    void setObservationChecked(bool ObservationChecked)
-    { m_ObservationChecked = ObservationChecked; }
 
 private:
     double m_FedderLossTx;
     double m_DepointingLossTx;
     double m_TransmittingPower;
     QSharedPointer<ScenarioModulation> m_Modulation;
-    bool m_ObservationChecked;
 };
 
 
@@ -6825,6 +6824,579 @@ private:
 };
 
 
+// ScenarioTangentialDeltaVType
+class ScenarioTangentialDeltaVType : public ScenarioAbstractTrajectoryType
+{
+public:
+    ScenarioTangentialDeltaVType();
+    static ScenarioTangentialDeltaVType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "TangentialDeltaVType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioEnvironmentType> Environment() const
+    { return m_Environment; }
+    void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
+    { m_Environment = Environment; }
+    QSharedPointer<ScenarioTimeLine> TimeLine() const
+    { return m_TimeLine; }
+    void setTimeLine(QSharedPointer<ScenarioTimeLine> TimeLine)
+    { m_TimeLine = TimeLine; }
+    QSharedPointer<ScenarioInitialPositionType> InitialPosition() const
+    { return m_InitialPosition; }
+    void setInitialPosition(QSharedPointer<ScenarioInitialPositionType> InitialPosition)
+    { m_InitialPosition = InitialPosition; }
+    QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude() const
+    { return m_InitialAttitude; }
+    void setInitialAttitude(QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude)
+    { m_InitialAttitude = InitialAttitude; }
+    double Magnitude() const
+    { return m_Magnitude; }
+    void setMagnitude(double Magnitude)
+    { m_Magnitude = Magnitude; }
+
+private:
+    QSharedPointer<ScenarioEnvironmentType> m_Environment;
+    QSharedPointer<ScenarioTimeLine> m_TimeLine;
+    QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
+    QSharedPointer<ScenarioInitialAttitudeType> m_InitialAttitude;
+    double m_Magnitude;
+};
+
+
+// ScenarioRadialDeltaVType
+class ScenarioRadialDeltaVType : public ScenarioAbstractTrajectoryType
+{
+public:
+    ScenarioRadialDeltaVType();
+    static ScenarioRadialDeltaVType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "RadialDeltaVType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioEnvironmentType> Environment() const
+    { return m_Environment; }
+    void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
+    { m_Environment = Environment; }
+    QSharedPointer<ScenarioTimeLine> TimeLine() const
+    { return m_TimeLine; }
+    void setTimeLine(QSharedPointer<ScenarioTimeLine> TimeLine)
+    { m_TimeLine = TimeLine; }
+    QSharedPointer<ScenarioInitialPositionType> InitialPosition() const
+    { return m_InitialPosition; }
+    void setInitialPosition(QSharedPointer<ScenarioInitialPositionType> InitialPosition)
+    { m_InitialPosition = InitialPosition; }
+    QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude() const
+    { return m_InitialAttitude; }
+    void setInitialAttitude(QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude)
+    { m_InitialAttitude = InitialAttitude; }
+    double Magnitude() const
+    { return m_Magnitude; }
+    void setMagnitude(double Magnitude)
+    { m_Magnitude = Magnitude; }
+
+private:
+    QSharedPointer<ScenarioEnvironmentType> m_Environment;
+    QSharedPointer<ScenarioTimeLine> m_TimeLine;
+    QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
+    QSharedPointer<ScenarioInitialAttitudeType> m_InitialAttitude;
+    double m_Magnitude;
+};
+
+
+// ScenarioLateralDeltaVType
+class ScenarioLateralDeltaVType : public ScenarioAbstractTrajectoryType
+{
+public:
+    ScenarioLateralDeltaVType();
+    static ScenarioLateralDeltaVType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "LateralDeltaVType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioEnvironmentType> Environment() const
+    { return m_Environment; }
+    void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
+    { m_Environment = Environment; }
+    QSharedPointer<ScenarioTimeLine> TimeLine() const
+    { return m_TimeLine; }
+    void setTimeLine(QSharedPointer<ScenarioTimeLine> TimeLine)
+    { m_TimeLine = TimeLine; }
+    QSharedPointer<ScenarioInitialPositionType> InitialPosition() const
+    { return m_InitialPosition; }
+    void setInitialPosition(QSharedPointer<ScenarioInitialPositionType> InitialPosition)
+    { m_InitialPosition = InitialPosition; }
+    QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude() const
+    { return m_InitialAttitude; }
+    void setInitialAttitude(QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude)
+    { m_InitialAttitude = InitialAttitude; }
+    double Magnitude() const
+    { return m_Magnitude; }
+    void setMagnitude(double Magnitude)
+    { m_Magnitude = Magnitude; }
+
+private:
+    QSharedPointer<ScenarioEnvironmentType> m_Environment;
+    QSharedPointer<ScenarioTimeLine> m_TimeLine;
+    QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
+    QSharedPointer<ScenarioInitialAttitudeType> m_InitialAttitude;
+    double m_Magnitude;
+};
+
+
+// ScenarioTboostXaxisType
+class ScenarioTboostXaxisType : public ScenarioAbstractTrajectoryType
+{
+public:
+    ScenarioTboostXaxisType();
+    static ScenarioTboostXaxisType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "TboostXaxisType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioEnvironmentType> Environment() const
+    { return m_Environment; }
+    void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
+    { m_Environment = Environment; }
+    QSharedPointer<ScenarioTimeLine> TimeLine() const
+    { return m_TimeLine; }
+    void setTimeLine(QSharedPointer<ScenarioTimeLine> TimeLine)
+    { m_TimeLine = TimeLine; }
+    QSharedPointer<ScenarioInitialPositionType> InitialPosition() const
+    { return m_InitialPosition; }
+    void setInitialPosition(QSharedPointer<ScenarioInitialPositionType> InitialPosition)
+    { m_InitialPosition = InitialPosition; }
+    QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude() const
+    { return m_InitialAttitude; }
+    void setInitialAttitude(QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude)
+    { m_InitialAttitude = InitialAttitude; }
+
+private:
+    QSharedPointer<ScenarioEnvironmentType> m_Environment;
+    QSharedPointer<ScenarioTimeLine> m_TimeLine;
+    QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
+    QSharedPointer<ScenarioInitialAttitudeType> m_InitialAttitude;
+};
+
+
+// ScenarioTboostHohmannType
+class ScenarioTboostHohmannType : public ScenarioAbstractTrajectoryType
+{
+public:
+    ScenarioTboostHohmannType();
+    static ScenarioTboostHohmannType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "TboostHohmannType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioEnvironmentType> Environment() const
+    { return m_Environment; }
+    void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
+    { m_Environment = Environment; }
+    QSharedPointer<ScenarioTimeLine> TimeLine() const
+    { return m_TimeLine; }
+    void setTimeLine(QSharedPointer<ScenarioTimeLine> TimeLine)
+    { m_TimeLine = TimeLine; }
+    QSharedPointer<ScenarioInitialPositionType> InitialPosition() const
+    { return m_InitialPosition; }
+    void setInitialPosition(QSharedPointer<ScenarioInitialPositionType> InitialPosition)
+    { m_InitialPosition = InitialPosition; }
+    QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude() const
+    { return m_InitialAttitude; }
+    void setInitialAttitude(QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude)
+    { m_InitialAttitude = InitialAttitude; }
+    double FinalZ() const
+    { return m_FinalZ; }
+    void setFinalZ(double FinalZ)
+    { m_FinalZ = FinalZ; }
+
+private:
+    QSharedPointer<ScenarioEnvironmentType> m_Environment;
+    QSharedPointer<ScenarioTimeLine> m_TimeLine;
+    QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
+    QSharedPointer<ScenarioInitialAttitudeType> m_InitialAttitude;
+    double m_FinalZ;
+};
+
+
+// ScenarioTboost90Type
+class ScenarioTboost90Type : public ScenarioAbstractTrajectoryType
+{
+public:
+    ScenarioTboost90Type();
+    static ScenarioTboost90Type* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "Tboost90Type"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioEnvironmentType> Environment() const
+    { return m_Environment; }
+    void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
+    { m_Environment = Environment; }
+    QSharedPointer<ScenarioTimeLine> TimeLine() const
+    { return m_TimeLine; }
+    void setTimeLine(QSharedPointer<ScenarioTimeLine> TimeLine)
+    { m_TimeLine = TimeLine; }
+    QSharedPointer<ScenarioInitialPositionType> InitialPosition() const
+    { return m_InitialPosition; }
+    void setInitialPosition(QSharedPointer<ScenarioInitialPositionType> InitialPosition)
+    { m_InitialPosition = InitialPosition; }
+    QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude() const
+    { return m_InitialAttitude; }
+    void setInitialAttitude(QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude)
+    { m_InitialAttitude = InitialAttitude; }
+
+private:
+    QSharedPointer<ScenarioEnvironmentType> m_Environment;
+    QSharedPointer<ScenarioTimeLine> m_TimeLine;
+    QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
+    QSharedPointer<ScenarioInitialAttitudeType> m_InitialAttitude;
+};
+
+
+// ScenarioRboostXaxisType
+class ScenarioRboostXaxisType : public ScenarioAbstractTrajectoryType
+{
+public:
+    ScenarioRboostXaxisType();
+    static ScenarioRboostXaxisType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "RboostXaxisType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioEnvironmentType> Environment() const
+    { return m_Environment; }
+    void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
+    { m_Environment = Environment; }
+    QSharedPointer<ScenarioTimeLine> TimeLine() const
+    { return m_TimeLine; }
+    void setTimeLine(QSharedPointer<ScenarioTimeLine> TimeLine)
+    { m_TimeLine = TimeLine; }
+    QSharedPointer<ScenarioInitialPositionType> InitialPosition() const
+    { return m_InitialPosition; }
+    void setInitialPosition(QSharedPointer<ScenarioInitialPositionType> InitialPosition)
+    { m_InitialPosition = InitialPosition; }
+    QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude() const
+    { return m_InitialAttitude; }
+    void setInitialAttitude(QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude)
+    { m_InitialAttitude = InitialAttitude; }
+    double FinalPosition() const
+    { return m_FinalPosition; }
+    void setFinalPosition(double FinalPosition)
+    { m_FinalPosition = FinalPosition; }
+
+private:
+    QSharedPointer<ScenarioEnvironmentType> m_Environment;
+    QSharedPointer<ScenarioTimeLine> m_TimeLine;
+    QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
+    QSharedPointer<ScenarioInitialAttitudeType> m_InitialAttitude;
+    double m_FinalPosition;
+};
+
+
+// ScenarioRboost90Type
+class ScenarioRboost90Type : public ScenarioAbstractTrajectoryType
+{
+public:
+    ScenarioRboost90Type();
+    static ScenarioRboost90Type* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "Rboost90Type"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioEnvironmentType> Environment() const
+    { return m_Environment; }
+    void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
+    { m_Environment = Environment; }
+    QSharedPointer<ScenarioTimeLine> TimeLine() const
+    { return m_TimeLine; }
+    void setTimeLine(QSharedPointer<ScenarioTimeLine> TimeLine)
+    { m_TimeLine = TimeLine; }
+    QSharedPointer<ScenarioInitialPositionType> InitialPosition() const
+    { return m_InitialPosition; }
+    void setInitialPosition(QSharedPointer<ScenarioInitialPositionType> InitialPosition)
+    { m_InitialPosition = InitialPosition; }
+    QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude() const
+    { return m_InitialAttitude; }
+    void setInitialAttitude(QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude)
+    { m_InitialAttitude = InitialAttitude; }
+    double FinalPosition() const
+    { return m_FinalPosition; }
+    void setFinalPosition(double FinalPosition)
+    { m_FinalPosition = FinalPosition; }
+
+private:
+    QSharedPointer<ScenarioEnvironmentType> m_Environment;
+    QSharedPointer<ScenarioTimeLine> m_TimeLine;
+    QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
+    QSharedPointer<ScenarioInitialAttitudeType> m_InitialAttitude;
+    double m_FinalPosition;
+};
+
+
+// ScenarioRboost360Type
+class ScenarioRboost360Type : public ScenarioAbstractTrajectoryType
+{
+public:
+    ScenarioRboost360Type();
+    static ScenarioRboost360Type* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "Rboost360Type"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioEnvironmentType> Environment() const
+    { return m_Environment; }
+    void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
+    { m_Environment = Environment; }
+    QSharedPointer<ScenarioTimeLine> TimeLine() const
+    { return m_TimeLine; }
+    void setTimeLine(QSharedPointer<ScenarioTimeLine> TimeLine)
+    { m_TimeLine = TimeLine; }
+    QSharedPointer<ScenarioInitialPositionType> InitialPosition() const
+    { return m_InitialPosition; }
+    void setInitialPosition(QSharedPointer<ScenarioInitialPositionType> InitialPosition)
+    { m_InitialPosition = InitialPosition; }
+    QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude() const
+    { return m_InitialAttitude; }
+    void setInitialAttitude(QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude)
+    { m_InitialAttitude = InitialAttitude; }
+
+private:
+    QSharedPointer<ScenarioEnvironmentType> m_Environment;
+    QSharedPointer<ScenarioTimeLine> m_TimeLine;
+    QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
+    QSharedPointer<ScenarioInitialAttitudeType> m_InitialAttitude;
+};
+
+
+// ScenarioFCstHoldType
+class ScenarioFCstHoldType : public ScenarioAbstractTrajectoryType
+{
+public:
+    ScenarioFCstHoldType();
+    static ScenarioFCstHoldType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "FCstHoldType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioEnvironmentType> Environment() const
+    { return m_Environment; }
+    void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
+    { m_Environment = Environment; }
+    QSharedPointer<ScenarioTimeLine> TimeLine() const
+    { return m_TimeLine; }
+    void setTimeLine(QSharedPointer<ScenarioTimeLine> TimeLine)
+    { m_TimeLine = TimeLine; }
+    QSharedPointer<ScenarioInitialPositionType> InitialPosition() const
+    { return m_InitialPosition; }
+    void setInitialPosition(QSharedPointer<ScenarioInitialPositionType> InitialPosition)
+    { m_InitialPosition = InitialPosition; }
+    QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude() const
+    { return m_InitialAttitude; }
+    void setInitialAttitude(QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude)
+    { m_InitialAttitude = InitialAttitude; }
+    double Position() const
+    { return m_Position; }
+    void setPosition(double Position)
+    { m_Position = Position; }
+
+private:
+    QSharedPointer<ScenarioEnvironmentType> m_Environment;
+    QSharedPointer<ScenarioTimeLine> m_TimeLine;
+    QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
+    QSharedPointer<ScenarioInitialAttitudeType> m_InitialAttitude;
+    double m_Position;
+};
+
+
+// ScenarioFCstVbarType
+class ScenarioFCstVbarType : public ScenarioAbstractTrajectoryType
+{
+public:
+    ScenarioFCstVbarType();
+    static ScenarioFCstVbarType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "FCstVbarType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioEnvironmentType> Environment() const
+    { return m_Environment; }
+    void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
+    { m_Environment = Environment; }
+    QSharedPointer<ScenarioTimeLine> TimeLine() const
+    { return m_TimeLine; }
+    void setTimeLine(QSharedPointer<ScenarioTimeLine> TimeLine)
+    { m_TimeLine = TimeLine; }
+    QSharedPointer<ScenarioInitialPositionType> InitialPosition() const
+    { return m_InitialPosition; }
+    void setInitialPosition(QSharedPointer<ScenarioInitialPositionType> InitialPosition)
+    { m_InitialPosition = InitialPosition; }
+    QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude() const
+    { return m_InitialAttitude; }
+    void setInitialAttitude(QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude)
+    { m_InitialAttitude = InitialAttitude; }
+    double FinalPosition() const
+    { return m_FinalPosition; }
+    void setFinalPosition(double FinalPosition)
+    { m_FinalPosition = FinalPosition; }
+
+private:
+    QSharedPointer<ScenarioEnvironmentType> m_Environment;
+    QSharedPointer<ScenarioTimeLine> m_TimeLine;
+    QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
+    QSharedPointer<ScenarioInitialAttitudeType> m_InitialAttitude;
+    double m_FinalPosition;
+};
+
+
+// ScenarioFCstRbarType
+class ScenarioFCstRbarType : public ScenarioAbstractTrajectoryType
+{
+public:
+    ScenarioFCstRbarType();
+    static ScenarioFCstRbarType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "FCstRbarType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioEnvironmentType> Environment() const
+    { return m_Environment; }
+    void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
+    { m_Environment = Environment; }
+    QSharedPointer<ScenarioTimeLine> TimeLine() const
+    { return m_TimeLine; }
+    void setTimeLine(QSharedPointer<ScenarioTimeLine> TimeLine)
+    { m_TimeLine = TimeLine; }
+    QSharedPointer<ScenarioInitialPositionType> InitialPosition() const
+    { return m_InitialPosition; }
+    void setInitialPosition(QSharedPointer<ScenarioInitialPositionType> InitialPosition)
+    { m_InitialPosition = InitialPosition; }
+    QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude() const
+    { return m_InitialAttitude; }
+    void setInitialAttitude(QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude)
+    { m_InitialAttitude = InitialAttitude; }
+    double FinalPosition() const
+    { return m_FinalPosition; }
+    void setFinalPosition(double FinalPosition)
+    { m_FinalPosition = FinalPosition; }
+
+private:
+    QSharedPointer<ScenarioEnvironmentType> m_Environment;
+    QSharedPointer<ScenarioTimeLine> m_TimeLine;
+    QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
+    QSharedPointer<ScenarioInitialAttitudeType> m_InitialAttitude;
+    double m_FinalPosition;
+};
+
+
+// ScenarioFCstTangType
+class ScenarioFCstTangType : public ScenarioAbstractTrajectoryType
+{
+public:
+    ScenarioFCstTangType();
+    static ScenarioFCstTangType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "FCstTangType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioEnvironmentType> Environment() const
+    { return m_Environment; }
+    void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
+    { m_Environment = Environment; }
+    QSharedPointer<ScenarioTimeLine> TimeLine() const
+    { return m_TimeLine; }
+    void setTimeLine(QSharedPointer<ScenarioTimeLine> TimeLine)
+    { m_TimeLine = TimeLine; }
+    QSharedPointer<ScenarioInitialPositionType> InitialPosition() const
+    { return m_InitialPosition; }
+    void setInitialPosition(QSharedPointer<ScenarioInitialPositionType> InitialPosition)
+    { m_InitialPosition = InitialPosition; }
+    QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude() const
+    { return m_InitialAttitude; }
+    void setInitialAttitude(QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude)
+    { m_InitialAttitude = InitialAttitude; }
+    double FinalZ() const
+    { return m_FinalZ; }
+    void setFinalZ(double FinalZ)
+    { m_FinalZ = FinalZ; }
+
+private:
+    QSharedPointer<ScenarioEnvironmentType> m_Environment;
+    QSharedPointer<ScenarioTimeLine> m_TimeLine;
+    QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
+    QSharedPointer<ScenarioInitialAttitudeType> m_InitialAttitude;
+    double m_FinalZ;
+};
+
+
+// ScenarioFCstRadType
+class ScenarioFCstRadType : public ScenarioAbstractTrajectoryType
+{
+public:
+    ScenarioFCstRadType();
+    static ScenarioFCstRadType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "FCstRadType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioEnvironmentType> Environment() const
+    { return m_Environment; }
+    void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
+    { m_Environment = Environment; }
+    QSharedPointer<ScenarioTimeLine> TimeLine() const
+    { return m_TimeLine; }
+    void setTimeLine(QSharedPointer<ScenarioTimeLine> TimeLine)
+    { m_TimeLine = TimeLine; }
+    QSharedPointer<ScenarioInitialPositionType> InitialPosition() const
+    { return m_InitialPosition; }
+    void setInitialPosition(QSharedPointer<ScenarioInitialPositionType> InitialPosition)
+    { m_InitialPosition = InitialPosition; }
+    QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude() const
+    { return m_InitialAttitude; }
+    void setInitialAttitude(QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude)
+    { m_InitialAttitude = InitialAttitude; }
+    double FinalX() const
+    { return m_FinalX; }
+    void setFinalX(double FinalX)
+    { m_FinalX = FinalX; }
+
+private:
+    QSharedPointer<ScenarioEnvironmentType> m_Environment;
+    QSharedPointer<ScenarioTimeLine> m_TimeLine;
+    QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
+    QSharedPointer<ScenarioInitialAttitudeType> m_InitialAttitude;
+    double m_FinalX;
+};
+
+
 // ScenarioSCSystemType
 class ScenarioSCSystemType : public ScenarioObject
 {
@@ -7830,20 +8402,27 @@ private:
 
 
 QDomElement CreatePayloadSetElement(ScenarioPayloadSet* e, QDomDocument& doc);
+QDomElement CreateTangentialDeltaVElement(ScenarioTangentialDeltaVType* e, QDomDocument& doc);
 QDomElement CreatePointElement(ScenarioPoint* e, QDomDocument& doc);
 QDomElement CreateOptimizationElement(ScenarioOptimization* e, QDomDocument& doc);
+QDomElement CreateRboost360Element(ScenarioRboost360Type* e, QDomDocument& doc);
 QDomElement CreateRegionElement(ScenarioRegion* e, QDomDocument& doc);
 QDomElement CreateREVElement(ScenarioREV* e, QDomDocument& doc);
 QDomElement CreateLoiteringTLEElement(ScenarioLoiteringTLEType* e, QDomDocument& doc);
 QDomElement CreateReceiverPayloadElement(ScenarioReceiverPayloadType* e, QDomDocument& doc);
 QDomElement CreateOpticalPayloadElement(ScenarioOpticalPayloadType* e, QDomDocument& doc);
+QDomElement CreateTboostHohmannElement(ScenarioTboostHohmannType* e, QDomDocument& doc);
+QDomElement CreateFCstRbarElement(ScenarioFCstRbarType* e, QDomDocument& doc);
 QDomElement CreateInitialAttitudeElement(ScenarioInitialAttitudeType* e, QDomDocument& doc);
 QDomElement CreateElementIdentifierElement(ScenarioElementIdentifierType* e, QDomDocument& doc);
 QDomElement CreateLoiteringElement(ScenarioLoiteringType* e, QDomDocument& doc);
+QDomElement CreateRboost90Element(ScenarioRboost90Type* e, QDomDocument& doc);
+QDomElement CreateTboost90Element(ScenarioTboost90Type* e, QDomDocument& doc);
 QDomElement CreateRadarElement(ScenarioRadarType* e, QDomDocument& doc);
 QDomElement CreateReceiverElement(ScenarioReceiver* e, QDomDocument& doc);
 QDomElement CreateSphericalCoordinatesElement(ScenarioSphericalCoordinatesType* e, QDomDocument& doc);
 QDomElement CreateTimeLineElement(ScenarioTimeLine* e, QDomDocument& doc);
+QDomElement CreateTboostXaxisElement(ScenarioTboostXaxisType* e, QDomDocument& doc);
 QDomElement CreateEntryArcElement(ScenarioEntryArcType* e, QDomDocument& doc);
 QDomElement CreateKeplerianElementsElement(ScenarioKeplerianElementsType* e, QDomDocument& doc);
 QDomElement CreatePropagationAttitudeElement(ScenarioPropagationAttitudeType* e, QDomDocument& doc);
@@ -7867,13 +8446,19 @@ QDomElement CreateEnvironmentElement(ScenarioEnvironmentType* e, QDomDocument& d
 QDomElement CreateStateVectorElement(ScenarioStateVectorType* e, QDomDocument& doc);
 QDomElement CreateDeltaVElement(ScenarioDeltaVType* e, QDomDocument& doc);
 QDomElement CreateSpaceScenarioElement(SpaceScenario* e, QDomDocument& doc);
+QDomElement CreateRadialDeltaVElement(ScenarioRadialDeltaVType* e, QDomDocument& doc);
+QDomElement CreateLateralDeltaVElement(ScenarioLateralDeltaVType* e, QDomDocument& doc);
+QDomElement CreateFCstTangElement(ScenarioFCstTangType* e, QDomDocument& doc);
 QDomElement CreateqBLVLHElement(ScenarioqBLVLHType* e, QDomDocument& doc);
 QDomElement CreatePropagationPositionElement(ScenarioPropagationPositionType* e, QDomDocument& doc);
 QDomElement CreateSCElement(ScenarioSC* e, QDomDocument& doc);
+QDomElement CreateRboostXaxisElement(ScenarioRboostXaxisType* e, QDomDocument& doc);
 QDomElement CreateSCProgramElement(ScenarioSCProgram* e, QDomDocument& doc);
 QDomElement CreateFlyByElement(ScenarioFlyByType* e, QDomDocument& doc);
+QDomElement CreateFCstRadElement(ScenarioFCstRadType* e, QDomDocument& doc);
 QDomElement CreateLagrangianElement(ScenarioLagrangianType* e, QDomDocument& doc);
 QDomElement CreatePropagationElement(ScenarioPropagation* e, QDomDocument& doc);
 QDomElement CreateTelescopeElement(ScenarioTelescopeType* e, QDomDocument& doc);
+QDomElement CreateFCstHoldElement(ScenarioFCstHoldType* e, QDomDocument& doc);
 
 #endif // _STASCHEMA_H_
