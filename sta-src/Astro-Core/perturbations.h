@@ -301,6 +301,22 @@ private:
     VectorXd m_counterMeteoroids;
 };
 
+
+/**
+ * Function: evaluation of Legendre's associated function using recursive form.
+ * Source: Vallado, Fundamentals of Astrodynamics and Applications
+ * @param x The argument
+ * @param l The degree of polynomial
+ * @param m The order of derivative
+ * @return The evaluation of Legendre associated function
+ * Author: Michele Scotti
+ * E-mail: michele.scotti@gmail.com
+ */
+double legendre (double x, int l, int m);
+
+
+
+
 /**
  * Generate a random number between inf and sup.
  */

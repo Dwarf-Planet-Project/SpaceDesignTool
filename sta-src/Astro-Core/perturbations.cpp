@@ -625,3 +625,36 @@ double randomNumber(double inf, double sup)
     const float scale = rand()/float(RAND_MAX);
     return inf + scale * (sup - inf);
 }
+
+
+
+
+/**
+ * Function: evaluation of Legendre's associated function using recursive form.
+ * Source: Vallado, Fundamentals of Astrodynamics and Applications
+ * @param x The argument
+ * @param l The degree of polynomial
+ * @param m The order of derivative
+ * @return The evaluation of Legendre associated function
+ * Author: Michele Scotti
+ * E-mail: michele.scotti@gmail.com
+ */
+double legendre (double x, int l, int m)
+{
+        if (m > l)						// m > l;
+                return 0;
+        else if ((l == 0) && (m == 0))	// l = 0; m = 0;
+                return 1;
+        else if ((l == 1) && (m == 0))	// l = 1; m = 0;
+                return x;
+        else if ((l == 1) && (m == 1))	// l = 1; m = 1;
+                return sqrt(1 - x*x);
+        else if (l >= 2 && m == 0)
+            return ((2*l-1)*x*legendre(x, l-1, 0) - (l-1)*legendre(x, l-2, 0)) / (l);
+        else if (m != 0 && m < l)
+            return (legendre(x, l-2, m) + (2*l-1)*(sqrt(1- x*x))*legendre(x, l-1, m-1));
+        else if(l == m)
+            return ((2*l-1)*sqrt(1-x*x)*legendre(x, l-1, l-1));
+        else
+            return -1;
+}
