@@ -32,8 +32,8 @@
 	<element name="AbstractTrajectory" abstract="true"
 		type="tns:AbstractTrajectoryType"></element>
 	<complexType name="AbstractTrajectoryType">
-        <sequence>
-		    <element ref="tns:ElementIdentifier"></element>
+		<sequence>
+			<element ref="tns:ElementIdentifier"></element>
 		</sequence>
 	</complexType>
 
@@ -199,6 +199,23 @@
 			<element name="userDefined" type="boolean" minOccurs="0"></element>
 		</sequence>
 	</complexType>
+
+
+	<element name="TrajectoryStoppingCondition" type="tns:TrajectoryStoppingConditionType"></element>
+	<complexType name="TrajectoryStoppingConditionType">
+		<sequence>
+			<element name="ConditionIdentifier" type="string" minOccurs="0">
+			</element>
+			<element name="ConditionValue" type="double" minOccurs="0">
+			</element>
+			<element name="ConditionBody" type="tns:CentralBodyType"
+				minOccurs="0">
+			</element>
+			<element name="ConditionTolerance" type="double" minOccurs="0">
+			</element>
+		</sequence>
+	</complexType>
+
 
 
 
@@ -457,15 +474,15 @@
 		</sequence>
 	</complexType>
 
-    <complexType name="CoverageType">
-      <sequence>
-        <element name="FrustumShape" type="string"></element>
-        <element name="FrustumAngle1" type="double"></element>
-        <element name="FrustumAngle2" type="double"></element>
-      </sequence>
-    </complexType>
+	<complexType name="CoverageType">
+		<sequence>
+			<element name="FrustumShape" type="string"></element>
+			<element name="FrustumAngle1" type="double"></element>
+			<element name="FrustumAngle2" type="double"></element>
+		</sequence>
+	</complexType>
 
-    <element name="Coverage" type="tns:CoverageType"></element>
+	<element name="Coverage" type="tns:CoverageType"></element>
 
 	<element name="Antenna" type="tns:AntennaType" abstract="true"></element>
 
@@ -483,8 +500,8 @@
 						<element name="elevation" type="double"></element>
 						<element name="azimuthDot" type="double" minOccurs="0"></element>
 						<element name="elevationDot" type="double" minOccurs="0"></element>
-                                                <element name="coneAngle" type="double" minOccurs="0"></element>
-                                                <element name="coneShape" type="integer" minOccurs="0"></element>
+						<element name="coneAngle" type="double" minOccurs="0"></element>
+						<element name="coneShape" type="int" minOccurs="0"></element>
 					</sequence>
 				</complexType>
 			</element>
@@ -503,7 +520,7 @@
 					</sequence>
 				</complexType>
 			</element>
-            <element name="Coverage" type="tns:CoverageType"></element>
+			<element name="Coverage" type="tns:CoverageType"></element>
 		</sequence>
 	</complexType>
 
@@ -549,7 +566,8 @@
 			<complexContent>
 				<extension base="tns:AntennaType">
 					<sequence>
-                                                <element name="ObservationChecked" type="boolean" minOccurs="0"></element>
+						<element name="ObservationChecked" type="boolean"
+							minOccurs="0"></element>
 						<element name="FedderLossTx" type="double"></element>
 						<element name="DepointingLossTx" type="double"></element>
 						<element name="TransmittingPower" type="double"></element>

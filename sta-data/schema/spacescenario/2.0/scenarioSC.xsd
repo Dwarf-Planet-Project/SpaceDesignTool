@@ -82,6 +82,7 @@
 					<element ref="tns:InitialAttitude"></element>
 					<element ref="tns:PropagationPosition"></element>
 					<element ref="tns:PropagationAttitude"></element>
+					<element ref="TrajectoryStoppingCondition"></element>
 				</sequence>
 			</extension>
 		</complexContent>
@@ -120,10 +121,10 @@
 		<complexContent>
 			<extension base="tns:AbstractTrajectoryType">
 				<sequence>
-			        <element name="CentralBody" type="tns:CentralBodyType"></element>
-			        <element name="CoordinateSystem" type="string"></element>
-                    <element name="TimeTags" type="tns:ListOfDateTime"></element>
-                    <element name="States" type="tns:ListOfDouble"></element>
+					<element name="CentralBody" type="tns:CentralBodyType"></element>
+					<element name="CoordinateSystem" type="string"></element>
+					<element name="TimeTags" type="tns:ListOfDateTime"></element>
+					<element name="States" type="tns:ListOfDouble"></element>
 				</sequence>
 			</extension>
 		</complexContent>
@@ -133,7 +134,7 @@
 	<element name="DeltaV" substitutionGroup="tns:AbstractTrajectory"
 		type="tns:DeltaVType"></element>
 
- 	<complexType name="DeltaVType">
+	<complexType name="DeltaVType">
 		<complexContent>
 			<extension base="tns:AbstractTrajectoryType">
 				<sequence>

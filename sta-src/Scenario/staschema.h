@@ -48,6 +48,7 @@ class ScenarioEnvironmentType;
 class ScenarioCentralBodyType;
 class ScenarioGravityModel;
 class ScenarioPerturbationsType;
+class ScenarioTrajectoryStoppingConditionType;
 class ScenarioAbstract3DOFPositionType;
 class ScenarioAbstract6DOFPositionType;
 class ScenarioGroundPositionType;
@@ -806,6 +807,43 @@ private:
     bool m_thirdBody;
     QList<QString> m_perturbingBody;
     bool m_userDefined;
+};
+
+
+// ScenarioTrajectoryStoppingConditionType
+class ScenarioTrajectoryStoppingConditionType : public ScenarioObject
+{
+public:
+    ScenarioTrajectoryStoppingConditionType();
+    static ScenarioTrajectoryStoppingConditionType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "TrajectoryStoppingConditionType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QString ConditionIdentifier() const
+    { return m_ConditionIdentifier; }
+    void setConditionIdentifier(QString ConditionIdentifier)
+    { m_ConditionIdentifier = ConditionIdentifier; }
+    double ConditionValue() const
+    { return m_ConditionValue; }
+    void setConditionValue(double ConditionValue)
+    { m_ConditionValue = ConditionValue; }
+    QSharedPointer<ScenarioCentralBodyType> ConditionBody() const
+    { return m_ConditionBody; }
+    void setConditionBody(QSharedPointer<ScenarioCentralBodyType> ConditionBody)
+    { m_ConditionBody = ConditionBody; }
+    double ConditionTolerance() const
+    { return m_ConditionTolerance; }
+    void setConditionTolerance(double ConditionTolerance)
+    { m_ConditionTolerance = ConditionTolerance; }
+
+private:
+    QString m_ConditionIdentifier;
+    double m_ConditionValue;
+    QSharedPointer<ScenarioCentralBodyType> m_ConditionBody;
+    double m_ConditionTolerance;
 };
 
 
@@ -1647,6 +1685,14 @@ public:
     { return m_elevationDot; }
     void setElevationDot(double elevationDot)
     { m_elevationDot = elevationDot; }
+    double coneAngle() const
+    { return m_coneAngle; }
+    void setConeAngle(double coneAngle)
+    { m_coneAngle = coneAngle; }
+    int coneShape() const
+    { return m_coneShape; }
+    void setConeShape(int coneShape)
+    { m_coneShape = coneShape; }
 
 private:
     QString m_referenceSystem;
@@ -1874,6 +1920,10 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    bool ObservationChecked() const
+    { return m_ObservationChecked; }
+    void setObservationChecked(bool ObservationChecked)
+    { m_ObservationChecked = ObservationChecked; }
     double FedderLossTx() const
     { return m_FedderLossTx; }
     void setFedderLossTx(double FedderLossTx)
@@ -1892,6 +1942,7 @@ public:
     { m_Modulation = Modulation; }
 
 private:
+    bool m_ObservationChecked;
     double m_FedderLossTx;
     double m_DepointingLossTx;
     double m_TransmittingPower;
@@ -6644,6 +6695,10 @@ public:
     { return m_PropagationAttitude; }
     void setPropagationAttitude(QSharedPointer<ScenarioPropagationAttitudeType> PropagationAttitude)
     { m_PropagationAttitude = PropagationAttitude; }
+    QSharedPointer<ScenarioTrajectoryStoppingConditionType> TrajectoryStoppingCondition() const
+    { return m_TrajectoryStoppingCondition; }
+    void setTrajectoryStoppingCondition(QSharedPointer<ScenarioTrajectoryStoppingConditionType> TrajectoryStoppingCondition)
+    { m_TrajectoryStoppingCondition = TrajectoryStoppingCondition; }
 
 private:
     QSharedPointer<ScenarioEnvironmentType> m_Environment;
@@ -6652,6 +6707,7 @@ private:
     QSharedPointer<ScenarioInitialAttitudeType> m_InitialAttitude;
     QSharedPointer<ScenarioPropagationPositionType> m_PropagationPosition;
     QSharedPointer<ScenarioPropagationAttitudeType> m_PropagationAttitude;
+    QSharedPointer<ScenarioTrajectoryStoppingConditionType> m_TrajectoryStoppingCondition;
 };
 
 
@@ -8410,6 +8466,7 @@ QDomElement CreateRegionElement(ScenarioRegion* e, QDomDocument& doc);
 QDomElement CreateREVElement(ScenarioREV* e, QDomDocument& doc);
 QDomElement CreateLoiteringTLEElement(ScenarioLoiteringTLEType* e, QDomDocument& doc);
 QDomElement CreateReceiverPayloadElement(ScenarioReceiverPayloadType* e, QDomDocument& doc);
+QDomElement CreateTrajectoryStoppingConditionElement(ScenarioTrajectoryStoppingConditionType* e, QDomDocument& doc);
 QDomElement CreateOpticalPayloadElement(ScenarioOpticalPayloadType* e, QDomDocument& doc);
 QDomElement CreateTboostHohmannElement(ScenarioTboostHohmannType* e, QDomDocument& doc);
 QDomElement CreateFCstRbarElement(ScenarioFCstRbarType* e, QDomDocument& doc);

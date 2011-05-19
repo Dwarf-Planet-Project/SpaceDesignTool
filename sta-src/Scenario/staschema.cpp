@@ -1044,6 +1044,75 @@ QList<QSharedPointer<ScenarioObject> >ScenarioPerturbationsType::children() cons
 
 
 
+// ScenarioTrajectoryStoppingConditionType
+ScenarioTrajectoryStoppingConditionType::ScenarioTrajectoryStoppingConditionType() :
+    m_ConditionValue(0.0),
+    m_ConditionTolerance(0.0)
+{
+}
+
+ScenarioTrajectoryStoppingConditionType* ScenarioTrajectoryStoppingConditionType::create(const QDomElement& e)
+{
+    ScenarioTrajectoryStoppingConditionType* v;
+    {
+        v = new ScenarioTrajectoryStoppingConditionType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioTrajectoryStoppingConditionType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:ConditionIdentifier")
+    {
+        m_ConditionIdentifier = (next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    if (next->tagName() == "tns:ConditionValue")
+    {
+        m_ConditionValue = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    if (next->tagName() == "tns:ConditionBody")
+        m_ConditionBody = QSharedPointer<ScenarioCentralBodyType>(ScenarioCentralBodyType::create(*next));
+if (!m_ConditionBody.isNull())
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:ConditionTolerance")
+    {
+        m_ConditionTolerance = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    return true;
+}
+
+QDomElement ScenarioTrajectoryStoppingConditionType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:ConditionIdentifier", m_ConditionIdentifier));
+    e.appendChild(createSimpleElement(doc, "tns:ConditionValue", m_ConditionValue));
+    if (!m_ConditionBody.isNull())
+    {
+        QString tagName = "ConditionBody";
+        QDomElement child = m_ConditionBody->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    e.appendChild(createSimpleElement(doc, "tns:ConditionTolerance", m_ConditionTolerance));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioTrajectoryStoppingConditionType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_ConditionBody.isNull()) children << m_ConditionBody;
+    return children;
+}
+
+
+
+
 // ScenarioAbstract3DOFPositionType
 ScenarioAbstract3DOFPositionType::ScenarioAbstract3DOFPositionType()
 {
@@ -10613,6 +10682,7 @@ ScenarioLoiteringType::ScenarioLoiteringType()
     m_InitialAttitude = QSharedPointer<ScenarioInitialAttitudeType>(new ScenarioInitialAttitudeType());
     m_PropagationPosition = QSharedPointer<ScenarioPropagationPositionType>(new ScenarioPropagationPositionType());
     m_PropagationAttitude = QSharedPointer<ScenarioPropagationAttitudeType>(new ScenarioPropagationAttitudeType());
+    m_TrajectoryStoppingCondition = QSharedPointer<ScenarioTrajectoryStoppingConditionType>(new ScenarioTrajectoryStoppingConditionType());
 }
 
 ScenarioLoiteringType* ScenarioLoiteringType::create(const QDomElement& e)
@@ -10647,6 +10717,9 @@ bool ScenarioLoiteringType::load(const QDomElement& e, QDomElement* next)
     *next = next->nextSiblingElement();
     if (next->tagName() == "tns:PropagationAttitude")
         m_PropagationAttitude = QSharedPointer<ScenarioPropagationAttitudeType>(ScenarioPropagationAttitudeType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:TrajectoryStoppingCondition")
+        m_TrajectoryStoppingCondition = QSharedPointer<ScenarioTrajectoryStoppingConditionType>(ScenarioTrajectoryStoppingConditionType::create(*next));
     *next = next->nextSiblingElement();
     return true;
 }
@@ -10690,6 +10763,12 @@ QDomElement ScenarioLoiteringType::toDomElement(QDomDocument& doc, const QString
         QDomElement child = m_PropagationAttitude->toDomElement(doc, tagName);
         e.appendChild(child);
     }
+    if (!m_TrajectoryStoppingCondition.isNull())
+    {
+        QString tagName = "TrajectoryStoppingCondition";
+        QDomElement child = m_TrajectoryStoppingCondition->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
     return e;
 }
 
@@ -10702,6 +10781,7 @@ QList<QSharedPointer<ScenarioObject> >ScenarioLoiteringType::children() const
     if (!m_InitialAttitude.isNull()) children << m_InitialAttitude;
     if (!m_PropagationPosition.isNull()) children << m_PropagationPosition;
     if (!m_PropagationAttitude.isNull()) children << m_PropagationAttitude;
+    if (!m_TrajectoryStoppingCondition.isNull()) children << m_TrajectoryStoppingCondition;
     return children;
 }
 
@@ -14070,6 +14150,11 @@ QDomElement CreateLoiteringTLEElement(ScenarioLoiteringTLEType* e, QDomDocument&
 QDomElement CreateReceiverPayloadElement(ScenarioReceiverPayloadType* e, QDomDocument& doc)
 {
     return e->toDomElement(doc, "ReceiverPayload");
+}
+
+QDomElement CreateTrajectoryStoppingConditionElement(ScenarioTrajectoryStoppingConditionType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "TrajectoryStoppingCondition");
 }
 
 QDomElement CreateOpticalPayloadElement(ScenarioOpticalPayloadType* e, QDomDocument& doc)
