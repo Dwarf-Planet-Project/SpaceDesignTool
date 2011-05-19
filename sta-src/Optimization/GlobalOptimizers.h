@@ -133,6 +133,9 @@ at the end of this file two test mathematical functions are reported, a single-o
 bi-objective function called t1, so that the user can use them to test the behaviour of the optimization algorithms.
 */
 
+#ifndef GLOBAL_OPT
+#define GLOBAL_OPT
+
 #include <Eigen/Core>
 using namespace Eigen;
 #define huge 1e10	//NOTE: increase this if the objective functions have values of this order of magnitude. Maintain approximately 10 orders of magnitude of difference.
@@ -145,7 +148,7 @@ public:
         Eigen::VectorXd LOWERBOUND,UPPERBOUND;
         Eigen::MatrixXd OptimalSolutions, ParetoFront, OldSwarm, OldPbest, OldVel, OldJpbest, OldJswarm;
 
-        void InitializeOptimizer();
+        virtual void InitializeOptimizer() = 0;
         //This function has to be provided by the user and should initialize the values of the main problem parameters
         //(NVAR,NOBJ,NCONS,MAXITER,InitMode,NsolPareto,LOWERBOUND,UPPERBOUND), define the seed for the random numbers
         //generator, allocate memory for the GSL vectors and matrixes AND open the output files.
@@ -154,7 +157,7 @@ public:
         //or run results, but memory must be allocated for them.
         //See the prototype below for an example.
 
-        Eigen::VectorXd EvaluateModel(Eigen::VectorXd, int);
+        virtual Eigen::VectorXd EvaluateModel(Eigen::VectorXd, int) = 0;
         //This function has to be provided by the user and is the function that provides the mathematical function to be
         //optimized AND the constraints to which the function is subjected. The function must take as input a gsl_vector of
         //NVAR elements containing the variables values and return another gsl_vector of NOBJ+NCONS elements that contains
@@ -333,3 +336,6 @@ gsl_vector*  GlobalOptimizers::EvaluateModel(gsl_vector* x,int)
 
 
 */
+
+
+#endif // GLOBAL_OPT
