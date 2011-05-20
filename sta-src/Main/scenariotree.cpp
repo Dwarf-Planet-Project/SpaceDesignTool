@@ -446,6 +446,7 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
         trajectory = ScenarioDeltaVType::create(element);  // Guillermo says: creating the maneuver as a trajectory arc
 
     ///New manouvres created by Cesar Bernal for the RvD module
+    /*
     else if (elementName == "tns:TangencialDeltaV")
         trajectory = ScenarioTangentialDeltaVType::create(element);
     else if (elementName == "tns:RadialDeltaV")
@@ -472,7 +473,7 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
             trajectory = ScenarioFCstTangType::create(element);
     else if (elementName == "tns:FCstRad")
             trajectory = ScenarioFCstRadType::create(element);
-
+    */
 
 
 
