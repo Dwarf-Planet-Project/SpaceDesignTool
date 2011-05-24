@@ -89,7 +89,7 @@ void analysisParametersChoice::loadTheSTAscenario(SpaceScenario* scenario, Propa
 
         if ((dynamic_cast<ScenarioSC*>(participant.data())!=NULL)) //SC participant
         {
-            QTreeWidgetItem* spacecraftItem = new QTreeWidgetItem(scenarioTabAnalysisChoiceStreeView);
+            QTreeWidgetItem* spacecraftItem = new QTreeWidgetItem(TreeWidgetMissionArc);
             spacecraftItem->setExpanded(true);
             spacecraftItem->setText(0,participant.data()->Name());
             spacecraftItem->setIcon(0, QIcon(":/icons/ParticipantSATELLITE.png"));
@@ -228,7 +228,7 @@ void analysisParametersChoice::loadTheSTAscenario(SpaceScenario* scenario, Propa
 
         if(dynamic_cast<ScenarioREV*>(participant.data())!=NULL) //Re-entry vehicle
         {
-            QTreeWidgetItem * REVitem = new QTreeWidgetItem(scenarioTabAnalysisChoiceStreeView);
+            QTreeWidgetItem * REVitem = new QTreeWidgetItem(TreeWidgetMissionArc);
             REVitem->setExpanded(true);
             REVitem->setText(0,participant.data()->Name());
             REVitem->setIcon(0, QIcon(":/icons/ParticipantENTRYVEHICLE.png"));
@@ -288,7 +288,7 @@ void analysisParametersChoice::loadTheSTAscenario(SpaceScenario* scenario, Propa
 
         if(dynamic_cast<ScenarioGroundStation*>(participant.data())) //Ground Station
         {
-            QTreeWidgetItem * GSitem = new QTreeWidgetItem(scenarioTabAnalysisChoiceStreeView);
+            QTreeWidgetItem * GSitem = new QTreeWidgetItem(TreeWidgetMissionArc);
             GSitem->setExpanded(true);
             GSitem->setText(0,participant.data()->Name());
             GSitem->setIcon(0, QIcon(":/icons/ParticipantSTATION.png"));

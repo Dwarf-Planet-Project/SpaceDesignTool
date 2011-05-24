@@ -26,7 +26,9 @@
 #define ENVIRONMENTDIALOG_H
 
 #include "ui_environmentDialog.h"
+
 #include <QDialog>
+
 #include "Scenario/staschema.h"
 #include "Coverage/commanalysis.h"
 

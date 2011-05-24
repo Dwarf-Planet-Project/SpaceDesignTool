@@ -36,11 +36,12 @@
 #include <string.h>
 #include <stdlib.h>// for MAX_PATH
 #include <math.h>
-#include <Main/propagatedscenario.h>
-#include <Astro-Core/constants.h>
-#include <Astro-Core/stacoordsys.h>
-#include <Astro-Core/stabody.h>
-#include <Locations/environmentdialog.h>
+
+#include "Main/propagatedscenario.h"
+#include "Astro-Core/constants.h"
+#include "Astro-Core/stacoordsys.h"
+#include "Astro-Core/stabody.h"
+#include "Locations/environmentdialog.h"
 
 using namespace sta;
 
