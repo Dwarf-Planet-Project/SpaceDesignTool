@@ -34,6 +34,7 @@
 #include <QVariantList>
 #include <QSignalMapper>
 
+#include "analysisParametersChoice.h"
 #include "Scenario/staschema.h"
 #include "Main/propagatedscenario.h"
 
@@ -100,7 +101,6 @@ private:
     SpaceScenario* m_scenario;
     PropagatedScenario* m_propagatedScenario;
     ApplicationWindow* m_appWindow;
-
-
+    analysisParametersChoice* m_analysisParameterChooser;
 };
 

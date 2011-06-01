@@ -33,6 +33,7 @@
 #include <QApplication>
 #include <QSignalMapper>
 #include <QDebug>
+#include <QDockWidget>
 
 #include "qtiplotmain.h"
 #include "analysisParametersChoice.h"
@@ -44,7 +45,8 @@
 
 QtiPlotMain::QtiPlotMain(bool factorySettings, QWidget *parent) :
     QMainWindow(parent),
-    m_appWindow(NULL)
+    m_appWindow(NULL),
+    m_analysisParameterChooser(NULL)
 {
     initQtiPlot();
 };
@@ -95,8 +97,19 @@ QtiPlotMain::initQtiPlot()
     m_appWindow->restoreApplicationGeometry();
     connect(m_appWindow, SIGNAL(destroyed()), this, SLOT(qtiClosed()));
 
+    m_analysisParameterChooser = new analysisParametersChoice(m_appWindow);
     //QSignalMapper *signalMapper = new QSignalMapper(this);
     //connect(signalMapper, SIGNAL(mapped(int)), this, SIGNAL(digitClicked(int)));
+
+    // Place the analysis parameter chooser window in the dock area of the QtiPlot window
+    QDockWidget* analysisParametersChoiceDock = new QDockWidget(tr("Parameters"), m_appWindow);
+    analysisParametersChoiceDock->setObjectName("sta-analysis-choice-box");
+    analysisParametersChoiceDock->setMinimumWidth(200);
+    analysisParametersChoiceDock->setFloating(false);
+
+    analysisParametersChoiceDock->setWidget(m_analysisParameterChooser);
+    m_appWindow->addDockWidget(Qt::RightDockWidgetArea, analysisParametersChoiceDock);
+    analysisParametersChoiceDock->setVisible(true);
 }
 
 
@@ -164,11 +177,9 @@ AnalysisResult::setColumnName(int column, const QString& name)
 }
 
 
-
 void
 QtiPlotMain::passTheSTAscenarioToQtiPlotMain(SpaceScenario* scenario, PropagatedScenario* propagatedScenario)
 {
-    //qDebug() << "----------------> QtiPlotMain is about to pass the data" <<endl;
-    m_appWindow->loadTheSTAscenarioIntoQtiPlot(scenario, propagatedScenario);
+    m_analysisParameterChooser->loadTheSTAscenario(scenario, propagatedScenario);
 }
 
