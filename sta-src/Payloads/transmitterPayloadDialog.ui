@@ -794,7 +794,8 @@
      <property name="text">
       <string>Observation</string>
      </property>
-    </widget></widget>
+    </widget>
+   </widget>
    <widget class="QWidget" name="BudgetPage">
     <attribute name="title">
      <string>Budget</string>
@@ -908,6 +909,7 @@
   </widget>
  </widget>
  <tabstops>
+  <tabstop>tabWidget</tabstop>
   <tabstop>GainMaxRadioButton</tabstop>
   <tabstop>GainLineEdit</tabstop>
   <tabstop>DiameterRadioButton</tabstop>
@@ -920,22 +922,23 @@
   <tabstop>PowerLineEdit</tabstop>
   <tabstop>TxFeederLossLineEdit</tabstop>
   <tabstop>TxDepointingLossLineEdit</tabstop>
+  <tabstop>BandWidthLineEdit</tabstop>
   <tabstop>PolarisationComboBox</tabstop>
   <tabstop>TiltLineEdit</tabstop>
   <tabstop>TypeModComboBox</tabstop>
   <tabstop>DataRateLineEdit</tabstop>
+  <tabstop>observationCheckBox</tabstop>
   <tabstop>ElLineEdit</tabstop>
   <tabstop>AzLineEdit</tabstop>
   <tabstop>ConeShapeComboBox</tabstop>
-  <tabstop>ConeAngleLineEdit</tabstop>
+  <tabstop>VertAngleLineEdit</tabstop>
+  <tabstop>HorAngleLineEdit</tabstop>
   <tabstop>MassLineEdit</tabstop>
   <tabstop>LengthLineEdit</tabstop>
   <tabstop>WidthLineEdit</tabstop>
   <tabstop>HightLineEdit</tabstop>
-  <tabstop>HorAngleLineEdit</tabstop>
   <tabstop>buttonBox</tabstop>
-  <tabstop>tabWidget</tabstop>
-  <tabstop>VertAngleLineEdit</tabstop>
+  <tabstop>ConeAngleLineEdit</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -951,22 +954,6 @@
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>transmitterPayloadDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
      <y>274</y>
     </hint>
    </hints>
@@ -1030,8 +1017,8 @@
      <y>106</y>
     </hint>
     <hint type="destinationlabel">
-     <x>241</x>
-     <y>155</y>
+     <x>242</x>
+     <y>146</y>
     </hint>
    </hints>
   </connection>
