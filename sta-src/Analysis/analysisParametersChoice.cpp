@@ -60,7 +60,7 @@ analysisParametersChoice::analysisParametersChoice( QWidget * parent) : QWidget(
 {
     setupUi(this);
 
-    connect(this->AddParameterPushButton, SIGNAL(clicked()), this, SLOT(addParameters()));
+    connect(this->AddParameterPushButton, SIGNAL(clicked()), this, SLOT(addSelectedParameters()));
     connect(this->RemoveParameterPushButton, SIGNAL(clicked()), this, SLOT(removeParameters()));
 }
 
@@ -463,9 +463,43 @@ void analysisParametersChoice::loadTheSTAscenario(SpaceScenario* scenario, Propa
 
 
 void
-analysisParametersChoice::addParameters()
+analysisParametersChoice::addSelectedParameters()
 {
+    /*
+      Selects the items in the list of the parameters that can be sent to the list of the report options/parameters
+      */
+    QList<QTreeWidgetItem *> selectedParameters=treeWidgetReportOptions->selectedItems();
+    int numberOfchildren = selectedParameters[0]->childCount();
+    if (numberOfchildren == 0)
+    {
+        QList<QTreeWidgetItem *> parameters = treeWidgetReportOptions->selectedItems();
+
+        for (int i = 0; i < parameters.size(); i++)
+        {
+            addParameter(parameters.at(i));
+
+        }
+    }
+
     qDebug() << "add parameters";
+}
+
+
+void
+analysisParametersChoice::addParameter(QTreeWidgetItem* item)
+{
+    /*
+      allows the user to add the parameters he/she wants to see in the report
+      Inputs: item- selected items that are to be sent to the report options list
+      */
+    QString text = item->text(0);
+    if(treeWidgetShowInReport->findItems(text,Qt::MatchExactly).isEmpty())
+
+    {
+        QTreeWidgetItem*added=new QTreeWidgetItem(treeWidgetShowInReport);
+        added->setText(0,text);
+        comboBoxOptions(added);
+    }
 }
 
 
@@ -763,4 +797,332 @@ analysisParametersChoice::on_EditTimePushButton_clicked() //adds new time interv
         parametersWarning.exec();
     }
 }
+
+
+/*  Selects the comboboxes that should be available next to each parameter, according to its type
+ *  item- line of the tree that contains the report options
+ */
+void
+analysisParametersChoice::comboBoxOptions(QTreeWidgetItem* item)
+{
+    QString name=item->text(0);
+    if ((name=="x position") ||
+        (name=="y position")||
+        (name=="z position") ||
+        (name=="Sun")||
+        (name=="Mercury")||
+        (name=="Venus")||
+        (name=="Earth")||
+        (name=="Moon")||
+        (name=="Mars")||
+        (name=="Jupiter")||
+        (name=="Saturn")||
+        (name=="Uranus")||
+        (name=="Neptune")||
+        (name=="Pluto") ||
+        (name=="Radius")||
+        (name=="Radial Distance")||
+        (name=="Apogee Planetocentric Radius")||
+        (name=="Perigee Planetocentric Radius")||
+        (name=="Apogee Planetocentric Altitude")||
+        (name=="Perigee Planetocentric Altitude")||
+        (name=="Altitude")||
+        (name=="Range")||
+        (name=="Velocity Modulus")||
+        (name=="Semimajor Axis"))
+    {
+        treeWidgetShowInReport->setItemWidget(item,1,CoordinateBox());
+        treeWidgetShowInReport->setItemWidget(item,2,DistanceUnitsBox());
+    }
+    if(name=="Time")
+    {
+        //This group has been patched by Guillermo
+        treeWidgetShowInReport->setItemWidget(item,1,TimeFramesBox());
+        treeWidgetShowInReport->setItemWidget(item,2,NoUnitsBox());
+       // Next lines oatched by Guillermo
+       /*
+       treeWidgetShowInReport->setColumnWidth(0, 100);
+       treeWidgetShowInReport->setColumnWidth(1, 200);
+       treeWidgetShowInReport->setColumnWidth(2, 150);
+       DialogServiceTimeParameterFrame* serviceTimeParameterWidget = new DialogServiceTimeParameterFrame();
+       treeWidgetShowInReport->setItemWidget(item,1,serviceTimeParameterWidget);
+       serviceTimeParameterWidget->show();
+       DialogServiceTimeUnitFrame* serviceTimeUnitWidget = new DialogServiceTimeUnitFrame();
+       treeWidgetShowInReport->setItemWidget(item,2,serviceTimeUnitWidget);
+       serviceTimeUnitWidget->show();
+       */
+    }
+    if(name=="Epoch")
+    {
+        treeWidgetShowInReport->setItemWidget(item,1,NoUnitsBox());
+        treeWidgetShowInReport->setItemWidget(item,2,TimeUnitsBox());
+    }
+
+    if((name=="Eccentricity")||
+       (name=="L")||
+       (name=="G")||
+       (name=="l")||
+       (name=="g")||
+       (name=="h")||
+       (name=="H"))
+
+    {
+        treeWidgetShowInReport->setItemWidget(item,1,CoordinateBox());
+        treeWidgetShowInReport->setItemWidget(item,2,NoUnitsBox());
+
+    }
+    if((name=="e*sin(omegaBar)")||(name=="e*cos(omegaBar)")||(name=="tan(i/2)*sin(raan)")||(name=="tan(i/2)*cos(raan)"))
+    {
+        treeWidgetShowInReport->setItemWidget(item,1,CoordinateBox());
+        treeWidgetShowInReport->setItemWidget(item,2,NoUnitsBox());
+    }
+
+    if((name=="x velocity")||
+       (name=="y velocity")||
+       (name=="z velocity"))
+    {
+        treeWidgetShowInReport->setItemWidget(item,1,CoordinateBox());
+        treeWidgetShowInReport->setItemWidget(item,2,VelocityUnitsBox());
+    }
+    if((name=="Access Time")||
+
+       (name=="Time crossing the J2000 epoch")||
+       (name=="Time crossing the Mean Ecliptic Plane of Date")||
+       (name=="Time crossing the True Ecliptic Plane of Date")||
+       (name=="Local Time of Ascending Node")||
+       (name=="Local Time of Descending Node")||
+       (name=="Time of Ascending Node")||
+       (name=="Time of Descending Node")||
+       (name=="Time of Apogee")||
+       (name=="Time of Perigee")||
+       (name=="Time of Minimum Latitude")||
+       (name=="Time of Maximum Altitude")||
+       (name=="Time of Maximum Sun Elevation")||
+       (name=="Time of Apparent Noon")||
+       (name=="Time of Apparent Midnight")||
+       (name=="Time of Apparent Dawn")||
+       (name=="Time of Apparent Dusk"))
+    {
+        treeWidgetShowInReport->setItemWidget(item,1,TimeFramesBox());
+        treeWidgetShowInReport->setItemWidget(item,2,TimeUnitsBox());
+    }
+    if((name=="Inclination")||
+       (name=="RAAN")||
+       (name=="Argument of Periapsis")||
+       (name=="True Anomaly")||
+       (name=="Mean Longitude")||
+
+       (name=="Longitude when passing Ascending Node")||
+       (name=="Longitude when passing Descending Node")||
+       (name=="Maximum Geodetic Latitude")||
+       (name=="Minimum Geodetic Latitude")||
+       (name=="Heading Angle")||
+
+       (name=="Latitude")||
+       (name=="Longitude")||
+       (name=="Azimuth")||
+       (name=="Elevation")||
+       (name=="Flight Path Angle")||
+       (name=="l")||(name=="g")||(name=="h")
+
+        )
+        {
+        treeWidgetShowInReport->setItemWidget(item,1,CoordinateBox());
+        treeWidgetShowInReport->setItemWidget(item,2,AngleUnitsBox());
+    }
+    if(name=="Covered Area" && m_propagatedScenario->coverageTriggered())
+    {
+        treeWidgetShowInReport->setItemWidget(item,1,NoUnitsBox());
+        treeWidgetShowInReport->setItemWidget(item,2,CoveredAreaUnitsBox());
+    }
+    if((name=="EIRP")||(name=="Received Frequency")||(name=="Doppler Shift")||(name=="Received Power")||(name=="Flux Density")||(name=="Overlap Bandwidth Factor")||
+       (name=="Free Space Loss")||(name=="Oxygen Loss")||(name=="Water Vapour Loss")||(name=="Rain Loss")||(name=="Atmospheric Loss")||(name=="Propagation Loss")||
+       (name=="G/T")||(name=="C/No")||(name=="C/N")||(name=="Eb/No")||(name=="BER"))
+    {
+        treeWidgetShowInReport->setItemWidget(item,1,NoUnitsBox());
+        treeWidgetShowInReport->setItemWidget(item,2,NoUnitsBox());
+
+    }
+
+}
+
+
+QComboBox*
+analysisParametersChoice::CoordinateBox()
+{
+    /*
+      returns a combobox with all the coordinate systems available
+      */
+    QComboBox*CoordinateBox2=new QComboBox();
+    CoordinateBox2->addItem(tr("EME J2000"),0);
+    CoordinateBox2->addItem(tr("EME B1950"),1);
+    CoordinateBox2->addItem(tr("Fixed"),2);
+    CoordinateBox2->addItem(tr("Ecliptic J2000"),3);
+    // CoordinateBox2->addItem(tr("ICRF"),4);
+    //    CoordinateBox2->addItem(tr("Rotating"),4);
+    //    CoordinateBox2->addItem(tr("Rotating Norm."),5);
+    CoordinateBox2->addItem(tr("ICRF"),6);
+    CoordinateBox2->addItem(tr("Mean of Date"),7);
+    CoordinateBox2->addItem(tr("True of Date"),8);
+    CoordinateBox2->addItem(tr("Mean of Epoch"),9);
+
+    //    CoordinateBox2->addItem(tr("True of Epoch"),10);
+    //    CoordinateBox2->addItem(tr("TEME of Date"),11);
+    //    CoordinateBox2->addItem(tr("TEME of Epoch"),12);
+    //    CoordinateBox2->addItem(tr("Alignment at Epoch"),13);
+
+    // Guillermo says: smaller font is better for the row
+    //QFont font("Helvetica", 10); CoordinateBox2->setFont(font);
+    CoordinateBox2->setMaximumHeight(22);
+
+    return CoordinateBox2;
+}
+
+
+QComboBox*
+analysisParametersChoice::TimeFramesBox()
+{
+    /*
+      Description: returns a combobox with all the time frames available
+      */
+    QComboBox*TimeBox=new QComboBox();
+    TimeBox->addItem(tr("Days from Epoch"));
+    TimeBox->addItem(tr("Hours from Epoch"));
+    TimeBox->addItem(tr("Minutes from Epoch"));
+    TimeBox->addItem(tr("Seconds from Epoch"));
+    TimeBox->addItem(tr("Earth canonical time"));
+    //TimeBox->addItem(tr("GMT"));                  // It's not implemented yet
+    TimeBox->addItem(tr("Gregorian GPS"));
+    //TimeBox->addItem(tr("Gregorian LCL"));        // It's not implemented yet
+    TimeBox->addItem(tr("Gregorian TAI"));
+    TimeBox->addItem(tr("Gregorian TDB"));
+    TimeBox->addItem(tr("Gregorian TDT"));
+    TimeBox->addItem(tr("Gregorian UTC"));
+    TimeBox->addItem(tr("Julian Ephemeris Date"));
+    // TimeBox->addItem(tr("Julian LCL"));           // It's not implemented yet
+    TimeBox->addItem(tr("Julian GPS"));
+    TimeBox->addItem(tr("Julian TDB"));
+    TimeBox->addItem(tr("Julian UTC"));
+    TimeBox->addItem(tr("Julian Date"));
+    TimeBox->addItem(tr("Mission Elapsed"));
+    TimeBox->addItem(tr("MJD"));
+    TimeBox->addItem(tr("YYDDD TDB"));
+
+    // Guillermo says: smaller font is better for the row
+    //QFont font("Helvetica", 10); TimeBox->setFont(font);
+    TimeBox->setMaximumHeight(22);
+
+    return TimeBox;
+}
+
+
+QComboBox*
+analysisParametersChoice::TimeUnitsBox()
+{
+    /*
+  Description: returns a combobox with all the time units available
+  */
+    QComboBox*TimeBox=new QComboBox();
+    TimeBox->addItem(tr("Seconds"),0);
+    TimeBox->addItem(tr("Minutes"),1);
+    TimeBox->addItem(tr("Hours"),2);
+    TimeBox->addItem(tr("Days"),3);
+
+    // Guillermo says: smaller font is better for the row
+    //QFont font("Helvetica", 10);     TimeBox->setFont(font);
+    TimeBox->setMaximumHeight(22);
+
+    return TimeBox;
+}
+
+
+QComboBox*
+analysisParametersChoice::AngleUnitsBox()
+{
+    /*
+      Description: returns a combobox with all the angle units available
+      */
+    QComboBox*AngleBox=new QComboBox();
+    AngleBox->addItem(tr("deg"),1);
+    AngleBox->addItem(tr("rad"),0);
+
+
+    // Guillermo says: smaller font is better for the row
+    //QFont font("Helvetica", 10);     AngleBox->setFont(font);
+    AngleBox->setMaximumHeight(22);
+
+    return AngleBox;
+}
+
+
+QComboBox*
+analysisParametersChoice::DistanceUnitsBox()
+{
+    /*
+      Description: returns a combobox with all the distance units available
+      */
+    QComboBox*DistanceBox=new QComboBox();
+    DistanceBox->addItem(tr("km"),0);
+    DistanceBox->addItem(tr("m"),1);
+    DistanceBox->addItem(tr("AU"),2);
+    DistanceBox->addItem(tr("nm"),3);
+
+    // Guillermo says: smaller font is better for the row
+    //QFont font("Helvetica", 10);     DistanceBox->setFont(font);
+    DistanceBox->setMaximumHeight(22);
+
+    return DistanceBox;
+}
+
+
+QComboBox*
+analysisParametersChoice::CoveredAreaUnitsBox()
+{
+    /*
+      Description: returns a combobox with the units "%" and "km^2"
+      */
+    QComboBox*CoveredAreaBox=new QComboBox();
+    CoveredAreaBox->addItem(tr("km^2"),0);
+    CoveredAreaBox->addItem(tr("%"),1);
+
+    CoveredAreaBox->setMaximumHeight(22);
+
+    return CoveredAreaBox;
+}
+
+
+QComboBox*
+analysisParametersChoice::NoUnitsBox()
+{
+    /*
+    Description: returns a combobox with no text, for parameters with no units
+        */
+    QComboBox* NoUnits=new QComboBox();
+    NoUnits->addItem(tr("-"));
+
+    // Guillermo says: smaller font is better for the row
+    //QFont font("Helvetica", 10);     NoUnits->setFont(font);
+    NoUnits->setMaximumHeight(22);
+
+    return NoUnits;
+}
+
+
+QComboBox*
+analysisParametersChoice::VelocityUnitsBox()
+{
+    /*
+      Description: returns a combobox with all the velocity units available
+      */
+    QComboBox*VelocityBox=new QComboBox();
+    VelocityBox->addItem(tr("km/s"),0);
+    VelocityBox->addItem(tr("m/s"),0);
+
+    // Guillermo says: smaller font is better for the row
+    //QFont font("Helvetica", 10);     VelocityBox->setFont(font);
+    VelocityBox->setMaximumHeight(22);
+
+    return VelocityBox;
+}
+
 

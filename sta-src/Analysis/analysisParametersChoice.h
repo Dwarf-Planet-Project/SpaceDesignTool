@@ -50,12 +50,12 @@ class analysisParametersChoice : public QWidget , private Ui::analysisParameters
 {
 Q_OBJECT
 public:
-    analysisParametersChoice( QWidget * parent = NULL);
+    analysisParametersChoice(QWidget * parent = NULL);
     ~analysisParametersChoice();
     void loadTheSTAscenario(SpaceScenario* scenario, PropagatedScenario* propagatedScenario);
 
 public slots:
-    void addParameters();
+    void addSelectedParameters();
     void removeParameters();
     void on_AddDefaultPushButton_clicked();
     void on_EditTimePushButton_clicked();
@@ -66,8 +66,19 @@ protected slots:
 public:
 
 private:
+    void addParameter(QTreeWidgetItem* item);
+    void comboBoxOptions(QTreeWidgetItem* item);
     int objectsIndex(QStringList AllObjects, int Index, QString ObjectType);
     bool checkIfMissionArc();
+
+    QComboBox *TimeFramesBox();
+    QComboBox *TimeUnitsBox();
+    QComboBox *AngleUnitsBox();
+    QComboBox *DistanceUnitsBox();
+    QComboBox *CoordinateBox();
+    QComboBox *VelocityUnitsBox();
+    QComboBox *CoveredAreaUnitsBox();
+    QComboBox *NoUnitsBox();
 
 private:
     QList<ScenarioTransmitterPayloadType*>TxSC;
