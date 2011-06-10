@@ -36,7 +36,7 @@
 
 #include <QFont>
 #include <QDialog>
-#include<QComboBox>
+#include <QComboBox>
 #include <QTreeWidgetItem>
 #include <QObject>
 #include <QWidget>
@@ -54,10 +54,20 @@ public:
     ~analysisParametersChoice();
     void loadTheSTAscenario(SpaceScenario* scenario, PropagatedScenario* propagatedScenario);
 
+public slots:
+    void addParameters();
+    void removeParameters();
+    void on_AddDefaultPushButton_clicked();
+    void on_EditTimePushButton_clicked();
+    void on_DeleteTimePushButton_clicked();
+
 protected slots:
 
 public:
 
+private:
+    int objectsIndex(QStringList AllObjects, int Index, QString ObjectType);
+    bool checkIfMissionArc();
 
 private:
     QList<ScenarioTransmitterPayloadType*>TxSC;
