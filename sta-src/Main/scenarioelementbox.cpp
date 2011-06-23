@@ -406,7 +406,7 @@ static QByteArray externalFragment(const char* name)
 
 
 /////////////////////// Creating vehicle with trajectories ///////////////////////////
-static QByteArray spaceVehicleWithTrajectoryFragment(const char* name, const char* vehicleType)
+static QByteArray spaceVehicleWithTrajectoryFragment(const QString& name, const char* vehicleType)
 {
     ScenarioSC* sc = new ScenarioSC();
     sc->ElementIdentifier()->setName(name);
