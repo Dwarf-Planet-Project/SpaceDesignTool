@@ -55,10 +55,35 @@
 static const QString TimeRangeSelectionDateFormat = "d/M/yyyy hh:mm:ss";
 
 
+// Mark tree items with children as unselectable. This prevents the user
+// from accidentally choosing invalid parameters (e.g. the State Vector category
+// instead of the individual state vector components.)
+static void SetParentItemsUnselectable(QTreeWidgetItem* item)
+{
+    if (item->childCount() > 0)
+    {
+        item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
+        for (int i = 0; i < item->childCount(); ++i)
+        {
+            SetParentItemsUnselectable(item->child(i));
+        }
+    }
+}
+
 
 analysisParametersChoice::analysisParametersChoice( QWidget * parent) : QWidget(parent)
 {
     setupUi(this);
+
+    // Prevent the user from accidentally selecting parameter classes
+    for (int i = 0; i < treeWidgetReportOptions->topLevelItemCount(); ++i)
+    {
+        QTreeWidgetItem* item = treeWidgetReportOptions->topLevelItem(i);
+        if (item)
+        {
+            SetParentItemsUnselectable(item);
+        }
+    }
 
     connect(this->AddParameterPushButton, SIGNAL(clicked()), this, SLOT(addSelectedParameters()));
     connect(this->RemoveParameterPushButton, SIGNAL(clicked()), this, SLOT(removeSelectedParameters()));
@@ -477,11 +502,8 @@ analysisParametersChoice::addSelectedParameters()
         for (int i = 0; i < parameters.size(); i++)
         {
             addParameter(parameters.at(i));
-
         }
     }
-
-    qDebug() << "add parameters";
 }
 
 
