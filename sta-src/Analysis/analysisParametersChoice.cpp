@@ -61,7 +61,7 @@ analysisParametersChoice::analysisParametersChoice( QWidget * parent) : QWidget(
     setupUi(this);
 
     connect(this->AddParameterPushButton, SIGNAL(clicked()), this, SLOT(addSelectedParameters()));
-    connect(this->RemoveParameterPushButton, SIGNAL(clicked()), this, SLOT(removeParameters()));
+    connect(this->RemoveParameterPushButton, SIGNAL(clicked()), this, SLOT(removeSelectedParameters()));
 }
 
 analysisParametersChoice::~analysisParametersChoice()
@@ -504,9 +504,16 @@ analysisParametersChoice::addParameter(QTreeWidgetItem* item)
 
 
 void
-analysisParametersChoice::removeParameters()
-{
-    qDebug() << "remove parameters";
+analysisParametersChoice::removeSelectedParameters()
+{    
+    /*
+      deletes the selected parameters from the report options list
+      */
+    QList<QTreeWidgetItem *> ChosenParameters = treeWidgetShowInReport->selectedItems();
+    for (int i = 0; i < ChosenParameters.size(); i++)
+    {
+        delete ChosenParameters.at(i);
+    }
 }
 
 

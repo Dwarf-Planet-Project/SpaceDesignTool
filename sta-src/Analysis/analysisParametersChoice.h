@@ -56,7 +56,7 @@ public:
 
 public slots:
     void addSelectedParameters();
-    void removeParameters();
+    void removeSelectedParameters();
     void on_AddDefaultPushButton_clicked();
     void on_EditTimePushButton_clicked();
     void on_DeleteTimePushButton_clicked();
