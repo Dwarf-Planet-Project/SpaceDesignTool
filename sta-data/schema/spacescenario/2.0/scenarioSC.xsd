@@ -82,7 +82,7 @@
 					<element ref="tns:InitialAttitude"></element>
 					<element ref="tns:PropagationPosition"></element>
 					<element ref="tns:PropagationAttitude"></element>
-					<element ref="tns:TrajectoryStoppingCondition"></element>
+					<element ref="tns:TrajectoryStoppingCondition" minOccurs="0"></element>
 				</sequence>
 			</extension>
 		</complexContent>

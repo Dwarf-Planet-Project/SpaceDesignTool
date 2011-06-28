@@ -10598,7 +10598,6 @@ ScenarioLoiteringType::ScenarioLoiteringType()
     m_InitialAttitude = QSharedPointer<ScenarioInitialAttitudeType>(new ScenarioInitialAttitudeType());
     m_PropagationPosition = QSharedPointer<ScenarioPropagationPositionType>(new ScenarioPropagationPositionType());
     m_PropagationAttitude = QSharedPointer<ScenarioPropagationAttitudeType>(new ScenarioPropagationAttitudeType());
-    m_TrajectoryStoppingCondition = QSharedPointer<ScenarioTrajectoryStoppingConditionType>(new ScenarioTrajectoryStoppingConditionType());
 }
 
 ScenarioLoiteringType* ScenarioLoiteringType::create(const QDomElement& e)
@@ -10636,7 +10635,8 @@ bool ScenarioLoiteringType::load(const QDomElement& e, QDomElement* next)
     *next = next->nextSiblingElement();
     if (next->tagName() == "tns:TrajectoryStoppingCondition")
         m_TrajectoryStoppingCondition = QSharedPointer<ScenarioTrajectoryStoppingConditionType>(ScenarioTrajectoryStoppingConditionType::create(*next));
-    *next = next->nextSiblingElement();
+if (!m_TrajectoryStoppingCondition.isNull())
+        *next = next->nextSiblingElement();
     return true;
 }
 
