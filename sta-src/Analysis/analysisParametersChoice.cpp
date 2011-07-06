@@ -744,10 +744,17 @@ analysisParametersChoice::on_EditTimePushButton_clicked() //adds new time interv
     /*
       a new time interval, user-specified, can be inserted in the list of Time Intervals
       */
-    bool ok;
+    bool ok = false;
     int check=0;
     //QList<QTreeWidgetItem *> selectedTimes=treeWidgetTimeSpecifications->selectedItems();
     QString InitTime = QInputDialog::getText(this, tr("Insert Start Time"),tr("Start Time"), QLineEdit::Normal,"dd/mm/yyyy hh:mm:ss",&ok);
+
+    // Return immediately if the user pressed cancel
+    if (!ok)
+    {
+        return;
+    }
+
     QString Date=InitTime.section(' ',0,0);
     QString Time=InitTime.section(' ',1,1);
 
