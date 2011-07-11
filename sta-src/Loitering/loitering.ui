@@ -30,7 +30,10 @@
    <iconset resource="../../iconary/sta-icons.qrc">
     <normaloff>:/icons/Loitering.png</normaloff>:/icons/Loitering.png</iconset>
   </property>
-  <widget class="QTabWidget" name="LoiteringTabsAssembly">
+  <widget class="QTabWidget" name="SCProperties_2">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -658,7 +661,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
        <item row="0" column="0">
         <widget class="QLabel" name="CoordSystlabel">
          <property name="text">
-          <string>System: </string>
+          <string>Coordinate System: </string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -743,8 +746,8 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
        <rect>
         <x>5</x>
         <y>80</y>
-        <width>256</width>
-        <height>231</height>
+        <width>246</width>
+        <height>226</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -757,17 +760,20 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
        <number>0</number>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
-      <widget class="QWidget" name="page_4">
+      <widget class="QWidget" name="Euler123Page">
        <widget class="QGroupBox" name="groupBox_6">
         <property name="geometry">
          <rect>
-          <x>3</x>
+          <x>0</x>
           <y>0</y>
           <width>246</width>
           <height>226</height>
          </rect>
+        </property>
+        <property name="whatsThis">
+         <string extracomment="Euler attitude angles in 1-2-3 sequence"/>
         </property>
         <property name="title">
          <string>Euler Angles 1-2-3</string>
@@ -778,10 +784,10 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
         <widget class="QWidget" name="formLayoutWidget_4">
          <property name="geometry">
           <rect>
-           <x>59</x>
-           <y>30</y>
-           <width>181</width>
-           <height>191</height>
+           <x>0</x>
+           <y>40</y>
+           <width>201</width>
+           <height>181</height>
           </rect>
          </property>
          <layout class="QFormLayout" name="formLayout_4">
@@ -797,7 +803,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
           <item row="0" column="0">
            <widget class="QLabel" name="alpha">
             <property name="text">
-             <string>&amp;alpha; [deg]: </string>
+             <string>&amp;phi; [deg]: </string>
             </property>
             <property name="textFormat">
              <enum>Qt::RichText</enum>
@@ -817,7 +823,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
           <item row="1" column="0">
            <widget class="QLabel" name="beta">
             <property name="text">
-             <string>&amp;beta; [deg]: </string>
+             <string>&amp;theta; [deg]: </string>
             </property>
             <property name="textFormat">
              <enum>Qt::RichText</enum>
@@ -837,7 +843,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
           <item row="2" column="0">
            <widget class="QLabel" name="gamma">
             <property name="text">
-             <string>&amp;gamma; [deg]: </string>
+             <string>&amp;psi; [deg]: </string>
             </property>
             <property name="textFormat">
              <enum>Qt::RichText</enum>
@@ -857,7 +863,11 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
           <item row="3" column="0">
            <widget class="QLabel" name="omegax">
             <property name="text">
-             <string>&amp;omega;x [deg/s]: </string>
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;ω&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;x&lt;/span&gt; [deg/s]: &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="textFormat">
              <enum>Qt::RichText</enum>
@@ -877,7 +887,11 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
           <item row="4" column="0">
            <widget class="QLabel" name="omegay">
             <property name="text">
-             <string>&amp;omega;y [deg/s]: </string>
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;y&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="textFormat">
              <enum>Qt::RichText</enum>
@@ -897,7 +911,11 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
           <item row="5" column="0">
            <widget class="QLabel" name="omegaz">
             <property name="text">
-             <string>&amp;omega;z [deg/s]: </string>
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;z&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="textFormat">
              <enum>Qt::RichText</enum>
@@ -918,14 +936,14 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
         </widget>
        </widget>
       </widget>
-      <widget class="QWidget" name="page_5">
+      <widget class="QWidget" name="Euler321Page">
        <widget class="QGroupBox" name="groupBox_7">
         <property name="geometry">
          <rect>
-          <x>3</x>
-          <y>5</y>
-          <width>246</width>
-          <height>221</height>
+          <x>0</x>
+          <y>0</y>
+          <width>251</width>
+          <height>231</height>
          </rect>
         </property>
         <property name="title">
@@ -937,9 +955,9 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
         <widget class="QWidget" name="formLayoutWidget_5">
          <property name="geometry">
           <rect>
-           <x>59</x>
-           <y>30</y>
-           <width>181</width>
+           <x>0</x>
+           <y>35</y>
+           <width>201</width>
            <height>191</height>
           </rect>
          </property>
@@ -956,7 +974,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
           <item row="0" column="0">
            <widget class="QLabel" name="alpha_2">
             <property name="text">
-             <string>&amp;alpha; [deg]: </string>
+             <string>&amp;phi; [deg]: </string>
             </property>
             <property name="textFormat">
              <enum>Qt::RichText</enum>
@@ -976,7 +994,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
           <item row="1" column="0">
            <widget class="QLabel" name="beta_2">
             <property name="text">
-             <string>&amp;beta; [deg]: </string>
+             <string>&amp;theta; [deg]: </string>
             </property>
             <property name="textFormat">
              <enum>Qt::RichText</enum>
@@ -996,7 +1014,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
           <item row="2" column="0">
            <widget class="QLabel" name="gamma_2">
             <property name="text">
-             <string>&amp;gamma; [deg]: </string>
+             <string>&amp;psi; [deg]: </string>
             </property>
             <property name="textFormat">
              <enum>Qt::RichText</enum>
@@ -1016,7 +1034,11 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
           <item row="3" column="0">
            <widget class="QLabel" name="omegax_2">
             <property name="text">
-             <string>&amp;omega;x [deg/s]: </string>
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;ω&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;x&lt;/span&gt; [deg/s]: &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="textFormat">
              <enum>Qt::RichText</enum>
@@ -1036,7 +1058,11 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
           <item row="4" column="0">
            <widget class="QLabel" name="omegay_2">
             <property name="text">
-             <string>&amp;omega;y [deg/s]: </string>
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;y&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="textFormat">
              <enum>Qt::RichText</enum>
@@ -1056,7 +1082,11 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
           <item row="5" column="0">
            <widget class="QLabel" name="omegaz_2">
             <property name="text">
-             <string>&amp;omega;z [deg/s]: </string>
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;z&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="textFormat">
              <enum>Qt::RichText</enum>
@@ -1077,172 +1107,184 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
         </widget>
        </widget>
       </widget>
-      <widget class="QWidget" name="page_6">
+      <widget class="QWidget" name="Euler313Page">
        <widget class="QGroupBox" name="groupBox_8">
         <property name="geometry">
          <rect>
-          <x>3</x>
+          <x>0</x>
           <y>0</y>
           <width>246</width>
           <height>226</height>
          </rect>
         </property>
         <property name="title">
-         <string>Euler Angles 1-3-2</string>
+         <string>Euler Angles 3-1-3</string>
         </property>
         <property name="flat">
          <bool>true</bool>
         </property>
-       </widget>
-       <widget class="QWidget" name="formLayoutWidget_6">
-        <property name="geometry">
-         <rect>
-          <x>62</x>
-          <y>30</y>
-          <width>181</width>
-          <height>191</height>
-         </rect>
-        </property>
-        <layout class="QFormLayout" name="formLayout_6">
-         <property name="fieldGrowthPolicy">
-          <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+        <widget class="QWidget" name="formLayoutWidget_6">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>35</y>
+           <width>201</width>
+           <height>191</height>
+          </rect>
          </property>
-         <property name="labelAlignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="formAlignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="alpha_3">
-           <property name="text">
-            <string>&amp;alpha; [deg]: </string>
-           </property>
-           <property name="textFormat">
-            <enum>Qt::RichText</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="semimajorAxisEdit_6">
-           <property name="text">
-            <string>23.4562</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="beta_3">
-           <property name="text">
-            <string>&amp;beta; [deg]: </string>
-           </property>
-           <property name="textFormat">
-            <enum>Qt::RichText</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="eccentricityEdit_6">
-           <property name="text">
-            <string>12.4564</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="gamma_3">
-           <property name="text">
-            <string>&amp;gamma; [deg]: </string>
-           </property>
-           <property name="textFormat">
-            <enum>Qt::RichText</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="inclinationEdit_6">
-           <property name="text">
-            <string>78.4532</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="omegax_3">
-           <property name="text">
-            <string>&amp;omega;x [deg/s]: </string>
-           </property>
-           <property name="textFormat">
-            <enum>Qt::RichText</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QLineEdit" name="raanEdit_6">
-           <property name="text">
-            <string>2.04834</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="omegay_3">
-           <property name="text">
-            <string>&amp;omega;y [deg/s]: </string>
-           </property>
-           <property name="textFormat">
-            <enum>Qt::RichText</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QLineEdit" name="argOfPeriapsisEdit_6">
-           <property name="text">
-            <string>1.02732</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="omegaz_3">
-           <property name="text">
-            <string>&amp;omega;z [deg/s]: </string>
-           </property>
-           <property name="textFormat">
-            <enum>Qt::RichText</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <widget class="QLineEdit" name="trueAnomalyEdit_6">
-           <property name="text">
-            <string>0.01245</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-        </layout>
+         <layout class="QFormLayout" name="formLayout_6">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+          </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="formAlignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="alpha_3">
+            <property name="text">
+             <string>&amp;phi; [deg]: </string>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::RichText</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="Euler123alphaEdit_3">
+            <property name="text">
+             <string>23.4562</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="beta_3">
+            <property name="text">
+             <string>&amp;theta; [deg]: </string>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::RichText</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="Euler123betaEdit_3">
+            <property name="text">
+             <string>12.4564</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="gamma_3">
+            <property name="text">
+             <string>&amp;psi; [deg]: </string>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::RichText</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="Euler123gammaEdit_3">
+            <property name="text">
+             <string>78.4532</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="omegax_3">
+            <property name="text">
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;ω&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;x&lt;/span&gt; [deg/s]: &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::RichText</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="AngularVelocityXEdit_4">
+            <property name="text">
+             <string>2.04834</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="omegay_3">
+            <property name="text">
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;y&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::RichText</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QLineEdit" name="AngularVelocityYEdit_3">
+            <property name="text">
+             <string>1.02732</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="omegaz_3">
+            <property name="text">
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;z&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::RichText</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QLineEdit" name="AngularVelocityZEdit_5">
+            <property name="text">
+             <string>0.01245</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </widget>
       </widget>
-      <widget class="QWidget" name="page_7">
+      <widget class="QWidget" name="QuaternionJPLPage">
        <widget class="QGroupBox" name="groupBox_9">
         <property name="geometry">
          <rect>
-          <x>3</x>
+          <x>0</x>
           <y>0</y>
-          <width>246</width>
+          <width>251</width>
           <height>221</height>
          </rect>
         </property>
@@ -1255,10 +1297,10 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
         <widget class="QWidget" name="formLayoutWidget_7">
          <property name="geometry">
           <rect>
-           <x>44</x>
-           <y>25</y>
-           <width>196</width>
-           <height>216</height>
+           <x>0</x>
+           <y>35</y>
+           <width>191</width>
+           <height>181</height>
           </rect>
          </property>
          <layout class="QFormLayout" name="formLayout_7">
@@ -1331,16 +1373,6 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="omegax_4">
-            <property name="text">
-             <string>&amp;omega;x [deg/s]: </string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
           <item row="4" column="1">
            <widget class="QLineEdit" name="AngularVelocityXEdit_2">
             <property name="text">
@@ -1351,18 +1383,8 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="omegay_4">
-            <property name="text">
-             <string>&amp;omega;y [deg/s]: </string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
           <item row="5" column="1">
-           <widget class="QLineEdit" name="argOfPeriapsisEdit_7">
+           <widget class="QLineEdit" name="AngularVelocityYEdit_4">
             <property name="text">
              <string>1.02732</string>
             </property>
@@ -1371,18 +1393,8 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
             </property>
            </widget>
           </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="omegaz_4">
-            <property name="text">
-             <string>&amp;omega;z [deg/s]: </string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
           <item row="6" column="1">
-           <widget class="QLineEdit" name="trueAnomalyEdit_7">
+           <widget class="QLineEdit" name="AngularVelocityZEdit_3">
             <property name="text">
              <string>0.01245</string>
             </property>
@@ -1408,6 +1420,48 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
             </property>
            </widget>
           </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="omegax_4">
+            <property name="text">
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;ω&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;x&lt;/span&gt; [deg/s]: &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::RichText</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="omegax_6">
+            <property name="text">
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;y&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::RichText</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="omegax_8">
+            <property name="text">
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;z&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::RichText</enum>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </widget>
@@ -1417,7 +1471,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>25</y>
+        <y>15</y>
         <width>251</width>
         <height>56</height>
        </rect>
@@ -1426,7 +1480,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
        <item row="0" column="0">
         <widget class="QLabel" name="CoordSystlabel_2">
          <property name="text">
-          <string>System: </string>
+          <string>Coordinate System: </string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1447,12 +1501,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
         <widget class="QComboBox" name="comboBox_3">
          <item>
           <property name="text">
-           <string>Body centered</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>No body centered</string>
+           <string>Inertial</string>
           </property>
          </item>
         </widget>
@@ -1471,7 +1520,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
          </item>
          <item>
           <property name="text">
-           <string>Euler Angles 1-3-2</string>
+           <string>Euler Angles 3-1-3</string>
           </property>
          </item>
          <item>
@@ -2296,6 +2345,9 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
         </item>
         <item row="0" column="2">
          <widget class="QComboBox" name="PropagatorComboBox_2">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="sizeAdjustPolicy">
            <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
           </property>
@@ -2330,6 +2382,206 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
        </layout>
       </item>
      </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="SCProperties">
+    <attribute name="title">
+     <string>SC Properties</string>
+    </attribute>
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>611</width>
+       <height>161</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Mass properties</string>
+     </property>
+     <widget class="QWidget" name="formLayoutWidget_8">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>25</y>
+        <width>421</width>
+        <height>126</height>
+       </rect>
+      </property>
+      <layout class="QFormLayout" name="formLayout_8">
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+       </property>
+       <property name="horizontalSpacing">
+        <number>10</number>
+       </property>
+       <property name="verticalSpacing">
+        <number>14</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Mass</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <property name="spacing">
+          <number>12</number>
+         </property>
+         <item>
+          <widget class="QLineEdit" name="lineEdit"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="inertiaMatLabel">
+           <property name="text">
+            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;kg      &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Inertia Matrix</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <layout class="QGridLayout" name="gridLayout_5">
+         <property name="horizontalSpacing">
+          <number>12</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLineEdit" name="lineEdit_2"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLineEdit" name="lineEdit_3"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLineEdit" name="lineEdit_7"/>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="lineEdit_8"/>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="lineEdit_9"/>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="lineEdit_10"/>
+         </item>
+         <item row="0" column="2">
+          <widget class="QLineEdit" name="lineEdit_11"/>
+         </item>
+         <item row="1" column="2">
+          <widget class="QLineEdit" name="lineEdit_13"/>
+         </item>
+         <item row="2" column="2">
+          <widget class="QLineEdit" name="lineEdit_12"/>
+         </item>
+         <item row="0" column="3">
+          <widget class="QLabel" name="inertiaMatLabel_3">
+           <property name="text">
+            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;kg &lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt; vertical-align:super;&quot;&gt;.&lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt; m&lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt; vertical-align:super;&quot;&gt;2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_10">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>180</y>
+       <width>611</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Geometric properties</string>
+     </property>
+     <widget class="QLineEdit" name="lineEdit_5">
+      <property name="geometry">
+       <rect>
+        <x>95</x>
+        <y>100</y>
+        <width>36</width>
+        <height>20</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_6">
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>100</y>
+        <width>41</width>
+        <height>20</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QWidget" name="gridLayoutWidget_5">
+      <property name="geometry">
+       <rect>
+        <x>14</x>
+        <y>25</y>
+        <width>391</width>
+        <height>36</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_6">
+       <property name="horizontalSpacing">
+        <number>14</number>
+       </property>
+       <property name="verticalSpacing">
+        <number>6</number>
+       </property>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="lineEdit_4"/>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Wet area     </string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="inertiaMatLabel_4">
+         <property name="text">
+          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;m&lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt; vertical-align:super;&quot;&gt;2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </widget>
   </widget>
@@ -2381,6 +2633,9 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
     </item>
    </layout>
   </widget>
+  <zorder>SCProperties_2</zorder>
+  <zorder>horizontalLayoutWidget_2</zorder>
+  <zorder>horizontalSpacer</zorder>
  </widget>
  <tabstops>
   <tabstop>dateTimeEdit</tabstop>
@@ -2396,13 +2651,6 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
   <tabstop>trueAnomalyEdit</tabstop>
   <tabstop>comboBox_3</tabstop>
   <tabstop>comboBox_4</tabstop>
-  <tabstop>Euler123alphaEdit_2</tabstop>
-  <tabstop>Euler123betaEdit_2</tabstop>
-  <tabstop>Euler123gammaEdit_2</tabstop>
-  <tabstop>AngularVelocityXEdit_3</tabstop>
-  <tabstop>AngularVelocityYEdit_2</tabstop>
-  <tabstop>AngularVelocityZEdit_2</tabstop>
-  <tabstop>argOfPeriapsisEdit_6</tabstop>
   <tabstop>GravityFieldRadioButton</tabstop>
   <tabstop>GravityComboBox</tabstop>
   <tabstop>ZonalsSpinBox</tabstop>
@@ -2426,41 +2674,62 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
   <tabstop>buttonBoxLoitering</tabstop>
   <tabstop>positionYEdit</tabstop>
   <tabstop>positionZEdit</tabstop>
-  <tabstop>LoiteringTabsAssembly</tabstop>
+  <tabstop>SCProperties_2</tabstop>
   <tabstop>Euler123betaEdit</tabstop>
   <tabstop>AngularVelocityXEdit</tabstop>
   <tabstop>Euler123gammaEdit</tabstop>
   <tabstop>AngularVelocityYEdit</tabstop>
   <tabstop>AngularVelocityZEdit</tabstop>
   <tabstop>positionXEdit</tabstop>
-  <tabstop>semimajorAxisEdit_6</tabstop>
-  <tabstop>inclinationEdit_6</tabstop>
-  <tabstop>raanEdit_6</tabstop>
-  <tabstop>eccentricityEdit_6</tabstop>
   <tabstop>velocityXEdit</tabstop>
   <tabstop>ManualInputTLEpushButton</tabstop>
   <tabstop>velocityYEdit</tabstop>
   <tabstop>velocityZEdit</tabstop>
   <tabstop>LoadTLEpushButton</tabstop>
   <tabstop>Euler123alphaEdit</tabstop>
-  <tabstop>trueAnomalyEdit_6</tabstop>
   <tabstop>quaternion1Edit</tabstop>
   <tabstop>quaternion2Edit</tabstop>
   <tabstop>quaternion3Edit</tabstop>
-  <tabstop>argOfPeriapsisEdit_7</tabstop>
-  <tabstop>trueAnomalyEdit_7</tabstop>
+  <tabstop>AngularVelocityYEdit_4</tabstop>
+  <tabstop>AngularVelocityZEdit_3</tabstop>
   <tabstop>AngularVelocityXEdit_2</tabstop>
  </tabstops>
  <resources>
   <include location="../../iconary/sta-icons.qrc"/>
-  <include location="../../iconary/sta-icons.qrc"/>
-  <include location="../../iconary/sta-icons.qrc"/>
-  <include location="../../iconary/sta-icons.qrc"/>
-  <include location="../../iconary/sta-icons.qrc"/>
-  <include location="../../iconary/sta-icons.qrc"/>
-  <include location="../../iconary/sta-icons.qrc"/>
  </resources>
  <connections>
+  <connection>
+   <sender>InitialStateComboBox</sender>
+   <signal>activated(int)</signal>
+   <receiver>InitialStateStackedWidget</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>250</x>
+     <y>193</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>183</x>
+     <y>323</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBox_4</sender>
+   <signal>activated(int)</signal>
+   <receiver>stackedWidget_2</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>616</x>
+     <y>186</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>598</x>
+     <y>209</y>
+    </hint>
+   </hints>
+  </connection>
   <connection>
    <sender>buttonBoxLoitering</sender>
    <signal>accepted()</signal>
@@ -2484,28 +2753,12 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>371</x>
-     <y>474</y>
+     <x>644</x>
+     <y>479</y>
     </hint>
     <hint type="destinationlabel">
      <x>135</x>
      <y>-10</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>InitialStateComboBox</sender>
-   <signal>activated(int)</signal>
-   <receiver>InitialStateStackedWidget</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>250</x>
-     <y>193</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>183</x>
-     <y>323</y>
     </hint>
    </hints>
   </connection>
