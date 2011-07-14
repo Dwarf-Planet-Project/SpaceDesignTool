@@ -864,10 +864,11 @@ bool PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
     {
         double sma            = initialStateKeplerian.SemimajorAxis;
         double e              = initialStateKeplerian.Eccentricity;
-        double inclination    = initialStateKeplerian.Inclination;
-        double raan           = initialStateKeplerian.AscendingNode;
-        double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis;
-        double meanAnomaly    = initialStateKeplerian.MeanAnomaly;
+        double inclination    = initialStateKeplerian.Inclination*Pi()/180.0;
+        double raan           = initialStateKeplerian.AscendingNode*Pi()/180.0;
+        double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis*Pi()/180.0;
+        double trueAnomaly    = initialStateKeplerian.TrueAnomaly*Pi()/180.0;
+        double meanAnomaly    = trueAnomalyTOmeanAnomaly(trueAnomaly, e);
 
         for (double t = dt; t < timelineDuration + dt; t += dt)
         {
