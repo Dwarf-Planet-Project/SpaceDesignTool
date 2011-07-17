@@ -300,7 +300,8 @@ SEM_SOURCES = sta-src/SEM/sem.cpp \
     sta-src/SEM/OBDHSubsystem.cpp \
     sta-src/SEM/MissionDetails.cpp \
     sta-src/SEM/datacommgui.cpp \
-    sta-src/SEM/Launcher.cpp
+    sta-src/SEM/Launcher.cpp \
+    sta-src/SEM/platformDialog.cpp
 SEM_HEADERS = sta-src/SEM/sem.h \
     sta-src/SEM/TTCSubsystem.h \
     sta-src/SEM/ThermalSubsystem.h \
@@ -316,14 +317,16 @@ SEM_HEADERS = sta-src/SEM/sem.h \
     sta-src/SEM/OBDHSubsystem.h \
     sta-src/SEM/MissionDetails.h \
     sta-src/SEM/datacommgui.h \
-    sta-src/SEM/Launcher.h
+    sta-src/SEM/Launcher.h \
+    sta-src/SEM/platformDialog.h
 SEM_FORMS = sta-src/SEM/sem.ui \
     sta-src/SEM/ThermalGUI.ui \
     sta-src/SEM/StructureGUI.ui \
     sta-src/SEM/SEMWizard.ui \
     sta-src/SEM/SemMainGUI.ui \
     sta-src/SEM/PowerGUI.ui \
-    sta-src/SEM/DataCommGUI.ui
+    sta-src/SEM/DataCommGUI.ui \
+    sta-src/SEM/platform.ui
 
 
 # ############# Interplanetary Module ##############

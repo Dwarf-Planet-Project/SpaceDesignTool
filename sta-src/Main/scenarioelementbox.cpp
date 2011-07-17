@@ -1,8 +1,20 @@
 /*
+ This program is free software; you can redistribute it and/or modify it under
+ the terms of the European Union Public Licence - EUPL v.1.1 as published by
+ the European Commission.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE. See the European Union Public Licence - EUPL v.1.1
+ for more details.
+
+ You should have received a copy of the European Union Public Licence - EUPL v.1.1
+ along with this program.
+
  Further information about the European Union Public Licence - EUPL v.1.1 can
  also be found on the world wide web at http://ec.europa.eu/idabc/eupl
- */
 
+*/
 /*
  ------ Copyright (C) 2010 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
  */
@@ -138,6 +150,12 @@ static QByteArray spaceVehicleFragment(const char* name, const char* vehicleType
 
     /*** fill in defaults ***/
     spacecraft.ElementIdentifier()->setName(name);
+
+    MissionsDefaults myMissionDefaults;
+    ScenarioSCSystemType genericPlatform;
+
+    genericPlatform = myMissionDefaults.MissionsDefaults_GenericPlatform();
+    spacecraft.setSystem(QSharedPointer<ScenarioSCSystemType>(&genericPlatform));
 
     QDomDocument doc;
     return fragmentText(CreateSCElement(&spacecraft, doc)).toUtf8();
@@ -415,6 +433,7 @@ static QByteArray spaceVehicleWithTrajectoryFragment(const QString& name, const 
     ScenarioLoiteringType loiteringDefault;
     ScenarioTransmitterPayloadType genericTransmitter;
     ScenarioReceiverPayloadType genericReceiver;
+    ScenarioSCSystemType genericPlatform;
 
     QDomDocument doc;
 
@@ -457,6 +476,9 @@ static QByteArray spaceVehicleWithTrajectoryFragment(const QString& name, const 
 
     genericTransmitter = myMissionDefaults.MissionsDefaults_GenericTransmitter();
     genericReceiver = myMissionDefaults.MissionsDefaults_GenericReceiver();
+    genericPlatform = myMissionDefaults.MissionsDefaults_GenericPlatform();
+    sc->setSystem(QSharedPointer<ScenarioSCSystemType>(&genericPlatform));
+    //genericPlatform.SystemBudgets()->setMassOfSystem(QSharedPointer<ScenarioMassOfSystem>(new ScenarioMassOfSystem()));
 
     sc->SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(&loiteringDefault));
     sc->SCMission()->PayloadSet()->AbstractPayload().append(QSharedPointer<ScenarioAbstractPayloadType>(&genericTransmitter));

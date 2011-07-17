@@ -1,0 +1,613 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <author>Guillermo Ortega (ESA)</author>
+ <class>PlatformDialogClass</class>
+ <widget class="QDialog" name="PlatformDialogClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>847</width>
+    <height>455</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Platform</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../../iconary/sta-icons.qrc">
+    <normaloff>:/icons/STAModelsIcons-DEFAULT.png</normaloff>:/icons/STAModelsIcons-DEFAULT.png</iconset>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayoutLoiteringBottom">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBoxLoitering">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="0">
+    <widget class="QTabWidget" name="PlatformProperties">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="currentIndex">
+      <number>2</number>
+     </property>
+     <widget class="QWidget" name="Aerodynamics">
+      <attribute name="title">
+       <string>Aerodynamics</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="Propulsion">
+      <attribute name="title">
+       <string>Propulsion</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="Strcuture">
+      <attribute name="title">
+       <string>Structures</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QGroupBox" name="groupBox">
+           <property name="title">
+            <string>Mass properties</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_6">
+            <item row="0" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <item>
+               <layout class="QGridLayout" name="gridLayout_3">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_10">
+                  <property name="text">
+                   <string>Dry Mass [kg]:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLineEdit" name="DryMass">
+                  <property name="minimumSize">
+                   <size>
+                    <width>80</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="label_12">
+                  <property name="text">
+                   <string>Total Mass [Kg]:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="label_11">
+                  <property name="text">
+                   <string>Wet Mass [Kg]:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLineEdit" name="WetMass">
+                  <property name="minimumSize">
+                   <size>
+                    <width>80</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QLineEdit" name="TotalMass">
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="Line" name="line_2">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QGridLayout" name="gridLayout_4">
+                <item row="0" column="4">
+                 <widget class="QLineEdit" name="Ixx">
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="3">
+                 <widget class="QLabel" name="label">
+                  <property name="text">
+                   <string>Ixx [Kg/m2]:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="6">
+                 <widget class="QLineEdit" name="Ixy">
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="8">
+                 <widget class="QLineEdit" name="Ixz">
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="6">
+                 <widget class="QLineEdit" name="Iyy">
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="8">
+                 <widget class="QLineEdit" name="Iyz">
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="8">
+                 <widget class="QLineEdit" name="Izz">
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="5">
+                 <widget class="QLabel" name="label_13">
+                  <property name="text">
+                   <string>Iyy [Kg/m2]:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="7">
+                 <widget class="QLabel" name="label_2">
+                  <property name="text">
+                   <string>Izz [Kg/m2]:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="5">
+                 <widget class="QLabel" name="label_15">
+                  <property name="text">
+                   <string>Ixy [m3]:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="7">
+                 <widget class="QLabel" name="label_16">
+                  <property name="text">
+                   <string>Ixz [m3]:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="6">
+                 <widget class="QLineEdit" name="Izy">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="4">
+                 <widget class="QLineEdit" name="Izx">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="4">
+                 <widget class="QLineEdit" name="Iyx">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="7">
+                 <widget class="QLabel" name="label_14">
+                  <property name="text">
+                   <string>Iyz [m3]:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="3">
+                 <widget class="QLabel" name="label_17">
+                  <property name="text">
+                   <string>Iyx [m3]:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="3">
+                 <widget class="QLabel" name="label_18">
+                  <property name="text">
+                   <string>Izx [m3]:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="5">
+                 <widget class="QLabel" name="label_19">
+                  <property name="text">
+                   <string>Izy [m3]:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="0">
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Size and material properties</string>
+         </property>
+         <layout class="QFormLayout" name="formLayout_3">
+          <item row="0" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <layout class="QFormLayout" name="formLayout">
+              <property name="fieldGrowthPolicy">
+               <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+              </property>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>Width [m]:</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="Width">
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_5">
+                <property name="text">
+                 <string>Length [m]:</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="Length">
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_6">
+                <property name="text">
+                 <string>Height [m]:</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="Height">
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_7">
+                <property name="text">
+                 <string>Volume [m3]:</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="Volume">
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="Line" name="line">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QFormLayout" name="formLayout_2">
+              <property name="fieldGrowthPolicy">
+               <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+              </property>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_8">
+                <property name="text">
+                 <string>Axial Freq. [Hz]:</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="AxialFrequency">
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_9">
+                <property name="text">
+                 <string>Lateral Freq. [Hz]:</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="LateralFrequency">
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QComboBox" name="materialComboBox">
+                <item>
+                 <property name="text">
+                  <string>Steel</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Aluminium</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_20">
+                <property name="text">
+                 <string>Material :</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_21">
+                <property name="text">
+                 <string>Shape :</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QComboBox" name="shapeComboBox">
+                <item>
+                 <property name="text">
+                  <string>Cube</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Cylindirical</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Spherical</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="Thermal">
+      <attribute name="title">
+       <string>Thermal</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="Power">
+      <attribute name="title">
+       <string>Power</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="TTC">
+      <attribute name="title">
+       <string>TTC</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="GNC">
+      <attribute name="title">
+       <string>GNC</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="OBDH">
+      <attribute name="title">
+       <string>Data Handling</string>
+      </attribute>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>buttonBoxLoitering</tabstop>
+  <tabstop>PlatformProperties</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../../iconary/sta-icons.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBoxLoitering</sender>
+   <signal>accepted()</signal>
+   <receiver>PlatformDialogClass</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>443</x>
+     <y>472</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>325</x>
+     <y>250</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBoxLoitering</sender>
+   <signal>rejected()</signal>
+   <receiver>PlatformDialogClass</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>644</x>
+     <y>479</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>135</x>
+     <y>-10</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <designerdata>
+  <property name="gridDeltaX">
+   <number>5</number>
+  </property>
+  <property name="gridDeltaY">
+   <number>5</number>
+  </property>
+  <property name="gridSnapX">
+   <bool>true</bool>
+  </property>
+  <property name="gridSnapY">
+   <bool>true</bool>
+  </property>
+  <property name="gridVisible">
+   <bool>true</bool>
+  </property>
+ </designerdata>
+</ui>
