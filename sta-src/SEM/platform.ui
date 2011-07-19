@@ -7,20 +7,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>620</width>
-    <height>374</height>
+    <width>830</width>
+    <height>473</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>620</width>
-    <height>374</height>
+    <width>830</width>
+    <height>473</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>620</width>
-    <height>374</height>
+    <width>830</width>
+    <height>473</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -708,7 +708,7 @@
            </item>
            <item>
             <property name="text">
-             <string>Pressure regulated chemical</string>
+             <string>Regulated chemical</string>
             </property>
            </item>
            <item>
@@ -1437,6 +1437,19 @@
               </property>
              </spacer>
             </item>
+            <item row="1" column="2">
+             <spacer name="horizontalSpacer_27">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
            </layout>
           </widget>
          </item>
@@ -1459,6 +1472,9 @@
            <layout class="QGridLayout" name="gridLayout_12">
             <item row="1" column="1">
              <layout class="QFormLayout" name="formLayout_9">
+              <property name="fieldGrowthPolicy">
+               <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+              </property>
               <item row="0" column="0">
                <widget class="QLabel" name="label_43">
                 <property name="sizePolicy">
@@ -1485,6 +1501,19 @@
                 </property>
                </widget>
               </item>
+              <item row="1" column="0">
+               <spacer name="verticalSpacer_11">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
               <item row="2" column="0">
                <widget class="QLabel" name="label_44">
                 <property name="sizePolicy">
@@ -1499,6 +1528,25 @@
                 <property name="indent">
                  <number>0</number>
                 </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QComboBox" name="comboBox_2">
+                <item>
+                 <property name="text">
+                  <string>Silicon</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>GaS</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Multujunction</string>
+                 </property>
+                </item>
                </widget>
               </item>
               <item row="4" column="0">
@@ -1543,6 +1591,25 @@
                 </property>
                </widget>
               </item>
+              <item row="6" column="1">
+               <widget class="QComboBox" name="comboBox">
+                <item>
+                 <property name="text">
+                  <string>Litium-Ion</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Nickel-Ca</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Lead acid    </string>
+                 </property>
+                </item>
+               </widget>
+              </item>
               <item row="7" column="0">
                <widget class="QLabel" name="label_47">
                 <property name="sizePolicy">
@@ -1569,59 +1636,8 @@
                 </property>
                </widget>
               </item>
-              <item row="6" column="1">
-               <widget class="QComboBox" name="comboBox">
-                <item>
-                 <property name="text">
-                  <string>Litium-Ion</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Nickel-Ca</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Lead acid    </string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QComboBox" name="comboBox_2">
-                <item>
-                 <property name="text">
-                  <string>Silicon</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>GaS</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Multujunction</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="5" column="1">
-               <spacer name="horizontalSpacer_8">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="1" column="0">
-               <spacer name="verticalSpacer_11">
+              <item row="5" column="0">
+               <spacer name="verticalSpacer_28">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
                 </property>
@@ -1661,8 +1677,8 @@
               </property>
              </spacer>
             </item>
-            <item row="1" column="0">
-             <spacer name="horizontalSpacer_19">
+            <item row="1" column="2">
+             <spacer name="horizontalSpacer_20">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -1674,8 +1690,8 @@
               </property>
              </spacer>
             </item>
-            <item row="1" column="2">
-             <spacer name="horizontalSpacer_20">
+            <item row="1" column="0">
+             <spacer name="horizontalSpacer_24">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -2015,7 +2031,7 @@
        <string>TTC</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_15">
-       <item row="1" column="2">
+       <item row="1" column="1">
         <layout class="QGridLayout" name="gridLayout_14">
          <item row="0" column="3">
           <widget class="QLineEdit" name="TTCAntennaDiameterLineEdit">
@@ -2169,7 +2185,7 @@
          </item>
         </layout>
        </item>
-       <item row="0" column="2">
+       <item row="0" column="1">
         <spacer name="verticalSpacer_14">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -2182,7 +2198,7 @@
          </property>
         </spacer>
        </item>
-       <item row="2" column="2">
+       <item row="2" column="1">
         <spacer name="verticalSpacer_15">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -2208,33 +2224,7 @@
          </property>
         </spacer>
        </item>
-       <item row="1" column="3">
-        <spacer name="horizontalSpacer_24">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="1" column="1">
-        <spacer name="horizontalSpacer_25">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="1" column="4">
+       <item row="1" column="2">
         <spacer name="horizontalSpacer_26">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -2484,9 +2474,9 @@
        <string>Data Handling</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_17">
-       <item row="0" column="1">
+       <item row="1" column="1">
         <layout class="QGridLayout" name="gridLayout_16">
-         <item row="1" column="0">
+         <item row="0" column="0">
           <widget class="QLabel" name="label_48">
            <property name="text">
             <string>Number Of Orbits with No Downlink:</string>
@@ -2496,7 +2486,7 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
+         <item row="0" column="1">
           <widget class="QLineEdit" name="NumberOfNoLinkOrbitLineEdit">
            <property name="text">
             <string>0</string>
@@ -2506,7 +2496,7 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
+         <item row="1" column="0">
           <widget class="QLabel" name="label_49">
            <property name="text">
             <string>Coding for On Board communication :</string>
@@ -2516,7 +2506,7 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
+         <item row="1" column="1">
           <widget class="QComboBox" name="CodingTypeComboBox">
            <item>
             <property name="text">
@@ -2530,33 +2520,7 @@
            </item>
           </widget>
          </item>
-         <item row="0" column="0">
-          <spacer name="verticalSpacer_16">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="5" column="0">
-          <spacer name="verticalSpacer_17">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="3" column="0">
+         <item row="2" column="0">
           <widget class="QLabel" name="label_34">
            <property name="text">
             <string>Size of Memory [Gb]:</string>
@@ -2566,7 +2530,7 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
+         <item row="2" column="1">
           <widget class="QLineEdit" name="NumberOfNoLinkOrbitLineEdit_2">
            <property name="text">
             <string>5</string>
@@ -2576,7 +2540,7 @@
            </property>
           </widget>
          </item>
-         <item row="4" column="0">
+         <item row="3" column="0">
           <widget class="QLabel" name="label_35">
            <property name="text">
             <string>OBDH total mass [Kg]:</string>
@@ -2586,7 +2550,7 @@
            </property>
           </widget>
          </item>
-         <item row="4" column="1">
+         <item row="3" column="1">
           <widget class="QLineEdit" name="NumberOfNoLinkOrbitLineEdit_3">
            <property name="text">
             <string>20</string>
@@ -2598,7 +2562,7 @@
          </item>
         </layout>
        </item>
-       <item row="0" column="2">
+       <item row="1" column="2">
         <spacer name="horizontalSpacer_2">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -2611,7 +2575,7 @@
          </property>
         </spacer>
        </item>
-       <item row="0" column="0">
+       <item row="1" column="0">
         <spacer name="horizontalSpacer_3">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -2620,6 +2584,32 @@
           <size>
            <width>40</width>
            <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="1">
+        <spacer name="verticalSpacer_16">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="1">
+        <spacer name="verticalSpacer_17">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
           </size>
          </property>
         </spacer>
