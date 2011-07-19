@@ -28,6 +28,8 @@
 #include "Main/scenariotree.h"
 #include "Scenario/scenario.h"
 
+#include <QDebug>
+
 //PlatformDialog::PlatformDialog( QWidget * parent, Qt::WindowFlags f) : QDialog(parent,f)
 PlatformDialog::PlatformDialog(ScenarioTree* parent):
         QDialog(parent)
@@ -56,31 +58,65 @@ PlatformDialog::~PlatformDialog()
 
 bool PlatformDialog::loadValues(ScenarioSCSystemType* spacecraftPlatformSystem)
 {
+    //  ----------- Structures ---------------
     DryMass->setText(QString::number(spacecraftPlatformSystem->SystemBudgets()->MassOfSystem()->dryMass()));
     WetMass->setText(QString::number(spacecraftPlatformSystem->SystemBudgets()->MassOfSystem()->wetMass()));
     TotalMass->setText(QString::number(spacecraftPlatformSystem->SystemBudgets()->MassOfSystem()->dryMass() + spacecraftPlatformSystem->SystemBudgets()->MassOfSystem()->wetMass()));
-
     Ixx->setText(QString::number(spacecraftPlatformSystem->Structure()->MomentsOfInertia()->xAxis()));
     Iyy->setText(QString::number(spacecraftPlatformSystem->Structure()->MomentsOfInertia()->yAxis()));
     Izz->setText(QString::number(spacecraftPlatformSystem->Structure()->MomentsOfInertia()->zAxis()));
     Ixy->setText(QString::number(spacecraftPlatformSystem->Structure()->SecondMomentsOfArea()->xAxis()));
     Ixz->setText(QString::number(spacecraftPlatformSystem->Structure()->SecondMomentsOfArea()->yAxis()));
     Iyz->setText(QString::number(spacecraftPlatformSystem->Structure()->SecondMomentsOfArea()->zAxis()));
-
     Iyx->setText(QString::number(spacecraftPlatformSystem->Structure()->SecondMomentsOfArea()->xAxis()));
     Izx->setText(QString::number(spacecraftPlatformSystem->Structure()->SecondMomentsOfArea()->yAxis()));
     Izy->setText(QString::number(spacecraftPlatformSystem->Structure()->SecondMomentsOfArea()->zAxis()));
-
     Width->setText(QString::number(spacecraftPlatformSystem->Structure()->Sizing()->width()));
     Length->setText(QString::number(spacecraftPlatformSystem->Structure()->Sizing()->length()));
     Height->setText(QString::number(spacecraftPlatformSystem->Structure()->Sizing()->height()));
     Volume->setText(QString::number(spacecraftPlatformSystem->Structure()->Sizing()->volume()));
-
     AxialFrequency->setText(QString::number(spacecraftPlatformSystem->Structure()->NaturalFrequency()->axialFrequency()));
     LateralFrequency->setText(QString::number(spacecraftPlatformSystem->Structure()->NaturalFrequency()->lateralFrequency()));
+    materialComboBox->setCurrentText(spacecraftPlatformSystem->Structure()->StructuralMaterial());
+    shapeComboBox->setCurrentText(spacecraftPlatformSystem->Structure()->StructuralShape());
 
-    //TODO
-    //materialComboBox->
+    //  ----------- Propulsion ---------------
+    numberOfEngines->setText(QString::number(spacecraftPlatformSystem->Propulsion()->numberOfEngines()));
+    thrustPerEngine->setText(QString::number(spacecraftPlatformSystem->Propulsion()->thrustPerEngine()));
+    specificImpulse->setText(QString::number(spacecraftPlatformSystem->Propulsion()->specificImpulse()));
+    propellantMass->setText(QString::number(spacecraftPlatformSystem->Propulsion()->propellantMass()));
+    propulsionTotalDryMass->setText(QString::number(spacecraftPlatformSystem->Propulsion()->totalPropulsionDryMass()));
+    //propulsionTypeComboBox->setCurrentText(spacecraftPlatformSystem->Propulsion()->
+
+    //  ----------- Thermal ---------------
+    ThermalGUISCMinTemperatureHeaterRadiatorLineEdit_3->setText(QString::number(spacecraftPlatformSystem->TCS()->Temperature()->minimumSCTemperature()));
+    ThermalGUISCMaxTemperatureHeaterRadiatorLineEdit_3->setText(QString::number(spacecraftPlatformSystem->TCS()->Temperature()->maximumSCTemperature()));
+    ThermalGUISCMinTemperatureLineEdit_3->setText(QString::number(spacecraftPlatformSystem->TCS()->Temperature()->minimumSCTemperature()));
+    ThermalGUISCMaxTemperatureLineEdit_3->setText(QString::number(spacecraftPlatformSystem->TCS()->Temperature()->maximumSCTemperature()));
+    ThermalGUIHeaterPowerLineEdit->setText(QString::number(spacecraftPlatformSystem->TCS()->heaterPower()));
+    ThermalGUIRadiatorLineEdit->setText(QString::number(spacecraftPlatformSystem->TCS()->radiatedPower()));
+    ThermalGUIColdCoatingComboBox_2->setCurrentText(spacecraftPlatformSystem->TCS()->CoatingArea()->ColdSurface()->ColdCoating()->ElementIdentifier()->elementName());
+    qDebug() << ThermalGUIColdCoatingComboBox_2->currentText() << endl;
+    ThermalGUIColdEmmissivityLineEdit_2->setText(QString::number(spacecraftPlatformSystem->TCS()->CoatingArea()->ColdSurface()->ColdCoating()->emissivity()));
+    ThermalGUIColdAbsorptivityLineEdit_2->setText(QString::number(spacecraftPlatformSystem->TCS()->CoatingArea()->ColdSurface()->ColdCoating()->absorptivity()));
+    ThermalGUIHotCoatingComboBox_2->setCurrentText(spacecraftPlatformSystem->TCS()->CoatingArea()->HotSurface()->HotCoating()->ElementIdentifier()->elementName());
+    ThermalGUIHotEmmissivityLineEdit_2->setText(QString::number(spacecraftPlatformSystem->TCS()->CoatingArea()->HotSurface()->HotCoating()->emissivity()));
+    ThermalGUIHotAbsorptivityLineEdit_2->setText(QString::number(spacecraftPlatformSystem->TCS()->CoatingArea()->HotSurface()->HotCoating()->absorptivity()));
+
+    //  ----------- Power ---------------
+
+
+    //  ----------- Aerodynamics ---------------
+
+
+    //  ----------- TTC ---------------
+
+
+    //  ----------- GNC ---------------
+
+
+    //  ----------- Data handling ---------------
+
 
     return true;
 
@@ -89,27 +125,62 @@ bool PlatformDialog::loadValues(ScenarioSCSystemType* spacecraftPlatformSystem)
 
 bool PlatformDialog::saveValues(ScenarioSCSystemType* spacecraftPlatformSystem)
 {
+    //  ----------- Structures ---------------
     spacecraftPlatformSystem->SystemBudgets()->MassOfSystem()->setDryMass(DryMass->text().toDouble());
     spacecraftPlatformSystem->SystemBudgets()->MassOfSystem()->setWetMass(WetMass->text().toDouble());
-
     spacecraftPlatformSystem->Structure()->MomentsOfInertia()->setXAxis(Ixx->text().toDouble());
     spacecraftPlatformSystem->Structure()->MomentsOfInertia()->setYAxis(Iyy->text().toDouble());
     spacecraftPlatformSystem->Structure()->MomentsOfInertia()->setZAxis(Izz->text().toDouble());
     spacecraftPlatformSystem->Structure()->SecondMomentsOfArea()->setXAxis(Ixy->text().toDouble());
     spacecraftPlatformSystem->Structure()->SecondMomentsOfArea()->setYAxis(Ixz->text().toDouble());
     spacecraftPlatformSystem->Structure()->SecondMomentsOfArea()->setZAxis(Iyz->text().toDouble());
-
     //spacecraftPlatformSystem->Structure()->SecondMomentsOfArea()->setXAxis(Iyx->text().toDouble());
     //spacecraftPlatformSystem->Structure()->SecondMomentsOfArea()->setYAxis(Izx->text().toDouble());
     //spacecraftPlatformSystem->Structure()->SecondMomentsOfArea()->setZAxis(Izy->text().toDouble());
-
     spacecraftPlatformSystem->Structure()->Sizing()->setHeight(Width->text().toDouble());
     spacecraftPlatformSystem->Structure()->Sizing()->setLength(Length->text().toDouble());
     spacecraftPlatformSystem->Structure()->Sizing()->setHeight(Height->text().toDouble());
     spacecraftPlatformSystem->Structure()->Sizing()->setVolume(Volume->text().toDouble());
-
     spacecraftPlatformSystem->Structure()->NaturalFrequency()->setAxialFrequency(AxialFrequency->text().toDouble());
     spacecraftPlatformSystem->Structure()->NaturalFrequency()->setLateralFrequency(LateralFrequency->text().toDouble());
+    spacecraftPlatformSystem->Structure()->setStructuralMaterial(materialComboBox->currentText());
+    spacecraftPlatformSystem->Structure()->setStructuralShape(shapeComboBox->currentText());
+
+    //  ----------- Propulsion ---------------
+    spacecraftPlatformSystem->Propulsion()->setNumberOfEngines(numberOfEngines->text().toInt());
+    spacecraftPlatformSystem->Propulsion()->setPropellantMass(propellantMass->text().toDouble());
+    spacecraftPlatformSystem->Propulsion()->setSpecificImpulse(specificImpulse->text().toDouble());
+    spacecraftPlatformSystem->Propulsion()->setThrustPerEngine(thrustPerEngine->text().toDouble());
+    spacecraftPlatformSystem->Propulsion()->setTotalPropulsionDryMass(propulsionTotalDryMass->text().toDouble());
+
+    //  ----------- Thermal ---------------
+    spacecraftPlatformSystem->TCS()->Temperature()->setMinimumSCTemperature(ThermalGUISCMinTemperatureHeaterRadiatorLineEdit_3->text().toDouble());
+    spacecraftPlatformSystem->TCS()->Temperature()->setMaximumSCTemperature(ThermalGUISCMaxTemperatureHeaterRadiatorLineEdit_3->text().toDouble());
+    spacecraftPlatformSystem->TCS()->Temperature()->setMinimumSCTemperature(ThermalGUISCMinTemperatureLineEdit_3->text().toDouble());
+    spacecraftPlatformSystem->TCS()->Temperature()->setMaximumSCTemperature(ThermalGUISCMaxTemperatureLineEdit_3->text().toDouble());
+    spacecraftPlatformSystem->TCS()->setHeaterPower(ThermalGUIHeaterPowerLineEdit->text().toDouble());
+    spacecraftPlatformSystem->TCS()->setRadiatedPower(ThermalGUIRadiatorLineEdit->text().toDouble());
+    spacecraftPlatformSystem->TCS()->CoatingArea()->ColdSurface()->ColdCoating()->ElementIdentifier()->setName(ThermalGUIColdCoatingComboBox_2->currentText());
+    spacecraftPlatformSystem->TCS()->CoatingArea()->ColdSurface()->ColdCoating()->setEmissivity(ThermalGUIColdEmmissivityLineEdit_2->text().toDouble());
+    spacecraftPlatformSystem->TCS()->CoatingArea()->ColdSurface()->ColdCoating()->setAbsorptivity(ThermalGUIColdAbsorptivityLineEdit_2->text().toDouble());
+    spacecraftPlatformSystem->TCS()->CoatingArea()->HotSurface()->HotCoating()->ElementIdentifier()->setName(ThermalGUIHotCoatingComboBox_2->currentText());
+    spacecraftPlatformSystem->TCS()->CoatingArea()->HotSurface()->HotCoating()->setEmissivity(ThermalGUIHotEmmissivityLineEdit_2->text().toDouble());
+    spacecraftPlatformSystem->TCS()->CoatingArea()->HotSurface()->HotCoating()->setAbsorptivity(ThermalGUIHotAbsorptivityLineEdit_2->text().toDouble());
+
+    //  ----------- Power ---------------
+
+
+    //  ----------- Aerodynamics ---------------
+
+
+    //  ----------- TTC ---------------
+
+
+    //  ----------- GNC ---------------
+
+
+    //  ----------- Data handling ---------------
+
 
     return true;
 

@@ -56,6 +56,7 @@ using namespace Eigen;
                                  int seq1,
                                  int seq2,
                                  int seq3);
+
     Vector3d ToAngularVelocity(Eigen::Quaterniond &quaternion,
                                  Eigen::Quaterniond &initQuatRates);
 

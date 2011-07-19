@@ -85,9 +85,11 @@ ScenarioSCSystemType MissionsDefaults::MissionsDefaults_GenericPlatform()
     genericPlatform.TCS()->setRadiatedPower(12);
     genericPlatform.TCS()->setHeaterPower(25);
     genericPlatform.TCS()->setTotalTCSMass(15);
+    genericPlatform.TCS()->CoatingArea()->ColdSurface()->ColdCoating()->ElementIdentifier()->setName("White Paint");
     genericPlatform.TCS()->CoatingArea()->ColdSurface()->ColdCoating()->setAbsorptivity(0.2);
     genericPlatform.TCS()->CoatingArea()->ColdSurface()->ColdCoating()->setEmissivity(0.3);
     genericPlatform.TCS()->CoatingArea()->ColdSurface()->setTotalColdArea(1);
+    genericPlatform.TCS()->CoatingArea()->HotSurface()->HotCoating()->ElementIdentifier()->setName("White Paint");
     genericPlatform.TCS()->CoatingArea()->HotSurface()->HotCoating()->setAbsorptivity(0.2);
     genericPlatform.TCS()->CoatingArea()->HotSurface()->HotCoating()->setEmissivity(0.3);
     genericPlatform.TCS()->CoatingArea()->HotSurface()->setTotalHotArea(1);

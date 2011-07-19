@@ -231,6 +231,7 @@ unix: man.files += $$PWD/qtiplot.1
 
 HEADERS  += \
             ../../sta-src/Scenario/staschema.h \
+            ../../sta-src/Astro-Core/attitudetransformations.h \
             ../../sta-src/Scenario/scenario.h \
             ../../sta-src/Scenario/stascenarioutil.h \
             ../../sta-src/Astro-Core/cartesianTOorbital.h \
@@ -283,6 +284,7 @@ HEADERS  += \
 
 SOURCES  += \
             ../../sta-src/Scenario/staschema.cpp \
+            ../../sta-src/Astro-Core/attitudetransformations.cpp \
             ../../sta-src/Scenario/scenario.cpp \
             ../../sta-src/Scenario/stascenarioutil.cpp \
             ../../sta-src/Astro-Core/cartesianTOorbital.cpp \
