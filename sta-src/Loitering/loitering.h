@@ -22,17 +22,19 @@
 /*
 ------------------ Author: Guillermo Ortega  -------------------------------------------
  Modified by Tiziana Sabatini on July 2009 to support the new perturbations layer
+ Patched by Catarina to add attitude, July 2011
  */
 
 #ifndef _LOITERING_H_
 #define _LOITERING_H_
 
-#include "ui_loitering.h"
-
 #include "Scenario/scenario.h"
 #include "Scenario/propagationfeedback.h"
 #include "Astro-Core/statevector.h"
 #include "Scenario/missionAspectDialog.h"
+#include "Astro-Core/attitudevector.h"
+
+#include "ui_loitering.h"
 
 #include <QDialog>
 
@@ -59,6 +61,13 @@ public:
     bool saveValues(ScenarioTimeLine* parameters);
     bool saveValues(ScenarioPropagationPositionType* propagation);
     bool saveValues(ScenarioInitialPositionType* initPosition);
+
+    bool saveValues(ScenarioPropagationAttitudeType* propagation);
+    bool loadValues(ScenarioPropagationAttitudeType* propagation);
+
+    bool loadValues(ScenarioInitialAttitudeType* initAtt);
+    bool saveValues(ScenarioInitialAttitudeType* initAtt);
+
 
     TesseralBox* TesseralSpinBox;
     int m_tesserals;
@@ -103,6 +112,13 @@ extern bool
 PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
                              QList<double>& sampleTimes,
                              QList<sta::StateVector>& samples,
+                             PropagationFeedback& propFeedback);
+extern bool
+PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
+                             QList<double>& sampleTimes,
+                             QList<sta::StateVector>& samples,
+                             QList<staAttitude::AttitudeVector>& samplesAtt,
+                             QString attitudeRotationSequence,
                              PropagationFeedback& propFeedback);
 
 #endif // _LOITERING_H_

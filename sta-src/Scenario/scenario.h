@@ -22,6 +22,7 @@
 /*
 ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
+ // Patched by Catarina to add attitude, July 2011
  */
 
 #ifndef _STA_SCENARIO_H_
@@ -31,7 +32,7 @@
 
 #include "Astro-Core/statevector.h"
 #include "Astro-Core/stabody.h"
-
+#include "Astro-Core/attitudevector.h"
 
 // Utility functions for space scenario objects.
 
@@ -41,6 +42,10 @@ AbstractPositionToStateVector(const ScenarioAbstract6DOFPositionType* position,
 extern sta::KeplerianElements
 AbstractPositionToKeplerianElements(const ScenarioAbstract6DOFPositionType* position,
                                     const StaBody* centralBody);
+
+extern staAttitude::AttitudeVector
+AbstractAttitudeToAttitudeVector(const ScenarioAbstract6DOFAttitudeType* attitude,
+                                 const int seq1, const int seq2, const int seq3);
 
 
 #endif // _STA_SCENARIO_H_

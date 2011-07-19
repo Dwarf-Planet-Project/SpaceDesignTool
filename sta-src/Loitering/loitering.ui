@@ -7,21 +7,9 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>655</width>
-    <height>501</height>
+    <width>700</width>
+    <height>611</height>
    </rect>
-  </property>
-  <property name="minimumSize">
-   <size>
-    <width>655</width>
-    <height>501</height>
-   </size>
-  </property>
-  <property name="maximumSize">
-   <size>
-    <width>655</width>
-    <height>501</height>
-   </size>
   </property>
   <property name="windowTitle">
    <string>Loitering</string>
@@ -30,7 +18,7 @@
    <iconset resource="../../iconary/sta-icons.qrc">
     <normaloff>:/icons/Loitering.png</normaloff>:/icons/Loitering.png</iconset>
   </property>
-  <widget class="QTabWidget" name="SCProperties_2">
+  <widget class="QTabWidget" name="LoiteringTAB">
    <property name="enabled">
     <bool>true</bool>
    </property>
@@ -38,8 +26,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>635</width>
-     <height>441</height>
+     <width>681</width>
+     <height>531</height>
     </rect>
    </property>
    <property name="currentIndex">
@@ -133,7 +121,7 @@
        <x>10</x>
        <y>90</y>
        <width>321</width>
-       <height>316</height>
+       <height>401</height>
       </rect>
      </property>
      <property name="title">
@@ -143,9 +131,9 @@
       <property name="geometry">
        <rect>
         <x>5</x>
-        <y>85</y>
+        <y>95</y>
         <width>311</width>
-        <height>226</height>
+        <height>296</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -167,7 +155,7 @@
           <x>3</x>
           <y>0</y>
           <width>301</width>
-          <height>226</height>
+          <height>291</height>
          </rect>
         </property>
         <property name="toolTip">
@@ -190,7 +178,7 @@ a set of six parameters are commonly used in astronomy and orbital mechanics.</s
            <x>5</x>
            <y>30</y>
            <width>296</width>
-           <height>191</height>
+           <height>261</height>
           </rect>
          </property>
          <layout class="QFormLayout" name="formLayout_3">
@@ -243,7 +231,7 @@ a set of six parameters are commonly used in astronomy and orbital mechanics.</s
           <item row="4" column="0">
            <widget class="QLabel" name="omega_3">
             <property name="text">
-             <string>Argument of Periapsis [deg:]</string>
+             <string>Arg. of Periapsis [deg:]</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -731,8 +719,8 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
       <rect>
        <x>345</x>
        <y>90</y>
-       <width>276</width>
-       <height>316</height>
+       <width>321</width>
+       <height>406</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -741,794 +729,786 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
      <property name="title">
       <string>Initial Attitude Vector</string>
      </property>
-     <widget class="QStackedWidget" name="stackedWidget_2">
-      <property name="geometry">
-       <rect>
-        <x>5</x>
-        <y>80</y>
-        <width>246</width>
-        <height>226</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Plain</enum>
-      </property>
-      <property name="lineWidth">
-       <number>0</number>
-      </property>
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <widget class="QWidget" name="Euler123Page">
-       <widget class="QGroupBox" name="groupBox_6">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>246</width>
-          <height>226</height>
-         </rect>
-        </property>
-        <property name="whatsThis">
-         <string extracomment="Euler attitude angles in 1-2-3 sequence"/>
-        </property>
-        <property name="title">
-         <string>Euler Angles 1-2-3</string>
-        </property>
-        <property name="flat">
-         <bool>true</bool>
-        </property>
-        <widget class="QWidget" name="formLayoutWidget_4">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>40</y>
-           <width>201</width>
-           <height>181</height>
-          </rect>
-         </property>
-         <layout class="QFormLayout" name="formLayout_4">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::FieldsStayAtSizeHint</enum>
-          </property>
-          <property name="labelAlignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="formAlignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="alpha">
-            <property name="text">
-             <string>&amp;phi; [deg]: </string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="Euler123alphaEdit">
-            <property name="text">
-             <string>23.4562</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="beta">
-            <property name="text">
-             <string>&amp;theta; [deg]: </string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="Euler123betaEdit">
-            <property name="text">
-             <string>12.4564</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="gamma">
-            <property name="text">
-             <string>&amp;psi; [deg]: </string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="Euler123gammaEdit">
-            <property name="text">
-             <string>78.4532</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="omegax">
-            <property name="text">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;ω&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;x&lt;/span&gt; [deg/s]: &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="AngularVelocityXEdit">
-            <property name="text">
-             <string>2.04834</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="omegay">
-            <property name="text">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;y&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QLineEdit" name="AngularVelocityYEdit">
-            <property name="text">
-             <string>1.02732</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="omegaz">
-            <property name="text">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;z&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QLineEdit" name="AngularVelocityZEdit">
-            <property name="text">
-             <string>0.01245</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="Euler321Page">
-       <widget class="QGroupBox" name="groupBox_7">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>251</width>
-          <height>231</height>
-         </rect>
-        </property>
-        <property name="title">
-         <string>Euler Angles 3-2-1</string>
-        </property>
-        <property name="flat">
-         <bool>true</bool>
-        </property>
-        <widget class="QWidget" name="formLayoutWidget_5">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>35</y>
-           <width>201</width>
-           <height>191</height>
-          </rect>
-         </property>
-         <layout class="QFormLayout" name="formLayout_5">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::FieldsStayAtSizeHint</enum>
-          </property>
-          <property name="labelAlignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="formAlignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="alpha_2">
-            <property name="text">
-             <string>&amp;phi; [deg]: </string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="Euler123alphaEdit_2">
-            <property name="text">
-             <string>23.4562</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="beta_2">
-            <property name="text">
-             <string>&amp;theta; [deg]: </string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="Euler123betaEdit_2">
-            <property name="text">
-             <string>12.4564</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="gamma_2">
-            <property name="text">
-             <string>&amp;psi; [deg]: </string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="Euler123gammaEdit_2">
-            <property name="text">
-             <string>78.4532</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="omegax_2">
-            <property name="text">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;ω&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;x&lt;/span&gt; [deg/s]: &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="AngularVelocityXEdit_3">
-            <property name="text">
-             <string>2.04834</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="omegay_2">
-            <property name="text">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;y&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QLineEdit" name="AngularVelocityYEdit_2">
-            <property name="text">
-             <string>1.02732</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="omegaz_2">
-            <property name="text">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;z&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QLineEdit" name="AngularVelocityZEdit_2">
-            <property name="text">
-             <string>0.01245</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="Euler313Page">
-       <widget class="QGroupBox" name="groupBox_8">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>246</width>
-          <height>226</height>
-         </rect>
-        </property>
-        <property name="title">
-         <string>Euler Angles 3-1-3</string>
-        </property>
-        <property name="flat">
-         <bool>true</bool>
-        </property>
-        <widget class="QWidget" name="formLayoutWidget_6">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>35</y>
-           <width>201</width>
-           <height>191</height>
-          </rect>
-         </property>
-         <layout class="QFormLayout" name="formLayout_6">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::FieldsStayAtSizeHint</enum>
-          </property>
-          <property name="labelAlignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="formAlignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="alpha_3">
-            <property name="text">
-             <string>&amp;phi; [deg]: </string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="Euler123alphaEdit_3">
-            <property name="text">
-             <string>23.4562</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="beta_3">
-            <property name="text">
-             <string>&amp;theta; [deg]: </string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="Euler123betaEdit_3">
-            <property name="text">
-             <string>12.4564</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="gamma_3">
-            <property name="text">
-             <string>&amp;psi; [deg]: </string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="Euler123gammaEdit_3">
-            <property name="text">
-             <string>78.4532</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="omegax_3">
-            <property name="text">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;ω&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;x&lt;/span&gt; [deg/s]: &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="AngularVelocityXEdit_4">
-            <property name="text">
-             <string>2.04834</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="omegay_3">
-            <property name="text">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;y&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QLineEdit" name="AngularVelocityYEdit_3">
-            <property name="text">
-             <string>1.02732</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="omegaz_3">
-            <property name="text">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;z&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QLineEdit" name="AngularVelocityZEdit_5">
-            <property name="text">
-             <string>0.01245</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="QuaternionJPLPage">
-       <widget class="QGroupBox" name="groupBox_9">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>251</width>
-          <height>221</height>
-         </rect>
-        </property>
-        <property name="title">
-         <string>Quaternions</string>
-        </property>
-        <property name="flat">
-         <bool>true</bool>
-        </property>
-        <widget class="QWidget" name="formLayoutWidget_7">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>35</y>
-           <width>191</width>
-           <height>181</height>
-          </rect>
-         </property>
-         <layout class="QFormLayout" name="formLayout_7">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::FieldsStayAtSizeHint</enum>
-          </property>
-          <property name="labelAlignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="formAlignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="alpha_4">
-            <property name="text">
-             <string>Q1: </string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="quaternion1Edit">
-            <property name="text">
-             <string>23.4562</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="beta_4">
-            <property name="text">
-             <string>Q2: </string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="quaternion2Edit">
-            <property name="text">
-             <string>12.4564</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="gamma_4">
-            <property name="text">
-             <string>Q3 :</string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="quaternion3Edit">
-            <property name="text">
-             <string>78.4532</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QLineEdit" name="AngularVelocityXEdit_2">
-            <property name="text">
-             <string>2.04834</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QLineEdit" name="AngularVelocityYEdit_4">
-            <property name="text">
-             <string>1.02732</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="1">
-           <widget class="QLineEdit" name="AngularVelocityZEdit_3">
-            <property name="text">
-             <string>0.01245</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>Q4: </string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="quaternion4Edit">
-            <property name="text">
-             <string>78.4532</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="omegax_4">
-            <property name="text">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;ω&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;x&lt;/span&gt; [deg/s]: &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="omegax_6">
-            <property name="text">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;y&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="omegax_8">
-            <property name="text">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;z&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::RichText</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </widget>
-      </widget>
-     </widget>
      <widget class="QWidget" name="gridLayoutWidget_3">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>15</y>
-        <width>251</width>
-        <height>56</height>
+        <x>5</x>
+        <y>25</y>
+        <width>313</width>
+        <height>371</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
-        <widget class="QLabel" name="CoordSystlabel_2">
-         <property name="text">
-          <string>Coordinate System: </string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="InitialStateTypeLabel_2">
-         <property name="text">
-          <string>Type:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QComboBox" name="comboBox_3">
+        <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
-          <property name="text">
-           <string>Inertial</string>
-          </property>
+          <layout class="QGridLayout" name="gridLayout_7">
+           <item row="1" column="0">
+            <widget class="QLabel" name="InitialStateTypeLabel_2">
+             <property name="text">
+              <string>Type:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QComboBox" name="CoordSystemAttitudeComboBox">
+             <item>
+              <property name="text">
+               <string>ICRF</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QComboBox" name="AttitudeTypeComboBox">
+             <item>
+              <property name="text">
+               <string>Euler Angles 1-2-3</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Euler Angles 3-2-1</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Euler Angles 3-1-3</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Quaternions JPL</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="CoordSystlabel_2">
+             <property name="text">
+              <string>Coordinate System: </string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QComboBox" name="comboBox_4">
          <item>
-          <property name="text">
-           <string>Euler Angles 1-2-3</string>
-          </property>
+          <widget class="QStackedWidget" name="stackedWidget_2">
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Plain</enum>
+           </property>
+           <property name="lineWidth">
+            <number>0</number>
+           </property>
+           <property name="currentIndex">
+            <number>3</number>
+           </property>
+           <widget class="QWidget" name="Euler123Page">
+            <widget class="QGroupBox" name="groupBox_6">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>246</width>
+               <height>226</height>
+              </rect>
+             </property>
+             <property name="whatsThis">
+              <string extracomment="Euler attitude angles in 1-2-3 sequence"/>
+             </property>
+             <property name="title">
+              <string>Euler Angles 1-2-3</string>
+             </property>
+             <property name="flat">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="formLayoutWidget_4">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>40</y>
+                <width>256</width>
+                <height>186</height>
+               </rect>
+              </property>
+              <layout class="QFormLayout" name="formLayout_4">
+               <property name="fieldGrowthPolicy">
+                <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+               </property>
+               <property name="labelAlignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+               <property name="formAlignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <item row="0" column="0">
+                <widget class="QLabel" name="alpha">
+                 <property name="text">
+                  <string>&amp;phi; [deg]: </string>
+                 </property>
+                 <property name="textFormat">
+                  <enum>Qt::RichText</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QLineEdit" name="Euler123phi">
+                 <property name="text">
+                  <string>23.4562</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="beta">
+                 <property name="text">
+                  <string>&amp;theta; [deg]: </string>
+                 </property>
+                 <property name="textFormat">
+                  <enum>Qt::RichText</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QLineEdit" name="Euler123theta">
+                 <property name="text">
+                  <string>12.4564</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="gamma">
+                 <property name="text">
+                  <string>&amp;psi; [deg]: </string>
+                 </property>
+                 <property name="textFormat">
+                  <enum>Qt::RichText</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QLineEdit" name="Euler123psi">
+                 <property name="text">
+                  <string>78.4532</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="omegax">
+                 <property name="text">
+                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;ω&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;x&lt;/span&gt; [deg/s]: &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="textFormat">
+                  <enum>Qt::RichText</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QLineEdit" name="Euler123omegaX">
+                 <property name="text">
+                  <string>2.04834</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="0">
+                <widget class="QLabel" name="omegay">
+                 <property name="text">
+                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;y&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="textFormat">
+                  <enum>Qt::RichText</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="1">
+                <widget class="QLineEdit" name="Euler123omegaY">
+                 <property name="text">
+                  <string>1.02732</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="0">
+                <widget class="QLabel" name="omegaz">
+                 <property name="text">
+                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;z&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="textFormat">
+                  <enum>Qt::RichText</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="1">
+                <widget class="QLineEdit" name="Euler123omegaZ">
+                 <property name="text">
+                  <string>0.01245</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </widget>
+           <widget class="QWidget" name="Euler321Page">
+            <widget class="QGroupBox" name="groupBox_7">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>251</width>
+               <height>231</height>
+              </rect>
+             </property>
+             <property name="title">
+              <string>Euler Angles 3-2-1</string>
+             </property>
+             <property name="flat">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="formLayoutWidget_5">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>35</y>
+                <width>256</width>
+                <height>206</height>
+               </rect>
+              </property>
+              <layout class="QFormLayout" name="formLayout_5">
+               <property name="fieldGrowthPolicy">
+                <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+               </property>
+               <property name="labelAlignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+               <property name="formAlignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <item row="0" column="0">
+                <widget class="QLabel" name="alpha_2">
+                 <property name="text">
+                  <string>&amp;phi; [deg]: </string>
+                 </property>
+                 <property name="textFormat">
+                  <enum>Qt::RichText</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QLineEdit" name="Euler321phi">
+                 <property name="text">
+                  <string>23.4562</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="beta_2">
+                 <property name="text">
+                  <string>&amp;theta; [deg]: </string>
+                 </property>
+                 <property name="textFormat">
+                  <enum>Qt::RichText</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QLineEdit" name="Euler321theta">
+                 <property name="text">
+                  <string>12.4564</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="gamma_2">
+                 <property name="text">
+                  <string>&amp;psi; [deg]: </string>
+                 </property>
+                 <property name="textFormat">
+                  <enum>Qt::RichText</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QLineEdit" name="Euler321psi">
+                 <property name="text">
+                  <string>78.4532</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="omegax_2">
+                 <property name="text">
+                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;ω&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;x&lt;/span&gt; [deg/s]: &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="textFormat">
+                  <enum>Qt::RichText</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QLineEdit" name="Euler321omegaX">
+                 <property name="text">
+                  <string>2.04834</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="0">
+                <widget class="QLabel" name="omegay_2">
+                 <property name="text">
+                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;y&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="textFormat">
+                  <enum>Qt::RichText</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="1">
+                <widget class="QLineEdit" name="Euler321omegaY">
+                 <property name="text">
+                  <string>1.02732</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="0">
+                <widget class="QLabel" name="omegaz_2">
+                 <property name="text">
+                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;z&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="textFormat">
+                  <enum>Qt::RichText</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="1">
+                <widget class="QLineEdit" name="Euler321omegaZ">
+                 <property name="text">
+                  <string>0.01245</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </widget>
+           <widget class="QWidget" name="Euler313Page">
+            <widget class="QGroupBox" name="groupBox_8">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>246</width>
+               <height>226</height>
+              </rect>
+             </property>
+             <property name="title">
+              <string>Euler Angles 3-1-3</string>
+             </property>
+             <property name="flat">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="formLayoutWidget_6">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>35</y>
+                <width>251</width>
+                <height>191</height>
+               </rect>
+              </property>
+              <layout class="QFormLayout" name="formLayout_6">
+               <property name="fieldGrowthPolicy">
+                <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+               </property>
+               <property name="labelAlignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+               <property name="formAlignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <item row="0" column="0">
+                <widget class="QLabel" name="alpha_3">
+                 <property name="text">
+                  <string>&amp;phi; [deg]: </string>
+                 </property>
+                 <property name="textFormat">
+                  <enum>Qt::RichText</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QLineEdit" name="Euler313phi">
+                 <property name="text">
+                  <string>23.4562</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="beta_3">
+                 <property name="text">
+                  <string>&amp;theta; [deg]: </string>
+                 </property>
+                 <property name="textFormat">
+                  <enum>Qt::RichText</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QLineEdit" name="Euler313theta">
+                 <property name="text">
+                  <string>12.4564</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="gamma_3">
+                 <property name="text">
+                  <string>&amp;psi; [deg]: </string>
+                 </property>
+                 <property name="textFormat">
+                  <enum>Qt::RichText</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QLineEdit" name="Euler313psi">
+                 <property name="text">
+                  <string>78.4532</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="omegax_3">
+                 <property name="text">
+                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;ω&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;x&lt;/span&gt; [deg/s]: &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="textFormat">
+                  <enum>Qt::RichText</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QLineEdit" name="Euler313omegaX">
+                 <property name="text">
+                  <string>2.04834</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="0">
+                <widget class="QLabel" name="omegay_3">
+                 <property name="text">
+                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;y&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="textFormat">
+                  <enum>Qt::RichText</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="1">
+                <widget class="QLineEdit" name="Euler313omegaY">
+                 <property name="text">
+                  <string>1.02732</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="0">
+                <widget class="QLabel" name="omegaz_3">
+                 <property name="text">
+                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;ω&lt;/span&gt;&lt;span style=&quot; font-size:8pt; vertical-align:sub;&quot;&gt;z&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; [deg/s]: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="textFormat">
+                  <enum>Qt::RichText</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="1">
+                <widget class="QLineEdit" name="Euler313omegaZ">
+                 <property name="text">
+                  <string>0.01245</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </widget>
+           <widget class="QWidget" name="QuaternionJPLPage">
+            <widget class="QGroupBox" name="groupBox_9">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>-4</y>
+               <width>234</width>
+               <height>297</height>
+              </rect>
+             </property>
+             <property name="title">
+              <string>Quaternions</string>
+             </property>
+             <property name="flat">
+              <bool>true</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_8">
+              <item row="0" column="0">
+               <layout class="QFormLayout" name="formLayout_9">
+                <property name="fieldGrowthPolicy">
+                 <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+                </property>
+                <property name="labelAlignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+                <property name="formAlignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="q1_3">
+                  <property name="text">
+                   <string>Q1: </string>
+                  </property>
+                  <property name="textFormat">
+                   <enum>Qt::RichText</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLineEdit" name="q1">
+                  <property name="text">
+                   <string>23.4562</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="q2_3">
+                  <property name="text">
+                   <string>Q2: </string>
+                  </property>
+                  <property name="textFormat">
+                   <enum>Qt::RichText</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLineEdit" name="q2">
+                  <property name="text">
+                   <string>12.4564</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="q3_3">
+                  <property name="text">
+                   <string>Q3 :</string>
+                  </property>
+                  <property name="textFormat">
+                   <enum>Qt::RichText</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QLineEdit" name="q3">
+                  <property name="text">
+                   <string>78.4532</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="q4_3">
+                  <property name="text">
+                   <string>Q4: </string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QLineEdit" name="q4">
+                  <property name="text">
+                   <string>78.4532</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="q1Dot_3">
+                  <property name="text">
+                   <string>Q1 Rate</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <widget class="QLineEdit" name="q1dot">
+                  <property name="text">
+                   <string>2.04834</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="0">
+                 <widget class="QLabel" name="q2Dot_3">
+                  <property name="text">
+                   <string>Q2 Rate</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="1">
+                 <widget class="QLineEdit" name="q2dot">
+                  <property name="text">
+                   <string>1.02732</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="6" column="0">
+                 <widget class="QLabel" name="q3Dot_3">
+                  <property name="text">
+                   <string>Q3 Rate</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="6" column="1">
+                 <widget class="QLineEdit" name="q3dot">
+                  <property name="text">
+                   <string>0.01245</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="7" column="0">
+                 <widget class="QLabel" name="q4Dot_3">
+                  <property name="text">
+                   <string>Q4 Rate</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="7" column="1">
+                 <widget class="QLineEdit" name="q4dot">
+                  <property name="text">
+                   <string>0.01245</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </widget>
          </item>
-         <item>
-          <property name="text">
-           <string>Euler Angles 3-2-1</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Euler Angles 3-1-3</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Quaternions JPL</string>
-          </property>
-         </item>
-        </widget>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -2384,213 +2364,13 @@ p, li { white-space: pre-wrap; }
      </layout>
     </widget>
    </widget>
-   <widget class="QWidget" name="SCProperties">
-    <attribute name="title">
-     <string>SC Properties</string>
-    </attribute>
-    <widget class="QGroupBox" name="groupBox_4">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>611</width>
-       <height>161</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>Mass properties</string>
-     </property>
-     <widget class="QWidget" name="formLayoutWidget_8">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>25</y>
-        <width>421</width>
-        <height>126</height>
-       </rect>
-      </property>
-      <layout class="QFormLayout" name="formLayout_8">
-       <property name="fieldGrowthPolicy">
-        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-       </property>
-       <property name="horizontalSpacing">
-        <number>10</number>
-       </property>
-       <property name="verticalSpacing">
-        <number>14</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>Mass</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <layout class="QHBoxLayout" name="horizontalLayout_6">
-         <property name="spacing">
-          <number>12</number>
-         </property>
-         <item>
-          <widget class="QLineEdit" name="lineEdit"/>
-         </item>
-         <item>
-          <widget class="QLabel" name="inertiaMatLabel">
-           <property name="text">
-            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;kg      &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_5">
-         <property name="text">
-          <string>Inertia Matrix</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <layout class="QGridLayout" name="gridLayout_5">
-         <property name="horizontalSpacing">
-          <number>12</number>
-         </property>
-         <item row="0" column="0">
-          <widget class="QLineEdit" name="lineEdit_2"/>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLineEdit" name="lineEdit_3"/>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLineEdit" name="lineEdit_7"/>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="lineEdit_8"/>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="lineEdit_9"/>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="lineEdit_10"/>
-         </item>
-         <item row="0" column="2">
-          <widget class="QLineEdit" name="lineEdit_11"/>
-         </item>
-         <item row="1" column="2">
-          <widget class="QLineEdit" name="lineEdit_13"/>
-         </item>
-         <item row="2" column="2">
-          <widget class="QLineEdit" name="lineEdit_12"/>
-         </item>
-         <item row="0" column="3">
-          <widget class="QLabel" name="inertiaMatLabel_3">
-           <property name="text">
-            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;kg &lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt; vertical-align:super;&quot;&gt;.&lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt; m&lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt; vertical-align:super;&quot;&gt;2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-    <widget class="QGroupBox" name="groupBox_10">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>180</y>
-       <width>611</width>
-       <height>71</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>Geometric properties</string>
-     </property>
-     <widget class="QLineEdit" name="lineEdit_5">
-      <property name="geometry">
-       <rect>
-        <x>95</x>
-        <y>100</y>
-        <width>36</width>
-        <height>20</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="lineEdit_6">
-      <property name="geometry">
-       <rect>
-        <x>140</x>
-        <y>100</y>
-        <width>41</width>
-        <height>20</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QWidget" name="gridLayoutWidget_5">
-      <property name="geometry">
-       <rect>
-        <x>14</x>
-        <y>25</y>
-        <width>391</width>
-        <height>36</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_6">
-       <property name="horizontalSpacing">
-        <number>14</number>
-       </property>
-       <property name="verticalSpacing">
-        <number>6</number>
-       </property>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="lineEdit_4"/>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Wet area     </string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QLabel" name="inertiaMatLabel_4">
-         <property name="text">
-          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;m&lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt; vertical-align:super;&quot;&gt;2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-   </widget>
   </widget>
   <widget class="QWidget" name="horizontalLayoutWidget_2">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>455</y>
-     <width>636</width>
+     <y>560</y>
+     <width>676</width>
      <height>36</height>
     </rect>
    </property>
@@ -2633,9 +2413,6 @@ p, li { white-space: pre-wrap; }
     </item>
    </layout>
   </widget>
-  <zorder>SCProperties_2</zorder>
-  <zorder>horizontalLayoutWidget_2</zorder>
-  <zorder>horizontalSpacer</zorder>
  </widget>
  <tabstops>
   <tabstop>dateTimeEdit</tabstop>
@@ -2649,8 +2426,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>raanEdit</tabstop>
   <tabstop>argOfPeriapsisEdit</tabstop>
   <tabstop>trueAnomalyEdit</tabstop>
-  <tabstop>comboBox_3</tabstop>
-  <tabstop>comboBox_4</tabstop>
   <tabstop>GravityFieldRadioButton</tabstop>
   <tabstop>GravityComboBox</tabstop>
   <tabstop>ZonalsSpinBox</tabstop>
@@ -2666,7 +2441,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>PertBodyListWidget</tabstop>
   <tabstop>AddPushButton</tabstop>
   <tabstop>RemovePushButton</tabstop>
-  <tabstop>quaternion4Edit</tabstop>
   <tabstop>PropagatorComboBox</tabstop>
   <tabstop>IntegratorComboBox</tabstop>
   <tabstop>IntStepEdit</tabstop>
@@ -2674,30 +2448,51 @@ p, li { white-space: pre-wrap; }
   <tabstop>buttonBoxLoitering</tabstop>
   <tabstop>positionYEdit</tabstop>
   <tabstop>positionZEdit</tabstop>
-  <tabstop>SCProperties_2</tabstop>
-  <tabstop>Euler123betaEdit</tabstop>
-  <tabstop>AngularVelocityXEdit</tabstop>
-  <tabstop>Euler123gammaEdit</tabstop>
-  <tabstop>AngularVelocityYEdit</tabstop>
-  <tabstop>AngularVelocityZEdit</tabstop>
+  <tabstop>LoiteringTAB</tabstop>
   <tabstop>positionXEdit</tabstop>
   <tabstop>velocityXEdit</tabstop>
   <tabstop>ManualInputTLEpushButton</tabstop>
   <tabstop>velocityYEdit</tabstop>
   <tabstop>velocityZEdit</tabstop>
   <tabstop>LoadTLEpushButton</tabstop>
-  <tabstop>Euler123alphaEdit</tabstop>
-  <tabstop>quaternion1Edit</tabstop>
-  <tabstop>quaternion2Edit</tabstop>
-  <tabstop>quaternion3Edit</tabstop>
-  <tabstop>AngularVelocityYEdit_4</tabstop>
-  <tabstop>AngularVelocityZEdit_3</tabstop>
-  <tabstop>AngularVelocityXEdit_2</tabstop>
  </tabstops>
  <resources>
   <include location="../../iconary/sta-icons.qrc"/>
+  <include location="../../iconary/sta-icons.qrc"/>
  </resources>
  <connections>
+  <connection>
+   <sender>buttonBoxLoitering</sender>
+   <signal>accepted()</signal>
+   <receiver>LoiteringDialogClass</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>685</x>
+     <y>579</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>325</x>
+     <y>250</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBoxLoitering</sender>
+   <signal>rejected()</signal>
+   <receiver>LoiteringDialogClass</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>685</x>
+     <y>586</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>135</x>
+     <y>0</y>
+    </hint>
+   </hints>
+  </connection>
   <connection>
    <sender>InitialStateComboBox</sender>
    <signal>activated(int)</signal>
@@ -2715,50 +2510,18 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>comboBox_4</sender>
+   <sender>AttitudeTypeComboBox</sender>
    <signal>activated(int)</signal>
    <receiver>stackedWidget_2</receiver>
    <slot>setCurrentIndex(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>616</x>
-     <y>186</y>
+     <x>619</x>
+     <y>195</y>
     </hint>
     <hint type="destinationlabel">
-     <x>598</x>
-     <y>209</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBoxLoitering</sender>
-   <signal>accepted()</signal>
-   <receiver>LoiteringDialogClass</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>443</x>
-     <y>472</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>325</x>
-     <y>250</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBoxLoitering</sender>
-   <signal>rejected()</signal>
-   <receiver>LoiteringDialogClass</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>644</x>
-     <y>479</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>135</x>
-     <y>-10</y>
+     <x>615</x>
+     <y>239</y>
     </hint>
    </hints>
   </connection>
