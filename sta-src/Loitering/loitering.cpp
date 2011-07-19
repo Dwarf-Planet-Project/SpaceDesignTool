@@ -873,406 +873,12 @@ void TesseralBox::setVariableMaximum(int i)
 {
     this->setMaximum(i);
 }
-/////////////////////////////////////// PropagateLoiteringTrajectory /////////////////////////////
-//bool PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
-//                                     QList<double>& sampleTimes,
-//                                     QList<sta::StateVector>& samples,
-//                                     QList<sta::AttitudeVector>& samplesAtt,
-//                                     QString attitudeRotationSequence,
-//                                     PropagationFeedback& propFeedback)
-//{
-//    //Check the coordinate system of position
-//    QString loiteringLabel = loitering->ElementIdentifier()->Name();
 
-//    QString centralBodyName = loitering->Environment()->CentralBody()->Name();
-//    StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
-//    if (!centralBody)
-//    {
-//        propFeedback.raiseError(QObject::tr("Unrecognized central body '%1'").arg(centralBodyName));
-//        return false;
-//    }
 
-//    QString coordSysName = loitering->InitialPosition()->CoordinateSystem();
-//    sta::CoordinateSystem coordSys(coordSysName);
-//    if (coordSys.type() == sta::COORDSYS_INVALID)
-//    {
-//        propFeedback.raiseError(QObject::tr("Unrecognized coordinate system '%1'").arg(coordSysName));
-//        return false;
-//    }
 
-//    //Check the coordinate system of attitude
-//    QString attitudeCoordSysName = loitering->InitialAttitude()->CoordinateSystem();
-//    //sta::CoordinateSystem coordSys(attitudeCoordSysName);
-//    if (coordSys.type() == sta::COORDSYS_INVALID)
-//    {
-//        propFeedback.raiseError(QObject::tr("Unrecognized coordinate system '%1'").arg(attitudeCoordSysName));
-//        return false;
-//    }
-//    // Get the initial state in two forms:
-//    //   - Keplerian elements for simple two-body propagation
-//    //   - A state vector for any other sort of propagation
-//    ScenarioAbstract6DOFPositionType* position = loitering->InitialPosition()->Abstract6DOFPosition().data();
-//    sta::StateVector initialState = AbstractPositionToStateVector(position, centralBody);
-//    sta::KeplerianElements initialStateKeplerian = AbstractPositionToKeplerianElements(position, centralBody);
 
-//    double mu = centralBody->mu();
 
-//    // Get the initial attitude
-//    //Stores the information of the attitude, inserted in the GUI
-//    ScenarioAbstract6DOFAttitudeType* attitude = loitering->InitialAttitude()->Abstract6DOFAttitude().data();
-//    int seq1, seq2, seq3;
 
-//    if (dynamic_cast<const ScenarioEulerBIType*>(attitude))
-//    {
-//        const ScenarioEulerBIType* euler = dynamic_cast<const ScenarioEulerBIType*>(attitude);
-
-//        if(attitudeRotationSequence == "123")
-//        {
-//            seq1 = 1;
-//            seq2 = 2;
-//            seq3 = 3;
-//        }
-//        else if(attitudeRotationSequence == "321")
-//        {
-//            seq1 = 3;
-//            seq2 = 2;
-//            seq3 = 1;
-//        }
-//        else if(attitudeRotationSequence == "313")
-//        {
-//            seq1 = 3;
-//            seq2 = 1;
-//            seq3 = 3;
-//        }
-//    }
-//    //Initial attitude: contains the quaternions and the body rates. Transforms the input to quaternions and quaternion rates
-//    sta::AttitudeVector initialAttitude = AbstractAttitudeToQuaternions(attitude, seq1, seq2, seq3);
-//    //Stores the initial attitude in quaternions and body rates!!
-//    sta::AttitudeVector initialAttitudeQuaternions = AttitudeVector(initialAttitude);
-
-//    // Get the timeline information
-//    const ScenarioTimeLine* timeline = loitering->TimeLine().data();
-//    double timelineDuration = timeline->StartTime().secsTo(timeline->EndTime());
-//    double dt = loitering->PropagationPosition()->timeStep();
-
-//    if (dt == 0.0)
-//    {
-//        propFeedback.raiseError(QObject::tr("Time step is zero!"));
-//        return false;
-//    }
-
-//    // We don't output values at every integration step. Instead use the time step
-//    // from simulation parameters. The actual output step used will not necessarily
-//    // match the requested output step: the code below sets it to be an integer
-//    // multiple of the integration step.
-//    double requestedOutputTimeStep = timeline->StepTime();
-//    double outputTimeStep;
-//    unsigned int outputRate;
-//    if (requestedOutputTimeStep < dt)
-//    {
-//        outputRate = 1;
-//        outputTimeStep = dt;
-//    }
-//    else
-//    {
-//        outputRate = (unsigned int) floor(requestedOutputTimeStep / dt + 0.5);
-//        outputTimeStep = outputRate * dt;
-//    }
-
-//    if (timelineDuration / outputTimeStep > MAX_OUTPUT_STEPS)
-//    {
-//        propFeedback.raiseError(QObject::tr("Number of propagation steps exceeds %1. Try increasing the simulation time step.").arg(MAX_OUTPUT_STEPS));
-//        return false;
-//    }
-
-//        QList<Perturbations*> perturbationsList; // Create the list of perturbations that will influence the propagation
-
-//    sta::StateVector stateVector = initialState;
-//    sta::AttitudeVector attitudeVector = initialAttitudeQuaternions;
-
-//    // deviation, reference, and q will be used only in Encke propagation
-//    sta::StateVector deviation(Vector3d::Zero(), Vector3d::Zero());
-//    sta::StateVector reference = initialState;
-//    double q = 0.0;
-
-//    double startTime = sta::JdToMjd(sta::CalendarToJd(timeline->StartTime()));
-
-//    sampleTimes << startTime;
-//    samples << stateVector;
-//    samplesAtt << attitudeVector;
-
-//    QFile ciccio("data/PerturbationsData.stae");
-//    QTextStream cicciostream(&ciccio);
-//    ciccio.open(QIODevice::WriteOnly);
-
-//    //unsigned int steps = 0;
-//    unsigned int steps = 1; // patched by Ana on 18th June 2010
-
-//    QString propagator = loitering->PropagationPosition()->propagator();
-//    QString integrator = loitering->PropagationPosition()->integrator();
-
-//    MyMatrix3d inertiaMatrix;
-//    ScenarioSC* mySatellite = new ScenarioSC();
-//    inertiaMatrix(0,0) = mySatellite->System()->Structure()->MomentsOfInertia()->xAxis();
-//    inertiaMatrix(1,1) = mySatellite->System()->Structure()->MomentsOfInertia()->yAxis();
-//    inertiaMatrix(2,2) = mySatellite->System()->Structure()->MomentsOfInertia()->zAxis();
-//    inertiaMatrix(0,1) = mySatellite->System()->Structure()->SecondMomentsOfArea()->xAxis();
-//    inertiaMatrix(0,2) = mySatellite->System()->Structure()->SecondMomentsOfArea()->yAxis();
-//    inertiaMatrix(1,2) = mySatellite->System()->Structure()->SecondMomentsOfArea()->zAxis();
-
-//    if (propagator == "TWO BODY")
-//    {
-
-//        double sma            = initialStateKeplerian.SemimajorAxis;
-//        double e              = initialStateKeplerian.Eccentricity;
-//        double inclination    = initialStateKeplerian.Inclination*Pi()/180.0;
-//        double raan           = initialStateKeplerian.AscendingNode*Pi()/180.0;
-//        double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis*Pi()/180.0;
-//        double trueAnomaly    = initialStateKeplerian.TrueAnomaly*Pi()/180.0;
-//        double meanAnomaly    = trueAnomalyTOmeanAnomaly(trueAnomaly, e);
-
-//        // Next lines patched by Guillermo on April 23 2010 to speed up calculations outside the for loop
-//        double argOfPeriapsisUpdated      = 0.0;
-//        double meanAnomalyUpdated         = 0.0;
-//        double raanUpdated                = 0.0;
-
-//        double perigee = sma * (1 - e);
-//        if (perigee < centralBody->meanRadius())
-//        {
-//            propFeedback.raiseError(QObject::tr("The perigee distance is smaller than the main body radius."));
-//            return false;
-//        }
-//        else
-//        {
-//            for (double t = dt; t < timelineDuration + dt; t += dt)
-//            {
-//                JulianDate jd = startTime + sta::secsToDays(t);
-
-//                stateVector = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
-//                                               dt,
-//                                               raanUpdated, argOfPeriapsisUpdated, meanAnomalyUpdated);
-
-//                argOfPeriapsis = argOfPeriapsisUpdated;
-//                meanAnomaly    = meanAnomalyUpdated;
-//                raan           = raanUpdated;
-
-//                // -- Integrating the attitude -- //
-
-//                //Integrating the body rates
-//                AttitudeIntegration propagBodyRates;
-//                MyVector3d bodyRates = propagBodyRates.propagateEulerEquation(attitudeVector.bodyRates, startTime, dt, inertiaMatrix);
-
-//                //Integrating the quaternions
-//                AttitudeIntegration propAttitudeVector;
-//                MyVector4d theQuaternions(attitudeVector.quaternion.coeffs().coeffRef(0),
-//                                          attitudeVector.quaternion.coeffs().coeffRef(1),
-//                                          attitudeVector.quaternion.coeffs().coeffRef(2),
-//                                          attitudeVector.quaternion.coeffs().coeffRef(3));
-
-//                MyVector4d integratedQuaternions = propAttitudeVector.propagateQUATERNIONS(theQuaternions, startTime, dt, bodyRates);
-
-//                //Saving integrated values to the new attitude vector
-//                attitudeVector.quaternion.coeffs().coeffRef(0) = integratedQuaternions(0);
-//                attitudeVector.quaternion.coeffs().coeffRef(1) = integratedQuaternions(1);
-//                attitudeVector.quaternion.coeffs().coeffRef(2) = integratedQuaternions(2);
-//                attitudeVector.quaternion.coeffs().coeffRef(3) = integratedQuaternions(3);
-//                attitudeVector.bodyRates(0) = bodyRates(0);
-//                attitudeVector.bodyRates(1) = bodyRates(1);
-//                attitudeVector.bodyRates(2) = bodyRates(2);
-
-//                // -- End of: Integrating the attitude -- //
-
-//                // Append a trajectory sample every outputRate integration steps (and always at the last step.)
-//                if (steps % outputRate == 0 || t >= timelineDuration)
-//                {
-//                    sampleTimes << jd;
-//                    samples << stateVector;
-//                    samplesAtt << attitudeVector;
-//                }
-//                ++steps;
-//            }
-//        }
-//    }
-//    else if (propagator == "COWELL")
-//    {
-//        for (double t = dt; t < timelineDuration + dt; t += dt)
-//        {
-//            JulianDate jd = startTime + sta::secsToDays(t);
-//            stateVector = propagateCOWELL(mu, stateVector, dt, perturbationsList, jd, integrator, propFeedback);
-
-//            // -- Integrating the attitude -- //
-
-//            //Integrating the body rates
-//            AttitudeIntegration propagBodyRates;
-//            MyVector3d bodyRates = propagBodyRates.propagateEulerEquation(attitudeVector.bodyRates, startTime, dt, inertiaMatrix);
-
-//            //Integrating the quaternions
-//            AttitudeIntegration propAttitudeVector;
-//            MyVector4d theQuaternions(attitudeVector.quaternion.coeffs().coeffRef(0),
-//                                      attitudeVector.quaternion.coeffs().coeffRef(1),
-//                                      attitudeVector.quaternion.coeffs().coeffRef(2),
-//                                      attitudeVector.quaternion.coeffs().coeffRef(3));
-
-//            MyVector4d integratedQuaternions = propAttitudeVector.propagateQUATERNIONS(theQuaternions, startTime, dt, bodyRates);
-
-//            //Saving integrated values to the new attitude vector
-//            attitudeVector.quaternion.coeffs().coeffRef(0) = integratedQuaternions(0);
-//            attitudeVector.quaternion.coeffs().coeffRef(1) = integratedQuaternions(1);
-//            attitudeVector.quaternion.coeffs().coeffRef(2) = integratedQuaternions(2);
-//            attitudeVector.quaternion.coeffs().coeffRef(3) = integratedQuaternions(3);
-//            attitudeVector.bodyRates(0) = bodyRates(0);
-//            attitudeVector.bodyRates(1) = bodyRates(1);
-//            attitudeVector.bodyRates(2) = bodyRates(2);
-
-//            // -- End of: Integrating the attitude -- //
-
-//            // Append a trajectory sample every outputRate integration steps (and always at the last step.)
-//            if (steps % outputRate == 0 || t >= timelineDuration)
-//            {
-//                sampleTimes << jd;
-//                samples << stateVector;
-//                samplesAtt << attitudeVector;
-//            }
-//            ++steps;
-//        }
-//    }
-//    else if (propagator == "ENCKE")
-//    {
-//        double sma            = initialStateKeplerian.SemimajorAxis;
-//        double e              = initialStateKeplerian.Eccentricity;
-//        double inclination    = initialStateKeplerian.Inclination;
-//        double raan           = initialStateKeplerian.AscendingNode;
-//        double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis;
-//        double meanAnomaly    = initialStateKeplerian.MeanAnomaly;
-
-//        for (double t = dt; t < timelineDuration + dt; t += dt)
-//        {
-//            JulianDate jd = startTime + sta::secsToDays(t);
-//            deviation = propagateENCKE(mu, reference, dt, perturbationsList, jd, stateVector, deviation,  q, integrator, propFeedback);
-
-//            // PropagateTWObody is used to propagate the reference trajectory
-//            double argOfPeriapsisUpdated      = 0.0;
-//            double meanAnomalyUpdated         = 0.0;
-//            double raanUpdated                = 0.0;
-//            reference = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
-//                                         dt,
-//                                         raanUpdated, argOfPeriapsisUpdated, meanAnomalyUpdated);
-
-//            argOfPeriapsis = argOfPeriapsisUpdated;
-//            meanAnomaly    = meanAnomalyUpdated;
-//            raan           = raanUpdated;
-
-//            // Calculating the perturbed trajectory
-//            stateVector = reference + deviation;
-//            q = deviation.position.dot(reference.position + 0.5 * deviation.position) / pow(reference.position.norm(), 2.0);
-
-//#if 0
-//            // Rectification of the reference trajectory, when the deviation is too large.
-//            if (q > 0.01)
-//            {
-//                sta::KeplerianElements keplerian = cartesianTOorbital(mu, stateVector);
-
-//                sma = keplerian.SemimajorAxis;
-//                e = keplerian.Eccentricity;
-//                inclination = keplerian.Inclination;
-//                argOfPeriapsis = keplerian.ArgumentOfPeriapsis;
-//                raan = keplerian.AscendingNode;
-//                meanAnomaly = keplerian.MeanAnomaly;
-
-//                q = 0;
-//                reference = stateVector;
-//                deviation = sta::StateVector(null, null);
-//            }
-//#endif
-
-//            // -- Integrating the attitude -- //
-
-//            //Integrating the body rates
-//            AttitudeIntegration propagBodyRates;
-//            MyVector3d bodyRates = propagBodyRates.propagateEulerEquation(attitudeVector.bodyRates, startTime, dt, inertiaMatrix);
-
-//            //Integrating the quaternions
-//            AttitudeIntegration propAttitudeVector;
-//            MyVector4d theQuaternions(attitudeVector.quaternion.coeffs().coeffRef(0),
-//                                      attitudeVector.quaternion.coeffs().coeffRef(1),
-//                                      attitudeVector.quaternion.coeffs().coeffRef(2),
-//                                      attitudeVector.quaternion.coeffs().coeffRef(3));
-
-//            MyVector4d integratedQuaternions = propAttitudeVector.propagateQUATERNIONS(theQuaternions, startTime, dt, bodyRates);
-
-//            //Saving integrated values to the new attitude vector
-//            attitudeVector.quaternion.coeffs().coeffRef(0) = integratedQuaternions(0);
-//            attitudeVector.quaternion.coeffs().coeffRef(1) = integratedQuaternions(1);
-//            attitudeVector.quaternion.coeffs().coeffRef(2) = integratedQuaternions(2);
-//            attitudeVector.quaternion.coeffs().coeffRef(3) = integratedQuaternions(3);
-//            attitudeVector.bodyRates(0) = bodyRates(0);
-//            attitudeVector.bodyRates(1) = bodyRates(1);
-//            attitudeVector.bodyRates(2) = bodyRates(2);
-
-//            // -- End of: Integrating the attitude -- //
-
-//            // Append a trajectory sample every outputRate integration steps (and always at the last step.)
-//            if (steps % outputRate == 0 || t >= timelineDuration)
-//            {
-//                sampleTimes << jd;
-//                samples << stateVector;
-//                samplesAtt << attitudeVector;
-//            }
-//            ++steps;
-//        }
-//    }
-//    else if (propagator == "GAUSS")
-//    {
-//        for (double t = dt; t < timelineDuration + dt; t += dt)
-//        {
-//            JulianDate jd = startTime + sta::secsToDays(t);
-//                        // Append a trajectory sample every outputRate integration steps (and always at the last step.)
-//            if (steps % outputRate == 0 || t >= timelineDuration)
-//            {
-//                sampleTimes << jd;
-//                samples << stateVector;
-//                samplesAtt << attitudeVector;
-//            }
-//            ++steps;
-
-//            stateVector = propagateGAUSS(mu, stateVector, dt, perturbationsList, jd, integrator);
-
-//            // -- Integrating the attitude -- //
-
-//            //Integrating the body rates
-//            AttitudeIntegration propagBodyRates;
-//            MyVector3d bodyRates = propagBodyRates.propagateEulerEquation(attitudeVector.bodyRates, startTime, dt, inertiaMatrix);
-
-//            //Integrating the quaternions
-//            AttitudeIntegration propAttitudeVector;
-//            MyVector4d theQuaternions(attitudeVector.quaternion.coeffs().coeffRef(0),
-//                                      attitudeVector.quaternion.coeffs().coeffRef(1),
-//                                      attitudeVector.quaternion.coeffs().coeffRef(2),
-//                                      attitudeVector.quaternion.coeffs().coeffRef(3));
-
-//            MyVector4d integratedQuaternions = propAttitudeVector.propagateQUATERNIONS(theQuaternions, startTime, dt, bodyRates);
-
-//            //Saving integrated values to the new attitude vector
-//            attitudeVector.quaternion.coeffs().coeffRef(0) = integratedQuaternions(0);
-//            attitudeVector.quaternion.coeffs().coeffRef(1) = integratedQuaternions(1);
-//            attitudeVector.quaternion.coeffs().coeffRef(2) = integratedQuaternions(2);
-//            attitudeVector.quaternion.coeffs().coeffRef(3) = integratedQuaternions(3);
-//            attitudeVector.bodyRates(0) = bodyRates(0);
-//            attitudeVector.bodyRates(1) = bodyRates(1);
-//            attitudeVector.bodyRates(2) = bodyRates(2);
-
-//            // -- End of: Integrating the attitude -- //
-//        }
-//    }
-//    else
-//    {
-//        propFeedback.raiseError(QObject::tr("Unsupported propagator '%1'").arg(propagator));
-//        return false;
-//    }
-
-//    return true;
-
-//}
 /////////////////////////////////////// PropagateLoiteringTrajectory /////////////////////////////
 bool PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
                                   QList<double>& sampleTimes,
@@ -1516,6 +1122,423 @@ bool PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
     return true;
 
 } // ------------------------------- End of the propagation method -----------------------
+
+
+
+//---------------------------------------------------------------------------------------------------------
+
+///////////////////////////////////// PropagateLoiteringTrajectory /////////////////////////////
+bool PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
+                                     QList<double>& sampleTimes,
+                                     QList<sta::StateVector>& samples,
+                                     QList<staAttitude::AttitudeVector>& samplesAtt,
+                                     QString attitudeRotationSequence,
+                                     PropagationFeedback& propFeedback)
+{
+    //Check the coordinate system of position
+    QString loiteringLabel = loitering->ElementIdentifier()->Name();
+
+    QString centralBodyName = loitering->Environment()->CentralBody()->Name();
+    StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+    if (!centralBody)
+    {
+        propFeedback.raiseError(QObject::tr("Unrecognized central body '%1'").arg(centralBodyName));
+        return false;
+    }
+
+    QString coordSysName = loitering->InitialPosition()->CoordinateSystem();
+    sta::CoordinateSystem coordSys(coordSysName);
+    if (coordSys.type() == sta::COORDSYS_INVALID)
+    {
+        propFeedback.raiseError(QObject::tr("Unrecognized coordinate system '%1'").arg(coordSysName));
+        return false;
+    }
+
+    //Check the coordinate system of attitude
+    QString attitudeCoordSysName = loitering->InitialAttitude()->CoordinateSystem();
+    //sta::CoordinateSystem coordSys(attitudeCoordSysName);
+    if (coordSys.type() == sta::COORDSYS_INVALID)
+    {
+        propFeedback.raiseError(QObject::tr("Unrecognized coordinate system '%1'").arg(attitudeCoordSysName));
+        return false;
+    }
+    // Get the initial state in two forms:
+    //   - Keplerian elements for simple two-body propagation
+    //   - A state vector for any other sort of propagation
+    ScenarioAbstract6DOFPositionType* position = loitering->InitialPosition()->Abstract6DOFPosition().data();
+    sta::StateVector initialState = AbstractPositionToStateVector(position, centralBody);
+    sta::KeplerianElements initialStateKeplerian = AbstractPositionToKeplerianElements(position, centralBody);
+
+    double mu = centralBody->mu();
+
+    // Get the initial attitude
+    //Stores the information of the attitude, inserted in the GUI
+    ScenarioAbstract6DOFAttitudeType* attitude = loitering->InitialAttitude()->Abstract6DOFAttitude().data();
+    int seq1, seq2, seq3;
+
+    if (dynamic_cast<const ScenarioEulerBIType*>(attitude))
+    {
+        const ScenarioEulerBIType* euler = dynamic_cast<const ScenarioEulerBIType*>(attitude);
+
+        if(attitudeRotationSequence == "123")
+        {
+            seq1 = 1;
+            seq2 = 2;
+            seq3 = 3;
+        }
+        else if(attitudeRotationSequence == "321")
+        {
+            seq1 = 3;
+            seq2 = 2;
+            seq3 = 1;
+        }
+        else if(attitudeRotationSequence == "313")
+        {
+            seq1 = 3;
+            seq2 = 1;
+            seq3 = 3;
+        }
+    }
+
+//    //Initial attitude: contains the quaternions and the body rates. Transforms the input to quaternions and quaternion rates
+//    staAttitude::AttitudeVector initialAttitudeState = AbstractAttitudeToAttitudeVector(attitude, seq1, seq2, seq3);
+
+//    //Stores the initial attitude in quaternions and body rates!!
+//    //staAttitude::AttitudeVector initialAttitudeQuaternions = AttitudeVector(initialAttitude);
+
+//    // Get the timeline information
+//    const ScenarioTimeLine* timeline = loitering->TimeLine().data();
+//    double timelineDuration = timeline->StartTime().secsTo(timeline->EndTime());
+//    double dt = loitering->PropagationPosition()->timeStep();
+
+//    if (dt == 0.0)
+//    {
+//        propFeedback.raiseError(QObject::tr("Time step is zero!"));
+//        return false;
+//    }
+
+//    // We don't output values at every integration step. Instead use the time step
+//    // from simulation parameters. The actual output step used will not necessarily
+//    // match the requested output step: the code below sets it to be an integer
+//    // multiple of the integration step.
+//    double requestedOutputTimeStep = timeline->StepTime();
+//    double outputTimeStep;
+//    unsigned int outputRate;
+
+//    if (requestedOutputTimeStep < dt)
+//    {
+//        outputRate = 1;
+//        outputTimeStep = dt;
+//    }
+//    else
+//    {
+//        outputRate = (unsigned int) floor(requestedOutputTimeStep / dt + 0.5);
+//        outputTimeStep = outputRate * dt;
+//    }
+
+//    if (timelineDuration / outputTimeStep > MAX_OUTPUT_STEPS)
+//    {
+//        propFeedback.raiseError(QObject::tr("Number of propagation steps exceeds %1. Try increasing the simulation time step.").arg(MAX_OUTPUT_STEPS));
+//        return false;
+//    }
+
+//        QList<Perturbations*> perturbationsList; // Create the list of perturbations that will influence the propagation
+
+//    sta::StateVector stateVector = initialState;
+//    staAttitude::AttitudeVector attitudeVector = initialAttitudeState;
+
+//    // deviation, reference, and q will be used only in Encke propagation
+//    sta::StateVector deviation(Vector3d::Zero(), Vector3d::Zero());
+//    sta::StateVector reference = initialState;
+//    double q = 0.0;
+
+//    double startTime = sta::JdToMjd(sta::CalendarToJd(timeline->StartTime()));
+
+//    sampleTimes << startTime;
+//    samples << stateVector;
+//    samplesAtt << attitudeVector;
+
+//    QFile ciccio("data/PerturbationsData.stae");
+//    QTextStream cicciostream(&ciccio);
+//    ciccio.open(QIODevice::WriteOnly);
+
+//    //unsigned int steps = 0;
+//    unsigned int steps = 1; // patched by Ana on 18th June 2010
+
+//    QString propagator = loitering->PropagationPosition()->propagator();
+//    QString integrator = loitering->PropagationPosition()->integrator();
+
+//    MyMatrix3d inertiaMatrix;
+//    ScenarioSC* mySatellite = new ScenarioSC();
+//    inertiaMatrix(0,0) = mySatellite->System()->Structure()->MomentsOfInertia()->xAxis();
+//    inertiaMatrix(1,1) = mySatellite->System()->Structure()->MomentsOfInertia()->yAxis();
+//    inertiaMatrix(2,2) = mySatellite->System()->Structure()->MomentsOfInertia()->zAxis();
+//    inertiaMatrix(0,1) = mySatellite->System()->Structure()->SecondMomentsOfArea()->xAxis();
+//    inertiaMatrix(0,2) = mySatellite->System()->Structure()->SecondMomentsOfArea()->yAxis();
+//    inertiaMatrix(1,2) = mySatellite->System()->Structure()->SecondMomentsOfArea()->zAxis();
+
+//    if (propagator == "TWO BODY")
+//    {
+
+//        double sma            = initialStateKeplerian.SemimajorAxis;
+//        double e              = initialStateKeplerian.Eccentricity;
+//        double inclination    = initialStateKeplerian.Inclination*Pi()/180.0;
+//        double raan           = initialStateKeplerian.AscendingNode*Pi()/180.0;
+//        double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis*Pi()/180.0;
+//        double trueAnomaly    = initialStateKeplerian.TrueAnomaly*Pi()/180.0;
+//        double meanAnomaly    = trueAnomalyTOmeanAnomaly(trueAnomaly, e);
+
+//        // Next lines patched by Guillermo on April 23 2010 to speed up calculations outside the for loop
+//        double argOfPeriapsisUpdated      = 0.0;
+//        double meanAnomalyUpdated         = 0.0;
+//        double raanUpdated                = 0.0;
+
+//        double perigee = sma * (1 - e);
+//        if (perigee < centralBody->meanRadius())
+//        {
+//            propFeedback.raiseError(QObject::tr("The perigee distance is smaller than the main body radius."));
+//            return false;
+//        }
+//        else
+//        {
+//            for (double t = dt; t < timelineDuration + dt; t += dt)
+//            {
+//                JulianDate jd = startTime + sta::secsToDays(t);
+
+//                stateVector = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
+//                                               dt,
+//                                               raanUpdated, argOfPeriapsisUpdated, meanAnomalyUpdated);
+
+//                argOfPeriapsis = argOfPeriapsisUpdated;
+//                meanAnomaly    = meanAnomalyUpdated;
+//                raan           = raanUpdated;
+
+//                // -- Integrating the attitude -- //
+
+//                //Integrating the body rates
+//                AttitudeIntegration propagBodyRates;
+//                MyVector3d bodyRates = propagBodyRates.propagateEulerEquation(attitudeVector.myBodyRates, startTime, dt, inertiaMatrix);
+
+//                //Integrating the quaternions
+//                AttitudeIntegration propAttitudeVector;
+//                MyVector4d theQuaternions(attitudeVector.myQuaternion.coeffs().coeffRef(0),
+//                                          attitudeVector.myQuaternion.coeffs().coeffRef(1),
+//                                          attitudeVector.myQuaternion.coeffs().coeffRef(2),
+//                                          attitudeVector.myQuaternion.coeffs().coeffRef(3));
+
+
+
+//                MyVector4d integratedQuaternions = propAttitudeVector.propagateQUATERNIONS(theQuaternions, startTime, dt, bodyRates);
+
+//                //Saving integrated values to the new attitude vector
+//                attitudeVector.myQuaternion.coeffs().coeffRef(0) = integratedQuaternions(0);
+//                attitudeVector.myQuaternion.coeffs().coeffRef(1) = integratedQuaternions(1);
+//                attitudeVector.myQuaternion.coeffs().coeffRef(2) = integratedQuaternions(2);
+//                attitudeVector.myQuaternion.coeffs().coeffRef(3) = integratedQuaternions(3);
+//                attitudeVector.myBodyRates(0) = bodyRates(0);
+//                attitudeVector.myBodyRates(1) = bodyRates(1);
+//                attitudeVector.myBodyRates(2) = bodyRates(2);
+
+//                // -- End of: Integrating the attitude -- //
+
+//                // Append a trajectory sample every outputRate integration steps (and always at the last step.)
+//                if (steps % outputRate == 0 || t >= timelineDuration)
+//                {
+//                    sampleTimes << jd;
+//                    samples << stateVector;
+//                    samplesAtt << attitudeVector;
+//                }
+//                ++steps;
+//            }
+//        }
+//    }
+//    else if (propagator == "COWELL")
+//    {
+//        for (double t = dt; t < timelineDuration + dt; t += dt)
+//        {
+//            JulianDate jd = startTime + sta::secsToDays(t);
+//            stateVector = propagateCOWELL(mu, stateVector, dt, perturbationsList, jd, integrator, propFeedback);
+
+//            // -- Integrating the attitude -- //
+
+//            //Integrating the body rates
+//            AttitudeIntegration propagBodyRates;
+//            MyVector3d bodyRates = propagBodyRates.propagateEulerEquation(attitudeVector.myBodyRates, startTime, dt, inertiaMatrix);
+
+//            //Integrating the quaternions
+//            AttitudeIntegration propAttitudeVector;
+//            MyVector4d theQuaternions(attitudeVector.myQuaternion.coeffs().coeffRef(0),
+//                                      attitudeVector.myQuaternion.coeffs().coeffRef(1),
+//                                      attitudeVector.myQuaternion.coeffs().coeffRef(2),
+//                                      attitudeVector.myQuaternion.coeffs().coeffRef(3));
+
+//            MyVector4d integratedQuaternions = propAttitudeVector.propagateQUATERNIONS(theQuaternions, startTime, dt, bodyRates);
+
+//            //Saving integrated values to the new attitude vector
+//            attitudeVector.myQuaternion.coeffs().coeffRef(0) = integratedQuaternions(0);
+//            attitudeVector.myQuaternion.coeffs().coeffRef(1) = integratedQuaternions(1);
+//            attitudeVector.myQuaternion.coeffs().coeffRef(2) = integratedQuaternions(2);
+//            attitudeVector.myQuaternion.coeffs().coeffRef(3) = integratedQuaternions(3);
+//            attitudeVector.myBodyRates(0) = bodyRates(0);
+//            attitudeVector.myBodyRates(1) = bodyRates(1);
+//            attitudeVector.myBodyRates(2) = bodyRates(2);
+
+//            // -- End of: Integrating the attitude -- //
+
+//            // Append a trajectory sample every outputRate integration steps (and always at the last step.)
+//            if (steps % outputRate == 0 || t >= timelineDuration)
+//            {
+//                sampleTimes << jd;
+//                samples << stateVector;
+//                samplesAtt << attitudeVector;
+//            }
+//            ++steps;
+//        }
+//    }
+//    else if (propagator == "ENCKE")
+//    {
+//        double sma            = initialStateKeplerian.SemimajorAxis;
+//        double e              = initialStateKeplerian.Eccentricity;
+//        double inclination    = initialStateKeplerian.Inclination;
+//        double raan           = initialStateKeplerian.AscendingNode;
+//        double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis;
+//        double meanAnomaly    = initialStateKeplerian.MeanAnomaly;
+
+//        for (double t = dt; t < timelineDuration + dt; t += dt)
+//        {
+//            JulianDate jd = startTime + sta::secsToDays(t);
+//            deviation = propagateENCKE(mu, reference, dt, perturbationsList, jd, stateVector, deviation,  q, integrator, propFeedback);
+
+//            // PropagateTWObody is used to propagate the reference trajectory
+//            double argOfPeriapsisUpdated      = 0.0;
+//            double meanAnomalyUpdated         = 0.0;
+//            double raanUpdated                = 0.0;
+//            reference = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
+//                                         dt,
+//                                         raanUpdated, argOfPeriapsisUpdated, meanAnomalyUpdated);
+
+//            argOfPeriapsis = argOfPeriapsisUpdated;
+//            meanAnomaly    = meanAnomalyUpdated;
+//            raan           = raanUpdated;
+
+//            // Calculating the perturbed trajectory
+//            stateVector = reference + deviation;
+//            q = deviation.position.dot(reference.position + 0.5 * deviation.position) / pow(reference.position.norm(), 2.0);
+
+//#if 0
+//            // Rectification of the reference trajectory, when the deviation is too large.
+//            if (q > 0.01)
+//            {
+//                sta::KeplerianElements keplerian = cartesianTOorbital(mu, stateVector);
+
+//                sma = keplerian.SemimajorAxis;
+//                e = keplerian.Eccentricity;
+//                inclination = keplerian.Inclination;
+//                argOfPeriapsis = keplerian.ArgumentOfPeriapsis;
+//                raan = keplerian.AscendingNode;
+//                meanAnomaly = keplerian.MeanAnomaly;
+
+//                q = 0;
+//                reference = stateVector;
+//                deviation = sta::StateVector(null, null);
+//            }
+//#endif
+
+//            // -- Integrating the attitude -- //
+
+//            //Integrating the body rates
+//            AttitudeIntegration propagBodyRates;
+//            MyVector3d bodyRates = propagBodyRates.propagateEulerEquation(attitudeVector.myBodyRates, startTime, dt, inertiaMatrix);
+
+//            //Integrating the quaternions
+//            AttitudeIntegration propAttitudeVector;
+//            MyVector4d theQuaternions(attitudeVector.myQuaternion.coeffs().coeffRef(0),
+//                                      attitudeVector.myQuaternion.coeffs().coeffRef(1),
+//                                      attitudeVector.myQuaternion.coeffs().coeffRef(2),
+//                                      attitudeVector.myQuaternion.coeffs().coeffRef(3));
+
+//            MyVector4d integratedQuaternions = propAttitudeVector.propagateQUATERNIONS(theQuaternions, startTime, dt, bodyRates);
+
+//            //Saving integrated values to the new attitude vector
+//            attitudeVector.myQuaternion.coeffs().coeffRef(0) = integratedQuaternions(0);
+//            attitudeVector.myQuaternion.coeffs().coeffRef(1) = integratedQuaternions(1);
+//            attitudeVector.myQuaternion.coeffs().coeffRef(2) = integratedQuaternions(2);
+//            attitudeVector.myQuaternion.coeffs().coeffRef(3) = integratedQuaternions(3);
+//            attitudeVector.myBodyRates(0) = bodyRates(0);
+//            attitudeVector.myBodyRates(1) = bodyRates(1);
+//            attitudeVector.myBodyRates(2) = bodyRates(2);
+
+//            // -- End of: Integrating the attitude -- //
+
+//            // Append a trajectory sample every outputRate integration steps (and always at the last step.)
+//            if (steps % outputRate == 0 || t >= timelineDuration)
+//            {
+//                sampleTimes << jd;
+//                samples << stateVector;
+//                samplesAtt << attitudeVector;
+//            }
+//            ++steps;
+//        }
+//    }
+//    else if (propagator == "GAUSS")
+//    {
+//        for (double t = dt; t < timelineDuration + dt; t += dt)
+//        {
+//            JulianDate jd = startTime + sta::secsToDays(t);
+//                        // Append a trajectory sample every outputRate integration steps (and always at the last step.)
+//            if (steps % outputRate == 0 || t >= timelineDuration)
+//            {
+//                sampleTimes << jd;
+//                samples << stateVector;
+//                samplesAtt << attitudeVector;
+//            }
+//            ++steps;
+
+//            stateVector = propagateGAUSS(mu, stateVector, dt, perturbationsList, jd, integrator);
+
+//            // -- Integrating the attitude -- //
+
+//            //Integrating the body rates
+//            AttitudeIntegration propagBodyRates;
+//            MyVector3d bodyRates = propagBodyRates.propagateEulerEquation(attitudeVector.myBodyRates, startTime, dt, inertiaMatrix);
+
+//            //Integrating the quaternions
+//            AttitudeIntegration propAttitudeVector;
+//            MyVector4d theQuaternions(attitudeVector.myQuaternion.coeffs().coeffRef(0),
+//                                      attitudeVector.myQuaternion.coeffs().coeffRef(1),
+//                                      attitudeVector.myQuaternion.coeffs().coeffRef(2),
+//                                      attitudeVector.myQuaternion.coeffs().coeffRef(3));
+
+//            MyVector4d integratedQuaternions = propAttitudeVector.propagateQUATERNIONS(theQuaternions, startTime, dt, bodyRates);
+
+//            //Saving integrated values to the new attitude vector
+//            attitudeVector.myQuaternion.coeffs().coeffRef(0) = integratedQuaternions(0);
+//            attitudeVector.myQuaternion.coeffs().coeffRef(1) = integratedQuaternions(1);
+//            attitudeVector.myQuaternion.coeffs().coeffRef(2) = integratedQuaternions(2);
+//            attitudeVector.myQuaternion.coeffs().coeffRef(3) = integratedQuaternions(3);
+//            attitudeVector.myBodyRates(0) = bodyRates(0);
+//            attitudeVector.myBodyRates(1) = bodyRates(1);
+//            attitudeVector.myBodyRates(2) = bodyRates(2);
+
+//            // -- End of: Integrating the attitude -- //
+//        }
+//    }
+//    else
+//    {
+//        propFeedback.raiseError(QObject::tr("Unsupported propagator '%1'").arg(propagator));
+//        return false;
+//    }
+
+    return true;
+
+}
+
+
+
+
+
+
+
 void LoiteringDialog::on_pushButtonAspect_clicked()
 {
     loiteringAspect.exec();
