@@ -181,6 +181,7 @@ class ScenarioLagrangianType;
 class ScenarioFlyByType;
 class ScenarioExternalType;
 class ScenarioDeltaVType;
+class ScenarioRendezVousManoeuvreType;
 class ScenarioSCSystemType;
 class ScenarioSystemBudgets;
 class ScenarioMassOfSystem;
@@ -6868,6 +6869,63 @@ private:
 };
 
 
+// ScenarioRendezVousManoeuvreType
+class ScenarioRendezVousManoeuvreType : public ScenarioAbstractTrajectoryType
+{
+public:
+    ScenarioRendezVousManoeuvreType();
+    static ScenarioRendezVousManoeuvreType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "RendezVousManoeuvreType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QSharedPointer<ScenarioEnvironmentType> Environment() const
+    { return m_Environment; }
+    void setEnvironment(QSharedPointer<ScenarioEnvironmentType> Environment)
+    { m_Environment = Environment; }
+    QSharedPointer<ScenarioTimeLine> TimeLine() const
+    { return m_TimeLine; }
+    void setTimeLine(QSharedPointer<ScenarioTimeLine> TimeLine)
+    { m_TimeLine = TimeLine; }
+    double DeltaV1() const
+    { return m_DeltaV1; }
+    void setDeltaV1(double DeltaV1)
+    { m_DeltaV1 = DeltaV1; }
+    double DeltaV2() const
+    { return m_DeltaV2; }
+    void setDeltaV2(double DeltaV2)
+    { m_DeltaV2 = DeltaV2; }
+    QSharedPointer<ScenarioInitialPositionType> InitialPosition() const
+    { return m_InitialPosition; }
+    void setInitialPosition(QSharedPointer<ScenarioInitialPositionType> InitialPosition)
+    { m_InitialPosition = InitialPosition; }
+    QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude() const
+    { return m_InitialAttitude; }
+    void setInitialAttitude(QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude)
+    { m_InitialAttitude = InitialAttitude; }
+    QSharedPointer<ScenarioPropagationPositionType> PropagationPosition() const
+    { return m_PropagationPosition; }
+    void setPropagationPosition(QSharedPointer<ScenarioPropagationPositionType> PropagationPosition)
+    { m_PropagationPosition = PropagationPosition; }
+    QSharedPointer<ScenarioPropagationAttitudeType> PropagationAttitude() const
+    { return m_PropagationAttitude; }
+    void setPropagationAttitude(QSharedPointer<ScenarioPropagationAttitudeType> PropagationAttitude)
+    { m_PropagationAttitude = PropagationAttitude; }
+
+private:
+    QSharedPointer<ScenarioEnvironmentType> m_Environment;
+    QSharedPointer<ScenarioTimeLine> m_TimeLine;
+    double m_DeltaV1;
+    double m_DeltaV2;
+    QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
+    QSharedPointer<ScenarioInitialAttitudeType> m_InitialAttitude;
+    QSharedPointer<ScenarioPropagationPositionType> m_PropagationPosition;
+    QSharedPointer<ScenarioPropagationAttitudeType> m_PropagationAttitude;
+};
+
+
 // ScenarioSCSystemType
 class ScenarioSCSystemType : public ScenarioObject
 {
@@ -7893,6 +7951,7 @@ QDomElement CreateKeplerianElementsElement(ScenarioKeplerianElementsType* e, QDo
 QDomElement CreatePropagationAttitudeElement(ScenarioPropagationAttitudeType* e, QDomDocument& doc);
 QDomElement CreateRadarPayloadElement(ScenarioRadarPayloadType* e, QDomDocument& doc);
 QDomElement CreateTransmitterPayloadElement(ScenarioTransmitterPayloadType* e, QDomDocument& doc);
+QDomElement CreateRendezVousManoeuvreElement(ScenarioRendezVousManoeuvreType* e, QDomDocument& doc);
 QDomElement CreateTransmitterElement(ScenarioTransmitter* e, QDomDocument& doc);
 QDomElement CreateGroundPositionElement(ScenarioGroundPositionType* e, QDomDocument& doc);
 QDomElement CreateInitialPositionElement(ScenarioInitialPositionType* e, QDomDocument& doc);

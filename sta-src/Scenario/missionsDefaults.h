@@ -57,6 +57,9 @@ public:
     // Generic deltaV maneuver
     ScenarioDeltaVType MissionsDefaults_GENERIC_DELTAV();
 
+    //ALONSO.-
+    // Generic RendezVous Manoeuvres
+    ScenarioRendezVousManoeuvreType MissionsDefaults_GENERIC_RENDEZVOUS();
 
     // Science
     ScenarioLoiteringType MissionsDefaults_XMM();

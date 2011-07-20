@@ -48,10 +48,15 @@
 #include "Astro-Core/date.h"
 #include "Astro-Core/EclipseDuration.h"
 
+#include"Astro-Core/eci2lhlv.h"
+
 //#include "Plotting/plottingtool.h"
 
 #include "Loitering/loitering.h"
 #include "Loitering/loiteringTLE.h"
+
+#include "RendezVous/rendezVousManoeuvres.h"
+
 
 #include "Entry/reentry.h"
 
@@ -345,7 +350,209 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
                     spaceObject->addMissionArc(arc);
                 }
 
+
             }
+  else if(dynamic_cast<ScenarioRendezVousManoeuvreType*>(trajectory.data())) //All kind of rendezvous manoeuvres
+                            {
+                            ScenarioRendezVousManoeuvreType* RVmanoeuvre = dynamic_cast<ScenarioRendezVousManoeuvreType*>(trajectory.data());
+                            QString propagator = RVmanoeuvre->PropagationPosition()->propagator();
+                            QList<ScenarioStateVectorType> mySamples;
+
+                            double mu=Earth_GRAVITY_PARAMETER/1000000000.0;
+
+
+
+                            if (theLastSampleTime > 0.0)  // This arc is NOT the first one
+                            {
+                                if (propagator == "TWO BODY")
+                                {
+                                    ScenarioKeplerianElementsType* elements = new ScenarioKeplerianElementsType;
+                                    QString centralBodyName = RVmanoeuvre->Environment()->CentralBody()->Name();
+                                    StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+                                    sta::KeplerianElements initialStateKeplerian = cartesianTOorbital(centralBody->mu(), theLastStateVector);
+                                    elements->setSemiMajorAxis(initialStateKeplerian.SemimajorAxis);
+                                    elements->setEccentricity(initialStateKeplerian.Eccentricity);
+                                    elements->setInclination(sta::radToDeg(initialStateKeplerian.Inclination));
+                                    elements->setRAAN(sta::radToDeg(initialStateKeplerian.AscendingNode));
+                                    elements->setArgumentOfPeriapsis(sta::radToDeg(initialStateKeplerian.ArgumentOfPeriapsis));
+                                    elements->setTrueAnomaly(sta::radToDeg(initialStateKeplerian.TrueAnomaly));
+                                    RVmanoeuvre->InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(elements));
+                                }
+                                else
+                                {
+                                    ScenarioStateVectorType* stateVector = new ScenarioStateVectorType();
+                                    stateVector->setX(theLastStateVector.position(0));
+                                    stateVector->setY(theLastStateVector.position(1));
+                                    stateVector->setZ(theLastStateVector.position(2));
+                                    stateVector->setVx(theLastStateVector.velocity(0));
+                                    stateVector->setVy(theLastStateVector.velocity(1));
+                                    stateVector->setVz(theLastStateVector.velocity(2));
+                                    RVmanoeuvre->InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(stateVector));
+                                }
+                            }
+                            //Outrageous way for propagation. No multilayer, no OOP.
+
+                            PropagateRendezVousTrajectory(RVmanoeuvre,sampleTimes,mySamples,feedback);
+
+
+                           // qWarning("En scenariopro1 sampleTimes %d\n",sampleTimes.size());
+                           // qWarning("En scenariopro1 samples %d\n",samples.size());
+
+                            //Needed sop for getStateVector
+
+                            sta::StateVector* stateAux=new sta::StateVector();
+
+                            QString centralBodyName = RVmanoeuvre->Environment()->CentralBody()->Name();
+                            StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+                            QString coordSysName = RVmanoeuvre->InitialPosition()->CoordinateSystem();
+                            sta::CoordinateSystem coordSys(coordSysName);
+                            SpaceObject* targetPropagated;
+
+                            targetPropagated=(propScenario->spaceObjects().first());
+                            //qWarning("sample 1 %f\n",mySamples[0].z());
+                            targetPropagated->getStateVector(sampleTimes[0],*centralBody,coordSys,stateAux);
+                            //qWarning("del loitering %f\n",stateAux->position.z());
+
+                            double xInertial,yInertial,zInertial;
+                            double xLocal,yLocal,zLocal;
+                            sta::KeplerianElements e;
+
+                            for(int i=0;i<mySamples.size();i++){
+
+                                sta::StateVector* auxSamples=new sta::StateVector();
+
+                                targetPropagated->mission().at(0)->getStateVector(sampleTimes[i],stateAux);
+
+                                e =cartesianTOorbital(mu,*stateAux);
+
+                                lhlvTOlocal(mySamples[i].x(),mySamples[i].y(),mySamples[i].z(),xLocal,yLocal,zLocal);
+
+                                /*localTOinertial(mySamples[i].x(),mySamples[i].y(),mySamples[i].z(),
+                                                e.Inclination, e.AscendingNode,
+                                                e.TrueAnomaly,e.ArgumentOfPeriapsis,
+                                                xInertial,yInertial,zInertial);*/
+
+                                localTOinertial(xLocal,yLocal,zLocal,
+                                                e.Inclination, e.AscendingNode,
+                                                e.TrueAnomaly,e.ArgumentOfPeriapsis,
+                                                xInertial,yInertial,zInertial);
+
+
+                                auxSamples->position.x()=(xInertial+stateAux->position.x());
+                                auxSamples->position.y()=(yInertial+stateAux->position.y());
+                                auxSamples->position.z()=(zInertial+stateAux->position.z());
+
+                                //Speeds
+
+                                lhlvTOlocal(mySamples[i].vx(),mySamples[i].vy(),mySamples[i].vz(),xLocal,yLocal,zLocal);
+
+                                localTOinertial(xLocal,yLocal,zLocal,
+                                                e.Inclination, e.AscendingNode,
+                                                e.TrueAnomaly,e.ArgumentOfPeriapsis,
+                                                xInertial,yInertial,zInertial);
+
+                                /*localTOinertial(mySamples[i].vx(),mySamples[i].vy(),mySamples[i].vz(),
+                                                e.Inclination, e.AscendingNode,
+                                                e.TrueAnomaly,e.ArgumentOfPeriapsis,
+                                                xInertial,yInertial,zInertial);*/
+
+
+                                auxSamples->velocity.x()=(xInertial+stateAux->velocity.x());
+                                auxSamples->velocity.y()=(yInertial+stateAux->velocity.y());
+                                auxSamples->velocity.z()=(zInertial+stateAux->velocity.z());
+
+                                samples.append(*auxSamples);
+
+
+
+
+                            }
+
+
+
+
+                          /*  qWarning("Primer sample x-- %f\n ",samples[0].position.x());
+                            qWarning("Primer sample y-- %f\n ",samples[0].position.y());
+                            qWarning("Primer sample z-- %f\n ",samples[0].position.z());
+
+
+                            qWarning("Ultimo sample x-- %f\n ",samples[mySamples.size()-1].position.x());
+                            qWarning("Ultimo sample y-- %f\n ",samples[mySamples.size()-1].position.y());
+                            qWarning("Ultimo sample z-- %f\n ",samples[mySamples.size()-1].position.z());*/
+
+
+
+
+
+                            // Recovering the last state vector
+                            numberOFsamples = sampleTimes.size();
+                            theLastStateVector = samples.at(numberOFsamples - 1);
+                            theLastSampleTime = sampleTimes.at(numberOFsamples - 1);
+
+
+                                            //******************************************************************** /OZGUN
+                                            // Eclipse function is called and the "data/EclipseStarLight.stad" is generated
+                                            EclipseDuration* Eclipse = new EclipseDuration();
+
+                                            Eclipse->StarLightTimeFunction(sampleTimes,
+                                                                                                       samples,
+                                                                                                       STA_SOLAR_SYSTEM->lookup("Earth"),
+                                                                                                       STA_SOLAR_SYSTEM->lookup("Sun"));
+
+                                            //******************************************************************** OZGUN/
+
+                                            if (feedback.status() != PropagationFeedback::PropagationOk)
+                                            {
+                                                    return;
+                                            }
+
+                                            //QString centralBodyName = RVmanoeuvre->Environment()->CentralBody()->Name();
+                                            //StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+                                            if (!centralBody)
+                                            {
+                                int ret = QMessageBox::warning(parent, "Propagation Error", "Unrecognized central body");
+                                                    continue;
+                                            }
+
+                                            //QString coordSysName = RVmanoeuvre->InitialPosition()->CoordinateSystem();
+                                            //sta::CoordinateSystem coordSys(coordSysName);
+                                            if (coordSys.type() == sta::COORDSYS_INVALID)
+                                            {
+                                int ret = QMessageBox::warning(parent, "Propagation Error", "Unrecognized coordinate system");
+                                                    continue;
+                                            }
+
+
+                                            if (numberOFsamples > 1)
+                                            {
+
+                                                //samples.removeLast();
+                                                //sampleTimes.removeLast();
+
+                                MissionArc* arc = new MissionArc(centralBody,
+                                                                 coordSys,
+                                                                 sampleTimes,
+                                                                 samples);
+
+                                            //qWarning("En scenariopro sampleTimes %d\n",sampleTimes.size());
+                                            //qWarning("En scenariopro samples %d\n",samples.size());
+                               // qWarning("En rendez tamaño muestras %d\n",samples.size());
+
+                                            // Loading arc color, name, and model
+                                            arc->setArcName(RVmanoeuvre->ElementIdentifier()->Name());
+                                            QString arcColorName = RVmanoeuvre->ElementIdentifier()->colorName();
+                                            MissionsDefaults myMissionDefaults;
+                                            QColor trajectoryColor = myMissionDefaults.missionArcColorFromQt(arcColorName);
+                                            arc->setArcTrajectoryColor(trajectoryColor);
+                                            arc->setModelName(RVmanoeuvre->ElementIdentifier()->modelName());
+
+
+                                            spaceObject->addMissionArc(arc);
+                                          
+
+                                            }
+                }
+
             /////////////////////////// end of the big IF for all arcs
         }
 

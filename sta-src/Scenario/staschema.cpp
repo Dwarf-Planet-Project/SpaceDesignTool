@@ -7453,6 +7453,8 @@ bool ScenarioREVTrajectoryPlanType::load(const QDomElement& e, QDomElement* next
             v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioExternalType::create(*next));
         else if (next->tagName() == "tns:DeltaV")
             v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioDeltaVType::create(*next));
+        else if (next->tagName() == "tns:RendezVousManoeuvre")
+            v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioRendezVousManoeuvreType::create(*next));
         if (v.isNull()) break; else {
             m_AbstractTrajectory << v;
             *next = next->nextSiblingElement();
@@ -7481,6 +7483,8 @@ QDomElement ScenarioREVTrajectoryPlanType::toDomElement(QDomDocument& doc, const
             tagName = "External";
         else if (dynamic_cast<ScenarioDeltaVType*>(p.data()))
             tagName = "DeltaV";
+        else if (dynamic_cast<ScenarioRendezVousManoeuvreType*>(p.data()))
+            tagName = "RendezVousManoeuvre";
         QDomElement child = p->toDomElement(doc, tagName);
         e.appendChild(child);
     }
@@ -10545,6 +10549,8 @@ bool ScenarioTrajectoryPlan::load(const QDomElement& e, QDomElement* next)
             v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioExternalType::create(*next));
         else if (next->tagName() == "tns:DeltaV")
             v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioDeltaVType::create(*next));
+        else if (next->tagName() == "tns:RendezVousManoeuvre")
+            v = QSharedPointer<ScenarioAbstractTrajectoryType>((ScenarioAbstractTrajectoryType*)ScenarioRendezVousManoeuvreType::create(*next));
         if (v.isNull()) break; else {
             m_AbstractTrajectory << v;
             *next = next->nextSiblingElement();
@@ -10573,6 +10579,8 @@ QDomElement ScenarioTrajectoryPlan::toDomElement(QDomDocument& doc, const QStrin
             tagName = "External";
         else if (dynamic_cast<ScenarioDeltaVType*>(p.data()))
             tagName = "DeltaV";
+        else if (dynamic_cast<ScenarioRendezVousManoeuvreType*>(p.data()))
+            tagName = "RendezVousManoeuvre";
         QDomElement child = p->toDomElement(doc, tagName);
         e.appendChild(child);
     }
@@ -10988,6 +10996,118 @@ QList<QSharedPointer<ScenarioObject> >ScenarioDeltaVType::children() const
     if (!m_TimeLine.isNull()) children << m_TimeLine;
     if (!m_InitialPosition.isNull()) children << m_InitialPosition;
     if (!m_InitialAttitude.isNull()) children << m_InitialAttitude;
+    return children;
+}
+
+
+
+
+// ScenarioRendezVousManoeuvreType
+ScenarioRendezVousManoeuvreType::ScenarioRendezVousManoeuvreType() :
+    m_DeltaV1(0.0),
+    m_DeltaV2(0.0)
+{
+    m_Environment = QSharedPointer<ScenarioEnvironmentType>(new ScenarioEnvironmentType());
+    m_TimeLine = QSharedPointer<ScenarioTimeLine>(new ScenarioTimeLine());
+    m_InitialPosition = QSharedPointer<ScenarioInitialPositionType>(new ScenarioInitialPositionType());
+    m_InitialAttitude = QSharedPointer<ScenarioInitialAttitudeType>(new ScenarioInitialAttitudeType());
+    m_PropagationPosition = QSharedPointer<ScenarioPropagationPositionType>(new ScenarioPropagationPositionType());
+    m_PropagationAttitude = QSharedPointer<ScenarioPropagationAttitudeType>(new ScenarioPropagationAttitudeType());
+}
+
+ScenarioRendezVousManoeuvreType* ScenarioRendezVousManoeuvreType::create(const QDomElement& e)
+{
+    ScenarioRendezVousManoeuvreType* v;
+    {
+        v = new ScenarioRendezVousManoeuvreType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioRendezVousManoeuvreType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioAbstractTrajectoryType::load(e, next);
+    if (next->tagName() == "tns:Environment")
+        m_Environment = QSharedPointer<ScenarioEnvironmentType>(ScenarioEnvironmentType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:TimeLine")
+        m_TimeLine = QSharedPointer<ScenarioTimeLine>(ScenarioTimeLine::create(*next));
+    *next = next->nextSiblingElement();
+        m_DeltaV1 = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_DeltaV2 = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:InitialPosition")
+        m_InitialPosition = QSharedPointer<ScenarioInitialPositionType>(ScenarioInitialPositionType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:InitialAttitude")
+        m_InitialAttitude = QSharedPointer<ScenarioInitialAttitudeType>(ScenarioInitialAttitudeType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:PropagationPosition")
+        m_PropagationPosition = QSharedPointer<ScenarioPropagationPositionType>(ScenarioPropagationPositionType::create(*next));
+    *next = next->nextSiblingElement();
+    if (next->tagName() == "tns:PropagationAttitude")
+        m_PropagationAttitude = QSharedPointer<ScenarioPropagationAttitudeType>(ScenarioPropagationAttitudeType::create(*next));
+    *next = next->nextSiblingElement();
+    return true;
+}
+
+QDomElement ScenarioRendezVousManoeuvreType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioAbstractTrajectoryType::toDomElement(doc, elementName);
+    if (!m_Environment.isNull())
+    {
+        QString tagName = "Environment";
+        QDomElement child = m_Environment->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_TimeLine.isNull())
+    {
+        QString tagName = "TimeLine";
+        QDomElement child = m_TimeLine->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    e.appendChild(createSimpleElement(doc, "tns:DeltaV1", m_DeltaV1));
+    e.appendChild(createSimpleElement(doc, "tns:DeltaV2", m_DeltaV2));
+    if (!m_InitialPosition.isNull())
+    {
+        QString tagName = "InitialPosition";
+        QDomElement child = m_InitialPosition->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_InitialAttitude.isNull())
+    {
+        QString tagName = "InitialAttitude";
+        QDomElement child = m_InitialAttitude->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_PropagationPosition.isNull())
+    {
+        QString tagName = "PropagationPosition";
+        QDomElement child = m_PropagationPosition->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    if (!m_PropagationAttitude.isNull())
+    {
+        QString tagName = "PropagationAttitude";
+        QDomElement child = m_PropagationAttitude->toDomElement(doc, tagName);
+        e.appendChild(child);
+    }
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioRendezVousManoeuvreType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    if (!m_Environment.isNull()) children << m_Environment;
+    if (!m_TimeLine.isNull()) children << m_TimeLine;
+    if (!m_InitialPosition.isNull()) children << m_InitialPosition;
+    if (!m_InitialAttitude.isNull()) children << m_InitialAttitude;
+    if (!m_PropagationPosition.isNull()) children << m_PropagationPosition;
+    if (!m_PropagationAttitude.isNull()) children << m_PropagationAttitude;
     return children;
 }
 
@@ -12934,6 +13054,11 @@ QDomElement CreateRadarPayloadElement(ScenarioRadarPayloadType* e, QDomDocument&
 QDomElement CreateTransmitterPayloadElement(ScenarioTransmitterPayloadType* e, QDomDocument& doc)
 {
     return e->toDomElement(doc, "TransmitterPayload");
+}
+
+QDomElement CreateRendezVousManoeuvreElement(ScenarioRendezVousManoeuvreType* e, QDomDocument& doc)
+{
+    return e->toDomElement(doc, "RendezVousManoeuvre");
 }
 
 QDomElement CreateTransmitterElement(ScenarioTransmitter* e, QDomDocument& doc)

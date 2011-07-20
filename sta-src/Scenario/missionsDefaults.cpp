@@ -351,6 +351,63 @@ ScenarioDeltaVType MissionsDefaults::MissionsDefaults_GENERIC_DELTAV()
     return deltaV;
 }
 
+//ALONSO.-
+// Generic RendezVous Manoeuvres
+ScenarioRendezVousManoeuvreType MissionsDefaults::MissionsDefaults_GENERIC_RENDEZVOUS()
+{
+    ScenarioRendezVousManoeuvreType rvManoeuvre;
+
+    rvManoeuvre.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
+
+    QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
+    initPos->setSemiMajorAxis(7650.0);
+    initPos->setInclination(45.0);
+    initPos->setEccentricity(0.0);
+    initPos->setRAAN(0.0);
+    initPos->setArgumentOfPeriapsis(0.0);
+    initPos->setTrueAnomaly(0.0);
+    rvManoeuvre.InitialPosition()->setAbstract6DOFPosition(initPos);
+
+    rvManoeuvre.InitialAttitude()->setCoordinateSystem("EULER 123");
+    QSharedPointer<ScenarioEulerBIType> initAtt(new ScenarioEulerBIType());
+    initAtt->setPhi(0.00000);
+    initAtt->setTheta(0.00000);
+    initAtt->setPsi(0.00000);
+    initAtt->setPhiDot(0.00000);
+    initAtt->setThetaDot(0.00000);
+    initAtt->setPsiDot(0.00000);
+    rvManoeuvre.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+
+    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
+    rvManoeuvre.TimeLine()->setStartTime(TheCurrentDateAndTime);
+    rvManoeuvre.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
+    rvManoeuvre.TimeLine()->setStepTime(60.0);
+
+    rvManoeuvre.PropagationPosition()->setPropagator("TWO BODY");
+    rvManoeuvre.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    rvManoeuvre.PropagationPosition()->setTimeStep(60.0);
+
+    rvManoeuvre.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    rvManoeuvre.PropagationAttitude()->setTimeStep(60.0);
+
+    rvManoeuvre.Environment()->CentralBody()->setName("Earth");
+    rvManoeuvre.Environment()->CentralBody()->GravityModel()->setModelName("EGM2008");
+    rvManoeuvre.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(0);
+    rvManoeuvre.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(0);
+
+
+    rvManoeuvre.ElementIdentifier()->setColorName("Red");
+    rvManoeuvre.ElementIdentifier()->setModelName("Default");
+    rvManoeuvre.ElementIdentifier()->setTheOrder(1);
+    rvManoeuvre.ElementIdentifier()->setName("RVmanoeuvre");
+
+
+
+    return rvManoeuvre;
+}
+
+
+
 
 
 //////////////////////////////////////// Science /////////////////////////////////////////////////
