@@ -490,6 +490,9 @@ static QByteArray spaceVehicleWithTrajectoryFragment(const QString& name, const 
 
 
 
+//ALONSO.- Changes in scenarioelementbox for RV are right here
+//Modifying Cesar deltaV into RendezVousManoeuvreType
+
 ////////////////////////  Creating MANOEUVRES fragments /////////////////////////////////
 static QByteArray deltaVFragment(const char* name)
 {
@@ -540,122 +543,122 @@ static QByteArray lateralDeltaVFragment(const char* name)
 static QByteArray tboostXaxisFragment(const char* name)
 {
     MissionsDefaults myMissionDefaults;
-    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
-    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
-    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+    ScenarioRendezVousManoeuvreType tBoostXaxis = myMissionDefaults.MissionsDefaults_GENERIC_RENDEZVOUS();
+    tBoostXaxis.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    tBoostXaxis.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
 
     QDomDocument doc;
-    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+    return fragmentText(CreateRendezVousManoeuvreElement(&tBoostXaxis, doc)).toUtf8();
 }
 
 static QByteArray tboostHohmannFragment(const char* name)
 {
     MissionsDefaults myMissionDefaults;
-    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
-    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
-    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+    ScenarioRendezVousManoeuvreType tBoostHohmann = myMissionDefaults.MissionsDefaults_GENERIC_RENDEZVOUS();
+    tBoostHohmann.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    tBoostHohmann.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
 
     QDomDocument doc;
-    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+    return fragmentText(CreateRendezVousManoeuvreElement(&tBoostHohmann, doc)).toUtf8();
 }
 
 static QByteArray tboost90Fragment(const char* name)
 {
     MissionsDefaults myMissionDefaults;
-    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
-    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
-    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+    ScenarioRendezVousManoeuvreType tBoost90 = myMissionDefaults.MissionsDefaults_GENERIC_RENDEZVOUS();
+    tBoost90.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    tBoost90.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
 
     QDomDocument doc;
-    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+    return fragmentText(CreateRendezVousManoeuvreElement(&tBoost90, doc)).toUtf8();
 }
 
 static QByteArray rboostXaxisFragment(const char* name)
 {
     MissionsDefaults myMissionDefaults;
-    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
-    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
-    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+    ScenarioRendezVousManoeuvreType rBoostXaxis = myMissionDefaults.MissionsDefaults_GENERIC_RENDEZVOUS();
+    rBoostXaxis.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    rBoostXaxis.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
 
     QDomDocument doc;
-    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+    return fragmentText(CreateRendezVousManoeuvreElement(&rBoostXaxis, doc)).toUtf8();
 }
 
 static QByteArray rboost90Fragment(const char* name)
 {
     MissionsDefaults myMissionDefaults;
-    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
-    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
-    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+    ScenarioRendezVousManoeuvreType rBoost90 = myMissionDefaults.MissionsDefaults_GENERIC_RENDEZVOUS();
+    rBoost90.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    rBoost90.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
 
     QDomDocument doc;
-    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+    return fragmentText(CreateRendezVousManoeuvreElement(&rBoost90, doc)).toUtf8();
 }
 
 static QByteArray rboost360Fragment(const char* name)
 {
     MissionsDefaults myMissionDefaults;
-    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
-    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
-    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+    ScenarioRendezVousManoeuvreType rBoost360 = myMissionDefaults.MissionsDefaults_GENERIC_RENDEZVOUS();
+    rBoost360.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    rBoost360.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
 
     QDomDocument doc;
-    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+    return fragmentText(CreateRendezVousManoeuvreElement(&rBoost360, doc)).toUtf8();
 }
 
 static QByteArray fCstHoldFragment(const char* name)
 {
     MissionsDefaults myMissionDefaults;
-    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
-    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
-    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+    ScenarioRendezVousManoeuvreType fCstHold = myMissionDefaults.MissionsDefaults_GENERIC_RENDEZVOUS();
+    fCstHold.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    fCstHold.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
 
     QDomDocument doc;
-    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+    return fragmentText(CreateRendezVousManoeuvreElement(&fCstHold, doc)).toUtf8();
 }
 
 static QByteArray fCstVbarFragment(const char* name)
 {
     MissionsDefaults myMissionDefaults;
-    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
-    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
-    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+    ScenarioRendezVousManoeuvreType fCstVbar = myMissionDefaults.MissionsDefaults_GENERIC_RENDEZVOUS();
+    fCstVbar.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    fCstVbar.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
 
     QDomDocument doc;
-    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+    return fragmentText(CreateRendezVousManoeuvreElement(&fCstVbar, doc)).toUtf8();
 }
 
 static QByteArray fCstRbarFragment(const char* name)
 {
     MissionsDefaults myMissionDefaults;
-    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
-    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
-    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+    ScenarioRendezVousManoeuvreType fCstRbar = myMissionDefaults.MissionsDefaults_GENERIC_RENDEZVOUS();
+    fCstRbar.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    fCstRbar.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
 
     QDomDocument doc;
-    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+    return fragmentText(CreateRendezVousManoeuvreElement(&fCstRbar, doc)).toUtf8();
 }
 
 static QByteArray fCstTangFragment(const char* name)
 {
     MissionsDefaults myMissionDefaults;
-    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
-    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
-    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+    ScenarioRendezVousManoeuvreType fCstTang = myMissionDefaults.MissionsDefaults_GENERIC_RENDEZVOUS();
+    fCstTang.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    fCstTang.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
 
     QDomDocument doc;
-    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+    return fragmentText(CreateRendezVousManoeuvreElement(&fCstTang, doc)).toUtf8();
 }
 
 static QByteArray fCstRadFragment(const char* name)
 {
     MissionsDefaults myMissionDefaults;
-    ScenarioDeltaVType myDeltaV = myMissionDefaults.MissionsDefaults_GENERIC_DELTAV();
-    myDeltaV.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
-    myDeltaV.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
+    ScenarioRendezVousManoeuvreType fCstRad = myMissionDefaults.MissionsDefaults_GENERIC_RENDEZVOUS();
+    fCstRad.InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioStateVectorType>(new ScenarioStateVectorType()));
+    fCstRad.InitialAttitude()->setAbstract6DOFAttitude(QSharedPointer<ScenarioEulerBIType>(new ScenarioEulerBIType()));
 
     QDomDocument doc;
-    return fragmentText(CreateDeltaVElement(&myDeltaV, doc)).toUtf8();
+    return fragmentText(CreateRendezVousManoeuvreElement(&fCstRad, doc)).toUtf8();
 }
 
 ////////////////////////  Creating PAYLOADS fragments /////////////////////////////////

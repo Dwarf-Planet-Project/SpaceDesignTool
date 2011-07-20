@@ -58,7 +58,7 @@
 //***************** OZGUN/
 
 #include "propagatedscenario.h"
-#include "RendezVous/rendezvousDialog.h"
+#include "RendezVous/rendezVousDialog.h"
 #include "Lagrangian/lagrangianDialog.h"
 #include "Interplanetary/interplanetaryDialog.h"
 #include "Entry/reentry.h"
@@ -1604,7 +1604,7 @@ void MainWindow::on_actionCreateLagrangianPlan_triggered()
 void MainWindow::on_actionCreateRendezvousPlan_triggered()
 {
     //ALONSO.- Changes in definition of RVDialog. scenario and propagated scenario are needed
-    rendezvousDialog* myRendezvousPlanDialoge = new rendezvousDialog(m_scenario,m_propagatedScenario,this);
+    RendezVousDialog* myRendezvousPlanDialoge = new RendezVousDialog(m_scenario,m_propagatedScenario,this);
     myRendezvousPlanDialoge->exec();
     myRendezvousPlanDialoge->setFocus();
 
