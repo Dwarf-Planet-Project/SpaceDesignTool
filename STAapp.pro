@@ -271,18 +271,19 @@ LOCATIONS_FORMS = sta-src/Locations/locationeditor.ui \
     sta-src/Locations/environmentDialog.ui
 
 # ############# Rendezvous Module ##############
-RENDEZVOUS_SOURCES = sta-src/RendezVous/rendezvousDialog.cpp \
-    sta-src/RendezVous/scheduledtablemanoeuvres.cpp \
-    sta-src/RendezVous/RVXMLInterface.cpp \
-    sta-src/RendezVous/RVManoeuvres.cpp \
-    sta-src/RendezVous/manoeuvrestreedrag.cpp
-RENDEZVOUS_HEADERS = sta-src/RendezVous/rendezvousDialog.h \
-    sta-src/RendezVous/scheduledtablemanoeuvres.h \
-    sta-src/RendezVous/RVXMLInterface.h \
-    sta-src/RendezVous/RVManoeuvres.h \
-    sta-src/RendezVous/RVconstants.h \
-    sta-src/RendezVous/manoeuvrestreedrag.h
-RENDEZVOUS_FORMS = sta-src/RendezVous/rendezvousDialog.ui
+RENDEZVOUS_SOURCES = sta-src/RendezVous/rendezVousDialog.cpp \
+    sta-src/RendezVous/rendezVousScheduledManoeuvresTable.cpp \
+    sta-src/RendezVous/rendezVousXMLInterface.cpp \
+    sta-src/RendezVous/rendezVousManoeuvres.cpp \
+    sta-src/RendezVous/rendezVousManoeuvresTreeDrag.cpp
+RENDEZVOUS_HEADERS = sta-src/RendezVous/rendezVousDialog.h \
+    sta-src/RendezVous/rendezVousScheduledManoeuvresTable.h \
+    sta-src/RendezVous/rendezVousXMLInterface.h \
+    sta-src/RendezVous/rendezVousManoeuvres.h \
+    sta-src/RendezVous/rendezVousConstants.h \
+    sta-src/RendezVous/rendezVousManoeuvresTreeDrag.h
+RENDEZVOUS_FORMS = sta-src/RendezVous/rendezVousDialog.ui
+
 
 # ############# Coverage Module ##############
 COVERAGE_SOURCES = sta-src/Coverage/commanalysis.cpp \
