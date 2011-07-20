@@ -131,6 +131,7 @@
 	</complexType>
 
 	<!-- Maneuvers -->
+		
 	<element name="DeltaV" substitutionGroup="tns:AbstractTrajectory"
 		type="tns:DeltaVType"></element>
 
@@ -146,6 +147,31 @@
 					<element name="DeltaVy" type="double"></element>
 					<element name="DeltaVz" type="double"></element>
 					<element name="Magnitude" type="double"></element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+
+	<!-- Alonso.- One kind of rendezVous type to bind them all -->
+
+	<element name="RendezVousManoeuvre" substitutionGroup="tns:AbstractTrajectory"
+		type="tns:RendezVousManoeuvreType"></element>
+
+	<complexType name="RendezVousManoeuvreType">
+		<complexContent>
+			<extension base="tns:AbstractTrajectoryType">
+				<sequence>
+					
+					<element ref="tns:Environment"></element>
+					<element ref="tns:TimeLine"></element>
+					<element name="DeltaV1" type="double"></element>
+					<element name="DeltaV2" type="double"></element>
+					<element ref="tns:InitialPosition"></element>
+					<element ref="tns:InitialAttitude"></element>
+					<element ref="tns:PropagationPosition"></element>
+					<element ref="tns:PropagationAttitude"></element>
+					
 				</sequence>
 			</extension>
 		</complexContent>
@@ -414,6 +440,7 @@
 			</extension>
 		</complexContent>
 	</complexType>
+
 
 
 
