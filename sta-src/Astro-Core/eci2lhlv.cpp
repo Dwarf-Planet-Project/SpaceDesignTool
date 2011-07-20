@@ -27,6 +27,7 @@
  Modified by Tiziana Sabatini on July 2009
  */
 #include<Eigen/Core>
+#include<Eigen/LU>
 #include<QDebug>
 
 USING_PART_OF_NAMESPACE_EIGEN;
@@ -38,7 +39,8 @@ void inertialTOlocal(double xInertial, double yInertial, double zInertial, doubl
         double phi = w+t;
 
         Matrix3d conversion;
-        conversion <<   cos(phi)*cos(Omega) - sin(Omega)*cos(i)*sin(phi),   cos(phi)*sin(Omega) + cos(Omega)*cos(i)*sin(phi), sin(i)*sin(phi),
+
+         conversion <<   cos(phi)*cos(Omega) - sin(Omega)*cos(i)*sin(phi),   cos(phi)*sin(Omega) + cos(Omega)*cos(i)*sin(phi), sin(i)*sin(phi),
                       - sin(phi)*cos(Omega) - sin(Omega)*cos(i)*cos(phi), - sin(phi)*sin(Omega) + cos(Omega)*cos(i)*cos(phi), sin(i)*cos(phi),
                         sin(i)*sin(Omega),  - sin(i)*cos(Omega),  cos(i);
 
@@ -48,5 +50,42 @@ void inertialTOlocal(double xInertial, double yInertial, double zInertial, doubl
         xlocal = local.x();
         ylocal = local.y();
         zlocal = local.z();
+
+}
+
+
+void localTOinertial(double xLocal, double yLocal, double zLocal, double i, double Omega, double t, double w,double& xInertial, double& yInertial, double& zInertial)
+{
+        // phase angle
+        double phi = w+t;
+
+        Matrix3d conversion;
+
+         conversion <<   cos(phi)*cos(Omega) - sin(Omega)*cos(i)*sin(phi),   cos(phi)*sin(Omega) + cos(Omega)*cos(i)*sin(phi), sin(i)*sin(phi),
+                      - sin(phi)*cos(Omega) - sin(Omega)*cos(i)*cos(phi), - sin(phi)*sin(Omega) + cos(Omega)*cos(i)*cos(phi), sin(i)*cos(phi),
+                        sin(i)*sin(Omega),  - sin(i)*cos(Omega),  cos(i);
+
+        Vector3d local, inertial;
+
+        local << xLocal,yLocal,zLocal;
+
+
+        inertial=conversion.inverse()*local;
+
+
+
+        xInertial = inertial.x();
+        yInertial = inertial.y();
+        zInertial = inertial.z();
+
+
+}
+
+
+void lhlvTOlocal(double xLHLV,double yLHLV,double zLHLV, double& xLocal,double& yLocal,double& zLocal){
+
+    xLocal=-zLHLV;
+    yLocal=xLHLV;
+    zLocal=-yLHLV;
 
 }

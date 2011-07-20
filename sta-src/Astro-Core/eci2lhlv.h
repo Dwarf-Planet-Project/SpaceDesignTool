@@ -46,3 +46,12 @@
 void inertialTOlocal(double xInertial, double yInertial, double zInertial,
                 double i, double Omega, double t, double w, double& xlocal, double& ylocal, double& zlocal);
 
+
+//ALONSO.- inverse transformation
+void localTOinertial(double xInertial, double yInertial, double zInertial,
+                double i, double Omega, double t, double w, double& xlocal, double& ylocal, double& zlocal);
+
+
+//ALONSO.- Needed for lhlv. Renaming axis, no more.
+void lhlvTOlocal(double xLHLV,double yLHLV,double zLHLV, double& xLocal,double& yLocal,double& zLocal);
+
