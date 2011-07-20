@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>rendezvousDialog</class>
- <widget class="QDialog" name="rendezvousDialog">
+ <class>RendezVousDialogClass</class>
+ <widget class="QDialog" name="RendezVousDialogClass">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>619</width>
-    <height>564</height>
+    <width>643</width>
+    <height>540</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="acceptDrops">
-   <bool>true</bool>
+   <bool>false</bool>
   </property>
   <property name="windowTitle">
    <string>RendezVous Wizard</string>
@@ -26,18 +26,13 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QToolBox" name="toolBox">
-       <widget class="QWidget" name="toolBoxPage1">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>599</width>
-          <height>430</height>
-         </rect>
-        </property>
-        <attribute name="label">
-         <string>Target and Chaser initial data</string>
+      <widget class="QTabWidget" name="tabWidget">
+       <property name="currentIndex">
+        <number>2</number>
+       </property>
+       <widget class="QWidget" name="initiaDataPage">
+        <attribute name="title">
+         <string>INITIAL DATA</string>
         </attribute>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
@@ -64,6 +59,117 @@
             </property>
             <property name="text">
              <string>Chaser Initial Data</string>
+            </property>
+           </widget>
+           <widget class="QWidget" name="layoutWidget_2">
+            <property name="geometry">
+             <rect>
+              <x>20</x>
+              <y>120</y>
+              <width>136</width>
+              <height>151</height>
+             </rect>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_5">
+             <item>
+              <widget class="QLabel" name="label_14">
+               <property name="text">
+                <string>Orbit Radius (km)</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_15">
+               <property name="text">
+                <string>Eccentricity [-]</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_16">
+               <property name="text">
+                <string>Inclination (deg)</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_17">
+               <property name="text">
+                <string>RAAN (deg)</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_18">
+               <property name="text">
+                <string>Argument of periapsis (deg)</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_19">
+               <property name="text">
+                <string>True Anomaly (deg)</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="layoutWidget_3">
+            <property name="geometry">
+             <rect>
+              <x>170</x>
+              <y>120</y>
+              <width>112</width>
+              <height>152</height>
+             </rect>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_6">
+             <item>
+              <widget class="QLineEdit" name="RadiusChaserEdit"/>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="EccentricityChaserEdit"/>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="InclinationChaserEdit"/>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="RAANChaserEdit">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="ArgumentPeriapChaserEdit"/>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="TrueAnomalyChaserEdit"/>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QLineEdit" name="PropStepEdit">
+            <property name="geometry">
+             <rect>
+              <x>170</x>
+              <y>300</y>
+              <width>113</width>
+              <height>20</height>
+             </rect>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label_20">
+            <property name="geometry">
+             <rect>
+              <x>50</x>
+              <y>300</y>
+              <width>111</width>
+              <height>20</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Propagation Step (s)</string>
             </property>
            </widget>
           </widget>
@@ -94,21 +200,124 @@
              <string>Target Initial Data</string>
             </property>
            </widget>
+           <widget class="QDateTimeEdit" name="InitialEpochTargetEdit">
+            <property name="geometry">
+             <rect>
+              <x>120</x>
+              <y>70</y>
+              <width>131</width>
+              <height>22</height>
+             </rect>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label_2">
+            <property name="geometry">
+             <rect>
+              <x>40</x>
+              <y>70</y>
+              <width>61</width>
+              <height>16</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Initial Epoch</string>
+            </property>
+           </widget>
+           <widget class="QWidget" name="layoutWidget">
+            <property name="geometry">
+             <rect>
+              <x>11</x>
+              <y>121</y>
+              <width>136</width>
+              <height>151</height>
+             </rect>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_3">
+             <item>
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>Orbit Radius (km)</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_9">
+               <property name="text">
+                <string>Eccentricity [-]</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_10">
+               <property name="text">
+                <string>Inclination (deg)</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_11">
+               <property name="text">
+                <string>RAAN (deg)</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_12">
+               <property name="text">
+                <string>Argument of periapsis (deg)</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_13">
+               <property name="text">
+                <string>True Anomaly (deg)</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="layoutWidget">
+            <property name="geometry">
+             <rect>
+              <x>160</x>
+              <y>120</y>
+              <width>112</width>
+              <height>152</height>
+             </rect>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <item>
+              <widget class="QLineEdit" name="RadiusTargetEdit"/>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="EccentricityTargetEdit"/>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="InclinationTargetEdit"/>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="RAANTargetEdit">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="ArgumentPeriapTargetEdit"/>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="TrueAnomalyTargetEdit"/>
+             </item>
+            </layout>
+           </widget>
           </widget>
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="toolBoxPage2">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>599</width>
-          <height>430</height>
-         </rect>
-        </property>
-        <attribute name="label">
-         <string>INFO (Perturbations in future)</string>
+       <widget class="QWidget" name="perturbationsPage">
+        <attribute name="title">
+         <string>PERTURBATIONS</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_2">
          <item row="0" column="0">
@@ -133,74 +342,42 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="toolBoxPage3">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>599</width>
-          <height>430</height>
-         </rect>
-        </property>
-        <attribute name="label">
-         <string>Manoeuvre Plan</string>
+       <widget class="QWidget" name="manoeuvresPage">
+        <attribute name="title">
+         <string>SCHEDULED MANOEUVRES</string>
         </attribute>
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="font">
-            <font>
-             <pointsize>18</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Manoeuvre List </string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLabel" name="label">
-           <property name="font">
-            <font>
-             <pointsize>18</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Scheduled Manoeuvres</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="ManoeuvresTreeDrag" name="manoeuvreTree">
-           <property name="minimumSize">
-            <size>
-             <width>219</width>
-             <height>370</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>219</width>
-             <height>370</height>
-            </size>
-           </property>
-           <column>
-            <property name="text">
-             <string>Select manoeuvre (d&amp;d not available yet)</string>
+        <widget class="QWidget" name="layoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>9</x>
+           <y>76</y>
+           <width>591</width>
+           <height>372</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="ManoeuvresTreeDrag" name="manoeuvreTree">
+            <property name="minimumSize">
+             <size>
+              <width>219</width>
+              <height>370</height>
+             </size>
             </property>
-           </column>
-           <item>
-            <property name="text">
-             <string>Free Drift</string>
+            <property name="maximumSize">
+             <size>
+              <width>219</width>
+              <height>370</height>
+             </size>
             </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Single Boost</string>
-            </property>
+            <column>
+             <property name="text">
+              <string>Select manoeuvre </string>
+             </property>
+            </column>
             <item>
              <property name="text">
-              <string>Tangential</string>
+              <string>Free Drift</string>
              </property>
              <property name="flags">
               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
@@ -208,373 +385,404 @@
             </item>
             <item>
              <property name="text">
-              <string>Radial</string>
+              <string>Single Boost</string>
              </property>
              <property name="flags">
-              <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+              <set>ItemIsEnabled</set>
              </property>
+             <item>
+              <property name="text">
+               <string>SBtangential</string>
+              </property>
+              <property name="flags">
+               <set>NoItemFlags</set>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>SBradial</string>
+              </property>
+              <property name="flags">
+               <set>NoItemFlags</set>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>SBlateral</string>
+              </property>
+              <property name="flags">
+               <set>NoItemFlags</set>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Full DeltaV</string>
+              </property>
+              <property name="flags">
+               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+              </property>
+             </item>
             </item>
             <item>
              <property name="text">
-              <string>Lateral</string>
+              <string>Two pulse transfers</string>
              </property>
              <property name="flags">
-              <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Full DeltaV</string>
-             </property>
-            </item>
-           </item>
-           <item>
-            <property name="text">
-             <string>Two pulse transfers</string>
-            </property>
-            <item>
-             <property name="text">
-              <string>Tangential Boost Transfers</string>
+              <set>ItemIsEnabled</set>
              </property>
              <item>
               <property name="text">
-               <string>Along x-axis</string>
+               <string>Tangential Boost Transfers</string>
               </property>
               <property name="flags">
-               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+               <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
               </property>
+              <item>
+               <property name="text">
+                <string>2TBTalong x-axis</string>
+               </property>
+               <property name="flags">
+                <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>2TBTHohmann Transfer</string>
+               </property>
+               <property name="flags">
+                <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>2TBT90 degrees fly-around</string>
+               </property>
+               <property name="flags">
+                <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+               </property>
+              </item>
              </item>
              <item>
               <property name="text">
-               <string>Hohmann Transfer</string>
+               <string>Radial boost Transfers</string>
               </property>
               <property name="flags">
-               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+               <set>ItemIsEnabled</set>
               </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>90 degrees fly-around</string>
-              </property>
-              <property name="flags">
-               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
-              </property>
+              <item>
+               <property name="text">
+                <string>2RBTalong x-axis</string>
+               </property>
+               <property name="flags">
+                <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>2RBT90 degrees radial fly-around</string>
+               </property>
+               <property name="flags">
+                <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>2RBT360 degrees radial fly-around</string>
+               </property>
+               <property name="flags">
+                <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+               </property>
+              </item>
              </item>
             </item>
             <item>
              <property name="text">
-              <string>Radial boost Transfers</string>
-             </property>
-             <item>
-              <property name="text">
-               <string>Transfer along x-axis</string>
-              </property>
-              <property name="flags">
-               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>90 degrees radial fly-around</string>
-              </property>
-              <property name="flags">
-               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>360 degrees radial fly-around</string>
-              </property>
-              <property name="flags">
-               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
-              </property>
-             </item>
-            </item>
-           </item>
-           <item>
-            <property name="text">
-             <string>Constant force trajectories</string>
-            </property>
-            <item>
-             <property name="text">
-              <string>Hold Points outside V-bar</string>
+              <string>Constant force trajectories</string>
              </property>
              <property name="flags">
-              <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Straight lines trajectories</string>
+              <set>ItemIsEnabled</set>
              </property>
              <item>
               <property name="text">
-               <string>V-bar</string>
+               <string>Hold Points outside V-bar</string>
               </property>
               <property name="flags">
-               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+               <set>NoItemFlags</set>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>R-bar</string>
+               <string>Straight lines trajectories</string>
               </property>
               <property name="flags">
-               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+               <set>ItemIsEnabled</set>
               </property>
+              <item>
+               <property name="text">
+                <string>SLT V-bar</string>
+               </property>
+               <property name="flags">
+                <set>NoItemFlags</set>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>SLT R-bar</string>
+               </property>
+               <property name="flags">
+                <set>NoItemFlags</set>
+               </property>
+              </item>
+             </item>
+             <item>
+              <property name="text">
+               <string>Constant force transfers</string>
+              </property>
+              <property name="flags">
+               <set>ItemIsEnabled</set>
+              </property>
+              <item>
+               <property name="text">
+                <string>CFT Tangential</string>
+               </property>
+               <property name="flags">
+                <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>CFT Radial</string>
+               </property>
+               <property name="flags">
+                <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+               </property>
+              </item>
              </item>
             </item>
-            <item>
-             <property name="text">
-              <string>Constant force transfers</string>
-             </property>
-             <item>
-              <property name="text">
-               <string>Tangential</string>
-              </property>
-              <property name="flags">
-               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Radial</string>
-              </property>
-              <property name="flags">
-               <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
-              </property>
-             </item>
-            </item>
-           </item>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QToolBox" name="toolBox_2">
-           <property name="currentIndex">
-            <number>2</number>
-           </property>
-           <widget class="QWidget" name="page_1">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>356</width>
-              <height>296</height>
-             </rect>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTabWidget" name="ScheduledManoeuvresTB">
+            <property name="currentIndex">
+             <number>1</number>
             </property>
-            <attribute name="label">
-             <string>Phasing Stage</string>
-            </attribute>
-            <widget class="QTableWidget" name="tableWidget">
-             <property name="geometry">
-              <rect>
-               <x>10</x>
-               <y>10</y>
-               <width>341</width>
-               <height>281</height>
-              </rect>
-             </property>
-             <row>
-              <property name="text">
-               <string>NAME</string>
+            <widget class="QWidget" name="ScheduledManoeuvresTBPage1">
+             <attribute name="title">
+              <string>Phasing manoeuvres</string>
+             </attribute>
+             <widget class="ScheduledTableManoeuvres" name="phasingManTable">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>10</y>
+                <width>341</width>
+                <height>331</height>
+               </rect>
               </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>INIT TIME</string>
+              <property name="dragEnabled">
+               <bool>true</bool>
               </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>END TIME</string>
+              <property name="dragDropMode">
+               <enum>QAbstractItemView::DragDrop</enum>
               </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>INIT POS</string>
+              <row>
+               <property name="text">
+                <string>NAME</string>
+               </property>
+              </row>
+              <row>
+               <property name="text">
+                <string>INIT TIME</string>
+               </property>
+              </row>
+              <row>
+               <property name="text">
+                <string>END TIME</string>
+               </property>
+              </row>
+              <row>
+               <property name="text">
+                <string>INIT POS</string>
+               </property>
+              </row>
+              <row>
+               <property name="text">
+                <string>END POS</string>
+               </property>
+              </row>
+              <row>
+               <property name="text">
+                <string>DELTAV</string>
+               </property>
+              </row>
+              <row>
+               <property name="text">
+                <string>INPUT</string>
+               </property>
+              </row>
+              <column>
+               <property name="text">
+                <string>1</string>
+               </property>
+              </column>
+              <item row="0" column="0">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="checkState">
+                <enum>PartiallyChecked</enum>
+               </property>
+              </item>
+              <item row="1" column="0">
+               <property name="text">
+                <string/>
+               </property>
+              </item>
+              <item row="2" column="0">
+               <property name="text">
+                <string/>
+               </property>
+              </item>
+              <item row="3" column="0">
+               <property name="text">
+                <string/>
+               </property>
+              </item>
+              <item row="4" column="0">
+               <property name="text">
+                <string/>
+               </property>
+              </item>
+              <item row="5" column="0">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="checkState">
+                <enum>Unchecked</enum>
+               </property>
+              </item>
+              <item row="6" column="0">
+               <property name="flags">
+                <set>ItemIsSelectable|ItemIsEditable|ItemIsUserCheckable|ItemIsEnabled</set>
+               </property>
+              </item>
+             </widget>
+            </widget>
+            <widget class="QWidget" name="ScheduledManoeuvresTBPage3">
+             <attribute name="title">
+              <string>Close Range </string>
+             </attribute>
+             <widget class="ScheduledTableManoeuvres" name="closeManTable">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>10</y>
+                <width>341</width>
+                <height>331</height>
+               </rect>
               </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>END POS</string>
+              <property name="acceptDrops">
+               <bool>true</bool>
               </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>DELTAV</string>
+              <property name="dragEnabled">
+               <bool>true</bool>
               </property>
-             </row>
-             <column>
-              <property name="text">
-               <string>1</string>
+              <property name="dragDropMode">
+               <enum>QAbstractItemView::DragDrop</enum>
               </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>2</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>3</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>4</string>
-              </property>
-             </column>
+              <row>
+               <property name="text">
+                <string>NAME</string>
+               </property>
+              </row>
+              <row>
+               <property name="text">
+                <string>INIT TIME</string>
+               </property>
+              </row>
+              <row>
+               <property name="text">
+                <string>END TIME</string>
+               </property>
+              </row>
+              <row>
+               <property name="text">
+                <string>INIT POS</string>
+               </property>
+              </row>
+              <row>
+               <property name="text">
+                <string>END POS</string>
+               </property>
+              </row>
+              <row>
+               <property name="text">
+                <string>DELTAV</string>
+               </property>
+              </row>
+              <row>
+               <property name="text">
+                <string>INPUT</string>
+               </property>
+              </row>
+              <column>
+               <property name="text">
+                <string>1</string>
+               </property>
+              </column>
+              <item row="0" column="0">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="checkState">
+                <enum>Unchecked</enum>
+               </property>
+               <property name="flags">
+                <set>ItemIsSelectable|ItemIsEditable|ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+               </property>
+              </item>
+             </widget>
             </widget>
            </widget>
-           <widget class="QWidget" name="page_2">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>356</width>
-              <height>296</height>
-             </rect>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="layoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>30</y>
+           <width>551</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QLabel" name="label_4">
+            <property name="font">
+             <font>
+              <pointsize>18</pointsize>
+             </font>
             </property>
-            <attribute name="label">
-             <string>Long Range Stage</string>
-            </attribute>
-            <widget class="QTableWidget" name="tableWidget_2">
-             <property name="geometry">
-              <rect>
-               <x>10</x>
-               <y>0</y>
-               <width>341</width>
-               <height>281</height>
-              </rect>
-             </property>
-             <row>
-              <property name="text">
-               <string>NAME</string>
-              </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>INIT TIME</string>
-              </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>END TIME</string>
-              </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>INIT POS</string>
-              </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>END POS</string>
-              </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>DELTAV</string>
-              </property>
-             </row>
-             <column>
-              <property name="text">
-               <string>1</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>2</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>3</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>4</string>
-              </property>
-             </column>
-            </widget>
-           </widget>
-           <widget class="QWidget" name="page_3">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>356</width>
-              <height>296</height>
-             </rect>
+            <property name="text">
+             <string>Manoeuvre List </string>
             </property>
-            <attribute name="label">
-             <string>Close Range Stage</string>
-            </attribute>
-            <widget class="ScheduledTableManoeuvres" name="tableWidget_3">
-             <property name="geometry">
-              <rect>
-               <x>10</x>
-               <y>0</y>
-               <width>341</width>
-               <height>281</height>
-              </rect>
-             </property>
-             <row>
-              <property name="text">
-               <string>NAME</string>
-              </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>INIT TIME</string>
-              </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>END TIME</string>
-              </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>INIT POS</string>
-              </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>END POS</string>
-              </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>DELTAV</string>
-              </property>
-             </row>
-             <column>
-              <property name="text">
-               <string>1</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>2</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>3</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>4</string>
-              </property>
-             </column>
-            </widget>
            </widget>
-          </widget>
-         </item>
-        </layout>
+          </item>
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="font">
+             <font>
+              <pointsize>18</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Scheduled Manoeuvres</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </widget>
       </widget>
      </item>
@@ -583,7 +791,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="pushButtonAspect">
        <property name="text">
         <string>Aspect</string>
        </property>
@@ -607,26 +815,12 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="deltaVPB">
-       <property name="text">
-        <string>DeltaV</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="freeDriftPB">
-       <property name="text">
-        <string>FreeDrift</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QDialogButtonBox" name="buttonBox">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="standardButtons">
-        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+        <set>QDialogButtonBox::Ok</set>
        </property>
       </widget>
      </item>
@@ -636,47 +830,31 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ManoeuvresTreeDrag</class>
-   <extends>QTreeWidget</extends>
-   <header location="global">./sta-src/RendezVous/manoeuvrestreedrag.h</header>
-  </customwidget>
-  <customwidget>
    <class>ScheduledTableManoeuvres</class>
    <extends>QTableWidget</extends>
-   <header location="global">./sta-src/RendezVous/scheduledtablemanoeuvres.h</header>
+   <header>./sta-src/RendezVous/rendezVousScheduledManoeuvresTable.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ManoeuvresTreeDrag</class>
+   <extends>QTreeWidget</extends>
+   <header>./sta-src/RendezVous/rendezVousManoeuvresTreeDrag.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>rendezvousDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>rendezvousDialog</receiver>
+   <receiver>RendezVousDialogClass</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>445</x>
+     <y>467</y>
     </hint>
     <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
+     <x>309</x>
+     <y>244</y>
     </hint>
    </hints>
   </connection>

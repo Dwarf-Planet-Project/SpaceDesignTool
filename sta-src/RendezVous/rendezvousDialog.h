@@ -23,51 +23,60 @@
 /*
  ------------------ Author: Guillermo Ortega  -------------------------------------------------
  ------------------ European Space Agency ----------------------------
-
+ ------------------ Modified: J. Alonso     -------------------------------------------------
+ ------------------ ETSIA                   ----------------------------
+ Comments:
+ Header for dialog.
  */
 
 
+#ifndef _RENDEZVOUSDIALOG_H_
+#define _RENDEZVOUSDIALOG_H_
 
-#ifndef RENDEZVOUSDIALOG_H
-#define RENDEZVOUSDIALOG_H
 
+#include "rendezVousXMLInterface.h"
 
-#include "RVXMLInterface.h"
-
-#include "manoeuvrestreedrag.h"
+#include "rendezVousManoeuvresTreeDrag.h"
+#include "rendezVousScheduledManoeuvresTable.h"
 
 #include <QDialog>
 #include <QTreeWidget>
-#include "ui_rendezvousDialog.h"
+#include "Scenario/missionAspectDialog.h"
+
+#include "ui_rendezVousDialog.h"
+#include "ui_missionAspectDialog.h"
+
 class MainWindow;
 
 
-
-
-class rendezvousDialog : public QDialog , private Ui_rendezvousDialog
+class RendezVousDialog : public QDialog , private Ui_RendezVousDialogClass
 {
 Q_OBJECT
 public:
 
-        rendezvousDialog(SpaceScenario*,PropagatedScenario*,MainWindow* parent);
-	~rendezvousDialog();
+        RendezVousDialog(SpaceScenario*,PropagatedScenario*,MainWindow* parent);
+        ~RendezVousDialog();
+        void setupTargetChaserInitialData(int);
 
+        missionAspectDialog *rendezVousAspect;
 
+        double userOrbitalInput[13];
+        void updateUserOrbitalInput();
 
 private:
 
     MainWindow* mainwindow;
     RVXMLInterface interfXML;
  protected slots:
-        //Manoeuvre tree drag and drop
+
 
         void propagate();
-        void on_buttonBox_accepted();
-	void on_buttonBox_rejected();
+
         void generateScenario();
         void addDeltaV();
         void addFreeDrift();
+        void initAspectRV();
 
 
 };
-#endif //RENDEZVOUSDIALOG_H
+#endif //_RENDEZVOUSDIALOG_H_
