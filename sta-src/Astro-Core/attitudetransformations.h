@@ -20,7 +20,7 @@
  ------ Copyright (C) 2011 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
 */
 
- //------------------ Author: Catarina Silva  -------------------------------------------------
+//------------------ Author: Catarina Silva  -------------------------------------------------
 // ------------------ E-mail: (catsilva20@gmail.com) ------------------------------------------
 
 #ifndef ATTITUDETRANSFORMATIONS_H
@@ -35,33 +35,33 @@ typedef Eigen::Matrix< double, 3, 1 > MyVector3d;
 using namespace Eigen;
 
 
-    /*virtual*/ Eigen::Quaterniond ToQuaternions(const Vector3d &EulerAngles,
-                                                 int seq1,
-                                                 int seq2,
-                                                 int seq3);
-
-    /*virtual*/ Eigen::Vector3d ToEulerAngles(Eigen::Quaterniond &quaternion,
-                                              int seq1,
-                                              int seq2,
-                                              int seq3);
-
-    Vector3d ToEulerAngleRates(const Vector3d &angVel,
-                                 const Vector3d &EulerAngles,
+Eigen::Quaterniond ToQuaternions(const Vector3d &EulerAngles,
                                  int seq1,
                                  int seq2,
                                  int seq3);
 
-    Vector3d ToAngularVelocity(const Vector3d &EulerRates,
-                                 const Vector3d &EulerAngles,
-                                 int seq1,
-                                 int seq2,
-                                 int seq3);
+Vector3d ToEulerAngles(Quaterniond quaternion,
+                              int seq1,
+                              int seq2,
+                              int seq3);
 
-    Vector3d ToAngularVelocity(Eigen::Quaterniond &quaternion,
-                                 Eigen::Quaterniond &initQuatRates);
+Vector3d ToEulerAngleRates(const Vector3d &angVel,
+                           const Vector3d &EulerAngles,
+                           int seq1,
+                           int seq2,
+                           int seq3);
 
-    Quaterniond ToQuaternionRates(Eigen::Quaterniond &quaternion,
-                                  Vector3d &bodyRates);
+Vector3d ToAngularVelocity(const Vector3d &EulerRates,
+                           const Vector3d &EulerAngles,
+                           int seq1,
+                           int seq2,
+                           int seq3);
+
+Vector3d ToAngularVelocity(Eigen::Quaterniond &quaternion,
+                           Eigen::Quaterniond &initQuatRates);
+
+Quaterniond ToQuaternionRates(Eigen::Quaterniond &quaternion,
+                              Vector3d &bodyRates);
 
 
 #endif // ATTITUDETRANSFORMATIONS_H

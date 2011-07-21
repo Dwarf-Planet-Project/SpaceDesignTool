@@ -55,19 +55,16 @@ public:
     bool loadValues(ScenarioTimeLine* parameters);
     bool loadValues(ScenarioPropagationPositionType* propagation);
     bool loadValues(ScenarioInitialPositionType* initPosition);
+    bool loadValues(ScenarioPropagationAttitudeType* propagation);
+    bool loadValues(ScenarioInitialAttitudeType* initAtt);
     bool saveValues(ScenarioLoiteringType* loitering);
     bool saveValues(ScenarioElementIdentifierType* arcIdentifier);
     bool saveValues(ScenarioEnvironmentType* environment);
     bool saveValues(ScenarioTimeLine* parameters);
     bool saveValues(ScenarioPropagationPositionType* propagation);
     bool saveValues(ScenarioInitialPositionType* initPosition);
-
     bool saveValues(ScenarioPropagationAttitudeType* propagation);
-    bool loadValues(ScenarioPropagationAttitudeType* propagation);
-
-    bool loadValues(ScenarioInitialAttitudeType* initAtt);
     bool saveValues(ScenarioInitialAttitudeType* initAtt);
-
 
     TesseralBox* TesseralSpinBox;
     int m_tesserals;

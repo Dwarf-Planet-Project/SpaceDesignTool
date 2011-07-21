@@ -478,7 +478,6 @@ static QByteArray spaceVehicleWithTrajectoryFragment(const QString& name, const 
     genericReceiver = myMissionDefaults.MissionsDefaults_GenericReceiver();
     genericPlatform = myMissionDefaults.MissionsDefaults_GenericPlatform();
     sc->setSystem(QSharedPointer<ScenarioSCSystemType>(&genericPlatform));
-    //genericPlatform.SystemBudgets()->setMassOfSystem(QSharedPointer<ScenarioMassOfSystem>(new ScenarioMassOfSystem()));
 
     sc->SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(&loiteringDefault));
     sc->SCMission()->PayloadSet()->AbstractPayload().append(QSharedPointer<ScenarioAbstractPayloadType>(&genericTransmitter));

@@ -177,9 +177,6 @@ ScenarioTransmitterPayloadType MissionsDefaults::MissionsDefaults_GenericTransmi
 }
 
 
-
-
-
 ScenarioReceiverPayloadType MissionsDefaults::MissionsDefaults_GenericReceiver()
 {    
     ScenarioReceiverPayloadType receiverPayload;
@@ -214,8 +211,6 @@ ScenarioReceiverPayloadType MissionsDefaults::MissionsDefaults_GenericReceiver()
 }
 
 
-
-
 ScenarioOpticalPayloadType MissionsDefaults::MissionsDefaults_GenericOpticalPayload()
 {
     ScenarioOpticalPayloadType genericTelescope;
@@ -226,7 +221,6 @@ ScenarioOpticalPayloadType MissionsDefaults::MissionsDefaults_GenericOpticalPayl
 
     return genericTelescope;
 }
-
 
 
 ScenarioRadarPayloadType MissionsDefaults::MissionsDefaults_GenericRadarPayload()
@@ -253,24 +247,44 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_GENERIC()
     ScenarioLoiteringType loitering;
 
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
-    QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
-    initPos->setSemiMajorAxis(8100.0);
-    initPos->setInclination(45.0);
-    initPos->setEccentricity(0.0);
-    initPos->setRAAN(0.0);
-    initPos->setArgumentOfPeriapsis(0.0);
-    initPos->setTrueAnomaly(0.0);
-    loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
+    QSharedPointer<ScenarioKeplerianElementsType> initPosKeplerian(new ScenarioKeplerianElementsType());
+    initPosKeplerian->setSemiMajorAxis(8100.0);
+    initPosKeplerian->setInclination(45.0);
+    initPosKeplerian->setEccentricity(0.0);
+    initPosKeplerian->setRAAN(0.0);
+    initPosKeplerian->setArgumentOfPeriapsis(0.0);
+    initPosKeplerian->setTrueAnomaly(0.0);
+    QSharedPointer<ScenarioStateVectorType> initPosStateVector(new ScenarioStateVectorType());
+    initPosStateVector->setX(1.1);
+    initPosStateVector->setY(1.1);
+    initPosStateVector->setZ(1.1);
+    initPosStateVector->setVx(1.1);
+    initPosStateVector->setVy(1.1);
+    initPosStateVector->setVz(1.1);
+    loitering.InitialPosition()->setAbstract6DOFPosition(initPosStateVector);
+    // The next line should be the last one to make sure the GUI starts on the right tab
+    loitering.InitialPosition()->setAbstract6DOFPosition(initPosKeplerian);
 
-    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
-    QSharedPointer<ScenarioEulerBIType> initAtt(new ScenarioEulerBIType());
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+    loitering.InitialAttitude()->setCoordinateSystem("Body fixed");
+    QSharedPointer<ScenarioEulerBIType> initAttEuler(new ScenarioEulerBIType());
+    initAttEuler->setPhi(0.0);
+    initAttEuler->setTheta(0.0);
+    initAttEuler->setPsi(0.0);
+    initAttEuler->setPhiDot(0.0);
+    initAttEuler->setThetaDot(0.0);
+    initAttEuler->setPsiDot(0.0);
+    QSharedPointer<ScenarioqBIType> initAttQuaternion(new ScenarioqBIType());
+    initAttQuaternion->setQ1(0.0);
+    initAttQuaternion->setQ2(0.0);
+    initAttQuaternion->setQ3(0.0);
+    initAttQuaternion->setQ4(0.0);
+    initAttQuaternion->setQ1Dot(0.0);
+    initAttQuaternion->setQ2Dot(0.0);
+    initAttQuaternion->setQ3Dot(0.0);
+    initAttQuaternion->setQ4Dot(0.0);
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAttQuaternion);
+    // The next line should be the last one to make sure the GUI starts on the right tab
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAttEuler);
 
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);

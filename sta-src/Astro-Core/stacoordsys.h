@@ -62,7 +62,7 @@ namespace sta
         COORDSYS_EME_J2000,       /*! Inertial, Earth mean equator of J2000 */
         COORDSYS_EME_B1950,       /*! Inertial, Earth mean equator of B1950 */
         COORDSYS_ECLIPTIC_J2000,  /*! Ecliptic, J2000 */
-        COORDSYS_BODYFIXED,
+        COORDSYS_BODYFIXED,       /*! Planet fixed */
         COORDSYS_MEAN_OF_DATE,    /*! Mean of Date */
         COORDSYS_TRUE_OF_DATE,    /*! True of Date */
         COORDSYS_MEAN_OF_EPOCH,   /*! Mean of Epoch*/

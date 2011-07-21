@@ -51,7 +51,7 @@ typedef Eigen::Matrix< double, 4, 1 > 	MyVector4d;
   *
   * @return derivBodyRates  body rates derivatives
   */
-void derivEulerEquation (VectorXd bodyRates, double time, VectorXd inertiaANDmoments, VectorXd& derivBodyRates)
+void derivEulerEquation (Vector3d bodyRates, double time, VectorXd inertiaANDmoments, VectorXd& derivBodyRates)
 {
     double p = bodyRates[0];
     double q = bodyRates[1];
@@ -62,7 +62,7 @@ void derivEulerEquation (VectorXd bodyRates, double time, VectorXd inertiaANDmom
         r,   0,  -p,
        -q,   p,   0
     };
-    static const MyMatrix3d bodyMatrix(bodyCoeffs);
+    static const Matrix3d bodyMatrix(bodyCoeffs);
 
     //the input of derivEulerEquation needs to be a VectorXd (in this case, 12elements vector).
     //This vector will include the components of the INERTIA MATRIX (the first 9 elements), and
@@ -82,7 +82,7 @@ void derivEulerEquation (VectorXd bodyRates, double time, VectorXd inertiaANDmom
     double M2 = inertiaANDmoments[10];
     double M3 = inertiaANDmoments[11];
 
-    MyVector3d Moments(M1,M2,M3);
+    Vector3d Moments(M1,M2,M3);
 
     static double inertiaCoeffs[9] = {
         I11, I12, I13,
@@ -90,11 +90,11 @@ void derivEulerEquation (VectorXd bodyRates, double time, VectorXd inertiaANDmom
         I31, I32, I33
 
     };
-    static const MyMatrix3d inertiaMatrix(inertiaCoeffs);
+    static const Matrix3d inertiaMatrix(inertiaCoeffs);
 
     //Euler's equation
-    MyMatrix3d multipInertia= inertiaMatrix * inertiaMatrix.transpose();
-    MyMatrix3d inertiaTimesBodyMatrix = bodyMatrix * multipInertia;
+    Matrix3d multipInertia= inertiaMatrix * inertiaMatrix.transpose();
+    Matrix3d inertiaTimesBodyMatrix = bodyMatrix * multipInertia;
 
     derivBodyRates = Moments - inertiaTimesBodyMatrix * bodyRates;
 }
@@ -109,25 +109,24 @@ void derivEulerEquation (VectorXd bodyRates, double time, VectorXd inertiaANDmom
   *
   * @return body rates      final body rates
   */
-MyVector3d propagateEulerEquation(MyVector3d& initbodyRates,
+Vector3d propagateEulerEquation(Vector3d& initbodyRates,
                                   double time,
                                   double timeStep,
-                                  MyMatrix3d inertiaMatrix)
+                                  VectorXd& inertiaMatrix)
 {
-    VectorXd bodyRates(3);
-    bodyRates << initbodyRates[0], initbodyRates[1], initbodyRates[2];
-    VectorXd parameters(9);
-    parameters << inertiaMatrix[0], inertiaMatrix[1], inertiaMatrix[2],
-                  inertiaMatrix[3], inertiaMatrix[4], inertiaMatrix[5],
-                  inertiaMatrix[6], inertiaMatrix[7], inertiaMatrix[8];
-
-    //what about the moments? Do they need to go to parameters?
+    //Convert Vector3d to VectorSd so it can be fed to RK4
+    VectorXd theBodyRates;
+    theBodyRates << initbodyRates[0], initbodyRates[1],initbodyRates[2];
 
     //For now, a Runge Kutta 4 will be used. Later, this can be changed to a better integrator (Runge Kutta 7,8 ex.)
-    rk4(bodyRates, 3, time, timeStep, derivEulerEquation, parameters);
+    rk4(theBodyRates, 3, time, timeStep, derivEulerEquation, inertiaMatrix);
 
     //Returns the body rates, after integration
-    return bodyRates;
+    Vector3d integratedBodyRates;
+    integratedBodyRates[0] = theBodyRates[0];
+    integratedBodyRates[1] = theBodyRates[1];
+    integratedBodyRates[2] = theBodyRates[2];
+    return integratedBodyRates;
 }
 
 /**
@@ -168,20 +167,25 @@ void derivQUATERNIONS (VectorXd initQuaternions, double time, VectorXd parameter
   * @return quats       final quaternions
   */
 
-MyVector4d propagateQUATERNIONS(MyVector4d& quaternions,
+Quaterniond propagateQUATERNIONS(Quaterniond& quaternions,
                                  double time,
                                  double timeStep,
-                                 MyVector3d bodyrates)
+                                 Vector3d bodyrates)
 {
+
     VectorXd parameters(3);
     parameters << bodyrates[0], bodyrates[1], bodyrates[2];
 
     VectorXd quats(4);
-    quats << quaternions[0],quaternions[1],quaternions[2],quaternions[3];
+    quats << quaternions.coeffs().coeffRef(0), quaternions.coeffs().coeffRef(1),
+    quaternions.coeffs().coeffRef(2), quaternions.coeffs().coeffRef(3);
 
     rk4 (quats, 4, time, timeStep, derivQUATERNIONS, parameters);
 
-    return quats;
+    //Transform VectorXd to quaternions
+    Quaterniond propagatedQuaternion(quats(0),quats(1), quats(2),quats(3));
+
+    return propagatedQuaternion;
 }
 
 

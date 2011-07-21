@@ -20,7 +20,7 @@
  ------ Copyright (C) 2011 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
 */
 
- //------------------ Author: Catarina Silva  -------------------------------------------------
+//------------------ Author: Catarina Silva  -------------------------------------------------
 // ------------------ E-mail: (catsilva20@gmail.com) ------------------------------------------
 
 #ifndef ATTITUDEVECTOR_H
@@ -57,13 +57,13 @@ namespace staAttitude
     struct QuaternionElements
     {
         QuaternionElements():
-        q1(1.0),
-        q2(0.0),
-        q3(0.0),
-        q4(0.0),
-        p(0.0),
-        q(0.0),
-        r(0.0)
+                q1(1.0),
+                q2(0.0),
+                q3(0.0),
+                q4(0.0),
+                p(0.0),
+                q(0.0),
+                r(0.0)
         {
         }
         double q1, q2, q3, q4, p,q,r;
@@ -81,12 +81,12 @@ namespace staAttitude
     struct EulerElements
     {
         EulerElements():
-        phi(0.0),
-        theta(0.0),
-        psi(0.0),
-        p(0.0),
-        q(0.0),
-        r(0.0)
+                phi(0.0),
+                theta(0.0),
+                psi(0.0),
+                p(0.0),
+                q(0.0),
+                r(0.0)
         {
         }
         double phi;
@@ -104,17 +104,14 @@ namespace staAttitude
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-        AttitudeVector() {}
+                AttitudeVector() {}
         AttitudeVector(const Eigen::Quaterniond& _myQuaternion, const Eigen::Vector3d& _myBodyRates) :
-                       myQuaternion(_myQuaternion), myBodyRates(_myBodyRates) {}
+                myQuaternion(_myQuaternion), myBodyRates(_myBodyRates) {}
 
     public:
         Eigen::Quaterniond myQuaternion;
         Eigen::Vector3d myBodyRates;
     };
-
-
-
 
 
 }

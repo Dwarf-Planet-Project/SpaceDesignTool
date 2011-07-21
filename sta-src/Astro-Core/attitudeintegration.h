@@ -20,7 +20,7 @@
  ------ Copyright (C) 2011 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
 */
 
- //------------------ Author: Catarina Silva  -------------------------------------------------
+//------------------ Author: Catarina Silva  -------------------------------------------------
 // ------------------ E-mail: (catsilva20@gmail.com) ------------------------------------------
 
 #ifndef ATTITUDEINTEGRATION_H
@@ -30,27 +30,34 @@
 #include <Eigen/Geometry>
 using namespace Eigen;
 
-// import most common Eigen types
-//USING_PART_OF_NAMESPACE_EIGEN
 typedef Eigen::Matrix< double, 3, 3 > 	MyMatrix3d;
 typedef Eigen::Matrix< double, 3, 1 >   MyVector3d;
 typedef Eigen::Matrix< double,  4, 1 >   MyVector4d;
 
-class AttitudeIntegration
-{
-public:
-    AttitudeIntegration();
-    void derivQUATERNIONS (VectorXd initQuaternions, double time, VectorXd parameters, VectorXd& derivative);
-    MyVector4d propagateQUATERNIONS(MyVector4d& quaternions,
-                                     double time,
-                                     double timeStep,
-                                     MyVector3d bodyrates);
-    void derivEulerEquation (VectorXd bodyRates, double time, MatrixXd inertiaMatrix, VectorXd& derivBodyRates);
-    void eulerEquation(MyVector3d &initBodyRates, MyMatrix3d &inertialMatrix, MyVector3d &finalBodyRates);
-    MyVector3d propagateEulerEquation(MyVector3d& initbodyRates,
-                                      double time,
-                                      double timeStep,
-                                      MyMatrix3d inertiaMatrix);
-};
+
+void derivQUATERNIONS (VectorXd initQuaternions,
+                       double time,
+                       VectorXd parameters,
+                       VectorXd& derivative);
+
+Quaterniond propagateQUATERNIONS(Quaterniond& quaternions,
+                                 double time,
+                                 double timeStep,
+                                 Vector3d bodyrates);
+
+void derivEulerEquation (VectorXd bodyRates,
+                         double time,
+                         VectorXd inertiaANDmoments,
+                         VectorXd& derivBodyRates);
+
+void eulerEquation(VectorXd &initBodyRates,
+                   MatrixXd &inertialMatrix,
+                   VectorXd &finalBodyRates);
+
+Vector3d propagateEulerEquation(Vector3d& initbodyRates,
+                                double time,
+                                double timeStep,
+                                MatrixXd inertiaMatrix);
+
 
 #endif // ATTITUDEINTEGRATION_H
