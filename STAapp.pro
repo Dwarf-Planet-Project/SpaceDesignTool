@@ -165,7 +165,6 @@ ASTROCORE_SOURCES = sta-src/Astro-Core/calendarTOjulian.cpp \
     sta-src/Astro-Core/bodyTOwind.cpp \
     sta-src/Astro-Core/nedTOfixed.cpp \
     sta-src/Astro-Core/calculateElements.cpp \
-#    sta-src/Astro-Core/attitudevector.cpp \
     sta-src/Astro-Core/attitudeintegration.cpp \
     sta-src/Astro-Core/attitudetransformations.cpp
 
