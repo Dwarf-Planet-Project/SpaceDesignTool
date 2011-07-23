@@ -22,6 +22,7 @@
 
 //------------------ Author: Catarina Silva  -------------------------------------------------
 // ------------------ E-mail: (catsilva20@gmail.com) ------------------------------------------
+// Patched by Guillermo to correct error, July 2011
 
 #ifndef ATTITUDETRANSFORMATIONS_H
 #define ATTITUDETRANSFORMATIONS_H
@@ -29,13 +30,11 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-typedef Eigen::Matrix< double, 3, 3 > 	MyMatrix3d;
-typedef Eigen::Matrix< double, 3, 1 > MyVector3d;
 
 using namespace Eigen;
 
 
-Eigen::Quaterniond ToQuaternions(const Vector3d EulerAngles,
+Quaterniond ToQuaternions(const Vector3d EulerAngles,
                                  int seq1,
                                  int seq2,
                                  int seq3);

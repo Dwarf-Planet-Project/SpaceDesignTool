@@ -22,6 +22,7 @@
 
 //------------------ Author: Catarina Silva  -------------------------------------------------
 // ------------------ E-mail: (catsilva20@gmail.com) ------------------------------------------
+// Patched by Guillermo to correct error, July 2011
 
 #ifndef ATTITUDEVECTOR_H
 #define ATTITUDEVECTOR_H
@@ -29,7 +30,6 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-typedef Eigen::Matrix< double, 3, 1 > 	MyVector3d;
 using namespace Eigen;
 
 namespace staAttitude
@@ -104,7 +104,7 @@ namespace staAttitude
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-                AttitudeVector() {}
+        AttitudeVector() {}
         AttitudeVector(const Eigen::Quaterniond& _myQuaternion, const Eigen::Vector3d& _myBodyRates) :
                 myQuaternion(_myQuaternion), myBodyRates(_myBodyRates) {}
 

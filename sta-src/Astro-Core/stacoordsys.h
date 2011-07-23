@@ -67,6 +67,8 @@ namespace sta
         COORDSYS_TRUE_OF_DATE,    /*! True of Date */
         COORDSYS_MEAN_OF_EPOCH,   /*! Mean of Epoch*/
         COORDSYS_ICRF,            /*! ICRF, International Celestial Reference Frame */
+        COORDSYS_COG,            /*! Center of Gravity of a body (for attitude) */
+        COORDSYS_COP,            /*! Center of Pressure of a body (for attitude) */
 
         COORDSYS_INVALID,
     };

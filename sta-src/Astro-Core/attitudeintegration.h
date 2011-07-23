@@ -22,6 +22,7 @@
 
 //------------------ Author: Catarina Silva  -------------------------------------------------
 // ------------------ E-mail: (catsilva20@gmail.com) ------------------------------------------
+// Patched by Guillermo to correct error, July 2011
 
 #ifndef ATTITUDEINTEGRATION_H
 #define ATTITUDEINTEGRATION_H
@@ -29,10 +30,6 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 using namespace Eigen;
-
-typedef Eigen::Matrix< double, 3, 3 > 	MyMatrix3d;
-typedef Eigen::Matrix< double, 3, 1 >   MyVector3d;
-typedef Eigen::Matrix< double,  4, 1 >   MyVector4d;
 
 
 void derivQUATERNIONS (VectorXd initQuaternions,

@@ -22,6 +22,7 @@
 
 //------------------ Author: Catarina Silva  -------------------------------------------------
 // ------------------ E-mail: (catsilva20@gmail.com) ------------------------------------------
+// Patched by Guillermo to correct erros, July 2011
 
 #include "attitudetransformations.h"
 
@@ -151,18 +152,21 @@ Vector3d ToEulerAngles(Quaterniond quaternion,
 
     //Transform the initial quaternions in the direction cosine matrix, using Eigen::Geometry capabilities.
     Matrix3d R = quaternion.toRotationMatrix();
+    qDebug() << R(0,0) <<  R(0,1) <<  R(0,2) << endl;
+    qDebug() << R(1,0) <<  R(1,1) <<  R(1,2) << endl;
+    qDebug() << R(2,0) <<  R(2,1) <<  R(2,2) << endl;
 
     //Transform the direction cosine matrix in the Euler angles for the three sequences.
     // SEQUENCE 321
     if (seq1 == 3 && seq2 == 2 && seq3 == 1)
     {
-        qDebug() << "321" << endl;
         a = R(0,1)/R(0,0);
         theta1 = atan(a);
         theta2 = asin(-R(0,2));
         b = R(2,0)*sin(theta1) - R(2,1)*cos(theta1);
         c = -R(1,0)*sin(theta1) + R(1,1)*cos(theta1);
         theta3 = atan(b/c);
+        qDebug() << "321: " << a << b << c << theta1 << theta2 << theta3 << endl;
     }
     // SEQUENCE 123
     else if (seq1 == 1 && seq2 == 2 && seq3 == 3)
@@ -173,6 +177,7 @@ Vector3d ToEulerAngles(Quaterniond quaternion,
         b = R(0,2)*sin(theta1) + R(0,1)*cos(theta1);
         c = R(1,2)*sin(theta1) + R(1,1)*cos(theta1);
         theta3 = atan(b/c);
+        qDebug() << "123: " << a << b << c << theta1 << theta2 << theta3 << endl;
     }
     // SEQUENCE 313
     else if (seq1 == 3 && seq2 == 1 && seq3 == 3)
@@ -183,6 +188,7 @@ Vector3d ToEulerAngles(Quaterniond quaternion,
         b = -R(1,1)*sin(theta1) - R(1,0)*cos(theta1);
         c = R(0,1)*sin(theta1) + R(0,0)*cos(theta1);
         theta3 = atan(b/c);
+        qDebug() << "321: " <<a << b << c << theta1 << theta2 << theta3 << endl;
     }
     else
     {
@@ -218,14 +224,14 @@ Vector3d ToEulerAngleRates(const Vector3d angVel,
                            int seq3)
 {
     //Convert the Euler angles from degress to radians
-    double phi = sta::degToRad(EulerAngles[0]);
+    //double phi = sta::degToRad(EulerAngles[0]); // Guillermo
     double theta = sta::degToRad(EulerAngles[1]);
     double psi = sta::degToRad(EulerAngles[2]);
 
     // we need to check the singularities. theta = pi/2 there's a singularity
     bool singularity = false;
 
-    static Vector3d finalEulerRates;
+    Vector3d finalEulerRates; // Guillermo
     finalEulerRates.setZero();
 
     // SEQUENCE 321
@@ -276,7 +282,7 @@ Vector3d ToEulerAngleRates(const Vector3d angVel,
             };
             static const Matrix3d Matrix(MatrixCoeffs);
             finalEulerRates = Matrix*angVel;
-
+            //qDebug() << "313 non singular" <<endl;
         }
     }
 
@@ -289,7 +295,7 @@ Vector3d ToEulerAngleRates(const Vector3d angVel,
         EulerSingularity.setStandardButtons(QMessageBox::Ignore | QMessageBox::Abort);
         EulerSingularity.setDefaultButton(QMessageBox::Abort);
         EulerSingularity.exec();
-
+        finalEulerRates << 0, 0, 0;  // Guillermo
     }
 
     return finalEulerRates;
@@ -316,9 +322,10 @@ Vector3d ToAngularVelocity(const Vector3d EulerRates,
                            int seq3)
 {
     //Convert the Euler angles from degress to radians
-    double phi = sta::degToRad(EulerAngles[0]);
+    //double phi = sta::degToRad(EulerAngles[0]);
     double theta = sta::degToRad(EulerAngles[1]);
     double psi = sta::degToRad(EulerAngles[2]);
+    Vector3d finalAngVel;
 
     // SEQUENCE 321
     if(seq1 == 3 && seq2 == 2 && seq3 == 1)
@@ -328,9 +335,8 @@ Vector3d ToAngularVelocity(const Vector3d EulerRates,
             sin(psi)*cos(theta),          cos(psi),   0,
             cos(psi)*cos(theta),         -sin(psi),   0
         };
-        static const MyMatrix3d Matrix(MatrixCoeffs);
-        static const Vector3d finalAngVel = Matrix * EulerRates;
-        return finalAngVel;
+        static const Matrix3d Matrix(MatrixCoeffs);
+        finalAngVel = Matrix * EulerRates;
     }
 
     // SEQUENCE 123
@@ -341,9 +347,8 @@ Vector3d ToAngularVelocity(const Vector3d EulerRates,
             -sin(psi)*cos(theta),     cos(psi),   0.0,
             sin(theta),               0.0,        1.0
         };
-        static const MyMatrix3d Matrix(MatrixCoeffs);
-        static const Vector3d finalAngVel = Matrix * EulerRates;
-        return finalAngVel;
+        static const Matrix3d Matrix(MatrixCoeffs);
+        finalAngVel = Matrix * EulerRates;
     }
 
     // SEQUENCE 313
@@ -354,10 +359,11 @@ Vector3d ToAngularVelocity(const Vector3d EulerRates,
             cos(psi)*sin(theta),        -sin(psi),      0.0,
             cos(theta),                 0.0,            1.0
         };
-        static const MyMatrix3d Matrix(MatrixCoeffs);
-        static const Vector3d finalAngVel = Matrix * EulerRates;
-        return finalAngVel;
+        static const Matrix3d Matrix(MatrixCoeffs);
+        finalAngVel = Matrix * EulerRates;
     }
+
+    return finalAngVel;
 }
 
 

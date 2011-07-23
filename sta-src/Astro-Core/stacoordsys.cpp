@@ -339,6 +339,10 @@ CoordinateSystem::CoordinateSystem(QString name) :
         m_type = COORDSYS_TRUE_OF_DATE;
     else if (name == "Mean of Epoch")
         m_type = COORDSYS_MEAN_OF_EPOCH;
+    else if (name == "Center of Gravity")
+        m_type = COORDSYS_COG;
+    else if (name == "Gravity of Pressure")
+        m_type = COORDSYS_COP;
 
 }
 
