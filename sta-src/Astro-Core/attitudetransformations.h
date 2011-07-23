@@ -35,7 +35,7 @@ typedef Eigen::Matrix< double, 3, 1 > MyVector3d;
 using namespace Eigen;
 
 
-Eigen::Quaterniond ToQuaternions(const Vector3d &EulerAngles,
+Eigen::Quaterniond ToQuaternions(const Vector3d EulerAngles,
                                  int seq1,
                                  int seq2,
                                  int seq3);
@@ -45,23 +45,23 @@ Vector3d ToEulerAngles(Quaterniond quaternion,
                               int seq2,
                               int seq3);
 
-Vector3d ToEulerAngleRates(const Vector3d &angVel,
-                           const Vector3d &EulerAngles,
+Vector3d ToEulerAngleRates(const Vector3d angVel,
+                           const Vector3d EulerAngles,
                            int seq1,
                            int seq2,
                            int seq3);
 
-Vector3d ToAngularVelocity(const Vector3d &EulerRates,
-                           const Vector3d &EulerAngles,
+Vector3d ToAngularVelocity(const Vector3d EulerRates,
+                           const Vector3d EulerAngles,
                            int seq1,
                            int seq2,
                            int seq3);
 
-Vector3d ToAngularVelocity(Eigen::Quaterniond &quaternion,
-                           Eigen::Quaterniond &initQuatRates);
+Vector3d ToAngularVelocity(Eigen::Quaterniond quaternion,
+                           Eigen::Quaterniond initQuatRates);
 
-Quaterniond ToQuaternionRates(Eigen::Quaterniond &quaternion,
-                              Vector3d &bodyRates);
+Quaterniond ToQuaternionRates(Eigen::Quaterniond quaternion,
+                              Vector3d bodyRates);
 
 
 #endif // ATTITUDETRANSFORMATIONS_H

@@ -32,6 +32,7 @@
 #include <Eigen/Geometry>
 
 #include <QDebug>
+#include <QMessageBox>
 
 
 // Sets all the transformations between quaternions, Euler angles and Direction cosine matrix
@@ -55,7 +56,7 @@
   *
   * @return the Quaternions
   */
-Quaterniond ToQuaternions(const Vector3d &EulerAngles,
+Quaterniond ToQuaternions(const Vector3d EulerAngles,
                           int seq1,
                           int seq2,
                           int seq3)
@@ -210,8 +211,8 @@ Vector3d ToEulerAngles(Quaterniond quaternion,
   *
   * @return             the Euler angle rates representation (radians/second)
   */
-Vector3d ToEulerAngleRates(const Vector3d &angVel,
-                           const Vector3d &EulerAngles,
+Vector3d ToEulerAngleRates(const Vector3d angVel,
+                           const Vector3d EulerAngles,
                            int seq1,
                            int seq2,
                            int seq3)
@@ -223,6 +224,9 @@ Vector3d ToEulerAngleRates(const Vector3d &angVel,
 
     // we need to check the singularities. theta = pi/2 there's a singularity
     bool singularity = false;
+
+    static Vector3d finalEulerRates;
+    finalEulerRates.setZero();
 
     // SEQUENCE 321
     if (seq1 == 3 && seq2 == 2 && seq3 == 1)
@@ -236,10 +240,8 @@ Vector3d ToEulerAngleRates(const Vector3d &angVel,
                 0.0,    cos(psi),                         -sin(psi),
                 1.0,   (sin(psi)*sin(theta))/cos(theta),  (cos(psi)*sin(theta))/cos(theta)
             };
-            static const MyMatrix3d Matrix(MatrixCoeffs);
-            static const Vector3d finalEulerRates = Matrix*angVel;
-
-            return finalEulerRates;
+            static const Matrix3d Matrix(MatrixCoeffs);
+            finalEulerRates = Matrix*angVel;
         }
     }
 
@@ -255,10 +257,8 @@ Vector3d ToEulerAngleRates(const Vector3d &angVel,
                 sin(psi),                               cos(psi),                           0.0,
                 (-cos(psi)*sin(theta))/cos(theta),      (sin(psi)*sin(theta))/cos(theta),   1.0
             };
-            static const MyMatrix3d Matrix(MatrixCoeffs);
-            static const Vector3d finalEulerRates = Matrix*angVel;
-
-            return finalEulerRates;
+            static const Matrix3d Matrix(MatrixCoeffs);
+            finalEulerRates = Matrix*angVel;
         }
     }
 
@@ -272,14 +272,27 @@ Vector3d ToEulerAngleRates(const Vector3d &angVel,
             static double MatrixCoeffs[9] = {
                 sin(psi)/sin(theta),                  cos(psi)/sin(theta),                0.0,
                 cos(psi),                             -sin(psi),                          0.0,
-                -sin(psi)*cos(theta)/sin(theta),      -cos(psi)*cos(theta)/sin(theta),    1.0
+                -(sin(psi)*cos(theta))/sin(theta),    -(cos(psi)*cos(theta))/sin(theta),    1.0
             };
-            static const MyMatrix3d Matrix(MatrixCoeffs);
-            static const Vector3d finalEulerRates = Matrix*angVel;
+            static const Matrix3d Matrix(MatrixCoeffs);
+            finalEulerRates = Matrix*angVel;
 
-            return finalEulerRates;
         }
     }
+
+    if (singularity)
+    {
+        //throw an exception to user
+        QMessageBox EulerSingularity;
+        //EulerSingularity.setIcon();
+        EulerSingularity.setText("A singularity in the Euler angles has occurred. Value of angle rates set to (0,0,0). Do you want to continue?");
+        EulerSingularity.setStandardButtons(QMessageBox::Ignore | QMessageBox::Abort);
+        EulerSingularity.setDefaultButton(QMessageBox::Abort);
+        EulerSingularity.exec();
+
+    }
+
+    return finalEulerRates;
 }
 
 
@@ -296,8 +309,8 @@ Vector3d ToEulerAngleRates(const Vector3d &angVel,
   *
   * @return             the angular velocity (radians/second)
   */
-Vector3d ToAngularVelocity(const Vector3d &EulerRates,
-                           const Vector3d &EulerAngles,
+Vector3d ToAngularVelocity(const Vector3d EulerRates,
+                           const Vector3d EulerAngles,
                            int seq1,
                            int seq2,
                            int seq3)
@@ -354,8 +367,8 @@ Vector3d ToAngularVelocity(const Vector3d &EulerRates,
 //------------------------------------------------------------------------------------------------------------
 
 //Quaternion rates to body rates
-Vector3d ToAngularVelocity(Eigen::Quaterniond &quaternion,
-                           Eigen::Quaterniond &initQuatRates)
+Vector3d ToAngularVelocity(Eigen::Quaterniond quaternion,
+                           Eigen::Quaterniond initQuatRates)
 {
     // q = q4 + q1i + q2j + q3k
     double q1 = quaternion.coeffs().coeffRef(0);
@@ -381,8 +394,8 @@ Vector3d ToAngularVelocity(Eigen::Quaterniond &quaternion,
 }
 
 //Body rates to quaternion rates
-Quaterniond ToQuaternionRates(Eigen::Quaterniond &quaternion,
-                              Vector3d &bodyRates)
+Quaterniond ToQuaternionRates(Eigen::Quaterniond quaternion,
+                              Vector3d bodyRates)
 {
 
     double q1 = quaternion.coeffs().coeffRef(0);
