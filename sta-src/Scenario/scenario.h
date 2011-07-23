@@ -23,6 +23,7 @@
 ------------------ Author: Chris Laurel  -------------------------------------------------
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
  // Patched by Catarina to add attitude, July 2011
+ // Extebsively patched by Guillermo to correct errors and change the type of the qauternions in the schema, July 2011
  */
 
 #ifndef _STA_SCENARIO_H_
@@ -37,15 +38,26 @@
 // Utility functions for space scenario objects.
 
 extern sta::StateVector
-AbstractPositionToStateVector(const ScenarioAbstract6DOFPositionType* position,
-                              const StaBody* centralBody);
+        AbstractPositionToStateVector(const ScenarioAbstract6DOFPositionType* position,
+                                      const StaBody* centralBody);
 extern sta::KeplerianElements
-AbstractPositionToKeplerianElements(const ScenarioAbstract6DOFPositionType* position,
-                                    const StaBody* centralBody);
+        AbstractPositionToKeplerianElements(const ScenarioAbstract6DOFPositionType* position,
+                                            const StaBody* centralBody);
 
 extern staAttitude::AttitudeVector
-AbstractAttitudeToAttitudeVector(const ScenarioAbstract6DOFAttitudeType* attitude,
-                                 const int seq1, const int seq2, const int seq3);
+        Euler123ToAttitudeVector(const ScenarioAbstract6DOFAttitudeType* attitudeEuler);
+
+extern staAttitude::AttitudeVector
+        Euler321ToAttitudeVector(const ScenarioAbstract6DOFAttitudeType* attitudeEuler);
+
+extern staAttitude::AttitudeVector
+        Euler313ToAttitudeVector(const ScenarioAbstract6DOFAttitudeType* attitudeEuler);
+
+extern staAttitude::AttitudeVector
+        QuaternionJPLToAttitudeVector(const ScenarioAbstract8DOFAttitudeType* attitudeQuaternion);
+
+extern staAttitude::AttitudeVector
+        QuaternionESAToAttitudeVector(const ScenarioAbstract8DOFAttitudeType* attitudeQuaternion);
 
 
 #endif // _STA_SCENARIO_H_

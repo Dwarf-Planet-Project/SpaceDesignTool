@@ -31,7 +31,7 @@
 #include "Astro-Core/cartesianTOorbital.h"
 #include "Astro-Core/trueAnomalyTOmeanAnomaly.h"
 #include "Astro-Core/stamath.h"
-//#include "Astro-Core/attitudevector.h"
+#include "Astro-Core/attitudevector.h"
 #include "Astro-Core/attitudetransformations.h"
 
 /** Convert an abstract position to a cartesian state vector.
@@ -134,41 +134,65 @@ sta::KeplerianElements
 
 
 
+
 /** Convert an abstract attitude to an attitude state vector
   *
   * \param position an ????????
   * \param c????????
   */
-staAttitude::AttitudeVector
-        AbstractAttitudeToAttitudeVector(const ScenarioAbstract6DOFAttitudeType* attitude,
-                                         int seq1, int seq2, int seq3)
+staAttitude::AttitudeVector Euler123ToAttitudeVector(const ScenarioAbstract6DOFAttitudeType* attitudeEuler)
 
 {
     staAttitude::AttitudeVector initialAttitude;
 
-    if (dynamic_cast<const ScenarioqBIType*>(attitude))
+   if (dynamic_cast<const ScenarioEulerType*>(attitudeEuler))
     {
-        //Reading the attitude from XML
-        const ScenarioqBIType* av = dynamic_cast<const ScenarioqBIType*>(attitude);
-        // converting to quaternions and body rates
-        Quaterniond quaternions(av->q1(), av->q2(), av->q3(), av->q4());
-        Quaterniond quaternionsDot(av->q1Dot(), av->q2Dot(), av->q3Dot(), av->q4Dot());
-
-        Vector3d transformedBodyRates = ToAngularVelocity(quaternions, quaternionsDot);
-
-        // inserting them in the attitude vector
-        initialAttitude = staAttitude::AttitudeVector(Eigen::Quaterniond(av->q1(), av->q2(), av->q3(), av->q4()),
-                                                      Vector3d(transformedBodyRates));
-
-    }
-    else if (dynamic_cast<const ScenarioEulerBIType*>(attitude))
-    {
-        const ScenarioEulerBIType* euler = dynamic_cast<const ScenarioEulerBIType*>(attitude);
-        MyVector3d eulerAngles(euler->phi(), euler->theta(), euler->psi());
-        MyVector3d bodyRates(euler->phiDot(), euler->thetaDot(), euler->psiDot());
+        const ScenarioEulerType* euler = dynamic_cast<const ScenarioEulerType*>(attitudeEuler);
+        Vector3d eulerAngles(euler->phi(), euler->theta(), euler->psi());
+        Vector3d bodyRates(euler->phiDot(), euler->thetaDot(), euler->psiDot());
 
         //Call object's ToQuaternions function:
-        Quaterniond initQuaternion = ToQuaternions(eulerAngles, seq1, seq2, seq3);
+        Quaterniond initQuaternion = ToQuaternions(eulerAngles, 1, 2, 3);
+
+        //Call object's ToQuaternionRates function
+        Quaterniond initQuaternionRates = ToQuaternionRates(initQuaternion,bodyRates);
+
+        Vector3d transformedBodyRates = ToAngularVelocity(initQuaternion, initQuaternionRates);
+        // inserting them in the attitude vector
+        initialAttitude = staAttitude::AttitudeVector(Quaterniond(initQuaternion),
+                                                      Vector3d(transformedBodyRates));
+    }
+    else
+    {
+        qCritical("Unrecognized AbstractAttitude subclass!");
+    }
+
+    return initialAttitude;
+
+}
+
+
+
+
+
+/** Convert an abstract attitude to an attitude state vector
+  *
+  * \param position an ????????
+  * \param c????????
+  */
+staAttitude::AttitudeVector Euler321ToAttitudeVector(const ScenarioAbstract6DOFAttitudeType* attitudeEuler)
+
+{
+    staAttitude::AttitudeVector initialAttitude;
+
+   if (dynamic_cast<const ScenarioEulerType*>(attitudeEuler))
+    {
+        const ScenarioEulerType* euler = dynamic_cast<const ScenarioEulerType*>(attitudeEuler);
+        Vector3d eulerAngles(euler->phi(), euler->theta(), euler->psi());
+        Vector3d bodyRates(euler->phiDot(), euler->thetaDot(), euler->psiDot());
+
+        //Call object's ToQuaternions function:
+        Quaterniond initQuaternion = ToQuaternions(eulerAngles, 3, 2, 1);
 
         //Call object's ToQuaternionRates function
         Quaterniond initQuaternionRates = ToQuaternionRates(initQuaternion,bodyRates);
@@ -184,6 +208,116 @@ staAttitude::AttitudeVector
     }
 
     return initialAttitude;
+
+}
+
+
+
+/** Convert an abstract attitude to an attitude state vector
+  *
+  * \param position an ????????
+  * \param c????????
+  */
+staAttitude::AttitudeVector Euler313ToAttitudeVector(const ScenarioAbstract6DOFAttitudeType* attitudeEuler)
+
+{
+    staAttitude::AttitudeVector initialAttitude;
+
+   if (dynamic_cast<const ScenarioEulerType*>(attitudeEuler))
+    {
+        const ScenarioEulerType* euler = dynamic_cast<const ScenarioEulerType*>(attitudeEuler);
+        Vector3d eulerAngles(euler->phi(), euler->theta(), euler->psi());
+        Vector3d bodyRates(euler->phiDot(), euler->thetaDot(), euler->psiDot());
+
+        //Call object's ToQuaternions function:
+        Quaterniond initQuaternion = ToQuaternions(eulerAngles, 3, 1, 3);
+
+        //Call object's ToQuaternionRates function
+        Quaterniond initQuaternionRates = ToQuaternionRates(initQuaternion,bodyRates);
+
+        Vector3d transformedBodyRates = ToAngularVelocity(initQuaternion, initQuaternionRates);
+        // inserting them in the attitude vector
+        initialAttitude = staAttitude::AttitudeVector(Eigen::Quaterniond(initQuaternion),
+                                              Eigen::Vector3d(transformedBodyRates));
+    }
+    else
+    {
+        qCritical("Unrecognized AbstractAttitude subclass!");
+    }
+
+    return initialAttitude;
+
+}
+
+
+
+
+/** Convert an abstract attitude to an attitude state vector
+  *
+  * \param position an ????????
+  * \param c????????
+  */
+staAttitude::AttitudeVector QuaternionJPLToAttitudeVector(const ScenarioAbstract8DOFAttitudeType* attitudeQuaternion)
+
+{
+    staAttitude::AttitudeVector initialAttitude;
+
+    if (dynamic_cast<const ScenarioQuaternionType*>(attitudeQuaternion))
+    {
+        //Reading the attitude from XML
+        const ScenarioQuaternionType* av = dynamic_cast<const ScenarioQuaternionType*>(attitudeQuaternion);
+        // converting to quaternions and body rates
+        Quaterniond quaternions(av->q1(), av->q2(), av->q3(), av->q4());
+        Quaterniond quaternionsDot(av->q1Dot(), av->q2Dot(), av->q3Dot(), av->q4Dot());
+
+        Vector3d transformedBodyRates = ToAngularVelocity(quaternions, quaternionsDot);
+
+        // inserting them in the attitude vector
+        initialAttitude = staAttitude::AttitudeVector(Eigen::Quaterniond(av->q1(), av->q2(), av->q3(), av->q4()),
+                                                      Vector3d(transformedBodyRates));
+
+    }
+    else
+    {
+        qCritical("Unrecognized AbstractAttitude subclass!");
+    }
+
+    return initialAttitude;
+
+}
+
+
+
+
+/** Convert an abstract attitude to an attitude state vector
+  *
+  * \param position an ????????
+  * \param c????????
+  */
+staAttitude::AttitudeVector QuaternionESAToAttitudeVector(const ScenarioAbstract8DOFAttitudeType* attitudeQuaternion)
+
+{
+    staAttitude::AttitudeVector initialAttitudeVector;
+
+    if (dynamic_cast<const ScenarioQuaternionType*>(attitudeQuaternion))
+    {
+        const ScenarioQuaternionType* av = dynamic_cast<const ScenarioQuaternionType*>(attitudeQuaternion);
+
+        // converting to quaternions and body rates
+        Quaterniond quaternions(av->q1(), av->q2(), av->q3(), av->q4());
+        Quaterniond quaternionsDot(av->q1Dot(), av->q2Dot(), av->q3Dot(), av->q4Dot());
+
+        Vector3d transformedBodyRates = ToAngularVelocity(quaternions, quaternionsDot);
+
+        // inserting them in the attitude vector
+        initialAttitudeVector = staAttitude::AttitudeVector(quaternions, transformedBodyRates);
+    }
+    else
+    {
+        qCritical("Unrecognized AbstractAttitude subclass!");
+    }
+
+    return initialAttitudeVector;
 
 }
 
