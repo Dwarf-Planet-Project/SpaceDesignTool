@@ -1164,12 +1164,12 @@ void SemMainGUI::on_SemMainGUISavePushButton_clicked()
     Vehicle->System().data()->Structure().data()->MomentsOfInertia().data()->setZAxis
             (SC.getNewSCStructure()->getMomentsOfInertia().z());
 
-    Vehicle->System().data()->Structure().data()->SecondMomentsOfArea().data()->setXAxis
-            (SC.getNewSCStructure()->getSecondMomentsOfArea().x());
-    Vehicle->System().data()->Structure().data()->SecondMomentsOfArea().data()->setYAxis
-            (SC.getNewSCStructure()->getSecondMomentsOfArea().y());
-    Vehicle->System().data()->Structure().data()->SecondMomentsOfArea().data()->setZAxis
-            (SC.getNewSCStructure()->getSecondMomentsOfArea().z());
+    Vehicle->System().data()->Structure().data()->SecondMomentsOfInertia().data()->setXAxis
+            (SC.getNewSCStructure()->getSecondMomentsOfInertia().x());
+    Vehicle->System().data()->Structure().data()->SecondMomentsOfInertia().data()->setYAxis
+            (SC.getNewSCStructure()->getSecondMomentsOfInertia().y());
+    Vehicle->System().data()->Structure().data()->SecondMomentsOfInertia().data()->setZAxis
+            (SC.getNewSCStructure()->getSecondMomentsOfInertia().z());
 
     Vehicle->System().data()->Structure().data()->NaturalFrequency().data()->setLateralFrequency
             (SC.getNewSCStructure()->getLateralFrequency());
@@ -1962,10 +1962,10 @@ void SemMainGUI::RetrieveScenarioSC()
             (Vehicle->System().data()->Structure().data()->MomentsOfInertia().data()->xAxis(),
              Vehicle->System().data()->Structure().data()->MomentsOfInertia().data()->yAxis(),
              Vehicle->System().data()->Structure().data()->MomentsOfInertia().data()->zAxis());
-    SC.getNewSCStructure()->setSecondMomentsOfArea
-            (Vehicle->System().data()->Structure().data()->SecondMomentsOfArea().data()->xAxis(),
-             Vehicle->System().data()->Structure().data()->SecondMomentsOfArea().data()->yAxis(),
-             Vehicle->System().data()->Structure().data()->SecondMomentsOfArea().data()->zAxis());
+    SC.getNewSCStructure()->setSecondMomentsOfInertia
+            (Vehicle->System().data()->Structure().data()->SecondMomentsOfInertia().data()->xAxis(),
+             Vehicle->System().data()->Structure().data()->SecondMomentsOfInertia().data()->yAxis(),
+             Vehicle->System().data()->Structure().data()->SecondMomentsOfInertia().data()->zAxis());
     SC.getNewSCStructure()->setLateralFrequency
             (Vehicle->System().data()->Structure().data()->NaturalFrequency().data()->lateralFrequency());
     SC.getNewSCStructure()->setAxialFrequency

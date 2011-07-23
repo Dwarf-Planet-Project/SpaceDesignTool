@@ -228,8 +228,8 @@ void ConstellationWizardDialog::accept()
         elements->setTrueAnomaly(satellitekeplerian[i].param[5]);
 
         // Create the initial attitude (Euler elements)
-        ScenarioEulerBIType*  initAtt = new ScenarioEulerBIType();
-        //QSharedPointer<ScenarioEulerBIType> initAtt(new ScenarioEulerBIType());
+        ScenarioEulerType*  initAtt = new ScenarioEulerType();
+        //QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
         initAtt->setPhi(0.00000);
         initAtt->setTheta(0.00000);
         initAtt->setPsi(0.00000);

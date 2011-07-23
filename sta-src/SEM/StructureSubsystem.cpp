@@ -46,7 +46,7 @@ StructureSubsystem::StructureSubsystem()
 
     MomentsOfInertia.setZero();
 
-    SecondMomentsOfArea.setZero();
+    SecondMomentsOfInertia.setZero();
 
     SCShape = Undefined;
 
@@ -333,51 +333,51 @@ Vector3d StructureSubsystem::getMomentsOfInertia()
     return MomentsOfInertia;
 }
 
-void StructureSubsystem::CalculateAndSetSecondMomentsOfArea()
+void StructureSubsystem::CalculateAndSetSecondMomentsOfInertia()
 {
     switch (SCShape)
     {
     case Cube:
         {
-            SecondMomentsOfArea.x() = (pow(SCSizing.x(),4.0)/ 12);
-            SecondMomentsOfArea.y() = (pow(SCSizing.y(),4.0)/ 12);
-            SecondMomentsOfArea.z() = (pow(SCSizing.x(),4.0)/ 12);
+            SecondMomentsOfInertia.x() = (pow(SCSizing.x(),4.0)/ 12);
+            SecondMomentsOfInertia.y() = (pow(SCSizing.y(),4.0)/ 12);
+            SecondMomentsOfInertia.z() = (pow(SCSizing.x(),4.0)/ 12);
             break;
         }
     case Cylindrical:
         {
-            SecondMomentsOfArea.x() =(mypi * pow(SCSizing.x(),4.0) / 64);
-            SecondMomentsOfArea.y() =(mypi * pow(SCSizing.x(),4.0) / 64);
-            SecondMomentsOfArea.z() =(mypi * pow(SCSizing.x(),4.0) / 32);
+            SecondMomentsOfInertia.x() =(mypi * pow(SCSizing.x(),4.0) / 64);
+            SecondMomentsOfInertia.y() =(mypi * pow(SCSizing.x(),4.0) / 64);
+            SecondMomentsOfInertia.z() =(mypi * pow(SCSizing.x(),4.0) / 32);
             break;
         }
     case Spherical:
         {
-            SecondMomentsOfArea.x() =(mypi * pow(SCSizing.x(),4.0) / 64);
-            SecondMomentsOfArea.y() =(mypi * pow(SCSizing.x(),4.0) / 64);
-            SecondMomentsOfArea.z() =(mypi * pow(SCSizing.x(),4.0) / 32);
+            SecondMomentsOfInertia.x() =(mypi * pow(SCSizing.x(),4.0) / 64);
+            SecondMomentsOfInertia.y() =(mypi * pow(SCSizing.x(),4.0) / 64);
+            SecondMomentsOfInertia.z() =(mypi * pow(SCSizing.x(),4.0) / 32);
             break;
         }
     default:
         {
-            SecondMomentsOfArea.x() = 0.0;
-            SecondMomentsOfArea.y() = 0.0;
-            SecondMomentsOfArea.z() = 0.0;
+            SecondMomentsOfInertia.x() = 0.0;
+            SecondMomentsOfInertia.y() = 0.0;
+            SecondMomentsOfInertia.z() = 0.0;
             break;
         }
     }
 }
 
-void StructureSubsystem::setSecondMomentsOfArea(double x, double y, double z)
+void StructureSubsystem::setSecondMomentsOfInertia(double x, double y, double z)
 {
-    SecondMomentsOfArea.x() = x;
-    SecondMomentsOfArea.y() = y;
-    SecondMomentsOfArea.z() = z;
+    SecondMomentsOfInertia.x() = x;
+    SecondMomentsOfInertia.y() = y;
+    SecondMomentsOfInertia.z() = z;
 }
 
-Vector3d StructureSubsystem::getSecondMomentsOfArea()
+Vector3d StructureSubsystem::getSecondMomentsOfInertia()
 {
-    return SecondMomentsOfArea;
+    return SecondMomentsOfInertia;
 }
 
 void StructureSubsystem::setSCShape(Shape DefinedShape)
@@ -435,7 +435,7 @@ void StructureSubsystem::CalculateAndSetLateralFrequency()
     case Cube:
         {
             NaturalFrequency.Lateral = (0.560 *
-                        sqrt((SCMaterial.ModulusOfElasticity * SecondMomentsOfArea.x())
+                        sqrt((SCMaterial.ModulusOfElasticity * SecondMomentsOfInertia.x())
                              /
                              (SCMassDetails.SCTotal * pow(SCSizing.z(),3.0))
                             )   );
@@ -444,7 +444,7 @@ void StructureSubsystem::CalculateAndSetLateralFrequency()
     case Cylindrical:
         {
             NaturalFrequency.Lateral = (0.560 *
-                    sqrt((SCMaterial.ModulusOfElasticity * SecondMomentsOfArea.x())
+                    sqrt((SCMaterial.ModulusOfElasticity * SecondMomentsOfInertia.x())
                          /
                          (SCMassDetails.SCTotal * pow(SCSizing.y(),3))
                         )   );
@@ -453,7 +453,7 @@ void StructureSubsystem::CalculateAndSetLateralFrequency()
     case Spherical:
         {
             NaturalFrequency.Lateral = (0.560 *
-                    sqrt((SCMaterial.ModulusOfElasticity * SecondMomentsOfArea.x())
+                    sqrt((SCMaterial.ModulusOfElasticity * SecondMomentsOfInertia.x())
                          /
                          (SCMassDetails.SCTotal * pow(SCSizing.x(),3))
                         )   );
@@ -798,7 +798,7 @@ void StructureSubsystem::setPowerSubsystemVolume(double volume)
     CalculateAndSetSCVolume();
     CalculateAndSetSpacecraftDimension();
     CalculateAndSetMomentsOfInertia();
-    CalculateAndSetSecondMomentsOfArea();
+    CalculateAndSetSecondMomentsOfInertia();
     CalculateAndSetLateralFrequency();
     CalculateAndSetAxialFrequency();
 }
@@ -816,7 +816,7 @@ void StructureSubsystem::setOBDHSubsystemVolume(double volume)
     CalculateAndSetSCVolume();
     CalculateAndSetSpacecraftDimension();
     CalculateAndSetMomentsOfInertia();
-    CalculateAndSetSecondMomentsOfArea();
+    CalculateAndSetSecondMomentsOfInertia();
     CalculateAndSetLateralFrequency();
     CalculateAndSetAxialFrequency();
 }
@@ -834,7 +834,7 @@ void StructureSubsystem::setThermalSubsystemVolume(double volume)
     CalculateAndSetSCVolume();
     CalculateAndSetSpacecraftDimension();
     CalculateAndSetMomentsOfInertia();
-    CalculateAndSetSecondMomentsOfArea();
+    CalculateAndSetSecondMomentsOfInertia();
     CalculateAndSetLateralFrequency();
     CalculateAndSetAxialFrequency();
 }
@@ -852,7 +852,7 @@ void StructureSubsystem::setTTCSubsystemVolume(double volume)
     CalculateAndSetSCVolume();
     CalculateAndSetSpacecraftDimension();
     CalculateAndSetMomentsOfInertia();
-    CalculateAndSetSecondMomentsOfArea();
+    CalculateAndSetSecondMomentsOfInertia();
     CalculateAndSetLateralFrequency();
     CalculateAndSetAxialFrequency();
 }

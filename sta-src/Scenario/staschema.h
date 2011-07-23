@@ -37,11 +37,8 @@ class ScenarioAbstractPayloadType;
 class ScenarioPayloadSet;
 class ScenarioInitialPositionType;
 class ScenarioInitialAttitudeType;
+class ScenarioInitialAttitudeUsingQuaternionsType;
 class ScenarioParticipantType;
-class ScenarioOptVarDouble;
-class ScenarioOptVarInt;
-class ScenarioOptVarBool;
-class ScenarioOptVarString;
 class ScenarioTimeLine;
 class ScenarioPropagation;
 class ScenarioEnvironmentType;
@@ -56,14 +53,13 @@ class ScenarioStateVectorType;
 class ScenarioKeplerianElementsType;
 class ScenarioSphericalCoordinatesType;
 class ScenarioAbstract6DOFAttitudeType;
-class ScenarioEulerBLVLHType;
-class ScenarioEulerBIType;
-class ScenarioqBLVLHType;
-class ScenarioqBIType;
+class ScenarioAbstract8DOFAttitudeType;
+class ScenarioEulerType;
+class ScenarioQuaternionType;
 class ScenarioAbstract12DOFStateType;
 class ScenarioState12DOF;
-class ScenarioOptimization;
-class ScenarioOutputFiles;
+class ScenarioAbstract14DOFStateType;
+class ScenarioState14DOF;
 class ScenarioTelescopeType;
 class ScenarioOpticalProperties;
 class ScenarioRadarType;
@@ -81,6 +77,12 @@ class ScenarioModulation;
 class ScenarioReceiver;
 class ScenarioSystemTemperature;
 class ScenarioAeroCoefFileType;
+class ScenarioOptVarDouble;
+class ScenarioOptVarInt;
+class ScenarioOptVarBool;
+class ScenarioOptVarString;
+class ScenarioOptimization;
+class ScenarioOutputFiles;
 class ScenarioGroundStation;
 class ScenarioGroundStationEnvironment;
 class ScenarioRain;
@@ -192,7 +194,7 @@ class ScenarioPropulsion;
 class ScenarioStructure;
 class ScenarioSizing;
 class ScenarioMomentsOfInertia;
-class ScenarioSecondMomentsOfArea;
+class ScenarioSecondMomentsOfInertia;
 class ScenarioNaturalFrequency;
 class ScenarioTCS;
 class ScenarioTemperature;
@@ -302,6 +304,10 @@ public:
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QString propagator() const
+    { return m_propagator; }
+    void setPropagator(QString propagator)
+    { m_propagator = propagator; }
     QString integrator() const
     { return m_integrator; }
     void setIntegrator(QString integrator)
@@ -312,6 +318,7 @@ public:
     { m_timeStep = timeStep; }
 
 private:
+    QString m_propagator;
     QString m_integrator;
     double m_timeStep;
 };
@@ -439,6 +446,33 @@ private:
 };
 
 
+// ScenarioInitialAttitudeUsingQuaternionsType
+class ScenarioInitialAttitudeUsingQuaternionsType : public ScenarioObject
+{
+public:
+    ScenarioInitialAttitudeUsingQuaternionsType();
+    static ScenarioInitialAttitudeUsingQuaternionsType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "InitialAttitudeUsingQuaternionsType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QString CoordinateSystem() const
+    { return m_CoordinateSystem; }
+    void setCoordinateSystem(QString CoordinateSystem)
+    { m_CoordinateSystem = CoordinateSystem; }
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> Abstract8DOFAttitude() const
+    { return m_Abstract8DOFAttitude; }
+    void setAbstract8DOFAttitude(QSharedPointer<ScenarioAbstract8DOFAttitudeType> Abstract8DOFAttitude)
+    { m_Abstract8DOFAttitude = Abstract8DOFAttitude; }
+
+private:
+    QString m_CoordinateSystem;
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> m_Abstract8DOFAttitude;
+};
+
+
 // ScenarioParticipantType
 class ScenarioParticipantType : public ScenarioObject
 {
@@ -458,118 +492,6 @@ public:
 
 private:
     QString m_Name;
-};
-
-
-// ScenarioOptVarDouble
-class ScenarioOptVarDouble : public ScenarioObject
-{
-public:
-    ScenarioOptVarDouble();
-    static ScenarioOptVarDouble* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "OptVarDouble"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    double min() const
-    { return m_min; }
-    void setMin(double min)
-    { m_min = min; }
-    double value() const
-    { return m_value; }
-    void setValue(double value)
-    { m_value = value; }
-    double max() const
-    { return m_max; }
-    void setMax(double max)
-    { m_max = max; }
-
-private:
-    double m_min;
-    double m_value;
-    double m_max;
-};
-
-
-// ScenarioOptVarInt
-class ScenarioOptVarInt : public ScenarioObject
-{
-public:
-    ScenarioOptVarInt();
-    static ScenarioOptVarInt* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "OptVarInt"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    const QList<int>& list() const
-    { return m_list; }
-    QList<int>& list()
-    { return m_list; }
-    void setList(QList<int> list)
-    { m_list = list; }
-    int value() const
-    { return m_value; }
-    void setValue(int value)
-    { m_value = value; }
-
-private:
-    QList<int> m_list;
-    int m_value;
-};
-
-
-// ScenarioOptVarBool
-class ScenarioOptVarBool : public ScenarioObject
-{
-public:
-    ScenarioOptVarBool();
-    static ScenarioOptVarBool* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "OptVarBool"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    bool value() const
-    { return m_value; }
-    void setValue(bool value)
-    { m_value = value; }
-
-private:
-    bool m_value;
-};
-
-
-// ScenarioOptVarString
-class ScenarioOptVarString : public ScenarioObject
-{
-public:
-    ScenarioOptVarString();
-    static ScenarioOptVarString* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "OptVarString"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    const QList<QString>& list() const
-    { return m_list; }
-    QList<QString>& list()
-    { return m_list; }
-    void setList(QList<QString> list)
-    { m_list = list; }
-    QString value() const
-    { return m_value; }
-    void setValue(QString value)
-    { m_value = value; }
-
-private:
-    QList<QString> m_list;
-    QString m_value;
 };
 
 
@@ -1058,14 +980,31 @@ private:
 };
 
 
-// ScenarioEulerBLVLHType
-class ScenarioEulerBLVLHType : public ScenarioAbstract6DOFAttitudeType
+// ScenarioAbstract8DOFAttitudeType
+class ScenarioAbstract8DOFAttitudeType : public ScenarioObject
 {
 public:
-    ScenarioEulerBLVLHType();
-    static ScenarioEulerBLVLHType* create(const QDomElement& e);
+    ScenarioAbstract8DOFAttitudeType();
+    static ScenarioAbstract8DOFAttitudeType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "EulerBLVLHType"; }
+    { return "Abstract8DOFAttitudeType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+
+private:
+};
+
+
+// ScenarioEulerType
+class ScenarioEulerType : public ScenarioAbstract6DOFAttitudeType
+{
+public:
+    ScenarioEulerType();
+    static ScenarioEulerType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "EulerType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -1105,118 +1044,14 @@ private:
 };
 
 
-// ScenarioEulerBIType
-class ScenarioEulerBIType : public ScenarioAbstract6DOFAttitudeType
+// ScenarioQuaternionType
+class ScenarioQuaternionType : public ScenarioAbstract8DOFAttitudeType
 {
 public:
-    ScenarioEulerBIType();
-    static ScenarioEulerBIType* create(const QDomElement& e);
+    ScenarioQuaternionType();
+    static ScenarioQuaternionType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "EulerBIType"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    double phi() const
-    { return m_phi; }
-    void setPhi(double phi)
-    { m_phi = phi; }
-    double theta() const
-    { return m_theta; }
-    void setTheta(double theta)
-    { m_theta = theta; }
-    double psi() const
-    { return m_psi; }
-    void setPsi(double psi)
-    { m_psi = psi; }
-    double phiDot() const
-    { return m_phiDot; }
-    void setPhiDot(double phiDot)
-    { m_phiDot = phiDot; }
-    double thetaDot() const
-    { return m_thetaDot; }
-    void setThetaDot(double thetaDot)
-    { m_thetaDot = thetaDot; }
-    double psiDot() const
-    { return m_psiDot; }
-    void setPsiDot(double psiDot)
-    { m_psiDot = psiDot; }
-
-private:
-    double m_phi;
-    double m_theta;
-    double m_psi;
-    double m_phiDot;
-    double m_thetaDot;
-    double m_psiDot;
-};
-
-
-// ScenarioqBLVLHType
-class ScenarioqBLVLHType : public ScenarioAbstract6DOFAttitudeType
-{
-public:
-    ScenarioqBLVLHType();
-    static ScenarioqBLVLHType* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "qBLVLHType"; }
-    virtual bool load(const QDomElement& e, QDomElement* nextElement);
-    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
-
-    virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    double q1() const
-    { return m_q1; }
-    void setQ1(double q1)
-    { m_q1 = q1; }
-    double q2() const
-    { return m_q2; }
-    void setQ2(double q2)
-    { m_q2 = q2; }
-    double q3() const
-    { return m_q3; }
-    void setQ3(double q3)
-    { m_q3 = q3; }
-    double q4() const
-    { return m_q4; }
-    void setQ4(double q4)
-    { m_q4 = q4; }
-    double q1Dot() const
-    { return m_q1Dot; }
-    void setQ1Dot(double q1Dot)
-    { m_q1Dot = q1Dot; }
-    double q2Dot() const
-    { return m_q2Dot; }
-    void setQ2Dot(double q2Dot)
-    { m_q2Dot = q2Dot; }
-    double q3Dot() const
-    { return m_q3Dot; }
-    void setQ3Dot(double q3Dot)
-    { m_q3Dot = q3Dot; }
-    double q4Dot() const
-    { return m_q4Dot; }
-    void setQ4Dot(double q4Dot)
-    { m_q4Dot = q4Dot; }
-
-private:
-    double m_q1;
-    double m_q2;
-    double m_q3;
-    double m_q4;
-    double m_q1Dot;
-    double m_q2Dot;
-    double m_q3Dot;
-    double m_q4Dot;
-};
-
-
-// ScenarioqBIType
-class ScenarioqBIType : public ScenarioAbstract6DOFAttitudeType
-{
-public:
-    ScenarioqBIType();
-    static ScenarioqBIType* create(const QDomElement& e);
-    virtual QString elementName() const
-    { return "qBIType"; }
+    { return "QuaternionType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -1310,146 +1145,47 @@ private:
 };
 
 
-// ScenarioOptimization
-class ScenarioOptimization : public ScenarioObject
+// ScenarioAbstract14DOFStateType
+class ScenarioAbstract14DOFStateType : public ScenarioObject
 {
 public:
-    ScenarioOptimization();
-    static ScenarioOptimization* create(const QDomElement& e);
+    ScenarioAbstract14DOFStateType();
+    static ScenarioAbstract14DOFStateType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "Optimization"; }
+    { return "Abstract14DOFStateType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    int nVariables() const
-    { return m_nVariables; }
-    void setNVariables(int nVariables)
-    { m_nVariables = nVariables; }
-    const QList<QString>& variables() const
-    { return m_variables; }
-    QList<QString>& variables()
-    { return m_variables; }
-    void setVariables(QList<QString> variables)
-    { m_variables = variables; }
-    const QList<double>& variablesMatrix() const
-    { return m_variablesMatrix; }
-    QList<double>& variablesMatrix()
-    { return m_variablesMatrix; }
-    void setVariablesMatrix(QList<double> variablesMatrix)
-    { m_variablesMatrix = variablesMatrix; }
-    int nObjectives() const
-    { return m_nObjectives; }
-    void setNObjectives(int nObjectives)
-    { m_nObjectives = nObjectives; }
-    const QList<QString>& objectives() const
-    { return m_objectives; }
-    QList<QString>& objectives()
-    { return m_objectives; }
-    void setObjectives(QList<QString> objectives)
-    { m_objectives = objectives; }
-    const QList<double>& objectivesMatrix() const
-    { return m_objectivesMatrix; }
-    QList<double>& objectivesMatrix()
-    { return m_objectivesMatrix; }
-    void setObjectivesMatrix(QList<double> objectivesMatrix)
-    { m_objectivesMatrix = objectivesMatrix; }
-    int nConstraints() const
-    { return m_nConstraints; }
-    void setNConstraints(int nConstraints)
-    { m_nConstraints = nConstraints; }
-    const QList<QString>& constraints() const
-    { return m_constraints; }
-    QList<QString>& constraints()
-    { return m_constraints; }
-    void setConstraints(QList<QString> constraints)
-    { m_constraints = constraints; }
-    const QList<double>& constraintsMatrix() const
-    { return m_constraintsMatrix; }
-    QList<double>& constraintsMatrix()
-    { return m_constraintsMatrix; }
-    void setConstraintsMatrix(QList<double> constraintsMatrix)
-    { m_constraintsMatrix = constraintsMatrix; }
-    QString algorithm() const
-    { return m_algorithm; }
-    void setAlgorithm(QString algorithm)
-    { m_algorithm = algorithm; }
-    const QList<double>& algorithmParameters() const
-    { return m_algorithmParameters; }
-    QList<double>& algorithmParameters()
-    { return m_algorithmParameters; }
-    void setAlgorithmParameters(QList<double> algorithmParameters)
-    { m_algorithmParameters = algorithmParameters; }
 
 private:
-    int m_nVariables;
-    QList<QString> m_variables;
-    QList<double> m_variablesMatrix;
-    int m_nObjectives;
-    QList<QString> m_objectives;
-    QList<double> m_objectivesMatrix;
-    int m_nConstraints;
-    QList<QString> m_constraints;
-    QList<double> m_constraintsMatrix;
-    QString m_algorithm;
-    QList<double> m_algorithmParameters;
 };
 
 
-// ScenarioOutputFiles
-class ScenarioOutputFiles : public ScenarioObject
+// ScenarioState14DOF
+class ScenarioState14DOF : public ScenarioAbstract14DOFStateType
 {
 public:
-    ScenarioOutputFiles();
-    static ScenarioOutputFiles* create(const QDomElement& e);
+    ScenarioState14DOF();
+    static ScenarioState14DOF* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "OutputFiles"; }
+    { return "State14DOF"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
     virtual QList<QSharedPointer<ScenarioObject> > children() const;
-    QString paretoFrontVarsFileName() const
-    { return m_paretoFrontVarsFileName; }
-    void setParetoFrontVarsFileName(QString paretoFrontVarsFileName)
-    { m_paretoFrontVarsFileName = paretoFrontVarsFileName; }
-    QString paretoFrontCstrsFileName() const
-    { return m_paretoFrontCstrsFileName; }
-    void setParetoFrontCstrsFileName(QString paretoFrontCstrsFileName)
-    { m_paretoFrontCstrsFileName = paretoFrontCstrsFileName; }
-    QString paretoFrontObjsFileName() const
-    { return m_paretoFrontObjsFileName; }
-    void setParetoFrontObjsFileName(QString paretoFrontObjsFileName)
-    { m_paretoFrontObjsFileName = paretoFrontObjsFileName; }
-    QString geometryFileName() const
-    { return m_geometryFileName; }
-    void setGeometryFileName(QString geometryFileName)
-    { m_geometryFileName = geometryFileName; }
-    QString trajPostionFileName() const
-    { return m_trajPostionFileName; }
-    void setTrajPostionFileName(QString trajPostionFileName)
-    { m_trajPostionFileName = trajPostionFileName; }
-    QString trajAttitudeFileName() const
-    { return m_trajAttitudeFileName; }
-    void setTrajAttitudeFileName(QString trajAttitudeFileName)
-    { m_trajAttitudeFileName = trajAttitudeFileName; }
-    QString trajMiscFileName() const
-    { return m_trajMiscFileName; }
-    void setTrajMiscFileName(QString trajMiscFileName)
-    { m_trajMiscFileName = trajMiscFileName; }
-    QString successProbabilityFileName() const
-    { return m_successProbabilityFileName; }
-    void setSuccessProbabilityFileName(QString successProbabilityFileName)
-    { m_successProbabilityFileName = successProbabilityFileName; }
+    QSharedPointer<ScenarioAbstract6DOFPositionType> Abstract6DOFPosition() const
+    { return m_Abstract6DOFPosition; }
+    void setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType> Abstract6DOFPosition)
+    { m_Abstract6DOFPosition = Abstract6DOFPosition; }
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> Abstract8DOFAttitude() const
+    { return m_Abstract8DOFAttitude; }
+    void setAbstract8DOFAttitude(QSharedPointer<ScenarioAbstract8DOFAttitudeType> Abstract8DOFAttitude)
+    { m_Abstract8DOFAttitude = Abstract8DOFAttitude; }
 
 private:
-    QString m_paretoFrontVarsFileName;
-    QString m_paretoFrontCstrsFileName;
-    QString m_paretoFrontObjsFileName;
-    QString m_geometryFileName;
-    QString m_trajPostionFileName;
-    QString m_trajAttitudeFileName;
-    QString m_trajMiscFileName;
-    QString m_successProbabilityFileName;
+    QSharedPointer<ScenarioAbstract6DOFPositionType> m_Abstract6DOFPosition;
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> m_Abstract8DOFAttitude;
 };
 
 
@@ -2107,6 +1843,261 @@ private:
     QList<int> m_IndepVarDiscretizationPoints;
     QList<double> m_IndepVarMin;
     QList<double> m_IndepVarMax;
+};
+
+
+// ScenarioOptVarDouble
+class ScenarioOptVarDouble : public ScenarioObject
+{
+public:
+    ScenarioOptVarDouble();
+    static ScenarioOptVarDouble* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "OptVarDouble"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    double min() const
+    { return m_min; }
+    void setMin(double min)
+    { m_min = min; }
+    double value() const
+    { return m_value; }
+    void setValue(double value)
+    { m_value = value; }
+    double max() const
+    { return m_max; }
+    void setMax(double max)
+    { m_max = max; }
+
+private:
+    double m_min;
+    double m_value;
+    double m_max;
+};
+
+
+// ScenarioOptVarInt
+class ScenarioOptVarInt : public ScenarioObject
+{
+public:
+    ScenarioOptVarInt();
+    static ScenarioOptVarInt* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "OptVarInt"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    const QList<int>& list() const
+    { return m_list; }
+    QList<int>& list()
+    { return m_list; }
+    void setList(QList<int> list)
+    { m_list = list; }
+    int value() const
+    { return m_value; }
+    void setValue(int value)
+    { m_value = value; }
+
+private:
+    QList<int> m_list;
+    int m_value;
+};
+
+
+// ScenarioOptVarBool
+class ScenarioOptVarBool : public ScenarioObject
+{
+public:
+    ScenarioOptVarBool();
+    static ScenarioOptVarBool* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "OptVarBool"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    bool value() const
+    { return m_value; }
+    void setValue(bool value)
+    { m_value = value; }
+
+private:
+    bool m_value;
+};
+
+
+// ScenarioOptVarString
+class ScenarioOptVarString : public ScenarioObject
+{
+public:
+    ScenarioOptVarString();
+    static ScenarioOptVarString* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "OptVarString"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    const QList<QString>& list() const
+    { return m_list; }
+    QList<QString>& list()
+    { return m_list; }
+    void setList(QList<QString> list)
+    { m_list = list; }
+    QString value() const
+    { return m_value; }
+    void setValue(QString value)
+    { m_value = value; }
+
+private:
+    QList<QString> m_list;
+    QString m_value;
+};
+
+
+// ScenarioOptimization
+class ScenarioOptimization : public ScenarioObject
+{
+public:
+    ScenarioOptimization();
+    static ScenarioOptimization* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "Optimization"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    int nVariables() const
+    { return m_nVariables; }
+    void setNVariables(int nVariables)
+    { m_nVariables = nVariables; }
+    const QList<QString>& variables() const
+    { return m_variables; }
+    QList<QString>& variables()
+    { return m_variables; }
+    void setVariables(QList<QString> variables)
+    { m_variables = variables; }
+    const QList<double>& variablesMatrix() const
+    { return m_variablesMatrix; }
+    QList<double>& variablesMatrix()
+    { return m_variablesMatrix; }
+    void setVariablesMatrix(QList<double> variablesMatrix)
+    { m_variablesMatrix = variablesMatrix; }
+    int nObjectives() const
+    { return m_nObjectives; }
+    void setNObjectives(int nObjectives)
+    { m_nObjectives = nObjectives; }
+    const QList<QString>& objectives() const
+    { return m_objectives; }
+    QList<QString>& objectives()
+    { return m_objectives; }
+    void setObjectives(QList<QString> objectives)
+    { m_objectives = objectives; }
+    const QList<double>& objectivesMatrix() const
+    { return m_objectivesMatrix; }
+    QList<double>& objectivesMatrix()
+    { return m_objectivesMatrix; }
+    void setObjectivesMatrix(QList<double> objectivesMatrix)
+    { m_objectivesMatrix = objectivesMatrix; }
+    int nConstraints() const
+    { return m_nConstraints; }
+    void setNConstraints(int nConstraints)
+    { m_nConstraints = nConstraints; }
+    const QList<QString>& constraints() const
+    { return m_constraints; }
+    QList<QString>& constraints()
+    { return m_constraints; }
+    void setConstraints(QList<QString> constraints)
+    { m_constraints = constraints; }
+    const QList<double>& constraintsMatrix() const
+    { return m_constraintsMatrix; }
+    QList<double>& constraintsMatrix()
+    { return m_constraintsMatrix; }
+    void setConstraintsMatrix(QList<double> constraintsMatrix)
+    { m_constraintsMatrix = constraintsMatrix; }
+    QString algorithm() const
+    { return m_algorithm; }
+    void setAlgorithm(QString algorithm)
+    { m_algorithm = algorithm; }
+    const QList<double>& algorithmParameters() const
+    { return m_algorithmParameters; }
+    QList<double>& algorithmParameters()
+    { return m_algorithmParameters; }
+    void setAlgorithmParameters(QList<double> algorithmParameters)
+    { m_algorithmParameters = algorithmParameters; }
+
+private:
+    int m_nVariables;
+    QList<QString> m_variables;
+    QList<double> m_variablesMatrix;
+    int m_nObjectives;
+    QList<QString> m_objectives;
+    QList<double> m_objectivesMatrix;
+    int m_nConstraints;
+    QList<QString> m_constraints;
+    QList<double> m_constraintsMatrix;
+    QString m_algorithm;
+    QList<double> m_algorithmParameters;
+};
+
+
+// ScenarioOutputFiles
+class ScenarioOutputFiles : public ScenarioObject
+{
+public:
+    ScenarioOutputFiles();
+    static ScenarioOutputFiles* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "OutputFiles"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    QString paretoFrontVarsFileName() const
+    { return m_paretoFrontVarsFileName; }
+    void setParetoFrontVarsFileName(QString paretoFrontVarsFileName)
+    { m_paretoFrontVarsFileName = paretoFrontVarsFileName; }
+    QString paretoFrontCstrsFileName() const
+    { return m_paretoFrontCstrsFileName; }
+    void setParetoFrontCstrsFileName(QString paretoFrontCstrsFileName)
+    { m_paretoFrontCstrsFileName = paretoFrontCstrsFileName; }
+    QString paretoFrontObjsFileName() const
+    { return m_paretoFrontObjsFileName; }
+    void setParetoFrontObjsFileName(QString paretoFrontObjsFileName)
+    { m_paretoFrontObjsFileName = paretoFrontObjsFileName; }
+    QString geometryFileName() const
+    { return m_geometryFileName; }
+    void setGeometryFileName(QString geometryFileName)
+    { m_geometryFileName = geometryFileName; }
+    QString trajPostionFileName() const
+    { return m_trajPostionFileName; }
+    void setTrajPostionFileName(QString trajPostionFileName)
+    { m_trajPostionFileName = trajPostionFileName; }
+    QString trajAttitudeFileName() const
+    { return m_trajAttitudeFileName; }
+    void setTrajAttitudeFileName(QString trajAttitudeFileName)
+    { m_trajAttitudeFileName = trajAttitudeFileName; }
+    QString trajMiscFileName() const
+    { return m_trajMiscFileName; }
+    void setTrajMiscFileName(QString trajMiscFileName)
+    { m_trajMiscFileName = trajMiscFileName; }
+    QString successProbabilityFileName() const
+    { return m_successProbabilityFileName; }
+    void setSuccessProbabilityFileName(QString successProbabilityFileName)
+    { m_successProbabilityFileName = successProbabilityFileName; }
+
+private:
+    QString m_paretoFrontVarsFileName;
+    QString m_paretoFrontCstrsFileName;
+    QString m_paretoFrontObjsFileName;
+    QString m_geometryFileName;
+    QString m_trajPostionFileName;
+    QString m_trajAttitudeFileName;
+    QString m_trajMiscFileName;
+    QString m_successProbabilityFileName;
 };
 
 
@@ -6676,6 +6667,10 @@ public:
     { return m_InitialAttitude; }
     void setInitialAttitude(QSharedPointer<ScenarioInitialAttitudeType> InitialAttitude)
     { m_InitialAttitude = InitialAttitude; }
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> InitialAttitudeUsingQuaternions() const
+    { return m_InitialAttitudeUsingQuaternions; }
+    void setInitialAttitudeUsingQuaternions(QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> InitialAttitudeUsingQuaternions)
+    { m_InitialAttitudeUsingQuaternions = InitialAttitudeUsingQuaternions; }
     QSharedPointer<ScenarioPropagationPositionType> PropagationPosition() const
     { return m_PropagationPosition; }
     void setPropagationPosition(QSharedPointer<ScenarioPropagationPositionType> PropagationPosition)
@@ -6694,6 +6689,7 @@ private:
     QSharedPointer<ScenarioTimeLine> m_TimeLine;
     QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
     QSharedPointer<ScenarioInitialAttitudeType> m_InitialAttitude;
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> m_InitialAttitudeUsingQuaternions;
     QSharedPointer<ScenarioPropagationPositionType> m_PropagationPosition;
     QSharedPointer<ScenarioPropagationAttitudeType> m_PropagationAttitude;
     QSharedPointer<ScenarioTrajectoryStoppingConditionType> m_TrajectoryStoppingCondition;
@@ -7198,10 +7194,10 @@ public:
     { return m_MomentsOfInertia; }
     void setMomentsOfInertia(QSharedPointer<ScenarioMomentsOfInertia> MomentsOfInertia)
     { m_MomentsOfInertia = MomentsOfInertia; }
-    QSharedPointer<ScenarioSecondMomentsOfArea> SecondMomentsOfArea() const
-    { return m_SecondMomentsOfArea; }
-    void setSecondMomentsOfArea(QSharedPointer<ScenarioSecondMomentsOfArea> SecondMomentsOfArea)
-    { m_SecondMomentsOfArea = SecondMomentsOfArea; }
+    QSharedPointer<ScenarioSecondMomentsOfInertia> SecondMomentsOfInertia() const
+    { return m_SecondMomentsOfInertia; }
+    void setSecondMomentsOfInertia(QSharedPointer<ScenarioSecondMomentsOfInertia> SecondMomentsOfInertia)
+    { m_SecondMomentsOfInertia = SecondMomentsOfInertia; }
     QSharedPointer<ScenarioNaturalFrequency> NaturalFrequency() const
     { return m_NaturalFrequency; }
     void setNaturalFrequency(QSharedPointer<ScenarioNaturalFrequency> NaturalFrequency)
@@ -7216,7 +7212,7 @@ private:
     QString m_StructuralMaterial;
     QSharedPointer<ScenarioSizing> m_Sizing;
     QSharedPointer<ScenarioMomentsOfInertia> m_MomentsOfInertia;
-    QSharedPointer<ScenarioSecondMomentsOfArea> m_SecondMomentsOfArea;
+    QSharedPointer<ScenarioSecondMomentsOfInertia> m_SecondMomentsOfInertia;
     QSharedPointer<ScenarioNaturalFrequency> m_NaturalFrequency;
     double m_totalStructureMass;
 };
@@ -7291,14 +7287,14 @@ private:
 };
 
 
-// ScenarioSecondMomentsOfArea
-class ScenarioSecondMomentsOfArea : public ScenarioObject
+// ScenarioSecondMomentsOfInertia
+class ScenarioSecondMomentsOfInertia : public ScenarioObject
 {
 public:
-    ScenarioSecondMomentsOfArea();
-    static ScenarioSecondMomentsOfArea* create(const QDomElement& e);
+    ScenarioSecondMomentsOfInertia();
+    static ScenarioSecondMomentsOfInertia* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "SecondMomentsOfArea"; }
+    { return "SecondMomentsOfInertia"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -7942,13 +7938,16 @@ QDomElement CreateOpticalPayloadElement(ScenarioOpticalPayloadType* e, QDomDocum
 QDomElement CreateInitialAttitudeElement(ScenarioInitialAttitudeType* e, QDomDocument& doc);
 QDomElement CreateElementIdentifierElement(ScenarioElementIdentifierType* e, QDomDocument& doc);
 QDomElement CreateLoiteringElement(ScenarioLoiteringType* e, QDomDocument& doc);
+QDomElement CreateEuler321Element(ScenarioEulerType* e, QDomDocument& doc);
 QDomElement CreateRadarElement(ScenarioRadarType* e, QDomDocument& doc);
+QDomElement CreateQuaternionJPLElement(ScenarioQuaternionType* e, QDomDocument& doc);
 QDomElement CreateReceiverElement(ScenarioReceiver* e, QDomDocument& doc);
 QDomElement CreateSphericalCoordinatesElement(ScenarioSphericalCoordinatesType* e, QDomDocument& doc);
 QDomElement CreateTimeLineElement(ScenarioTimeLine* e, QDomDocument& doc);
 QDomElement CreateEntryArcElement(ScenarioEntryArcType* e, QDomDocument& doc);
 QDomElement CreateKeplerianElementsElement(ScenarioKeplerianElementsType* e, QDomDocument& doc);
 QDomElement CreatePropagationAttitudeElement(ScenarioPropagationAttitudeType* e, QDomDocument& doc);
+QDomElement CreateInitialAttitudeUsingQuaternionsElement(ScenarioInitialAttitudeUsingQuaternionsType* e, QDomDocument& doc);
 QDomElement CreateRadarPayloadElement(ScenarioRadarPayloadType* e, QDomDocument& doc);
 QDomElement CreateTransmitterPayloadElement(ScenarioTransmitterPayloadType* e, QDomDocument& doc);
 QDomElement CreateRendezVousManoeuvreElement(ScenarioRendezVousManoeuvreType* e, QDomDocument& doc);
@@ -7958,25 +7957,25 @@ QDomElement CreateInitialPositionElement(ScenarioInitialPositionType* e, QDomDoc
 QDomElement CreateLVElement(ScenarioLV* e, QDomDocument& doc);
 QDomElement CreateOutputFilesElement(ScenarioOutputFiles* e, QDomDocument& doc);
 QDomElement CreateExternalElement(ScenarioExternalType* e, QDomDocument& doc);
-QDomElement CreateEulerBIElement(ScenarioEulerBIType* e, QDomDocument& doc);
 QDomElement CreateState12DOFElement(ScenarioState12DOF* e, QDomDocument& doc);
 QDomElement CreateCoverageElement(ScenarioCoverageType* e, QDomDocument& doc);
-QDomElement CreateEulerBLVLHElement(ScenarioEulerBLVLHType* e, QDomDocument& doc);
 QDomElement CreateLaunchPadElement(ScenarioLaunchPad* e, QDomDocument& doc);
 QDomElement CreateGroundStationElement(ScenarioGroundStation* e, QDomDocument& doc);
+QDomElement CreateEuler123Element(ScenarioEulerType* e, QDomDocument& doc);
 QDomElement CreateSCMissionElement(ScenarioSCMission* e, QDomDocument& doc);
-QDomElement CreateqBIElement(ScenarioqBIType* e, QDomDocument& doc);
 QDomElement CreateEnvironmentElement(ScenarioEnvironmentType* e, QDomDocument& doc);
 QDomElement CreateStateVectorElement(ScenarioStateVectorType* e, QDomDocument& doc);
 QDomElement CreateDeltaVElement(ScenarioDeltaVType* e, QDomDocument& doc);
 QDomElement CreateSpaceScenarioElement(SpaceScenario* e, QDomDocument& doc);
-QDomElement CreateqBLVLHElement(ScenarioqBLVLHType* e, QDomDocument& doc);
+QDomElement CreateQuaternionESAElement(ScenarioQuaternionType* e, QDomDocument& doc);
 QDomElement CreatePropagationPositionElement(ScenarioPropagationPositionType* e, QDomDocument& doc);
 QDomElement CreateSCElement(ScenarioSC* e, QDomDocument& doc);
+QDomElement CreateState14DOFElement(ScenarioState14DOF* e, QDomDocument& doc);
 QDomElement CreateSCProgramElement(ScenarioSCProgram* e, QDomDocument& doc);
 QDomElement CreateFlyByElement(ScenarioFlyByType* e, QDomDocument& doc);
 QDomElement CreateLagrangianElement(ScenarioLagrangianType* e, QDomDocument& doc);
 QDomElement CreatePropagationElement(ScenarioPropagation* e, QDomDocument& doc);
+QDomElement CreateEuler313Element(ScenarioEulerType* e, QDomDocument& doc);
 QDomElement CreateTelescopeElement(ScenarioTelescopeType* e, QDomDocument& doc);
 
 #endif // _STASCHEMA_H_

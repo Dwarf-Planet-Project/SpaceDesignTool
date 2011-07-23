@@ -138,7 +138,7 @@ static ScenarioTreeLabel TreeLabels[] =
     { "Structure", "Structure", "", false },
     { "Sizing", "Sizing", "", false },
     { "MomentsOfInertia", "Inertia", "", false },
-    { "SecondMomentsOfArea", "More inertia", "", false },
+    { "SecondMomentsOfInertia", "More inertia", "", false },
     { "NaturalFrequency", "Natural frequency", "", false },
     { "TCS", "Thermal control", "", false },
     { "Temperature", "Temperature", "", false },

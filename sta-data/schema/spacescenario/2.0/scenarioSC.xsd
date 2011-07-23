@@ -80,6 +80,7 @@
 					<element ref="tns:TimeLine"></element>
 					<element ref="tns:InitialPosition"></element>
 					<element ref="tns:InitialAttitude"></element>
+					<element ref="tns:InitialAttitudeUsingQuaternions" minOccurs="0"></element>
 					<element ref="tns:PropagationPosition"></element>
 					<element ref="tns:PropagationAttitude"></element>
 					<element ref="tns:TrajectoryStoppingCondition" minOccurs="0"></element>
@@ -255,7 +256,7 @@
 								</sequence>
 							</complexType>
 						</element>
-						<element name="SecondMomentsOfArea">
+						<element name="SecondMomentsOfInertia">
 							<complexType>
 								<sequence>
 									<element name="xAxis" type="double"></element>

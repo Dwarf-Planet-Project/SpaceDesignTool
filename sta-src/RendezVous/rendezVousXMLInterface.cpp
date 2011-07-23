@@ -446,7 +446,7 @@ void RVXMLInterface::setManoeuvre(int descriptor,int order,ScenarioRendezVousMan
 
     manPlan.plan[order].setAssociatedManoeuvre(mu,radius,*initialState,input);
     ScenarioKeplerianElementsType* elements = new ScenarioKeplerianElementsType();
-    ScenarioEulerBIType*  initAtt = new ScenarioEulerBIType();
+    ScenarioEulerType*  initAtt = new ScenarioEulerType();
     initAtt->setPhi(0.00000);
     initAtt->setTheta(0.00000);
     initAtt->setPsi(0.00000);
@@ -592,7 +592,7 @@ void RVXMLInterface::setFreeDrift(ScenarioLoiteringType* freeDrift,int order){
 
 
     // Create the initial attitude (Euler elements)
-    ScenarioEulerBIType*  initAtt = new ScenarioEulerBIType();
+    ScenarioEulerType*  initAtt = new ScenarioEulerType();
     initAtt->setPhi(0.00000);
     initAtt->setTheta(0.00000);
     initAtt->setPsi(0.00000);
@@ -695,7 +695,7 @@ void RVXMLInterface::newTarget(){
     targetElements->setTrueAnomaly(userOrbitalDialogInputs[11]);
 
     // Create the initial attitude (Euler elements)
-    ScenarioEulerBIType*  targetInitAtt = new ScenarioEulerBIType();
+    ScenarioEulerType*  targetInitAtt = new ScenarioEulerType();
     targetInitAtt->setPhi(0.00000);
     targetInitAtt->setTheta(0.00000);
     targetInitAtt->setPsi(0.00000);

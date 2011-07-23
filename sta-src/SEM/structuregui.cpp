@@ -63,13 +63,13 @@ StructureGUI::StructureGUI( SemMain * SC, QWidget * parent, Qt::WindowFlags f) :
         //visualize SecondMoment of inertia and display on GUI
         StructureGUIMomentOfAreaXaxisLineEdit->setText
                 (QString::number
-                 (SCVirtual->getNewSCStructure()->getSecondMomentsOfArea().x()));
+                 (SCVirtual->getNewSCStructure()->getSecondMomentsOfInertia().x()));
         StructureGUIMomentOfAreaYaxisLineEdit->setText
                 (QString::number
-                 (SCVirtual->getNewSCStructure()->getSecondMomentsOfArea().y()));
+                 (SCVirtual->getNewSCStructure()->getSecondMomentsOfInertia().y()));
         StructureGUIMomentOfAreaZaxisLineEdit->setText
                 (QString::number
-                 (SCVirtual->getNewSCStructure()->getSecondMomentsOfArea().z()));
+                 (SCVirtual->getNewSCStructure()->getSecondMomentsOfInertia().z()));
 
         // visualize lateral & axial frequencies of SC (in terms of
         // cylinder it is assumed that it is on top of circles)
@@ -158,17 +158,17 @@ void StructureGUI::on_StructureGUISCShapeComboBox_activated(const QString&)
             (QString::number(SCVirtual->getNewSCStructure()->getSCMass()));
 
     //Calculate and set SecondMoment of ýnertia and display on GUI
-    SCVirtual->getNewSCStructure()->CalculateAndSetSecondMomentsOfArea();
+    SCVirtual->getNewSCStructure()->CalculateAndSetSecondMomentsOfInertia();
 
     StructureGUIMomentOfAreaXaxisLineEdit->setText
             (QString::number
-             (SCVirtual->getNewSCStructure()->getSecondMomentsOfArea().x()));
+             (SCVirtual->getNewSCStructure()->getSecondMomentsOfInertia().x()));
     StructureGUIMomentOfAreaYaxisLineEdit->setText
             (QString::number
-             (SCVirtual->getNewSCStructure()->getSecondMomentsOfArea().y()));
+             (SCVirtual->getNewSCStructure()->getSecondMomentsOfInertia().y()));
     StructureGUIMomentOfAreaZaxisLineEdit->setText
             (QString::number
-             (SCVirtual->getNewSCStructure()->getSecondMomentsOfArea().z()));
+             (SCVirtual->getNewSCStructure()->getSecondMomentsOfInertia().z()));
 
     // calculate and set lateral & axial frequencies of SC (in terms of
     // cylinder it is assumed that it is on top of circles)

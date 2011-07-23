@@ -24,6 +24,7 @@
 	<element name="PropagationAttitude" type="tns:PropagationAttitudeType" />
 	<complexType name="PropagationAttitudeType">
 		<sequence>
+		    <element name="propagator" type="string"></element>
 			<element name="integrator" type="string"></element>
 			<element name="timeStep" type="double"></element>
 		</sequence>
@@ -55,7 +56,6 @@
 	</element>
 
 
-
 	<element name="InitialPosition" type="tns:InitialPositionType" />
 	<complexType name="InitialPositionType">
 		<sequence>
@@ -72,6 +72,13 @@
 		</sequence>
 	</complexType>
 
+	<element name="InitialAttitudeUsingQuaternions" type="tns:InitialAttitudeUsingQuaternionsType" />
+	<complexType name="InitialAttitudeUsingQuaternionsType">
+		<sequence>
+			<element name="CoordinateSystem" type="string"></element>
+			<element ref="tns:Abstract8DOFAttitude"></element>
+		</sequence>
+	</complexType>
 
 
 	<element name="AbstractParticipant" abstract="true"
@@ -98,42 +105,6 @@
 	<simpleType name="ListOfDateTime">
 		<list itemType="dateTime"></list>
 	</simpleType>
-
-	<!-- OPTIMIZATION VARIABLES -->
-	<complexType name="OptVarDouble">
-		<sequence>
-			<element name="min" type="double" minOccurs="0"></element>
-			<element name="value" type="double"></element>
-			<element name="max" type="double" minOccurs="0"></element>
-		</sequence>
-		<attribute name="fromFirstGuess" type="boolean"></attribute>
-		<!--
-			0 if the user defines the box constraints for the variable, 1 if the
-			first guess module defines the box constraints for the variable
-		-->
-	</complexType>
-
-	<complexType name="OptVarInt">
-		<sequence>
-			<element name="list" type="tns:ListOfInt" minOccurs="0"></element>
-			<element name="value" type="int"></element>
-		</sequence>
-	</complexType>
-
-	<complexType name="OptVarBool">
-		<sequence>
-			<element name="value" type="boolean"></element>
-		</sequence>
-		<attribute name="optimized" type="boolean"></attribute>
-		<!-- 0 not optimization variable, 1 optimization variable -->
-	</complexType>
-
-	<complexType name="OptVarString">
-		<sequence>
-			<element name="list" type="tns:ListOfString" minOccurs="0"></element>
-			<element name="value" type="string"></element>
-		</sequence>
-	</complexType>
 
 	<!-- COMMON ELEMENTS -->
 
@@ -204,15 +175,10 @@
 	<element name="TrajectoryStoppingCondition" type="tns:TrajectoryStoppingConditionType"></element>
 	<complexType name="TrajectoryStoppingConditionType">
 		<sequence>
-			<element name="ConditionIdentifier" type="string" minOccurs="0">
-			</element>
-			<element name="ConditionValue" type="double" minOccurs="0">
-			</element>
-			<element name="ConditionBody" type="tns:CentralBodyType"
-				minOccurs="0">
-			</element>
-			<element name="ConditionTolerance" type="double" minOccurs="0">
-			</element>
+			<element name="ConditionIdentifier" type="string" minOccurs="0"> </element>
+			<element name="ConditionValue" type="double" minOccurs="0"> </element>
+			<element name="ConditionBody" type="tns:CentralBodyType" minOccurs="0"> </element>
+			<element name="ConditionTolerance" type="double" minOccurs="0"> </element>
 		</sequence>
 	</complexType>
 
@@ -226,14 +192,16 @@
 		</sequence>
 	</complexType>
 	<element name="Abstract3DOFPosition" type="tns:Abstract3DOFPositionType"
-		abstract="true"></element>
+		abstract="true">
+	</element>
 
 	<complexType name="Abstract6DOFPositionType">
 		<sequence>
 		</sequence>
 	</complexType>
 	<element name="Abstract6DOFPosition" type="tns:Abstract6DOFPositionType"
-		abstract="true"></element>
+		abstract="true">
+	</element>
 
 	<element name="GroundPosition" type="tns:GroundPositionType"
 		substitutionGroup="tns:Abstract3DOFPosition"></element>
@@ -285,7 +253,9 @@
 	</complexType>
 
 	<element name="SphericalCoordinates" substitutionGroup="tns:Abstract6DOFPosition"
-		type="tns:SphericalCoordinatesType"></element>
+		type="tns:SphericalCoordinatesType">
+	</element>
+
 	<complexType name="SphericalCoordinatesType">
 		<complexContent>
 			<extension base="tns:Abstract6DOFPositionType">
@@ -303,14 +273,36 @@
 
 	<!-- INITIAL ATTITUDE TYPE -->
 	<element name="Abstract6DOFAttitude" abstract="true"
-		type="tns:Abstract6DOFAttitudeType"></element>
+		type="tns:Abstract6DOFAttitudeType">
+	</element>
+
 	<complexType name="Abstract6DOFAttitudeType">
-		<sequence></sequence>
+		<sequence>
+		</sequence>
 	</complexType>
 
-	<element name="EulerBLVLH" substitutionGroup="tns:Abstract6DOFAttitude"
-		type="tns:EulerBLVLHType"></element>
-	<complexType name="EulerBLVLHType">
+	<element name="Abstract8DOFAttitude" abstract="true"
+		type="tns:Abstract8DOFAttitudeType">
+	</element>
+
+	<complexType name="Abstract8DOFAttitudeType">
+		<sequence>
+		</sequence>
+	</complexType>
+
+	<element name="Euler123" substitutionGroup="tns:Abstract6DOFAttitude"
+		type="tns:EulerType">
+	</element>
+
+	<element name="Euler321" substitutionGroup="tns:Abstract6DOFAttitude"
+		type="tns:EulerType">
+	</element>
+
+	<element name="Euler313" substitutionGroup="tns:Abstract6DOFAttitude"
+		type="tns:EulerType">
+	</element>
+
+	<complexType name="EulerType">
 		<complexContent>
 			<extension base="tns:Abstract6DOFAttitudeType">
 				<sequence>
@@ -325,47 +317,17 @@
 		</complexContent>
 	</complexType>
 
-	<element name="EulerBI" substitutionGroup="tns:Abstract6DOFAttitude"
-		type="tns:EulerBIType"></element>
-	<complexType name="EulerBIType">
-		<complexContent>
-			<extension base="tns:Abstract6DOFAttitudeType">
-				<sequence>
-					<element name="phi" type="double"></element>
-					<element name="theta" type="double"></element>
-					<element name="psi" type="double"></element>
-					<element name="phiDot" type="double"></element>
-					<element name="thetaDot" type="double"></element>
-					<element name="psiDot" type="double"></element>
-				</sequence>
-			</extension>
-		</complexContent>
-	</complexType>
+	<element name="QuaternionJPL" substitutionGroup="tns:Abstract8DOFAttitude"
+		type="tns:QuaternionType">
+	</element>
 
-	<element name="qBLVLH" substitutionGroup="tns:Abstract6DOFAttitude"
-		type="tns:qBLVLHType"></element>
-	<complexType name="qBLVLHType">
-		<complexContent>
-			<extension base="tns:Abstract6DOFAttitudeType">
-				<sequence>
-					<element name="q1" type="double"></element>
-					<element name="q2" type="double"></element>
-					<element name="q3" type="double"></element>
-					<element name="q4" type="double"></element>
-					<element name="q1Dot" type="double"></element>
-					<element name="q2Dot" type="double"></element>
-					<element name="q3Dot" type="double"></element>
-					<element name="q4Dot" type="double"></element>
-				</sequence>
-			</extension>
-		</complexContent>
-	</complexType>
+	<element name="QuaternionESA" substitutionGroup="tns:Abstract8DOFAttitude"
+		type="tns:QuaternionType">
+	</element>
 
-	<element name="qBI" substitutionGroup="tns:Abstract6DOFAttitude"
-		type="tns:qBIType"></element>
-	<complexType name="qBIType">
+	<complexType name="QuaternionType">
 		<complexContent>
-			<extension base="tns:Abstract6DOFAttitudeType">
+			<extension base="tns:Abstract8DOFAttitudeType">
 				<sequence>
 					<element name="q1" type="double"></element>
 					<element name="q2" type="double"></element>
@@ -382,7 +344,8 @@
 
 
 	<element name="Abstract12DOFState" abstract="true"
-		type="tns:Abstract12DOFStateType"></element>
+		type="tns:Abstract12DOFStateType">
+	</element>
 	<complexType name="Abstract12DOFStateType">
 		<sequence />
 	</complexType>
@@ -400,45 +363,27 @@
 		</complexType>
 	</element>
 
-	<!-- OPTIMIZATION SETTINGS -->
-	<element name="Optimization">
+
+	<element name="Abstract14DOFState" abstract="true"
+		type="tns:Abstract14DOFStateType">
+	</element>
+	<complexType name="Abstract14DOFStateType">
+		<sequence />
+	</complexType>
+
+	<element name="State14DOF" substitutionGroup="tns:Abstract14DOFState">
 		<complexType>
-			<sequence>
-				<element name="nVariables" type="int"></element>
-				<element name="variables" type="tns:ListOfString"></element>
-				<element name="variablesMatrix" type="tns:ListOfDouble"></element>
-				<element name="nObjectives" type="int"></element>
-				<element name="objectives" type="tns:ListOfString"></element>
-				<element name="objectivesMatrix" type="tns:ListOfDouble"></element>
-				<element name="nConstraints" type="int"></element>
-				<element name="constraints" type="tns:ListOfString"></element>
-				<element name="constraintsMatrix" type="tns:ListOfDouble"></element>
-				<element name="algorithm" type="string"></element>
-				<element name="algorithmParameters" type="tns:ListOfDouble"></element>
-			</sequence>
+			<complexContent>
+				<extension base="tns:Abstract14DOFStateType">
+					<sequence>
+						<element ref="tns:Abstract6DOFPosition"></element>
+						<element ref="tns:Abstract8DOFAttitude"></element>
+					</sequence>
+				</extension>
+			</complexContent>
 		</complexType>
 	</element>
 
-	<!-- OOUTPUTFILES LIST -->
-	<element name="OutputFiles">
-		<complexType>
-			<sequence>
-				<element name="paretoFrontVarsFileName" type="string"
-					minOccurs="0"></element>
-				<element name="paretoFrontCstrsFileName" type="string"
-					minOccurs="0"></element>
-				<element name="paretoFrontObjsFileName" type="string"
-					minOccurs="0"></element>
-				<element name="geometryFileName" type="string" minOccurs="0"></element>
-				<element name="trajPostionFileName" type="string"></element>
-				<element name="trajAttitudeFileName" type="string"
-					minOccurs="0"></element>
-				<element name="trajMiscFileName" type="string"></element>
-				<element name="successProbabilityFileName" type="string"
-					minOccurs="0"></element>
-			</sequence>
-		</complexType>
-	</element>
 
 	<!-- ANTENNA -->
 
@@ -623,6 +568,86 @@
 			<element name="IndepVarMax" type="tns:ListOfDouble"></element>
 		</sequence>
 	</complexType>
+
+
+	<!-- OPTIMIZATION VARIABLES -->
+	<complexType name="OptVarDouble">
+		<sequence>
+			<element name="min" type="double" minOccurs="0"></element>
+			<element name="value" type="double"></element>
+			<element name="max" type="double" minOccurs="0"></element>
+		</sequence>
+		<attribute name="fromFirstGuess" type="boolean"></attribute>
+		<!--
+			0 if the user defines the box constraints for the variable, 1 if the
+			first guess module defines the box constraints for the variable
+		-->
+	</complexType>
+
+	<complexType name="OptVarInt">
+		<sequence>
+			<element name="list" type="tns:ListOfInt" minOccurs="0"></element>
+			<element name="value" type="int"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="OptVarBool">
+		<sequence>
+			<element name="value" type="boolean"></element>
+		</sequence>
+		<attribute name="optimized" type="boolean"></attribute>
+		<!-- 0 not optimization variable, 1 optimization variable -->
+	</complexType>
+
+	<complexType name="OptVarString">
+		<sequence>
+			<element name="list" type="tns:ListOfString" minOccurs="0"></element>
+			<element name="value" type="string"></element>
+		</sequence>
+	</complexType>
+	
+	
+		<!-- OPTIMIZATION SETTINGS -->
+	<element name="Optimization">
+		<complexType>
+			<sequence>
+				<element name="nVariables" type="int"></element>
+				<element name="variables" type="tns:ListOfString"></element>
+				<element name="variablesMatrix" type="tns:ListOfDouble"></element>
+				<element name="nObjectives" type="int"></element>
+				<element name="objectives" type="tns:ListOfString"></element>
+				<element name="objectivesMatrix" type="tns:ListOfDouble"></element>
+				<element name="nConstraints" type="int"></element>
+				<element name="constraints" type="tns:ListOfString"></element>
+				<element name="constraintsMatrix" type="tns:ListOfDouble"></element>
+				<element name="algorithm" type="string"></element>
+				<element name="algorithmParameters" type="tns:ListOfDouble"></element>
+			</sequence>
+		</complexType>
+	</element>
+
+	<!-- OOUTPUTFILES LIST -->
+	<element name="OutputFiles">
+		<complexType>
+			<sequence>
+				<element name="paretoFrontVarsFileName" type="string"
+					minOccurs="0"></element>
+				<element name="paretoFrontCstrsFileName" type="string"
+					minOccurs="0"></element>
+				<element name="paretoFrontObjsFileName" type="string"
+					minOccurs="0"></element>
+				<element name="geometryFileName" type="string" minOccurs="0"></element>
+				<element name="trajPostionFileName" type="string"></element>
+				<element name="trajAttitudeFileName" type="string"
+					minOccurs="0"></element>
+				<element name="trajMiscFileName" type="string"></element>
+				<element name="successProbabilityFileName" type="string"
+					minOccurs="0"></element>
+			</sequence>
+		</complexType>
+	</element>
+
+	
 
 
 

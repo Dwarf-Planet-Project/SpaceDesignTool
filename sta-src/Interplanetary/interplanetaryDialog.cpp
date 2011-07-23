@@ -71,7 +71,7 @@ void interplanetaryDialog::on_buttonBox_accepted()
     elements->setTrueAnomaly(45.32);
 
     // Create the initial attitude (Euler elements)
-    ScenarioEulerBIType*  initAtt = new ScenarioEulerBIType();
+    ScenarioEulerType*  initAtt = new ScenarioEulerType();
     initAtt->setPhi(0.00000);
     initAtt->setTheta(0.00000);
     initAtt->setPsi(0.00000);

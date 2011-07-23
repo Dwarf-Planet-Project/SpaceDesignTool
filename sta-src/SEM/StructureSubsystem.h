@@ -144,9 +144,9 @@ public:
     void setMomentsOfInertia(double x,double y,double z);
     MyVector3d getMomentsOfInertia();
 
-    void CalculateAndSetSecondMomentsOfArea();
-    void setSecondMomentsOfArea(double x,double y,double z);
-    MyVector3d getSecondMomentsOfArea();
+    void CalculateAndSetSecondMomentsOfInertia();
+    void setSecondMomentsOfInertia(double x,double y,double z);
+    MyVector3d getSecondMomentsOfInertia();
 
     void setSCShape(Shape DefinedShape);
     void setSCShape(QString Shape);
@@ -233,7 +233,7 @@ private:
     * plane.
     */
     MyVector3d MomentsOfInertia;
-    MyVector3d SecondMomentsOfArea;
+    MyVector3d SecondMomentsOfInertia;
     Shape SCShape;
     NaturalFreq NaturalFrequency;
 
