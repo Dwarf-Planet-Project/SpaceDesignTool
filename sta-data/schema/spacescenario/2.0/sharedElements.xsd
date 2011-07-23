@@ -24,7 +24,7 @@
 	<element name="PropagationAttitude" type="tns:PropagationAttitudeType" />
 	<complexType name="PropagationAttitudeType">
 		<sequence>
-		    <element name="propagator" type="string"></element>
+			<element name="propagator" type="string"></element>
 			<element name="integrator" type="string"></element>
 			<element name="timeStep" type="double"></element>
 		</sequence>
@@ -175,10 +175,15 @@
 	<element name="TrajectoryStoppingCondition" type="tns:TrajectoryStoppingConditionType"></element>
 	<complexType name="TrajectoryStoppingConditionType">
 		<sequence>
-			<element name="ConditionIdentifier" type="string" minOccurs="0"> </element>
-			<element name="ConditionValue" type="double" minOccurs="0"> </element>
-			<element name="ConditionBody" type="tns:CentralBodyType" minOccurs="0"> </element>
-			<element name="ConditionTolerance" type="double" minOccurs="0"> </element>
+			<element name="ConditionIdentifier" type="string" minOccurs="0">
+			</element>
+			<element name="ConditionValue" type="double" minOccurs="0">
+			</element>
+			<element name="ConditionBody" type="tns:CentralBodyType"
+				minOccurs="0">
+			</element>
+			<element name="ConditionTolerance" type="double" minOccurs="0">
+			</element>
 		</sequence>
 	</complexType>
 
@@ -578,10 +583,8 @@
 			<element name="max" type="double" minOccurs="0"></element>
 		</sequence>
 		<attribute name="fromFirstGuess" type="boolean"></attribute>
-		<!--
-			0 if the user defines the box constraints for the variable, 1 if the
-			first guess module defines the box constraints for the variable
-		-->
+		<!-- 0 if the user defines the box constraints for the variable, 1 if the 
+			first guess module defines the box constraints for the variable -->
 	</complexType>
 
 	<complexType name="OptVarInt">
@@ -605,9 +608,9 @@
 			<element name="value" type="string"></element>
 		</sequence>
 	</complexType>
-	
-	
-		<!-- OPTIMIZATION SETTINGS -->
+
+
+	<!-- OPTIMIZATION SETTINGS -->
 	<element name="Optimization">
 		<complexType>
 			<sequence>
@@ -646,9 +649,6 @@
 			</sequence>
 		</complexType>
 	</element>
-
-	
-
 
 
 </schema>

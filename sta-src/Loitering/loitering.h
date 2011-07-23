@@ -53,18 +53,25 @@ public:
     bool loadValues(ScenarioElementIdentifierType* arcIdentifier);
     bool loadValues(ScenarioEnvironmentType* environment);
     bool loadValues(ScenarioTimeLine* parameters);
-    bool loadValues(ScenarioPropagationPositionType* propagation);
+
     bool loadValues(ScenarioInitialPositionType* initPosition);
-    bool loadValues(ScenarioPropagationAttitudeType* propagation);
+    bool loadValues(ScenarioPropagationPositionType* propagation);
+
     bool loadValues(ScenarioInitialAttitudeType* initAtt);
+    bool loadValues(ScenarioInitialAttitudeUsingQuaternionsType* initAttQuaternions);
+    bool loadValues(ScenarioPropagationAttitudeType* propagation);
+
     bool saveValues(ScenarioLoiteringType* loitering);
     bool saveValues(ScenarioElementIdentifierType* arcIdentifier);
     bool saveValues(ScenarioEnvironmentType* environment);
     bool saveValues(ScenarioTimeLine* parameters);
     bool saveValues(ScenarioPropagationPositionType* propagation);
+
     bool saveValues(ScenarioInitialPositionType* initPosition);
     bool saveValues(ScenarioPropagationAttitudeType* propagation);
+
     bool saveValues(ScenarioInitialAttitudeType* initAtt);
+    bool saveValues(ScenarioInitialAttitudeUsingQuaternionsType* initAttQuaternions);
 
     TesseralBox* TesseralSpinBox;
     int m_tesserals;
@@ -106,17 +113,16 @@ class TesseralBox : public QSpinBox
 };
 
 extern bool
-PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
-                             QList<double>& sampleTimes,
-                             QList<sta::StateVector>& samples,
-                             PropagationFeedback& propFeedback);
+        PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
+                                     QList<double>& sampleTimes,
+                                     QList<sta::StateVector>& samples,
+                                     PropagationFeedback& propFeedback);
+
 extern bool
-PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
-                             QList<double>& sampleTimes,
-                             QList<sta::StateVector>& samples,
-                             QList<staAttitude::AttitudeVector>& samplesAtt,
-                             QString attitudeRotationSequence,
-                             PropagationFeedback& propFeedback);
+        PropagateLoiteringAttitude(ScenarioLoiteringType* loitering,
+                                   QList<double>& sampleTimes,
+                                   QList<staAttitude::AttitudeVector>& samplesAtt,
+                                   PropagationFeedback& propFeedback);
 
 #endif // _LOITERING_H_
 

@@ -697,56 +697,6 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
          <property name="toolTip">
           <string>Coordinate system in which the initial orbital vector will be given</string>
          </property>
-         <item>
-          <property name="text">
-           <string>Inertial EME J2000</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Inertial EME B1950</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Ecliptic J2000</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Planet fixed</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Mean of Date</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>True of Date</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Mean of Epoch</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>ICRF</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Rotating R. F.</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Rotating Normalized R. F.</string>
-          </property>
-         </item>
         </widget>
        </item>
        <item row="1" column="1">
@@ -779,7 +729,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
       <rect>
        <x>15</x>
        <y>75</y>
-       <width>596</width>
+       <width>641</width>
        <height>16</height>
       </rect>
      </property>
@@ -828,38 +778,12 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
        <item row="0" column="1">
         <widget class="QComboBox" name="CoordSystemAttitudeComboBox">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
-         <item>
-          <property name="text">
-           <string>Body fixed</string>
-          </property>
-         </item>
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QComboBox" name="AttitudeTypeComboBox">
-         <item>
-          <property name="text">
-           <string>Euler Angles 123</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Euler Angles 321</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Euler Angles 313</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Quaternions JPL</string>
-          </property>
-         </item>
-        </widget>
+        <widget class="QComboBox" name="AttitudeTypeComboBox"/>
        </item>
        <item row="0" column="0">
         <widget class="QLabel" name="CoordSystlabel_2">
@@ -878,7 +802,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
        <rect>
         <x>6</x>
         <y>95</y>
-        <width>311</width>
+        <width>314</width>
         <height>281</height>
        </rect>
       </property>
@@ -945,7 +869,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
           <item row="0" column="1">
            <widget class="QLineEdit" name="Euler123phi">
             <property name="text">
-             <string/>
+             <string>11.2334</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -965,7 +889,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
           <item row="1" column="1">
            <widget class="QLineEdit" name="Euler123theta">
             <property name="text">
-             <string/>
+             <string>23.4543</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1236,8 +1160,8 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
           <rect>
            <x>5</x>
            <y>20</y>
-           <width>296</width>
-           <height>261</height>
+           <width>291</width>
+           <height>256</height>
           </rect>
          </property>
          <layout class="QFormLayout" name="formLayout_10">
@@ -1374,18 +1298,18 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
         </widget>
        </widget>
       </widget>
-      <widget class="QWidget" name="QuaternionJPLPage">
+      <widget class="QWidget" name="QuaternionESAPage">
        <widget class="QGroupBox" name="groupBox_13">
         <property name="geometry">
          <rect>
           <x>5</x>
           <y>0</y>
           <width>301</width>
-          <height>306</height>
+          <height>281</height>
          </rect>
         </property>
         <property name="title">
-         <string>Quaternions</string>
+         <string>Quaternions ESA</string>
         </property>
         <property name="flat">
          <bool>true</bool>
@@ -1487,7 +1411,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
            </widget>
           </item>
           <item row="4" column="0">
-           <widget class="QLabel" name="q1Dot_4">
+           <widget class="QLabel" name="q1Dot">
             <property name="text">
              <string>Q1 Rate</string>
             </property>
@@ -1546,6 +1470,190 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
           </item>
           <item row="7" column="1">
            <widget class="QLineEdit" name="q4dot">
+            <property name="text">
+             <string>0.01245</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="QuaternionJPLPage">
+       <widget class="QGroupBox" name="groupBox_14">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>0</y>
+          <width>305</width>
+          <height>306</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Quaternions JPL</string>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+        <widget class="QWidget" name="layoutWidget_7">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>19</y>
+           <width>296</width>
+           <height>256</height>
+          </rect>
+         </property>
+         <layout class="QFormLayout" name="formLayout_13">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+          </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="formAlignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="q1_6">
+            <property name="text">
+             <string>Q1: </string>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::RichText</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="q1JPL">
+            <property name="text">
+             <string>23.4562</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="q2_6">
+            <property name="text">
+             <string>Q2: </string>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::RichText</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="q2JPL">
+            <property name="text">
+             <string>12.4564</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="q3_6">
+            <property name="text">
+             <string>Q3 :</string>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::RichText</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="q3JPL">
+            <property name="text">
+             <string>78.4532</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="q4_6">
+            <property name="text">
+             <string>Q4: </string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="q4JPL">
+            <property name="text">
+             <string>78.4532</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="q1Dot_6">
+            <property name="text">
+             <string>Q1 Rate</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QLineEdit" name="q1dotJPL">
+            <property name="text">
+             <string>2.04834</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="q2Dot_6">
+            <property name="text">
+             <string>Q2 Rate</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QLineEdit" name="q2dotJPL">
+            <property name="text">
+             <string>1.02732</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="q3Dot_6">
+            <property name="text">
+             <string>Q3 Rate</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QLineEdit" name="q3dotJPL">
+            <property name="text">
+             <string>0.01245</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="q4Dot_6">
+            <property name="text">
+             <string>Q4 Rate</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1">
+           <widget class="QLineEdit" name="q4dotJPL">
             <property name="text">
              <string>0.01245</string>
             </property>
@@ -2250,26 +2358,6 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
           <property name="sizeAdjustPolicy">
            <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
           </property>
-          <item>
-           <property name="text">
-            <string>Two Body</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Gauss</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Cowell</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Encke</string>
-           </property>
-          </item>
          </widget>
         </item>
         <item row="1" column="1">
@@ -2287,16 +2375,6 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
           <property name="sizeAdjustPolicy">
            <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
           </property>
-          <item>
-           <property name="text">
-            <string>Runge-Kutta 3-4</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Runge-Kutta-Fehlberg</string>
-           </property>
-          </item>
          </widget>
         </item>
         <item row="2" column="1">
@@ -2415,11 +2493,6 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
           <property name="sizeAdjustPolicy">
            <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
           </property>
-          <item>
-           <property name="text">
-            <string>Runge-Kutta 3-4</string>
-           </property>
-          </item>
          </widget>
         </item>
         <item row="0" column="0">
@@ -2581,7 +2654,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
    <hints>
     <hint type="sourcelabel">
      <x>685</x>
-     <y>579</y>
+     <y>558</y>
     </hint>
     <hint type="destinationlabel">
      <x>325</x>
@@ -2597,7 +2670,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
    <hints>
     <hint type="sourcelabel">
      <x>685</x>
-     <y>586</y>
+     <y>558</y>
     </hint>
     <hint type="destinationlabel">
      <x>135</x>
@@ -2628,12 +2701,12 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
    <slot>setCurrentIndex(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>587</x>
-     <y>195</y>
+     <x>559</x>
+     <y>194</y>
     </hint>
     <hint type="destinationlabel">
-     <x>670</x>
-     <y>229</y>
+     <x>364</x>
+     <y>278</y>
     </hint>
    </hints>
   </connection>

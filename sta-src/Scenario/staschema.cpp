@@ -10674,6 +10674,7 @@ ScenarioLoiteringType::ScenarioLoiteringType()
     m_TimeLine = QSharedPointer<ScenarioTimeLine>(new ScenarioTimeLine());
     m_InitialPosition = QSharedPointer<ScenarioInitialPositionType>(new ScenarioInitialPositionType());
     m_InitialAttitude = QSharedPointer<ScenarioInitialAttitudeType>(new ScenarioInitialAttitudeType());
+    m_InitialAttitudeUsingQuaternions = QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType>(new ScenarioInitialAttitudeUsingQuaternionsType());
     m_PropagationPosition = QSharedPointer<ScenarioPropagationPositionType>(new ScenarioPropagationPositionType());
     m_PropagationAttitude = QSharedPointer<ScenarioPropagationAttitudeType>(new ScenarioPropagationAttitudeType());
 }
@@ -10707,8 +10708,7 @@ bool ScenarioLoiteringType::load(const QDomElement& e, QDomElement* next)
     *next = next->nextSiblingElement();
     if (next->tagName() == "tns:InitialAttitudeUsingQuaternions")
         m_InitialAttitudeUsingQuaternions = QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType>(ScenarioInitialAttitudeUsingQuaternionsType::create(*next));
-if (!m_InitialAttitudeUsingQuaternions.isNull())
-        *next = next->nextSiblingElement();
+    *next = next->nextSiblingElement();
     if (next->tagName() == "tns:PropagationPosition")
         m_PropagationPosition = QSharedPointer<ScenarioPropagationPositionType>(ScenarioPropagationPositionType::create(*next));
     *next = next->nextSiblingElement();

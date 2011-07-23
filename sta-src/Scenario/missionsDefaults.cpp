@@ -25,6 +25,7 @@
  ------------------ Affiliation:  European Space Agency (ESA)    -------------------
  -----------------------------------------------------------------------------------
  Updated March 2011
+ Update July 2011 by Guillermo
 
 */
 
@@ -265,7 +266,7 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_GENERIC()
     // The next line should be the last one to make sure the GUI starts on the right tab
     loitering.InitialPosition()->setAbstract6DOFPosition(initPosKeplerian);
 
-    loitering.InitialAttitude()->setCoordinateSystem("PEuler123");
+    loitering.InitialAttitude()->setCoordinateSystem("Center of Gravity");
     QSharedPointer<ScenarioEulerType> initAttEuler(new ScenarioEulerType());
     initAttEuler->setPhi(0.0);
     initAttEuler->setTheta(0.0);
@@ -273,7 +274,7 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_GENERIC()
     initAttEuler->setPhiDot(0.0);
     initAttEuler->setThetaDot(0.0);
     initAttEuler->setPsiDot(0.0);
-    loitering.InitialAttitudeUsingQuaternions()->setCoordinateSystem("PQuaternionsESA");
+    loitering.InitialAttitudeUsingQuaternions()->setCoordinateSystem("Center of Gravity");
     QSharedPointer<ScenarioQuaternionType> initAttQuaternion(new ScenarioQuaternionType());
     initAttQuaternion->setQ1(0.0);
     initAttQuaternion->setQ2(0.0);
@@ -383,7 +384,7 @@ ScenarioRendezVousManoeuvreType MissionsDefaults::MissionsDefaults_GENERIC_RENDE
     initPos->setTrueAnomaly(0.0);
     rvManoeuvre.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    rvManoeuvre.InitialAttitude()->setCoordinateSystem("EULER 123");
+    //rvManoeuvre.InitialAttitude()->setCoordinateSystem("EULER 123");
     QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
     initAtt->setPhi(0.00000);
     initAtt->setTheta(0.00000);
@@ -441,7 +442,7 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_XMM()
     initPos->setTrueAnomaly(0.0);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
     QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
     initAtt->setPhi(0.00000);
     initAtt->setTheta(0.00000);
@@ -493,7 +494,7 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_INTEGRAL()
     initPos->setTrueAnomaly(85.35622442451043);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
     QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
     initAtt->setPhi(0.00000);
     initAtt->setTheta(0.00000);
@@ -544,7 +545,7 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_MEX()
     initPos->setTrueAnomaly(0.001);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
     QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
     initAtt->setPhi(0.00000);
     initAtt->setTheta(0.00000);
@@ -599,7 +600,7 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_VEX()
     initPos->setTrueAnomaly(85.356);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
     QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
     initAtt->setPhi(0.00000);
     initAtt->setTheta(0.00000);
@@ -670,7 +671,7 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Meteosat6()
     initPos->setTrueAnomaly(237.05669);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
     QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
     initAtt->setPhi(0.00000);
     initAtt->setTheta(0.00000);
@@ -720,7 +721,7 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Meteosat7()
     initPos->setTrueAnomaly(163.48669);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
     QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
     initAtt->setPhi(0.00000);
     initAtt->setTheta(0.00000);
@@ -769,7 +770,7 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Meteosat8()
     initPos->setTrueAnomaly(41.8352738537);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
     QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
     initAtt->setPhi(0.00000);
     initAtt->setTheta(0.00000);
@@ -818,7 +819,7 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Meteosat9()
     initPos->setTrueAnomaly(309.256769134);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
     QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
     initAtt->setPhi(0.00000);
     initAtt->setTheta(0.00000);
@@ -867,7 +868,7 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_ERS2()
     initPos->setTrueAnomaly(0.0);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
     QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
     initAtt->setPhi(0.00000);
     initAtt->setTheta(0.00000);
@@ -916,7 +917,7 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_ENVISAT()
     initPos->setTrueAnomaly(0.0);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
     QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
     initAtt->setPhi(0.00000);
     initAtt->setTheta(0.00000);
@@ -977,16 +978,6 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Cryosat()
     initPos->setTrueAnomaly(283.899507188);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
-    QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
-
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
     loitering.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(8));
@@ -1036,16 +1027,6 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Aeolus()
     initPos->setTrueAnomaly(0.0);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
-    QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
-
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
     loitering.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
@@ -1092,7 +1073,7 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Sentinel1A()
     initPos->setTrueAnomaly(2.56);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
     QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
     initAtt->setPhi(0.00000);
     initAtt->setTheta(0.00000);
@@ -1159,7 +1140,7 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Artemis()
     initPos->setTrueAnomaly(0.0);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
     QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
     initAtt->setPhi(0.00000);
     initAtt->setTheta(0.00000);
@@ -1225,7 +1206,7 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_SmallGEO()
     initPos->setTrueAnomaly(0.0);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
     QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
     initAtt->setPhi(0.00000);
     initAtt->setTheta(0.00000);
@@ -1276,7 +1257,7 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_PROBA1()
     initPos->setTrueAnomaly(0.0);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
     QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
     initAtt->setPhi(0.00000);
     initAtt->setTheta(0.00000);
@@ -1325,7 +1306,7 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_PROBA2()
     initPos->setTrueAnomaly(0.0);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
     QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
     initAtt->setPhi(0.00000);
     initAtt->setTheta(0.00000);
@@ -1380,7 +1361,7 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_ISS()
     initPos->setTrueAnomaly(87.3523);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
+    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
     QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
     initAtt->setPhi(0.00000);
     initAtt->setTheta(0.00000);

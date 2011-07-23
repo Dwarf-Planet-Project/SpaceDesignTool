@@ -33,7 +33,7 @@
 
 #include "Main/scenariotree.h"
 
-#include "Scenario/scenario.h"
+//#include "Scenario/scenario.h"
 #include "Scenario/propagationfeedback.h"
 #include "Scenario/missionAspectDialog.h"
 #include "Scenario/missionAspectDialog.h"
@@ -72,22 +72,33 @@ LoiteringDialog::LoiteringDialog(ScenarioTree* parent) :
         m_tesserals(0)
 {
     setupUi(this);
-    // Set up the combo boxes
-    //CoordSystemComboBox->addItem(tr("Planet Fixed"), (int) sta::COORDSYS_BODYFIXED);
-    //CoordSystemComboBox->addItem(tr("Inertial (J2000)"), (int) sta::COORDSYS_EME_J2000);
-    //CoordSystemComboBox->addItem(tr("Inertial (B1950)"), (int) sta::COORDSYS_EME_B1950);
-    //CoordSystemComboBox->addItem(tr("Ecliptic (J2000)"), (int) sta::COORDSYS_ECLIPTIC_J2000);
 
+    // Set up the combo boxes: position and velocity
+    CoordSystemComboBox->addItem(tr("Planet Fixed"), (int) sta::COORDSYS_BODYFIXED);
+    CoordSystemComboBox->addItem(tr("Inertial (J2000)"), (int) sta::COORDSYS_EME_J2000);
+    CoordSystemComboBox->addItem(tr("Inertial (B1950)"), (int) sta::COORDSYS_EME_B1950);
+    CoordSystemComboBox->addItem(tr("Ecliptic (J2000)"), (int) sta::COORDSYS_ECLIPTIC_J2000);
+    PropagatorComboBox->addItem(tr("Two Body"), "TWO BODY");
+    PropagatorComboBox->addItem(tr("Gauss"), "GAUSS");
+    PropagatorComboBox->addItem(tr("Cowell"), "COWELL");
+    PropagatorComboBox->addItem(tr("Encke"), "ENCKE");
+    IntegratorComboBox->addItem(tr("Runge-Kutta 3-4"), "RK4");
+    IntegratorComboBox->addItem(tr("Runge-Kutta-Fehlberg"), "RKF");
 
-    //PropagatorComboBox->addItem(tr("Two Body"), "TWO BODY");
-    //PropagatorComboBox->addItem(tr("Gauss"), "GAUSS");
-    //PropagatorComboBox->addItem(tr("Cowell"), "COWELL");
-    //PropagatorComboBox->addItem(tr("Encke"), "ENCKE");
-
-    //IntegratorComboBox->addItem(tr("Runge-Kutta 3-4"), "RK4");
-    //IntegratorComboBox->addItem(tr("Runge-Kutta-Fehlberg"), "RKF");
-
-    //IntegratorAttitudeComboBox->addItem(tr("Runge-Kutta 3-4"),"RK4"); //Catarina: Integrator for Attitude
+    // Set up the combo boxes: Attitude
+    CoordSystemAttitudeComboBox->addItem(tr("Center of Gravity"), (int) sta::COORDSYS_COG);
+    CoordSystemAttitudeComboBox->addItem(tr("Center of Pressure"), (int) sta::COORDSYS_COP);
+    AttitudeTypeComboBox->addItem(tr("Euler Angles 123"), "Euler123");
+    AttitudeTypeComboBox->addItem(tr("Euler Angles 312"), "Euler321");
+    AttitudeTypeComboBox->addItem(tr("Euler Angles 313"), "Euler313");
+    AttitudeTypeComboBox->addItem(tr("Quaternions ESA"), "QuaternionsESA");
+    AttitudeTypeComboBox->addItem(tr("Quaternions JPL"), "QuaternionsJPL");
+    PropagatorAttitudeComboBox->addItem(tr("Euler 1->2->3"), "PEuler123");
+    PropagatorAttitudeComboBox->addItem(tr("Euler 3->2->1"), "PEuler321");
+    PropagatorAttitudeComboBox->addItem(tr("Euler 3->1->3"), "PEuler313");
+    PropagatorAttitudeComboBox->addItem(tr("Quaternions ESA"), "PQuaternionsESA");
+    PropagatorAttitudeComboBox->addItem(tr("Quaternions JPL"), "PQuaternionsJPL");
+    IntegratorAttitudeComboBox->addItem(tr("Runge-Kutta 3-4"),"RK4"); //Catarina: Integrator for Attitude
 
     // Set up the input validators
     QDoubleValidator* doubleValidator = new QDoubleValidator(this);
@@ -268,9 +279,11 @@ bool LoiteringDialog::loadValues(ScenarioLoiteringType* loitering)
     ScenarioInitialPositionType* initPosition            = loitering->InitialPosition().data();  // Dominik
     ScenarioPropagationAttitudeType* attitudePropagation = loitering->PropagationAttitude().data();  //Added by Catarina
     ScenarioInitialAttitudeType* initAttitude            = loitering->InitialAttitude().data();  //Added by Catarina
+    ScenarioInitialAttitudeUsingQuaternionsType* initAttQuaternions = loitering->InitialAttitudeUsingQuaternions().data(); // Guillermo
 
     if (loadValues(arcIdentifier) && loadValues(environment) && loadValues(parameters) &&
-        loadValues(propagation) && loadValues(initPosition) && loadValues(attitudePropagation) && loadValues(initAttitude))
+        loadValues(propagation) && loadValues(initPosition) && loadValues(attitudePropagation) &&
+        loadValues(initAttitude) && loadValues(initAttQuaternions))
     {
         return true;
     }
@@ -532,97 +545,87 @@ bool LoiteringDialog::loadValues(ScenarioPropagationAttitudeType *propagation)
 
 bool LoiteringDialog::loadValues(ScenarioInitialAttitudeType* initAttitude)
 {
-    QString attitudeCoordSysName = initAttitude->CoordinateSystem().trimmed();
-    //qDebug() << "attitudeCoordSysName :" << attitudeCoordSysName << endl;
-    sta::CoordinateSystem coordSys(attitudeCoordSysName);
-
-    // Set the coordinate system combo box value
-    for (int i = 0; i < CoordSystemAttitudeComboBox->count(); i++)
-    {
-        if (CoordSystemAttitudeComboBox->itemData(i) == coordSys.type())
-        {
-            CoordSystemAttitudeComboBox->setCurrentIndex(i);
-            break;
-        }
-    }
-
     ScenarioAbstract6DOFAttitudeType* attitude = initAttitude->Abstract6DOFAttitude().data();
-    ScenarioEulerBIType* Euler123 =  dynamic_cast<ScenarioEulerBIType*>(attitude);
-
-    Euler123phi->setText(QString::number(Euler123->phi()));
-    Euler123theta->setText(QString::number(Euler123->theta()));
-    Euler123psi->setText(QString::number(Euler123->psi()));
-    Euler123omegaX->setText(QString::number(Euler123->phiDot()));
-    Euler123omegaY->setText(QString::number(Euler123->thetaDot()));
-    Euler123omegaZ->setText(QString::number(Euler123->psiDot()));
-
-    ScenarioEulerBIType* Euler321 =  dynamic_cast<ScenarioEulerBIType*>(attitude);
-    ScenarioEulerBIType* Euler313 =  dynamic_cast<ScenarioEulerBIType*>(attitude);
-    ScenarioqBIType*     qBI      =  dynamic_cast<ScenarioqBIType*>(attitude);
+    ScenarioEulerType* Euler123 = dynamic_cast<ScenarioEulerType*>(attitude);
 
     // Converting from Euler 123 (nominal representation) into the other representations
-    // First Quaternions
     Vector3d eulerAngles(Euler123->phi(), Euler123->theta(), Euler123->psi());
     Vector3d bodyRates(Euler123->phiDot(), Euler123->thetaDot(), Euler123->psiDot());
     Quaterniond initQuaternion = ToQuaternions(eulerAngles, 1, 2, 3);
-    Quaterniond initQuaternionRates = ToQuaternionRates(initQuaternion, bodyRates);
-    q1->setText(QString::number(initQuaternion.x()));
-    q2->setText(QString::number(initQuaternion.y()));
-    q3->setText(QString::number(initQuaternion.z()));
-    q4->setText(QString::number(initQuaternion.w()));
-    q1dot->setText(QString::number(initQuaternionRates.x()));
-    q2dot->setText(QString::number(initQuaternionRates.y()));
-    q3dot->setText(QString::number(initQuaternionRates.z()));
-    q4dot->setText(QString::number(initQuaternionRates.w()));
 
-    // Second, we convert it into Euler 321
-    Euler321phi->setText(QString::number(ToEulerAngles(initQuaternion, 3, 2, 1)[0]));
-    Euler321psi->setText(QString::number(ToEulerAngles(initQuaternion, 3, 2, 1)[1]));
-    Euler321theta->setText(QString::number(ToEulerAngles(initQuaternion, 3, 2, 1)[2]));
-    Euler321omegaX->setText(QString::number(bodyRates.x()));     //these are not the Euler rates, but the BODY rates
-    Euler321omegaY->setText(QString::number(bodyRates.y()));
-    Euler321omegaZ->setText(QString::number(bodyRates.z()));
-
-    // Third, we convert it into Euler 313
-    Euler313phi->setText(QString::number(ToEulerAngles(initQuaternion, 3, 1, 3)[0]));
-    Euler313psi->setText(QString::number(ToEulerAngles(initQuaternion, 3, 1, 3)[1]));
-    Euler313theta->setText(QString::number(ToEulerAngles(initQuaternion, 3, 1, 3)[2]));
-    Euler313omegaX->setText(QString::number(bodyRates.x()));     //these are not the Euler rates, but the BODY rates
-    Euler313omegaY->setText(QString::number(bodyRates.y()));
-    Euler313omegaZ->setText(QString::number(bodyRates.z()));
-
-
-
-    Q_ASSERT(Euler123 || Euler321 || Euler313 || qBI );
-
-    if (Euler123)
+    switch (AttitudeTypeComboBox->currentIndex())
     {
-        AttitudeTypeComboBox->setCurrentIndex(0);
-        InitAttitudeStackedWidget->setCurrentWidget(Euler123Page);
-    }
-    else if (Euler321)
-    {
-        AttitudeTypeComboBox->setCurrentIndex(1);
-        InitAttitudeStackedWidget->setCurrentWidget(Euler321Page);
-    }
-    else if (Euler313)
-    {
-        AttitudeTypeComboBox->setCurrentIndex(2);
-        InitAttitudeStackedWidget->setCurrentWidget(Euler313Page);
-    }
-    else if (qBI)
-    {
-        AttitudeTypeComboBox->setCurrentIndex(3);
-        InitAttitudeStackedWidget->setCurrentWidget(QuaternionJPLPage);
-    }
-    else
-    {
-        // Unknown initial attitude type
-        return false;
+    case 0:  // --- Euler 321
+        {
+            InitAttitudeStackedWidget->setCurrentWidget(Euler123Page);
+            Euler123phi->setText(QString::number(Euler123->phi()));
+            Euler123theta->setText(QString::number(Euler123->theta()));
+            Euler123psi->setText(QString::number(Euler123->psi()));
+            Euler123omegaX->setText(QString::number(Euler123->phiDot()));
+            Euler123omegaY->setText(QString::number(Euler123->thetaDot()));
+            Euler123omegaZ->setText(QString::number(Euler123->psiDot()));
+        }
+    case 1:  // --- Euler 123
+        {
+            InitAttitudeStackedWidget->setCurrentWidget(Euler321Page);
+            Euler321phi->setText(QString::number(ToEulerAngles(initQuaternion, 3, 2, 1)[0]));
+            Euler321psi->setText(QString::number(ToEulerAngles(initQuaternion, 3, 2, 1)[1]));
+            Euler321theta->setText(QString::number(ToEulerAngles(initQuaternion, 3, 2, 1)[2]));
+            Euler321omegaX->setText(QString::number(bodyRates.x()));     //these are not the Euler rates, but the BODY rates
+            Euler321omegaY->setText(QString::number(bodyRates.y()));
+            Euler321omegaZ->setText(QString::number(bodyRates.z()));
+        }
+    case 2:  // --- Euler 313
+        {
+            // Third, we convert it into Euler 313
+            InitAttitudeStackedWidget->setCurrentWidget(Euler313Page);
+            Euler313phi->setText(QString::number(ToEulerAngles(initQuaternion, 3, 1, 3)[0]));
+            Euler313psi->setText(QString::number(ToEulerAngles(initQuaternion, 3, 1, 3)[1]));
+            Euler313theta->setText(QString::number(ToEulerAngles(initQuaternion, 3, 1, 3)[2]));
+            Euler313omegaX->setText(QString::number(bodyRates.x()));     //these are not the Euler rates, but the BODY rates
+            Euler313omegaY->setText(QString::number(bodyRates.y()));
+            Euler313omegaZ->setText(QString::number(bodyRates.z()));
+        }
+        return true;
     }
 
-    return true;
+}
 
+
+bool LoiteringDialog::loadValues(ScenarioInitialAttitudeUsingQuaternionsType* initAttQuaternions)
+{
+    switch (AttitudeTypeComboBox->currentIndex())
+    {
+    case 3:  // --- Q ESA
+        {
+            InitAttitudeStackedWidget->setCurrentWidget(QuaternionESAPage);
+            ScenarioAbstract8DOFAttitudeType* attitude = initAttQuaternions->Abstract8DOFAttitude().data();
+            ScenarioQuaternionType* quaternionESA = dynamic_cast<ScenarioQuaternionType*>(attitude);
+            q1->setText(QString::number(quaternionESA->q1()));
+            q2->setText(QString::number(quaternionESA->q2()));
+            q3->setText(QString::number(quaternionESA->q3()));
+            q4->setText(QString::number(quaternionESA->q4()));
+            q1dot->setText(QString::number(quaternionESA->q1Dot()));
+            q2dot->setText(QString::number(quaternionESA->q1Dot()));
+            q3dot->setText(QString::number(quaternionESA->q1Dot()));
+            q4dot->setText(QString::number(quaternionESA->q1Dot()));
+        }
+    case 4:  // --- Q JPL
+        {
+            InitAttitudeStackedWidget->setCurrentWidget(QuaternionJPLPage);
+            ScenarioAbstract8DOFAttitudeType* attitude = initAttQuaternions->Abstract8DOFAttitude().data();
+            ScenarioQuaternionType* quaternionJPL = dynamic_cast<ScenarioQuaternionType*>(attitude);
+            q1JPL->setText(QString::number(quaternionJPL->q1()));
+            q2JPL->setText(QString::number(quaternionJPL->q2()));
+            q3JPL->setText(QString::number(quaternionJPL->q3()));
+            q4JPL->setText(QString::number(quaternionJPL->q4()));
+            q1dotJPL->setText(QString::number(quaternionJPL->q1Dot()));
+            q2dotJPL->setText(QString::number(quaternionJPL->q1Dot()));
+            q3dotJPL->setText(QString::number(quaternionJPL->q1Dot()));
+            q4dotJPL->setText(QString::number(quaternionJPL->q1Dot()));
+        }
+        return true;
+    }
 }
 
 bool LoiteringDialog::saveValues(ScenarioLoiteringType* loitering)
@@ -633,10 +636,11 @@ bool LoiteringDialog::saveValues(ScenarioLoiteringType* loitering)
     ScenarioPropagationPositionType*   propagation          =   loitering->PropagationPosition().data();
     ScenarioInitialPositionType*       initPosition         =   loitering->InitialPosition().data(); //Dominik
     ScenarioPropagationAttitudeType*   attitudePropagation  =   loitering->PropagationAttitude().data(); //Added by Catarina
-    ScenarioInitialAttitudeType*       initAttitude         =   loitering->InitialAttitude().data(); //Added by Catarina
+    ScenarioInitialAttitudeType*       initAttitude  =   loitering->InitialAttitude().data(); //Added by Catarina
+    ScenarioInitialAttitudeUsingQuaternionsType * initAttQuaternions = loitering->InitialAttitudeUsingQuaternions().data();   // Guillermo
 
     if (saveValues(identifier) && saveValues(environment) && saveValues(parameters) && saveValues(propagation) &&
-        saveValues(initPosition) && saveValues(attitudePropagation) && saveValues(initAttitude))
+        saveValues(initPosition) && saveValues(attitudePropagation) && saveValues(initAttitude) && saveValues(initAttQuaternions))
     {
         return true;
     }
@@ -818,59 +822,60 @@ bool LoiteringDialog::saveValues(ScenarioInitialPositionType* initPos)
 
 bool LoiteringDialog::saveValues(ScenarioInitialAttitudeType* initAtt)
 {
-    sta::CoordinateSystemType coordSysType =
-            sta::CoordinateSystemType(CoordSystemAttitudeComboBox->itemData(CoordSystemAttitudeComboBox->currentIndex()).toInt());
-    initAtt->setCoordinateSystem(sta::CoordinateSystem(coordSysType).name());
+//    sta::CoordinateSystemType coordSysType =
+//            sta::CoordinateSystemType(CoordSystemAttitudeComboBox->itemData(CoordSystemAttitudeComboBox->currentIndex()).toInt());
+//    initAtt->setCoordinateSystem(sta::CoordinateSystem(coordSysType).name());
 
-    QString attitudeRotationSequence;
     switch (AttitudeTypeComboBox->currentIndex())
     {
     case 0:  // --- Euler 321
         {
-            ScenarioEulerBIType* euler = new ScenarioEulerBIType;
+            ScenarioEulerType* euler = new ScenarioEulerType;
             euler->setPhi(Euler321phi->text().toDouble());
             euler->setTheta(Euler321theta->text().toDouble());
             euler->setPsi(Euler321psi->text().toDouble());
             euler->setPhiDot(Euler321omegaX->text().toDouble());
             euler->setThetaDot(Euler321omegaY->text().toDouble());
             euler->setPsiDot(Euler321omegaZ->text().toDouble());
-
-            attitudeRotationSequence = "321";
-
             initAtt->setAbstract6DOFAttitude(QSharedPointer<ScenarioAbstract6DOFAttitudeType>(euler));
         }
     case 1:  // --- Euler 123
         {
-            ScenarioEulerBIType* euler = new ScenarioEulerBIType;
+            ScenarioEulerType* euler = new ScenarioEulerType;
             euler->setPhi(Euler123phi->text().toDouble());
             euler->setTheta(Euler123theta->text().toDouble());
             euler->setPsi(Euler123psi->text().toDouble());
             euler->setPhiDot(Euler123omegaX->text().toDouble());
             euler->setThetaDot(Euler123omegaY->text().toDouble());
             euler->setPsiDot(Euler123omegaZ->text().toDouble());
-
-            attitudeRotationSequence = "123";
-
             initAtt->setAbstract6DOFAttitude(QSharedPointer<ScenarioAbstract6DOFAttitudeType>(euler));
         }
     case 2:  // --- Euler 313
         {
-            ScenarioEulerBIType* euler = new ScenarioEulerBIType;
+            ScenarioEulerType* euler = new ScenarioEulerType;
             euler->setPhi(Euler313phi->text().toDouble());
             euler->setTheta(Euler313theta->text().toDouble());
             euler->setPsi(Euler313psi->text().toDouble());
             euler->setPhiDot(Euler313omegaX->text().toDouble());
             euler->setThetaDot(Euler313omegaY->text().toDouble());
             euler->setPsiDot(Euler313omegaZ->text().toDouble());
-
-            attitudeRotationSequence = "313";
-
             initAtt->setAbstract6DOFAttitude(QSharedPointer<ScenarioAbstract6DOFAttitudeType>(euler));
         }
-    case 3:  // --- Quaternions
-        {
-            ScenarioqBIType* quat = new ScenarioqBIType;
+        return true;
 
+    default:
+        return false;
+    }
+}
+
+
+bool LoiteringDialog::saveValues(ScenarioInitialAttitudeUsingQuaternionsType* initAttQuaternions)
+{
+    switch (AttitudeTypeComboBox->currentIndex())
+    {
+    case 3:  // --- ESA
+        {
+            ScenarioQuaternionType* quat = new ScenarioQuaternionType;
             quat->setQ1(q1->text().toDouble());
             quat->setQ2(q2->text().toDouble());
             quat->setQ3(q3->text().toDouble());
@@ -879,12 +884,21 @@ bool LoiteringDialog::saveValues(ScenarioInitialAttitudeType* initAtt)
             quat->setQ2Dot(q2dot->text().toDouble());
             quat->setQ3Dot(q3dot->text().toDouble());
             quat->setQ4Dot(q4dot->text().toDouble());
-
-            initAtt->setAbstract6DOFAttitude(QSharedPointer<ScenarioAbstract6DOFAttitudeType>(quat));
+            initAttQuaternions->setAbstract8DOFAttitude(QSharedPointer<ScenarioAbstract8DOFAttitudeType>(quat));
         }
-        return true;
-    default:
-        return false;
+    case 4:  // --- JPL
+        {
+            ScenarioQuaternionType* quat = new ScenarioQuaternionType;
+            quat->setQ1(q1JPL->text().toDouble());
+            quat->setQ2(q2JPL->text().toDouble());
+            quat->setQ3(q3JPL->text().toDouble());
+            quat->setQ4(q4JPL->text().toDouble());
+            quat->setQ1Dot(q1dotJPL->text().toDouble());
+            quat->setQ2Dot(q2dotJPL->text().toDouble());
+            quat->setQ3Dot(q3dotJPL->text().toDouble());
+            quat->setQ4Dot(q4dotJPL->text().toDouble());
+            initAttQuaternions->setAbstract8DOFAttitude(QSharedPointer<ScenarioAbstract8DOFAttitudeType>(quat));
+        }
     }
 }
 
@@ -1160,84 +1174,40 @@ bool PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
 
 } // ------------------------------- End of the propagation method -----------------------
 
+
 ///////////////////////////////////// PropagateLoiteringTrajectory with ATTITUDE /////////////////////////////
-bool PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
-                                  QList<double>& sampleTimes,
-                                  QList<sta::StateVector>& samples,
-                                  QList<staAttitude::AttitudeVector>& samplesAtt,
-                                  QString attitudeRotationSequence,
-                                  PropagationFeedback& propFeedback)
+bool PropagateLoiteringAttitude(ScenarioLoiteringType* loitering,
+                                QList<double>& sampleTimes,
+                                QList<staAttitude::AttitudeVector>& samplesAtt,
+                                PropagationFeedback& propFeedback)
 {
     //Check the coordinate system of position
     QString loiteringLabel = loitering->ElementIdentifier()->Name();
 
-    QString centralBodyName = loitering->Environment()->CentralBody()->Name();
-    StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
-    if (!centralBody)
-    {
-        propFeedback.raiseError(QObject::tr("Unrecognized central body '%1'").arg(centralBodyName));
-        return false;
-    }
+    // Checking out the attitude coordinate system type
+    QString attitudeEulerCoordSysName = loitering->InitialAttitude()->CoordinateSystem();
+    QString attitudeQuaternionCoordSysName = loitering->InitialAttitudeUsingQuaternions()->CoordinateSystem();
+//    if (attitudeEulerCoordSysName.type() == sta::COORDSYS_INVALID || attitudeQuaternionCoordSysName.type() == sta::COORDSYS_INVALID)
+//    {
+//        propFeedback.raiseError(QObject::tr("Unrecognized coordinate system '%1'").arg(attitudeCoordSysName));
+//        return false;
+//    }
 
-    QString coordSysName = loitering->InitialPosition()->CoordinateSystem();
-    sta::CoordinateSystem coordSys(coordSysName);
-    if (coordSys.type() == sta::COORDSYS_INVALID)
-    {
-        propFeedback.raiseError(QObject::tr("Unrecognized coordinate system '%1'").arg(coordSysName));
-        return false;
-    }
 
-    //Check the coordinate system of ATTITUDE
-    QString attitudeCoordSysName = loitering->InitialAttitude()->CoordinateSystem();
-    if (coordSys.type() == sta::COORDSYS_INVALID)
-    {
-        propFeedback.raiseError(QObject::tr("Unrecognized coordinate system '%1'").arg(attitudeCoordSysName));
-        return false;
-    }
-    // Get the initial state in two forms:
-    //   - Keplerian elements for simple two-body propagation
-    //   - A state vector for any other sort of propagation
-    ScenarioAbstract6DOFPositionType* position = loitering->InitialPosition()->Abstract6DOFPosition().data();
-    sta::StateVector initialState = AbstractPositionToStateVector(position, centralBody);
-    sta::KeplerianElements initialStateKeplerian = AbstractPositionToKeplerianElements(position, centralBody);
-    double mu = centralBody->mu();
+    //ScenarioAbstract6DOFPositionType* position = loitering->InitialPosition()->Abstract6DOFPosition().data();
+    //sta::StateVector initialState = AbstractPositionToStateVector(position, centralBody);
 
-    // Get the INITIAL ATTITUDE
-    //Stores the information of the attitude, inserted in the GUI
-    ScenarioAbstract6DOFAttitudeType* attitude = loitering->InitialAttitude()->Abstract6DOFAttitude().data();
-    int seq1, seq2, seq3;
 
-    if (dynamic_cast<const ScenarioEulerBIType*>(attitude))
-    {
-        //const ScenarioEulerBIType* euler = dynamic_cast<const ScenarioEulerBIType*>(attitude);
-
-        // MISSING: INPUT attitudeRotationSequence STRING.
-        if(attitudeRotationSequence == "123")
-        {
-            seq1 = 1;
-            seq2 = 2;
-            seq3 = 3;
-        }
-        else if(attitudeRotationSequence == "321")
-        {
-            seq1 = 3;
-            seq2 = 2;
-            seq3 = 1;
-        }
-        else if(attitudeRotationSequence == "313")
-        {
-            seq1 = 3;
-            seq2 = 1;
-            seq3 = 3;
-        }
-        return (seq1, seq2, seq3);
-    }
-
-    // Converts the initial input of attitude in quaternions and body rates. initialAttitudeState -> (quaternions, bodyRates)
-    staAttitude::AttitudeVector initialAttitudeState = AbstractAttitudeToAttitudeVector(attitude, seq1, seq2, seq3);
-
-    //Stores the initial attitude in quaternions and body rates!!
-    //staAttitude::AttitudeVector initialAttitudeQuaternions = AttitudeVector(initialAttitude);
+    // Get the initial state in several forms:
+    //   - All Eulers elements the different Euler sequences propagations
+    //   - Quaternions for quaternions propagation
+    ScenarioAbstract6DOFAttitudeType* eulerAnglesAndRates = loitering->InitialAttitude()->Abstract6DOFAttitude().data();
+    ScenarioAbstract8DOFAttitudeType* quaternionsAndRates = loitering->InitialAttitudeUsingQuaternions()->Abstract8DOFAttitude().data();
+    staAttitude::AttitudeVector initialStateAttitudeEuler123 = Euler123ToAttitudeVector(eulerAnglesAndRates);
+    staAttitude::AttitudeVector initialStateAttitudeEuler321 = Euler321ToAttitudeVector(eulerAnglesAndRates);
+    staAttitude::AttitudeVector initialStateAttitudeEuler313 = Euler313ToAttitudeVector(eulerAnglesAndRates);
+    staAttitude::AttitudeVector initialStateAttitudeQuaternionsESA = QuaternionESAToAttitudeVector(quaternionsAndRates);
+    staAttitude::AttitudeVector initialStateAttitudeQuaternionsJPL = QuaternionJPLToAttitudeVector(quaternionsAndRates);
 
     // Get the timeline information
     const ScenarioTimeLine* timeline = loitering->TimeLine().data();
@@ -1257,7 +1227,6 @@ bool PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
     double requestedOutputTimeStep = timeline->StepTime();
     double outputTimeStep;
     unsigned int outputRate;
-
     if (requestedOutputTimeStep < dt)
     {
         outputRate = 1;
@@ -1275,115 +1244,55 @@ bool PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
         return false;
     }
 
-    QList<Perturbations*> perturbationsList; // Create the list of perturbations that will influence the propagation
 
-    sta::StateVector stateVector = initialState;
-    staAttitude::AttitudeVector attitudeVector = initialAttitudeState;
+    // In the future place here after the attitude perturbations
+    //QList<Perturbations*> perturbationsList; // Create the list of perturbations that will influence the propagation
 
-    // deviation, reference, and q will be used only in Encke propagation
-    sta::StateVector deviation(Vector3d::Zero(), Vector3d::Zero());
-    sta::StateVector reference = initialState;
-    double q = 0.0;
-
-    double startTime = sta::JdToMjd(sta::CalendarToJd(timeline->StartTime()));
-
-    sampleTimes << startTime;
-    samples << stateVector;
-    samplesAtt << attitudeVector;
-
-    QFile ciccio("data/PerturbationsData.stae");
-    QTextStream cicciostream(&ciccio);
-    ciccio.open(QIODevice::WriteOnly);
-
-    //unsigned int steps = 0;
-    unsigned int steps = 1; // patched by Ana on 18th June 2010
-
-    QString propagator = loitering->PropagationPosition()->propagator();
-    QString integrator = loitering->PropagationPosition()->integrator();
-
-    QString propAttitude = loitering->PropagationAttitude()->integrator(); //Added by Catarina to integrate attitude
+    QString attitudePropagator = loitering->PropagationAttitude()->propagator();
+    QString attitudeIntegrator = loitering->PropagationAttitude()->integrator();
 
     VectorXd inertiaMatrix;
     ScenarioSC* mySatellite = new ScenarioSC();
     inertiaMatrix(0,0) = mySatellite->System()->Structure()->MomentsOfInertia()->xAxis();
     inertiaMatrix(1,1) = mySatellite->System()->Structure()->MomentsOfInertia()->yAxis();
     inertiaMatrix(2,2) = mySatellite->System()->Structure()->MomentsOfInertia()->zAxis();
-    inertiaMatrix(0,1) = mySatellite->System()->Structure()->SecondMomentsOfArea()->xAxis();
-    inertiaMatrix(0,2) = mySatellite->System()->Structure()->SecondMomentsOfArea()->yAxis();
-    inertiaMatrix(1,2) = mySatellite->System()->Structure()->SecondMomentsOfArea()->zAxis();
+    inertiaMatrix(0,1) = mySatellite->System()->Structure()->SecondMomentsOfInertia()->xAxis();
+    inertiaMatrix(0,2) = mySatellite->System()->Structure()->SecondMomentsOfInertia()->yAxis();
+    inertiaMatrix(1,2) = mySatellite->System()->Structure()->SecondMomentsOfInertia()->zAxis();
 
-    if (propagator == "TWO BODY")
+    // Possible values for propagators are as follows:
+//    PropagatorAttitudeComboBox->addItem(tr("Euler 1->2->3"), "PEuler123");
+//    PropagatorAttitudeComboBox->addItem(tr("Euler 3->2->1"), "PEuler321");
+//    PropagatorAttitudeComboBox->addItem(tr("Euler 3->1->3"), "PEuler313");
+//    PropagatorAttitudeComboBox->addItem(tr("Quaternions ESA"), "PQuaternionsESA");
+//    PropagatorAttitudeComboBox->addItem(tr("Quaternions JPL"), "PQuaternionsJPL");
+
+    if (attitudePropagator == "PEuler123")
     {
-
-        double sma            = initialStateKeplerian.SemimajorAxis;
-        double e              = initialStateKeplerian.Eccentricity;
-        double inclination    = initialStateKeplerian.Inclination*Pi()/180.0;
-        double raan           = initialStateKeplerian.AscendingNode*Pi()/180.0;
-        double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis*Pi()/180.0;
-        double trueAnomaly    = initialStateKeplerian.TrueAnomaly*Pi()/180.0;
-        double meanAnomaly    = trueAnomalyTOmeanAnomaly(trueAnomaly, e);
-
-        // Next lines patched by Guillermo on April 23 2010 to speed up calculations outside the for loop
-        double argOfPeriapsisUpdated      = 0.0;
-        double meanAnomalyUpdated         = 0.0;
-        double raanUpdated                = 0.0;
-
-        double perigee = sma * (1 - e);
-        if (perigee < centralBody->meanRadius())
-        {
-            propFeedback.raiseError(QObject::tr("The perigee distance is smaller than the main body radius."));
-            return false;
-        }
-        else
-        {
-            for (double t = dt; t < timelineDuration + dt; t += dt)
-            {
-                JulianDate jd = startTime + sta::secsToDays(t);
-
-                stateVector = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
-                                               dt,
-                                               raanUpdated, argOfPeriapsisUpdated, meanAnomalyUpdated);
-
-                argOfPeriapsis = argOfPeriapsisUpdated;
-                meanAnomaly    = meanAnomalyUpdated;
-                raan           = raanUpdated;
-
-                // -- Integrating the attitude -- //
-
-                //Integrating the body rates
-                Vector3d bodyRates = propagateEulerEquation(attitudeVector.myBodyRates, startTime, dt, inertiaMatrix);
-
-                //Integrating the quaternions
-                Quaterniond integratedQuaternions = propagateQUATERNIONS(attitudeVector.myQuaternion, startTime, dt, bodyRates);
-
-                //Saving integrated values to the new attitude vector
-                attitudeVector.myQuaternion.coeffs().coeffRef(0) = integratedQuaternions.coeffs().coeffRef(0);
-                attitudeVector.myQuaternion.coeffs().coeffRef(1) = integratedQuaternions.coeffs().coeffRef(1);
-                attitudeVector.myQuaternion.coeffs().coeffRef(2) = integratedQuaternions.coeffs().coeffRef(2);
-                attitudeVector.myQuaternion.coeffs().coeffRef(3) = integratedQuaternions.coeffs().coeffRef(3);
-                attitudeVector.myBodyRates(0) = bodyRates(0);
-                attitudeVector.myBodyRates(1) = bodyRates(1);
-                attitudeVector.myBodyRates(2) = bodyRates(2);
-
-                // -- End of: Integrating the attitude -- //
-
-                // Append a trajectory sample every outputRate integration steps (and always at the last step.)
-                if (steps % outputRate == 0 || t >= timelineDuration)
-                {
-                    sampleTimes << jd;
-                    samples << stateVector;
-                    samplesAtt << attitudeVector;
-                }
-                ++steps;
-            }
-        }
     }
-    else if (propagator == "COWELL")
+    else if (attitudePropagator == "PEuler321")
     {
+    }
+    else if (attitudePropagator == "PEuler313")
+    {
+    }
+    else if (attitudePropagator == "PEuler313")
+    {
+    }
+    else if (attitudePropagator == "PQuaternionsESA")
+    {
+        staAttitude::AttitudeVector attitudeVector = initialStateAttitudeQuaternionsESA;
+
+        double startTime = sta::JdToMjd(sta::CalendarToJd(timeline->StartTime()));
+
+        sampleTimes << startTime;
+        samplesAtt << attitudeVector;
+
+        unsigned int steps = 1; // patched by Ana on 18th June 2010
+
         for (double t = dt; t < timelineDuration + dt; t += dt)
         {
             JulianDate jd = startTime + sta::secsToDays(t);
-            stateVector = propagateCOWELL(mu, stateVector, dt, perturbationsList, jd, integrator, propFeedback);
 
             // -- Integrating the attitude -- //
 
@@ -1408,60 +1317,26 @@ bool PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
             if (steps % outputRate == 0 || t >= timelineDuration)
             {
                 sampleTimes << jd;
-                samples << stateVector;
                 samplesAtt << attitudeVector;
+
             }
             ++steps;
         }
     }
-    else if (propagator == "ENCKE")
+    else if (attitudePropagator == "PQuaternionsJPL")
     {
-        double sma            = initialStateKeplerian.SemimajorAxis;
-        double e              = initialStateKeplerian.Eccentricity;
-        double inclination    = initialStateKeplerian.Inclination;
-        double raan           = initialStateKeplerian.AscendingNode;
-        double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis;
-        double meanAnomaly    = initialStateKeplerian.MeanAnomaly;
+        staAttitude::AttitudeVector attitudeVector = initialStateAttitudeQuaternionsJPL;
+
+        double startTime = sta::JdToMjd(sta::CalendarToJd(timeline->StartTime()));
+
+        sampleTimes << startTime;
+        samplesAtt << attitudeVector;
+
+        unsigned int steps = 1; // patched by Ana on 18th June 2010
 
         for (double t = dt; t < timelineDuration + dt; t += dt)
         {
             JulianDate jd = startTime + sta::secsToDays(t);
-            deviation = propagateENCKE(mu, reference, dt, perturbationsList, jd, stateVector, deviation,  q, integrator, propFeedback);
-
-            // PropagateTWObody is used to propagate the reference trajectory
-            double argOfPeriapsisUpdated      = 0.0;
-            double meanAnomalyUpdated         = 0.0;
-            double raanUpdated                = 0.0;
-            reference = propagateTWObody(mu, sma, e, inclination, argOfPeriapsis, raan, meanAnomaly,
-                                         dt,
-                                         raanUpdated, argOfPeriapsisUpdated, meanAnomalyUpdated);
-
-            argOfPeriapsis = argOfPeriapsisUpdated;
-            meanAnomaly    = meanAnomalyUpdated;
-            raan           = raanUpdated;
-
-            // Calculating the perturbed trajectory
-            stateVector = reference + deviation;
-            q = deviation.position.dot(reference.position + 0.5 * deviation.position) / pow(reference.position.norm(), 2.0);
-
-#if 0
-            // Rectification of the reference trajectory, when the deviation is too large.
-            if (q > 0.01)
-            {
-                sta::KeplerianElements keplerian = cartesianTOorbital(mu, stateVector);
-
-                sma = keplerian.SemimajorAxis;
-                e = keplerian.Eccentricity;
-                inclination = keplerian.Inclination;
-                argOfPeriapsis = keplerian.ArgumentOfPeriapsis;
-                raan = keplerian.AscendingNode;
-                meanAnomaly = keplerian.MeanAnomaly;
-
-                q = 0;
-                reference = stateVector;
-                deviation = sta::StateVector(null, null);
-            }
-#endif
 
             // -- Integrating the attitude -- //
 
@@ -1486,51 +1361,15 @@ bool PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
             if (steps % outputRate == 0 || t >= timelineDuration)
             {
                 sampleTimes << jd;
-                samples << stateVector;
                 samplesAtt << attitudeVector;
+
             }
             ++steps;
-        }
-    }
-    else if (propagator == "GAUSS")
-    {
-        for (double t = dt; t < timelineDuration + dt; t += dt)
-        {
-            JulianDate jd = startTime + sta::secsToDays(t);
-            // Append a trajectory sample every outputRate integration steps (and always at the last step.)
-            if (steps % outputRate == 0 || t >= timelineDuration)
-            {
-                sampleTimes << jd;
-                samples << stateVector;
-                samplesAtt << attitudeVector;
-            }
-            ++steps;
-
-            stateVector = propagateGAUSS(mu, stateVector, dt, perturbationsList, jd, integrator);
-
-            // -- Integrating the attitude -- //
-
-            //Integrating the body rates
-            Vector3d bodyRates = propagateEulerEquation(attitudeVector.myBodyRates, startTime, dt, inertiaMatrix);
-
-            //Integrating the quaternions
-            Quaterniond integratedQuaternions = propagateQUATERNIONS(attitudeVector.myQuaternion, startTime, dt, bodyRates);
-
-            //Saving integrated values to the new attitude vector
-            attitudeVector.myQuaternion.coeffs().coeffRef(0) = integratedQuaternions.coeffs().coeffRef(0);
-            attitudeVector.myQuaternion.coeffs().coeffRef(1) = integratedQuaternions.coeffs().coeffRef(1);
-            attitudeVector.myQuaternion.coeffs().coeffRef(2) = integratedQuaternions.coeffs().coeffRef(2);
-            attitudeVector.myQuaternion.coeffs().coeffRef(3) = integratedQuaternions.coeffs().coeffRef(3);
-            attitudeVector.myBodyRates(0) = bodyRates(0);
-            attitudeVector.myBodyRates(1) = bodyRates(1);
-            attitudeVector.myBodyRates(2) = bodyRates(2);
-
-            // -- End of: Integrating the attitude -- //
         }
     }
     else
     {
-        propFeedback.raiseError(QObject::tr("Unsupported propagator '%1'").arg(propagator));
+        propFeedback.raiseError(QObject::tr("Unsupported attitude propagator '%1'").arg(attitudePropagator));
         return false;
     }
 
