@@ -205,6 +205,9 @@ LoiteringDialog::LoiteringDialog(ScenarioTree* parent) :
     IRCheckBox->setCheckable(true);
     IRCheckBox->setChecked(false);
 
+    InitialStateStackedWidget->setCurrentWidget(keplerianPage);
+    InitAttitudeStackedWidget->setCurrentWidget(Euler123Page);
+
     connect(GravityFieldRadioButton, SIGNAL(toggled(bool)), GravityComboBox, SLOT(setEnabled(bool)));
     connect(GravityFieldRadioButton, SIGNAL(toggled(bool)), ZonalsSpinBox, SLOT(setEnabled(bool)));
     connect(GravityFieldRadioButton, SIGNAL(toggled(bool)), TesseralSpinBox, SLOT(setEnabled(bool)));
@@ -283,7 +286,7 @@ bool LoiteringDialog::loadValues(ScenarioLoiteringType* loitering)
 
     if (loadValues(arcIdentifier) && loadValues(environment) && loadValues(parameters) &&
         loadValues(propagation) && loadValues(initPosition) && loadValues(attitudePropagation) &&
-        loadValues(initAttitude) && loadValues(initAttQuaternions))
+        loadValues(initAttQuaternions) && loadValues(initAttitude))
     {
         return true;
     }
@@ -555,16 +558,6 @@ bool LoiteringDialog::loadValues(ScenarioInitialAttitudeType* initAttitude)
 
     switch (AttitudeTypeComboBox->currentIndex())
     {
-    case 0:  // --- Euler 321
-        {
-            InitAttitudeStackedWidget->setCurrentWidget(Euler123Page);
-            Euler123phi->setText(QString::number(Euler123->phi()));
-            Euler123theta->setText(QString::number(Euler123->theta()));
-            Euler123psi->setText(QString::number(Euler123->psi()));
-            Euler123omegaX->setText(QString::number(Euler123->phiDot()));
-            Euler123omegaY->setText(QString::number(Euler123->thetaDot()));
-            Euler123omegaZ->setText(QString::number(Euler123->psiDot()));
-        }
     case 1:  // --- Euler 123
         {
             InitAttitudeStackedWidget->setCurrentWidget(Euler321Page);
@@ -586,43 +579,57 @@ bool LoiteringDialog::loadValues(ScenarioInitialAttitudeType* initAttitude)
             Euler313omegaY->setText(QString::number(bodyRates.y()));
             Euler313omegaZ->setText(QString::number(bodyRates.z()));
         }
+    case 3:
+    case 4:
+    case 0:  // --- Euler 321
+        {
+            InitAttitudeStackedWidget->setCurrentWidget(Euler123Page);
+            Euler123phi->setText(QString::number(Euler123->phi()));
+            Euler123theta->setText(QString::number(Euler123->theta()));
+            Euler123psi->setText(QString::number(Euler123->psi()));
+            Euler123omegaX->setText(QString::number(Euler123->phiDot()));
+            Euler123omegaY->setText(QString::number(Euler123->thetaDot()));
+            Euler123omegaZ->setText(QString::number(Euler123->psiDot()));
+        }
         return true;
     }
-
 }
 
 
 bool LoiteringDialog::loadValues(ScenarioInitialAttitudeUsingQuaternionsType* initAttQuaternions)
 {
+
+    ScenarioAbstract8DOFAttitudeType* attitude = initAttQuaternions->Abstract8DOFAttitude().data();
+    ScenarioQuaternionType* myQuaternion = dynamic_cast<ScenarioQuaternionType*>(attitude);
+
     switch (AttitudeTypeComboBox->currentIndex())
     {
+    case 0:
+    case 1:
+    case 2:
     case 3:  // --- Q ESA
         {
             InitAttitudeStackedWidget->setCurrentWidget(QuaternionESAPage);
-            ScenarioAbstract8DOFAttitudeType* attitude = initAttQuaternions->Abstract8DOFAttitude().data();
-            ScenarioQuaternionType* quaternionESA = dynamic_cast<ScenarioQuaternionType*>(attitude);
-            q1->setText(QString::number(quaternionESA->q1()));
-            q2->setText(QString::number(quaternionESA->q2()));
-            q3->setText(QString::number(quaternionESA->q3()));
-            q4->setText(QString::number(quaternionESA->q4()));
-            q1dot->setText(QString::number(quaternionESA->q1Dot()));
-            q2dot->setText(QString::number(quaternionESA->q1Dot()));
-            q3dot->setText(QString::number(quaternionESA->q1Dot()));
-            q4dot->setText(QString::number(quaternionESA->q1Dot()));
+            q1->setText(QString::number(myQuaternion->q1()));
+            q2->setText(QString::number(myQuaternion->q2()));
+            q3->setText(QString::number(myQuaternion->q3()));
+            q4->setText(QString::number(myQuaternion->q4()));
+            q1dot->setText(QString::number(myQuaternion->q1Dot()));
+            q2dot->setText(QString::number(myQuaternion->q1Dot()));
+            q3dot->setText(QString::number(myQuaternion->q1Dot()));
+            q4dot->setText(QString::number(myQuaternion->q1Dot()));
         }
     case 4:  // --- Q JPL
         {
             InitAttitudeStackedWidget->setCurrentWidget(QuaternionJPLPage);
-            ScenarioAbstract8DOFAttitudeType* attitude = initAttQuaternions->Abstract8DOFAttitude().data();
-            ScenarioQuaternionType* quaternionJPL = dynamic_cast<ScenarioQuaternionType*>(attitude);
-            q1JPL->setText(QString::number(quaternionJPL->q1()));
-            q2JPL->setText(QString::number(quaternionJPL->q2()));
-            q3JPL->setText(QString::number(quaternionJPL->q3()));
-            q4JPL->setText(QString::number(quaternionJPL->q4()));
-            q1dotJPL->setText(QString::number(quaternionJPL->q1Dot()));
-            q2dotJPL->setText(QString::number(quaternionJPL->q1Dot()));
-            q3dotJPL->setText(QString::number(quaternionJPL->q1Dot()));
-            q4dotJPL->setText(QString::number(quaternionJPL->q1Dot()));
+            q1JPL->setText(QString::number(myQuaternion->q1()));
+            q2JPL->setText(QString::number(myQuaternion->q2()));
+            q3JPL->setText(QString::number(myQuaternion->q3()));
+            q4JPL->setText(QString::number(myQuaternion->q4()));
+            q1dotJPL->setText(QString::number(myQuaternion->q1Dot()));
+            q2dotJPL->setText(QString::number(myQuaternion->q1Dot()));
+            q3dotJPL->setText(QString::number(myQuaternion->q1Dot()));
+            q4dotJPL->setText(QString::number(myQuaternion->q1Dot()));
         }
         return true;
     }
@@ -861,6 +868,9 @@ bool LoiteringDialog::saveValues(ScenarioInitialAttitudeType* initAtt)
             euler->setPsiDot(Euler313omegaZ->text().toDouble());
             initAtt->setAbstract6DOFAttitude(QSharedPointer<ScenarioAbstract6DOFAttitudeType>(euler));
         }
+    case 3:
+    case 4:
+
         return true;
 
     default:
@@ -873,6 +883,9 @@ bool LoiteringDialog::saveValues(ScenarioInitialAttitudeUsingQuaternionsType* in
 {
     switch (AttitudeTypeComboBox->currentIndex())
     {
+    case 0:
+    case 1:
+    case 2:
     case 3:  // --- ESA
         {
             ScenarioQuaternionType* quat = new ScenarioQuaternionType;
