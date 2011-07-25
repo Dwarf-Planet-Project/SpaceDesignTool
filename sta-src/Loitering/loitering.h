@@ -28,18 +28,22 @@
 #ifndef _LOITERING_H_
 #define _LOITERING_H_
 
+#include "ui_loitering.h"
+
 #include "Scenario/scenario.h"
 #include "Scenario/propagationfeedback.h"
-#include "Astro-Core/statevector.h"
 #include "Scenario/missionAspectDialog.h"
+
+#include "Astro-Core/statevector.h"
 #include "Astro-Core/attitudevector.h"
 
-#include "ui_loitering.h"
+#include "Services/perturbationForcesDialog.h"
+#include "Services/stoppingConditionsTrajectoryDialog.h"
 
 #include <QDialog>
 
 class ScenarioTree;
-class TesseralBox;
+//class TesseralBox;
 
 
 class LoiteringDialog : public QDialog, private Ui_LoiteringDialogClass
@@ -49,6 +53,7 @@ class LoiteringDialog : public QDialog, private Ui_LoiteringDialogClass
 public:
     LoiteringDialog(ScenarioTree* parent = NULL);
     ~LoiteringDialog();
+
     bool loadValues(ScenarioLoiteringType* loitering);
     bool loadValues(ScenarioElementIdentifierType* arcIdentifier);
     bool loadValues(ScenarioEnvironmentType* environment);
@@ -73,44 +78,28 @@ public:
     bool saveValues(ScenarioInitialAttitudeType* initAtt);
     bool saveValues(ScenarioInitialAttitudeUsingQuaternionsType* initAttQuaternions);
 
-    TesseralBox* TesseralSpinBox;
-    int m_tesserals;
-
 public:
     missionAspectDialog loiteringAspect;
+    perturbationForcesDialog myPerturbationsForces;
+    //perturbationTorquesDialog myPerturbationsTorques;  // To be finihsed by Catarina
+    stoppingConditionsTrajectoryDialog myStoppingConditionsTrajetory;
+    //stoppingConditionsAttitudeDialog myStoppingConditionsAttitude; // To be finihsed by Catarina
+
 
 public slots:
-    void addPerturbingPlanet(QListWidgetItem* item);
-    void addPerturbingPlanet();
-    void removePerturbingPlanet();
-    void setTesserals(int i);
     void disableIntegratorComboBox(int i);
 
 protected slots:
-        void on_pushButtonAspect_clicked();
+    void on_pushButtonAspect_clicked();
+    void on_perturbationForcesPushButton_clicked();
+    void on_perturbationTorquesPushButton_clicked();
+    void on_trajectoryStopConditionsPushButton_clicked();
+    void on_attitudeStopConditionsPushButton_clicked();
 
 
 };
 
-/**
- * Class to create a custom spinBox object; this class has been created for the tesserals spinBox
- * whose maximum value is function of the zonals spinBox value
- */
-class TesseralBox : public QSpinBox
-{
-    Q_OBJECT
 
-    public:
-    TesseralBox(QDialog* parent);
-
-    public slots:
-
-    /**
-     * Slot to define the maximum value of the tesseralSpinBox as function of i
-     */
-    void setVariableMaximum(int i);
-
-};
 
 extern bool
         PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,

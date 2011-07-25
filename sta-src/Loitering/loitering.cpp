@@ -68,8 +68,7 @@ static const unsigned int MAX_OUTPUT_STEPS = 1000000;
 
 
 LoiteringDialog::LoiteringDialog(ScenarioTree* parent) :
-        QDialog(parent),
-        m_tesserals(0)
+        QDialog(parent)
 {
     setupUi(this);
 
@@ -114,7 +113,7 @@ LoiteringDialog::LoiteringDialog(ScenarioTree* parent) :
     minusOneToOneValidator->setBottom(-1.0);
     minusOneToOneValidator->setTop(1.0);
 
-    TimeStepLineEdit->setValidator(positiveDoubleValidator);
+    //TimeStepLineEdit->setValidator(positiveDoubleValidator);
     IntAttitudeStep->setValidator(positiveDoubleValidator); //Catarina: Validator for the attitude time step
 
     //Set validator for the state vector
@@ -168,103 +167,20 @@ LoiteringDialog::LoiteringDialog(ScenarioTree* parent) :
     q3dot->setValidator(doubleValidator);
     q4dot->setValidator(doubleValidator);
 
-    //Added combo box to select atmosphere models
-    // Lines patched by Guillermo to take away the icons
-    AtmosphereComboBox->addItem(tr("GRAM 99"), "gram99");
-    AtmosphereComboBox->addItem(tr("Exponential"), "exponential");
-    AtmosphereComboBox->addItem(tr("US 76"), "ussa1976");
-    AtmosphereComboBox->addItem(tr("Mars EMCD"), "mars_emcd");
-
-    // Lines patched by Guillermo to take away the icons
-    GravityComboBox->addItem(tr("EGM 2008"), "EGM2008");
-    GravityComboBox->addItem(tr("GTM 090"), "GTM090");
-    GravityComboBox->addItem(tr("SHGJ 180"), "SHGJ180");
-    GravityComboBox->addItem(tr("JGL 165"), "JGL165");
-
-    AtmosphereComboBox->setEnabled(false);
-    GravityComboBox->setEnabled(false);
-
     IntStepEdit->setValidator(positiveDoubleValidator);
-
-    ZonalsSpinBox->setMaximum(20);
-
-    //Add the tesserals SpinBox
-    TesseralSpinBox = new TesseralBox(this);
-    TesseralSpinBox->setObjectName(QString::fromUtf8("TesseralSpinBox"));
-    TesseralSpinBox->setEnabled(false);
-    TesseralSpinBox->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-    TesseralSpinBox->setMaximum(ZonalsSpinBox->value());
-    TesseralSpinBox->setValue(m_tesserals);
-
-    gridLayout_4->addWidget(TesseralSpinBox, 2, 1, 1, 1);
-
-    SolarPressureRadioButton->setCheckable(true);
-    SolarPressureRadioButton->setChecked(false);
-    AlbedoCheckBox->setCheckable(true);
-    AlbedoCheckBox->setChecked(false);
-    IRCheckBox->setCheckable(true);
-    IRCheckBox->setChecked(false);
 
     InitialStateStackedWidget->setCurrentWidget(keplerianPage);
     InitAttitudeStackedWidget->setCurrentWidget(Euler123Page);
 
-    connect(GravityFieldRadioButton, SIGNAL(toggled(bool)), GravityComboBox, SLOT(setEnabled(bool)));
-    connect(GravityFieldRadioButton, SIGNAL(toggled(bool)), ZonalsSpinBox, SLOT(setEnabled(bool)));
-    connect(GravityFieldRadioButton, SIGNAL(toggled(bool)), TesseralSpinBox, SLOT(setEnabled(bool)));
-    connect(AtmDragRadioButton, SIGNAL(toggled(bool)), AtmosphereComboBox, SLOT(setEnabled(bool)));
-    connect(SolarPressureRadioButton, SIGNAL(toggled(bool)), CrSpinBox, SLOT(setEnabled(bool)));
-    connect(SolarPressureRadioButton, SIGNAL(toggled(bool)), AlbedoCheckBox, SLOT(setEnabled(bool)));
-    connect(SolarPressureRadioButton, SIGNAL(toggled(bool)), IRCheckBox, SLOT(setEnabled(bool)));
-    connect(SolarPressureRadioButton, SIGNAL(clicked(bool)), AlbedoCheckBox, SLOT(setChecked(bool)));
-    connect(SolarPressureRadioButton, SIGNAL(clicked(bool)), IRCheckBox, SLOT(setChecked(bool)));
-    connect(PertBodyRadioButton, SIGNAL(toggled(bool)), BodyListWidget, SLOT(setEnabled(bool)));
-    connect(PertBodyRadioButton, SIGNAL(toggled(bool)), PertBodyListWidget, SLOT(setEnabled(bool)));
-    connect(PertBodyRadioButton, SIGNAL(toggled(bool)), AddPushButton, SLOT(setEnabled(bool)));
-    connect(PertBodyRadioButton, SIGNAL(toggled(bool)), RemovePushButton, SLOT(setEnabled(bool)));
-    connect(BodyListWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(addPerturbingPlanet(QListWidgetItem*)));
-    connect(AddPushButton, SIGNAL(pressed()), this, SLOT(addPerturbingPlanet()));
-    connect(RemovePushButton, SIGNAL(pressed()), this, SLOT(removePerturbingPlanet()));
-    connect(TesseralSpinBox, SIGNAL(valueChanged(int)), this, SLOT(setTesserals(int)));
-    connect(ZonalsSpinBox, SIGNAL(valueChanged(int)), TesseralSpinBox, SLOT(setVariableMaximum(int)));
-
-    connect(PropagatorComboBox, SIGNAL(activated(int)), this, SLOT(disableIntegratorComboBox(int)));
+    //connect(PropagatorComboBox, SIGNAL(activated(int)), this, SLOT(disableIntegratorComboBox(int)));
 
 }
 
 LoiteringDialog::~LoiteringDialog()
 {
-    delete TesseralSpinBox;
+    //delete TesseralSpinBox;
 }
 
-void LoiteringDialog::addPerturbingPlanet()
-{
-    QList<QListWidgetItem *> planets = BodyListWidget->selectedItems();
-    for (int i = 0; i < planets.size(); i++)
-    {
-        addPerturbingPlanet(planets.at(i));
-    }
-}
-
-void LoiteringDialog::addPerturbingPlanet(QListWidgetItem* item)
-{
-    QString text = item->text();
-    if(PertBodyListWidget->findItems(text,Qt::MatchExactly).isEmpty())
-        PertBodyListWidget->addItem(text);
-}
-
-void LoiteringDialog::removePerturbingPlanet()
-{
-    QList<QListWidgetItem *> perturbplanets = PertBodyListWidget->selectedItems();
-    for (int i = 0; i < perturbplanets.size(); i++)
-    {
-        delete perturbplanets.at(i);
-    }
-}
-
-void LoiteringDialog::setTesserals(int i)
-{
-    m_tesserals = i;
-}
 
 void LoiteringDialog::disableIntegratorComboBox(int i)
 {
@@ -330,116 +246,118 @@ bool LoiteringDialog::loadValues(ScenarioEnvironmentType* environment)
         return false;
     }
 
-    // The perturbations
-    QSharedPointer<ScenarioPerturbationsType> perturbationsToCentralBody = environment->PerturbationsToCentralBody();
-    DebrisRadioButton->setChecked(false);
-    GravityFieldRadioButton->setChecked(false);
-    SolarPressureRadioButton->setChecked(false);
-    AtmDragRadioButton->setChecked(false);
-    PertBodyRadioButton->setChecked(false);
+//    // The perturbations
+//    QSharedPointer<ScenarioPerturbationsType> perturbationsToCentralBody = environment->PerturbationsToCentralBody();
+//    DebrisRadioButton->setChecked(false);
+//    GravityFieldRadioButton->setChecked(false);
+//    SolarPressureRadioButton->setChecked(false);
+//    AtmDragRadioButton->setChecked(false);
+//    PertBodyRadioButton->setChecked(false);
 
-    if (!perturbationsToCentralBody.isNull())
-    {
-        //qDebug() << "Not null" << endl;
-        bool theAlbedo = perturbationsToCentralBody->albedo();
-        bool theAtmosphericDrag = perturbationsToCentralBody->atmosphereDrag();
-        bool theSolarPressure = perturbationsToCentralBody->solarPressure();
-        bool theGravityEffects = perturbationsToCentralBody->gravityEffets();
-        bool theDebris = perturbationsToCentralBody->micrometeoroids();
-        bool the3rdBody =perturbationsToCentralBody->thirdBody();
-        bool theIR =perturbationsToCentralBody->IR();
+//    if (!perturbationsToCentralBody.isNull())
+//    {
+//        //qDebug() << "Not null" << endl;
+//        bool theAlbedo = perturbationsToCentralBody->albedo();
+//        bool theAtmosphericDrag = perturbationsToCentralBody->atmosphereDrag();
+//        bool theSolarPressure = perturbationsToCentralBody->solarPressure();
+//        bool theGravityEffects = perturbationsToCentralBody->gravityEffets();
+//        bool theDebris = perturbationsToCentralBody->micrometeoroids();
+//        bool the3rdBody =perturbationsToCentralBody->thirdBody();
+//        bool theIR =perturbationsToCentralBody->IR();
 
-        if (theDebris)
-            DebrisRadioButton->setChecked(true);
-        else
-            DebrisRadioButton->setChecked(false);
+//        if (theDebris)
+//            DebrisRadioButton->setChecked(true);
+//        else
+//            DebrisRadioButton->setChecked(false);
 
-        if (theGravityEffects)
-        {
-            GravityFieldRadioButton->setChecked(true);
-            if(!centralBody->GravityModel()->modelName().isEmpty())
-            {
-                QString gravitymodel = centralBody->GravityModel()->modelName();
-                gravitymodel.remove(".stad");
-                for (int i = 0; i < GravityComboBox->count(); i++)
-                {
-                    if (GravityComboBox->itemData(i) == gravitymodel)
-                    {
-                        GravityComboBox->setCurrentIndex(i);
-                        break;
-                    }
-                }
-            }
-            ZonalsSpinBox->setValue(centralBody->GravityModel()->numberOfZonals());
-            m_tesserals = centralBody->GravityModel()->numberOfTesserals();
-            TesseralSpinBox->setValue(m_tesserals);
-        } // ---- Gravity
-        else
-            GravityFieldRadioButton->setChecked(false);
-
-
-        if (theSolarPressure)
-            SolarPressureRadioButton->setChecked(true);
-        else
-            SolarPressureRadioButton->setChecked(false);
-
-        if (theAtmosphericDrag)
-        {
-            AtmDragRadioButton->setChecked(true);
-            if(!centralBody->AtmosphereModel().isEmpty())
-            {
-                QString atmospheremodel = centralBody->AtmosphereModel();
-                atmospheremodel.remove(".stad");
-                for (int i = 0; i < AtmosphereComboBox->count(); i++)
-                {
-                    if (AtmosphereComboBox->itemData(i) == atmospheremodel)
-                    {
-                        AtmosphereComboBox->setCurrentIndex(i);
-                        break;
-                    }
-                }
-            }
-        } // ---- Atmopsheric drag
-        else
-            AtmDragRadioButton->setChecked(false);
+//        if (theGravityEffects)
+//        {
+//            GravityFieldRadioButton->setChecked(true);
+//            if(!centralBody->GravityModel()->modelName().isEmpty())
+//            {
+//                QString gravitymodel = centralBody->GravityModel()->modelName();
+//                gravitymodel.remove(".stad");
+//                for (int i = 0; i < GravityComboBox->count(); i++)
+//                {
+//                    if (GravityComboBox->itemData(i) == gravitymodel)
+//                    {
+//                        GravityComboBox->setCurrentIndex(i);
+//                        break;
+//                    }
+//                }
+//            }
+//            ZonalsSpinBox->setValue(centralBody->GravityModel()->numberOfZonals());
+//            m_tesserals = centralBody->GravityModel()->numberOfTesserals();
+//            TesseralSpinBox->setValue(m_tesserals);
+//        } // ---- Gravity
+//        else
+//            GravityFieldRadioButton->setChecked(false);
 
 
-        if (theAlbedo)
-            AlbedoCheckBox->setChecked(true);
-        else
-            AlbedoCheckBox->setChecked(false);
+//        if (theSolarPressure)
+//            SolarPressureRadioButton->setChecked(true);
+//        else
+//            SolarPressureRadioButton->setChecked(false);
 
-        if (theIR)
-            IRCheckBox->setChecked(true);
-        else
-            IRCheckBox->setChecked(false);
+//        if (theAtmosphericDrag)
+//        {
+//            AtmDragRadioButton->setChecked(true);
+//            if(!centralBody->AtmosphereModel().isEmpty())
+//            {
+//                QString atmospheremodel = centralBody->AtmosphereModel();
+//                atmospheremodel.remove(".stad");
+//                for (int i = 0; i < AtmosphereComboBox->count(); i++)
+//                {
+//                    if (AtmosphereComboBox->itemData(i) == atmospheremodel)
+//                    {
+//                        AtmosphereComboBox->setCurrentIndex(i);
+//                        break;
+//                    }
+//                }
+//            }
+//        } // ---- Atmopsheric drag
+//        else
+//            AtmDragRadioButton->setChecked(false);
 
-        if (the3rdBody)
-        {
-            QList<QString> perturbingBodyList = environment->PerturbationsToCentralBody()->perturbingBody();
-            QString nameBody;
-            for (int j=0; j<perturbingBodyList.size(); j++)
-            {
-                nameBody = perturbingBodyList.at(j);
-                QList<QListWidgetItem*> items = BodyListWidget->findItems(nameBody, Qt::MatchFixedString);
-                //if(!items.isEmpty() && nameBody != environment->CentralBody()->Name())
-                if(nameBody != environment->CentralBody()->Name())
-                    PertBodyListWidget->addItem(nameBody);
-            }
-            PertBodyRadioButton->setChecked(true);
-        } // --- the 3rd Bodies
-        else
-            PertBodyRadioButton->setChecked(true);
-    }
+
+//        if (theAlbedo)
+//            AlbedoCheckBox->setChecked(true);
+//        else
+//            AlbedoCheckBox->setChecked(false);
+
+//        if (theIR)
+//            IRCheckBox->setChecked(true);
+//        else
+//            IRCheckBox->setChecked(false);
+
+//        if (the3rdBody)
+//        {
+//            QList<QString> perturbingBodyList = environment->PerturbationsToCentralBody()->perturbingBody();
+//            QString nameBody;
+//            for (int j=0; j<perturbingBodyList.size(); j++)
+//            {
+//                nameBody = perturbingBodyList.at(j);
+//                QList<QListWidgetItem*> items = BodyListWidget->findItems(nameBody, Qt::MatchFixedString);
+//                //if(!items.isEmpty() && nameBody != environment->CentralBody()->Name())
+//                if(nameBody != environment->CentralBody()->Name())
+//                    PertBodyListWidget->addItem(nameBody);
+//            }
+//            PertBodyRadioButton->setChecked(true);
+//        } // --- the 3rd Bodies
+//        else
+//            PertBodyRadioButton->setChecked(true);
+//    }
     // Finally returning
     return true;
 }
 
 bool LoiteringDialog::loadValues(ScenarioTimeLine* timeLine)
 {
-    dateTimeEdit->setDateTime(timeLine->StartTime());
-    dateTimeEdit_2->setDateTime(timeLine->EndTime());
-    TimeStepLineEdit->setText(QString::number(timeLine->StepTime()));
+    trajectoryStartingEpoch->setDateTime(timeLine->StartTime());
+    trajectoryEndingEpoch->setDateTime(timeLine->EndTime());
+    //TimeStepLineEdit->setText(QString::number(timeLine->StepTime()));
+    attitudeStartingEpoch->setDateTime(timeLine->StartTime());
+    attitudeEndingEpoch->setDateTime(timeLine->EndTime());
 
     return true;
 }
@@ -595,7 +513,6 @@ bool LoiteringDialog::loadValues(ScenarioInitialAttitudeType* initAttitude)
     }
 }
 
-
 bool LoiteringDialog::loadValues(ScenarioInitialAttitudeUsingQuaternionsType* initAttQuaternions)
 {
 
@@ -689,89 +606,89 @@ bool LoiteringDialog::saveValues(ScenarioEnvironmentType* environment)
         return false;
     }
 
-    // The perturbations
-    QSharedPointer<ScenarioPerturbationsType> perturbationsToCentralBody = environment->PerturbationsToCentralBody();
+//    // The perturbations
+//    QSharedPointer<ScenarioPerturbationsType> perturbationsToCentralBody = environment->PerturbationsToCentralBody();
 
-    if (perturbationsToCentralBody.isNull())
-    {
-        ScenarioPerturbationsType* perturbationsToCentralBody = new ScenarioPerturbationsType();
-        environment->setPerturbationsToCentralBody(QSharedPointer<ScenarioPerturbationsType>(perturbationsToCentralBody));
-    }
+//    if (perturbationsToCentralBody.isNull())
+//    {
+//        ScenarioPerturbationsType* perturbationsToCentralBody = new ScenarioPerturbationsType();
+//        environment->setPerturbationsToCentralBody(QSharedPointer<ScenarioPerturbationsType>(perturbationsToCentralBody));
+//    }
 
 
-    if (DebrisRadioButton->isChecked())
-        environment->PerturbationsToCentralBody()->setMicrometeoroids(true);
-    else
-        environment->PerturbationsToCentralBody()->setMicrometeoroids(false);
+//    if (DebrisRadioButton->isChecked())
+//        environment->PerturbationsToCentralBody()->setMicrometeoroids(true);
+//    else
+//        environment->PerturbationsToCentralBody()->setMicrometeoroids(false);
 
-    if (GravityFieldRadioButton->isChecked())
-    {
-        environment->PerturbationsToCentralBody()->setGravityEffets(true);
-        QString gravitymodel = GravityComboBox->itemData(GravityComboBox->currentIndex()).toString();
-        gravitymodel.append(".stad");
-        environment->CentralBody()->GravityModel()->setModelName(gravitymodel);
-        environment->CentralBody()->GravityModel()->setNumberOfZonals(ZonalsSpinBox->value());
-        environment->CentralBody()->GravityModel()->setNumberOfTesserals(m_tesserals);
-    }
-    else
-        environment->PerturbationsToCentralBody()->setGravityEffets(false);
+//    if (GravityFieldRadioButton->isChecked())
+//    {
+//        environment->PerturbationsToCentralBody()->setGravityEffets(true);
+//        QString gravitymodel = GravityComboBox->itemData(GravityComboBox->currentIndex()).toString();
+//        gravitymodel.append(".stad");
+//        environment->CentralBody()->GravityModel()->setModelName(gravitymodel);
+//        environment->CentralBody()->GravityModel()->setNumberOfZonals(ZonalsSpinBox->value());
+//        environment->CentralBody()->GravityModel()->setNumberOfTesserals(m_tesserals);
+//    }
+//    else
+//        environment->PerturbationsToCentralBody()->setGravityEffets(false);
 
-    if (AtmDragRadioButton->isChecked())
-    {
-        environment->PerturbationsToCentralBody()->setAtmosphereDrag(true);
-        QString atmospheremodel = AtmosphereComboBox->itemData(AtmosphereComboBox->currentIndex()).toString();
-        atmospheremodel.append(".stad");
-        environment->CentralBody()->setAtmosphereModel(atmospheremodel);
-    }
-    else
-        environment->PerturbationsToCentralBody()->setAtmosphereDrag(false);
+//    if (AtmDragRadioButton->isChecked())
+//    {
+//        environment->PerturbationsToCentralBody()->setAtmosphereDrag(true);
+//        QString atmospheremodel = AtmosphereComboBox->itemData(AtmosphereComboBox->currentIndex()).toString();
+//        atmospheremodel.append(".stad");
+//        environment->CentralBody()->setAtmosphereModel(atmospheremodel);
+//    }
+//    else
+//        environment->PerturbationsToCentralBody()->setAtmosphereDrag(false);
 
-    if (SolarPressureRadioButton->isChecked())
-    {
-        environment->PerturbationsToCentralBody()->setSolarPressure(true);
-        if (AlbedoCheckBox->isChecked())
-            environment->PerturbationsToCentralBody()->setAlbedo(true);
-        else
-        {
-            environment->PerturbationsToCentralBody()->setAlbedo(false);
-            AlbedoCheckBox->setChecked(false);
-        }
-        if (IRCheckBox->isChecked())
-            environment->PerturbationsToCentralBody()->setIR(true);
-        else
-        {
-            environment->PerturbationsToCentralBody()->setIR(false);
-            IRCheckBox->setChecked(false);
-        }
-    }
-    else
-    {
-        AlbedoCheckBox->setChecked(false);
-        IRCheckBox->setChecked(false);
-        environment->PerturbationsToCentralBody()->setSolarPressure(false);
-        environment->PerturbationsToCentralBody()->setIR(false);
-        environment->PerturbationsToCentralBody()->setAlbedo(false);
-    }
+//    if (SolarPressureRadioButton->isChecked())
+//    {
+//        environment->PerturbationsToCentralBody()->setSolarPressure(true);
+//        if (AlbedoCheckBox->isChecked())
+//            environment->PerturbationsToCentralBody()->setAlbedo(true);
+//        else
+//        {
+//            environment->PerturbationsToCentralBody()->setAlbedo(false);
+//            AlbedoCheckBox->setChecked(false);
+//        }
+//        if (IRCheckBox->isChecked())
+//            environment->PerturbationsToCentralBody()->setIR(true);
+//        else
+//        {
+//            environment->PerturbationsToCentralBody()->setIR(false);
+//            IRCheckBox->setChecked(false);
+//        }
+//    }
+//    else
+//    {
+//        AlbedoCheckBox->setChecked(false);
+//        IRCheckBox->setChecked(false);
+//        environment->PerturbationsToCentralBody()->setSolarPressure(false);
+//        environment->PerturbationsToCentralBody()->setIR(false);
+//        environment->PerturbationsToCentralBody()->setAlbedo(false);
+//    }
 
-    if (PertBodyRadioButton->isChecked())
-    {
-        environment->PerturbationsToCentralBody()->setThirdBody(true);
-        QList<QString> myPerturbingBodyList = environment->PerturbationsToCentralBody()->perturbingBody();
-        myPerturbingBodyList.clear(); // Reset the perturbing bodies list
-        for (int j = 0; j < PertBodyListWidget->count(); j++)
-        {
-            StaBody* body = STA_SOLAR_SYSTEM->lookup(PertBodyListWidget->item(j)->text());
-            if (body && body != centralBody)
-                myPerturbingBodyList.append(body->name());
-        }
-        qDebug() << myPerturbingBodyList << endl;
-        environment->PerturbationsToCentralBody()->setPerturbingBody(myPerturbingBodyList);
-        qDebug() << environment->PerturbationsToCentralBody()->perturbingBody() << endl;
-    }
-    else
-        environment->PerturbationsToCentralBody()->setThirdBody(false);
+//    if (PertBodyRadioButton->isChecked())
+//    {
+//        environment->PerturbationsToCentralBody()->setThirdBody(true);
+//        QList<QString> myPerturbingBodyList = environment->PerturbationsToCentralBody()->perturbingBody();
+//        myPerturbingBodyList.clear(); // Reset the perturbing bodies list
+//        for (int j = 0; j < PertBodyListWidget->count(); j++)
+//        {
+//            StaBody* body = STA_SOLAR_SYSTEM->lookup(PertBodyListWidget->item(j)->text());
+//            if (body && body != centralBody)
+//                myPerturbingBodyList.append(body->name());
+//        }
+//        qDebug() << myPerturbingBodyList << endl;
+//        environment->PerturbationsToCentralBody()->setPerturbingBody(myPerturbingBodyList);
+//        qDebug() << environment->PerturbationsToCentralBody()->perturbingBody() << endl;
+//    }
+//    else
+//        environment->PerturbationsToCentralBody()->setThirdBody(false);
 
-    environment->PerturbationsToCentralBody()->setUserDefined(false); // nothing for the moment
+//    environment->PerturbationsToCentralBody()->setUserDefined(false); // nothing for the moment
 
     // Finally returning
     return true;
@@ -779,9 +696,11 @@ bool LoiteringDialog::saveValues(ScenarioEnvironmentType* environment)
 
 bool LoiteringDialog::saveValues(ScenarioTimeLine* timeline)
 {
-    timeline->setStartTime(dateTimeEdit->dateTime());
-    timeline->setEndTime(dateTimeEdit_2->dateTime());
-    timeline->setStepTime(TimeStepLineEdit->text().toDouble());
+    timeline->setStartTime(trajectoryStartingEpoch->dateTime());
+    timeline->setEndTime(trajectoryEndingEpoch->dateTime());
+    //timeline->setStepTime(TimeStepLineEdit->text().toDouble());
+    timeline->setStartTime(attitudeStartingEpoch->dateTime());
+    timeline->setEndTime(attitudeEndingEpoch->dateTime());
 
     return true;
 }
@@ -878,7 +797,6 @@ bool LoiteringDialog::saveValues(ScenarioInitialAttitudeType* initAtt)
     }
 }
 
-
 bool LoiteringDialog::saveValues(ScenarioInitialAttitudeUsingQuaternionsType* initAttQuaternions)
 {
     switch (AttitudeTypeComboBox->currentIndex())
@@ -932,14 +850,6 @@ bool LoiteringDialog::saveValues(ScenarioPropagationAttitudeType* propagation)
     return true;
 }
 
-TesseralBox::TesseralBox(QDialog* parent) : QSpinBox(parent)
-{
-}
-
-void TesseralBox::setVariableMaximum(int i)
-{
-    this->setMaximum(i);
-}
 
 
 
@@ -1391,7 +1301,38 @@ bool PropagateLoiteringAttitude(ScenarioLoiteringType* loitering,
 }
 
 
+
+
+///////////////////////////////////// Activation of puched buttons leading to other window dialogs /////////////////////////////
 void LoiteringDialog::on_pushButtonAspect_clicked()
 {
     loiteringAspect.exec();
 }
+
+
+void LoiteringDialog::on_perturbationForcesPushButton_clicked()
+{
+    myPerturbationsForces.exec();
+}
+
+
+void LoiteringDialog::on_perturbationTorquesPushButton_clicked()
+{
+    //myPerturbationsTorques.exec();
+}
+
+
+void LoiteringDialog::on_trajectoryStopConditionsPushButton_clicked()
+{
+    myStoppingConditionsTrajetory.exec();
+}
+
+
+void LoiteringDialog::on_attitudeStopConditionsPushButton_clicked()
+{
+    //myStoppingConditionsAttitude.exec();
+}
+
+
+
+

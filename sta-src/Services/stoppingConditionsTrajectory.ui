@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>stoppingConditionsTrajectoryDialog</class>
+ <widget class="QDialog" name="stoppingConditionsTrajectoryDialog">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>508</width>
+    <height>367</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>508</width>
+    <height>367</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1000</width>
+    <height>1000</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Stopping Conditions</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="1" column="0" colspan="2">
+      <widget class="QTreeWidget" name="stopCondTreeWidget">
+       <column>
+        <property name="text">
+         <string>Name</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>CB</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Value</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Tolerance</string>
+        </property>
+       </column>
+      </widget>
+     </item>
+     <item row="0" column="0" colspan="2">
+      <layout class="QGridLayout" name="addStopCondLayout">
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="stopCondValueEdit"/>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="stopCondValueLabel">
+         <property name="text">
+          <string>Value: </string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="stopCondTolEdit"/>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="stopCondTolLabel">
+         <property name="text">
+          <string>Tolerance: </string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="stopCondTypeLabel">
+         <property name="text">
+          <string>Condition type: </string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="stopCondComboBox">
+         <item>
+          <property name="text">
+           <string>Periapsis Radius</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Ascending Node</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Body Distance</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="stopCondAddButton">
+         <property name="text">
+          <string>  Add  </string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="stopCondCentralBodyCombobox">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="accessibleName">
+          <string>comboBoxCentralBody</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>Earth</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/ComboEarth.png</normaloff>:/icons/ComboEarth.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Moon</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/ComboMoon.png</normaloff>:/icons/ComboMoon.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Mercury</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/ComboMercury.png</normaloff>:/icons/ComboMercury.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Venus</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/ComboVenus.png</normaloff>:/icons/ComboVenus.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Mars</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/ComboMars.png</normaloff>:/icons/ComboMars.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Jupiter</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/ComboJupiter.png</normaloff>:/icons/ComboJupiter.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Saturn</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/ComboSaturn.png</normaloff>:/icons/ComboSaturn.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Uranus</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/ComboUranus.png</normaloff>:/icons/ComboUranus.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Neptune</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/ComboNeptune.png</normaloff>:/icons/ComboNeptune.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pluto</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/ComboPluto.png</normaloff>:/icons/ComboPluto.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Sun</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/ComboSun.png</normaloff>:/icons/ComboSun.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Titan</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/ComboTitan.png</normaloff>:/icons/ComboTitan.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Europa</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/ComboEuropa.png</normaloff>:/icons/ComboEuropa.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Triton</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/ComboTriton.png</normaloff>:/icons/ComboTriton.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Enceladus</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/ComboEnceladus.png</normaloff>:/icons/ComboEnceladus.png</iconset>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="stopCondCentralBodyLabel">
+         <property name="text">
+          <string>Central Body: </string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QPushButton" name="stopCondRemoveButton">
+         <property name="text">
+          <string>Remove</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <widget class="QDialogButtonBox" name="buttonBoxMissionAspect">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../../iconary/sta-icons.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBoxMissionAspect</sender>
+   <signal>accepted()</signal>
+   <receiver>stoppingConditionsTrajectoryDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>341</x>
+     <y>333</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBoxMissionAspect</sender>
+   <signal>rejected()</signal>
+   <receiver>stoppingConditionsTrajectoryDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>409</x>
+     <y>333</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

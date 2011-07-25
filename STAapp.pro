@@ -502,11 +502,17 @@ MANEUVERS_FORMS = sta-src/Maneuvers/deltaVDialog.ui
 
 # ############# Services module ###################
 SERVICES_SOURCES = sta-src/Services/serviceTimeParameter.cpp \
-                   sta-src/Services/serviceTimeUnit.cpp
+                   sta-src/Services/serviceTimeUnit.cpp \
+                   sta-src/Services/stoppingConditionsTrajectoryDialog.cpp \
+                   sta-src/Services/perturbationForcesDialog.cpp
 SERVICES_HEADERS = sta-src/Services/serviceTimeParameter.h \
-                   sta-src/Services/serviceTimeUnit.h
+                   sta-src/Services/serviceTimeUnit.h \
+                   sta-src/Services/stoppingConditionsTrajectoryDialog.h \
+                   sta-src/Services/perturbationForcesDialog.h
 SERVICES_FORMS = sta-src/Services/serviceTimeParameter.ui \
-                 sta-src/Services/serviceTimeUnit.ui
+                 sta-src/Services/serviceTimeUnit.ui \
+                   sta-src/Services/stoppingConditionsTrajectory.ui \
+                   sta-src/Services/perturbationForces.ui
 
 # ########### GL extension wrangler ################
 GLEW_SOURCES = thirdparty/glew/src/glew.c
