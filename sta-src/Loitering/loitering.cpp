@@ -85,10 +85,13 @@ LoiteringDialog::LoiteringDialog(ScenarioTree* parent) :
     IntegratorComboBox->addItem(tr("Runge-Kutta-Fehlberg"), "RKF");
 
     // Set up the combo boxes: Attitude
-    CoordSystemAttitudeComboBox->addItem(tr("Center of Gravity"), (int) sta::COORDSYS_COG);
-    CoordSystemAttitudeComboBox->addItem(tr("Center of Pressure"), (int) sta::COORDSYS_COP);
+    //CoordSystemAttitudeComboBox->addItem(tr("Center of Gravity"), (int) sta::COORDSYS_COG);
+    //CoordSystemAttitudeComboBox->addItem(tr("Center of Pressure"), (int) sta::COORDSYS_COP);
+    CoordSystemAttitudeComboBox->addItem(tr("Inertial EMEJ2000"), (int) sta::COORDSYS_EME_J2000);
+    CoordSystemAttitudeComboBox->addItem(tr("Inertial B1950"), (int) sta::COORDSYS_EME_B1950);
+    CoordSystemAttitudeComboBox->addItem(tr("ICRF"), (int) sta::COORDSYS_ICRF);
     AttitudeTypeComboBox->addItem(tr("Euler Angles 123"), "Euler123");
-    AttitudeTypeComboBox->addItem(tr("Euler Angles 312"), "Euler321");
+    AttitudeTypeComboBox->addItem(tr("Euler Angles 321"), "Euler321");
     AttitudeTypeComboBox->addItem(tr("Euler Angles 313"), "Euler313");
     AttitudeTypeComboBox->addItem(tr("Quaternions ESA"), "QuaternionsESA");
     AttitudeTypeComboBox->addItem(tr("Quaternions JPL"), "QuaternionsJPL");
@@ -469,46 +472,51 @@ bool LoiteringDialog::loadValues(ScenarioInitialAttitudeType* initAttitude)
     ScenarioAbstract6DOFAttitudeType* attitude = initAttitude->Abstract6DOFAttitude().data();
     ScenarioEulerType* Euler123 = dynamic_cast<ScenarioEulerType*>(attitude);
 
+    qDebug() << "loaded angles: " << Euler123->phi() << " , " << Euler123->theta() <<" , "<< Euler123->psi() <<endl;
     // Converting from Euler 123 (nominal representation) into the other representations
-    Vector3d eulerAngles(Euler123->phi(), Euler123->theta(), Euler123->psi());
+    Vector3d eulerAngles(sta::radToDeg(Euler123->phi()), sta::radToDeg(Euler123->theta()), sta::radToDeg(Euler123->psi()));
     Vector3d bodyRates(Euler123->phiDot(), Euler123->thetaDot(), Euler123->psiDot());
     Quaterniond initQuaternion = ToQuaternions(eulerAngles, 1, 2, 3);
 
     switch (AttitudeTypeComboBox->currentIndex())
     {
-    case 1:  // --- Euler 123
+    case 0:  // --- Euler 123
+        {
+            InitAttitudeStackedWidget->setCurrentWidget(Euler123Page);
+            Euler123phi->setText(QString::number(sta::radToDeg(Euler123->phi())));
+            Euler123theta->setText(QString::number(sta::radToDeg(Euler123->theta())));
+            Euler123psi->setText(QString::number(sta::radToDeg(Euler123->psi())));
+            Euler123omegaX->setText(QString::number(Euler123->phiDot()));
+            Euler123omegaY->setText(QString::number(Euler123->thetaDot()));
+            Euler123omegaZ->setText(QString::number(Euler123->psiDot()));
+            break;
+        }
+    case 1:  // --- Euler 321
         {
             InitAttitudeStackedWidget->setCurrentWidget(Euler321Page);
-            Euler321phi->setText(QString::number(ToEulerAngles(initQuaternion, 3, 2, 1)[0]));
-            Euler321psi->setText(QString::number(ToEulerAngles(initQuaternion, 3, 2, 1)[1]));
-            Euler321theta->setText(QString::number(ToEulerAngles(initQuaternion, 3, 2, 1)[2]));
+            Euler321phi->setText(QString::number(sta::radToDeg(ToEulerAngles(initQuaternion, 3, 2, 1)[0])));
+            Euler321psi->setText(QString::number(sta::radToDeg(ToEulerAngles(initQuaternion, 3, 2, 1)[2])));
+            Euler321theta->setText(QString::number(sta::radToDeg(ToEulerAngles(initQuaternion, 3, 2, 1)[1])));
             Euler321omegaX->setText(QString::number(bodyRates.x()));     //these are not the Euler rates, but the BODY rates
             Euler321omegaY->setText(QString::number(bodyRates.y()));
             Euler321omegaZ->setText(QString::number(bodyRates.z()));
+            break;
         }
     case 2:  // --- Euler 313
         {
             // Third, we convert it into Euler 313
             InitAttitudeStackedWidget->setCurrentWidget(Euler313Page);
             Euler313phi->setText(QString::number(ToEulerAngles(initQuaternion, 3, 1, 3)[0]));
-            Euler313psi->setText(QString::number(ToEulerAngles(initQuaternion, 3, 1, 3)[1]));
-            Euler313theta->setText(QString::number(ToEulerAngles(initQuaternion, 3, 1, 3)[2]));
+            Euler313psi->setText(QString::number(ToEulerAngles(initQuaternion, 3, 1, 3)[2]));
+            Euler313theta->setText(QString::number(ToEulerAngles(initQuaternion, 3, 1, 3)[1]));
             Euler313omegaX->setText(QString::number(bodyRates.x()));     //these are not the Euler rates, but the BODY rates
             Euler313omegaY->setText(QString::number(bodyRates.y()));
             Euler313omegaZ->setText(QString::number(bodyRates.z()));
+            break;
         }
     case 3:
     case 4:
-    case 0:  // --- Euler 321
-        {
-            InitAttitudeStackedWidget->setCurrentWidget(Euler123Page);
-            Euler123phi->setText(QString::number(Euler123->phi()));
-            Euler123theta->setText(QString::number(Euler123->theta()));
-            Euler123psi->setText(QString::number(Euler123->psi()));
-            Euler123omegaX->setText(QString::number(Euler123->phiDot()));
-            Euler123omegaY->setText(QString::number(Euler123->thetaDot()));
-            Euler123omegaZ->setText(QString::number(Euler123->psiDot()));
-        }
+
         return true;
     }
 }
@@ -527,14 +535,14 @@ bool LoiteringDialog::loadValues(ScenarioInitialAttitudeUsingQuaternionsType* in
     case 3:  // --- Q ESA
         {
             InitAttitudeStackedWidget->setCurrentWidget(QuaternionESAPage);
-            q1->setText(QString::number(myQuaternion->q1()));
-            q2->setText(QString::number(myQuaternion->q2()));
-            q3->setText(QString::number(myQuaternion->q3()));
-            q4->setText(QString::number(myQuaternion->q4()));
-            q1dot->setText(QString::number(myQuaternion->q1Dot()));
+            q1->setText(QString::number(myQuaternion->q4()));
+            q2->setText(QString::number(myQuaternion->q1()));
+            q3->setText(QString::number(myQuaternion->q2()));
+            q1->setText(QString::number(myQuaternion->q3()));
+            q1dot->setText(QString::number(myQuaternion->q4Dot()));
             q2dot->setText(QString::number(myQuaternion->q1Dot()));
-            q3dot->setText(QString::number(myQuaternion->q1Dot()));
-            q4dot->setText(QString::number(myQuaternion->q1Dot()));
+            q3dot->setText(QString::number(myQuaternion->q2Dot()));
+            q4dot->setText(QString::number(myQuaternion->q3Dot()));
         }
     case 4:  // --- Q JPL
         {
@@ -544,9 +552,9 @@ bool LoiteringDialog::loadValues(ScenarioInitialAttitudeUsingQuaternionsType* in
             q3JPL->setText(QString::number(myQuaternion->q3()));
             q4JPL->setText(QString::number(myQuaternion->q4()));
             q1dotJPL->setText(QString::number(myQuaternion->q1Dot()));
-            q2dotJPL->setText(QString::number(myQuaternion->q1Dot()));
-            q3dotJPL->setText(QString::number(myQuaternion->q1Dot()));
-            q4dotJPL->setText(QString::number(myQuaternion->q1Dot()));
+            q2dotJPL->setText(QString::number(myQuaternion->q2Dot()));
+            q3dotJPL->setText(QString::number(myQuaternion->q3Dot()));
+            q4dotJPL->setText(QString::number(myQuaternion->q4Dot()));
         }
         return true;
     }
@@ -752,33 +760,71 @@ bool LoiteringDialog::saveValues(ScenarioInitialAttitudeType* initAtt)
 //            sta::CoordinateSystemType(CoordSystemAttitudeComboBox->itemData(CoordSystemAttitudeComboBox->currentIndex()).toInt());
 //    initAtt->setCoordinateSystem(sta::CoordinateSystem(coordSysType).name());
 
+    qDebug() << "Comboboc index: " << AttitudeTypeComboBox->currentIndex() <<endl;
+
     switch (AttitudeTypeComboBox->currentIndex())
     {
-    case 0:  // --- Euler 321
+
+    case 0:  // --- Euler 123
         {
+            qDebug() << "We are at beginning of 321" << endl;
             ScenarioEulerType* euler = new ScenarioEulerType;
-            euler->setPhi(Euler321phi->text().toDouble());
-            euler->setTheta(Euler321theta->text().toDouble());
-            euler->setPsi(Euler321psi->text().toDouble());
-            euler->setPhiDot(Euler321omegaX->text().toDouble());
-            euler->setThetaDot(Euler321omegaY->text().toDouble());
-            euler->setPsiDot(Euler321omegaZ->text().toDouble());
-            initAtt->setAbstract6DOFAttitude(QSharedPointer<ScenarioAbstract6DOFAttitudeType>(euler));
-        }
-    case 1:  // --- Euler 123
-        {
-            ScenarioEulerType* euler = new ScenarioEulerType;
-            euler->setPhi(Euler123phi->text().toDouble());
-            euler->setTheta(Euler123theta->text().toDouble());
-            euler->setPsi(Euler123psi->text().toDouble());
+            euler->setPhi(sta::degToRad(Euler123phi->text().toDouble()));
+            euler->setTheta(sta::degToRad(Euler123theta->text().toDouble()));
+            euler->setPsi(sta::degToRad(Euler123psi->text().toDouble()));
             euler->setPhiDot(Euler123omegaX->text().toDouble());
             euler->setThetaDot(Euler123omegaY->text().toDouble());
             euler->setPsiDot(Euler123omegaZ->text().toDouble());
             initAtt->setAbstract6DOFAttitude(QSharedPointer<ScenarioAbstract6DOFAttitudeType>(euler));
+            qDebug() << "We are at end of 123" << endl;
+            return true;
+            break;
+        }
+    case 1:  // --- Euler 321
+        {
+            ScenarioEulerType* euler = new ScenarioEulerType;
+
+            qDebug() << "We are at beginning of 321" << endl;
+            double phi = Euler321phi->text().toDouble();
+            double theta = Euler321theta->text().toDouble();
+            double psi = Euler321psi->text().toDouble();
+            Vector3d eulerAngles(phi, theta, psi);
+
+            qDebug() << "Original 321 Angles: " << " phi: "<< phi << ", theta: "<<  theta << ", psi: "<<  psi << endl;
+            Quaterniond initQuaternion = ToQuaternions(eulerAngles, 3, 2, 1);
+
+            double phi123 = ToEulerAngles(initQuaternion, 1, 2, 3)[0];
+            double theta123 =  ToEulerAngles(initQuaternion, 1, 2, 3)[1];
+            double psi123 =  ToEulerAngles(initQuaternion, 1, 2, 3)[2];
+
+            qDebug() << "Angles after converting back from toQuaternions: " << " phi: "<< phi123 << ", theta: "<<  theta123 << ", psi: "<<  psi123 << endl;
+
+            euler->setPhi(phi123);
+            euler->setTheta(theta123);
+            euler->setPsi(psi123);
+            euler->setPhiDot(Euler321omegaX->text().toDouble());
+            euler->setThetaDot(Euler321omegaY->text().toDouble());
+            euler->setPsiDot(Euler321omegaZ->text().toDouble());
+
+            initAtt->setAbstract6DOFAttitude(QSharedPointer<ScenarioAbstract6DOFAttitudeType>(euler));
+            qDebug() << "We are at end of 321"<<endl;
+            return true;
+            break;
         }
     case 2:  // --- Euler 313
         {
+
             ScenarioEulerType* euler = new ScenarioEulerType;
+//            double phi = Euler313phi->text().toDouble();
+//            double theta = Euler313theta->text().toDouble();
+//            double psi = Euler313psi->text().toDouble();
+//            Vector3d eulerAngles(phi, theta, psi);
+//            Quaterniond initQuaternion = ToQuaternions(eulerAngles, 3, 1, 3);
+
+//            euler->setPhi(ToEulerAngles(initQuaternion, 1, 2, 3)[0]);
+//            euler->setTheta(ToEulerAngles(initQuaternion, 1, 2, 3)[1]);
+//            euler->setPsi(ToEulerAngles(initQuaternion, 1, 2, 3)[2]);
+
             euler->setPhi(Euler313phi->text().toDouble());
             euler->setTheta(Euler313theta->text().toDouble());
             euler->setPsi(Euler313psi->text().toDouble());
@@ -786,14 +832,17 @@ bool LoiteringDialog::saveValues(ScenarioInitialAttitudeType* initAtt)
             euler->setThetaDot(Euler313omegaY->text().toDouble());
             euler->setPsiDot(Euler313omegaZ->text().toDouble());
             initAtt->setAbstract6DOFAttitude(QSharedPointer<ScenarioAbstract6DOFAttitudeType>(euler));
+            qDebug() << "We are at 313" << endl;
+            return true;
+            break;
         }
-    case 3:
-    case 4:
+    case 3:return false;break;
+    case 4:return false;break;
 
-        return true;
+        //return true;
 
     default:
-        return false;
+        return false;break;
     }
 }
 
@@ -816,6 +865,7 @@ bool LoiteringDialog::saveValues(ScenarioInitialAttitudeUsingQuaternionsType* in
             quat->setQ3Dot(q3dot->text().toDouble());
             quat->setQ4Dot(q4dot->text().toDouble());
             initAttQuaternions->setAbstract8DOFAttitude(QSharedPointer<ScenarioAbstract8DOFAttitudeType>(quat));
+            qDebug() << "We are at qESA" << endl;
         }
     case 4:  // --- JPL
         {
@@ -829,6 +879,7 @@ bool LoiteringDialog::saveValues(ScenarioInitialAttitudeUsingQuaternionsType* in
             quat->setQ3Dot(q3dotJPL->text().toDouble());
             quat->setQ4Dot(q4dotJPL->text().toDouble());
             initAttQuaternions->setAbstract8DOFAttitude(QSharedPointer<ScenarioAbstract8DOFAttitudeType>(quat));
+            qDebug() << "We are at qJPL" << endl;
         }
     }
 }

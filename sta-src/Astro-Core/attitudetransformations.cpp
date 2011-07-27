@@ -63,27 +63,41 @@ Quaterniond ToQuaternions(const Vector3d EulerAngles,
                           int seq3)
 {
     //Euler angles (phi, theta, psi)
-    double phi=EulerAngles[0];
-    double theta = EulerAngles[1];
-    double psi = EulerAngles[2];
+    double phi= sta::degToRad(EulerAngles[0]);
+    double theta = sta::degToRad(EulerAngles[1]);
+    double psi = sta::degToRad(EulerAngles[2]);
+
+    qDebug() << "Function ToQuaternions. Original Angles: " << " phi: "<< phi << ", theta: "<<  theta << ", psi: "<<  psi << endl;
+    qDebug() << "Function ToQuaternions. Sequence:" << seq1 << "," << seq2 << ","<< seq3 << endl;
 
     // SEQUENCE 321
     if (seq1 == 3 && seq2 == 2 && seq3 == 1)
     {
-        //        static double RotCoeffs[9] = {
-        //            cos(theta)*cos(phi),                                cos(theta)*sin(psi),                               -sin(theta),
-        //            -cos(psi)*sin(phi)+sin(psi)*sin(theta)*cos(phi),    cos(phi)*cos(psi)+sin(psi)*sin(theta)*sin(phi),    sin(psi)*cos(theta),
-        //            sin(psi)*sin(phi)+cos(psi)*sin(theta)*cos(phi),     -sin(psi)*cos(phi)+cos(psi)*sin(theta)*sin(phi),   cos(psi)*cos(theta)
-        //        };
-        //        static const MyMatrix3d R_321(RotCoeffs);
+//                static double RotCoeffs[9] = {
+//                    cos(theta)*cos(phi),                                cos(theta)*sin(phi),                               -sin(theta),
+//                    -cos(psi)*sin(phi)+sin(psi)*sin(theta)*cos(phi),    cos(phi)*cos(psi)+sin(psi)*sin(theta)*sin(phi),    sin(psi)*cos(theta),
+//                    sin(psi)*sin(phi)+cos(psi)*sin(theta)*cos(phi),     -sin(psi)*cos(phi)+cos(psi)*sin(theta)*sin(phi),   cos(psi)*cos(theta)
+//                };
+//                static const Matrix3d R_321(RotCoeffs);
 
-        //        //Convertion from DCM to Quaternions, for sequence 321
-        //        static Quaterniond quat(R_321);
+//                qDebug() << "Rotation matrix: " << endl;
+//                qDebug() << R_321(0,0) <<  R_321(0,1) <<  R_321(0,2) << endl;
+//                qDebug() << R_321(1,0) <<  R_321(1,1) <<  R_321(1,2) << endl;
+//                qDebug() << R_321(2,0) <<  R_321(2,1) <<  R_321(2,2) << endl;
 
-        //        return quat;
+//                //Convertion from DCM to Quaternions, for sequence 321
+//                static Quaterniond quat(R_321);
+
+//qDebug() << "Function ToQuaternions. Quaternion from 321 sequence:" << quat.coeffs().coeffRef(0) << "," << quat.coeffs().coeffRef(1) << ","<< quat.coeffs().coeffRef(2)<<","<<quat.coeffs().coeffRef(3) << endl;
+
+//                return quat;
+
         Quaterniond quaternion = Quaterniond(AngleAxis<double> (phi,   Vector3d::UnitZ())*
                                              Quaterniond(AngleAxis<double> (theta, Vector3d::UnitY()))*
                                              Quaterniond(AngleAxis<double> (psi,   Vector3d::UnitX())));
+
+qDebug() << "Function ToQuaternions. Quaternion from 321 sequence:" << quaternion.coeffs().coeffRef(0) << "," << quaternion.coeffs().coeffRef(1) << ","<< quaternion.coeffs().coeffRef(2)<<","<<quaternion.coeffs().coeffRef(3) << endl;
+
         return quaternion;
     }
 
@@ -104,6 +118,7 @@ Quaterniond ToQuaternions(const Vector3d EulerAngles,
                                              Quaterniond(AngleAxis<double> (psi,   Vector3d::UnitZ())));
         return quaternion;
 
+        qDebug() << "Function ToQuaternions. From 123 sequence. Quaternion:" << quaternion.coeffs().coeffRef(0) << "," << quaternion.coeffs().coeffRef(1) << ","<< quaternion.coeffs().coeffRef(2)<<","<<quaternion.coeffs().coeffRef(3) << endl;
         //        return quat;
     }
 
@@ -152,9 +167,9 @@ Vector3d ToEulerAngles(Quaterniond quaternion,
 
     //Transform the initial quaternions in the direction cosine matrix, using Eigen::Geometry capabilities.
     Matrix3d R = quaternion.toRotationMatrix();
-    qDebug() << R(0,0) <<  R(0,1) <<  R(0,2) << endl;
-    qDebug() << R(1,0) <<  R(1,1) <<  R(1,2) << endl;
-    qDebug() << R(2,0) <<  R(2,1) <<  R(2,2) << endl;
+    //qDebug() << R(0,0) <<  R(0,1) <<  R(0,2) << endl;
+    //qDebug() << R(1,0) <<  R(1,1) <<  R(1,2) << endl;
+    //qDebug() << R(2,0) <<  R(2,1) <<  R(2,2) << endl;
 
     //Transform the direction cosine matrix in the Euler angles for the three sequences.
     // SEQUENCE 321
