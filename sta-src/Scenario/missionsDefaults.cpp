@@ -44,197 +44,196 @@ MissionsDefaults::~MissionsDefaults()
 
 /////////////////////////////////////// Generic elements //////////////////////////////////////
 
-ScenarioSCSystemType MissionsDefaults::MissionsDefaults_GenericPlatform()
+ScenarioSCSystemType* MissionsDefaults::MissionsDefaults_GenericPlatform()
 {
-    ScenarioSCSystemType genericPlatform;
+    ScenarioSCSystemType* genericPlatform = new ScenarioSCSystemType();
 
-    genericPlatform.SystemBudgets()->MassOfSystem()->setDryMass(1000.0);
-    genericPlatform.SystemBudgets()->MassOfSystem()->setWetMass(1500.0);
-    genericPlatform.SystemBudgets()->PowerOfSystem()->setTotalPowerBoL(200.0);
-    genericPlatform.SystemBudgets()->PowerOfSystem()->setTotalPowerEoL(100.0);
-    genericPlatform.SystemBudgets()->Link()->setDownlinkMargin(10);
-    genericPlatform.SystemBudgets()->Link()->setUplinkMargin(10);
+    genericPlatform->SystemBudgets()->MassOfSystem()->setDryMass(1000.0);
+    genericPlatform->SystemBudgets()->MassOfSystem()->setWetMass(1500.0);
+    genericPlatform->SystemBudgets()->PowerOfSystem()->setTotalPowerBoL(200.0);
+    genericPlatform->SystemBudgets()->PowerOfSystem()->setTotalPowerEoL(100.0);
+    genericPlatform->SystemBudgets()->Link()->setDownlinkMargin(10);
+    genericPlatform->SystemBudgets()->Link()->setUplinkMargin(10);
 
-    genericPlatform.SCAerodynamics()->setSurfaceArea(1.0);
-    genericPlatform.SCAerodynamics()->setCd(0.25);
+    genericPlatform->SCAerodynamics()->setSurfaceArea(1.0);
+    genericPlatform->SCAerodynamics()->setCd(0.25);
 
-    genericPlatform.Propulsion()->setNumberOfEngines(1);
-    genericPlatform.Propulsion()->setPropellantMass(500);
-    genericPlatform.Propulsion()->setSpecificImpulse(312);
-    genericPlatform.Propulsion()->setThrustPerEngine(100);
-    genericPlatform.Propulsion()->setTotalPropulsionDryMass(25);
+    genericPlatform->Propulsion()->setNumberOfEngines(1);
+    genericPlatform->Propulsion()->setPropellantMass(500);
+    genericPlatform->Propulsion()->setSpecificImpulse(312);
+    genericPlatform->Propulsion()->setThrustPerEngine(100);
+    genericPlatform->Propulsion()->setTotalPropulsionDryMass(25);
 
-    genericPlatform.Structure()->setStructuralShape("Cube");			    // Cube, Cylinder or Sphere
-    genericPlatform.Structure()->setStructuralMaterial("Aluminium");		    // Steel or Aluminium
-    genericPlatform.Structure()->setTotalStructureMass(800);
-    genericPlatform.Structure()->Sizing()->setHeight(1);
-    genericPlatform.Structure()->Sizing()->setLength(1);
-    genericPlatform.Structure()->Sizing()->setWidth(1);
-    genericPlatform.Structure()->Sizing()->setVolume(1);
-    genericPlatform.Structure()->MomentsOfInertia()->setXAxis(150);
-    genericPlatform.Structure()->MomentsOfInertia()->setYAxis(150);
-    genericPlatform.Structure()->MomentsOfInertia()->setZAxis(150);
-    genericPlatform.Structure()->SecondMomentsOfInertia()->setXAxis(20);
-    genericPlatform.Structure()->SecondMomentsOfInertia()->setYAxis(20);
-    genericPlatform.Structure()->SecondMomentsOfInertia()->setZAxis(20);
-    genericPlatform.Structure()->NaturalFrequency()->setAxialFrequency(50);
-    genericPlatform.Structure()->NaturalFrequency()->setLateralFrequency(12);
+    genericPlatform->Structure()->setStructuralShape("Cube");			    // Cube, Cylinder or Sphere
+    genericPlatform->Structure()->setStructuralMaterial("Aluminium");		    // Steel or Aluminium
+    genericPlatform->Structure()->setTotalStructureMass(800);
+    genericPlatform->Structure()->Sizing()->setHeight(1);
+    genericPlatform->Structure()->Sizing()->setLength(1);
+    genericPlatform->Structure()->Sizing()->setWidth(1);
+    genericPlatform->Structure()->Sizing()->setVolume(1);
+    genericPlatform->Structure()->MomentsOfInertia()->setXAxis(150);
+    genericPlatform->Structure()->MomentsOfInertia()->setYAxis(150);
+    genericPlatform->Structure()->MomentsOfInertia()->setZAxis(150);
+    genericPlatform->Structure()->SecondMomentsOfInertia()->setXAxis(20);
+    genericPlatform->Structure()->SecondMomentsOfInertia()->setYAxis(20);
+    genericPlatform->Structure()->SecondMomentsOfInertia()->setZAxis(20);
+    genericPlatform->Structure()->NaturalFrequency()->setAxialFrequency(50);
+    genericPlatform->Structure()->NaturalFrequency()->setLateralFrequency(12);
 
-    genericPlatform.TCS()->Temperature()->setMaximumSCTemperature(85);
-    genericPlatform.TCS()->Temperature()->setMinimumSCTemperature(15);
-    genericPlatform.TCS()->setHeaterPower(50);
-    genericPlatform.TCS()->setRadiatedPower(12);
-    genericPlatform.TCS()->setHeaterPower(25);
-    genericPlatform.TCS()->setTotalTCSMass(15);
-    genericPlatform.TCS()->CoatingArea()->ColdSurface()->ColdCoating()->ElementIdentifier()->setName("White Paint");
-    genericPlatform.TCS()->CoatingArea()->ColdSurface()->ColdCoating()->setAbsorptivity(0.2);
-    genericPlatform.TCS()->CoatingArea()->ColdSurface()->ColdCoating()->setEmissivity(0.3);
-    genericPlatform.TCS()->CoatingArea()->ColdSurface()->setTotalColdArea(1);
-    genericPlatform.TCS()->CoatingArea()->HotSurface()->HotCoating()->ElementIdentifier()->setName("White Paint");
-    genericPlatform.TCS()->CoatingArea()->HotSurface()->HotCoating()->setAbsorptivity(0.2);
-    genericPlatform.TCS()->CoatingArea()->HotSurface()->HotCoating()->setEmissivity(0.3);
-    genericPlatform.TCS()->CoatingArea()->HotSurface()->setTotalHotArea(1);
+    genericPlatform->TCS()->Temperature()->setMaximumSCTemperature(85);
+    genericPlatform->TCS()->Temperature()->setMinimumSCTemperature(15);
+    genericPlatform->TCS()->setHeaterPower(50);
+    genericPlatform->TCS()->setRadiatedPower(12);
+    genericPlatform->TCS()->setHeaterPower(25);
+    genericPlatform->TCS()->setTotalTCSMass(15);
+    genericPlatform->TCS()->CoatingArea()->ColdSurface()->ColdCoating()->ElementIdentifier()->setName("White Paint");
+    genericPlatform->TCS()->CoatingArea()->ColdSurface()->ColdCoating()->setAbsorptivity(0.2);
+    genericPlatform->TCS()->CoatingArea()->ColdSurface()->ColdCoating()->setEmissivity(0.3);
+    genericPlatform->TCS()->CoatingArea()->ColdSurface()->setTotalColdArea(1);
+    genericPlatform->TCS()->CoatingArea()->HotSurface()->HotCoating()->ElementIdentifier()->setName("White Paint");
+    genericPlatform->TCS()->CoatingArea()->HotSurface()->HotCoating()->setAbsorptivity(0.2);
+    genericPlatform->TCS()->CoatingArea()->HotSurface()->HotCoating()->setEmissivity(0.3);
+    genericPlatform->TCS()->CoatingArea()->HotSurface()->setTotalHotArea(1);
 
-    genericPlatform.EPS()->SolarArray()->setSACellType("Silicon");		    // Silicon, GaAs, Multijunction
-    genericPlatform.EPS()->SolarArray()->setAreaOfSolarArray(4);
-    genericPlatform.EPS()->SolarArray()->setMassOfSolarArray(30);
-    genericPlatform.EPS()->BatteryType()->setBatteryType("Lithium_Ion");	    // Lithium_Ion, Nickel_Cadmium, Lead_Acid
-    genericPlatform.EPS()->BatteryType()->setNumberOfBatteries(4);
-    genericPlatform.EPS()->BatteryType()->setTotalMassOfBatteries(30);
-    genericPlatform.EPS()->BatteryType()->setTotalVolumeOfBatteries(0.01);
-    genericPlatform.EPS()->setMassOfPCU(0.1);
-    genericPlatform.EPS()->setTotalEPSMass(70);
+    genericPlatform->EPS()->SolarArray()->setSACellType("Silicon");		    // Silicon, GaAs, Multijunction
+    genericPlatform->EPS()->SolarArray()->setAreaOfSolarArray(4);
+    genericPlatform->EPS()->SolarArray()->setMassOfSolarArray(30);
+    genericPlatform->EPS()->BatteryType()->setBatteryType("Lithium_Ion");	    // Lithium_Ion, Nickel_Cadmium, Lead_Acid
+    genericPlatform->EPS()->BatteryType()->setNumberOfBatteries(4);
+    genericPlatform->EPS()->BatteryType()->setTotalMassOfBatteries(30);
+    genericPlatform->EPS()->BatteryType()->setTotalVolumeOfBatteries(0.01);
+    genericPlatform->EPS()->setMassOfPCU(0.1);
+    genericPlatform->EPS()->setTotalEPSMass(70);
 
-    genericPlatform.TTC()->setTotalTTCMass(70);
-    genericPlatform.TTC()->TTCAntenna()->setDataRate(300);
-    genericPlatform.TTC()->TTCAntenna()->setLinkDuration(10);
-    genericPlatform.TTC()->TTCAntenna()->setTransmitterEfficiency(90);
-    genericPlatform.TTC()->TTCAntenna()->setTransmitterFrequency(25);
-    genericPlatform.TTC()->TTCAntenna()->setTransmitterGain(30);
-    genericPlatform.TTC()->TTCAntenna()->setTransmitterPower(100);
+    genericPlatform->TTC()->setTotalTTCMass(70);
+    genericPlatform->TTC()->TTCAntenna()->setDataRate(300);
+    genericPlatform->TTC()->TTCAntenna()->setLinkDuration(10);
+    genericPlatform->TTC()->TTCAntenna()->setTransmitterEfficiency(90);
+    genericPlatform->TTC()->TTCAntenna()->setTransmitterFrequency(25);
+    genericPlatform->TTC()->TTCAntenna()->setTransmitterGain(30);
+    genericPlatform->TTC()->TTCAntenna()->setTransmitterPower(100);
 
-    genericPlatform.AOCS()->setTotalAOCSMass(0.5);
+    genericPlatform->AOCS()->setTotalAOCSMass(0.5);
 
-    genericPlatform.OBDH()->setTotalOBDHMass(0.5);
-    genericPlatform.OBDH()->setTotalSizeOfMemory(200);
+    genericPlatform->OBDH()->setTotalOBDHMass(0.5);
+    genericPlatform->OBDH()->setTotalSizeOfMemory(200);
 
     return genericPlatform;
-
 }
 
 
-ScenarioTransmitterPayloadType MissionsDefaults::MissionsDefaults_GenericTransmitter()
+ScenarioTransmitterPayloadType* MissionsDefaults::MissionsDefaults_GenericTransmitter()
 {
-    ScenarioTransmitterPayloadType genericTransmitter;
+    ScenarioTransmitterPayloadType* genericTransmitter = new ScenarioTransmitterPayloadType();
 
-    genericTransmitter.ElementIdentifier()->setColorName("Yellow");
-    genericTransmitter.ElementIdentifier()->setModelName("Default");
-    genericTransmitter.ElementIdentifier()->setName("Transmitter #1");
+    genericTransmitter->ElementIdentifier()->setColorName("Yellow");
+    genericTransmitter->ElementIdentifier()->setModelName("Default");
+    genericTransmitter->ElementIdentifier()->setName("Transmitter #1");
 
-    genericTransmitter.Budget()->setDataRate(100.0);
-    genericTransmitter.Budget()->setFrequencyBand(13397312236.56);
-    genericTransmitter.Budget()->setMass(30.0);
-    genericTransmitter.Budget()->Power()->setPowerConsumptionInDaylight(1000.0);
-    genericTransmitter.Budget()->Power()->setPowerConsumptionInEclipse(700.0);
-    genericTransmitter.Budget()->Power()->setPowerOnPercentageInDaylight(10.0);
-    genericTransmitter.Budget()->Power()->setPowerOnPercentageInEclipse(90.0);
-    genericTransmitter.Budget()->Size()->setHeight(0.100);  // in meters
-    genericTransmitter.Budget()->Size()->setLength(0.100);
-    genericTransmitter.Budget()->Size()->setWidth(0.100);
-    genericTransmitter.Budget()->TemperatureRange()->setMaximumTemperature(40.0);
-    genericTransmitter.Budget()->TemperatureRange()->setMinimumTemperature(10.0);
+    genericTransmitter->Budget()->setDataRate(100.0);
+    genericTransmitter->Budget()->setFrequencyBand(13397312236.56);
+    genericTransmitter->Budget()->setMass(30.0);
+    genericTransmitter->Budget()->Power()->setPowerConsumptionInDaylight(1000.0);
+    genericTransmitter->Budget()->Power()->setPowerConsumptionInEclipse(700.0);
+    genericTransmitter->Budget()->Power()->setPowerOnPercentageInDaylight(10.0);
+    genericTransmitter->Budget()->Power()->setPowerOnPercentageInEclipse(90.0);
+    genericTransmitter->Budget()->Size()->setHeight(0.100);  // in meters
+    genericTransmitter->Budget()->Size()->setLength(0.100);
+    genericTransmitter->Budget()->Size()->setWidth(0.100);
+    genericTransmitter->Budget()->TemperatureRange()->setMaximumTemperature(40.0);
+    genericTransmitter->Budget()->TemperatureRange()->setMinimumTemperature(10.0);
 
-    genericTransmitter.Transmitter()->setDepointingLossTx(0.0);
-    genericTransmitter.Transmitter()->setTransmittingPower(1000.0);
+    genericTransmitter->Transmitter()->setDepointingLossTx(0.0);
+    genericTransmitter->Transmitter()->setTransmittingPower(1000.0);
 
-    genericTransmitter.Transmitter()->Coverage()->setFrustumAngle1(15.0);
-    genericTransmitter.Transmitter()->Coverage()->setFrustumAngle2(15.0);
-    genericTransmitter.Transmitter()->Coverage()->setFrustumShape("Rectangular");
+    genericTransmitter->Transmitter()->Coverage()->setFrustumAngle1(15.0);
+    genericTransmitter->Transmitter()->Coverage()->setFrustumAngle2(15.0);
+    genericTransmitter->Transmitter()->Coverage()->setFrustumShape("Rectangular");
 
-    genericTransmitter.Transmitter()->PointingDirection()->setAzimuth(0.0);
-    genericTransmitter.Transmitter()->PointingDirection()->setAzimuthDot(0.0);
-    genericTransmitter.Transmitter()->PointingDirection()->setElevation(90.0*DEG2RAD);
-    genericTransmitter.Transmitter()->PointingDirection()->setElevationDot(0.0);
-    genericTransmitter.Transmitter()->PointingDirection()->setReferenceSystem("LVLH");  // Not sure about this
+    genericTransmitter->Transmitter()->PointingDirection()->setAzimuth(0.0);
+    genericTransmitter->Transmitter()->PointingDirection()->setAzimuthDot(0.0);
+    genericTransmitter->Transmitter()->PointingDirection()->setElevation(90.0*DEG2RAD);
+    genericTransmitter->Transmitter()->PointingDirection()->setElevationDot(0.0);
+    genericTransmitter->Transmitter()->PointingDirection()->setReferenceSystem("LVLH");  // Not sure about this
 
-    genericTransmitter.Transmitter()->EMproperties()->setAngularBeamWidth(15.0);
-    genericTransmitter.Transmitter()->EMproperties()->setAreaEff(30.0);
-    genericTransmitter.Transmitter()->EMproperties()->setBandWidth(32346653.32);
-    genericTransmitter.Transmitter()->EMproperties()->setBeamType("Parabolic");
-    genericTransmitter.Transmitter()->EMproperties()->setDiameter(0.280622);
-    genericTransmitter.Transmitter()->EMproperties()->setEfficiency(55.0);
-    genericTransmitter.Transmitter()->EMproperties()->setGainMax(30.0);
-    genericTransmitter.Transmitter()->EMproperties()->setPolarisation("Linear");
-    genericTransmitter.Transmitter()->EMproperties()->setTiltAngle(0.0);
+    genericTransmitter->Transmitter()->EMproperties()->setAngularBeamWidth(15.0);
+    genericTransmitter->Transmitter()->EMproperties()->setAreaEff(30.0);
+    genericTransmitter->Transmitter()->EMproperties()->setBandWidth(32346653.32);
+    genericTransmitter->Transmitter()->EMproperties()->setBeamType("Parabolic");
+    genericTransmitter->Transmitter()->EMproperties()->setDiameter(0.280622);
+    genericTransmitter->Transmitter()->EMproperties()->setEfficiency(55.0);
+    genericTransmitter->Transmitter()->EMproperties()->setGainMax(30.0);
+    genericTransmitter->Transmitter()->EMproperties()->setPolarisation("Linear");
+    genericTransmitter->Transmitter()->EMproperties()->setTiltAngle(0.0);
 
-    genericTransmitter.Transmitter()->setFedderLossTx(0.0);
+    genericTransmitter->Transmitter()->setFedderLossTx(0.0);
 
-    genericTransmitter.Transmitter()->Modulation()->setDataRate(16654486.34);
-    genericTransmitter.Transmitter()->Modulation()->setModulationType("BPSK");
+    genericTransmitter->Transmitter()->Modulation()->setDataRate(16654486.34);
+    genericTransmitter->Transmitter()->Modulation()->setModulationType("BPSK");
 
-    genericTransmitter.Transmitter()->setObservationChecked(false);
+    genericTransmitter->Transmitter()->setObservationChecked(false);
 
     return genericTransmitter;
 }
 
 
-ScenarioReceiverPayloadType MissionsDefaults::MissionsDefaults_GenericReceiver()
+ScenarioReceiverPayloadType* MissionsDefaults::MissionsDefaults_GenericReceiver()
 {    
-    ScenarioReceiverPayloadType receiverPayload;
+    ScenarioReceiverPayloadType* receiverPayload = new ScenarioReceiverPayloadType();
 
-    receiverPayload.ElementIdentifier()->setName("receiver");
+    receiverPayload->ElementIdentifier()->setName("receiver");
 
     double ElInit=(90*DEG2RAD);
-    receiverPayload.Receiver()->PointingDirection()->setElevation(ElInit);
-    receiverPayload.Receiver()->PointingDirection()->setAzimuth(0);
-    receiverPayload.Receiver()->EMproperties()->setEfficiency(55);
-    receiverPayload.Receiver()->EMproperties()->setGainMax(30);
-    receiverPayload.Receiver()->EMproperties()->setTiltAngle(0);
-    receiverPayload.Receiver()->EMproperties()->setPolarisation("Linear");
-    receiverPayload.Receiver()->EMproperties()->setBandWidth(32000000.0);//in Hz
+    receiverPayload->Receiver()->PointingDirection()->setElevation(ElInit);
+    receiverPayload->Receiver()->PointingDirection()->setAzimuth(0);
+    receiverPayload->Receiver()->EMproperties()->setEfficiency(55);
+    receiverPayload->Receiver()->EMproperties()->setGainMax(30);
+    receiverPayload->Receiver()->EMproperties()->setTiltAngle(0);
+    receiverPayload->Receiver()->EMproperties()->setPolarisation("Linear");
+    receiverPayload->Receiver()->EMproperties()->setBandWidth(32000000.0);//in Hz
 
-    receiverPayload.Receiver()->Coverage()->setFrustumShape("Ellipse");
-    receiverPayload.Receiver()->Coverage()->setFrustumAngle1(5.0);
-    receiverPayload.Receiver()->Coverage()->setFrustumAngle1(5.0);
+    receiverPayload->Receiver()->Coverage()->setFrustumShape("Ellipse");
+    receiverPayload->Receiver()->Coverage()->setFrustumAngle1(5.0);
+    receiverPayload->Receiver()->Coverage()->setFrustumAngle1(5.0);
 
-    receiverPayload.Receiver()->setDepointingLossRx(0);
-    receiverPayload.Receiver()->setFeederLossRx(0);
+    receiverPayload->Receiver()->setDepointingLossRx(0);
+    receiverPayload->Receiver()->setFeederLossRx(0);
 
-    receiverPayload.Budget()->setFrequencyBand(14500000000.0);//It's in hertz
+    receiverPayload->Budget()->setFrequencyBand(14500000000.0);//It's in hertz
 
-    receiverPayload.Receiver()->SystemTemperature()->setRxNoiseFigure(1);
-    receiverPayload.Receiver()->SystemTemperature()->setThermoFeeder(290);
-    receiverPayload.Receiver()->SystemTemperature()->setThermoReveicer(290);
+    receiverPayload->Receiver()->SystemTemperature()->setRxNoiseFigure(1);
+    receiverPayload->Receiver()->SystemTemperature()->setThermoFeeder(290);
+    receiverPayload->Receiver()->SystemTemperature()->setThermoReveicer(290);
 
-    receiverPayload.Receiver()->SystemTemperature()->setChoiceTantenna("calculated");
+    receiverPayload->Receiver()->SystemTemperature()->setChoiceTantenna("calculated");
 
     return receiverPayload;
 }
 
 
-ScenarioOpticalPayloadType MissionsDefaults::MissionsDefaults_GenericOpticalPayload()
+ScenarioOpticalPayloadType* MissionsDefaults::MissionsDefaults_GenericOpticalPayload()
 {
-    ScenarioOpticalPayloadType genericTelescope;
+    ScenarioOpticalPayloadType* genericTelescope = new ScenarioOpticalPayloadType();
 
-    genericTelescope.ElementIdentifier()->setName("telescope");
-    genericTelescope.Telescope()->OpticalProperties()->setDiameter(0.10);
-    genericTelescope.Telescope()->OpticalProperties()->setEfficiency(100.0);
+    genericTelescope->ElementIdentifier()->setName("telescope");
+    genericTelescope->Telescope()->OpticalProperties()->setDiameter(0.10);
+    genericTelescope->Telescope()->OpticalProperties()->setEfficiency(100.0);
 
     return genericTelescope;
 }
 
 
-ScenarioRadarPayloadType MissionsDefaults::MissionsDefaults_GenericRadarPayload()
+ScenarioRadarPayloadType* MissionsDefaults::MissionsDefaults_GenericRadarPayload()
 {
-    ScenarioRadarPayloadType genericRadar;
+    ScenarioRadarPayloadType* genericRadar = new ScenarioRadarPayloadType();
 
-    genericRadar.ElementIdentifier()->setName("radar");
-    genericRadar.Radar()->RadarProperties()->setAngularBeamWidth(25.0);
-    genericRadar.Radar()->RadarProperties()->setDiameter(0.10);
-    genericRadar.Radar()->RadarProperties()->setEfficiency(100.0);
-    genericRadar.Radar()->RadarProperties()->setGainMax(30.0);
-    genericRadar.Radar()->RadarProperties()->setPolarisation("right");
-    genericRadar.Radar()->RadarProperties()->setTiltAngle(0.0);
+    genericRadar->ElementIdentifier()->setName("radar");
+    genericRadar->Radar()->RadarProperties()->setAngularBeamWidth(25.0);
+    genericRadar->Radar()->RadarProperties()->setDiameter(0.10);
+    genericRadar->Radar()->RadarProperties()->setEfficiency(100.0);
+    genericRadar->Radar()->RadarProperties()->setGainMax(30.0);
+    genericRadar->Radar()->RadarProperties()->setPolarisation("right");
+    genericRadar->Radar()->RadarProperties()->setTiltAngle(0.0);
 
     return genericRadar;
 }

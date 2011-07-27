@@ -152,10 +152,10 @@ static QByteArray spaceVehicleFragment(const char* name, const char* vehicleType
     spacecraft.ElementIdentifier()->setName(name);
 
     MissionsDefaults myMissionDefaults;
-    ScenarioSCSystemType genericPlatform;
+    //ScenarioSCSystemType genericPlatform;
 
-    genericPlatform = myMissionDefaults.MissionsDefaults_GenericPlatform();
-    spacecraft.setSystem(QSharedPointer<ScenarioSCSystemType>(&genericPlatform));
+    //genericPlatform = myMissionDefaults.MissionsDefaults_GenericPlatform();
+    spacecraft.setSystem(QSharedPointer<ScenarioSCSystemType>(myMissionDefaults.MissionsDefaults_GenericPlatform()));
 
     QDomDocument doc;
     return fragmentText(CreateSCElement(&spacecraft, doc)).toUtf8();
@@ -431,9 +431,6 @@ static QByteArray spaceVehicleWithTrajectoryFragment(const QString& name, const 
 
     MissionsDefaults myMissionDefaults;
     ScenarioLoiteringType loiteringDefault;
-    ScenarioTransmitterPayloadType genericTransmitter;
-    ScenarioReceiverPayloadType genericReceiver;
-    ScenarioSCSystemType genericPlatform;
 
     QDomDocument doc;
 
@@ -474,14 +471,14 @@ static QByteArray spaceVehicleWithTrajectoryFragment(const QString& name, const 
     else if (name == "PROBA-2")
         loiteringDefault = myMissionDefaults.MissionsDefaults_PROBA2();
 
-    genericTransmitter = myMissionDefaults.MissionsDefaults_GenericTransmitter();
-    genericReceiver = myMissionDefaults.MissionsDefaults_GenericReceiver();
-    genericPlatform = myMissionDefaults.MissionsDefaults_GenericPlatform();
-    sc->setSystem(QSharedPointer<ScenarioSCSystemType>(&genericPlatform));
+    QSharedPointer<ScenarioSCSystemType> platform(myMissionDefaults.MissionsDefaults_GenericPlatform());
+    QSharedPointer<ScenarioTransmitterPayloadType> transmitter(myMissionDefaults.MissionsDefaults_GenericTransmitter());
+    QSharedPointer<ScenarioReceiverPayloadType> receiver(myMissionDefaults.MissionsDefaults_GenericReceiver());
+    sc->setSystem(platform);
 
     sc->SCMission()->TrajectoryPlan()->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(&loiteringDefault));
-    sc->SCMission()->PayloadSet()->AbstractPayload().append(QSharedPointer<ScenarioAbstractPayloadType>(&genericTransmitter));
-    sc->SCMission()->PayloadSet()->AbstractPayload().append(QSharedPointer<ScenarioAbstractPayloadType>(&genericReceiver));
+    sc->SCMission()->PayloadSet()->AbstractPayload().append(transmitter);
+    sc->SCMission()->PayloadSet()->AbstractPayload().append(receiver);
 
     return fragmentText(CreateSCElement(sc, doc)).toUtf8();
 }
@@ -665,12 +662,13 @@ static QByteArray fCstRadFragment(const char* name)
 static QByteArray transmitterPayloadFragment(const char* name)
 {
     MissionsDefaults myMissionDefaults;
-    ScenarioTransmitterPayloadType transmitterPayload;
-
-    transmitterPayload = myMissionDefaults.MissionsDefaults_GenericTransmitter();
+    ScenarioTransmitterPayloadType* transmitterPayload = myMissionDefaults.MissionsDefaults_GenericTransmitter();
 
     QDomDocument doc;
-    return fragmentText(CreateTransmitterPayloadElement(&transmitterPayload, doc)).toUtf8();
+    QByteArray text = fragmentText(CreateTransmitterPayloadElement(transmitterPayload, doc)).toUtf8();
+    delete transmitterPayload;
+
+    return text;
 }
 
 
@@ -678,12 +676,13 @@ static QByteArray transmitterPayloadFragment(const char* name)
 static QByteArray receiverPayloadFragment(const char* name)
 {
     MissionsDefaults myMissionDefaults;
-    ScenarioReceiverPayloadType receiverPayload;
-
-    receiverPayload = myMissionDefaults.MissionsDefaults_GenericReceiver();
+    ScenarioReceiverPayloadType* receiverPayload = myMissionDefaults.MissionsDefaults_GenericReceiver();
 
     QDomDocument doc;
-    return fragmentText(CreateReceiverPayloadElement(&receiverPayload, doc)).toUtf8();
+    QByteArray text = fragmentText(CreateReceiverPayloadElement(receiverPayload, doc)).toUtf8();
+    delete receiverPayload;
+
+    return text;
 }
 
 
@@ -692,12 +691,13 @@ static QByteArray receiverPayloadFragment(const char* name)
 static QByteArray opticalPayloadFragment(const char* name)
 {
     MissionsDefaults myMissionDefaults;
-    ScenarioOpticalPayloadType opticalPayload;
-
-    opticalPayload = myMissionDefaults.MissionsDefaults_GenericOpticalPayload();
+    ScenarioOpticalPayloadType* opticalPayload = myMissionDefaults.MissionsDefaults_GenericOpticalPayload();
 
     QDomDocument doc;
-    return fragmentText(CreateOpticalPayloadElement(&opticalPayload, doc)).toUtf8();
+    QByteArray text = fragmentText(CreateOpticalPayloadElement(opticalPayload, doc)).toUtf8();
+    delete opticalPayload;
+
+    return text;
 }
 
 
@@ -706,12 +706,13 @@ static QByteArray opticalPayloadFragment(const char* name)
 static QByteArray radarPayloadFragment(const char* name)
 {
     MissionsDefaults myMissionDefaults;
-    ScenarioRadarPayloadType radarPayload;
-
-    radarPayload = myMissionDefaults.MissionsDefaults_GenericRadarPayload();
+    ScenarioRadarPayloadType* radarPayload = myMissionDefaults.MissionsDefaults_GenericRadarPayload();
 
     QDomDocument doc;
-    return fragmentText(CreateRadarPayloadElement(&radarPayload, doc)).toUtf8();
+    QByteArray text = fragmentText(CreateRadarPayloadElement(radarPayload, doc)).toUtf8();
+    delete radarPayload;
+
+    return text;
 }
 
 
