@@ -44,9 +44,9 @@ MissionsDefaults::~MissionsDefaults()
 
 /////////////////////////////////////// Generic elements //////////////////////////////////////
 
-ScenarioSCSystemType* MissionsDefaults::MissionsDefaults_GenericPlatform()
+QSharedPointer<ScenarioSCSystemType> MissionsDefaults::MissionsDefaults_GenericPlatform()
 {
-    ScenarioSCSystemType* genericPlatform = new ScenarioSCSystemType();
+    QSharedPointer<ScenarioSCSystemType> genericPlatform(new ScenarioSCSystemType());
 
     genericPlatform->SystemBudgets()->MassOfSystem()->setDryMass(1000.0);
     genericPlatform->SystemBudgets()->MassOfSystem()->setWetMass(1500.0);
@@ -122,9 +122,9 @@ ScenarioSCSystemType* MissionsDefaults::MissionsDefaults_GenericPlatform()
 }
 
 
-ScenarioTransmitterPayloadType* MissionsDefaults::MissionsDefaults_GenericTransmitter()
+QSharedPointer<ScenarioTransmitterPayloadType> MissionsDefaults::MissionsDefaults_GenericTransmitter()
 {
-    ScenarioTransmitterPayloadType* genericTransmitter = new ScenarioTransmitterPayloadType();
+    QSharedPointer<ScenarioTransmitterPayloadType> genericTransmitter(new ScenarioTransmitterPayloadType());
 
     genericTransmitter->ElementIdentifier()->setColorName("Yellow");
     genericTransmitter->ElementIdentifier()->setModelName("Default");
@@ -177,9 +177,9 @@ ScenarioTransmitterPayloadType* MissionsDefaults::MissionsDefaults_GenericTransm
 }
 
 
-ScenarioReceiverPayloadType* MissionsDefaults::MissionsDefaults_GenericReceiver()
+QSharedPointer<ScenarioReceiverPayloadType> MissionsDefaults::MissionsDefaults_GenericReceiver()
 {    
-    ScenarioReceiverPayloadType* receiverPayload = new ScenarioReceiverPayloadType();
+    QSharedPointer<ScenarioReceiverPayloadType> receiverPayload(new ScenarioReceiverPayloadType());
 
     receiverPayload->ElementIdentifier()->setName("receiver");
 
@@ -211,9 +211,9 @@ ScenarioReceiverPayloadType* MissionsDefaults::MissionsDefaults_GenericReceiver(
 }
 
 
-ScenarioOpticalPayloadType* MissionsDefaults::MissionsDefaults_GenericOpticalPayload()
+QSharedPointer<ScenarioOpticalPayloadType> MissionsDefaults::MissionsDefaults_GenericOpticalPayload()
 {
-    ScenarioOpticalPayloadType* genericTelescope = new ScenarioOpticalPayloadType();
+    QSharedPointer<ScenarioOpticalPayloadType> genericTelescope(new ScenarioOpticalPayloadType());
 
     genericTelescope->ElementIdentifier()->setName("telescope");
     genericTelescope->Telescope()->OpticalProperties()->setDiameter(0.10);
@@ -223,9 +223,9 @@ ScenarioOpticalPayloadType* MissionsDefaults::MissionsDefaults_GenericOpticalPay
 }
 
 
-ScenarioRadarPayloadType* MissionsDefaults::MissionsDefaults_GenericRadarPayload()
+QSharedPointer<ScenarioRadarPayloadType> MissionsDefaults::MissionsDefaults_GenericRadarPayload()
 {
-    ScenarioRadarPayloadType* genericRadar = new ScenarioRadarPayloadType();
+    QSharedPointer<ScenarioRadarPayloadType> genericRadar(new ScenarioRadarPayloadType());
 
     genericRadar->ElementIdentifier()->setName("radar");
     genericRadar->Radar()->RadarProperties()->setAngularBeamWidth(25.0);

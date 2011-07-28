@@ -42,11 +42,11 @@ public:
     ~MissionsDefaults();
 
     // Default platform and payloads for a generic mission
-    ScenarioSCSystemType* MissionsDefaults_GenericPlatform();
-    ScenarioTransmitterPayloadType* MissionsDefaults_GenericTransmitter();
-    ScenarioReceiverPayloadType* MissionsDefaults_GenericReceiver();
-    ScenarioOpticalPayloadType* MissionsDefaults_GenericOpticalPayload();
-    ScenarioRadarPayloadType* MissionsDefaults_GenericRadarPayload();
+    QSharedPointer<ScenarioSCSystemType> MissionsDefaults_GenericPlatform();
+    QSharedPointer<ScenarioTransmitterPayloadType> MissionsDefaults_GenericTransmitter();
+    QSharedPointer<ScenarioReceiverPayloadType> MissionsDefaults_GenericReceiver();
+    QSharedPointer<ScenarioOpticalPayloadType> MissionsDefaults_GenericOpticalPayload();
+    QSharedPointer<ScenarioRadarPayloadType> MissionsDefaults_GenericRadarPayload();
 
     // Generic loitering satellite
     ScenarioLoiteringType MissionsDefaults_GENERIC();
