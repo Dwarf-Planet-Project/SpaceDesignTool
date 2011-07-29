@@ -92,7 +92,8 @@ public:
 
 
 private slots:
-    void qtiClosed();
+     void createTable();
+     void qtiClosed();
 
 private:
     void initQtiPlot();

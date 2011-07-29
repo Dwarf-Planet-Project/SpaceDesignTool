@@ -91,11 +91,37 @@ QtiPlotMain::qtiClosed()
 
 
 void
+QtiPlotMain::createTable()
+{
+    qDebug() << "Create table!";
+}
+
+
+void
 QtiPlotMain::initQtiPlot()
 {
     m_appWindow = new ApplicationWindow(false);
     m_appWindow->restoreApplicationGeometry();
     connect(m_appWindow, SIGNAL(destroyed()), this, SLOT(qtiClosed()));
+
+    // We want to change the function of the new table action so that it creates
+    // a new table filled with data from STA. In order to do this without modifying
+    // the QtiPlot source code, we'll scan the list of actions in the main QtiPlot
+    // window and reconnect the one labeled "New Table". This will no longer work if
+    // the action text is changed, but it's otherwise a better solution than changing
+    // code inside QtiPlot.
+    foreach (QObject* child, m_appWindow->children())
+    {
+        QAction* action = qobject_cast<QAction*>(child);
+        if (action)
+        {
+            if (action->text() == "New &Table")
+            {
+                action->disconnect();
+                connect(action, SIGNAL(activated()), this, SLOT(createTable()));
+            }
+        }
+    }
 
     m_analysisParameterChooser = new analysisParametersChoice(m_appWindow);
     //QSignalMapper *signalMapper = new QSignalMapper(this);
