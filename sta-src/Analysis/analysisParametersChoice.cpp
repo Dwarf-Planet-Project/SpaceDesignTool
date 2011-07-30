@@ -42,6 +42,7 @@
 #include <QDebug>
 #include <QGLWidget>
 #include <QMessageBox>
+#include <QFormLayout>
 #include <QPrinter>
 
 #include "analysisParametersChoice.h"
@@ -741,6 +742,7 @@ analysisParametersChoice::on_DeleteTimePushButton_clicked()
 void
 analysisParametersChoice::on_EditTimePushButton_clicked() //adds new time intervals to the tree
 {
+#if 0
     /*
       a new time interval, user-specified, can be inserted in the list of Time Intervals
       */
@@ -832,6 +834,53 @@ analysisParametersChoice::on_EditTimePushButton_clicked() //adds new time interv
         parametersWarning.setText("Time Input Error, please verify format"); //the date introduced does not match a calendar date
         parametersWarning.exec();
     }
+#endif
+    QDateTime defaultStartTime = QDateTime(QDate::currentDate()).toUTC();
+    QDateTime defaultEndTime = defaultStartTime.addSecs(3600 * 12);
+
+    QDialog timeDialog;
+    timeDialog.setWindowTitle(tr("Enter Time Range"));
+    QDateTimeEdit* startTimeEdit = new QDateTimeEdit(&timeDialog);
+    startTimeEdit->setDateTime(defaultStartTime.toUTC());
+    startTimeEdit->setDateTimeRange(QDateTime(QDate(1950, 1, 1)), QDateTime(QDate(2100, 1, 1)));
+    startTimeEdit->setDisplayFormat("yyyy-MMM-dd hh:mm:ss UTC");
+
+    QDateTimeEdit* endTimeEdit = new QDateTimeEdit(&timeDialog);
+    endTimeEdit->setDateTime(defaultEndTime.toUTC());
+    endTimeEdit->setDateTimeRange(QDateTime(QDate(1950, 1, 1)), QDateTime(QDate(2100, 1, 1)));
+    endTimeEdit->setDisplayFormat("yyyy-MMM-dd hh:mm:ss UTC");
+
+    QVBoxLayout* vbox = new QVBoxLayout(&timeDialog);
+    timeDialog.setLayout(vbox);
+
+    QFormLayout* form = new QFormLayout(&timeDialog);
+    QLabel* startLabel = new QLabel("Start time   ", &timeDialog);
+    QLabel* endLabel = new QLabel("End time   ", &timeDialog);
+    form->addRow(startLabel, startTimeEdit);
+    form->addRow(endLabel, endTimeEdit);
+
+    QDialogButtonBox* buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &timeDialog);
+    vbox->addItem(form);
+    vbox->addWidget(buttons);
+
+    connect(buttons, SIGNAL(accepted()), &timeDialog, SLOT(accept()));
+    connect(buttons, SIGNAL(rejected()), &timeDialog, SLOT(reject()));
+
+    if (timeDialog.exec() == QDialog::Accepted)
+    {
+        QDateTime startTime = startTimeEdit->dateTime();
+        QDateTime endTime = endTimeEdit->dateTime();
+        if (startTime >= endTime)
+        {
+            QMessageBox::warning(this, "Bad Time Range", "End time must be after start time");
+        }
+        else
+        {
+            QTreeWidgetItem*treeTimeN = new QTreeWidgetItem(treeWidgetTimeSpecifications);
+            treeTimeN->setText(0, startTimeEdit->dateTime().toString());
+            treeTimeN->setText(1, endTimeEdit->dateTime().toString());
+        }
+    }
 }
 
 
@@ -875,7 +924,7 @@ analysisParametersChoice::comboBoxOptions(QTreeWidgetItem* item)
         //This group has been patched by Guillermo
         treeWidgetShowInReport->setItemWidget(item,1,TimeFramesBox());
         treeWidgetShowInReport->setItemWidget(item,2,NoUnitsBox());
-       // Next lines oatched by Guillermo
+       // Next lines patched by Guillermo
        /*
        treeWidgetShowInReport->setColumnWidth(0, 100);
        treeWidgetShowInReport->setColumnWidth(1, 200);
