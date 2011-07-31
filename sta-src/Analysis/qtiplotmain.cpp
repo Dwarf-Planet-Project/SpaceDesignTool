@@ -58,6 +58,8 @@ QtiPlotMain::~QtiPlotMain()
 };
 
 
+/** Generate a QtiPlot table from analysis results.
+  */
 void
 QtiPlotMain::createReport(AnalysisResult *analysis)
 {
@@ -94,9 +96,16 @@ void
 QtiPlotMain::createTable()
 {
     qDebug() << "Create table!";
+    AnalysisResult results = m_analysisParameterChooser->generateReport();
+    if (results.isValid())
+    {
+        createReport(&results);
+    }
 }
 
 
+/** Initialize the QtiPlot module.
+  */
 void
 QtiPlotMain::initQtiPlot()
 {
@@ -139,73 +148,13 @@ QtiPlotMain::initQtiPlot()
 }
 
 
-AnalysisResult::AnalysisResult(unsigned int columnCount)
-{
-    Q_ASSERT(columnCount > 0);
-    for (unsigned int i = 0; i < columnCount; ++i)
-    {
-        m_columnNames << "";
-    }
-}
-
-
-void
-AnalysisResult::appendRow(const QVariantList& values)
-{
-    if (values.count() == columnCount())
-    {
-        m_data << values;
-    }
-}
-
-int
-AnalysisResult::columnCount() const
-{
-    return m_columnNames.count();
-}
-
-
-int
-AnalysisResult::rowCount() const
-{
-    return m_data.count() / columnCount();
-}
-
-
-void
-AnalysisResult::setTitle(const QString& title)
-{
-    m_title = title;
-}
-
-
-QString
-AnalysisResult::columnName(int column) const
-{
-    if (column >= 0 && column < columnCount())
-    {
-        return m_columnNames.at(column);
-    }
-    else
-    {
-        return "";
-    }
-}
-
-
-void
-AnalysisResult::setColumnName(int column, const QString& name)
-{
-    if (column >= 0 && column < columnCount())
-    {
-        m_columnNames[column] = name;
-    }
-}
-
-
+/** Set the scenario and propagated scenario that will be analyzed.
+  *
+  * TODO: the object should hold a reference to the scenario and propagated scenario, or
+  * else the main window needs to NULL them out when a new scenario is loaded or repropgated.
+  */
 void
 QtiPlotMain::passTheSTAscenarioToQtiPlotMain(SpaceScenario* scenario, PropagatedScenario* propagatedScenario)
 {
-    m_analysisParameterChooser->loadTheSTAscenario(scenario, propagatedScenario);
+    m_analysisParameterChooser->loadScenario(scenario, propagatedScenario);
 }
-

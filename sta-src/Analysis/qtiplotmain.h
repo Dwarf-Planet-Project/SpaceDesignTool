@@ -43,40 +43,6 @@
 class ApplicationWindow;
 class SpaceScenario;
 
-/** AnalyisResult is a simple container for data produced during an
-  * analysis. After creation, the AnalysisResult structure is passed
-  * to QtiPlot.
-  */
-class AnalysisResult
-{
-public:
-    AnalysisResult(unsigned int columnCount);
-
-    void appendRow(const QVariantList& rowValues);
-    int columnCount() const;
-    int rowCount() const;
-
-    QString title() const
-    {
-        return m_title;
-    }
-    void setTitle(const QString& title);
-
-    QString columnName(int column) const;
-    void setColumnName(int column, const QString& name);
-
-    QList<QVariant> data() const
-    {
-        return m_data;
-    }
-
-private:
-    QString m_title;
-    QList<QString> m_columnNames;
-    QVariantList m_data;
-};
-
-
 class QtiPlotMain: public QMainWindow
 {
     Q_OBJECT

@@ -44,6 +44,7 @@
 #include <QMessageBox>
 #include <QFormLayout>
 #include <QPrinter>
+#include <QDesktopServices>
 
 #include "analysisParametersChoice.h"
 #include "Analysis/qtiplotmain.h"
@@ -51,9 +52,15 @@
 #include "Scenario/staschema.h"
 #include "Main/propagatedscenario.h"
 
+#include "Astro-Core/stamath.h"
+#include "Astro-Core/calculateElements.h"
+#include "Services/serviceTimeParameter.h"
+
+using namespace sta;
+
 
 // Format for date/time strings shown to user when selecting a time range
-static const QString TimeRangeSelectionDateFormat = "d/M/yyyy hh:mm:ss";
+static const QString TimeRangeSelectionDateFormat = "dd/MM/yyyy hh:mm:ss";
 
 
 // Mark tree items with children as unselectable. This prevents the user
@@ -179,11 +186,92 @@ Scenario_GetTimeRange(ScenarioAbstractTrajectoryType* trajectory, QDateTime* sta
 }
 
 
+// Convert a state vector to the coordinate system given by the specified name
+static StateVector ConvertStateVector(const StateVector& state, const QString& coordSys, const StaBody* center, double mjd)
+{
+    sta::CoordinateSystemType toSystem = sta::COORDSYS_INVALID;
+    if (coordSys == "Fixed")
+    {
+        toSystem = sta::COORDSYS_BODYFIXED;
+    }
+    else if (coordSys == "Ecliptic J2000")
+    {
+        toSystem = sta::COORDSYS_ECLIPTIC_J2000;
+    }
+    else if (coordSys == "EME J2000")
+    {
+        toSystem = sta::COORDSYS_EME_J2000;
+    }
+    else if (coordSys == "EME B1950")
+    {
+        toSystem = sta::COORDSYS_EME_B1950;
+    }
+       else if (coordSys == "ICRF")
+        {
+            toSystem = sta::COORDSYS_ICRF;
+        }
+        else if (coordSys == "Mean of Date")
+        {
+            toSystem = sta::COORDSYS_MEAN_OF_DATE;
+        }
+        else if (coordSys == "True of Date")
+        {
+            toSystem = sta::COORDSYS_TRUE_OF_DATE;
+        }
+        else if (coordSys == "Mean of Epoch")
+        {
+            toSystem = sta::COORDSYS_MEAN_OF_EPOCH;
+        }
+
+    //    else if (coordSys == "True of Epoch")
+    //    {
+    //        toSystem = sta::COORDSYS_TRUE_OF_EPOCH;
+    //    }
+    //    else if (coordSys == "TEME of Date")
+    //    {
+    //        toSystem = sta::COORDSYS_TEME_OF_Date;
+    //    }
+    //    else if (coordSys == "TEME of Epoch")
+    //    {
+    //        toSystem = sta::COORDSYS_TEME_OF_EPOCH;
+    //    }
+    //    else if (coordSys == "Alignment at Epoch")
+    //    {
+    //        toSystem = sta::COORDSYS_ALIGN_AT_EPOCH;
+    //    }
+    //    else if (coordSys == "Rotating")
+    //    {
+    //        toSystem = sta::COORDSYS_ROT;
+    //    }
+    //    else if (coordSys == "Normalized Rotating")
+    //    {
+    //        toSystem = sta::COORDSYS_ROT_NORM;
+    //    }
+    Q_ASSERT(toSystem != sta::COORDSYS_INVALID);
+
+    return CoordinateSystem::convert(state,
+                                     mjd,
+                                     center,
+                                     sta::CoordinateSystem(sta::COORDSYS_EME_J2000),
+                                     center,
+                                     sta::CoordinateSystem(toSystem));
+}
+
+
+// Return true if this output field is the apparent distance to a Solar System body
+static bool IsPlanetDistanceField(const QString& fieldName)
+{
+    return STA_SOLAR_SYSTEM->lookup(fieldName) != NULL;
+}
+
+/***** End helper functions *****/
+
+
 /*
   builds a copy of the scenario tree from the STA main window in the GUI of Analysis Module
  */
-void analysisParametersChoice::loadTheSTAscenario(SpaceScenario* scenario, PropagatedScenario* propagatedScenario)
-
+void
+analysisParametersChoice::loadScenario(SpaceScenario* scenario, PropagatedScenario* propagatedScenario)
 {
     m_scenario = new SpaceScenario(*scenario);
     m_propagatedScenario = new PropagatedScenario(*propagatedScenario);
@@ -195,9 +283,6 @@ void analysisParametersChoice::loadTheSTAscenario(SpaceScenario* scenario, Propa
     int TxInd;
     int RxInd;
     QStringList AllObjects;
-
-    //qDebug() << "--------> loadTheSTAscenario got the data" << endl;
-
 
     foreach (QSharedPointer<ScenarioParticipantType> participant, m_scenario->AbstractParticipant())
     {
@@ -617,9 +702,9 @@ analysisParametersChoice::on_AddDefaultPushButton_clicked()
 
     QStringList AllObjects;
     QList<int>SelectedObjects;
-    for(int i=0;i<NumberOfObjects;i++)
+    for (int i = 0; i < NumberOfObjects; i++)
     {
-        int numberOfChildren=TreeWidgetMissionArc->topLevelItem(i)->childCount();
+        int numberOfChildren = TreeWidgetMissionArc->topLevelItem(i)->childCount();
         AllObjects.append(TreeWidgetMissionArc->topLevelItem(i)->child(numberOfChildren-1)->text(0));
 
     }
@@ -742,99 +827,6 @@ analysisParametersChoice::on_DeleteTimePushButton_clicked()
 void
 analysisParametersChoice::on_EditTimePushButton_clicked() //adds new time intervals to the tree
 {
-#if 0
-    /*
-      a new time interval, user-specified, can be inserted in the list of Time Intervals
-      */
-    bool ok = false;
-    int check=0;
-    //QList<QTreeWidgetItem *> selectedTimes=treeWidgetTimeSpecifications->selectedItems();
-    QString InitTime = QInputDialog::getText(this, tr("Insert Start Time"),tr("Start Time"), QLineEdit::Normal,"dd/mm/yyyy hh:mm:ss",&ok);
-
-    // Return immediately if the user pressed cancel
-    if (!ok)
-    {
-        return;
-    }
-
-    QString Date=InitTime.section(' ',0,0);
-    QString Time=InitTime.section(' ',1,1);
-
-    QString Day=Date.section('/',0,0);
-    QString Month=Date.section('/',1,1);
-    QString Year=Date.section('/',2,2);
-
-    QString Hour=Time.section(':',0,0);
-    QString Minute=Time.section(':',1,1);
-    QString Second=Time.section(':',2,2);
-
-    int iFDay=Day.toInt(&ok);
-    int iFYear;
-    int iFMonth;
-    int iFHour;
-    int iFMinute;
-    int iFSecond;
-    int iEYear;
-    int iEMonth;
-    int iEDay;
-    int iEHour;
-    int iEMinute;
-    int iESecond;
-
-    if (ok && iFDay>0 && iFDay<32){
-        iFMonth=Month.toInt(&ok);
-        if (ok && iFMonth>0 && iFMonth<13) {
-            iFYear=Year.toInt(&ok);
-            if (ok){
-                iFHour=Hour.toInt(&ok);
-                if (ok && iFHour>=0 && iFHour<24){
-                    iFMinute=Minute.toInt(&ok);
-                    if(ok && iFMinute>=0 && iFMinute<60){
-                        iFSecond=Second.toInt(&ok);
-                        if(ok && iFSecond>=0 && iFSecond<60){
-
-                            QString EndTime = QInputDialog::getText(this, tr("Insert End Time"),tr("End Time"), QLineEdit::Normal,"dd/mm/yyyy hh:mm:ss",&ok);
-
-                            QString Date=EndTime.section(' ',0,0);
-                            QString Time=EndTime.section(' ',1,1);
-
-                            QString Day=Date.section('/',0,0);
-                            QString Month=Date.section('/',1,1);
-                            QString Year=Date.section('/',2,2);
-
-                            QString Hour=Time.section(':',0,0);
-                            QString Minute=Time.section(':',1,1);
-                            QString Second=Time.section(':',2,2);
-
-                            iEDay=Day.toInt(&ok);
-
-                            if (ok && iEDay>0 && iEDay<32){ //check if the numbers introduced by the user are compatible with the calendar
-                                iEMonth=Month.toInt(&ok);
-                                if (ok && iEMonth>0 && iEMonth<13) {
-                                    iEYear=Year.toInt(&ok);
-                                    if (ok){
-                                        iEHour=Hour.toInt(&ok);
-                                        if (ok && iEHour>=0 && iEHour<24){
-                                            iEMinute=Minute.toInt(&ok);
-                                            if(ok && iEMinute>=0 && iEMinute<60){
-                                                iESecond=Second.toInt(&ok);
-                                                if(ok && iESecond>=0 && iESecond<60){
-
-
-
-                                                    QTreeWidgetItem*treeTimeN=new QTreeWidgetItem(treeWidgetTimeSpecifications);
-                                                    treeTimeN->setText(0,InitTime);
-                                                    treeTimeN->setText(1,EndTime);
-                                                    check=1;
-                                                }}}}}}}}}}}}
-
-    if (check==0)
-    {
-        QMessageBox parametersWarning;
-        parametersWarning.setText("Time Input Error, please verify format"); //the date introduced does not match a calendar date
-        parametersWarning.exec();
-    }
-#endif
     QDateTime defaultStartTime = QDateTime(QDate::currentDate()).toUTC();
     QDateTime defaultEndTime = defaultStartTime.addSecs(3600 * 12);
 
@@ -877,8 +869,8 @@ analysisParametersChoice::on_EditTimePushButton_clicked() //adds new time interv
         else
         {
             QTreeWidgetItem*treeTimeN = new QTreeWidgetItem(treeWidgetTimeSpecifications);
-            treeTimeN->setText(0, startTimeEdit->dateTime().toString());
-            treeTimeN->setText(1, endTimeEdit->dateTime().toString());
+            treeTimeN->setText(0, startTimeEdit->dateTime().toString(TimeRangeSelectionDateFormat));
+            treeTimeN->setText(1, endTimeEdit->dateTime().toString(TimeRangeSelectionDateFormat));
         }
     }
 }
@@ -1211,3 +1203,1755 @@ analysisParametersChoice::VelocityUnitsBox()
 }
 
 
+AnalysisResult
+analysisParametersChoice::generateReport()
+{
+    QList<QTreeWidgetItem *> selected=TreeWidgetMissionArc->selectedItems();
+    QList<QTreeWidgetItem *> selectedTimes=treeWidgetTimeSpecifications->selectedItems();
+
+    QString dataPath = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+
+    /*
+    generates and displays the report with the user-specified data
+    Inputs: selected- list of the selected lines in the scenario tree of the AM GUI, selectedTimes- list of the selected time intervals
+    */
+    int numberOfRows = 0; // Guillermo says: keep the number of rows of the report
+    int numberOfColumns = 0; // Guillermo says: keep the number of columns of the report
+
+    QList<int>SObjectsIndex;
+    QList<int>GObjectsIndex;
+    QList<int>MObjectsIndex;
+    QList<int>MParentIndex;
+
+    int TxParentIndex;
+    bool RxParentType;
+    int TxArrayIndex;
+    int RxArrayIndex;
+    bool TxParentType; //inputCoverage
+    int RxParentIndex; //input Coverage
+    int indSC; //inputCoverage
+    int indGS; //input Coverage
+    ScenarioReceiverPayloadType*Receiver;
+    ScenarioTransmitterPayloadType*Transmitter;
+    ScenarioGroundStationEnvironment*Environment;
+    bool ReadCoverage=false;
+    bool ReadCommunication1=false;
+    bool ReadCommunication2=false;
+    bool ReadCommunication3=false;
+
+    for (int t=0;t<selected.size();t++) // write the QLists with Parents and Mission indexes
+
+    {
+        int childnum=selected.at(t)->childCount();
+        if (selected.at(t)->child(childnum-1)->text(0)=="ground")
+        {
+            GObjectsIndex.append(selected.at(t)->child(childnum-2)->text(0).toInt());
+        }
+        if (selected.at(t)->child(childnum-1)->text(0)=="space")
+        {
+            SObjectsIndex.append(selected.at(t)->child(childnum-2)->text(0).toInt());
+        }
+        if (selected.at(t)->child(childnum-1)->text(0)=="MArc")
+        {
+            MObjectsIndex.append(selected.at(t)->child(childnum-3)->text(0).toInt());
+            MParentIndex.append(selected.at(t)->child(childnum-4)->text(0).toInt());
+        }
+
+        if(selected.at(t)->child(childnum-1)->text(0)=="Tx")
+        {
+
+            TxParentIndex=selected.at(t)->child(1)->text(0).toInt();
+
+            TxArrayIndex=selected.at(t)->child(2)->text(0).toInt();
+
+            int TxParentTy=selected.at(t)->child(0)->text(0).toInt();
+
+            if(TxParentTy==0)
+            {
+                indGS=TxParentIndex;
+                Transmitter=TxGS.at(TxArrayIndex);
+                Environment=GSEnvironment.at(indGS);
+                TxParentType=false;
+            }
+            if(TxParentTy==1)
+            {
+                indSC=TxParentIndex;
+                Transmitter=TxSC.at(TxArrayIndex);
+                TxParentType=true;
+
+            }
+        }
+
+        if(selected.at(t)->child(childnum-1)->text(0)=="Rx")
+        {
+            RxParentIndex=selected.at(t)->child(childnum-3)->text(0).toInt();
+            RxArrayIndex=selected.at(t)->child(childnum-2)->text(0).toInt();
+            int RxParentTy=(selected.at(t)->child(0)->text(0)).toInt();
+            if(RxParentTy==0)
+            {
+
+                indGS=RxParentIndex;
+                Receiver=RxGS.at(RxArrayIndex);
+                Environment=GSEnvironment.at(indGS);
+                RxParentType=false;
+
+            }
+            //indGS=0;
+            if(RxParentTy==1)
+            {
+
+                indSC=RxParentIndex;
+                Receiver=RxSC.at(RxArrayIndex);
+                RxParentType=true;
+            }
+        }
+
+    }
+
+    for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++) //sets true some bool
+
+    {
+        QTreeWidgetItem*parameter=treeWidgetShowInReport->topLevelItem(i);
+        QString name=parameter->text(0);
+
+        if(name=="Azimuth"||name=="Elevation"||name=="Range"||name=="Access Time")
+        {
+
+            ReadCoverage=true;
+        }
+        //if((name=="Equivalent Isotropical Radiated Power")||(name=="Received Frequency")||(name=="Doppler Shift")||(name=="Received Power")||(name=="Flux Density")||(name=="Overlap Bandwidth Factor"))
+        if((name=="EIRP")||(name=="Received Frequency")||(name=="Doppler Shift")||(name=="Received Power")||(name=="Flux Density")||(name=="Overlap Bandwidth Factor"))
+        {
+            ReadCommunication1=true;
+        }
+        if((name=="Free Space Loss")||(name=="Oxygen Loss")||(name=="Water Vapour Loss")||(name=="Rain Loss")||(name=="Atmospheric Loss")||(name=="Propagation Loss"))
+        {
+            ReadCommunication2=true;
+        }
+        if((name=="G/T")||(name=="C/No")||(name=="C/N")||(name=="Eb/No")||(name=="BER"))
+            ReadCommunication3=true;
+    }
+
+    // Patched by Guillermo to allow read of files in MAC and Linux
+    QString analysisFile = dataPath + "/" + "analysisReport.txt";
+    qDebug() << analysisFile;
+    QFile file(analysisFile);
+    file.open(QIODevice::WriteOnly);
+    QTextStream stream(&file);
+    stream.setRealNumberPrecision(16);
+
+    //######time of generation of report#####
+    QDateTime ReportDateTime=QDateTime::currentDateTime();
+
+    stream<<"Report generated on"<<"\t"<<ReportDateTime.date().day()<<"/"<<ReportDateTime.date().month()<<"/"<<ReportDateTime.date().year()<<" "<<"at"<<" "<<ReportDateTime.time().hour()<<":"<<ReportDateTime.time().minute()<<":"<<ReportDateTime.time().second()<<"\r\n";
+    int CStart, CStop;
+
+    // Get the column names for the analysis result
+    QStringList columnNames;
+    for (int itemIndex = 0; itemIndex < treeWidgetShowInReport->topLevelItemCount(); itemIndex++)
+    {
+        QString name = ReadParameter(treeWidgetShowInReport->topLevelItem(itemIndex));
+        if (name != "Access Time")
+        {
+            QString Unit = ReadUnits(treeWidgetShowInReport,treeWidgetShowInReport->topLevelItem(itemIndex));
+            columnNames << QString("%1 (%2)").arg(name, Unit);
+        }
+        else
+        {
+            columnNames << "Access Number" << "Start Time (MJD)" << "Stop Time (MJD)" << "Duration of each access (seconds)";
+        }
+    }
+
+    // Create the analysis result structure; output from the analysis will be dumped
+    // here and passed to QtiPlot.
+    AnalysisResult analysisResult(columnNames.count());
+    analysisResult.setTitle("STA Results");
+    for (int i = 0; i < columnNames.count(); ++i)
+    {
+        analysisResult.setColumnName(i, columnNames.at(i));
+    }
+
+    if (selectedTimes.empty())
+    {
+        QMessageBox::warning(this, "Analysis Error", "No time ranges selected");
+        return analysisResult;
+    }
+
+    for(int z=0;z<MParentIndex.size();z++)
+    {
+
+        SpaceObject*spaceObj=m_propagatedScenario->spaceObjects().at(MParentIndex.at(z));
+
+        {
+            int indMissionArc=MObjectsIndex.at(z);
+            MissionArc*arc=spaceObj->mission().at(MObjectsIndex.at(z));
+
+            stream<<"Satellite: "<<MParentIndex.at(z)+1<<"\t"<<"Mission Arc: "<<indMissionArc+1<<"\r\n";
+
+            int timeRangeCount = selectedTimes.size();
+            QVector<double> StartTime(timeRangeCount);
+            QVector<double> StopTime(timeRangeCount);
+            QVector<int> countStart(timeRangeCount);
+            QVector<int> countStop(timeRangeCount);
+
+            ReadTime(0,StartTime);//in MJD
+            ReadTime(1,StopTime); //in MJD
+
+            double StartEpoch=arc->trajectorySampleTime(0);
+
+            int totalTime=(arc->trajectorySampleCount())-1; //position of the last sample time
+
+            double StopEpoch=arc->trajectorySampleTime(totalTime);
+
+            int CovIndex[4]; //line of Coverage Report for each parameter
+            CovIndex[0]=CovIndex[1]=CovIndex[2]=CovIndex[3]=1; //0-Azimuth, 1-Elevation, 2-Range, 3-Access Time
+            int Comm1Index[6]; //line of Comminucation Report 1 for each parameter
+            Comm1Index[0]=Comm1Index[1]=Comm1Index[2]=Comm1Index[3]=Comm1Index[4]=Comm1Index[5]=1;
+            int Comm2Index[6];
+            Comm2Index[0]=Comm2Index[1]=Comm2Index[2]=Comm2Index[3]=Comm2Index[4]=Comm2Index[5]=1;
+            int Comm3Index[5];
+            Comm3Index[0]=Comm3Index[1]=Comm3Index[2]=Comm3Index[3]=Comm3Index[4]=1;
+            QString CoverageLine; //each line of the cov report
+            QStringList LineOfCoverageReport; //list of all the lines
+            QString Communication1Line;
+            QString Communication2Line;
+            QString Communication3Line;
+            QStringList LineOfComm1Report;
+            QStringList LineOfComm2Report;
+            QStringList LineOfComm3Report;
+
+#if 0
+            if(ReadCoverage==true)
+            {
+                CoverageAnalysis covAna=CoverageAnalysis(m_propagatedScenario, indSC, indGS, indMissionArc);
+                covAna.reportAER();
+                // Patched by Guillermo to allow read of files in MAC and Linux
+                QString CoverageFile = staResourcesPath + "/" + "reportCov1.txt";
+                QFile Coverage(CoverageFile);
+
+                if(Coverage.open(QIODevice::ReadOnly ))
+                {
+                    QTextStream text(&Coverage);
+                    while(!text.atEnd())
+                    {
+                        CoverageLine=text.readLine();
+                        LineOfCoverageReport.append(CoverageLine);
+                    }
+                    Coverage.close();
+                }
+            }
+
+            ReadCommunication1 = true; ReadCommunication2 = false;  ReadCommunication3 = false;
+            if(ReadCommunication1==true)
+            {
+                CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc, TxParentType, RxParentType);
+                commAnalysis.CommReports();
+                // Patched by Guillermo to allow read of files in MAC and Linux
+                QString Comm1File = staResourcesPath + "/" + "reportComm1.txt";
+                QFile Communication1(Comm1File);
+
+                if(Communication1.open(QIODevice::ReadOnly ))
+                {
+                    QTextStream Comm1(&Communication1);
+                    while(!Comm1.atEnd())
+                    {
+                        Communication1Line=Comm1.readLine();
+                        LineOfComm1Report.append(Communication1Line);
+                    }
+                    Communication1.close();
+                }
+            }
+            if(ReadCommunication2==true)
+            {
+                CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
+                commAnalysis.CommReports();
+                // Patched by Guillermo to allow read of files in MAC and Linux
+                QString Comm2File = staResourcesPath + "/" + "reportComm2.txt";
+                QFile Communication2(Comm2File);
+
+                if(Communication2.open(QIODevice::ReadOnly ))
+                {
+                    QTextStream Comm2(&Communication2);
+                    while(!Comm2.atEnd())
+                    {
+                        Communication2Line=Comm2.readLine();
+                        LineOfComm2Report.append(Communication2Line);
+                    }
+                    Communication2.close();
+                }
+            }
+            if(ReadCommunication3==true)
+            {
+                CommAnalysis commAnalysis=CommAnalysis(Transmitter, Receiver, Environment, m_propagatedScenario, indSC, indGS, indMissionArc,TxParentType,RxParentType);
+                commAnalysis.CommReports();
+                // Patched by Guillermo to allow read of files in MAC and Linux
+                QString Comm3File = staResourcesPath + "/" + "reportComm3.txt";
+                QFile Communication3(Comm3File);
+
+                if(Communication3.open(QIODevice::ReadOnly ))
+                {
+                    QTextStream Comm3(&Communication3);
+                    while(!Comm3.atEnd())
+                    {
+                        Communication3Line=Comm3.readLine();
+                        LineOfComm3Report.append(Communication3Line);
+                    }
+                    Communication3.close();
+                }
+            }
+#endif
+
+            for (int k=0;k<selectedTimes.size();k++)
+            {
+                int ControlStart=0;
+                int ControlStop=0;
+                if ((StartTime[k]>(StopEpoch+2*pow(10,-5)))||(StartTime[k]<=(StartEpoch-2*pow(10,-5))))
+                {
+                    ControlStart++;
+                }
+                if ((StopTime[k]>(StopEpoch+2*pow(10,-5)))||(StopTime[k]<=(StartEpoch-2*pow(10,-5))))
+                {
+
+                    ControlStop++;
+                }
+                CStart=ControlStart;
+                CStop=ControlStop;
+                int AccessStep=0;
+                int AccessNow=0;
+                int AccessNumber=0;
+
+                if((ControlStart==0)&&(ControlStop==0))
+                {
+                    int i=0;
+                    while(( (arc->trajectorySampleTime(i)))<(StartTime[k]))
+                    {
+
+                        i=i+1;
+                    }
+                    countStart[k]=i;
+                    int m=0;
+                    while(((arc->trajectorySampleTime(m)))<(StopTime[k]-pow(10,-5)))
+                    {
+                        m=m+1;
+                    }
+                    countStop[k]=m;
+                    int inumber=countStop[k]-countStart[k]+1;
+                    QList<QTreeWidgetItem*>SelTime=treeWidgetTimeSpecifications->selectedItems();
+                    QString Start=SelTime[k]->text(0);
+                    QString Stop=SelTime[k]->text(1);
+
+
+                    //stream<<"Satellite:"<<MParentIndex.at(z)+1<<"\t"<<"Mission Arc:"<<indMissionArc+1<<"\r\n";
+                    stream<<"###Beginning of time"<<" "<<(k+1)<<"###"<<"\r\n"<<"Start Time"<<" "<<Start<<"###"<<"Stop Time"<<" "<<Stop<<"\r\n";
+
+                    //printing the labels of the displayed parameters
+                    for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++)
+                    {
+                        QString name = ReadParameter(treeWidgetShowInReport->topLevelItem(i));
+                        if(name!="Access Time")
+                        {
+                            QString Unit = ReadUnits(treeWidgetShowInReport,treeWidgetShowInReport->topLevelItem(i));
+                            // Guillermo patched the following line
+                            //stream<<"\t"<<name<<"("<<Unit<<")"<<"\t";
+                            stream << name << " (" << Unit << ") " << "\t";
+                            numberOfColumns++;
+
+                            if(i==((treeWidgetShowInReport->topLevelItemCount())-1))
+                            {
+                                stream<<"\r\n";
+                            }
+                        }
+                        else
+                        {
+                            stream<<name<<"\r\n";
+                            stream<<"Access Number"<<"\t"<<"Start Time (MJD)"<<"\t"<<"Stop Time (MJD)"<<"\t"<<"Duration of each access (seconds)"<<"\r\n";
+                            numberOfColumns=4;
+
+                            if(i==((treeWidgetShowInReport->topLevelItemCount())-1))
+                            {
+                                stream<<"\r\n";
+                            }
+                        }
+                    }
+
+                    double MJDdate[inumber];
+                    //            double JulianDate[inumber];
+                    //            double TDBSeconds[inumber];
+                    //            double TAIDate[inumber];
+                    //            double TDTDate[inumber];
+                    //            double JDTDT[inumber];
+                    //            double JDGPS[inumber];
+                    //            double JDTAI[inumber];
+                    //            double GPSDate[inumber];
+                    //TimeConversions::GregorianDate gregUTC[inumber];
+                    //            double GregSec[inumber];
+                    //            double DateSec[inumber];
+                    //            double OrbitalPeriod;
+                    //            double EarthCanTime[inumber];
+
+                    QDateTime GregorianLCL[inumber];
+                    double CurrentJulianDate=sta::DateTimeTOjulian(QDateTime::currentDateTime());
+                    double JulianLCL[inumber];
+                    QDateTime TimeDateVector[inumber];
+                    double DayOfYear[inumber];
+
+                    QVariantList analysisRow;
+                    //Access Time calculation
+                    for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++)
+                    {
+
+                        QTreeWidgetItem*parameter=treeWidgetShowInReport->topLevelItem(i);
+                        QString name=parameter->text(0);
+
+#if 0
+                        if(name=="Access Time")
+                        {
+
+                            QList< QList<double> > AccessTime= calcAccessTime(countStop[k],countStart[k], AccessNumber, AccessStep, AccessNow,CovIndex[3],LineOfCoverageReport,arc);
+
+                            for(int l=0;l<AccessTime.size();l++)
+                            {
+                                QList <double> List=AccessTime.at(l);
+
+                                int j=0;
+                                for(int n=0;n<List.size();n++)
+                                {
+                                    j=j+1;
+                                    stream<<List.at(n)<<"\t";
+                                    analysisRow << List.at(n);
+
+                                    //if(n==List.size()-1)
+                                    if(j%4==0)
+                                    {
+                                        stream <<"\r\n";
+                                    }
+                                }
+                            }
+                            numberOfRows=AccessTime.size();
+                        }
+#endif
+                    }
+                    //other parameters
+                    for(int j=countStart[k];j<=countStop[k];j++)
+                    {
+                        int index=j-countStart[k];
+
+                        MJDdate[index]=arc->trajectorySampleTime(j);
+                        int AccessNumber=0;
+                        int AccessStep=0;
+
+                        //stream<<MJDdate[index]<<"\t"; //prints MJD by default
+
+                        for(int i=0;i<treeWidgetShowInReport->topLevelItemCount();i++)
+                        {
+
+                            QTreeWidgetItem*parameter=treeWidgetShowInReport->topLevelItem(i);
+                            QString name=parameter->text(0);
+
+                            if((name=="x position")||(name=="y position")||(name=="z position")||(name=="x velocity")||(name=="y velocity")||(name=="z velocity"))
+                            {
+                                QString Coordinate = ReadCoordinateSys(treeWidgetShowInReport,parameter);
+                                QString Units = ReadUnits(treeWidgetShowInReport,parameter);
+
+                                double outputValue = 0.0;
+
+                                double mjd = MJDdate[index];
+
+                                //Added by Catarina
+                                if (Coordinate == "Mean of Epoch")
+                                {
+                                     mjd = MJDdate[0];
+                                }
+
+                                StateVector state = arc->trajectorySample(j);
+                                StateVector transformedState = ConvertStateVector(state, Coordinate, arc->centralBody(), mjd);
+
+                                if (name == "x position")
+                                {
+                                    outputValue = transformedState.position.x();
+                                }
+                                else if (name == "y position")
+                                {
+                                    outputValue = transformedState.position.y();
+                                }
+                                else if (name == "z position")
+                                {
+                                    outputValue = transformedState.position.z();
+                                }
+                                else if (name == "x velocity")
+                                {
+                                    outputValue = transformedState.velocity.x();
+                                }
+                                else if (name == "y velocity")
+                                {
+                                    outputValue = transformedState.velocity.y();
+                                }
+                                else if (name == "z velocity")
+                                {
+                                    outputValue = transformedState.velocity.z();
+                                }
+
+                                stream << sta::ConvertUnits(Units,outputValue, "km") << "\t";
+                                analysisRow << sta::ConvertUnits(Units,outputValue, "km");
+                            }
+                            if(name=="Time")
+                            {
+
+                                QString TimeCoordinate = ReadCoordinateSys(treeWidgetShowInReport,parameter);
+
+                                //Options of Time
+                                if(TimeCoordinate=="MJD")                               // Added by Ana
+                                {
+                                    double mjd=convertToMJDUTC(MJDdate,index);
+                                    stream<<mjd<<"\t";
+                                    analysisRow << mjd;
+                                }
+                                if(TimeCoordinate=="Julian TDB")                        // Added by Ana
+                                {
+                                    double julianDate=convertToJulianTDB(MJDdate,index);
+                                    stream<<julianDate<<"\t";
+                                    analysisRow << julianDate;
+                                }
+                                if(TimeCoordinate=="Gregorian UTC")                     // Added by Ana. Corrected by Catarina
+                                {
+                                    QString gregUTC = convertToGregUTC(MJDdate,index);
+                                    stream<<gregUTC<<"\t";
+                                    analysisRow << gregUTC;
+                                }
+                                if(TimeCoordinate=="Gregorian LCL")                     // Added by Catarina. Missing: Time zones
+                                {
+                                    // Convert MJD to Julian Date in TDB
+                                    //double julianDate=sta::MjdToJd(MJDdate[index]+0.00001);
+                                    // Convert to gregorian UTC
+                                    //TimeConversions::GregorianDate gregUTC=TimeConversions::GregorianDate::UTCDateFromTDBJD(julianDate);
+                                    // Missing time zones
+
+                                    // This is to patch Ana's code
+                                    //QDateTime DisplayDateCalendar[inumber];
+
+                                    //--------------------------------------------------------------------------------
+                                    // For now it is shown in UTC
+
+                                    //TimeConversions::GregorianDate gregUTC = TimeConversions::GregorianDate::convertToGregLCL(MJDdate,index);
+                                    //stream<<gregUTC.day()<<"/"<<gregUTC.month()<<"/"<<gregUTC.year()<<" "<<gregUTC.hour()<<":"<<gregUTC.minute()<<":"<<gregUTC.second()<<"\t";
+                                }
+                                if(TimeCoordinate=="Gregorian TDB")                     // Added by Ana. Corrected by Catarina
+                                {
+                                    QString gregTDB = convertToGregTDB(MJDdate,index);
+                                    stream<<gregTDB<<"\t";
+                                    analysisRow << gregTDB;
+                                }
+                                if(TimeCoordinate=="Julian UTC")                        // Added by Ana. Corrected by Catarina
+                                {
+                                    int Last2Digits;
+                                    double hour, minute, second;
+                                    QList<double> DDD;
+                                    convertToJulianUTC(MJDdate,index, &Last2Digits , &DDD, &hour, &minute,&second);
+                                    stream<<Last2Digits<<"/";
+                                    for(int i=0;i<DDD.size();i++)
+                                    {
+                                        stream<<DDD[i];
+                                    }
+                                    stream<<" "<< hour<<":"<< minute<<":"<<second<<"\t";
+//                                    analysisRow << QString("%1/%2 %3:%4:%5").
+//                                                      arg(DDD).
+//                                                      arg(QString::number(Year).mid(2, 2)).
+//                                                      arg(gregUTC.hour(), 2, 10, QChar('0')).
+//                                                      arg(gregUTC.minute(), 2, 10, QChar('0')).
+//                                                      arg(gregUTC.second(), 2, 10, QChar('0'));
+
+                                }
+                                if(TimeCoordinate=="Julian Date")                       // Added by Catarina
+                                {
+                                    double julian=convertToJulianTDB(MJDdate,index);
+                                    stream<<julian<<"\t";
+                                    analysisRow << julian;
+                                }
+                                if(TimeCoordinate=="Julian LCL")                        // Added by Catarina. Missing: time zones
+                                {
+                                    //double julianDate=sta::MjdToJd(MJDdate[index]+0.00001);
+                                    //// Convert to Gregorian UTC
+                                    //TimeConversions::GregorianDate gregUTC=TimeConversions::GregorianDate::UTCDateFromTDBJD(julianDate);
+
+                                    //// Convert gregoUTC to JulianUTC
+                                    //double julUTC= calendarTOjulian(gregUTC.year(), gregUTC.month(), gregUTC.day(), gregUTC.hour(), gregUTC.minute(),gregUTC.second());
+
+                                    //// Need to add time zones. For now it's in UTC
+
+                                    //stream<<julUTC<<"\t";
+                                    //analysisRow << julUTC;
+                                }
+                                if(TimeCoordinate=="Mission Elapsed")                   // Added by Ana
+                                {
+                                    QString Elapsed= sta::MissionElapsedTime(MJDdate[index],StartEpoch);
+
+                                    stream<<Elapsed<<"\t";
+                                    analysisRow << Elapsed;
+                                }
+                                if(TimeCoordinate=="Days from Epoch")                   // Added by Catarina
+                                {
+                                    double ElapsedTimeDays=sta::MjdToFromEpoch(StartEpoch,MJDdate[index],"Days");
+                                    stream<<ElapsedTimeDays<<"\t";
+                                    analysisRow << ElapsedTimeDays;
+                                }
+                                if(TimeCoordinate=="Hours from Epoch")                  // Added by Catarina
+                                {
+                                    double ElapsedTimeHours=sta::MjdToFromEpoch(StartEpoch,MJDdate[index],"Hours");
+                                    stream<<ElapsedTimeHours<<"\t";
+                                    analysisRow << ElapsedTimeHours;
+                                }
+                                if(TimeCoordinate=="Minutes from Epoch")                // Added by Catarina
+                                {
+                                    double ElapsedTimeMinutes=sta::MjdToFromEpoch(StartEpoch,MJDdate[index],"Minutes");
+                                    stream<<ElapsedTimeMinutes<<"\t";
+                                    analysisRow << ElapsedTimeMinutes;
+                                }
+                                if(TimeCoordinate=="Seconds from Epoch")                // Added by Catarina
+                                {
+                                    double ElapsedTimeSeconds=sta::MjdToFromEpoch(StartEpoch,MJDdate[index],"Seconds");
+                                    stream<<ElapsedTimeSeconds<<"\t";
+                                    analysisRow << ElapsedTimeSeconds;
+                                }
+                                if(TimeCoordinate=="YYDDD TDB")                         // Added by Ana. Corrected by Catarina.
+                                {
+
+                                    int Last2Digits;
+                                    QList<double> DDD;
+                                    convertToYYDDD(MJDdate,index, &Last2Digits , &DDD);
+                                    stream<<Last2Digits<<"/";
+                                    for(int i=0;i<DDD.size();i++)
+                                    {
+                                        stream<<DDD[i];
+                                    }
+                                    stream<<"\t";
+                                    analysisRow << "FIX THIS!";
+                                }
+                                if(TimeCoordinate=="Gregorian TAI")                     // Added by Catarina
+                                {
+                                    QString gregTAI = convertToGregTAI(MJDdate,index);
+                                    stream<<gregTAI<<"\t";
+                                    analysisRow << "FIX THIS!";
+                                }
+                                if(TimeCoordinate=="Gregorian TDT")                     // Added by Catarina
+                                {
+                                    QString gregTDT = convertToGregTDT(MJDdate, index);
+                                    stream<<gregTDT<<"\t";
+                                    analysisRow << "FIX THIS!";
+                                }
+                                if(TimeCoordinate=="Julian Ephemeris Date")             // Added by Catarina
+                                {
+                                    double julianEphDate=convertToJulianEphDate(MJDdate,index);
+                                    stream<<julianEphDate<<"\t";
+                                    analysisRow << julianEphDate;
+                                }
+                                if(TimeCoordinate=="Gregorian GPS")                     // Added by Catarina
+                                {
+                                    QString gregGPS = convertToGregGPS(MJDdate,index);
+                                    stream<<gregGPS<<"\t";
+                                    analysisRow << "FIX THIS!";
+                                }
+                                if(TimeCoordinate=="Julian GPS")                        // Added by Catarina
+                                {
+                                    double julianGPS=convertToJulianGPS(MJDdate,index);
+                                    stream<<julianGPS<<"\t";
+                                    analysisRow << julianGPS;
+                                }
+                                if(TimeCoordinate=="Earth canonical time")              // Added by Catarina
+                                {
+                                    double EarthCanTime = convertToEarthCanTime(MJDdate, index, StartEpoch);
+                                    stream<<EarthCanTime<<"\t";
+                                    analysisRow << EarthCanTime;
+                                }
+                                if(TimeCoordinate=="GMT")   {}                          // Added by Catarina - not working
+
+                            }
+
+                            if(name=="Epoch")
+                            {
+                                QWidget*Box=treeWidgetShowInReport->itemWidget(parameter,2);
+                                QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
+                                QString TimeUnits=ComboBox->currentText();
+
+                                double ElapsedTime=MjdToFromEpoch(StartEpoch,MJDdate[index],TimeUnits);
+
+                                if(TimeUnits=="Seconds")
+                                {
+                                    stream<<ElapsedTime<<"\t";
+                                }
+                                if(TimeUnits=="Minutes")
+                                {
+                                    stream<<ElapsedTime<<"\t";
+                                }
+                                if(TimeUnits=="Hours")
+                                {
+                                    stream<<ElapsedTime<<"\t";
+                                }
+                                if(TimeUnits=="Days")
+                                {
+                                    stream<<ElapsedTime<<"\t";
+                                }
+                                analysisRow << ElapsedTime;
+                            }
+                            else if (IsPlanetDistanceField(name))
+                            {
+                                StaBody* body = STA_SOLAR_SYSTEM->lookup(name);
+                                Q_ASSERT(body != NULL);
+
+                                QString Units = ReadUnits(treeWidgetShowInReport,parameter);
+
+                                double mjd = MJDdate[index];
+                                sta::StateVector state;
+                                spaceObj->getStateVector(mjd, *body, CoordinateSystem(COORDSYS_EME_J2000), &state);
+
+                                stream << sta::ConvertUnits(Units, state.position.norm(), "km") << "\t";
+                                analysisRow << sta::ConvertUnits(Units, state.position.norm(), "km");
+                            }
+                            if((name=="Azimuth")||(name=="Elevation")||(name=="Range"))
+                            {
+                                QString ToCoord = ReadCoordinateSys(treeWidgetShowInReport,parameter);
+                                QString ToUnit = ReadUnits(treeWidgetShowInReport,parameter);
+                                if(name=="Azimuth")
+                                {
+
+                                    if(CovIndex[0]<LineOfCoverageReport.size())
+                                    {
+                                        QString Line=LineOfCoverageReport.at(CovIndex[0]);
+
+                                        double TimeCovReport=(Line.section("\t",0,0)).toDouble();
+
+                                        double Azimuth=(Line.section("\t",3,3)).toDouble();
+
+                                        if(fabs(MJDdate[index]-TimeCovReport)<10e-6)
+                                        {
+
+                                            stream<<sta::ConvertUnits(ToUnit,Azimuth,"deg")<<"\t";
+                                            analysisRow <<sta::ConvertUnits(ToUnit,Azimuth,"deg");
+                                            CovIndex[0]++;
+                                        }
+
+                                        else
+                                        {
+
+                                            stream<<"No visibility"<<"\t";
+                                            analysisRow << "No visibility";
+                                            //CovIndex[0]++;
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
+                                    }
+                                }
+                                if(name=="Elevation")
+                                {
+
+                                    if(CovIndex[1]<LineOfCoverageReport.size())
+                                    {
+                                        QString Line=LineOfCoverageReport.at(CovIndex[1]);
+
+                                        double TimeCovReport=(Line.section("\t",0,0)).toDouble();
+                                        double Elevation=(Line.section("\t",2,2)).toDouble();
+
+                                        if(fabs(MJDdate[index]-TimeCovReport)<10e-6)
+                                        {
+                                            stream<<sta::ConvertUnits(ToUnit,Elevation,"deg")<<"\t";
+                                            analysisRow << sta::ConvertUnits(ToUnit, Elevation, "deg");
+                                            CovIndex[1]++;
+                                        }
+
+                                        else
+                                        {
+                                            stream<<"No visibility"<<"\t";
+                                            analysisRow << "No visibility";
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
+                                    }
+                                }
+                                if(name=="Range")
+                                {
+                                    if(CovIndex[2]<LineOfCoverageReport.size())
+                                    {
+                                        QString Line=LineOfCoverageReport.at(CovIndex[2]);
+
+                                        double TimeCovReport=(Line.section("\t",0,0)).toDouble();
+                                        double Range=(Line.section("\t",1,1)).toDouble();
+
+                                        if(fabs(MJDdate[index]-TimeCovReport)<10e-6)
+                                        {
+                                            stream<<sta::ConvertUnits(ToUnit,Range,"km")<<"\t";
+                                            analysisRow<<sta::ConvertUnits(ToUnit,Range,"km");
+                                            CovIndex[2]++;
+                                        }
+
+                                        else
+                                        {
+                                            stream<<"No visibility"<<"\t";
+                                            analysisRow << "No visibility";
+                                        }
+
+
+
+                                    }
+                                    else
+                                    {
+                                        stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
+                                    }
+                                }
+                            }
+                            if(name=="EIRP")
+                            {
+
+                                if(Comm1Index[0]<LineOfComm1Report.size())
+                                {
+                                    QString Line=LineOfComm1Report.at(Comm1Index[0]);
+
+                                    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                    double EIRP=(Line.section("\t",1,1)).toDouble();
+
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    {
+                                        stream<<EIRP<<"\t";
+                                        analysisRow << EIRP;
+                                        Comm1Index[0]++;
+                                    }
+
+                                    else
+                                    {
+                                        stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
+                                    }
+
+                                }
+                                else
+                                {
+                                    stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
+                                }
+                            }
+                            if(name=="Received Frequency")
+                            {
+
+                                if(Comm1Index[1]<LineOfComm1Report.size())
+                                {
+                                    QString Line=LineOfComm1Report.at(Comm1Index[1]);
+
+                                    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                    double RcvFreq=(Line.section("\t",2,2)).toDouble();
+
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    {
+                                        stream<<RcvFreq<<"\t";
+                                        analysisRow<<RcvFreq;
+                                        Comm1Index[1]++;
+                                    }
+
+                                    else
+                                    {
+                                        stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
+                                    }
+
+                                }
+                                else
+                                {
+                                    stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
+                                }
+                            }
+                            if(name=="Doppler Shift")
+                            {
+
+                                if(Comm1Index[2]<LineOfComm1Report.size())
+                                {
+                                    QString Line=LineOfComm1Report.at(Comm1Index[2]);
+
+                                    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                    double RcvFreq=(Line.section("\t",3,3)).toDouble();
+
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    {
+                                        stream<<RcvFreq<<"\t";
+                                        analysisRow<<RcvFreq;
+                                        Comm1Index[2]++;
+                                    }
+
+                                    else
+                                    {
+                                        stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
+                                    }
+
+                                }
+                                else
+                                {
+                                    stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
+                                }
+                            }
+                            if(name=="Received Power")
+                            {
+                                if(Comm1Index[3]<LineOfComm1Report.size())
+                                {
+                                    QString Line=LineOfComm1Report.at(Comm1Index[3]);
+
+                                    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                    double RcvFreq=(Line.section("\t",4,4)).toDouble();
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    {
+                                        stream<<RcvFreq<<"\t";
+                                        analysisRow<<RcvFreq;
+                                        Comm1Index[3]++;
+                                    }
+
+                                    else
+                                    {
+                                        stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
+                                    }
+
+                                }
+                                else
+                                {
+                                    stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
+                                }
+                            }
+                            if(name=="Flux Density")
+                            {
+                                if(Comm1Index[4]<LineOfComm1Report.size())
+                                {
+                                    QString Line=LineOfComm1Report.at(Comm1Index[4]);
+
+                                    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                    double FluxDensity=(Line.section("\t",5,5)).toDouble();
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    {
+                                        stream<<FluxDensity<<"\t";
+                                        analysisRow<<FluxDensity;
+                                        Comm1Index[4]++;
+                                    }
+
+                                    else
+                                    {
+                                        stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
+                                    }
+
+                                }
+                                else
+                                {
+                                    stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
+                                }
+                            }
+                            if(name=="Overlap Bandwidth Factor")
+                            {
+
+                                if(Comm1Index[5]<LineOfComm1Report.size())
+                                {
+                                    QString Line=LineOfComm1Report.at(Comm1Index[5]);
+                                    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                    double OvBWF=(Line.section("\t",6,6)).toDouble();
+
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    {
+                                        stream<<OvBWF<<"\t";
+                                        analysisRow << OvBWF;
+                                        Comm1Index[5]++;
+                                    }
+
+                                    else
+                                    {
+                                        stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
+                                    }
+                                }
+                                else
+                                {
+                                    stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
+                                }
+                            }
+                            if(name=="Free Space Loss")
+                            {
+
+                                if(Comm2Index[0]<LineOfComm2Report.size())
+                                {
+                                    QString Line=LineOfComm2Report.at(Comm2Index[0]);
+
+                                    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+
+                                    double FSL=(Line.section("\t",1,1)).toDouble();
+
+
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    {
+                                        stream<<FSL<<"\t";
+                                        analysisRow << FSL;
+                                        Comm2Index[0]++;
+                                    }
+
+                                    else
+                                    {
+                                        stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
+                                    }
+
+                                }
+                                else
+                                {
+                                    stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
+                                }
+                            }
+                            if(name=="Oxygen Loss")
+                            {
+                                if(Comm2Index[1]<LineOfComm2Report.size())
+                                {
+                                    QString Line=LineOfComm2Report.at(Comm2Index[1]);
+                                    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                    double OxLoss=(Line.section("\t",2,2)).toDouble();
+
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    {
+                                        stream<<OxLoss<<"\t";
+                                        analysisRow << OxLoss;
+                                        Comm2Index[1]++;
+                                    }
+
+                                    else
+                                    {
+                                        stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
+                                    }
+                                }
+                                else
+                                {
+                                    stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
+                                }
+                            }
+                            if(name=="Water Vapour Loss")
+                            {
+                                if(Comm2Index[2]<LineOfComm2Report.size())
+                                {
+                                    QString Line=LineOfComm2Report.at(Comm2Index[2]);
+                                    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                    double WVLoss=(Line.section("\t",3,3)).toDouble();
+
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    {
+                                        stream<<WVLoss<<"\t";
+                                        analysisRow << WVLoss;
+                                        Comm2Index[2]++;
+                                    }
+
+                                    else
+                                    {
+                                        stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
+                                    }
+                                }
+                                else
+                                {
+                                    stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
+                                }
+                            }
+                            if(name=="Rain Loss")
+                            {
+                                if(Comm2Index[3]<LineOfComm2Report.size())
+                                {
+                                    QString Line=LineOfComm2Report.at(Comm2Index[3]);
+                                    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                    double RainLoss=(Line.section("\t",4,4)).toDouble();
+
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    {
+                                        stream<<RainLoss<<"\t";
+                                        analysisRow << RainLoss;
+                                        Comm2Index[3]++;
+                                    }
+
+                                    else
+                                    {
+                                        stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
+                                    }
+                                }
+                                else
+                                {
+                                    stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
+                                }
+                            }
+                            if(name=="Atmospheric Loss")
+                            {
+                                if(Comm2Index[4]<LineOfComm2Report.size())
+                                {
+                                    QString Line=LineOfComm2Report.at(Comm2Index[4]);
+                                    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                    double AtmLoss=(Line.section("\t",5,5)).toDouble();
+
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    {
+                                        stream<<AtmLoss<<"\t";
+                                        analysisRow << AtmLoss;
+                                        Comm2Index[4]++;
+                                    }
+
+                                    else
+                                    {
+                                        stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
+                                    }
+                                }
+                                else
+                                {
+                                    stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
+                                }
+                            }
+                            if(name=="Propagation Loss")
+                            {
+                                if(Comm2Index[5]<LineOfComm2Report.size())
+                                {
+                                    QString Line=LineOfComm2Report.at(Comm2Index[5]);
+                                    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                    double PropLoss=(Line.section("\t",6,6)).toDouble();
+
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    {
+                                        stream<<PropLoss<<"\t";
+                                        analysisRow << PropLoss;
+                                        Comm2Index[5]++;
+                                    }
+
+                                    else
+                                    {
+                                        stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
+                                    }
+                                }
+                                else
+                                {
+                                    stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
+                                }
+                            }
+                            if (name=="G/T")
+                            {
+                                if(Comm3Index[0]<LineOfComm3Report.size())
+                                {
+                                    QString Line=LineOfComm3Report.at(Comm3Index[0]);
+                                    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                    double GT=(Line.section("\t",1,1)).toDouble();
+
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    {
+                                        stream<<GT<<"\t";
+                                        analysisRow << GT;
+                                        Comm3Index[0]++;
+                                    }
+
+                                    else
+                                    {
+                                        stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
+                                    }
+                                }
+                                else
+                                {
+                                    stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
+                                }
+                            }
+                            if(name=="C/No")
+                            {
+                                if(Comm3Index[1]<LineOfComm3Report.size())
+                                {
+                                    QString Line=LineOfComm3Report.at(Comm3Index[1]);
+                                    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                    double CNo=(Line.section("\t",2,2)).toDouble();
+
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    {
+                                        stream<<CNo<<"\t";
+                                        analysisRow << CNo;
+                                        Comm3Index[1]++;
+                                    }
+
+                                    else
+                                    {
+                                        stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
+                                    }
+                                }
+                                else
+                                {
+                                    stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
+                                }
+                            }
+                            if(name=="C/N")
+                            {
+                                if(Comm3Index[2]<LineOfComm3Report.size())
+                                {
+                                    QString Line=LineOfComm3Report.at(Comm3Index[2]);
+                                    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                    double CN=(Line.section("\t",3,3)).toDouble();
+
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    {
+                                        stream<<CN<<"\t";
+                                        analysisRow << CN;
+                                        Comm3Index[2]++;
+                                    }
+
+                                    else
+                                    {
+                                        stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
+                                    }
+                                }
+                                else
+                                {
+                                    stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
+                                }
+                            }
+                            if(name=="Eb/No")
+                            {
+                                if(Comm3Index[3]<LineOfComm3Report.size())
+                                {
+                                    QString Line=LineOfComm3Report.at(Comm3Index[3]);
+                                    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                    double EbNo=(Line.section("\t",4,4)).toDouble();
+
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    {
+                                        stream<<EbNo<<"\t";
+                                        analysisRow << EbNo;
+                                        Comm3Index[3]++;
+                                    }
+
+                                    else
+                                    {
+                                        stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
+                                    }
+                                }
+                                else
+                                {
+                                    stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
+                                }
+                            }
+                            if(name=="BER")
+                            {
+                                if(Comm3Index[4]<LineOfComm3Report.size())
+                                {
+                                    QString Line=LineOfComm3Report.at(Comm3Index[4]);
+                                    double TimeCommReport=(Line.section("\t",0,0)).toDouble();
+                                    double BER=(Line.section("\t",5,5)).toDouble();
+
+                                    if(fabs(MJDdate[index]-TimeCommReport)<10e-6)
+                                    {
+                                        stream<<BER<<"\t";
+                                        analysisRow << BER;
+                                        Comm3Index[4]++;
+                                    }
+
+                                    else
+                                    {
+                                        stream<<"No visibility"<<"\t";
+                                        analysisRow << "No visibility";
+                                    }
+                                }
+                                else
+                                {
+                                    stream<<"No visibility"<<"\t";
+                                    analysisRow << "No visibility";
+                                }
+                            }
+                            if(name=="Eccentricity")
+                            {
+                                QString ToCoord = ReadCoordinateSys(treeWidgetShowInReport,parameter);
+
+                                sta::StateVector Vector;
+                                Vector=arc->trajectorySample(j);
+                                double Eccentricity=calcKeplerianElements(Vector,arc->centralBody(),"Eccentricity",
+                                                                          MJDdate[index],
+                                                                          "EME J2000",
+                                                                          ToCoord);
+                                stream<<Eccentricity<<"\t";
+                                analysisRow << Eccentricity;
+                            }
+                            if((name=="Inclination")||
+                               (name=="RAAN")||
+                               (name=="Argument of Periapsis")||
+                               (name=="True Anomaly")||
+                               (name=="Semimajor Axis"))
+                            {
+                                QString ToCoord = ReadCoordinateSys(treeWidgetShowInReport,parameter);
+                                QString ToUnit = ReadUnits(treeWidgetShowInReport,parameter);
+
+                                sta::StateVector Vector;
+                                Vector=arc->trajectorySample(j);
+
+                                if(name=="Inclination")
+                                {
+                                    double Inclination=calcKeplerianElements(Vector, arc->centralBody(),name,
+                                                                             MJDdate[index],
+                                                                             "EME J2000",
+                                                                             ToCoord);
+                                    stream<<sta::ConvertUnits(ToUnit,Inclination,"rad")<<"\t";
+                                    analysisRow << sta::ConvertUnits(ToUnit,Inclination,"rad");
+                                }
+                                if(name=="RAAN")
+                                {
+                                    double Ascending=calcKeplerianElements(Vector,arc->centralBody(),name,
+                                                                           MJDdate[index],
+                                                                           "EME J2000",
+                                                                           ToCoord);
+                                    stream<<sta::ConvertUnits(ToUnit,Ascending,"rad")<<"\t";
+                                    analysisRow << sta::ConvertUnits(ToUnit, Ascending, "rad");
+                                }
+                                if(name=="True Anomaly")
+                                {
+                                    double TrueAnom=calcKeplerianElements(Vector,arc->centralBody(),name,
+                                                                          MJDdate[index],
+                                                                          "EME J2000",
+                                                                          ToCoord);
+                                    stream<<sta::ConvertUnits(ToUnit,TrueAnom,"rad")<<"\t";
+                                    analysisRow << sta::ConvertUnits(ToUnit, TrueAnom, "rad");
+                                }
+                                if(name=="Argument of Periapsis")
+                                {
+                                    double Periapsis=calcKeplerianElements(Vector,arc->centralBody(),name,
+                                                                           MJDdate[index],
+                                                                           "EME J2000",
+                                                                           ToCoord);
+                                    stream<<sta::ConvertUnits(ToUnit,Periapsis,"rad")<<"\t";
+                                    analysisRow << sta::ConvertUnits(ToUnit, Periapsis, "rad");
+                                }
+                                if(name=="Semimajor Axis")
+                                {
+                                    double SemAxis=calcKeplerianElements(Vector,arc->centralBody(),name,
+                                                                         MJDdate[index],
+                                                                         "EME J2000",
+                                                                         ToCoord);
+                                    stream<<sta::ConvertUnits(ToUnit,SemAxis,"km")<<"\t";
+                                    analysisRow << sta::ConvertUnits(ToUnit, SemAxis, "rad");
+                                }
+
+                            }
+                            if((name=="l")||(name=="g")||(name=="h")||(name=="L")||(name=="G")||(name=="H"))
+                            {
+                                QString ToCoord = ReadCoordinateSys(treeWidgetShowInReport,parameter);
+                                sta::StateVector Vector;
+                                Vector=arc->trajectorySample(j);
+
+                                if(name=="l")
+                                {
+                                    double Delaunay_l=calcDelaunayElements(Vector,arc->centralBody(),name,
+                                                                           MJDdate[index],
+                                                                           "EME J2000",
+                                                                           ToCoord);
+                                    stream<<Delaunay_l<<"\t";
+                                    analysisRow << Delaunay_l;
+                                }
+                                if(name=="g")
+                                {
+                                    double Delaunay_g=calcDelaunayElements(Vector,arc->centralBody(),name,
+                                                                           MJDdate[index],
+                                                                           "EME J2000",
+                                                                           ToCoord);
+                                    stream<<Delaunay_g<<"\t";
+                                    analysisRow << Delaunay_g;
+                                }
+                                if(name=="h")
+                                {
+                                    double Delaunay_h=calcDelaunayElements(Vector,arc->centralBody(),name,
+                                                                           MJDdate[index],
+                                                                           "EME J2000",
+                                                                           ToCoord);
+                                    stream<<Delaunay_h<<"\t";
+                                    analysisRow << Delaunay_h;
+                                }
+                                if(name=="L")
+                                {
+                                    double Delaunay_L=calcDelaunayElements(Vector,arc->centralBody(),name,
+                                                                           MJDdate[index],
+                                                                           "EME J2000",
+                                                                           ToCoord);
+                                    stream<<Delaunay_L<<"\t";
+                                    analysisRow << Delaunay_L;
+                                }
+                                if(name=="G")
+                                {
+                                    double Delaunay_G=calcDelaunayElements(Vector,arc->centralBody(),name,
+                                                                           MJDdate[index],
+                                                                           "EME J2000",
+                                                                           ToCoord);
+                                    stream<<Delaunay_G<<"\t";
+                                    analysisRow << Delaunay_G;
+                                }
+                                if(name=="H")
+                                {
+                                    double Delaunay_H=calcDelaunayElements(Vector,arc->centralBody(),name,
+                                                                           MJDdate[index],
+                                                                           "EME J2000",
+                                                                           ToCoord);
+                                    stream<<Delaunay_H<<"\t";
+                                    analysisRow << Delaunay_H;
+                                }
+                            }
+
+                            if (name=="Covered Area" && m_propagatedScenario->coverageTriggered())
+                            {
+#if 0
+                                QString Units = ReadUnits(treeWidgetShowInReport,parameter);
+                                if(Units == "km^2")
+                                {
+                                    stream << m_studyOfConstellations->m_constellationStudySpaceObjectList.at(MParentIndex.at(z)).coveragesample.at(index).coveredArea<<"\t";
+                                }else{
+                                    stream << m_studyOfConstellations->m_constellationStudySpaceObjectList.at(MParentIndex.at(z)).coveragesample.at(index).coveredAreaInPerCent<<"\t";
+                                }
+#endif
+                            }
+
+                            if ((name=="Latitude")          ||
+                                (name=="Longitude")         ||
+                                (name=="Radial Distance")   ||
+                                (name=="Flight Path Angle") ||
+                                (name=="Heading Angle")     ||
+                                (name=="Velocity Modulus")  ||
+                                (name=="Altitude"))
+                            {
+                                QString ToCoord = ReadCoordinateSys(treeWidgetShowInReport,parameter);
+                                QString Units = ReadUnits(treeWidgetShowInReport,parameter);
+
+                                sta::StateVector Vector[inumber];
+                                sta::StateVector ModifVector[inumber];
+                                Vector[index]=arc->trajectorySample(j);
+                                sta::CoordinateSystem EME2000("INERTIAL J2000");
+                                ModifVector[index]=CoordinateSystem::convert(Vector[index],
+                                                                             MJDdate[index],
+                                                                             arc->centralBody(),
+                                                                             EME2000,
+                                                                             arc->centralBody(),
+                                                                             //analysis::CoordSys(ToCoord));
+                                                                             CoordSys(ToCoord));
+                                double SphericalElements[6]; // tau, delta, r, V, gamma, chi
+                                cartesianTOspherical(ModifVector[index].position.x(),ModifVector[index].position.y(),ModifVector[index].position.z(),
+                                                     ModifVector[index].velocity.x(),ModifVector[index].velocity.y(),ModifVector[index].velocity.z(),
+                                                     SphericalElements[0],SphericalElements[1],SphericalElements[2],SphericalElements[3],SphericalElements[4],
+                                                     SphericalElements[5]);
+                                if(name=="Latitude")
+                                {
+                                    stream<<sta::ConvertUnits(Units,SphericalElements[1],"rad")<<"\t";
+                                    analysisRow<<sta::ConvertUnits(Units,SphericalElements[1],"rad");
+                                }
+                                if(name=="Longitude")
+                                {
+                                    stream<<sta::ConvertUnits(Units,SphericalElements[0],"rad")<<"\t";
+                                    analysisRow<<sta::ConvertUnits(Units,SphericalElements[0],"rad");
+                                }
+                                if(name=="Radial Distance")
+                                {
+                                    stream<<sta::ConvertUnits(Units,SphericalElements[2],"km")<<"\t";
+                                    analysisRow<<sta::ConvertUnits(Units,SphericalElements[2],"km");
+                                }
+                                if(name=="Altitude")
+                                {
+                                    stream<<sta::ConvertUnits(Units,SphericalElements[2]-arc->centralBody()->meanRadius(),"km")<<"\t";
+                                    analysisRow<<sta::ConvertUnits(Units,SphericalElements[2]-arc->centralBody()->meanRadius(),"km");
+                                }
+                                if(name=="Flight Path Angle")
+                                {
+                                    stream<<sta::ConvertUnits(Units,SphericalElements[4],"rad")<<"\t";
+                                    analysisRow<<sta::ConvertUnits(Units,SphericalElements[4],"rad");
+                                }
+                                if(name=="Heading Angle")
+                                {
+                                    stream<<sta::ConvertUnits(Units,SphericalElements[5],"rad")<<"\t";
+                                    analysisRow<<sta::ConvertUnits(Units,SphericalElements[5],"rad");
+                                }
+                                if(name=="Velocity Modulus")
+                                {
+
+                                    stream<<sta::ConvertUnits(Units,SphericalElements[3],"km/s")<<"\t";
+                                    analysisRow<<sta::ConvertUnits(Units,SphericalElements[3],"km/s");
+                                }
+                            }
+
+                            if((name=="e*sin(omegaBar)")||(name=="e*cos(omegaBar)")||(name=="tan(i/2)*sin(raan)")||(name=="tan(i/2)*cos(raan)")||(name=="Mean Longitude"))
+                            {
+                                QString ToCoord = ReadCoordinateSys(treeWidgetShowInReport,parameter);
+                                QString Units = ReadCoordinateSys(treeWidgetShowInReport,parameter);
+
+                                sta::StateVector Vector[inumber];
+                                Vector[index]=arc->trajectorySample(j);
+                                if(name=="e*sin(omegaBar)")
+                                {
+                                    double esin=calcEquinoctialElements(Vector[index],arc->centralBody(),"e*sin(omegaBar)",
+                                                                        MJDdate[index],
+                                                                        "EME J2000",
+                                                                        ToCoord);
+                                    //stream<<sta::ConvertUnits(Units,esin)<<"\t";
+                                    stream<<esin<<"\t";
+                                    analysisRow << esin;
+                                }
+                                if(name=="e*cos(omegaBar)")
+                                {
+                                    double ecos=calcEquinoctialElements(Vector[index],arc->centralBody(),"e*cos(omegaBar)",
+                                                                        MJDdate[index],
+                                                                        "EME J2000",
+                                                                        ToCoord);
+                                    // stream<<sta::ConvertUnits(Units,ecos)<<"\t";
+                                    stream<<ecos<<"\t";
+                                    analysisRow << ecos;
+                                }
+                                if(name=="tan(i/2)*sin(raan)")
+                                {
+                                    double etansin=calcEquinoctialElements(Vector[index],arc->centralBody(),"tan(i/2)*sin(raan)",
+                                                                           MJDdate[index],
+                                                                           "EME J2000",
+                                                                           ToCoord);
+                                    // stream<<sta::ConvertUnits(Units,etansin)<<"\t";
+                                    stream<<etansin<<"\t";
+                                    analysisRow << etansin;
+                                }
+                                if(name=="tan(i/2)*cos(raan)")
+                                {
+                                    double etancos=calcEquinoctialElements(Vector[index],arc->centralBody(),"tan(i/2)*cos(raan)",
+                                                                           MJDdate[index],
+                                                                           "EME J2000",
+                                                                           ToCoord);
+                                    //stream<<sta::ConvertUnits(Units,etancos)<<"\t";
+                                    stream<<etancos<<"\t";
+                                    analysisRow << etancos;
+                                }
+                                if(name=="Mean Longitude")
+                                {
+                                    double MeanLon=calcEquinoctialElements(Vector[index],arc->centralBody(),"Mean Longitude",
+                                                                           MJDdate[index],
+                                                                           "EME J2000",
+                                                                           ToCoord);
+                                    //stream<<sta::ConvertUnits(Units,MeanLon)<<"\t";
+                                    stream<<MeanLon<<"\t";
+                                    analysisRow << MeanLon;
+                                }
+                            }
+                        }
+                        stream<<"\r\n";
+                        analysisResult.appendRow(analysisRow);
+                        analysisRow.clear();
+                        numberOfRows = numberOfRows + 1;
+                    }
+                }
+                else
+                {
+                    stream<<"#######Beginning of time"<<" "<<(k+1)<<"######"<<"\r\n";
+                    stream<<"No data available for the chosen time interval, please check the options of the propagation"<<"\r\n";
+                    if(selectedTimes.size()==1)
+                    {
+                        QMessageBox Warning;
+                        Warning.setText("No data available for the selected time interval");
+                        Warning.exec();
+                    }
+                }
+            }
+
+            stream<<"\r\n";
+        }
+    }
+
+    file.close();
+
+    if (CStart != 0 || CStop != 0)
+    {
+        QMessageBox::warning(this, "Analysis error", "No data available for the selected time interval");
+        analysisResult.clear();
+    }
+
+    return analysisResult;
+}
+
+
+/*
+ * Inputs: column-column number in the treeWidgetTimeSpecifications (start or end epochs);
+ *         MJD-pointer to the variable that will save the time in Modified Julian Date
+ */
+void
+analysisParametersChoice::ReadTime(int column, QVector<double>& MJD)
+{
+    QList<QTreeWidgetItem*>selectedTimes=treeWidgetTimeSpecifications->selectedItems();
+
+    if (selectedTimes.size() >0)
+    {
+        int i;
+        double JD;
+
+        for (i=0;i<selectedTimes.size();i++)
+        {
+            QDateTime d = QDateTime::fromString(selectedTimes[i]->text(column), TimeRangeSelectionDateFormat);
+            if (!d.isValid())
+            {
+                qDebug() << "Badly formatted date in analysis: " << selectedTimes[i];
+            }
+            qDebug() << i << ", " << d;
+
+            JD = calendarTOjulian(d.date().year(), d.date().month(), d.date().day(),
+                                  d.time().hour(), d.time().minute(), d.time().second());
+            MJD[i] = sta::JdToMjd(JD);
+        }
+    }
+    else
+    {
+        //      return 0;  ;
+    }
+}
+
+
+/*
+ * reads the name of the parameter that will be displayed in the output of the Analysis Module
+ * Inputs: item of the tree that is being considered (report or plot options)
+ */
+QString
+analysisParametersChoice::ReadParameter(QTreeWidgetItem*Item)
+{
+    QTreeWidgetItem*parameter=Item;
+    QString name=parameter->text(0);
+    return name;
+}
+
+
+/*
+ * reads the units the user selected as output units
+ * Inputs: Tree- widget from where data shall be read, Item- line of the widget that is being considered
+ */
+QString
+analysisParametersChoice::ReadUnits(QTreeWidget* Tree, QTreeWidgetItem* Item)
+{
+    if(Item->childCount()==0)
+    {
+        QWidget*Box=Tree->itemWidget(Item,2);
+        QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
+        QString Unit=ComboBox->currentText();
+        if(Item->text(0)=="Time")
+        {
+            QWidget*Box=Tree->itemWidget(Item,1);
+            QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
+            QString TimeType=ComboBox->currentText();
+            return TimeType;
+        }
+        return Unit;
+    }
+    else
+    {
+        return " ";
+    }
+}
+
+
+/*
+ * reads the coordinate system the user selected as output coordinate system
+ * Inputs: Tree- widget from where data shall be read, Item- line of the widget that is being considered
+ */
+QString
+analysisParametersChoice::ReadCoordinateSys(QTreeWidget* Tree, QTreeWidgetItem* Item)
+{
+    if(Item->childCount()==0)
+    {
+        QWidget*Box=Tree->itemWidget(Item,1);
+        QComboBox*ComboBox=dynamic_cast <QComboBox*>(Box);
+        QString Coordinate=ComboBox->currentText();
+        return Coordinate;
+    }
+    else
+    {
+        return " ";
+    }
+}
+
+
+
+
+AnalysisResult::AnalysisResult(unsigned int columnCount)
+{
+    for (unsigned int i = 0; i < columnCount; ++i)
+    {
+        m_columnNames << "";
+    }
+}
+
+
+void
+AnalysisResult::appendRow(const QVariantList& values)
+{
+    if (values.count() == columnCount())
+    {
+        m_data << values;
+    }
+}
+
+int
+AnalysisResult::columnCount() const
+{
+    return m_columnNames.count();
+}
+
+
+int
+AnalysisResult::rowCount() const
+{
+    return m_data.count() / columnCount();
+}
+
+
+void
+AnalysisResult::setTitle(const QString& title)
+{
+    m_title = title;
+}
+
+
+QString
+AnalysisResult::columnName(int column) const
+{
+    if (column >= 0 && column < columnCount())
+    {
+        return m_columnNames.at(column);
+    }
+    else
+    {
+        return "";
+    }
+}
+
+
+void
+AnalysisResult::setColumnName(int column, const QString& name)
+{
+    if (column >= 0 && column < columnCount())
+    {
+        m_columnNames[column] = name;
+    }
+}
+
+
+void
+AnalysisResult::clear()
+{
+    m_data.clear();
+}

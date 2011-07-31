@@ -45,6 +45,48 @@
 #include "Main/propagatedscenario.h"
 
 
+/** AnalyisResult is a simple container for data produced during an
+  * analysis. After creation, the AnalysisResult structure is passed
+  * to QtiPlot.
+  */
+class AnalysisResult
+{
+public:
+    AnalysisResult(unsigned int columnCount);
+    //AnalysisResult(const AnalysisResult& other);
+    //AnalysisResult
+
+    void appendRow(const QVariantList& rowValues);
+    int columnCount() const;
+    int rowCount() const;
+
+    QString title() const
+    {
+        return m_title;
+    }
+    void setTitle(const QString& title);
+
+    QString columnName(int column) const;
+    void setColumnName(int column, const QString& name);
+
+    void clear();
+
+    QList<QVariant> data() const
+    {
+        return m_data;
+    }
+
+    bool isValid() const
+    {
+        return columnCount() > 0;
+    }
+
+private:
+    QString m_title;
+    QList<QString> m_columnNames;
+    QVariantList m_data;
+};
+
 
 class analysisParametersChoice : public QWidget , private Ui::analysisParametersChoiceTabWidget
 {
@@ -52,7 +94,7 @@ Q_OBJECT
 public:
     analysisParametersChoice(QWidget * parent = NULL);
     ~analysisParametersChoice();
-    void loadTheSTAscenario(SpaceScenario* scenario, PropagatedScenario* propagatedScenario);
+    void loadScenario(SpaceScenario* scenario, PropagatedScenario* propagatedScenario);
 
 public slots:
     void addSelectedParameters();
@@ -64,12 +106,18 @@ public slots:
 protected slots:
 
 public:
+    AnalysisResult generateReport();
 
 private:
     void addParameter(QTreeWidgetItem* item);
     void comboBoxOptions(QTreeWidgetItem* item);
     int objectsIndex(QStringList AllObjects, int Index, QString ObjectType);
     bool checkIfMissionArc();
+
+    void ReadTime(int column, QVector<double>& MJD);
+    QString ReadParameter(QTreeWidgetItem*Item);
+    QString ReadUnits(QTreeWidget* Tree, QTreeWidgetItem* Item);
+    QString ReadCoordinateSys(QTreeWidget* Tree, QTreeWidgetItem* Item);
 
     QComboBox *TimeFramesBox();
     QComboBox *TimeUnitsBox();
