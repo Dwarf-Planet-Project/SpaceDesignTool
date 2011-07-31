@@ -1,0 +1,1141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RendezVousDialogClass</class>
+ <widget class="QDialog" name="RendezVousDialogClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>689</width>
+    <height>521</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="acceptDrops">
+   <bool>false</bool>
+  </property>
+  <property name="windowTitle">
+   <string>RendezVous Wizard</string>
+  </property>
+  <widget class="QTabWidget" name="tabWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>671</width>
+     <height>471</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <widget class="QWidget" name="initiaDataPage">
+    <attribute name="title">
+     <string>Initial Data</string>
+    </attribute>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>331</width>
+       <height>381</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="title">
+         <string>Target Initial Data</string>
+        </property>
+        <widget class="QWidget" name="layoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>190</x>
+           <y>20</y>
+           <width>112</width>
+           <height>152</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QLineEdit" name="RadiusTargetEdit"/>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="EccentricityTargetEdit"/>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="InclinationTargetEdit"/>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="RAANTargetEdit">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="ArgumentPeriapTargetEdit"/>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="TrueAnomalyTargetEdit"/>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="layoutWidget_2">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>20</y>
+           <width>136</width>
+           <height>151</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QLabel" name="label_14">
+            <property name="text">
+             <string>Orbit Radius [km]</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_15">
+            <property name="text">
+             <string>Eccentricity [-]</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_16">
+            <property name="text">
+             <string>Inclination [deg]</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_17">
+            <property name="text">
+             <string>RAAN [deg]</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_18">
+            <property name="text">
+             <string>Argument of periapsis [deg]</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_19">
+            <property name="text">
+             <string>True Anomaly [deg]</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox_2">
+        <property name="title">
+         <string>Chaser Initial Data</string>
+        </property>
+        <widget class="QWidget" name="layoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>20</y>
+           <width>136</width>
+           <height>151</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Orbit Radius (km)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Eccentricity [-]</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>Inclination (deg)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>RAAN (deg)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>Argument of periapsis (deg)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_13">
+            <property name="text">
+             <string>True Anomaly (deg)</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="layoutWidget_3">
+         <property name="geometry">
+          <rect>
+           <x>190</x>
+           <y>20</y>
+           <width>112</width>
+           <height>152</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <widget class="QLineEdit" name="RadiusChaserEdit"/>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="EccentricityChaserEdit"/>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="InclinationChaserEdit"/>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="RAANChaserEdit">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="ArgumentPeriapChaserEdit"/>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="TrueAnomalyChaserEdit"/>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>50</y>
+       <width>231</width>
+       <height>331</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_10">
+      <item>
+       <widget class="QGroupBox" name="groupBox_3">
+        <property name="title">
+         <string>Time Settings</string>
+        </property>
+        <widget class="QLineEdit" name="PropStepEdit">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>100</y>
+           <width>61</width>
+           <height>20</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_20">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>100</y>
+           <width>101</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Propagation Step [s]</string>
+         </property>
+        </widget>
+        <widget class="QDateTimeEdit" name="InitialEpochTargetEdit">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>30</y>
+           <width>131</width>
+           <height>22</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_2">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>61</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Initial Epoch</string>
+         </property>
+        </widget>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox_6">
+        <property name="title">
+         <string>Arc Aspect</string>
+        </property>
+        <widget class="QWidget" name="layoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>211</width>
+           <height>101</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_9">
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Target model</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>Chaser model</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_5">
+              <property name="text">
+               <string>Central Body</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_8">
+            <item>
+             <widget class="QComboBox" name="comboBoxTargetModel">
+              <item>
+               <property name="text">
+                <string>Default</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/STAModelsIcons-DEFAULT.png</normaloff>:/icons/STAModelsIcons-DEFAULT.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Soyuz</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/STAModelsIcons-SOYUZ.png</normaloff>:/icons/STAModelsIcons-SOYUZ.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>ISS</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/STAModelsIcons-ISS.png</normaloff>:/icons/STAModelsIcons-ISS.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>XMM</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/STAModelsIcons-XMM.png</normaloff>:/icons/STAModelsIcons-XMM.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Rosetta</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/STAModelsIcons-ROSETTA.png</normaloff>:/icons/STAModelsIcons-ROSETTA.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Planck</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/STAModelsIcons-PLANCK.png</normaloff>:/icons/STAModelsIcons-PLANCK.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>ExoMars</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/STAModelsIcons-EXOMARS.png</normaloff>:/icons/STAModelsIcons-EXOMARS.png</iconset>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="comboBoxChaserModel">
+              <item>
+               <property name="text">
+                <string>Default</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/STAModelsIcons-DEFAULT.png</normaloff>:/icons/STAModelsIcons-DEFAULT.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Soyuz</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/STAModelsIcons-SOYUZ.png</normaloff>:/icons/STAModelsIcons-SOYUZ.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>XMM</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/STAModelsIcons-XMM.png</normaloff>:/icons/STAModelsIcons-XMM.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Rosetta</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/STAModelsIcons-ROSETTA.png</normaloff>:/icons/STAModelsIcons-ROSETTA.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Planck</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/STAModelsIcons-PLANCK.png</normaloff>:/icons/STAModelsIcons-PLANCK.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>ExoMars</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/STAModelsIcons-EXOMARS.png</normaloff>:/icons/STAModelsIcons-EXOMARS.png</iconset>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="comboBoxCentralBody">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="accessibleName">
+               <string>comboBoxCentralBody</string>
+              </property>
+              <item>
+               <property name="text">
+                <string>Earth</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/ComboEarth.png</normaloff>:/icons/ComboEarth.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Moon</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/ComboMoon.png</normaloff>:/icons/ComboMoon.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Mercury</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/ComboMercury.png</normaloff>:/icons/ComboMercury.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Venus</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/ComboVenus.png</normaloff>:/icons/ComboVenus.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Mars</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/ComboMars.png</normaloff>:/icons/ComboMars.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Jupiter</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/ComboJupiter.png</normaloff>:/icons/ComboJupiter.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Saturn</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/ComboSaturn.png</normaloff>:/icons/ComboSaturn.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Uranus</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/ComboUranus.png</normaloff>:/icons/ComboUranus.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Neptune</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/ComboNeptune.png</normaloff>:/icons/ComboNeptune.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Pluto</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/ComboPluto.png</normaloff>:/icons/ComboPluto.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Sun</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/ComboSun.png</normaloff>:/icons/ComboSun.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Titan</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/ComboTitan.png</normaloff>:/icons/ComboTitan.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Europa</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/ComboEuropa.png</normaloff>:/icons/ComboEuropa.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Triton</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/ComboTriton.png</normaloff>:/icons/ComboTriton.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Enceladus</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../iconary/sta-icons.qrc">
+                 <normaloff>:/icons/ComboEnceladus.png</normaloff>:/icons/ComboEnceladus.png</iconset>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="manoeuvresPage">
+    <attribute name="title">
+     <string>Scheduled Manoeuvres</string>
+    </attribute>
+    <widget class="QGroupBox" name="groupBox_5">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>241</width>
+       <height>411</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Available Manoeuvres</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="ManoeuvresTreeDrag" name="manoeuvreTree">
+        <property name="minimumSize">
+         <size>
+          <width>219</width>
+          <height>370</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>219</width>
+          <height>370</height>
+         </size>
+        </property>
+        <property name="itemsExpandable">
+         <bool>true</bool>
+        </property>
+        <property name="sortingEnabled">
+         <bool>false</bool>
+        </property>
+        <property name="expandsOnDoubleClick">
+         <bool>true</bool>
+        </property>
+        <column>
+         <property name="text">
+          <string>1.- Select Man. 2.- Drag Selected Man.</string>
+         </property>
+        </column>
+        <item>
+         <property name="text">
+          <string>Free Drift</string>
+         </property>
+         <property name="flags">
+          <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Single Boost</string>
+         </property>
+         <property name="flags">
+          <set>ItemIsUserCheckable|ItemIsEnabled</set>
+         </property>
+         <item>
+          <property name="text">
+           <string>SBtangential</string>
+          </property>
+          <property name="flags">
+           <set>NoItemFlags</set>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SBradial</string>
+          </property>
+          <property name="flags">
+           <set>NoItemFlags</set>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SBlateral</string>
+          </property>
+          <property name="flags">
+           <set>NoItemFlags</set>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Full DeltaV</string>
+          </property>
+          <property name="flags">
+           <set>NoItemFlags</set>
+          </property>
+         </item>
+        </item>
+        <item>
+         <property name="text">
+          <string>Two pulse transfers</string>
+         </property>
+         <property name="flags">
+          <set>ItemIsUserCheckable|ItemIsEnabled</set>
+         </property>
+         <item>
+          <property name="text">
+           <string>Tangential Boost Transfers</string>
+          </property>
+          <property name="flags">
+           <set>ItemIsUserCheckable|ItemIsEnabled</set>
+          </property>
+          <item>
+           <property name="text">
+            <string>2TBTalong x-axis</string>
+           </property>
+           <property name="flags">
+            <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2TBTHohmann Transfer</string>
+           </property>
+           <property name="flags">
+            <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2TBT90 degrees fly-around</string>
+           </property>
+           <property name="flags">
+            <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+           </property>
+          </item>
+         </item>
+         <item>
+          <property name="text">
+           <string>Radial boost Transfers</string>
+          </property>
+          <property name="flags">
+           <set>ItemIsUserCheckable|ItemIsEnabled</set>
+          </property>
+          <item>
+           <property name="text">
+            <string>2RBTalong x-axis</string>
+           </property>
+           <property name="flags">
+            <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2RBT90 degrees radial fly-around</string>
+           </property>
+           <property name="flags">
+            <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2RBT360 degrees radial fly-around</string>
+           </property>
+           <property name="flags">
+            <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+           </property>
+          </item>
+         </item>
+        </item>
+        <item>
+         <property name="text">
+          <string>Constant force trajectories</string>
+         </property>
+         <property name="flags">
+          <set>ItemIsUserCheckable|ItemIsEnabled</set>
+         </property>
+         <item>
+          <property name="text">
+           <string>Hold Points outside V-bar</string>
+          </property>
+          <property name="flags">
+           <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Straight lines trajectories</string>
+          </property>
+          <property name="flags">
+           <set>ItemIsUserCheckable|ItemIsEnabled</set>
+          </property>
+          <item>
+           <property name="text">
+            <string>SLT V-bar</string>
+           </property>
+           <property name="flags">
+            <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>SLT R-bar</string>
+           </property>
+           <property name="flags">
+            <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+           </property>
+          </item>
+         </item>
+         <item>
+          <property name="text">
+           <string>Constant force transfers</string>
+          </property>
+          <property name="flags">
+           <set>ItemIsUserCheckable|ItemIsEnabled</set>
+          </property>
+          <item>
+           <property name="text">
+            <string>CFT Tangential</string>
+           </property>
+           <property name="flags">
+            <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>CFT Radial</string>
+           </property>
+           <property name="flags">
+            <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+           </property>
+          </item>
+         </item>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>20</y>
+       <width>401</width>
+       <height>411</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Scheduled Manoeuvres</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_7">
+      <item>
+       <widget class="QTabWidget" name="ScheduledManoeuvresTB">
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="ScheduledManoeuvresTBPage3">
+         <attribute name="title">
+          <string>Close Range (to erase: select and right button)</string>
+         </attribute>
+         <widget class="ScheduledTableManoeuvres" name="closeManTable">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>20</y>
+            <width>351</width>
+            <height>321</height>
+           </rect>
+          </property>
+          <property name="acceptDrops">
+           <bool>true</bool>
+          </property>
+          <property name="dragEnabled">
+           <bool>true</bool>
+          </property>
+          <property name="dragDropMode">
+           <enum>QAbstractItemView::DragDrop</enum>
+          </property>
+          <row>
+           <property name="text">
+            <string>Manoeuvre Name</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+          </row>
+          <row>
+           <property name="text">
+            <string>Initial DateTime</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+          </row>
+          <row>
+           <property name="text">
+            <string>Ending Date Time</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+          </row>
+          <row>
+           <property name="text">
+            <string>Initial Position LHLV</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+          </row>
+          <row>
+           <property name="text">
+            <string>Ending Position LHLV</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+          </row>
+          <row>
+           <property name="text">
+            <string>Delta V1</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+          </row>
+          <row>
+           <property name="text">
+            <string>Delta V2</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+          </row>
+          <row>
+           <property name="text">
+            <string>Total Delta V</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+          </row>
+          <row>
+           <property name="text">
+            <string>Desired Distance</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+          </row>
+          <column>
+           <property name="text">
+            <string>1</string>
+           </property>
+           <property name="font">
+            <font>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+          </column>
+          <item row="0" column="0">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
+           <property name="flags">
+            <set>ItemIsSelectable|ItemIsEditable|ItemIsDragEnabled|ItemIsEnabled</set>
+           </property>
+          </item>
+          <item row="8" column="0">
+           <property name="flags">
+            <set>ItemIsSelectable|ItemIsEditable|ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+           </property>
+          </item>
+         </widget>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>490</y>
+     <width>671</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <widget class="QPushButton" name="generatePB">
+      <property name="text">
+       <string>Generate Scenario</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QPushButton" name="exitPB">
+      <property name="text">
+       <string>Exit</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="okPB">
+      <property name="text">
+       <string>OK</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ScheduledTableManoeuvres</class>
+   <extends>QTableWidget</extends>
+   <header>./sta-src/RendezVous/rendezVousScheduledManoeuvresTable.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ManoeuvresTreeDrag</class>
+   <extends>QTreeWidget</extends>
+   <header>./sta-src/RendezVous/rendezVousManoeuvresTreeDrag.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../../iconary/sta-icons.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>exitPB</sender>
+   <signal>pressed()</signal>
+   <receiver>RendezVousDialogClass</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>558</x>
+     <y>502</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>260</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>okPB</sender>
+   <signal>pressed()</signal>
+   <receiver>RendezVousDialogClass</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>641</x>
+     <y>503</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>260</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
