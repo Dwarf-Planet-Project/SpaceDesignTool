@@ -39,6 +39,10 @@
 
 #include "Services/perturbationForcesDialog.h"
 #include "Services/stoppingConditionsTrajectoryDialog.h"
+#include "Services/serviceDistanceUnit.h"
+#include "Services/serviceVelocityUnit.h"
+#include "Services/serviceAngleUnit.h"
+#include "Services/serviceAngleRateUnit.h"
 
 #include <QDialog>
 
@@ -95,6 +99,20 @@ protected slots:
     void on_perturbationTorquesPushButton_clicked();
     void on_trajectoryStopConditionsPushButton_clicked();
     void on_attitudeStopConditionsPushButton_clicked();
+
+    void updateInputKeplerianA(int myIndex);
+    void updateInputEuler123Phi(int myIndex); void updateInputEuler123Theta(int myIndex); void updateInputEuler123Psi(int myIndex);
+    void updateInputEuler123OmegaX(int myIndex); void updateInputEuler123OmegaY(int myIndex); void updateInputEuler123OmegaZ(int myIndex);
+
+
+private:
+    DialogServiceDistanceUnitFrame* serviceDistanceUnitWidgetKeplerianA;
+    DialogServiceAngleUnitFrame* serviceAngleUnitWidgetEuler123Phi;
+    DialogServiceAngleUnitFrame* serviceAngleUnitWidgetEuler123Theta;
+    DialogServiceAngleUnitFrame* serviceAngleUnitWidgetEuler123Psi;
+    DialogServiceAngleRateUnitFrame* serviceAngleRateUnitWidgetEuler123OmegaX;
+    DialogServiceAngleRateUnitFrame* serviceAngleRateUnitWidgetEuler123OmegaY;
+    DialogServiceAngleRateUnitFrame* serviceAngleRateUnitWidgetEuler123OmegaZ;
 
 
 };
