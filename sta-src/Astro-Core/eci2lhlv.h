@@ -24,7 +24,10 @@
 /*
  ------------------ Author: Annalisa Riccardi   -------------------------------------------------
  ------------------ E-mail: nina1983@gmail.com  ----------------------------
+ Modified in July 2011 by J.Alonso to add lhlv methods needed in RendezVous
  */
+#include "Astro-Core/statevector.h"
+#include "cartesianTOorbital.h"
 
 /**
  * This function converts inertial planet-centered coordinates of position into spacecraft local
@@ -54,4 +57,14 @@ void localTOinertial(double xInertial, double yInertial, double zInertial,
 
 //ALONSO.- Needed for lhlv. Renaming axis, no more.
 void lhlvTOlocal(double xLHLV,double yLHLV,double zLHLV, double& xLocal,double& yLocal,double& zLocal);
+
+//ALONSO.- Needed for lhlv. Renaming axis, no more.
+void localTOlhlv(double xLocal,double yLocal,double zLocal, double& xLHLV,double& yLHLV,double& zLHLV);
+
+//ALONSO.- This lhlv changes are relative to target position and all of them in
+//         inertial coordinate system.
+
+void inertialTOlhlv(double mu,sta::StateVector relativeReference,sta::StateVector transform,sta::StateVector* result);
+
+void lhlvTOinertial(double mu,sta::StateVector relativeReference,sta::StateVector transform,sta::StateVector* result);
 
