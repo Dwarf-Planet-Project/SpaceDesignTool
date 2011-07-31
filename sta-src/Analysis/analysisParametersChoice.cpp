@@ -196,7 +196,7 @@ void analysisParametersChoice::loadTheSTAscenario(SpaceScenario* scenario, Propa
     int RxInd;
     QStringList AllObjects;
 
-    qDebug() << "--------> loadTheSTAscenario got the data" << endl;
+    //qDebug() << "--------> loadTheSTAscenario got the data" << endl;
 
 
     foreach (QSharedPointer<ScenarioParticipantType> participant, m_scenario->AbstractParticipant())

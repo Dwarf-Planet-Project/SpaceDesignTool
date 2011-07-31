@@ -67,8 +67,8 @@ Quaterniond ToQuaternions(const Vector3d EulerAngles,
     double theta = sta::degToRad(EulerAngles[1]);
     double psi = sta::degToRad(EulerAngles[2]);
 
-    qDebug() << "Function ToQuaternions. Original Angles: " << " phi: "<< phi << ", theta: "<<  theta << ", psi: "<<  psi << endl;
-    qDebug() << "Function ToQuaternions. Sequence:" << seq1 << "," << seq2 << ","<< seq3 << endl;
+    //qDebug() << "Function ToQuaternions. Original Angles: " << " phi: "<< phi << ", theta: "<<  theta << ", psi: "<<  psi << endl;
+    //qDebug() << "Function ToQuaternions. Sequence:" << seq1 << "," << seq2 << ","<< seq3 << endl;
 
     // SEQUENCE 321
     if (seq1 == 3 && seq2 == 2 && seq3 == 1)
@@ -96,7 +96,7 @@ Quaterniond ToQuaternions(const Vector3d EulerAngles,
                                              Quaterniond(AngleAxis<double> (theta, Vector3d::UnitY()))*
                                              Quaterniond(AngleAxis<double> (psi,   Vector3d::UnitX())));
 
-qDebug() << "Function ToQuaternions. Quaternion from 321 sequence:" << quaternion.coeffs().coeffRef(0) << "," << quaternion.coeffs().coeffRef(1) << ","<< quaternion.coeffs().coeffRef(2)<<","<<quaternion.coeffs().coeffRef(3) << endl;
+//qDebug() << "Function ToQuaternions. Quaternion from 321 sequence:" << quaternion.coeffs().coeffRef(0) << "," << quaternion.coeffs().coeffRef(1) << ","<< quaternion.coeffs().coeffRef(2)<<","<<quaternion.coeffs().coeffRef(3) << endl;
 
         return quaternion;
     }
@@ -118,7 +118,7 @@ qDebug() << "Function ToQuaternions. Quaternion from 321 sequence:" << quaternio
                                              Quaterniond(AngleAxis<double> (psi,   Vector3d::UnitZ())));
         return quaternion;
 
-        qDebug() << "Function ToQuaternions. From 123 sequence. Quaternion:" << quaternion.coeffs().coeffRef(0) << "," << quaternion.coeffs().coeffRef(1) << ","<< quaternion.coeffs().coeffRef(2)<<","<<quaternion.coeffs().coeffRef(3) << endl;
+        //qDebug() << "Function ToQuaternions. From 123 sequence. Quaternion:" << quaternion.coeffs().coeffRef(0) << "," << quaternion.coeffs().coeffRef(1) << ","<< quaternion.coeffs().coeffRef(2)<<","<<quaternion.coeffs().coeffRef(3) << endl;
         //        return quat;
     }
 
@@ -181,7 +181,7 @@ Vector3d ToEulerAngles(Quaterniond quaternion,
         b = R(2,0)*sin(theta1) - R(2,1)*cos(theta1);
         c = -R(1,0)*sin(theta1) + R(1,1)*cos(theta1);
         theta3 = atan(b/c);
-        qDebug() << "321: " << a << b << c << theta1 << theta2 << theta3 << endl;
+        //qDebug() << "321: " << a << b << c << theta1 << theta2 << theta3 << endl;
     }
     // SEQUENCE 123
     else if (seq1 == 1 && seq2 == 2 && seq3 == 3)
@@ -192,7 +192,7 @@ Vector3d ToEulerAngles(Quaterniond quaternion,
         b = R(0,2)*sin(theta1) + R(0,1)*cos(theta1);
         c = R(1,2)*sin(theta1) + R(1,1)*cos(theta1);
         theta3 = atan(b/c);
-        qDebug() << "123: " << a << b << c << theta1 << theta2 << theta3 << endl;
+        //qDebug() << "123: " << a << b << c << theta1 << theta2 << theta3 << endl;
     }
     // SEQUENCE 313
     else if (seq1 == 3 && seq2 == 1 && seq3 == 3)
@@ -203,7 +203,7 @@ Vector3d ToEulerAngles(Quaterniond quaternion,
         b = -R(1,1)*sin(theta1) - R(1,0)*cos(theta1);
         c = R(0,1)*sin(theta1) + R(0,0)*cos(theta1);
         theta3 = atan(b/c);
-        qDebug() << "321: " <<a << b << c << theta1 << theta2 << theta3 << endl;
+        //qDebug() << "321: " <<a << b << c << theta1 << theta2 << theta3 << endl;
     }
     else
     {

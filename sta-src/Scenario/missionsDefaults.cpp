@@ -240,10 +240,91 @@ QSharedPointer<ScenarioRadarPayloadType> MissionsDefaults::MissionsDefaults_Gene
 
 
 
+//////////////////////////////////////// Initial vectors for position and attitude /////////////////////////////
+
+QSharedPointer<ScenarioInitialPositionType> MissionsDefaults_InitialStateVectorKeplerian()
+{
+    QSharedPointer<ScenarioInitialPositionType> genericInitialStateVectorKeplerian(new ScenarioInitialPositionType());
+
+    genericInitialStateVectorKeplerian->setCoordinateSystem("INERTIAL J2000");
+
+    QSharedPointer<ScenarioKeplerianElementsType> initPosKeplerian(new ScenarioKeplerianElementsType());
+    initPosKeplerian->setSemiMajorAxis(8100.0);
+    initPosKeplerian->setInclination(45.0);
+    initPosKeplerian->setEccentricity(0.0);
+    initPosKeplerian->setRAAN(0.0);
+    initPosKeplerian->setArgumentOfPeriapsis(0.0);
+    initPosKeplerian->setTrueAnomaly(0.0);
+
+    genericInitialStateVectorKeplerian->setAbstract6DOFPosition(initPosKeplerian);
+
+    return genericInitialStateVectorKeplerian;
+}
+
+QSharedPointer<ScenarioInitialPositionType> MissionsDefaults_InitialStateVectorCartesian()
+{
+    QSharedPointer<ScenarioInitialPositionType> genericInitialStateVectorCartesian(new ScenarioInitialPositionType());
+
+    genericInitialStateVectorCartesian->setCoordinateSystem("INERTIAL J2000");
+
+    QSharedPointer<ScenarioStateVectorType> initPosStateVector(new ScenarioStateVectorType());
+    initPosStateVector->setX(1.1);
+    initPosStateVector->setY(1.1);
+    initPosStateVector->setZ(1.1);
+    initPosStateVector->setVx(1.1);
+    initPosStateVector->setVy(1.1);
+    initPosStateVector->setVz(1.1);
+
+    genericInitialStateVectorCartesian->setAbstract6DOFPosition(initPosStateVector);
+
+    return genericInitialStateVectorCartesian;
+}
+
+QSharedPointer<ScenarioInitialAttitudeType> MissionsDefaults_InitialAttitudeVectorEuler()
+{
+    QSharedPointer<ScenarioInitialAttitudeType> genericInitialAttitudeVectorEuler(new ScenarioInitialAttitudeType());
+
+    genericInitialAttitudeVectorEuler->setCoordinateSystem("Center of Gravity");
+    QSharedPointer<ScenarioEulerType> initAttEuler(new ScenarioEulerType());
+    initAttEuler->setPhi(0.0);
+    initAttEuler->setTheta(0.0);
+    initAttEuler->setPsi(0.0);
+    initAttEuler->setPhiDot(0.0);
+    initAttEuler->setThetaDot(0.0);
+    initAttEuler->setPsiDot(0.0);
+
+    genericInitialAttitudeVectorEuler->setAbstract6DOFAttitude(initAttEuler);
+
+    return genericInitialAttitudeVectorEuler;
+}
+
+QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> MissionsDefaults_InitialAttitudeVectorQuaternion()
+{
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> genericInitialAttitudeVectorQuaternion(new ScenarioInitialAttitudeUsingQuaternionsType());
+
+    genericInitialAttitudeVectorQuaternion->setCoordinateSystem("Center of Gravity");
+    QSharedPointer<ScenarioQuaternionType> initAttQuaternion(new ScenarioQuaternionType());
+    initAttQuaternion->setQ1(0.0);
+    initAttQuaternion->setQ2(0.0);
+    initAttQuaternion->setQ3(0.0);
+    initAttQuaternion->setQ4(0.0);
+    initAttQuaternion->setQ1Dot(0.0);
+    initAttQuaternion->setQ2Dot(0.0);
+    initAttQuaternion->setQ3Dot(0.0);
+    initAttQuaternion->setQ4Dot(0.0);
+    genericInitialAttitudeVectorQuaternion->setAbstract8DOFAttitude(initAttQuaternion);
+    // The next line should be the last one to make sure the GUI starts on the right tab
+
+    return genericInitialAttitudeVectorQuaternion;
+}
+
+
+
 //////////////////////////////////////// Generic Loitering /////////////////////////////////////////////////
 
 ScenarioLoiteringType MissionsDefaults::MissionsDefaults_GENERIC()
 {
+
     ScenarioLoiteringType loitering;
 
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
@@ -255,12 +336,12 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_GENERIC()
     initPosKeplerian->setArgumentOfPeriapsis(0.0);
     initPosKeplerian->setTrueAnomaly(0.0);
     QSharedPointer<ScenarioStateVectorType> initPosStateVector(new ScenarioStateVectorType());
-    initPosStateVector->setX(1.1);
-    initPosStateVector->setY(1.1);
-    initPosStateVector->setZ(1.1);
-    initPosStateVector->setVx(1.1);
-    initPosStateVector->setVy(1.1);
-    initPosStateVector->setVz(1.1);
+    initPosStateVector->setX(8100.0);
+    initPosStateVector->setY(0.0);
+    initPosStateVector->setZ(0.0);
+    initPosStateVector->setVx(0.0);
+    initPosStateVector->setVy(6.52413171);
+    initPosStateVector->setVz(2.57791256);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPosStateVector);
     // The next line should be the last one to make sure the GUI starts on the right tab
     loitering.InitialPosition()->setAbstract6DOFPosition(initPosKeplerian);
@@ -372,51 +453,49 @@ ScenarioRendezVousManoeuvreType MissionsDefaults::MissionsDefaults_GENERIC_RENDE
 {
     ScenarioRendezVousManoeuvreType rvManoeuvre;
 
-    rvManoeuvre.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
+//    rvManoeuvre.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
 
-    QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
-    initPos->setSemiMajorAxis(7650.0);
-    initPos->setInclination(45.0);
-    initPos->setEccentricity(0.0);
-    initPos->setRAAN(0.0);
-    initPos->setArgumentOfPeriapsis(0.0);
-    initPos->setTrueAnomaly(0.0);
-    rvManoeuvre.InitialPosition()->setAbstract6DOFPosition(initPos);
+//    QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
+//    initPos->setSemiMajorAxis(7650.0);
+//    initPos->setInclination(45.0);
+//    initPos->setEccentricity(0.0);
+//    initPos->setRAAN(0.0);
+//    initPos->setArgumentOfPeriapsis(0.0);
+//    initPos->setTrueAnomaly(0.0);
+//    rvManoeuvre.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    //rvManoeuvre.InitialAttitude()->setCoordinateSystem("EULER 123");
-    QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-    rvManoeuvre.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+//    //rvManoeuvre.InitialAttitude()->setCoordinateSystem("EULER 123");
+//    QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
+//    initAtt->setPhi(0.00000);
+//    initAtt->setTheta(0.00000);
+//    initAtt->setPsi(0.00000);
+//    initAtt->setPhiDot(0.00000);
+//    initAtt->setThetaDot(0.00000);
+//    initAtt->setPsiDot(0.00000);
+//    rvManoeuvre.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
 
-    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
-    rvManoeuvre.TimeLine()->setStartTime(TheCurrentDateAndTime);
-    rvManoeuvre.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
-    rvManoeuvre.TimeLine()->setStepTime(60.0);
+//    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
+//    rvManoeuvre.TimeLine()->setStartTime(TheCurrentDateAndTime);
+//    rvManoeuvre.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
+//    rvManoeuvre.TimeLine()->setStepTime(60.0);
 
-    rvManoeuvre.PropagationPosition()->setPropagator("TWO BODY");
-    rvManoeuvre.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
-    rvManoeuvre.PropagationPosition()->setTimeStep(60.0);
+//    rvManoeuvre.PropagationPosition()->setPropagator("TWO BODY");
+//    rvManoeuvre.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+//    rvManoeuvre.PropagationPosition()->setTimeStep(60.0);
 
-    rvManoeuvre.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
-    rvManoeuvre.PropagationAttitude()->setTimeStep(60.0);
+//    rvManoeuvre.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+//    rvManoeuvre.PropagationAttitude()->setTimeStep(60.0);
 
-    rvManoeuvre.Environment()->CentralBody()->setName("Earth");
-    rvManoeuvre.Environment()->CentralBody()->GravityModel()->setModelName("EGM2008");
-    rvManoeuvre.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(0);
-    rvManoeuvre.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(0);
-
-
-    rvManoeuvre.ElementIdentifier()->setColorName("Red");
-    rvManoeuvre.ElementIdentifier()->setModelName("Default");
-    rvManoeuvre.ElementIdentifier()->setTheOrder(1);
-    rvManoeuvre.ElementIdentifier()->setName("RVmanoeuvre");
+//    rvManoeuvre.Environment()->CentralBody()->setName("Earth");
+//    rvManoeuvre.Environment()->CentralBody()->GravityModel()->setModelName("EGM2008");
+//    rvManoeuvre.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(0);
+//    rvManoeuvre.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(0);
 
 
+//    rvManoeuvre.ElementIdentifier()->setColorName("Red");
+//    rvManoeuvre.ElementIdentifier()->setModelName("Default");
+//    rvManoeuvre.ElementIdentifier()->setTheOrder(1);
+//    rvManoeuvre.ElementIdentifier()->setName("RVmanoeuvre");
 
     return rvManoeuvre;
 }

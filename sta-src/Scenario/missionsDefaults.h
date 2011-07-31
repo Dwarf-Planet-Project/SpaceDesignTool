@@ -22,6 +22,7 @@
 /*
 ------------------ Author: Guillermo Ortega  -------------------------------------------
 Updated March 2011
+Updated by Guillermo July 2011 to include defauls of state and attitude vectors
 */
 
 #ifndef _MissionsDefaults_H_
@@ -47,6 +48,12 @@ public:
     QSharedPointer<ScenarioReceiverPayloadType> MissionsDefaults_GenericReceiver();
     QSharedPointer<ScenarioOpticalPayloadType> MissionsDefaults_GenericOpticalPayload();
     QSharedPointer<ScenarioRadarPayloadType> MissionsDefaults_GenericRadarPayload();
+
+    // Default initial state vectors for position and attitude
+    QSharedPointer<ScenarioInitialPositionType> MissionsDefaults_InitialStateVectorKeplerian();
+    QSharedPointer<ScenarioInitialPositionType> MissionsDefaults_InitialStateVectorCartesian();
+    QSharedPointer<ScenarioInitialAttitudeType> MissionsDefaults_InitialAttitudeVectorEuler();
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> MissionsDefaults_InitialAttitudeVectorQuaternion();
 
     // Generic loitering satellite
     ScenarioLoiteringType MissionsDefaults_GENERIC();
