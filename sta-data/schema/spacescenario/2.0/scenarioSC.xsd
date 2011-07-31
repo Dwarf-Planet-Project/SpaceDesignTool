@@ -154,7 +154,7 @@
 	</complexType>
 
 
-	<!-- Alonso.- One kind of rendezVous type to bind them all -->
+	<!-- Alonso.- One kind of rendezVous type -->
 
 	<element name="RendezVousManoeuvre" substitutionGroup="tns:AbstractTrajectory"
 		type="tns:RendezVousManoeuvreType"></element>
@@ -168,6 +168,9 @@
 					<element ref="tns:TimeLine"></element>
 					<element name="DeltaV1" type="double"></element>
 					<element name="DeltaV2" type="double"></element>
+					<element name="Input" type="double"></element>
+					<element name="Duration" type="double"></element>
+					<element name="TotalDeltaV" type="double"></element>
 					<element ref="tns:InitialPosition"></element>
 					<element ref="tns:InitialAttitude"></element>
 					<element ref="tns:PropagationPosition"></element>
