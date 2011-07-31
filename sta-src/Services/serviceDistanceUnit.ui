@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DialogServiceDistanceUnitFrame</class>
+ <widget class="QFrame" name="DialogServiceDistanceUnitFrame">
+  <property name="minimumSize">
+   <size>
+    <width>120</width>
+    <height>26</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>120</width>
+    <height>26</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>serviceDistance</string>
+  </property>
+  <property name="windowOpacity">
+   <double>1.000000000000000</double>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
+  <property name="frameShape">
+   <enum>QFrame::NoFrame</enum>
+  </property>
+  <property name="frameShadow">
+   <enum>QFrame::Plain</enum>
+  </property>
+  <property name="lineWidth">
+   <number>0</number>
+  </property>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>120</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QComboBox" name="comboBoxDistanceUnitsChoice">
+      <property name="minimumSize">
+       <size>
+        <width>120</width>
+        <height>26</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>120</width>
+        <height>26</height>
+       </size>
+      </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+      </property>
+      <item>
+       <property name="text">
+        <string>Km</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>m</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>cm</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>mm</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>AU</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

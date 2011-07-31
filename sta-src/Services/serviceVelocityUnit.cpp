@@ -20,24 +20,24 @@
  ------ Copyright (C) 2011 STA Steering Board (space.trajectory.analysis AT gmail.com) ----
 */
 /*
------------------- Author: Guillermo Ortega  -------------------------------------------
+------------------ Author: Guillermo Ortega  ----------------------------------------
+ May 2011
+
  */
 
+#include "serviceVelocityUnit.h"
 
-#ifndef DIALOGSERVICETIMEUNITFRAME_H
-#define DIALOGSERVICETIMEUNITFRAME_H
-
-#include "ui_serviceTimeUnit.h"
-#include <QFrame>
-
-class DialogServiceTimeUnitFrame : public QFrame , private Ui::DialogServiceTimeUnitFrame
+DialogServiceVelocityUnitFrame::DialogServiceVelocityUnitFrame( QWidget * parent, Qt::WindowFlags f) : QFrame(parent,f)
 {
-Q_OBJECT
-public:
-	DialogServiceTimeUnitFrame( QWidget * parent = 0, Qt::WindowFlags f = 0 );
-	~DialogServiceTimeUnitFrame();
-protected slots:
-	void on_comboBoxTimeUnitsChoice_currentIndexChanged(int);
-	
-};
-#endif //DIALOGSERVICETIMEUNITFRAME_H
+	setupUi(this);
+}
+
+DialogServiceVelocityUnitFrame::~DialogServiceVelocityUnitFrame()
+{
+}
+
+void DialogServiceVelocityUnitFrame::on_comboBoxVelocityUnitsChoice_currentIndexChanged(int)
+{
+	qWarning("TODO: %s	%d",__FILE__,__LINE__);
+}
+

@@ -24,20 +24,20 @@
  */
 
 
-#ifndef DIALOGSERVICETIMEUNITFRAME_H
-#define DIALOGSERVICETIMEUNITFRAME_H
+#ifndef DIALOGSERVICEVELOCITYUNITFRAME_H
+#define DIALOGSERVICEVELOCITYUNITFRAME_H
 
-#include "ui_serviceTimeUnit.h"
+#include "ui_serviceVelocityUnit.h"
 #include <QFrame>
 
-class DialogServiceTimeUnitFrame : public QFrame , private Ui::DialogServiceTimeUnitFrame
+class DialogServiceVelocityUnitFrame : public QFrame , private Ui::DialogServiceVelocityUnitFrame
 {
 Q_OBJECT
 public:
-	DialogServiceTimeUnitFrame( QWidget * parent = 0, Qt::WindowFlags f = 0 );
-	~DialogServiceTimeUnitFrame();
+	DialogServiceVelocityUnitFrame( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+	~DialogServiceVelocityUnitFrame();
 protected slots:
-	void on_comboBoxTimeUnitsChoice_currentIndexChanged(int);
+	void on_comboBoxVelocityUnitsChoice_currentIndexChanged(int);
 	
 };
 #endif //DIALOGSERVICETIMEUNITFRAME_H
