@@ -11086,7 +11086,10 @@ QList<QSharedPointer<ScenarioObject> >ScenarioDeltaVType::children() const
 // ScenarioRendezVousManoeuvreType
 ScenarioRendezVousManoeuvreType::ScenarioRendezVousManoeuvreType() :
     m_DeltaV1(0.0),
-    m_DeltaV2(0.0)
+    m_DeltaV2(0.0),
+    m_Input(0.0),
+    m_Duration(0.0),
+    m_TotalDeltaV(0.0)
 {
     m_Environment = QSharedPointer<ScenarioEnvironmentType>(new ScenarioEnvironmentType());
     m_TimeLine = QSharedPointer<ScenarioTimeLine>(new ScenarioTimeLine());
@@ -11121,6 +11124,12 @@ bool ScenarioRendezVousManoeuvreType::load(const QDomElement& e, QDomElement* ne
         *next = next->nextSiblingElement();
         m_DeltaV2 = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
+        m_Input = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_Duration = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+        m_TotalDeltaV = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
     if (next->tagName() == "tns:InitialPosition")
         m_InitialPosition = QSharedPointer<ScenarioInitialPositionType>(ScenarioInitialPositionType::create(*next));
     *next = next->nextSiblingElement();
@@ -11153,6 +11162,9 @@ QDomElement ScenarioRendezVousManoeuvreType::toDomElement(QDomDocument& doc, con
     }
     e.appendChild(createSimpleElement(doc, "tns:DeltaV1", m_DeltaV1));
     e.appendChild(createSimpleElement(doc, "tns:DeltaV2", m_DeltaV2));
+    e.appendChild(createSimpleElement(doc, "tns:Input", m_Input));
+    e.appendChild(createSimpleElement(doc, "tns:Duration", m_Duration));
+    e.appendChild(createSimpleElement(doc, "tns:TotalDeltaV", m_TotalDeltaV));
     if (!m_InitialPosition.isNull())
     {
         QString tagName = "InitialPosition";

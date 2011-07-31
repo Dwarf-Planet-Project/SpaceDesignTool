@@ -6893,6 +6893,18 @@ public:
     { return m_DeltaV2; }
     void setDeltaV2(double DeltaV2)
     { m_DeltaV2 = DeltaV2; }
+    double Input() const
+    { return m_Input; }
+    void setInput(double Input)
+    { m_Input = Input; }
+    double Duration() const
+    { return m_Duration; }
+    void setDuration(double Duration)
+    { m_Duration = Duration; }
+    double TotalDeltaV() const
+    { return m_TotalDeltaV; }
+    void setTotalDeltaV(double TotalDeltaV)
+    { m_TotalDeltaV = TotalDeltaV; }
     QSharedPointer<ScenarioInitialPositionType> InitialPosition() const
     { return m_InitialPosition; }
     void setInitialPosition(QSharedPointer<ScenarioInitialPositionType> InitialPosition)
@@ -6915,6 +6927,9 @@ private:
     QSharedPointer<ScenarioTimeLine> m_TimeLine;
     double m_DeltaV1;
     double m_DeltaV2;
+    double m_Input;
+    double m_Duration;
+    double m_TotalDeltaV;
     QSharedPointer<ScenarioInitialPositionType> m_InitialPosition;
     QSharedPointer<ScenarioInitialAttitudeType> m_InitialAttitude;
     QSharedPointer<ScenarioPropagationPositionType> m_PropagationPosition;

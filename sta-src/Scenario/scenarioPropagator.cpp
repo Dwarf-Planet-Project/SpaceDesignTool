@@ -67,6 +67,7 @@
 #include <QDebug>
 #include <QMessageBox>
 
+#include <cmath>
 
 USING_PART_OF_NAMESPACE_EIGEN;
 
@@ -133,7 +134,9 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
                     }
                 }
 
+
                 PropagateLoiteringTrajectory(loitering, sampleTimes, samples, feedback);
+
 
                 // Recovering the last state vector
                 numberOFsamples = sampleTimes.size();
@@ -174,6 +177,9 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
 
                 if (numberOFsamples > 1)
 				{
+
+
+
                     MissionArc* arc = new MissionArc(centralBody,
                                                      coordSys,
                                                      sampleTimes,
@@ -356,9 +362,10 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
                             {
                             ScenarioRendezVousManoeuvreType* RVmanoeuvre = dynamic_cast<ScenarioRendezVousManoeuvreType*>(trajectory.data());
                             QString propagator = RVmanoeuvre->PropagationPosition()->propagator();
-                            QList<ScenarioStateVectorType> mySamples;
 
-                            double mu=Earth_GRAVITY_PARAMETER/1000000000.0;
+                            QString centralBodyName = RVmanoeuvre->Environment()->CentralBody()->Name();
+                            StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+                            double mu=centralBody->mu();
 
 
 
@@ -390,97 +397,41 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
                                     RVmanoeuvre->InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(stateVector));
                                 }
                             }
-                            //Outrageous way for propagation. No multilayer, no OOP.
+                            //Propagation method, as loitering.
+                            //No OOP, no multilayer. This should be changed in my opinion.
 
-                            PropagateRendezVousTrajectory(RVmanoeuvre,sampleTimes,mySamples,feedback);
+                            PropagateRendezVousTrajectory(RVmanoeuvre,sampleTimes,samples,feedback,propScenario);
 
+                            //
+                            sta::StateVector* targetStateAux=new sta::StateVector();
 
-                           // qWarning("En scenariopro1 sampleTimes %d\n",sampleTimes.size());
-                           // qWarning("En scenariopro1 samples %d\n",samples.size());
-
-                            //Needed sop for getStateVector
-
-                            sta::StateVector* stateAux=new sta::StateVector();
-
-                            QString centralBodyName = RVmanoeuvre->Environment()->CentralBody()->Name();
-                            StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
                             QString coordSysName = RVmanoeuvre->InitialPosition()->CoordinateSystem();
                             sta::CoordinateSystem coordSys(coordSysName);
                             SpaceObject* targetPropagated;
 
                             targetPropagated=(propScenario->spaceObjects().first());
-                            //qWarning("sample 1 %f\n",mySamples[0].z());
-                            targetPropagated->getStateVector(sampleTimes[0],*centralBody,coordSys,stateAux);
-                            //qWarning("del loitering %f\n",stateAux->position.z());
 
-                            double xInertial,yInertial,zInertial;
-                            double xLocal,yLocal,zLocal;
-                            sta::KeplerianElements e;
+                            sta::StateVector *result=new sta::StateVector();
 
-                            for(int i=0;i<mySamples.size();i++){
+                            for(int i=0;i<samples.size();i++){
 
-                                sta::StateVector* auxSamples=new sta::StateVector();
+                                targetPropagated->mission().at(0)->getStateVector(sampleTimes[i],targetStateAux);
 
-                                targetPropagated->mission().at(0)->getStateVector(sampleTimes[i],stateAux);
+                                // Final samples transformation
 
-                                e =cartesianTOorbital(mu,*stateAux);
+                                lhlvTOinertial(mu,*targetStateAux,samples[i],result);
 
-                                lhlvTOlocal(mySamples[i].x(),mySamples[i].y(),mySamples[i].z(),xLocal,yLocal,zLocal);
-
-                                /*localTOinertial(mySamples[i].x(),mySamples[i].y(),mySamples[i].z(),
-                                                e.Inclination, e.AscendingNode,
-                                                e.TrueAnomaly,e.ArgumentOfPeriapsis,
-                                                xInertial,yInertial,zInertial);*/
-
-                                localTOinertial(xLocal,yLocal,zLocal,
-                                                e.Inclination, e.AscendingNode,
-                                                e.TrueAnomaly,e.ArgumentOfPeriapsis,
-                                                xInertial,yInertial,zInertial);
+                                //Data in inertial system are saved in samples.
+                                samples[i].position(0)=result->position(0)+targetStateAux->position(0);
+                                samples[i].position(1)=result->position(1)+targetStateAux->position(1);
+                                samples[i].position(2)=result->position(2)+targetStateAux->position(2);
 
 
-                                auxSamples->position.x()=(xInertial+stateAux->position.x());
-                                auxSamples->position.y()=(yInertial+stateAux->position.y());
-                                auxSamples->position.z()=(zInertial+stateAux->position.z());
-
-                                //Speeds
-
-                                lhlvTOlocal(mySamples[i].vx(),mySamples[i].vy(),mySamples[i].vz(),xLocal,yLocal,zLocal);
-
-                                localTOinertial(xLocal,yLocal,zLocal,
-                                                e.Inclination, e.AscendingNode,
-                                                e.TrueAnomaly,e.ArgumentOfPeriapsis,
-                                                xInertial,yInertial,zInertial);
-
-                                /*localTOinertial(mySamples[i].vx(),mySamples[i].vy(),mySamples[i].vz(),
-                                                e.Inclination, e.AscendingNode,
-                                                e.TrueAnomaly,e.ArgumentOfPeriapsis,
-                                                xInertial,yInertial,zInertial);*/
-
-
-                                auxSamples->velocity.x()=(xInertial+stateAux->velocity.x());
-                                auxSamples->velocity.y()=(yInertial+stateAux->velocity.y());
-                                auxSamples->velocity.z()=(zInertial+stateAux->velocity.z());
-
-                                samples.append(*auxSamples);
-
-
-
+                                samples[i].velocity(0)=targetStateAux->velocity(0);
+                                samples[i].velocity(1)=targetStateAux->velocity(1);
+                                samples[i].velocity(2)=targetStateAux->velocity(2);
 
                             }
-
-
-
-
-                          /*  qWarning("Primer sample x-- %f\n ",samples[0].position.x());
-                            qWarning("Primer sample y-- %f\n ",samples[0].position.y());
-                            qWarning("Primer sample z-- %f\n ",samples[0].position.z());
-
-
-                            qWarning("Ultimo sample x-- %f\n ",samples[mySamples.size()-1].position.x());
-                            qWarning("Ultimo sample y-- %f\n ",samples[mySamples.size()-1].position.y());
-                            qWarning("Ultimo sample z-- %f\n ",samples[mySamples.size()-1].position.z());*/
-
-
 
 
 
@@ -526,17 +477,17 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
                                             if (numberOFsamples > 1)
                                             {
 
-                                                //samples.removeLast();
-                                                //sampleTimes.removeLast();
+
+
 
                                 MissionArc* arc = new MissionArc(centralBody,
                                                                  coordSys,
                                                                  sampleTimes,
                                                                  samples);
 
-                                            //qWarning("En scenariopro sampleTimes %d\n",sampleTimes.size());
-                                            //qWarning("En scenariopro samples %d\n",samples.size());
-                               // qWarning("En rendez tamaño muestras %d\n",samples.size());
+
+
+
 
                                             // Loading arc color, name, and model
                                             arc->setArcName(RVmanoeuvre->ElementIdentifier()->Name());
@@ -546,9 +497,9 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
                                             arc->setArcTrajectoryColor(trajectoryColor);
                                             arc->setModelName(RVmanoeuvre->ElementIdentifier()->modelName());
 
-
                                             spaceObject->addMissionArc(arc);
-                                          
+
+
 
                                             }
                 }
