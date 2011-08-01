@@ -96,6 +96,8 @@ public:
     ~analysisParametersChoice();
     void loadScenario(SpaceScenario* scenario, PropagatedScenario* propagatedScenario);
 
+    void loadTheSTAscenario(SpaceScenario*, PropagatedScenario*);
+
 public slots:
     void addSelectedParameters();
     void removeSelectedParameters();

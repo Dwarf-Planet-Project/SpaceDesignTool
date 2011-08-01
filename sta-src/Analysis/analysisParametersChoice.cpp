@@ -102,6 +102,13 @@ analysisParametersChoice::~analysisParametersChoice()
 }
 
 
+// Temporary fix to make STA compile. --Chris
+void
+analysisParametersChoice::loadTheSTAscenario(SpaceScenario*, PropagatedScenario*)
+{
+}
+
+
 // ***** Scenario helper functions *****
 
 QList<QSharedPointer<ScenarioAbstractTrajectoryType> >
