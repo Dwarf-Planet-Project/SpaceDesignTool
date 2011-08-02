@@ -72,6 +72,20 @@ LoiteringDialog::LoiteringDialog(ScenarioTree* parent) :
 {
     setupUi(this);
 
+    // Set up generic input validators
+    QDoubleValidator* doubleValidator = new QDoubleValidator(this);
+    QDoubleValidator* angleValidator = new QDoubleValidator(this);
+    angleValidator->setBottom(0.0);
+    angleValidator->setTop(360.0);
+    QDoubleValidator* positiveDoubleValidator = new QDoubleValidator(this);
+    positiveDoubleValidator->setBottom(0.0);
+    QDoubleValidator* zeroToOneValidator = new QDoubleValidator(this);
+    zeroToOneValidator->setBottom(0.0);
+    zeroToOneValidator->setTop(0.9999);
+    QDoubleValidator* minusOneToOneValidator = new QDoubleValidator(this);
+    minusOneToOneValidator->setBottom(-1.0);
+    minusOneToOneValidator->setTop(1.0);
+
     // Set up the combo boxes: position and velocity
     CoordSystemComboBox->addItem(tr("Planet Fixed"), (int) sta::COORDSYS_BODYFIXED);
     CoordSystemComboBox->addItem(tr("Inertial (J2000)"), (int) sta::COORDSYS_EME_J2000);
@@ -88,19 +102,38 @@ LoiteringDialog::LoiteringDialog(ScenarioTree* parent) :
     serviceDistanceUnitWidgetKeplerianA = new DialogServiceDistanceUnitFrame();
     gridLayoutKeplerianElements->addWidget(serviceDistanceUnitWidgetKeplerianA, 0, 2); serviceDistanceUnitWidgetKeplerianA->show(); // Units of Semimajor axis
     connect(serviceDistanceUnitWidgetKeplerianA->distanceUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputKeplerianA(int)));
-
-    //DialogServiceAngleUnitFrame*      serviceDistanceUnitWidgetKeplerianE = new DialogServiceAngleUnitFrame();
-    //gridLayoutKeplerianElements->addWidget(serviceAngleUnitWidgetThetaEuler123, 1, 2); serviceAngleUnitWidgetThetaEuler123->show(); // Units of Eccentricity
-    DialogServiceAngleUnitFrame* serviceAngleUnitWidgetKeplerianI = new DialogServiceAngleUnitFrame();
+    serviceAngleUnitWidgetKeplerianI = new DialogServiceAngleUnitFrame();
     gridLayoutKeplerianElements->addWidget(serviceAngleUnitWidgetKeplerianI, 2, 2); serviceAngleUnitWidgetKeplerianI->show(); // Units of Inclination
-    DialogServiceAngleUnitFrame* serviceAngleUnitWidgetKeplerianRAAN = new DialogServiceAngleUnitFrame();
+    connect(serviceAngleUnitWidgetKeplerianI->angleUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputKeplerianI(int)));
+    serviceAngleUnitWidgetKeplerianRAAN = new DialogServiceAngleUnitFrame();
     gridLayoutKeplerianElements->addWidget(serviceAngleUnitWidgetKeplerianRAAN, 3, 2); serviceAngleUnitWidgetKeplerianRAAN->show(); // Units of RANN
-    DialogServiceAngleUnitFrame* serviceAngleUnitWidgetKeplerianAoP = new DialogServiceAngleUnitFrame();
+    connect(serviceAngleUnitWidgetKeplerianRAAN->angleUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputKeplerianRAAN(int)));
+    serviceAngleUnitWidgetKeplerianAoP = new DialogServiceAngleUnitFrame();
     gridLayoutKeplerianElements->addWidget(serviceAngleUnitWidgetKeplerianAoP, 4, 2); serviceAngleUnitWidgetKeplerianAoP->show(); // Units of Argument of Periapsis
-    DialogServiceAngleUnitFrame* serviceAngleUnitWidgetKeplerianTrueAnomany = new DialogServiceAngleUnitFrame();
-    gridLayoutKeplerianElements->addWidget(serviceAngleUnitWidgetKeplerianTrueAnomany, 5, 2); serviceAngleUnitWidgetKeplerianTrueAnomany->show(); // Units of True Anomaly
+    connect(serviceAngleUnitWidgetKeplerianAoP->angleUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputKeplerianAoP(int)));
+    serviceAngleUnitWidgetKeplerianTrueAnomaly = new DialogServiceAngleUnitFrame();
+    gridLayoutKeplerianElements->addWidget(serviceAngleUnitWidgetKeplerianTrueAnomaly, 5, 2); serviceAngleUnitWidgetKeplerianTrueAnomaly->show(); // Units of True Anomaly
+    connect(serviceAngleUnitWidgetKeplerianTrueAnomaly->angleUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputKeplerianTrueAnomaly(int)));
 
-
+    //  Setting up units for the position panels: Cartesian coordinates
+    serviceDistanceUnitWidgetCartesianX = new DialogServiceDistanceUnitFrame();
+    gridLayoutStateVector->addWidget(serviceDistanceUnitWidgetCartesianX, 0, 2); serviceDistanceUnitWidgetCartesianX->show(); // Units of X
+    connect(serviceDistanceUnitWidgetCartesianX->distanceUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputCartesianX(int)));
+    serviceDistanceUnitWidgetCartesianY = new DialogServiceDistanceUnitFrame();
+    gridLayoutStateVector->addWidget(serviceDistanceUnitWidgetCartesianY, 1, 2); serviceDistanceUnitWidgetCartesianY->show(); // Units of Y
+    connect(serviceDistanceUnitWidgetCartesianY->distanceUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputCartesianY(int)));
+    serviceDistanceUnitWidgetCartesianZ = new DialogServiceDistanceUnitFrame();
+    gridLayoutStateVector->addWidget(serviceDistanceUnitWidgetCartesianZ, 2, 2); serviceDistanceUnitWidgetCartesianZ->show(); // Units of Z
+    connect(serviceDistanceUnitWidgetCartesianZ->distanceUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputCartesianZ(int)));
+    serviceDistanceRateUnitWidgetCartesianVx = new DialogServiceDistanceRateUnitFrame();
+    gridLayoutStateVector->addWidget(serviceDistanceRateUnitWidgetCartesianVx, 3, 2); serviceDistanceRateUnitWidgetCartesianVx->show(); // Units of Vx
+    connect(serviceDistanceRateUnitWidgetCartesianVx->distanceRateUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputCartesianVx(int)));
+    serviceDistanceRateUnitWidgetCartesianVy = new DialogServiceDistanceRateUnitFrame();
+    gridLayoutStateVector->addWidget(serviceDistanceRateUnitWidgetCartesianVy, 4, 2); serviceDistanceRateUnitWidgetCartesianVy->show(); // Units of Vy
+    connect(serviceDistanceRateUnitWidgetCartesianVy->distanceRateUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputCartesianVy(int)));
+    serviceDistanceRateUnitWidgetCartesianVz = new DialogServiceDistanceRateUnitFrame();
+    gridLayoutStateVector->addWidget(serviceDistanceRateUnitWidgetCartesianVz, 5, 2); serviceDistanceRateUnitWidgetCartesianVz->show(); // Units of Vz
+    connect(serviceDistanceRateUnitWidgetCartesianVz->distanceRateUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputCartesianVz(int)));
 
     // Set up the combo boxes: Attitude
     CoordSystemAttitudeComboBox->addItem(tr("Center of Gravity"), (int) sta::COORDSYS_COG);
@@ -117,58 +150,72 @@ LoiteringDialog::LoiteringDialog(ScenarioTree* parent) :
     PropagatorAttitudeComboBox->addItem(tr("Quaternions JPL"), "PQuaternionsJPL");
     IntegratorAttitudeComboBox->addItem(tr("Runge-Kutta 3-4"),"RK4"); //Catarina: Integrator for Attitude
 
-
-    //DialogServiceDistanceUnitFrame*   serviceDistanceUnitWidget = new DialogServiceDistanceUnitFrame();
-    //DialogServiceVelocityUnitFrame*   serviceVelocityUnitWidget = new DialogServiceVelocityUnitFrame();
-
     //  Setting up units for the Attitude panels: Euler 123
     serviceAngleUnitWidgetEuler123Phi = new DialogServiceAngleUnitFrame();
     gridLayoutEuler123->addWidget(serviceAngleUnitWidgetEuler123Phi, 0, 2); serviceAngleUnitWidgetEuler123Phi->show(); // Units of Phi
     connect(serviceAngleUnitWidgetEuler123Phi->angleUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputEuler123Phi(int)));
-
     serviceAngleUnitWidgetEuler123Theta = new DialogServiceAngleUnitFrame();
     gridLayoutEuler123->addWidget(serviceAngleUnitWidgetEuler123Theta, 1, 2); serviceAngleUnitWidgetEuler123Theta->show(); // Units of Theta
     connect(serviceAngleUnitWidgetEuler123Theta->angleUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputEuler123Theta(int)));
-
     serviceAngleUnitWidgetEuler123Psi = new DialogServiceAngleUnitFrame();
     gridLayoutEuler123->addWidget(serviceAngleUnitWidgetEuler123Psi, 2, 2); serviceAngleUnitWidgetEuler123Psi->show(); // Units of Psi
     connect(serviceAngleUnitWidgetEuler123Psi->angleUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputEuler123Psi(int)));
-
     serviceAngleRateUnitWidgetEuler123OmegaX = new DialogServiceAngleRateUnitFrame();
     gridLayoutEuler123->addWidget(serviceAngleRateUnitWidgetEuler123OmegaX, 3, 2); serviceAngleRateUnitWidgetEuler123OmegaX->show(); // Units of OmegaX
     connect(serviceAngleRateUnitWidgetEuler123OmegaX->angleRateUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputEuler123OmegaX(int)));
-
     serviceAngleRateUnitWidgetEuler123OmegaY = new DialogServiceAngleRateUnitFrame();
     gridLayoutEuler123->addWidget(serviceAngleRateUnitWidgetEuler123OmegaY, 4, 2); serviceAngleRateUnitWidgetEuler123OmegaY->show(); // Units of OmegaY
     connect(serviceAngleRateUnitWidgetEuler123OmegaY->angleRateUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputEuler123OmegaY(int)));
-
     serviceAngleRateUnitWidgetEuler123OmegaZ = new DialogServiceAngleRateUnitFrame();
     gridLayoutEuler123->addWidget(serviceAngleRateUnitWidgetEuler123OmegaZ, 5, 2); serviceAngleRateUnitWidgetEuler123OmegaZ->show(); // Units of OmegaZ
     connect(serviceAngleRateUnitWidgetEuler123OmegaZ->angleRateUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputEuler123OmegaZ(int)));
 
+    //  Setting up units for the Attitude panels: Euler 321
+    serviceAngleUnitWidgetEuler321Phi = new DialogServiceAngleUnitFrame();
+    gridLayoutEuler321->addWidget(serviceAngleUnitWidgetEuler321Phi, 0, 2); serviceAngleUnitWidgetEuler321Phi->show(); // Units of Phi
+    connect(serviceAngleUnitWidgetEuler321Phi->angleUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputEuler321Phi(int)));
+    serviceAngleUnitWidgetEuler321Theta = new DialogServiceAngleUnitFrame();
+    gridLayoutEuler321->addWidget(serviceAngleUnitWidgetEuler321Theta, 1, 2); serviceAngleUnitWidgetEuler321Theta->show(); // Units of Theta
+    connect(serviceAngleUnitWidgetEuler321Theta->angleUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputEuler321Theta(int)));
+    serviceAngleUnitWidgetEuler321Psi = new DialogServiceAngleUnitFrame();
+    gridLayoutEuler321->addWidget(serviceAngleUnitWidgetEuler321Psi, 2, 2); serviceAngleUnitWidgetEuler321Psi->show(); // Units of Psi
+    connect(serviceAngleUnitWidgetEuler321Psi->angleUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputEuler321Psi(int)));
+    serviceAngleRateUnitWidgetEuler321OmegaX = new DialogServiceAngleRateUnitFrame();
+    gridLayoutEuler321->addWidget(serviceAngleRateUnitWidgetEuler321OmegaX, 3, 2); serviceAngleRateUnitWidgetEuler321OmegaX->show(); // Units of OmegaX
+    connect(serviceAngleRateUnitWidgetEuler321OmegaX->angleRateUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputEuler321OmegaX(int)));
+    serviceAngleRateUnitWidgetEuler321OmegaY = new DialogServiceAngleRateUnitFrame();
+    gridLayoutEuler321->addWidget(serviceAngleRateUnitWidgetEuler321OmegaY, 4, 2); serviceAngleRateUnitWidgetEuler321OmegaY->show(); // Units of OmegaY
+    connect(serviceAngleRateUnitWidgetEuler321OmegaY->angleRateUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputEuler321OmegaY(int)));
+    serviceAngleRateUnitWidgetEuler321OmegaZ = new DialogServiceAngleRateUnitFrame();
+    gridLayoutEuler321->addWidget(serviceAngleRateUnitWidgetEuler321OmegaZ, 5, 2); serviceAngleRateUnitWidgetEuler321OmegaZ->show(); // Units of OmegaZ
+    connect(serviceAngleRateUnitWidgetEuler321OmegaZ->angleRateUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputEuler321OmegaZ(int)));
 
+    //  Setting up units for the Attitude panels: Euler 313
+    serviceAngleUnitWidgetEuler313Phi = new DialogServiceAngleUnitFrame();
+    gridLayoutEuler313->addWidget(serviceAngleUnitWidgetEuler313Phi, 0, 2); serviceAngleUnitWidgetEuler313Phi->show(); // Units of Phi
+    connect(serviceAngleUnitWidgetEuler313Phi->angleUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputEuler313Phi(int)));
+    serviceAngleUnitWidgetEuler313Theta = new DialogServiceAngleUnitFrame();
+    gridLayoutEuler313->addWidget(serviceAngleUnitWidgetEuler313Theta, 1, 2); serviceAngleUnitWidgetEuler313Theta->show(); // Units of Theta
+    connect(serviceAngleUnitWidgetEuler313Theta->angleUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputEuler313Theta(int)));
+    serviceAngleUnitWidgetEuler313Psi = new DialogServiceAngleUnitFrame();
+    gridLayoutEuler313->addWidget(serviceAngleUnitWidgetEuler313Psi, 2, 2); serviceAngleUnitWidgetEuler313Psi->show(); // Units of Psi
+    connect(serviceAngleUnitWidgetEuler313Psi->angleUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputEuler313Psi(int)));
+    serviceAngleRateUnitWidgetEuler313OmegaX = new DialogServiceAngleRateUnitFrame();
+    gridLayoutEuler313->addWidget(serviceAngleRateUnitWidgetEuler313OmegaX, 3, 2); serviceAngleRateUnitWidgetEuler313OmegaX->show(); // Units of OmegaX
+    connect(serviceAngleRateUnitWidgetEuler313OmegaX->angleRateUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputEuler313OmegaX(int)));
+    serviceAngleRateUnitWidgetEuler313OmegaY = new DialogServiceAngleRateUnitFrame();
+    gridLayoutEuler313->addWidget(serviceAngleRateUnitWidgetEuler313OmegaY, 4, 2); serviceAngleRateUnitWidgetEuler313OmegaY->show(); // Units of OmegaY
+    connect(serviceAngleRateUnitWidgetEuler313OmegaY->angleRateUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputEuler313OmegaY(int)));
+    serviceAngleRateUnitWidgetEuler313OmegaZ = new DialogServiceAngleRateUnitFrame();
+    gridLayoutEuler313->addWidget(serviceAngleRateUnitWidgetEuler313OmegaZ, 5, 2); serviceAngleRateUnitWidgetEuler313OmegaZ->show(); // Units of OmegaZ
+    connect(serviceAngleRateUnitWidgetEuler313OmegaZ->angleRateUnitWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(updateInputEuler313OmegaZ(int)));
 
-    // Set up the input validators
-    QDoubleValidator* doubleValidator = new QDoubleValidator(this);
-    QDoubleValidator* angleValidator = new QDoubleValidator(this);
-    angleValidator->setBottom(0.0);
-    angleValidator->setTop(360.0);
-    QDoubleValidator* positiveDoubleValidator = new QDoubleValidator(this);
-    positiveDoubleValidator->setBottom(0.0);
-    QDoubleValidator* zeroToOneValidator = new QDoubleValidator(this);
-    zeroToOneValidator->setBottom(0.0);
-    zeroToOneValidator->setTop(0.9999);
-    QDoubleValidator* minusOneToOneValidator = new QDoubleValidator(this);
-    minusOneToOneValidator->setBottom(-1.0);
-    minusOneToOneValidator->setTop(1.0);
-
+    // -------- Setting up specific validators
     //TimeStepLineEdit->setValidator(positiveDoubleValidator);
     IntAttitudeStep->setValidator(positiveDoubleValidator); //Catarina: Validator for the attitude time step
-
     //Set validator for the state vector
     positionXEdit->setValidator(doubleValidator); positionYEdit->setValidator(doubleValidator); positionZEdit->setValidator(doubleValidator);
     velocityXEdit->setValidator(doubleValidator); velocityYEdit->setValidator(doubleValidator); velocityZEdit->setValidator(doubleValidator);
-
     //Set validator for the Keplerian elements
     semimajorAxisEdit->setValidator(positiveDoubleValidator);
     eccentricityEdit->setValidator(zeroToOneValidator);
@@ -176,32 +223,25 @@ LoiteringDialog::LoiteringDialog(ScenarioTree* parent) :
     raanEdit->setValidator(angleValidator);
     argOfPeriapsisEdit->setValidator(angleValidator);
     trueAnomalyEdit->setValidator(angleValidator);
-
     //Catarina: Set validator for the attitude
     //123 sequence
     Euler123phi->setValidator(angleValidator); Euler123theta->setValidator(angleValidator); Euler123psi->setValidator(angleValidator);
     Euler123omegaX->setValidator(doubleValidator); Euler123omegaY->setValidator(doubleValidator); Euler123omegaZ->setValidator(doubleValidator);
-
     //321 sequence
     Euler321phi->setValidator(angleValidator); Euler321theta->setValidator(angleValidator); Euler321psi->setValidator(angleValidator);
     Euler321omegaX->setValidator(doubleValidator); Euler321omegaY->setValidator(doubleValidator); Euler321omegaZ->setValidator(doubleValidator);
-
     //313 sequence
     Euler313phi->setValidator(angleValidator); Euler313theta->setValidator(angleValidator); Euler313psi->setValidator(angleValidator);
     Euler313omegaX->setValidator(doubleValidator); Euler313omegaY->setValidator(doubleValidator); Euler313omegaZ->setValidator(doubleValidator);
-
     //Quaternions
     q1->setValidator(minusOneToOneValidator); q2->setValidator(minusOneToOneValidator); q3->setValidator(minusOneToOneValidator); q4->setValidator(minusOneToOneValidator);
     q1dot->setValidator(doubleValidator); q2dot->setValidator(doubleValidator); q3dot->setValidator(doubleValidator); q4dot->setValidator(doubleValidator);
-
-
+    // Step sizes
     IntStepEdit->setValidator(positiveDoubleValidator);
 
+    // Make initial widget display to user
     InitialStateStackedWidget->setCurrentWidget(keplerianPage);
     InitAttitudeStackedWidget->setCurrentWidget(Euler123Page);
-
-    //connect(PropagatorComboBox, SIGNAL(activated(int)), this, SLOT(disableIntegratorComboBox(int)));
-
 }
 
 LoiteringDialog::~LoiteringDialog()
@@ -218,6 +258,77 @@ void LoiteringDialog::updateInputKeplerianA(int myIndex)
     //qDebug() << serviceDistanceUnitWidgetKeplerianA->myPastUnits << serviceDistanceUnitWidgetKeplerianA->myPastDistance << serviceDistanceUnitWidgetKeplerianA->myFutureDistance << endl;
     semimajorAxisEdit->setText(QString::number(serviceDistanceUnitWidgetKeplerianA->myFutureDistance));
 }
+
+void LoiteringDialog::updateInputKeplerianI(int myIndex)
+{
+    serviceAngleUnitWidgetKeplerianI->setInputAngle(inclinationEdit->text().toDouble());
+    serviceAngleUnitWidgetKeplerianI->on_comboBoxAngleUnitsChoice_currentIndexChanged(myIndex);
+    inclinationEdit->setText(QString::number(serviceAngleUnitWidgetKeplerianI->myFutureAngle));
+}
+
+void LoiteringDialog::updateInputKeplerianRAAN(int myIndex)
+{
+    serviceAngleUnitWidgetKeplerianRAAN->setInputAngle(raanEdit->text().toDouble());
+    serviceAngleUnitWidgetKeplerianRAAN->on_comboBoxAngleUnitsChoice_currentIndexChanged(myIndex);
+    raanEdit->setText(QString::number(serviceAngleUnitWidgetKeplerianRAAN->myFutureAngle));
+}
+
+void LoiteringDialog::updateInputKeplerianAoP(int myIndex)
+{
+    serviceAngleUnitWidgetKeplerianAoP->setInputAngle(argOfPeriapsisEdit->text().toDouble());
+    serviceAngleUnitWidgetKeplerianAoP->on_comboBoxAngleUnitsChoice_currentIndexChanged(myIndex);
+    argOfPeriapsisEdit->setText(QString::number(serviceAngleUnitWidgetKeplerianAoP->myFutureAngle));
+}
+
+void LoiteringDialog::updateInputKeplerianTrueAnomaly(int myIndex)
+{
+    serviceAngleUnitWidgetKeplerianTrueAnomaly->setInputAngle(trueAnomalyEdit->text().toDouble());
+    serviceAngleUnitWidgetKeplerianTrueAnomaly->on_comboBoxAngleUnitsChoice_currentIndexChanged(myIndex);
+    trueAnomalyEdit->setText(QString::number(serviceAngleUnitWidgetKeplerianTrueAnomaly->myFutureAngle));
+}
+
+void LoiteringDialog::updateInputCartesianX(int myIndex)
+{
+    serviceDistanceUnitWidgetCartesianX->setInputDistance(positionXEdit->text().toDouble());
+    serviceDistanceUnitWidgetCartesianX->on_comboBoxDistanceUnitsChoice_currentIndexChanged(myIndex);
+    positionXEdit->setText(QString::number(serviceDistanceUnitWidgetCartesianX->myFutureDistance));
+}
+
+void LoiteringDialog::updateInputCartesianY(int myIndex)
+{
+    serviceDistanceUnitWidgetCartesianY->setInputDistance(positionYEdit->text().toDouble());
+    serviceDistanceUnitWidgetCartesianY->on_comboBoxDistanceUnitsChoice_currentIndexChanged(myIndex);
+    positionYEdit->setText(QString::number(serviceDistanceUnitWidgetCartesianY->myFutureDistance));
+}
+
+void LoiteringDialog::updateInputCartesianZ(int myIndex)
+{
+    serviceDistanceUnitWidgetCartesianZ->setInputDistance(positionZEdit->text().toDouble());
+    serviceDistanceUnitWidgetCartesianZ->on_comboBoxDistanceUnitsChoice_currentIndexChanged(myIndex);
+    positionZEdit->setText(QString::number(serviceDistanceUnitWidgetCartesianZ->myFutureDistance));
+}
+
+void LoiteringDialog::updateInputCartesianVx(int myIndex)
+{
+    serviceDistanceRateUnitWidgetCartesianVx->setInputDistanceRate(velocityXEdit->text().toDouble());
+    serviceDistanceRateUnitWidgetCartesianVx->on_comboBoxDistanceRateUnitsChoice_currentIndexChanged(myIndex);
+    velocityXEdit->setText(QString::number(serviceDistanceRateUnitWidgetCartesianVx->myFutureDistanceRate));
+}
+
+void LoiteringDialog::updateInputCartesianVy(int myIndex)
+{
+    serviceDistanceRateUnitWidgetCartesianVy->setInputDistanceRate(velocityYEdit->text().toDouble());
+    serviceDistanceRateUnitWidgetCartesianVy->on_comboBoxDistanceRateUnitsChoice_currentIndexChanged(myIndex);
+    velocityYEdit->setText(QString::number(serviceDistanceRateUnitWidgetCartesianVy->myFutureDistanceRate));
+}
+
+void LoiteringDialog::updateInputCartesianVz(int myIndex)
+{
+    serviceDistanceRateUnitWidgetCartesianVz->setInputDistanceRate(velocityZEdit->text().toDouble());
+    serviceDistanceRateUnitWidgetCartesianVz->on_comboBoxDistanceRateUnitsChoice_currentIndexChanged(myIndex);
+    velocityZEdit->setText(QString::number(serviceDistanceRateUnitWidgetCartesianVz->myFutureDistanceRate));
+}
+
 
 void LoiteringDialog::updateInputEuler123Phi(int myIndex)
 {
@@ -260,6 +371,93 @@ void LoiteringDialog::updateInputEuler123OmegaZ(int myIndex)
     serviceAngleRateUnitWidgetEuler123OmegaZ->on_comboBoxAngleRateUnitsChoice_currentIndexChanged(myIndex);
     Euler123omegaZ->setText(QString::number(serviceAngleRateUnitWidgetEuler123OmegaZ->myFutureAngleRate));
 }
+
+
+void LoiteringDialog::updateInputEuler321Phi(int myIndex)
+{
+    serviceAngleUnitWidgetEuler321Phi->setInputAngle(Euler321phi->text().toDouble());
+    serviceAngleUnitWidgetEuler321Phi->on_comboBoxAngleUnitsChoice_currentIndexChanged(myIndex);
+    Euler321phi->setText(QString::number(serviceAngleUnitWidgetEuler321Phi->myFutureAngle));
+}
+
+void LoiteringDialog::updateInputEuler321Theta(int myIndex)
+{
+    serviceAngleUnitWidgetEuler321Theta->setInputAngle(Euler321theta->text().toDouble());
+    serviceAngleUnitWidgetEuler321Theta->on_comboBoxAngleUnitsChoice_currentIndexChanged(myIndex);
+    Euler321theta->setText(QString::number(serviceAngleUnitWidgetEuler321Theta->myFutureAngle));
+}
+
+void LoiteringDialog::updateInputEuler321Psi(int myIndex)
+{
+    serviceAngleUnitWidgetEuler321Psi->setInputAngle(Euler321psi->text().toDouble());
+    serviceAngleUnitWidgetEuler321Psi->on_comboBoxAngleUnitsChoice_currentIndexChanged(myIndex);
+    Euler321psi->setText(QString::number(serviceAngleUnitWidgetEuler321Psi->myFutureAngle));
+}
+
+void LoiteringDialog::updateInputEuler321OmegaX(int myIndex)
+{
+    serviceAngleRateUnitWidgetEuler321OmegaX->setInputAngleRate(Euler321omegaX->text().toDouble());
+    serviceAngleRateUnitWidgetEuler321OmegaX->on_comboBoxAngleRateUnitsChoice_currentIndexChanged(myIndex);
+    Euler321omegaX->setText(QString::number(serviceAngleRateUnitWidgetEuler321OmegaX->myFutureAngleRate));
+}
+
+void LoiteringDialog::updateInputEuler321OmegaY(int myIndex)
+{
+    serviceAngleRateUnitWidgetEuler321OmegaY->setInputAngleRate(Euler321omegaY->text().toDouble());
+    serviceAngleRateUnitWidgetEuler321OmegaY->on_comboBoxAngleRateUnitsChoice_currentIndexChanged(myIndex);
+    Euler321omegaY->setText(QString::number(serviceAngleRateUnitWidgetEuler321OmegaY->myFutureAngleRate));
+}
+
+void LoiteringDialog::updateInputEuler321OmegaZ(int myIndex)
+{
+    serviceAngleRateUnitWidgetEuler321OmegaZ->setInputAngleRate(Euler321omegaZ->text().toDouble());
+    serviceAngleRateUnitWidgetEuler321OmegaZ->on_comboBoxAngleRateUnitsChoice_currentIndexChanged(myIndex);
+    Euler321omegaZ->setText(QString::number(serviceAngleRateUnitWidgetEuler321OmegaZ->myFutureAngleRate));
+}
+
+
+void LoiteringDialog::updateInputEuler313Phi(int myIndex)
+{
+    serviceAngleUnitWidgetEuler313Phi->setInputAngle(Euler313phi->text().toDouble());
+    serviceAngleUnitWidgetEuler313Phi->on_comboBoxAngleUnitsChoice_currentIndexChanged(myIndex);
+    Euler313phi->setText(QString::number(serviceAngleUnitWidgetEuler313Phi->myFutureAngle));
+}
+
+void LoiteringDialog::updateInputEuler313Theta(int myIndex)
+{
+    serviceAngleUnitWidgetEuler313Theta->setInputAngle(Euler313theta->text().toDouble());
+    serviceAngleUnitWidgetEuler313Theta->on_comboBoxAngleUnitsChoice_currentIndexChanged(myIndex);
+    Euler313theta->setText(QString::number(serviceAngleUnitWidgetEuler313Theta->myFutureAngle));
+}
+
+void LoiteringDialog::updateInputEuler313Psi(int myIndex)
+{
+    serviceAngleUnitWidgetEuler313Psi->setInputAngle(Euler313psi->text().toDouble());
+    serviceAngleUnitWidgetEuler313Psi->on_comboBoxAngleUnitsChoice_currentIndexChanged(myIndex);
+    Euler313psi->setText(QString::number(serviceAngleUnitWidgetEuler313Psi->myFutureAngle));
+}
+
+void LoiteringDialog::updateInputEuler313OmegaX(int myIndex)
+{
+    serviceAngleRateUnitWidgetEuler313OmegaX->setInputAngleRate(Euler313omegaX->text().toDouble());
+    serviceAngleRateUnitWidgetEuler313OmegaX->on_comboBoxAngleRateUnitsChoice_currentIndexChanged(myIndex);
+    Euler313omegaX->setText(QString::number(serviceAngleRateUnitWidgetEuler313OmegaX->myFutureAngleRate));
+}
+
+void LoiteringDialog::updateInputEuler313OmegaY(int myIndex)
+{
+    serviceAngleRateUnitWidgetEuler313OmegaY->setInputAngleRate(Euler313omegaY->text().toDouble());
+    serviceAngleRateUnitWidgetEuler313OmegaY->on_comboBoxAngleRateUnitsChoice_currentIndexChanged(myIndex);
+    Euler313omegaY->setText(QString::number(serviceAngleRateUnitWidgetEuler313OmegaY->myFutureAngleRate));
+}
+
+void LoiteringDialog::updateInputEuler313OmegaZ(int myIndex)
+{
+    serviceAngleRateUnitWidgetEuler313OmegaZ->setInputAngleRate(Euler313omegaZ->text().toDouble());
+    serviceAngleRateUnitWidgetEuler313OmegaZ->on_comboBoxAngleRateUnitsChoice_currentIndexChanged(myIndex);
+    Euler313omegaZ->setText(QString::number(serviceAngleRateUnitWidgetEuler313OmegaZ->myFutureAngleRate));
+}
+
 
 
 ///////////////////////////////////// End of the methods that react after a unit combo has been activated ///////////////////////////////////////

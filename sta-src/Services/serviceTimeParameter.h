@@ -29,9 +29,10 @@
 #include "ui_serviceTimeParameter.h"
 #include <QFrame>
 #include "Astro-Core/date.h"
+
 class DialogServiceTimeParameterFrame : public QFrame , private Ui::DialogServiceTimeParameterFrame
 {
-Q_OBJECT
+    Q_OBJECT
 public:
 	DialogServiceTimeParameterFrame( QWidget * parent = 0, Qt::WindowFlags f = 0 );
 	~DialogServiceTimeParameterFrame();

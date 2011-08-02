@@ -23,6 +23,7 @@
 ------------------ Author: Guillermo Ortega  -------------------------------------------
  Modified by Tiziana Sabatini on July 2009 to support the new perturbations layer
  Patched by Catarina to add attitude, July 2011
+ Patched by Guillermo August 2011 to use the SERVICES module
  */
 
 #ifndef _LOITERING_H_
@@ -40,14 +41,13 @@
 #include "Services/perturbationForcesDialog.h"
 #include "Services/stoppingConditionsTrajectoryDialog.h"
 #include "Services/serviceDistanceUnit.h"
-#include "Services/serviceVelocityUnit.h"
+#include "Services/serviceDistanceRateUnit.h"
 #include "Services/serviceAngleUnit.h"
 #include "Services/serviceAngleRateUnit.h"
 
 #include <QDialog>
 
 class ScenarioTree;
-//class TesseralBox;
 
 
 class LoiteringDialog : public QDialog, private Ui_LoiteringDialogClass
@@ -94,19 +94,48 @@ public slots:
     void disableIntegratorComboBox(int i);
 
 protected slots:
+    //----------------- Declaring the actions when the user clicks any combo or button
     void on_pushButtonAspect_clicked();
     void on_perturbationForcesPushButton_clicked();
     void on_perturbationTorquesPushButton_clicked();
     void on_trajectoryStopConditionsPushButton_clicked();
     void on_attitudeStopConditionsPushButton_clicked();
 
-    void updateInputKeplerianA(int myIndex);
+    ////-------------- Declaring the actions to be taken when the user changes the units in the GUI
+    // Keplerian elements
+    void updateInputKeplerianA(int myIndex);  void updateInputKeplerianI(int myIndex);  void updateInputKeplerianRAAN(int myIndex);
+    void updateInputKeplerianAoP(int myIndex);  void updateInputKeplerianTrueAnomaly(int myIndex);
+    // Cartesian
+    void updateInputCartesianX(int myIndex); void updateInputCartesianY(int myIndex); void updateInputCartesianZ(int myIndex);
+    void updateInputCartesianVx(int myIndex); void updateInputCartesianVy(int myIndex); void updateInputCartesianVz(int myIndex);
+    // Next is the attitude panel
+    // Euler 123
     void updateInputEuler123Phi(int myIndex); void updateInputEuler123Theta(int myIndex); void updateInputEuler123Psi(int myIndex);
     void updateInputEuler123OmegaX(int myIndex); void updateInputEuler123OmegaY(int myIndex); void updateInputEuler123OmegaZ(int myIndex);
+    // Euler 321
+    void updateInputEuler321Phi(int myIndex); void updateInputEuler321Theta(int myIndex); void updateInputEuler321Psi(int myIndex);
+    void updateInputEuler321OmegaX(int myIndex); void updateInputEuler321OmegaY(int myIndex); void updateInputEuler321OmegaZ(int myIndex);
+    // Euler 313
+    void updateInputEuler313Phi(int myIndex); void updateInputEuler313Theta(int myIndex); void updateInputEuler313Psi(int myIndex);
+    void updateInputEuler313OmegaX(int myIndex); void updateInputEuler313OmegaY(int myIndex); void updateInputEuler313OmegaZ(int myIndex);
 
 
 private:
+    //------------------- Declaring the widgets of the units in the GUI
+    // Notice that the Eccentricity has no units!
     DialogServiceDistanceUnitFrame* serviceDistanceUnitWidgetKeplerianA;
+    DialogServiceAngleUnitFrame* serviceAngleUnitWidgetKeplerianI;
+    DialogServiceAngleUnitFrame* serviceAngleUnitWidgetKeplerianRAAN;
+    DialogServiceAngleUnitFrame* serviceAngleUnitWidgetKeplerianAoP;
+    DialogServiceAngleUnitFrame* serviceAngleUnitWidgetKeplerianTrueAnomaly;
+
+    DialogServiceDistanceUnitFrame* serviceDistanceUnitWidgetCartesianX;
+    DialogServiceDistanceUnitFrame* serviceDistanceUnitWidgetCartesianY;
+    DialogServiceDistanceUnitFrame* serviceDistanceUnitWidgetCartesianZ;
+    DialogServiceDistanceRateUnitFrame* serviceDistanceRateUnitWidgetCartesianVx;
+    DialogServiceDistanceRateUnitFrame* serviceDistanceRateUnitWidgetCartesianVy;
+    DialogServiceDistanceRateUnitFrame* serviceDistanceRateUnitWidgetCartesianVz;
+
     DialogServiceAngleUnitFrame* serviceAngleUnitWidgetEuler123Phi;
     DialogServiceAngleUnitFrame* serviceAngleUnitWidgetEuler123Theta;
     DialogServiceAngleUnitFrame* serviceAngleUnitWidgetEuler123Psi;
@@ -114,7 +143,19 @@ private:
     DialogServiceAngleRateUnitFrame* serviceAngleRateUnitWidgetEuler123OmegaY;
     DialogServiceAngleRateUnitFrame* serviceAngleRateUnitWidgetEuler123OmegaZ;
 
+    DialogServiceAngleUnitFrame* serviceAngleUnitWidgetEuler321Phi;
+    DialogServiceAngleUnitFrame* serviceAngleUnitWidgetEuler321Theta;
+    DialogServiceAngleUnitFrame* serviceAngleUnitWidgetEuler321Psi;
+    DialogServiceAngleRateUnitFrame* serviceAngleRateUnitWidgetEuler321OmegaX;
+    DialogServiceAngleRateUnitFrame* serviceAngleRateUnitWidgetEuler321OmegaY;
+    DialogServiceAngleRateUnitFrame* serviceAngleRateUnitWidgetEuler321OmegaZ;
 
+    DialogServiceAngleUnitFrame* serviceAngleUnitWidgetEuler313Phi;
+    DialogServiceAngleUnitFrame* serviceAngleUnitWidgetEuler313Theta;
+    DialogServiceAngleUnitFrame* serviceAngleUnitWidgetEuler313Psi;
+    DialogServiceAngleRateUnitFrame* serviceAngleRateUnitWidgetEuler313OmegaX;
+    DialogServiceAngleRateUnitFrame* serviceAngleRateUnitWidgetEuler313OmegaY;
+    DialogServiceAngleRateUnitFrame* serviceAngleRateUnitWidgetEuler313OmegaZ;
 };
 
 
