@@ -1,3 +1,9 @@
+#########################################################################################
+### This file has been modified by the STA team to incorporate some of the features
+### of QtiPlot into STA
+### Last modification happened in August 2011
+#########################################################################################
+
 # building without muParser doesn't work yet
 SCRIPTING_LANGS += muParser
 #SCRIPTING_LANGS += Python
@@ -114,28 +120,6 @@ linux:LIBS         += -lmuparser
 linux:LIBS         += -lgsl -lgslcblas
 
 ##################### Windows ###############################################
-
-#win32:LIBS        += $$PWD/3rdparty/muparser/lib/libmuparser.a
-#win32:LIBS        += $$PWD/3rdparty/qwtplot3d/lib/libqwtplot3d.a
-#win32:LIBS        += $$PWD/3rdparty/qwtplot3d/lib/qwtplot3d.dll
-#win32:LIBS        += $$PWD/3rdparty/qwt/lib/libqwt.a
-#win32:LIBS        += $$PWD/3rdparty/gsl/lib/libgsl.dll
-#win32:LIBS        += $$PWD/3rdparty/gsl/lib/libgslcblas.dll
-#win32:LIBS        += $$PWD/3rdparty/zlib123/lib/zdll.lib
-#win32:LIBS        += $$PWD/3rdparty/zlib123/lib/libzdll.a
-#win32:LIBS        += $$PWD/3rdparty/lib-build-desktop/QtAssistantClient4.dll
-
-#win32:LIBS        += ./lib/win32-x86-gcc/libmuparser.a
-#win32:LIBS        += ./lib/win32-x86-gcc/libqwtplot3d.a
-#win32:LIBS        += ./lib/win32-x86-gcc/libqwt.a
-#win32:LIBS        += ./lib/win32-x86-gcc/libgsl.dll
-#win32:LIBS        += ./lib/win32-x86-gcc/libgslcblas.dll
-##win32:LIBS        += ./lib/win32-x86-gcc/zdll.lib
-#win32:LIBS        += ./lib/win32-x86-gcc/zlib1.dll
-##win32:LIBS        += ./lib/win32-x86-gcc/libzdll.a
-#win32:LIBS        += ./lib/win32-x86-gcc/QtAssistantClient4.dll
-##win32:LIBS        += ./lib/win32-x86-gcc/libQtAssistantClient4.a
-
 win32:LIBS        += ../../lib/win32-x86-gcc/muparser.dll
 win32:LIBS        += ../../lib/win32-x86-gcc/qwtplot3d.dll
 #win32:LIBS        += ../../lib/win32-x86-gcc/qwtmathml5.dll
@@ -145,9 +129,6 @@ win32:LIBS        += ../../lib/win32-x86-gcc/libgslcblas.dll
 win32:LIBS        += ../../lib/win32-x86-gcc/zlib1.dll
 win32:LIBS        += ../../lib/win32-x86-gcc/msvcrt.dll
 win32:LIBS        += ../../lib/win32-x86-gcc/QtAssistantClient4.dll
-
-#win32:LIBS        += C:/STA/trunk/thirdparty/qtiplot/release/analysisParametersChoice.o
-#win32:LIBS        += C:/STA/trunk/thirdparty/qtiplot/release/moc_analysisParametersChoice.o
 
 #############################################################################
 ###################### BASIC PROJECT PROPERTIES #############################
@@ -230,14 +211,6 @@ unix: man.files += $$PWD/qtiplot.1
 ###################### HEADERS ##############################################
 
 HEADERS  += \
-            ../../sta-src/Scenario/staschema.h \
-            ../../sta-src/Astro-Core/attitudetransformations.h \
-            ../../sta-src/Scenario/scenario.h \
-            ../../sta-src/Scenario/stascenarioutil.h \
-            ../../sta-src/Astro-Core/cartesianTOorbital.h \
-            ../../sta-src/Astro-Core/orbitalTOcartesian.h \
-            ../../sta-src/Astro-Core/trueAnomalyTOmeanAnomaly.h \
-            ../../sta-src/Analysis/analysisParametersChoice.h \
             qtiplot/src/ApplicationWindow.h \
             qtiplot/src/globals.h\
             qtiplot/src/Table.h \
@@ -283,14 +256,6 @@ HEADERS  += \
 ###################### SOURCES ##############################################
 
 SOURCES  += \
-            ../../sta-src/Scenario/staschema.cpp \
-            ../../sta-src/Astro-Core/attitudetransformations.cpp \
-            ../../sta-src/Scenario/scenario.cpp \
-            ../../sta-src/Scenario/stascenarioutil.cpp \
-            ../../sta-src/Astro-Core/cartesianTOorbital.cpp \
-            ../../sta-src/Astro-Core/orbitalTOcartesian.cpp \
-            ../../sta-src/Astro-Core/trueAnomalyTOmeanAnomaly.cpp \
-            ../../sta-src/Analysis/analysisParametersChoice.cpp \
             qtiplot/src/ApplicationWindow.cpp \
             qtiplot/src/Table.cpp \
             qtiplot/src/SetColValuesDialog.cpp \
@@ -328,11 +293,6 @@ SOURCES  += \
             qtiplot/src/PlotWizard.cpp \
             qtiplot/src/LineNumberDisplay.cpp \
             qtiplot/src/PenStyleBox.cpp \
-
-
-   FORMS += \
-            ../../sta-src/Analysis/analysisParametersChoice.ui
-
 
 ###############################################################
 ##################### Compression (zlib123) ###################
