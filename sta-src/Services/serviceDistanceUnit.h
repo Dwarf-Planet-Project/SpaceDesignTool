@@ -53,7 +53,7 @@ public:
     void on_comboBoxDistanceUnitsChoice_currentIndexChanged(int myIndex);
 
 private:
-    double convertDistance(int fromDistanceUnit, int fromDistanceUnit, double distance);
+    double convertDistance(int fromDistanceUnit, int toDistanceUnit, double distance);
 
 	
 };

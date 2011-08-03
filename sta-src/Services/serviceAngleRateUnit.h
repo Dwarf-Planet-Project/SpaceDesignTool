@@ -53,7 +53,7 @@ public:
     void on_comboBoxAngleRateUnitsChoice_currentIndexChanged(int myIndex);
 
 private:
-    double convertAngleRate(int fromAngleRateUnit, int fromAngleRateUnit, double angleRate);
+    double convertAngleRate(int fromAngleRateUnit, int toAngleRateUnit, double angleRate);
 
 	
 };

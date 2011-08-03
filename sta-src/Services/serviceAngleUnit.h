@@ -53,7 +53,7 @@ public:
     void on_comboBoxAngleUnitsChoice_currentIndexChanged(int myIndex);
 
 private:
-    double convertAngle(int fromAngleUnit, int fromAngleUnit, double angle);
+    double convertAngle(int fromAngleUnit, int toAngleUnit, double angle);
 
 	
 };

@@ -53,7 +53,7 @@ public:
     void on_comboBoxDistanceRateUnitsChoice_currentIndexChanged(int myIndex);
 
 private:
-    double convertDistanceRate(int fromDistanceRateUnit, int fromDistanceRateUnit, double distance);
+    double convertDistanceRate(int fromDistanceRateUnit, int toDistanceRateUnit, double distance);
 
 	
 };
