@@ -94,7 +94,7 @@ public slots:
     void disableIntegratorComboBox(int i);
 
 protected slots:
-    //----------------- Declaring the actions when the user clicks any combo or button
+    //----------------- Declaring the actions when the user clicks auxiliary combo or button
     void on_pushButtonAspect_clicked();
     void on_perturbationForcesPushButton_clicked();
     void on_perturbationTorquesPushButton_clicked();
@@ -118,6 +118,10 @@ protected slots:
     // Euler 313
     void updateInputEuler313Phi(int myIndex); void updateInputEuler313Theta(int myIndex); void updateInputEuler313Psi(int myIndex);
     void updateInputEuler313OmegaX(int myIndex); void updateInputEuler313OmegaY(int myIndex); void updateInputEuler313OmegaZ(int myIndex);
+
+    ////-------------- Declaring the actions to be taken when the user changes the set of elements
+    void updateElementSetTrajectory(int myIndex);
+    void updateElementSetAttitude(int myIndex);
 
 
 private:

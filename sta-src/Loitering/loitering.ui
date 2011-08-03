@@ -2592,8 +2592,8 @@ p, li { white-space: pre-wrap; }
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>579</x>
-     <y>579</y>
+     <x>825</x>
+     <y>626</y>
     </hint>
     <hint type="destinationlabel">
      <x>344</x>
@@ -2608,44 +2608,12 @@ p, li { white-space: pre-wrap; }
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>530</x>
-     <y>577</y>
+     <x>825</x>
+     <y>626</y>
     </hint>
     <hint type="destinationlabel">
      <x>248</x>
      <y>579</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>InitialStateComboBox</sender>
-   <signal>activated(int)</signal>
-   <receiver>InitialStateStackedWidget</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>232</x>
-     <y>191</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>373</x>
-     <y>237</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>AttitudeTypeComboBox</sender>
-   <signal>activated(int)</signal>
-   <receiver>InitAttitudeStackedWidget</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>671</x>
-     <y>193</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>768</x>
-     <y>248</y>
     </hint>
    </hints>
   </connection>

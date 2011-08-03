@@ -27,6 +27,7 @@
  Modified by Tiziana Sabatini on July 2009 to support the new perturbations layer
  Extensively modified by Guillermo on August 2010 to comply with the new schema v2.0
  Patched by Catarina to add attitude, July 2011
+ Patched by Guilelrmo to allow on the fly conversions, August 2011
 */
 
 #include "Loitering/loitering.h"
@@ -52,6 +53,7 @@
 #include "Astro-Core/attitudevector.h"
 #include "Astro-Core/attitudeintegration.h"
 #include "Astro-Core/attitudetransformations.h"
+#include "Astro-Core/trueAnomalyTOmeanAnomaly.h"
 
 #include "ui_missionAspectDialog.h"
 
@@ -239,9 +241,10 @@ LoiteringDialog::LoiteringDialog(ScenarioTree* parent) :
     // Step sizes
     IntStepEdit->setValidator(positiveDoubleValidator);
 
-    // Make initial widget display to user
-    InitialStateStackedWidget->setCurrentWidget(keplerianPage);
-    InitAttitudeStackedWidget->setCurrentWidget(Euler123Page);
+    //--- Connecting the Elements types combo widgets
+    connect(InitialStateComboBox, SIGNAL(activated(int)), this, SLOT(updateElementSetTrajectory(int)));
+    connect(AttitudeTypeComboBox, SIGNAL(activated(int)), this, SLOT(updateElementSetAttitude(int)));
+
 }
 
 LoiteringDialog::~LoiteringDialog()
@@ -460,10 +463,35 @@ void LoiteringDialog::updateInputEuler313OmegaZ(int myIndex)
 
 
 
-///////////////////////////////////// End of the methods that react after a unit combo has been activated ///////////////////////////////////////
+///////////////////////////////////// Methods that react after a type of element set combo has been activated ///////////////////////////////////////
+void LoiteringDialog::updateElementSetTrajectory(int myIndex)
+{
+    InitialStateComboBox->setCurrentIndex(myIndex);
+
+    if (myIndex == 0)
+    {
+        InitialStateStackedWidget->setCurrentWidget(keplerianPage);
+    }
+    else if (myIndex == 1)
+    {
+        InitialStateStackedWidget->setCurrentWidget(stateVectorPage);
+    }
+
+}
+
+void LoiteringDialog::updateElementSetAttitude(int myIndex)
+{
+    AttitudeTypeComboBox->setCurrentIndex(myIndex);
+
+    if (myIndex == 0)      InitAttitudeStackedWidget->setCurrentWidget(Euler123Page);
+    else if (myIndex == 1) InitAttitudeStackedWidget->setCurrentWidget(Euler321Page);
+    else if (myIndex == 2) InitAttitudeStackedWidget->setCurrentWidget(Euler313Page);
+    else if (myIndex == 3) InitAttitudeStackedWidget->setCurrentWidget(QuaternionESAPage);
+    else if (myIndex == 4) InitAttitudeStackedWidget->setCurrentWidget(QuaternionJPLPage);
+}
 
 
-
+///////////////////////////////////// Methods to load and save the data to the GUI  ///////////////////////////////////////
 
 void LoiteringDialog::disableIntegratorComboBox(int i)
 {
@@ -690,44 +718,57 @@ bool LoiteringDialog::loadValues(ScenarioInitialPositionType* initPosition)
         }
     }
 
-    ScenarioAbstract6DOFPositionType* position = initPosition->Abstract6DOFPosition().data();
+    QString myBody = comboBoxCentralBody->currentText();      //qDebug() << myBody << endl;
+    StaBody* mySTABody = STA_SOLAR_SYSTEM->lookup(myBody);
 
-    ScenarioKeplerianElementsType* elements = dynamic_cast<ScenarioKeplerianElementsType*>(position);
-    ScenarioStateVectorType* stateVector    = dynamic_cast<ScenarioStateVectorType*>(position);
-
-    Q_ASSERT(elements || stateVector);
-
-    if (elements)
+    switch (InitialStateComboBox->currentIndex())
     {
-        InitialStateComboBox->setCurrentIndex(0);
-        InitialStateStackedWidget->setCurrentWidget(keplerianPage);
+    case 0: // --- KEPLERIAN
+        {
+            ScenarioAbstract6DOFPositionType* position = initPosition->Abstract6DOFPosition().data();
+            ScenarioKeplerianElementsType* elements = dynamic_cast<ScenarioKeplerianElementsType*>(position);
+            semimajorAxisEdit->setText(QString::number(elements->semiMajorAxis()));
+            eccentricityEdit->setText(QString::number(sta::radToDeg(elements->eccentricity())));
+            inclinationEdit->setText(QString::number(sta::radToDeg(elements->inclination())));
+            raanEdit->setText(QString::number(sta::radToDeg(elements->RAAN())));
+            argOfPeriapsisEdit->setText(QString::number(sta::radToDeg(elements->argumentOfPeriapsis())));
+            trueAnomalyEdit->setText(QString::number(sta::radToDeg(elements->trueAnomaly())));
 
-        semimajorAxisEdit->setText(QString::number(elements->semiMajorAxis()));
-        eccentricityEdit->setText(QString::number(elements->eccentricity()));
-        inclinationEdit->setText(QString::number(elements->inclination()));
-        raanEdit->setText(QString::number(elements->RAAN())); //*180/Pi()));
-        argOfPeriapsisEdit->setText(QString::number(elements->argumentOfPeriapsis())); //*180/Pi()));
-        trueAnomalyEdit->setText(QString::number(elements->trueAnomaly())); //*180/Pi()));
-    }
-    else if (stateVector)
-    {
-        InitialStateComboBox->setCurrentIndex(1);
-        InitialStateStackedWidget->setCurrentWidget(stateVectorPage);
+            // We need to convert into Cartesian and load the corresponding edit-label-combos of the GUI
 
-        positionXEdit->setText(QString::number(stateVector->x()));
-        positionYEdit->setText(QString::number(stateVector->y()));
-        positionZEdit->setText(QString::number(stateVector->z()));
-        velocityXEdit->setText(QString::number(stateVector->vx()));
-        velocityYEdit->setText(QString::number(stateVector->vy()));
-        velocityZEdit->setText(QString::number(stateVector->vz()));
-    }
-    else
-    {
-        // Unknown initial state type
+            double meanAnomaly = trueAnomalyTOmeanAnomaly(elements->trueAnomaly(), elements->eccentricity());
+
+            sta::StateVector myStateVector = orbitalTOcartesian(mySTABody->mu(),
+                                               elements->semiMajorAxis(),
+                                               elements->eccentricity(),
+                                               elements->inclination(),
+                                               elements->argumentOfPeriapsis(),
+                                               elements->RAAN(),
+                                               meanAnomaly);
+
+            //qDebug() << mySTABody->mu() << endl;
+            //qDebug() << elements->semiMajorAxis() << elements->eccentricity() << elements->inclination() << elements->argumentOfPeriapsis() << elements->RAAN() << elements->trueAnomaly() << endl;
+            //qDebug() << myStateVector.position(0) <<  myStateVector.position(1) << myStateVector.position(2) << myStateVector.velocity(0) << myStateVector.velocity(1) << myStateVector.velocity(2) << endl;
+
+            positionXEdit->setText(QString::number(myStateVector.position(0)));
+            positionYEdit->setText(QString::number(myStateVector.position(1)));
+            positionZEdit->setText(QString::number(myStateVector.position(2)));
+            velocityXEdit->setText(QString::number(myStateVector.velocity(0)));
+            velocityYEdit->setText(QString::number(myStateVector.velocity(1)));
+            velocityZEdit->setText(QString::number(myStateVector.velocity(2)));
+
+            return true;
+        }
+
+    case 1:  // --- STATE VECTOR
+        {
+
+
+            return true;
+        }
+    default:
         return false;
     }
-
-    return true;
 
 }
 
@@ -1003,32 +1044,55 @@ bool LoiteringDialog::saveValues(ScenarioInitialPositionType* initPos)
     {
     case 0: // --- KEPLERIAN
         {
-            // Guillermo April 23 2010
-            ScenarioKeplerianElementsType* elements_deg = new ScenarioKeplerianElementsType;
-            elements_deg->setSemiMajorAxis(semimajorAxisEdit->text().toDouble());
-            elements_deg->setEccentricity(eccentricityEdit->text().toDouble());
-            elements_deg->setInclination(inclinationEdit->text().toDouble());
-            elements_deg->setRAAN(raanEdit->text().toDouble());
-            elements_deg->setArgumentOfPeriapsis(argOfPeriapsisEdit->text().toDouble());
-            elements_deg->setTrueAnomaly(trueAnomalyEdit->text().toDouble());
+            // Takes the GUI values and stores them into the scenario
+            ScenarioKeplerianElementsType* keplerianElements = new ScenarioKeplerianElementsType;
+            keplerianElements->setSemiMajorAxis(semimajorAxisEdit->text().toDouble());
+            keplerianElements->setEccentricity(sta::degToRad(eccentricityEdit->text().toDouble()));
+            keplerianElements->setInclination(sta::degToRad(inclinationEdit->text().toDouble()));
+            keplerianElements->setRAAN(sta::degToRad(raanEdit->text().toDouble()));
+            keplerianElements->setArgumentOfPeriapsis(sta::degToRad(argOfPeriapsisEdit->text().toDouble()));
+            keplerianElements->setTrueAnomaly(sta::degToRad(trueAnomalyEdit->text().toDouble()));
 
-            initPos->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(elements_deg));
+            initPos->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(keplerianElements));
+            return true;
         }
-        return true;
+
     case 1:  // --- STATE VECTOR
         {
-            ScenarioStateVectorType* stateVector = new ScenarioStateVectorType();
-            stateVector->setX(positionXEdit->text().toDouble());
-            stateVector->setY(positionYEdit->text().toDouble());
-            stateVector->setZ(positionZEdit->text().toDouble());
-            stateVector->setVx(velocityXEdit->text().toDouble());
-            stateVector->setVy(velocityYEdit->text().toDouble());
-            stateVector->setVz(velocityZEdit->text().toDouble());
+            sta::StateVector myStateVector; sta::KeplerianElements myKeplerianElements;
 
-            initPos->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(stateVector));
+            QString myBody = comboBoxCentralBody->currentText();
+            StaBody* mySTABody = STA_SOLAR_SYSTEM->lookup(myBody);
+
+            //-- Read state vector and write keplerian
+            myStateVector.position(0) = positionXEdit->text().toDouble();
+            myStateVector.position(1) = positionYEdit->text().toDouble();
+            myStateVector.position(2) = positionZEdit->text().toDouble();
+            myStateVector.velocity(0) = velocityXEdit->text().toDouble();
+            myStateVector.velocity(1) = velocityYEdit->text().toDouble();
+            myStateVector.velocity(2) = velocityZEdit->text().toDouble();
+
+            myKeplerianElements = cartesianTOorbital(mySTABody->mu(), myStateVector);
+
+            // write keplerian
+            semimajorAxisEdit->setText(QString::number(myKeplerianElements.SemimajorAxis));
+            eccentricityEdit->setText(QString::number(sta::radToDeg(myKeplerianElements.Eccentricity)));
+            inclinationEdit->setText(QString::number(sta::radToDeg(myKeplerianElements.Inclination)));
+            raanEdit->setText(QString::number(sta::radToDeg(myKeplerianElements.AscendingNode)));
+            argOfPeriapsisEdit->setText(QString::number(sta::radToDeg(myKeplerianElements.ArgumentOfPeriapsis)));
+            trueAnomalyEdit->setText(QString::number(sta::radToDeg(myKeplerianElements.TrueAnomaly)));
+
+            ScenarioKeplerianElementsType* keplerianElements = new ScenarioKeplerianElementsType;
+            keplerianElements->setSemiMajorAxis(myKeplerianElements.SemimajorAxis);
+            keplerianElements->setEccentricity(myKeplerianElements.Eccentricity);
+            keplerianElements->setInclination(myKeplerianElements.Inclination);
+            keplerianElements->setRAAN(myKeplerianElements.AscendingNode);
+            keplerianElements->setArgumentOfPeriapsis(myKeplerianElements.ArgumentOfPeriapsis);
+            keplerianElements->setTrueAnomaly(myKeplerianElements.TrueAnomaly);
+
+            initPos->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(keplerianElements));
+            return true;
         }
-        return true;
-
     default:
         return false;
     }
