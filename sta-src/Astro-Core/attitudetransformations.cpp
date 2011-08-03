@@ -22,7 +22,7 @@
 
 //------------------ Author: Catarina Silva  -------------------------------------------------
 // ------------------ E-mail: (catsilva20@gmail.com) ------------------------------------------
-// Patched by Guillermo to correct erros, July 2011
+// Patched by Guillermo to correct errors, August 2011
 
 #include "attitudetransformations.h"
 
@@ -73,30 +73,9 @@ Quaterniond ToQuaternions(const Vector3d EulerAngles,
     // SEQUENCE 321
     if (seq1 == 3 && seq2 == 2 && seq3 == 1)
     {
-//                static double RotCoeffs[9] = {
-//                    cos(theta)*cos(phi),                                cos(theta)*sin(phi),                               -sin(theta),
-//                    -cos(psi)*sin(phi)+sin(psi)*sin(theta)*cos(phi),    cos(phi)*cos(psi)+sin(psi)*sin(theta)*sin(phi),    sin(psi)*cos(theta),
-//                    sin(psi)*sin(phi)+cos(psi)*sin(theta)*cos(phi),     -sin(psi)*cos(phi)+cos(psi)*sin(theta)*sin(phi),   cos(psi)*cos(theta)
-//                };
-//                static const Matrix3d R_321(RotCoeffs);
-
-//                qDebug() << "Rotation matrix: " << endl;
-//                qDebug() << R_321(0,0) <<  R_321(0,1) <<  R_321(0,2) << endl;
-//                qDebug() << R_321(1,0) <<  R_321(1,1) <<  R_321(1,2) << endl;
-//                qDebug() << R_321(2,0) <<  R_321(2,1) <<  R_321(2,2) << endl;
-
-//                //Convertion from DCM to Quaternions, for sequence 321
-//                static Quaterniond quat(R_321);
-
-//qDebug() << "Function ToQuaternions. Quaternion from 321 sequence:" << quat.coeffs().coeffRef(0) << "," << quat.coeffs().coeffRef(1) << ","<< quat.coeffs().coeffRef(2)<<","<<quat.coeffs().coeffRef(3) << endl;
-
-//                return quat;
-
         Quaterniond quaternion = Quaterniond(AngleAxis<double> (phi,   Vector3d::UnitZ())*
                                              Quaterniond(AngleAxis<double> (theta, Vector3d::UnitY()))*
                                              Quaterniond(AngleAxis<double> (psi,   Vector3d::UnitX())));
-
-//qDebug() << "Function ToQuaternions. Quaternion from 321 sequence:" << quaternion.coeffs().coeffRef(0) << "," << quaternion.coeffs().coeffRef(1) << ","<< quaternion.coeffs().coeffRef(2)<<","<<quaternion.coeffs().coeffRef(3) << endl;
 
         return quaternion;
     }
@@ -104,38 +83,15 @@ Quaterniond ToQuaternions(const Vector3d EulerAngles,
     // SEQUENCE 123
     if (seq1 == 1 && seq2 == 2 && seq3 == 3)
     {
-        //        static double RotCoeffs[9] = {
-        //            cos(psi)*cos(theta),    cos(psi)*sin(theta)*sin(phi)+sin(psi)*cos(phi),     -cos(psi)*sin(theta)*cos(phi)+sin(phi)*sin(psi),
-        //            -sin(psi)*cos(theta),   -sin(psi)*sin(theta)*sin(phi)+cos(psi)*cos(phi),    sin(psi)*sin(theta)*cos(phi)+cos(psi)*sin(phi),
-        //            sin(theta),             -cos(theta)*sin(phi),                               cos(theta)*cos(phi)
-        //        };
-        //        static const MyMatrix3d R_123(RotCoeffs);
-
-        //        //Convertion from DCM to Quaternions, for sequence 321
-        //        static Quaterniond quat(R_123);
         Quaterniond quaternion = Quaterniond(AngleAxis<double> (phi,   Vector3d::UnitX())*
                                              Quaterniond(AngleAxis<double> (theta, Vector3d::UnitY()))*
                                              Quaterniond(AngleAxis<double> (psi,   Vector3d::UnitZ())));
         return quaternion;
-
-        //qDebug() << "Function ToQuaternions. From 123 sequence. Quaternion:" << quaternion.coeffs().coeffRef(0) << "," << quaternion.coeffs().coeffRef(1) << ","<< quaternion.coeffs().coeffRef(2)<<","<<quaternion.coeffs().coeffRef(3) << endl;
-        //        return quat;
     }
 
     // SEQUENCE 313
     if(seq1 == 3 && seq2 == 1 && seq3 == 3)
     {
-        //         static double RotCoeffs[9] = {
-        //            cos(psi)*cos(phi)-sin(psi)*cos(theta)*sin(phi),     cos(psi)*sin(phi)+sin(psi)*cos(theta)*cos(phi),     sin(psi)*sin(theta),
-        //            -sin(psi)*cos(phi)-cos(psi)*cos(theta)*sin(phi),    -sin(psi)*sin(phi)+cos(psi)*cos(theta)*cos(phi),    cos(psi)*sin(theta),
-        //            sin(theta)*sin(phi),                                -sin(theta)*cos(phi),                               cos(theta)
-        //         };
-        //         static const MyMatrix3d R_313(RotCoeffs);
-
-        //         //Convertion from DCM to Quaternions, for sequence 321
-        //         static Quaterniond quat(R_313);
-
-        //         return quat;
         Quaterniond quaternion = Quaterniond(AngleAxis<double> (phi,   Vector3d::UnitZ())*
                                              Quaterniond(AngleAxis<double> (theta, Vector3d::UnitX()))*
                                              Quaterniond(AngleAxis<double> (psi,   Vector3d::UnitZ())));

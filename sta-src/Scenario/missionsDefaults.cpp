@@ -33,6 +33,10 @@
 #include "Scenario/missionsDefaults.h"
 
 #include "Astro-Core/constants.h"
+#include "Astro-Core/date.h"
+#include "Astro-Core/stacoordsys.h"
+#include "Astro-Core/stabody.h"
+#include "Astro-Core/stamath.h"
 
 
 
@@ -267,13 +271,13 @@ QSharedPointer<ScenarioInitialPositionType> MissionsDefaults_InitialStateVectorC
 
     genericInitialStateVectorCartesian->setCoordinateSystem("INERTIAL J2000");
 
-    QSharedPointer<ScenarioStateVectorType> initPosStateVector(new ScenarioStateVectorType());
-    initPosStateVector->setX(1.1);
-    initPosStateVector->setY(1.1);
-    initPosStateVector->setZ(1.1);
-    initPosStateVector->setVx(1.1);
-    initPosStateVector->setVy(1.1);
-    initPosStateVector->setVz(1.1);
+    QSharedPointer<ScenarioStateVectorType> initPosStateVector(new ScenarioStateVectorType());    
+    initPosStateVector->setX(8100.0);
+    initPosStateVector->setY(0.0);
+    initPosStateVector->setZ(0.0);
+    initPosStateVector->setVx(0.0);
+    initPosStateVector->setVy(6.52413171);
+    initPosStateVector->setVz(2.57791256);
 
     genericInitialStateVectorCartesian->setAbstract6DOFPosition(initPosStateVector);
 
@@ -329,22 +333,26 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_GENERIC()
 
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
     QSharedPointer<ScenarioKeplerianElementsType> initPosKeplerian(new ScenarioKeplerianElementsType());
+    //-- Figues shall be as follows:
+    // Distances in Km
+    // Distances rates in Km/s
+    // Angles in rad
+    // Angles rates in rad/s
     initPosKeplerian->setSemiMajorAxis(8100.0);
-    initPosKeplerian->setInclination(45.0);
-    initPosKeplerian->setEccentricity(0.0);
-    initPosKeplerian->setRAAN(0.0);
-    initPosKeplerian->setArgumentOfPeriapsis(0.0);
-    initPosKeplerian->setTrueAnomaly(0.0);
-    QSharedPointer<ScenarioStateVectorType> initPosStateVector(new ScenarioStateVectorType());
-    initPosStateVector->setX(8100.0);
-    initPosStateVector->setY(0.0);
-    initPosStateVector->setZ(0.0);
-    initPosStateVector->setVx(0.0);
-    initPosStateVector->setVy(6.52413171);
-    initPosStateVector->setVz(2.57791256);
-    loitering.InitialPosition()->setAbstract6DOFPosition(initPosStateVector);
-    // The next line should be the last one to make sure the GUI starts on the right tab
+    initPosKeplerian->setInclination(sta::degToRad(45.0));
+    initPosKeplerian->setEccentricity(sta::degToRad(0.0));
+    initPosKeplerian->setRAAN(sta::degToRad(0.0));
+    initPosKeplerian->setArgumentOfPeriapsis(sta::degToRad(0.0));
+    initPosKeplerian->setTrueAnomaly(sta::degToRad(0.0));
     loitering.InitialPosition()->setAbstract6DOFPosition(initPosKeplerian);
+//    QSharedPointer<ScenarioStateVectorType> initPosStateVector(new ScenarioStateVectorType());
+//    initPosStateVector->setX(8100.0);
+//    initPosStateVector->setY(0.0);
+//    initPosStateVector->setZ(0.0);
+//    initPosStateVector->setVx(0.0);
+//    initPosStateVector->setVy(6.52413171);
+//    initPosStateVector->setVz(2.57791256);
+//    loitering.InitialPosition()->setAbstract6DOFPosition(initPosStateVector);
 
     loitering.InitialAttitude()->setCoordinateSystem("Center of Gravity");
     QSharedPointer<ScenarioEulerType> initAttEuler(new ScenarioEulerType());
@@ -365,7 +373,6 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_GENERIC()
     initAttQuaternion->setQ3Dot(0.0);
     initAttQuaternion->setQ4Dot(0.0);
     loitering.InitialAttitudeUsingQuaternions()->setAbstract8DOFAttitude(initAttQuaternion);
-    // The next line should be the last one to make sure the GUI starts on the right tab
     loitering.InitialAttitude()->setAbstract6DOFAttitude(initAttEuler);
 
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch

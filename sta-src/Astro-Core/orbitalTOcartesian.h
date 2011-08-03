@@ -32,6 +32,10 @@
 
 #include "statevector.h"
 
+using namespace sta;
+
 sta::StateVector orbitalTOcartesian(double mu, double a, double ec, double i, double w0, double o0, double m0);
+
+sta::StateVector orbitalTOcartesian(double mu, KeplerianElements elements);
 
 #endif // _ASTROCORE_ORBITAL_TO_CARTESIAN_H_

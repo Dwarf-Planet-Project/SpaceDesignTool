@@ -140,7 +140,7 @@ sta::StateVector orbitalTOcartesian(double mu, double a, double ec, double i, do
  *         Units are km for position and km/s for velocity.
  *
  */
-sta::StateVector orbitalTOcartesian(double mu, const KeplerianElements& elements)
+sta::StateVector orbitalTOcartesian(double mu, KeplerianElements elements)
 
 {
     double a = elements.SemimajorAxis;
