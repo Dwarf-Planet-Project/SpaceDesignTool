@@ -45,9 +45,6 @@
 #include "Script.h"
 #include "plot2D/TranslateCurveTool.h"
 
-#include "analysisParametersChoice.h"
-
-
 class QPixmap;
 class QCloseEvent;
 class QDropEvent;
@@ -124,8 +121,6 @@ public:
     ApplicationWindow(bool factorySettings = false);
 	ApplicationWindow(const QStringList& l);
 	~ApplicationWindow();
-
-    void loadTheSTAscenarioIntoQtiPlot(SpaceScenario* scenario, PropagatedScenario* propagatedScenario);
 
 	enum ShowWindowsPolicy{HideAll, ActiveFolder, SubFolders};
 	enum WindowType{NoWindow, TableWindow, MatrixWindow, MultiLayerWindow, NoteWindow, Plot3DWindow};
@@ -1164,9 +1159,6 @@ public:
 	QString defaultScriptingLang;
 
 private:
-    // Next line introduced by Guillermo
-    analysisParametersChoice* m_analysisParametersChoice;
-
 	MdiSubWindow *d_active_window;
     TextEditor *d_text_editor;
 	// Flag telling if table values should be automatically recalculated when values in a column are modified.
