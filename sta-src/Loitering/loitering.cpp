@@ -718,13 +718,23 @@ bool LoiteringDialog::loadValues(ScenarioInitialPositionType* initPosition)
 
     // Load values from the schema into the GUI to the Keplerian elements
     ScenarioAbstract6DOFPositionType* position = initPosition->Abstract6DOFPosition().data();
+
     ScenarioKeplerianElementsType* elements = dynamic_cast<ScenarioKeplerianElementsType*>(position);
     semimajorAxisEdit->setText(QString::number(elements->semiMajorAxis()));
-    eccentricityEdit->setText(QString::number(sta::radToDeg(elements->eccentricity())));
+    eccentricityEdit->setText(QString::number(elements->eccentricity()));
     inclinationEdit->setText(QString::number(sta::radToDeg(elements->inclination())));
+    qDebug() << elements->inclination() << endl;
     raanEdit->setText(QString::number(sta::radToDeg(elements->RAAN())));
     argOfPeriapsisEdit->setText(QString::number(sta::radToDeg(elements->argumentOfPeriapsis())));
     trueAnomalyEdit->setText(QString::number(sta::radToDeg(elements->trueAnomaly())));
+
+//    ScenarioStateVectorType* cartesians = dynamic_cast<ScenarioStateVectorType*>(position);
+//    positionXEdit->setText(QString::number(cartesians->x()));
+//    positionYEdit->setText(QString::number(cartesians->y()));
+//    positionXEdit->setText(QString::number(cartesians->z()));
+//    velocityXEdit->setText(QString::number(cartesians->vx()));
+//    velocityYEdit->setText(QString::number(cartesians->vy()));
+//    velocityZEdit->setText(QString::number(cartesians->vz()));
 
     // We need to convert the Keplerian elements into Cartesian and load the corresponding edit-label-combos of the GUI
     double meanAnomaly = trueAnomalyTOmeanAnomaly(elements->trueAnomaly(), elements->eccentricity());
@@ -989,8 +999,9 @@ bool LoiteringDialog::saveValues(ScenarioInitialPositionType* initPos)
             // Takes the GUI values and stores them into the scenario
             ScenarioKeplerianElementsType* keplerianElements = new ScenarioKeplerianElementsType;
             keplerianElements->setSemiMajorAxis(semimajorAxisEdit->text().toDouble());
-            keplerianElements->setEccentricity(sta::degToRad(eccentricityEdit->text().toDouble()));
+            keplerianElements->setEccentricity(eccentricityEdit->text().toDouble());
             keplerianElements->setInclination(sta::degToRad(inclinationEdit->text().toDouble()));
+            qDebug() << inclinationEdit->text().toDouble() << endl;
             keplerianElements->setRAAN(sta::degToRad(raanEdit->text().toDouble()));
             keplerianElements->setArgumentOfPeriapsis(sta::degToRad(argOfPeriapsisEdit->text().toDouble()));
             keplerianElements->setTrueAnomaly(sta::degToRad(trueAnomalyEdit->text().toDouble()));
@@ -1432,10 +1443,10 @@ bool PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
 
         double sma            = initialStateKeplerian.SemimajorAxis;
         double e              = initialStateKeplerian.Eccentricity;
-        double inclination    = initialStateKeplerian.Inclination*Pi()/180.0;
-        double raan           = initialStateKeplerian.AscendingNode*Pi()/180.0;
-        double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis*Pi()/180.0;
-        double trueAnomaly    = initialStateKeplerian.TrueAnomaly*Pi()/180.0;
+        double inclination    = initialStateKeplerian.Inclination;
+        double raan           = initialStateKeplerian.AscendingNode;
+        double argOfPeriapsis = initialStateKeplerian.ArgumentOfPeriapsis;
+        double trueAnomaly    = initialStateKeplerian.TrueAnomaly;
         double meanAnomaly    = trueAnomalyTOmeanAnomaly(trueAnomaly, e);
 
         // Next lines patched by Guillermo on April 23 2010 to speed up calculations outside the for loop

@@ -340,7 +340,7 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_GENERIC()
     // Angles rates in rad/s
     initPosKeplerian->setSemiMajorAxis(8100.0);
     initPosKeplerian->setInclination(sta::degToRad(45.0));
-    initPosKeplerian->setEccentricity(sta::degToRad(0.0));
+    initPosKeplerian->setEccentricity(0.0);
     initPosKeplerian->setRAAN(sta::degToRad(0.0));
     initPosKeplerian->setArgumentOfPeriapsis(sta::degToRad(0.0));
     initPosKeplerian->setTrueAnomaly(sta::degToRad(0.0));
