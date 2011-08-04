@@ -723,7 +723,7 @@ bool LoiteringDialog::loadValues(ScenarioInitialPositionType* initPosition)
     semimajorAxisEdit->setText(QString::number(elements->semiMajorAxis()));
     eccentricityEdit->setText(QString::number(elements->eccentricity()));
     inclinationEdit->setText(QString::number(sta::radToDeg(elements->inclination())));
-    qDebug() << elements->inclination() << endl;
+    //qDebug() << elements->inclination() << endl;
     raanEdit->setText(QString::number(sta::radToDeg(elements->RAAN())));
     argOfPeriapsisEdit->setText(QString::number(sta::radToDeg(elements->argumentOfPeriapsis())));
     trueAnomalyEdit->setText(QString::number(sta::radToDeg(elements->trueAnomaly())));
@@ -1001,7 +1001,7 @@ bool LoiteringDialog::saveValues(ScenarioInitialPositionType* initPos)
             keplerianElements->setSemiMajorAxis(semimajorAxisEdit->text().toDouble());
             keplerianElements->setEccentricity(eccentricityEdit->text().toDouble());
             keplerianElements->setInclination(sta::degToRad(inclinationEdit->text().toDouble()));
-            qDebug() << inclinationEdit->text().toDouble() << endl;
+            //qDebug() << inclinationEdit->text().toDouble() << endl;
             keplerianElements->setRAAN(sta::degToRad(raanEdit->text().toDouble()));
             keplerianElements->setArgumentOfPeriapsis(sta::degToRad(argOfPeriapsisEdit->text().toDouble()));
             keplerianElements->setTrueAnomaly(sta::degToRad(trueAnomalyEdit->text().toDouble()));
@@ -1596,6 +1596,7 @@ bool PropagateLoiteringAttitude(ScenarioLoiteringType* loitering,
                                 QList<staAttitude::AttitudeVector>& samplesAtt,
                                 PropagationFeedback& propFeedback)
 {
+    qDebug() << "Entering PropagateLoiteringAttitude" << endl;
     //Check the coordinate system of position
     QString loiteringLabel = loitering->ElementIdentifier()->Name();
 
@@ -1664,16 +1665,22 @@ bool PropagateLoiteringAttitude(ScenarioLoiteringType* loitering,
     //QList<Perturbations*> perturbationsList; // Create the list of perturbations that will influence the propagation
 
     QString attitudePropagator = loitering->PropagationAttitude()->propagator();
-    QString attitudeIntegrator = loitering->PropagationAttitude()->integrator();
+    QString attitudeIntegrator = loitering->PropagationAttitude()->integrator();    
+
+    ScenarioSC* mySatellite = new ScenarioSC();
+    double inertiaMatrixCoeffs[9] =
+    {mySatellite->System()->Structure()->MomentsOfInertia()->xAxis(), mySatellite->System()->Structure()->SecondMomentsOfInertia()->xAxis(), mySatellite->System()->Structure()->SecondMomentsOfInertia()->yAxis(),
+     mySatellite->System()->Structure()->SecondMomentsOfInertia()->xAxis(), mySatellite->System()->Structure()->MomentsOfInertia()->yAxis(), mySatellite->System()->Structure()->SecondMomentsOfInertia()->zAxis(),
+     mySatellite->System()->Structure()->SecondMomentsOfInertia()->yAxis(), mySatellite->System()->Structure()->SecondMomentsOfInertia()->zAxis(), mySatellite->System()->Structure()->MomentsOfInertia()->zAxis()};
+    Matrix3d completeInertiaMatrix(inertiaMatrixCoeffs);
 
     VectorXd inertiaMatrix;
-    ScenarioSC* mySatellite = new ScenarioSC();
     inertiaMatrix(0,0) = mySatellite->System()->Structure()->MomentsOfInertia()->xAxis();
-    inertiaMatrix(1,1) = mySatellite->System()->Structure()->MomentsOfInertia()->yAxis();
-    inertiaMatrix(2,2) = mySatellite->System()->Structure()->MomentsOfInertia()->zAxis();
-    inertiaMatrix(0,1) = mySatellite->System()->Structure()->SecondMomentsOfInertia()->xAxis();
-    inertiaMatrix(0,2) = mySatellite->System()->Structure()->SecondMomentsOfInertia()->yAxis();
-    inertiaMatrix(1,2) = mySatellite->System()->Structure()->SecondMomentsOfInertia()->zAxis();
+    inertiaMatrix(0,1) = mySatellite->System()->Structure()->MomentsOfInertia()->yAxis();
+    inertiaMatrix(0,2) = mySatellite->System()->Structure()->MomentsOfInertia()->zAxis();
+//    inertiaMatrix(0,1) = mySatellite->System()->Structure()->SecondMomentsOfInertia()->xAxis();
+//    inertiaMatrix(0,2) = mySatellite->System()->Structure()->SecondMomentsOfInertia()->yAxis();
+//    inertiaMatrix(1,2) = mySatellite->System()->Structure()->SecondMomentsOfInertia()->zAxis();
 
     if (attitudePropagator == "PEuler123")
     {

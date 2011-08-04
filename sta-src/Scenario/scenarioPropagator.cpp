@@ -78,6 +78,11 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
 	const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList = vehicle->SCMission()->TrajectoryPlan()->AbstractTrajectory();
     int numberOfArcs = trajectoryList.size();
     sta::StateVector theLastStateVector = sta::StateVector::zero();
+
+    Quaterniond zeroQuaternion(0.0, 0.0, 0.0, 0.0);
+    Vector3d zeroRates(0.0, 0.0, 0.0);
+    staAttitude::AttitudeVector theLastAttitudeVector(zeroQuaternion, zeroRates);
+
     double theLastSampleTime = 0.0;
 
 	// Initial state is stored in the first trajectory (for now); so,
@@ -134,15 +139,15 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
                     }
                 }
 
-
                 PropagateLoiteringTrajectory(loitering, sampleTimesTrajectory, samplesTrajectory, feedback);
 
-                //PropagateLoiteringAttitude(loitering, sampleTimesAttitude, samplesAttitude, feedback);
-
+                //PropagationFeedback feedbackAttitude;
+                //PropagateLoiteringAttitude(loitering, sampleTimesAttitude, samplesAttitude, feedbackAttitude);
 
                 // Recovering the last state vector
                 numberOFsamples = sampleTimesTrajectory.size();
                 theLastStateVector = samplesTrajectory.at(numberOFsamples - 1);
+                //theLastAttitudeVector = samplesAttitude.at(numberOFsamples - 1);
                 theLastSampleTime = sampleTimesTrajectory.at(numberOFsamples - 1);
 
 				//******************************************************************** /OZGUN
@@ -179,9 +184,6 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
 
                 if (numberOFsamples > 1)
 				{
-
-
-
                     MissionArc* arc = new MissionArc(centralBody,
                                                      coordSys,
                                                      sampleTimesTrajectory,
@@ -196,7 +198,6 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
                     arc->setModelName(loitering->ElementIdentifier()->modelName());
 
                     spaceObject->addMissionArc(arc);
-
 				}
 			} ///////// End of loitering IF
 			else if (dynamic_cast<ScenarioLoiteringTLEType*>(trajectory.data()))    //// TLEs

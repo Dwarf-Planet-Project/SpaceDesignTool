@@ -54,7 +54,7 @@ void eulerEquation(VectorXd &initBodyRates,
 Vector3d propagateEulerEquation(Vector3d& initbodyRates,
                                 double time,
                                 double timeStep,
-                                MatrixXd inertiaMatrix);
+                                VectorXd inertiaMatrix);
 
 
 #endif // ATTITUDEINTEGRATION_H
