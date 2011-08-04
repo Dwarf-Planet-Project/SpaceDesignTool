@@ -79,8 +79,8 @@ public:
     bool saveValues(ScenarioInitialPositionType* initPosition);
     bool saveValues(ScenarioPropagationAttitudeType* propagation);
 
-    bool saveValues(ScenarioInitialAttitudeType* initAtt);
-    bool saveValues(ScenarioInitialAttitudeUsingQuaternionsType* initAttQuaternions);
+    bool saveValues(ScenarioInitialAttitudeType* initAtt, ScenarioInitialAttitudeUsingQuaternionsType* initAttQuaternions);
+
 
 public:
     missionAspectDialog loiteringAspect;

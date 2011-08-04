@@ -90,8 +90,8 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
 		// Propagate all segments of the trajectory plan.
 		foreach (QSharedPointer<ScenarioAbstractTrajectoryType> trajectory, trajectoryList)
 		{
-			QList<double> sampleTimes;
-			QList<sta::StateVector> samples;
+            QList<double> sampleTimesTrajectory; QList<double> sampleTimesAttitude;
+            QList<sta::StateVector> samplesTrajectory; QList<staAttitude::AttitudeVector> samplesAttitude;
             int numberOFsamples;
 
 			if (dynamic_cast<ScenarioLoiteringType*>(trajectory.data()))    // Loitering
@@ -135,20 +135,22 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
                 }
 
 
-                PropagateLoiteringTrajectory(loitering, sampleTimes, samples, feedback);
+                PropagateLoiteringTrajectory(loitering, sampleTimesTrajectory, samplesTrajectory, feedback);
+
+                //PropagateLoiteringAttitude(loitering, sampleTimesAttitude, samplesAttitude, feedback);
 
 
                 // Recovering the last state vector
-                numberOFsamples = sampleTimes.size();
-                theLastStateVector = samples.at(numberOFsamples - 1);
-                theLastSampleTime = sampleTimes.at(numberOFsamples - 1);
+                numberOFsamples = sampleTimesTrajectory.size();
+                theLastStateVector = samplesTrajectory.at(numberOFsamples - 1);
+                theLastSampleTime = sampleTimesTrajectory.at(numberOFsamples - 1);
 
 				//******************************************************************** /OZGUN
 				// Eclipse function is called and the "data/EclipseStarLight.stad" is generated
 				EclipseDuration* Eclipse = new EclipseDuration();
 
-				Eclipse->StarLightTimeFunction(sampleTimes,
-											   samples,
+                Eclipse->StarLightTimeFunction(sampleTimesTrajectory,
+                                               samplesTrajectory,
 											   STA_SOLAR_SYSTEM->lookup("Earth"),
 											   STA_SOLAR_SYSTEM->lookup("Sun"));
 
@@ -182,8 +184,8 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
 
                     MissionArc* arc = new MissionArc(centralBody,
                                                      coordSys,
-                                                     sampleTimes,
-                                                     samples);
+                                                     sampleTimesTrajectory,
+                                                     samplesTrajectory);
 
                     // Loading arc color, name, and model
                     arc->setArcName(loitering->ElementIdentifier()->Name());
@@ -200,7 +202,7 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
 			else if (dynamic_cast<ScenarioLoiteringTLEType*>(trajectory.data()))    //// TLEs
 			{
 				ScenarioLoiteringTLEType* loiteringTLE = dynamic_cast<ScenarioLoiteringTLEType*>(trajectory.data());
-				PropagateLoiteringTLETrajectory(loiteringTLE, sampleTimes, samples, feedback);
+                PropagateLoiteringTLETrajectory(loiteringTLE, sampleTimesTrajectory, samplesTrajectory, feedback);
 
 				if (feedback.status() != PropagationFeedback::PropagationOk)
 				{
@@ -224,12 +226,12 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
 					continue;
 				}
 
-				if (sampleTimes.size() > 1)
+                if (sampleTimesTrajectory.size() > 1)
 				{
 					MissionArc* arc = new MissionArc(centralBody,
 													 coordSys,
-													 sampleTimes,
-													 samples);
+                                                     sampleTimesTrajectory,
+                                                     samplesTrajectory);
 
                     // Loading arc color, name, and model
                     QString arcName = loiteringTLE->ElementIdentifier()->Name();
@@ -255,8 +257,8 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
                 double endTime = sta::JdToMjd(sta::CalendarToJd(deltaV->TimeLine()->EndTime()));
                 double dt = sta::daysToSecs(endTime - theLastSampleTime);
 
-                sampleTimes << theLastSampleTime;
-                samples << theLastStateVector;
+                sampleTimesTrajectory << theLastSampleTime;
+                samplesTrajectory << theLastStateVector;
 
                 // Calculating direction and magnitude. The magnitude is
                 // stored in m/s, and we need to convert to km/s
@@ -285,8 +287,8 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
                 theLastSampleTime = endTime;
 
                 // Emit the time+state sample
-                sampleTimes << theLastSampleTime;
-                samples << theLastStateVector;
+                sampleTimesTrajectory << theLastSampleTime;
+                samplesTrajectory << theLastStateVector;
 
                 QString centralBodyName = deltaV->Environment()->CentralBody()->Name();
                 StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
@@ -295,8 +297,8 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
 
                 MissionArc* arc = new MissionArc(centralBody,
                                                  coordSys,
-                                                 sampleTimes,
-                                                 samples);
+                                                 sampleTimesTrajectory,
+                                                 samplesTrajectory);
 
                 // Loading arc color, name, and model
                 arc->setArcName(deltaV->ElementIdentifier()->Name());
@@ -327,19 +329,19 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
                     continue;
                 }
 
-                PropagateExternalTrajectory(extTrajectory, "", sampleTimes, samples, feedback);
+                PropagateExternalTrajectory(extTrajectory, "", sampleTimesTrajectory, samplesTrajectory, feedback);
 
                 if (feedback.status() != PropagationFeedback::PropagationOk)
                 {
                     return;
                 }
 
-                if (sampleTimes.size() > 1)
+                if (sampleTimesTrajectory.size() > 1)
                 {
                     MissionArc* arc = new MissionArc(centralBody,
                                                      coordSys,
-                                                     sampleTimes,
-                                                     samples);
+                                                     sampleTimesTrajectory,
+                                                     samplesTrajectory);
 
                     // Loading arc color, name, and model
                     QString arcName = extTrajectory->ElementIdentifier()->Name();
@@ -358,151 +360,137 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
 
 
             }
-  else if(dynamic_cast<ScenarioRendezVousManoeuvreType*>(trajectory.data())) //All kind of rendezvous manoeuvres
-                            {
-                            ScenarioRendezVousManoeuvreType* RVmanoeuvre = dynamic_cast<ScenarioRendezVousManoeuvreType*>(trajectory.data());
-                            QString propagator = RVmanoeuvre->PropagationPosition()->propagator();
+            else if(dynamic_cast<ScenarioRendezVousManoeuvreType*>(trajectory.data())) //All kind of rendezvous manoeuvres
+            {
+                ScenarioRendezVousManoeuvreType* RVmanoeuvre = dynamic_cast<ScenarioRendezVousManoeuvreType*>(trajectory.data());
+                QString propagator = RVmanoeuvre->PropagationPosition()->propagator();
 
-                            QString centralBodyName = RVmanoeuvre->Environment()->CentralBody()->Name();
-                            StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
-                            double mu=centralBody->mu();
-
-
-
-                            if (theLastSampleTime > 0.0)  // This arc is NOT the first one
-                            {
-                                if (propagator == "TWO BODY")
-                                {
-                                    ScenarioKeplerianElementsType* elements = new ScenarioKeplerianElementsType;
-                                    QString centralBodyName = RVmanoeuvre->Environment()->CentralBody()->Name();
-                                    StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
-                                    sta::KeplerianElements initialStateKeplerian = cartesianTOorbital(centralBody->mu(), theLastStateVector);
-                                    elements->setSemiMajorAxis(initialStateKeplerian.SemimajorAxis);
-                                    elements->setEccentricity(initialStateKeplerian.Eccentricity);
-                                    elements->setInclination(sta::radToDeg(initialStateKeplerian.Inclination));
-                                    elements->setRAAN(sta::radToDeg(initialStateKeplerian.AscendingNode));
-                                    elements->setArgumentOfPeriapsis(sta::radToDeg(initialStateKeplerian.ArgumentOfPeriapsis));
-                                    elements->setTrueAnomaly(sta::radToDeg(initialStateKeplerian.TrueAnomaly));
-                                    RVmanoeuvre->InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(elements));
-                                }
-                                else
-                                {
-                                    ScenarioStateVectorType* stateVector = new ScenarioStateVectorType();
-                                    stateVector->setX(theLastStateVector.position(0));
-                                    stateVector->setY(theLastStateVector.position(1));
-                                    stateVector->setZ(theLastStateVector.position(2));
-                                    stateVector->setVx(theLastStateVector.velocity(0));
-                                    stateVector->setVy(theLastStateVector.velocity(1));
-                                    stateVector->setVz(theLastStateVector.velocity(2));
-                                    RVmanoeuvre->InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(stateVector));
-                                }
-                            }
-                            //Propagation method, as loitering.
-                            //No OOP, no multilayer. This should be changed in my opinion.
-
-                            PropagateRendezVousTrajectory(RVmanoeuvre,sampleTimes,samples,feedback,propScenario);
-
-                            //
-                            sta::StateVector* targetStateAux=new sta::StateVector();
-
-                            QString coordSysName = RVmanoeuvre->InitialPosition()->CoordinateSystem();
-                            sta::CoordinateSystem coordSys(coordSysName);
-                            SpaceObject* targetPropagated;
-
-                            targetPropagated=(propScenario->spaceObjects().first());
-
-                            sta::StateVector *result=new sta::StateVector();
-
-                            for(int i=0;i<samples.size();i++){
-
-                                targetPropagated->mission().at(0)->getStateVector(sampleTimes[i],targetStateAux);
-
-                                // Final samples transformation
-
-                                lhlvTOinertial(mu,*targetStateAux,samples[i],result);
-
-                                //Data in inertial system are saved in samples.
-                                samples[i].position(0)=result->position(0)+targetStateAux->position(0);
-                                samples[i].position(1)=result->position(1)+targetStateAux->position(1);
-                                samples[i].position(2)=result->position(2)+targetStateAux->position(2);
-
-
-                                samples[i].velocity(0)=targetStateAux->velocity(0);
-                                samples[i].velocity(1)=targetStateAux->velocity(1);
-                                samples[i].velocity(2)=targetStateAux->velocity(2);
-
-                            }
+                QString centralBodyName = RVmanoeuvre->Environment()->CentralBody()->Name();
+                StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+                double mu=centralBody->mu();
 
 
 
-                            // Recovering the last state vector
-                            numberOFsamples = sampleTimes.size();
-                            theLastStateVector = samples.at(numberOFsamples - 1);
-                            theLastSampleTime = sampleTimes.at(numberOFsamples - 1);
-
-
-                                            //******************************************************************** /OZGUN
-                                            // Eclipse function is called and the "data/EclipseStarLight.stad" is generated
-                                            EclipseDuration* Eclipse = new EclipseDuration();
-
-                                            Eclipse->StarLightTimeFunction(sampleTimes,
-                                                                                                       samples,
-                                                                                                       STA_SOLAR_SYSTEM->lookup("Earth"),
-                                                                                                       STA_SOLAR_SYSTEM->lookup("Sun"));
-
-                                            //******************************************************************** OZGUN/
-
-                                            if (feedback.status() != PropagationFeedback::PropagationOk)
-                                            {
-                                                    return;
-                                            }
-
-                                            //QString centralBodyName = RVmanoeuvre->Environment()->CentralBody()->Name();
-                                            //StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
-                                            if (!centralBody)
-                                            {
-                                int ret = QMessageBox::warning(parent, "Propagation Error", "Unrecognized central body");
-                                                    continue;
-                                            }
-
-                                            //QString coordSysName = RVmanoeuvre->InitialPosition()->CoordinateSystem();
-                                            //sta::CoordinateSystem coordSys(coordSysName);
-                                            if (coordSys.type() == sta::COORDSYS_INVALID)
-                                            {
-                                int ret = QMessageBox::warning(parent, "Propagation Error", "Unrecognized coordinate system");
-                                                    continue;
-                                            }
-
-
-                                            if (numberOFsamples > 1)
-                                            {
-
-
-
-
-                                MissionArc* arc = new MissionArc(centralBody,
-                                                                 coordSys,
-                                                                 sampleTimes,
-                                                                 samples);
-
-
-
-
-
-                                            // Loading arc color, name, and model
-                                            arc->setArcName(RVmanoeuvre->ElementIdentifier()->Name());
-                                            QString arcColorName = RVmanoeuvre->ElementIdentifier()->colorName();
-                                            MissionsDefaults myMissionDefaults;
-                                            QColor trajectoryColor = myMissionDefaults.missionArcColorFromQt(arcColorName);
-                                            arc->setArcTrajectoryColor(trajectoryColor);
-                                            arc->setModelName(RVmanoeuvre->ElementIdentifier()->modelName());
-
-                                            spaceObject->addMissionArc(arc);
-
-
-
-                                            }
+                if (theLastSampleTime > 0.0)  // This arc is NOT the first one
+                {
+                    if (propagator == "TWO BODY")
+                    {
+                        ScenarioKeplerianElementsType* elements = new ScenarioKeplerianElementsType;
+                        QString centralBodyName = RVmanoeuvre->Environment()->CentralBody()->Name();
+                        StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+                        sta::KeplerianElements initialStateKeplerian = cartesianTOorbital(centralBody->mu(), theLastStateVector);
+                        elements->setSemiMajorAxis(initialStateKeplerian.SemimajorAxis);
+                        elements->setEccentricity(initialStateKeplerian.Eccentricity);
+                        elements->setInclination(sta::radToDeg(initialStateKeplerian.Inclination));
+                        elements->setRAAN(sta::radToDeg(initialStateKeplerian.AscendingNode));
+                        elements->setArgumentOfPeriapsis(sta::radToDeg(initialStateKeplerian.ArgumentOfPeriapsis));
+                        elements->setTrueAnomaly(sta::radToDeg(initialStateKeplerian.TrueAnomaly));
+                        RVmanoeuvre->InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(elements));
+                    }
+                    else
+                    {
+                        ScenarioStateVectorType* stateVector = new ScenarioStateVectorType();
+                        stateVector->setX(theLastStateVector.position(0));
+                        stateVector->setY(theLastStateVector.position(1));
+                        stateVector->setZ(theLastStateVector.position(2));
+                        stateVector->setVx(theLastStateVector.velocity(0));
+                        stateVector->setVy(theLastStateVector.velocity(1));
+                        stateVector->setVz(theLastStateVector.velocity(2));
+                        RVmanoeuvre->InitialPosition()->setAbstract6DOFPosition(QSharedPointer<ScenarioAbstract6DOFPositionType>(stateVector));
+                    }
                 }
+                //Propagation method, as loitering.
+                //No OOP, no multilayer. This should be changed in my opinion.
+
+                PropagateRendezVousTrajectory(RVmanoeuvre, sampleTimesTrajectory, samplesTrajectory, feedback, propScenario);
+
+                //
+                sta::StateVector* targetStateAux=new sta::StateVector();
+
+                QString coordSysName = RVmanoeuvre->InitialPosition()->CoordinateSystem();
+                sta::CoordinateSystem coordSys(coordSysName);
+                SpaceObject* targetPropagated;
+
+                targetPropagated=(propScenario->spaceObjects().first());
+
+                sta::StateVector *result=new sta::StateVector();
+
+                for(int i=0; i<samplesTrajectory.size(); i++)
+                {
+
+                    targetPropagated->mission().at(0)->getStateVector(sampleTimesTrajectory[i],targetStateAux);
+
+                    // Final samples transformation
+
+                    lhlvTOinertial(mu,*targetStateAux,samplesTrajectory[i],result);
+
+                    //Data in inertial system are saved in samples.
+                    samplesTrajectory[i].position(0)=result->position(0)+targetStateAux->position(0);
+                    samplesTrajectory[i].position(1)=result->position(1)+targetStateAux->position(1);
+                    samplesTrajectory[i].position(2)=result->position(2)+targetStateAux->position(2);
+                    samplesTrajectory[i].velocity(0)=targetStateAux->velocity(0);
+                    samplesTrajectory[i].velocity(1)=targetStateAux->velocity(1);
+                    samplesTrajectory[i].velocity(2)=targetStateAux->velocity(2);
+
+                }
+
+                // Recovering the last state vector
+                numberOFsamples = sampleTimesTrajectory.size();
+                theLastStateVector = samplesTrajectory.at(numberOFsamples - 1);
+                theLastSampleTime = sampleTimesTrajectory.at(numberOFsamples - 1);
+
+
+                //******************************************************************** /OZGUN
+                // Eclipse function is called and the "data/EclipseStarLight.stad" is generated
+                EclipseDuration* Eclipse = new EclipseDuration();
+
+                Eclipse->StarLightTimeFunction(sampleTimesTrajectory,
+                                               samplesTrajectory,
+                                               STA_SOLAR_SYSTEM->lookup("Earth"),
+                                               STA_SOLAR_SYSTEM->lookup("Sun"));
+
+                //******************************************************************** OZGUN/
+
+                if (feedback.status() != PropagationFeedback::PropagationOk)
+                {
+                    return;
+                }
+
+                //QString centralBodyName = RVmanoeuvre->Environment()->CentralBody()->Name();
+                //StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(centralBodyName);
+                if (!centralBody)
+                {
+                    int ret = QMessageBox::warning(parent, "Propagation Error", "Unrecognized central body");
+                    continue;
+                }
+
+                //QString coordSysName = RVmanoeuvre->InitialPosition()->CoordinateSystem();
+                //sta::CoordinateSystem coordSys(coordSysName);
+                if (coordSys.type() == sta::COORDSYS_INVALID)
+                {
+                    int ret = QMessageBox::warning(parent, "Propagation Error", "Unrecognized coordinate system");
+                    continue;
+                }
+
+
+                if (numberOFsamples > 1)
+                {
+                    MissionArc* arc = new MissionArc(centralBody,
+                                                     coordSys,
+                                                     sampleTimesTrajectory,
+                                                     samplesTrajectory);
+
+                    // Loading arc color, name, and model
+                    arc->setArcName(RVmanoeuvre->ElementIdentifier()->Name());
+                    QString arcColorName = RVmanoeuvre->ElementIdentifier()->colorName();
+                    MissionsDefaults myMissionDefaults;
+                    QColor trajectoryColor = myMissionDefaults.missionArcColorFromQt(arcColorName);
+                    arc->setArcTrajectoryColor(trajectoryColor);
+                    arc->setModelName(RVmanoeuvre->ElementIdentifier()->modelName());
+
+                    spaceObject->addMissionArc(arc);
+                }
+            }
 
             /////////////////////////// end of the big IF for all arcs
         }
@@ -830,8 +818,8 @@ void scenarioPropagatorGroundElement(ScenarioGroundStation* groundElement,  QCol
                 }
             }
 
-	    propScenario->addGroundObject(groundObject);
-	}
+            propScenario->addGroundObject(groundObject);
+        }
     }
 }
 
@@ -888,7 +876,7 @@ void scenarioPropagatorPoint(ScenarioPoint* aPoint,  PropagationFeedback& feedba
 
 
 void
-scenarioPropagatorRegion(ScenarioRegion* region, PropagationFeedback& feedback, PropagatedScenario* propScenario)
+        scenarioPropagatorRegion(ScenarioRegion* region, PropagationFeedback& feedback, PropagatedScenario* propScenario)
 {
     StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(region->CentralBody());
 

@@ -345,17 +345,12 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_GENERIC()
     initPosKeplerian->setArgumentOfPeriapsis(sta::degToRad(0.0));
     initPosKeplerian->setTrueAnomaly(sta::degToRad(0.0));
     loitering.InitialPosition()->setAbstract6DOFPosition(initPosKeplerian);
-//    QSharedPointer<ScenarioStateVectorType> initPosStateVector(new ScenarioStateVectorType());
-//    initPosStateVector->setX(8100.0);
-//    initPosStateVector->setY(0.0);
-//    initPosStateVector->setZ(0.0);
-//    initPosStateVector->setVx(0.0);
-//    initPosStateVector->setVy(6.52413171);
-//    initPosStateVector->setVz(2.57791256);
-//    loitering.InitialPosition()->setAbstract6DOFPosition(initPosStateVector);
 
     loitering.InitialAttitude()->setCoordinateSystem("Center of Gravity");
     QSharedPointer<ScenarioEulerType> initAttEuler(new ScenarioEulerType());
+    //-- Figues shall be as follows:
+    // Angles in rad
+    // Angles rates in rad/s
     initAttEuler->setPhi(0.0);
     initAttEuler->setTheta(0.0);
     initAttEuler->setPsi(0.0);
@@ -363,6 +358,7 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_GENERIC()
     initAttEuler->setThetaDot(0.0);
     initAttEuler->setPsiDot(0.0);
     loitering.InitialAttitudeUsingQuaternions()->setCoordinateSystem("Center of Gravity");
+
     QSharedPointer<ScenarioQuaternionType> initAttQuaternion(new ScenarioQuaternionType());
     initAttQuaternion->setQ1(0.0);
     initAttQuaternion->setQ2(0.0);
