@@ -258,7 +258,6 @@ void LoiteringDialog::updateInputKeplerianA(int myIndex)
 {
     serviceDistanceUnitWidgetKeplerianA->setInputDistance(semimajorAxisEdit->text().toDouble());
     serviceDistanceUnitWidgetKeplerianA->on_comboBoxDistanceUnitsChoice_currentIndexChanged(myIndex);
-    //qDebug() << serviceDistanceUnitWidgetKeplerianA->myPastUnits << serviceDistanceUnitWidgetKeplerianA->myPastDistance << serviceDistanceUnitWidgetKeplerianA->myFutureDistance << endl;
     semimajorAxisEdit->setText(QString::number(serviceDistanceUnitWidgetKeplerianA->myFutureDistance));
 }
 

@@ -6,24 +6,28 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>651</width>
-    <height>630</height>
+    <width>693</width>
+    <height>609</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>651</width>
-    <height>630</height>
+    <width>693</width>
+    <height>609</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>651</width>
-    <height>630</height>
+    <width>693</width>
+    <height>609</height>
    </size>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Perturbation: Forces</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../../iconary/sta-icons.qrc">
+    <normaloff>:/icons/Mydrag.png</normaloff>:/icons/Mydrag.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="2" column="0">
@@ -44,8 +48,8 @@
     </widget>
    </item>
    <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
+    <layout class="QGridLayout" name="gridLayout_9">
+     <item row="0" column="0">
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QGroupBox" name="groupBox_2">
@@ -153,8 +157,8 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="0" column="0">
-           <layout class="QVBoxLayout" name="verticalLayout_2">
-            <item>
+           <layout class="QGridLayout" name="gridLayout_8">
+            <item row="0" column="0">
              <widget class="QRadioButton" name="AtmDragRadioButton">
               <property name="text">
                <string>Atmospheric Drag</string>
@@ -174,96 +178,88 @@
               </property>
              </widget>
             </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_3">
-              <item>
-               <layout class="QFormLayout" name="formLayout_3">
-                <item row="0" column="0">
-                 <widget class="QLabel" name="AthmLabel_4">
-                  <property name="text">
-                   <string>Model type: </string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1">
-                 <widget class="QComboBox" name="AtmosphereDragTypeComboBox">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QLineEdit" name="dragDayF10Edit">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="1">
-                 <widget class="QLineEdit" name="dragAvF10Edit">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="0">
-                 <widget class="QLabel" name="dragAvF10Label">
-                  <property name="text">
-                   <string>Average F10.7:</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="0">
-                 <widget class="QLabel" name="dragGeomagLabel">
-                  <property name="text">
-                   <string>Geomagnetic Index:</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="1">
-                 <widget class="QLineEdit" name="dragGeomagEdit">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="0">
-                 <widget class="QLabel" name="dragDayF10Label">
-                  <property name="text">
-                   <string>Daily F10.7:</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
+            <item row="1" column="0">
+             <widget class="QLabel" name="AthmLabel_4">
+              <property name="text">
+               <string>Model type: </string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="AtmosphereDragTypeComboBox">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="dragDayF10Label">
+              <property name="text">
+               <string>Daily F10.7:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="dragDayF10Edit">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="dragAvF10Label">
+              <property name="text">
+               <string>Average F10.7:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLineEdit" name="dragAvF10Edit">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="dragGeomagLabel">
+              <property name="text">
+               <string>Geomagnetic Index:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLineEdit" name="dragGeomagEdit">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -388,16 +384,9 @@
          </layout>
         </widget>
        </item>
-       <item>
-        <widget class="Line" name="line_3">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
       </layout>
      </item>
-     <item>
+     <item row="0" column="1">
       <widget class="QGroupBox" name="groupBox">
        <property name="title">
         <string>3rd bodies</string>
@@ -664,6 +653,27 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>GravityFieldRadioButton</tabstop>
+  <tabstop>GravityEffectsModelComboBox</tabstop>
+  <tabstop>ZonalsSpinBox</tabstop>
+  <tabstop>AtmDragRadioButton</tabstop>
+  <tabstop>AtmosphereDragTypeComboBox</tabstop>
+  <tabstop>dragDayF10Edit</tabstop>
+  <tabstop>dragAvF10Edit</tabstop>
+  <tabstop>dragGeomagEdit</tabstop>
+  <tabstop>SolarPressureRadioButton</tabstop>
+  <tabstop>AlbedoCheckBox</tabstop>
+  <tabstop>IRCheckBox</tabstop>
+  <tabstop>CrSpinBox</tabstop>
+  <tabstop>DebrisRadioButton</tabstop>
+  <tabstop>ThirdBodyRadioButton</tabstop>
+  <tabstop>BodyListWidget</tabstop>
+  <tabstop>PertBodyListWidget</tabstop>
+  <tabstop>AddPushButton</tabstop>
+  <tabstop>RemovePushButton</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources>
   <include location="../../iconary/sta-icons.qrc"/>
  </resources>
@@ -675,8 +685,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>254</x>
+     <y>604</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -691,8 +701,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>322</x>
+     <y>604</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

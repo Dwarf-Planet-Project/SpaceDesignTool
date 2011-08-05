@@ -347,28 +347,8 @@ LAGRANGIAN_HEADERS = sta-src/Lagrangian/lagrangianDialog.h
 LAGRANGIAN_FORMS = sta-src/Lagrangian/lagrangianDialog.ui
 
 # ############# Optimization ##############
-#OPTIMIZATION_SOURCES = sta-src/Optimization/pso1D.cpp \
-#    sta-src/Optimization/nsga2.cpp \
-#    sta-src/Optimization/dgmopso.cpp \
-#    sta-src/Optimization/RunOptimizer.cpp \
-#    sta-src/Optimization/arrays.cpp
-#OPTIMIZATION_HEADERS = sta-src/Optimization/GlobalOptimizers.h \
-#    sta-src/Optimization/arrays.h \
-#    sta-src/Optimization/random.h \
-#    sta-src/Optimization/input.h \
-#    sta-src/Optimization/realinit.h \
-#    sta-src/Optimization/init.h \
-#    sta-src/Optimization/decode.h \
-#    sta-src/Optimization/ranking.h \
-#    sta-src/Optimization/rancon.h \
-#    sta-src/Optimization/dfit.h \
-#    sta-src/Optimization/select.h \
-#    sta-src/Optimization/crossover.h \
-#    sta-src/Optimization/uniformxr.h \
-#    sta-src/Optimization/realcross2.h \
-#    sta-src/Optimization/mut.h \
-#    sta-src/Optimization/realmut1.h \
-#    sta-src/Optimization/keepaliven.h
+#OPTIMIZATION_SOURCES = sta-src/Optimization/
+#OPTIMIZATION_HEADERS = sta-src/Optimization/
 
 # ############# Visualization Module ##############
 VISUALIZATION_SOURCES = \
@@ -389,29 +369,6 @@ VISUALIZATION_HEADERS = \
     sta-src/Visualization/ThreeDVisualizationTool.h \
     sta-src/Visualization/VisualizationToolBar.h
 
-# ############# Plotting Module ##############
-#PLOT_SOURCES = \
-#    sta-src/Plotting/plottingtool.cpp \
-#    sta-src/Plotting/PlotLabelFormatter.cpp \
-#    sta-src/Plotting/PlotScale.cpp \
-#    sta-src/Plotting/PlotStyle.cpp \
-#    sta-src/Plotting/PlotView.cpp \
-#    sta-src/Plotting/PlotView3D.cpp \
-#    sta-src/Plotting/PlotGraphFromFile.cpp \
-#    sta-src/Plotting/TimePlotScale.cpp
-#
-#PLOT_HEADERS = \
-#    sta-src/Plotting/plottingtool.h \
-#    sta-src/Plotting/PlotDataSource.h \
-#    sta-src/Plotting/PlotLabelFormatter.h \
-#    sta-src/Plotting/PlotScale.h \
-#    sta-src/Plotting/PlotStyle.h \
-#    sta-src/Plotting/PlotView3D.h \
-#    sta-src/Plotting/PlotGraphFromFile.h \
-#    sta-src/Plotting/TimePlotScale.h
-#
-#PLOT_FORMS = sta-src/Plotting/plottingtool.ui
-
 # ################ RAM ############
 RAM_SOURCES = sta-src/RAM/parametrization.cpp \
     sta-src/RAM/aerodynamicmethods.cpp \
@@ -431,15 +388,9 @@ RAM_FORMS = sta-src/RAM/parametrizedgeometry.ui \
 
 # ################ Analysis ############
 ANALYSIS_SOURCES = \
-           #sta-src/Analysis/analysis.cpp \
-           #sta-src/Analysis/AnalysisPlot.cpp \
-           #sta-src/Analysis/analysisTable.cpp \
            sta-src/Analysis/analysisParametersChoice.cpp \
            sta-src/Analysis/qtiplotmain.cpp
 ANALYSIS_HEADERS = \
-           #sta-src/Analysis/analysis.h\
-           #sta-src/Analysis/AnalysisPlot.h \
-           #sta-src/Analysis/analysisTable.h \
            sta-src/Analysis/analysisParametersChoice.h \
            sta-src/Analysis/qtiplotmain.h
 ANALYSIS_FORMS = \
@@ -532,9 +483,6 @@ GLEW_HEADERS = thirdparty/glew/include/GL/glew.h \
     thirdparty/glew/include/GL/glxew.h \
     thirdparty/glew/include/GL/wglew.h
 
-
-
-
 # ############# TLEs support ##############
 NORAD_HEADERS += thirdparty/noradtle/norad.h
 NORAD_SOURCES += thirdparty/noradtle/basics.cpp \
@@ -546,6 +494,8 @@ NORAD_SOURCES += thirdparty/noradtle/basics.cpp \
     thirdparty/noradtle/sgp.cpp \
     thirdparty/noradtle/sgp4.cpp \
     thirdparty/noradtle/sgp8.cpp
+
+# ############# VESTA ##############
 
 QTVESTA_SOURCES = \
     $$QTVESTA_DIR/LocalImageLoader.cpp \
@@ -581,7 +531,6 @@ SOURCES = $$MAIN_SOURCES \
 #    $$OPTIMIZATION_SOURCES \
     $$CALCULATOR_SOURCES \
     $$GLEW_SOURCES \
-#    $$QWT3D_SOURCES \
     $$QTVESTA_SOURCES \
     $$NORAD_SOURCES \
     $$HELPBROWSER_SOURCES \
@@ -608,7 +557,6 @@ HEADERS = $$MAIN_HEADERS \
 #    $$OPTIMIZATION_HEADER \
     $$CALCULATOR_HEADERS \
     $$GLEW_HEADERS \
-#    $$QWT3D_HEADERS \
     $$QTVESTA_HEADERS \
     $$NORAD_HEADERS \
     $$HELPBROWSER_HEADERS \
@@ -633,7 +581,6 @@ FORMS = $$MAIN_FORMS \
     $$LAGRANGIAN_FORMS \
     $$INTERPLANETARY_FORMS \
     $$GLEW_FORMS \
-#    $$QWT3D_FORMS \
     $$NORAD_FORMS \
     $$HELPBROWSER_FORMS \
     $$PAYLOAD_FORMS \
@@ -703,18 +650,6 @@ win32 {
     #DEFINES += QT_DLL QT_THREAD_SUPPORT
 
     LIBS += $$PWD/lib/win32-x86-gcc/cspice.a
-
-    # Case of static libs
-    #LIBS += $$PWD/lib/win32-x86-gcc/libqtiplot.a
-    #LIBS += $$PWD/lib/win32-x86-gcc/libQtAssistantClient4.a
-    #LIBS += $$PWD/lib/win32-x86-gcc/libmuparser.a
-    #LIBS += $$PWD/lib/win32-x86-gcc/libgsl.dll
-    #LIBS += $$PWD/lib/win32-x86-gcc/libgslcblas.dll
-    #LIBS += $$PWD/lib/win32-x86-gcc/libzdll.a
-    #LIBS += $$PWD/lib/win32-x86-gcc/libqwt.a
-    #LIBS += $$PWD/lib/win32-x86-gcc/libqwt5.a
-    #LIBS += $$PWD/lib/win32-x86-gcc/libqwtmathml5.a
-    #LIBS += $$PWD/lib/win32-x86-gcc/libqwtplot3d.a
 
     # Case of dynamic libs
     LIBS += $$PWD/lib/win32-x86-gcc/qtiplot.dll
