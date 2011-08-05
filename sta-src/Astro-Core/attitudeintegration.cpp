@@ -112,14 +112,27 @@ void derivEulerEquation (Vector3d bodyRates, double time, VectorXd inertiaANDmom
 Vector3d propagateEulerEquation(Vector3d& initbodyRates,
                                   double time,
                                   double timeStep,
-                                  VectorXd& inertiaMatrix)
+                                  Matrix3d& inertiaMatrix)
 {
     //Convert Vector3d to VectorSd so it can be fed to RK4
     VectorXd theBodyRates;
     theBodyRates << initbodyRates[0], initbodyRates[1],initbodyRates[2];
 
+    //Convert the matrix3d of the inertia matrix to a vectorXd, so it can be an input in the intregator
+    VectorXd inertiaMatrix_Vector;
+
+    inertiaMatrix_Vector[0] = inertiaMatrix(0,0);
+    inertiaMatrix_Vector[1] = inertiaMatrix(0,1);
+    inertiaMatrix_Vector[2] = inertiaMatrix(0,2);
+    inertiaMatrix_Vector[3] = inertiaMatrix(1,0);
+    inertiaMatrix_Vector[4] = inertiaMatrix(1,1);
+    inertiaMatrix_Vector[5] = inertiaMatrix(1,2);
+    inertiaMatrix_Vector[6] = inertiaMatrix(2,0);
+    inertiaMatrix_Vector[7] = inertiaMatrix(2,1);
+    inertiaMatrix_Vector[8] = inertiaMatrix(2,2);
+
     //For now, a Runge Kutta 4 will be used. Later, this can be changed to a better integrator (Runge Kutta 7,8 ex.)
-    rk4(theBodyRates, 3, time, timeStep, derivEulerEquation, inertiaMatrix);
+    rk4(theBodyRates, 3, time, timeStep, derivEulerEquation, inertiaMatrix_Vector);
 
     //Returns the body rates, after integration
     Vector3d integratedBodyRates;
