@@ -23,12 +23,13 @@
 //------------------ Author: Catarina Silva  -------------------------------------------------
 // ------------------ E-mail: (catsilva20@gmail.com) ------------------------------------------
 // Patched by Guillermo to correct errors, July 2011
+// Patched by Guillermo to allow compilation in Linux, August 2011
 
 #include "attitudetransformations.h"
 
-#include "Astro-core/RotationState.h"
+#include "Astro-Core/RotationState.h"
 #include "Astro-Core/stamath.h"
-#include "Astro-core/stamath.h"
+#include "Astro-Core/stamath.h"
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
