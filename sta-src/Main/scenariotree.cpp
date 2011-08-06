@@ -27,6 +27,7 @@
  Extensively modified by Guillermo to accomodate payloads April 2010
  Modified by Guillermo August 2010 to add maneuvers
  Modified by Guillermo to add the dialog of the SC platform data, July 2011
+ Modified by Guillermo to add the dialog of the RvD maneouvres set, August 2011
  */
 
 
@@ -37,8 +38,9 @@
 #include "Astro-Core/trajectorypropagation.h"
 #include "initialstateeditor.h"
 #include "initialstateThreebodyEditor.h"
+
 #include "Locations/locationeditor.h"
-//#include "RendezVous/rendezvous.h"
+
 #include "Loitering/loitering.h"
 #include "Loitering/loiteringTLE.h"
 #include "External/external.h"
@@ -48,13 +50,15 @@
 #include "aerodynamicproperties.h"
 #include "propulsionproperties.h"
 #include "entrymass.h"
-//#include "payloadproperties.h"
+
 #include "Payloads/transmitterPayloadDialog.h"
 #include "Payloads/receiverPayloadDialog.h"
 #include "Payloads/opticalPayloadDialog.h"
 #include "Payloads/radarPayloadDialog.h"
 #include "Locations/environmentdialog.h"
+
 #include "Maneuvers/deltaVDialog.h"
+#include "Maneuvers/rendezVousManoeuvreDialogClass.h"
 
 #include "SEM/platformDialog.h"
 
@@ -116,7 +120,8 @@ static ScenarioTreeLabel TreeLabels[] =
     { "RadarType", "Radar type", "", false },
     { "Loitering", "Loitering", "", false },
     { "LoiteringType", "Loitering", ":/icons/mission-arcs-loitering.png", false },
-    { "Rendezvous", "Rendezvous", "", false },
+    { "RendezVousManoeuvre", "RendezVous", "", false },
+    { "RendezVousManoeuvreType", "RendezVous", ":/icons/Rendezvous.png", false },
     { "FlyBy", "Fly By", "", false },
     { "LoiteringTLE", "TLE", "", false },
     { "LoiteringTLEType", "TLE", ":/icons/mission-arcs-loiteringTLE.png", false },
@@ -447,37 +452,8 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
 
     if (elementName == "tns:DeltaV")
         trajectory = ScenarioDeltaVType::create(element);  // Guillermo says: creating the maneuver as a trajectory arc    
-
-    ///New manouvres created by Cesar Bernal for the RvD module
-    /*
-    else if (elementName == "tns:TangencialDeltaV")
-        trajectory = ScenarioTangentialDeltaVType::create(element);
-    else if (elementName == "tns:RadialDeltaV")
-        trajectory = ScenarioRadialDeltaVType::create(element);
-    else if (elementName == "tns:LateralDeltaV")
-        trajectory = ScenarioLateralDeltaVType::create(element);
-    else if (elementName == "tns:TboostXaxis")
-        trajectory = ScenarioTboostXaxisType::create(element);
-    else if (elementName == "tns:TboostHohmann")
-        trajectory = ScenarioTboostHohmannType::create(element);
-    else if (elementName == "tns:Tboost90")
-        trajectory = ScenarioTboost90Type::create(element);
-    else if (elementName == "tns:RboostXaxis")
-        trajectory = ScenarioRboostXaxisType::create(element);
-    else if (elementName == "tns:Rboost90")
-            trajectory = ScenarioRboost90Type::create(element);
-    else if (elementName == "tns:FCstHold")
-            trajectory = ScenarioFCstHoldType::create(element);
-    else if (elementName == "tns:FCstVbar")
-            trajectory = ScenarioFCstVbarType::create(element);
-    else if (elementName == "tns:FCstRbar")
-            trajectory = ScenarioFCstRbarType::create(element);
-    else if (elementName == "tns:FCstTang")
-            trajectory = ScenarioFCstTangType::create(element);
-    else if (elementName == "tns:FCstRad")
-            trajectory = ScenarioFCstRadType::create(element);
-    */
-
+    else if (elementName == "tns:RendezVousManoeuvre")
+        trajectory = ScenarioRendezVousManoeuvreType::create(element);
 
 
 
@@ -495,7 +471,6 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
         {
             qDebug() << "Internal error in tree view: root item is null.";
         }
-
         return true;
     }
     else if (trajectory && elementName != "tns:EntryArc" && elementName != "tns:DeltaV")   // Loitering and loiteirng TLEs
@@ -589,6 +564,37 @@ bool ScenarioTree::dropMimeData(QTreeWidgetItem* parent,
                     theCurrentDeltaV->TimeLine()->setEndTime(thePreviousLoiteringArc->TimeLine()->EndTime().addSecs(1));
 
                     return true;
+                }
+            }
+        }
+        else if (trajectory && elementName == "tns:RendezVousManoeuvre")   // Stack of RvD maneouvres
+        {
+            ScenarioObject* parentObject = objectForItem(parent);
+            ScenarioTrajectoryPlan* trajectoryPlan = dynamic_cast<ScenarioTrajectoryPlan*>(parentObject);
+            if (trajectoryPlan)
+            {
+                int numberOfArcs = trajectoryPlan->children().size();
+                //qDebug() << numberOfArcs << endl;
+                if (numberOfArcs > 0)
+                {
+                    const QList<QSharedPointer<ScenarioAbstractTrajectoryType> >& trajectoryList = trajectoryPlan->AbstractTrajectory();
+                    QSharedPointer<ScenarioAbstractTrajectoryType> thePreviousTrajectory = trajectoryList.at(numberOfArcs - 1);
+                    if (dynamic_cast<ScenarioLoiteringType*>(thePreviousTrajectory.data()))
+                    {
+                        // Adding the Stack of RvD maneouvres into the trajectory plan
+                        trajectoryPlan->AbstractTrajectory().append(QSharedPointer<ScenarioAbstractTrajectoryType>(trajectory));
+                        QTreeWidgetItem* trajectoryItem = new QTreeWidgetItem(parent);
+                        addScenarioItems(trajectoryItem, trajectory);
+
+                        // Passing information from the previous arc into the current deltaV
+                        //                        ScenarioLoiteringType* thePreviousLoiteringArc = dynamic_cast<ScenarioLoiteringType*>(thePreviousTrajectory.data());
+                        //                        QSharedPointer<ScenarioAbstractTrajectoryType> theCurrentManeuver = trajectoryList.at(numberOfArcs);
+                        //                        ScenarioDeltaVType* theCurrentDeltaV = dynamic_cast<ScenarioDeltaVType*>(theCurrentManeuver.data());
+                        //                        theCurrentDeltaV->TimeLine()->setStartTime(thePreviousLoiteringArc->TimeLine()->EndTime()); // concatenating the times for the mission arcs
+                        //                        theCurrentDeltaV->TimeLine()->setEndTime(thePreviousLoiteringArc->TimeLine()->EndTime().addSecs(1));
+
+                        return true;
+                    }
                 }
             }
         }
@@ -737,7 +743,6 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
     {
         return;
     }
-
     if (dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject) != NULL)
     {
         ScenarioElementIdentifierType* myIdentifier = dynamic_cast<ScenarioElementIdentifierType*>(scenarioObject);
@@ -798,6 +803,24 @@ void ScenarioTree::editScenarioObject(ScenarioObject* scenarioObject,
             if (editDialog.exec() == QDialog::Accepted)
             {
                 editDialog.saveValues(deltaV);
+                //updateTreeItems(editItem, scenarioObject);
+            }
+        }
+    }
+    else if (dynamic_cast<ScenarioRendezVousManoeuvreType*>(scenarioObject) != NULL)
+    {
+        ScenarioRendezVousManoeuvreType* myRvDManeouvresSet = dynamic_cast<ScenarioRendezVousManoeuvreType*>(scenarioObject);
+        rendezVousManoeuvreDialogClass editDialog(this);
+
+        if (!editDialog.loadValues(myRvDManeouvresSet))
+        {
+            QMessageBox::information(this, tr("Bad RvD Maneouvres Set element"), tr("Error in RvD Maneouvres Set element"));
+        }
+        else
+        {
+            if (editDialog.exec() == QDialog::Accepted)
+            {
+                editDialog.saveValues(myRvDManeouvresSet);
                 //updateTreeItems(editItem, scenarioObject);
             }
         }

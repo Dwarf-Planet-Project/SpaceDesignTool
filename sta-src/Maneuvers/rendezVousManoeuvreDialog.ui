@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <author>Guillermo Ortega (ESA)</author>
+ <class>rendezVousManoeuvreDialogClass</class>
+ <widget class="QDialog" name="rendezVousManoeuvreDialogClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>698</width>
+    <height>463</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>RendezVous manoeuvres</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../../iconary/sta-icons.qrc">
+    <normaloff>:/icons/Rendezvous.png</normaloff>:/icons/Rendezvous.png</iconset>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="2">
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="0" column="0">
+      <layout class="QHBoxLayout" name="horizontal2ParametersChoiceTabWidget">
+       <item>
+        <widget class="QTreeWidget" name="treeWidgetRendezVousManoeuvreToChoose">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>390</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::MultiSelection</enum>
+         </property>
+         <property name="uniformRowHeights">
+          <bool>false</bool>
+         </property>
+         <property name="animated">
+          <bool>true</bool>
+         </property>
+         <attribute name="headerMinimumSectionSize">
+          <number>35</number>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>RvD Manoeuvre Choice</string>
+          </property>
+         </column>
+         <item>
+          <property name="text">
+           <string>deltaV</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/engine.png</normaloff>:/icons/engine.png</iconset>
+          </property>
+          <item>
+           <property name="text">
+            <string>Tangengial</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Lateral</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Radial</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Free</string>
+           </property>
+          </item>
+         </item>
+         <item>
+          <property name="text">
+           <string>Two-pulse tangential</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/engine.png</normaloff>:/icons/engine.png</iconset>
+          </property>
+          <item>
+           <property name="text">
+            <string>Along X</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>To altitude</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Fly around</string>
+           </property>
+          </item>
+         </item>
+         <item>
+          <property name="text">
+           <string>Two-pulse radial</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/engine.png</normaloff>:/icons/engine.png</iconset>
+          </property>
+          <item>
+           <property name="text">
+            <string>Starting on X</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Fly-around</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Fly-around 360</string>
+           </property>
+          </item>
+         </item>
+         <item>
+          <property name="text">
+           <string>Constant thrust</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/engine.png</normaloff>:/icons/engine.png</iconset>
+          </property>
+          <item>
+           <property name="text">
+            <string>Hold point</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>V-bar transfer</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>R-Bar transfer</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Constant tangential</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Constant radial</string>
+           </property>
+          </item>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="minimumSize">
+            <size>
+             <width>30</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>30</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="AddRendezVousManoeuvrePushButton">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>50</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../../iconary/sta-icons.qrc">
+             <normaloff>:/icons/timeline-double.png</normaloff>:/icons/timeline-double.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="RemoveRendezVousManoeuvrePushButton">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>50</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../../iconary/sta-icons.qrc">
+             <normaloff>:/icons/timeline-half.png</normaloff>:/icons/timeline-half.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="minimumSize">
+            <size>
+             <width>30</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>30</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QTreeWidget" name="treeWidgetRendezVousManoeuvreSelected">
+         <property name="minimumSize">
+          <size>
+           <width>400</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <attribute name="headerCascadingSectionResizes">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="headerDefaultSectionSize">
+          <number>100</number>
+         </attribute>
+         <attribute name="headerShowSortIndicator" stdset="0">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="headerStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Manoeuvre</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignJustify|AlignVCenter</set>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/engine.png</normaloff>:/icons/engine.png</iconset>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Start epoch</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignJustify|AlignVCenter</set>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/TicksButton.png</normaloff>:/icons/TicksButton.png</iconset>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>End epoch</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignJustify|AlignVCenter</set>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/TicksButton.png</normaloff>:/icons/TicksButton.png</iconset>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Features</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignJustify|AlignVCenter</set>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/mission-arcs-loitering.png</normaloff>:/icons/mission-arcs-loitering.png</iconset>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Total deltaV</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignJustify|AlignVCenter</set>
+          </property>
+          <property name="icon">
+           <iconset resource="../../iconary/sta-icons.qrc">
+            <normaloff>:/icons/engine.png</normaloff>:/icons/engine.png</iconset>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="1">
+    <widget class="QDialogButtonBox" name="buttonBoxRendezVousManoeuvreDialog">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>buttonBoxRendezVousManoeuvreDialog</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../../iconary/sta-icons.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBoxRendezVousManoeuvreDialog</sender>
+   <signal>accepted()</signal>
+   <receiver>rendezVousManoeuvreDialogClass</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>93</x>
+     <y>678</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>325</x>
+     <y>185</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBoxRendezVousManoeuvreDialog</sender>
+   <signal>rejected()</signal>
+   <receiver>rendezVousManoeuvreDialogClass</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>93</x>
+     <y>680</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>135</x>
+     <y>0</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <designerdata>
+  <property name="gridDeltaX">
+   <number>5</number>
+  </property>
+  <property name="gridDeltaY">
+   <number>5</number>
+  </property>
+  <property name="gridSnapX">
+   <bool>true</bool>
+  </property>
+  <property name="gridSnapY">
+   <bool>true</bool>
+  </property>
+  <property name="gridVisible">
+   <bool>true</bool>
+  </property>
+ </designerdata>
+</ui>

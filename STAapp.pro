@@ -447,9 +447,15 @@ HELPBROWSER_HEADERS = sta-src/Help/HelpBrowser.h
 HELPBROWSER_FORMS =
 
 # ############# Maneuvers module ##############
-MANEUVERS_SOURCES = sta-src/Maneuvers/deltaVDialog.cpp
-MANEUVERS_HEADERS = sta-src/Maneuvers/deltaVDialog.h
-MANEUVERS_FORMS = sta-src/Maneuvers/deltaVDialog.ui
+MANEUVERS_SOURCES = \
+                    sta-src/Maneuvers/deltaVDialog.cpp \
+                    sta-src/Maneuvers/rendezVousManoeuvreDialogClass.cpp
+MANEUVERS_HEADERS = \
+                    sta-src/Maneuvers/deltaVDialog.h \
+                    sta-src/Maneuvers/rendezVousManoeuvreDialogClass.h
+MANEUVERS_FORMS =   \
+                    sta-src/Maneuvers/deltaVDialog.ui \
+                    sta-src/Maneuvers/rendezVousManoeuvreDialog.ui
 
 # ############# Services module ###################
 SERVICES_SOURCES = sta-src/Services/serviceTimeParameter.cpp \
