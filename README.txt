@@ -56,7 +56,7 @@ CONTRIBUTIONS
 See the AUTHORS file
 
 STA email address:
-  <space.trajectory.analyis@gmail.com>
+  <space.trajectory.analysis@gmail.com>
 
 
 
