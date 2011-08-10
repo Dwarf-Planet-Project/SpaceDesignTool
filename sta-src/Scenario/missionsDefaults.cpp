@@ -246,7 +246,7 @@ QSharedPointer<ScenarioRadarPayloadType> MissionsDefaults::MissionsDefaults_Gene
 
 //////////////////////////////////////// Initial vectors for position and attitude /////////////////////////////
 
-QSharedPointer<ScenarioInitialPositionType> MissionsDefaults_InitialStateVectorKeplerian()
+QSharedPointer<ScenarioInitialPositionType> MissionsDefaults::MissionsDefaults_InitialStateVectorKeplerian()
 {
     QSharedPointer<ScenarioInitialPositionType> genericInitialStateVectorKeplerian(new ScenarioInitialPositionType());
 
@@ -265,7 +265,7 @@ QSharedPointer<ScenarioInitialPositionType> MissionsDefaults_InitialStateVectorK
     return genericInitialStateVectorKeplerian;
 }
 
-QSharedPointer<ScenarioInitialPositionType> MissionsDefaults_InitialStateVectorCartesian()
+QSharedPointer<ScenarioInitialPositionType> MissionsDefaults::MissionsDefaults_InitialStateVectorCartesian()
 {
     QSharedPointer<ScenarioInitialPositionType> genericInitialStateVectorCartesian(new ScenarioInitialPositionType());
 
@@ -284,7 +284,7 @@ QSharedPointer<ScenarioInitialPositionType> MissionsDefaults_InitialStateVectorC
     return genericInitialStateVectorCartesian;
 }
 
-QSharedPointer<ScenarioInitialAttitudeType> MissionsDefaults_InitialAttitudeVectorEuler()
+QSharedPointer<ScenarioInitialAttitudeType> MissionsDefaults::MissionsDefaults_InitialAttitudeVectorEuler()
 {
     QSharedPointer<ScenarioInitialAttitudeType> genericInitialAttitudeVectorEuler(new ScenarioInitialAttitudeType());
 
@@ -302,7 +302,7 @@ QSharedPointer<ScenarioInitialAttitudeType> MissionsDefaults_InitialAttitudeVect
     return genericInitialAttitudeVectorEuler;
 }
 
-QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> MissionsDefaults_InitialAttitudeVectorQuaternion()
+QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> MissionsDefaults::MissionsDefaults_InitialAttitudeVectorQuaternion()
 {
     QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> genericInitialAttitudeVectorQuaternion(new ScenarioInitialAttitudeUsingQuaternionsType());
 
@@ -387,6 +387,17 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_GENERIC()
     loitering.Environment()->CentralBody()->GravityModel()->setModelName("EGM2008");
     loitering.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(0);
     loitering.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(0);
+
+     //loitering.Environment()->PerturbationsToCentralBody()->setAlbedo(false);
+//    loitering.Environment()->PerturbationsToCentralBody()->setAtmosphereDrag(false);
+//    loitering.Environment()->PerturbationsToCentralBody()->setCr(1);
+//    loitering.Environment()->PerturbationsToCentralBody()->setGravityEffets(false);
+//    loitering.Environment()->PerturbationsToCentralBody()->setIR(false);
+//    loitering.Environment()->PerturbationsToCentralBody()->setMicrometeoroids(false);
+//    //loitering.Environment()->PerturbationsToCentralBody()->setPerturbingBody("");
+//    loitering.Environment()->PerturbationsToCentralBody()->setSolarPressure(false);
+//    loitering.Environment()->PerturbationsToCentralBody()->setThirdBody(false);
+//    loitering.Environment()->PerturbationsToCentralBody()->setUserDefined(false);
 
     loitering.ElementIdentifier()->setName("loitering arc");
     loitering.ElementIdentifier()->setTheOrder(1);

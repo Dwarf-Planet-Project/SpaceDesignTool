@@ -107,7 +107,7 @@ bool LoiteringTLEDialog::loadValues(ScenarioLoiteringTLEType* loiteringTLE)
     TLEline1Edit->setText(loiteringTLE->tleLine1());
     TLEline2Edit->setText(loiteringTLE->tleLine2());
 
-	loiteringAspectTLE.loadValueCentralBody("Earth");
+    //loiteringAspectTLE.loadValueCentralBody("Earth");
 
 	ScenarioElementIdentifierType* arcIdentifier = loiteringTLE->ElementIdentifier().data();
 	LoiteringTLEDialog::loadValues(arcIdentifier);
@@ -455,9 +455,9 @@ bool LoiteringTLEDialog::saveValues(ScenarioElementIdentifierType* arcIdentifier
 
 void LoiteringTLEDialog::on_pushButtonAspectTLE_clicked()
 {
-	loiteringAspectTLE.removePlanetsFromComboBoxForTLEs();
-	loiteringAspectTLE.removePlanetsFromComboBoxForTLEs();
-	loiteringAspectTLE.removePlanetsFromComboBoxForTLEs();
-	loiteringAspectTLE.removePlanetsFromComboBoxForTLEs();
+//	loiteringAspectTLE.removePlanetsFromComboBoxForTLEs();
+//	loiteringAspectTLE.removePlanetsFromComboBoxForTLEs();
+//	loiteringAspectTLE.removePlanetsFromComboBoxForTLEs();
+//	loiteringAspectTLE.removePlanetsFromComboBoxForTLEs();
 	loiteringAspectTLE.exec();
 }

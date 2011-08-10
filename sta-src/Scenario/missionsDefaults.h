@@ -96,7 +96,7 @@ public:
     ScenarioLoiteringType MissionsDefaults_Aeolus();
     ScenarioLoiteringType MissionsDefaults_EarthCare();
     ScenarioLoiteringType MissionsDefaults_Sentinel1A();
-     ScenarioLoiteringType MissionsDefaults_Sentinel1B();
+    ScenarioLoiteringType MissionsDefaults_Sentinel1B();
     ScenarioLoiteringType MissionsDefaults_Sentinel2();
     ScenarioLoiteringType MissionsDefaults_Sentinel3();
     ScenarioLoiteringType MissionsDefaults_Sentinel5();

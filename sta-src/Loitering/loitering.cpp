@@ -531,128 +531,19 @@ bool LoiteringDialog::loadValues(ScenarioElementIdentifierType* arcIdentifier)
     return true;
 }
 
-bool LoiteringDialog::loadValues(ScenarioEnvironmentType* environment)
+bool LoiteringDialog::loadValues(ScenarioEnvironmentType* environment) //---------------------- <== Environment
 {
+
+    ScenarioCentralBodyType* myCentralBody = environment->CentralBody().data();
+    ScenarioPerturbationsType* perturbationsToCentralBody = environment->PerturbationsToCentralBody().data();
+
     // The central body
-    QSharedPointer<ScenarioCentralBodyType> centralBody = environment->CentralBody();
-    if (!centralBody.isNull())
-    {
-        QString centralBodyName = centralBody->Name().trimmed();
-        const StaBody* body = STA_SOLAR_SYSTEM->lookup(centralBodyName);
-        if (!body)
-        {
-            qDebug() << "Bad central body '" << centralBodyName << "' in loitering trajectory.";
-            return false;
-        }
-        loiteringAspect.loadValueCentralBody(centralBodyName);
-    }
-    else
-    {
-        return false;
-    }
+    QString centralBodyName = environment->CentralBody()->Name();
+    comboBoxCentralBody->setCurrentText(centralBodyName);
 
-//    // The perturbations
-//    QSharedPointer<ScenarioPerturbationsType> perturbationsToCentralBody = environment->PerturbationsToCentralBody();
-//    DebrisRadioButton->setChecked(false);
-//    GravityFieldRadioButton->setChecked(false);
-//    SolarPressureRadioButton->setChecked(false);
-//    AtmDragRadioButton->setChecked(false);
-//    PertBodyRadioButton->setChecked(false);
+    // The perturbations
+   // myPerturbationsForces.loadValues(myCentralBody, perturbationsToCentralBody);
 
-//    if (!perturbationsToCentralBody.isNull())
-//    {
-//        //qDebug() << "Not null" << endl;
-//        bool theAlbedo = perturbationsToCentralBody->albedo();
-//        bool theAtmosphericDrag = perturbationsToCentralBody->atmosphereDrag();
-//        bool theSolarPressure = perturbationsToCentralBody->solarPressure();
-//        bool theGravityEffects = perturbationsToCentralBody->gravityEffets();
-//        bool theDebris = perturbationsToCentralBody->micrometeoroids();
-//        bool the3rdBody =perturbationsToCentralBody->thirdBody();
-//        bool theIR =perturbationsToCentralBody->IR();
-
-//        if (theDebris)
-//            DebrisRadioButton->setChecked(true);
-//        else
-//            DebrisRadioButton->setChecked(false);
-
-//        if (theGravityEffects)
-//        {
-//            GravityFieldRadioButton->setChecked(true);
-//            if(!centralBody->GravityModel()->modelName().isEmpty())
-//            {
-//                QString gravitymodel = centralBody->GravityModel()->modelName();
-//                gravitymodel.remove(".stad");
-//                for (int i = 0; i < GravityComboBox->count(); i++)
-//                {
-//                    if (GravityComboBox->itemData(i) == gravitymodel)
-//                    {
-//                        GravityComboBox->setCurrentIndex(i);
-//                        break;
-//                    }
-//                }
-//            }
-//            ZonalsSpinBox->setValue(centralBody->GravityModel()->numberOfZonals());
-//            m_tesserals = centralBody->GravityModel()->numberOfTesserals();
-//            TesseralSpinBox->setValue(m_tesserals);
-//        } // ---- Gravity
-//        else
-//            GravityFieldRadioButton->setChecked(false);
-
-
-//        if (theSolarPressure)
-//            SolarPressureRadioButton->setChecked(true);
-//        else
-//            SolarPressureRadioButton->setChecked(false);
-
-//        if (theAtmosphericDrag)
-//        {
-//            AtmDragRadioButton->setChecked(true);
-//            if(!centralBody->AtmosphereModel().isEmpty())
-//            {
-//                QString atmospheremodel = centralBody->AtmosphereModel();
-//                atmospheremodel.remove(".stad");
-//                for (int i = 0; i < AtmosphereComboBox->count(); i++)
-//                {
-//                    if (AtmosphereComboBox->itemData(i) == atmospheremodel)
-//                    {
-//                        AtmosphereComboBox->setCurrentIndex(i);
-//                        break;
-//                    }
-//                }
-//            }
-//        } // ---- Atmopsheric drag
-//        else
-//            AtmDragRadioButton->setChecked(false);
-
-
-//        if (theAlbedo)
-//            AlbedoCheckBox->setChecked(true);
-//        else
-//            AlbedoCheckBox->setChecked(false);
-
-//        if (theIR)
-//            IRCheckBox->setChecked(true);
-//        else
-//            IRCheckBox->setChecked(false);
-
-//        if (the3rdBody)
-//        {
-//            QList<QString> perturbingBodyList = environment->PerturbationsToCentralBody()->perturbingBody();
-//            QString nameBody;
-//            for (int j=0; j<perturbingBodyList.size(); j++)
-//            {
-//                nameBody = perturbingBodyList.at(j);
-//                QList<QListWidgetItem*> items = BodyListWidget->findItems(nameBody, Qt::MatchFixedString);
-//                //if(!items.isEmpty() && nameBody != environment->CentralBody()->Name())
-//                if(nameBody != environment->CentralBody()->Name())
-//                    PertBodyListWidget->addItem(nameBody);
-//            }
-//            PertBodyRadioButton->setChecked(true);
-//        } // --- the 3rd Bodies
-//        else
-//            PertBodyRadioButton->setChecked(true);
-//    }
-    // Finally returning
     return true;
 }
 
@@ -726,14 +617,6 @@ bool LoiteringDialog::loadValues(ScenarioInitialPositionType* initPosition)
     raanEdit->setText(QString::number(sta::radToDeg(elements->RAAN())));
     argOfPeriapsisEdit->setText(QString::number(sta::radToDeg(elements->argumentOfPeriapsis())));
     trueAnomalyEdit->setText(QString::number(sta::radToDeg(elements->trueAnomaly())));
-
-//    ScenarioStateVectorType* cartesians = dynamic_cast<ScenarioStateVectorType*>(position);
-//    positionXEdit->setText(QString::number(cartesians->x()));
-//    positionYEdit->setText(QString::number(cartesians->y()));
-//    positionXEdit->setText(QString::number(cartesians->z()));
-//    velocityXEdit->setText(QString::number(cartesians->vx()));
-//    velocityYEdit->setText(QString::number(cartesians->vy()));
-//    velocityZEdit->setText(QString::number(cartesians->vz()));
 
     // We need to convert the Keplerian elements into Cartesian and load the corresponding edit-label-combos of the GUI
     double meanAnomaly = trueAnomalyTOmeanAnomaly(elements->trueAnomaly(), elements->eccentricity());
@@ -873,104 +756,15 @@ bool LoiteringDialog::saveValues(ScenarioElementIdentifierType* arcIdentifier)
 
 bool LoiteringDialog::saveValues(ScenarioEnvironmentType* environment)
 {
+    ScenarioCentralBodyType* myCentralBody = environment->CentralBody().data();
+    ScenarioPerturbationsType* perturbationsToCentralBody = environment->PerturbationsToCentralBody().data();
+
     // The central body
-    QString myCentralBody = loiteringAspect.saveValueCentralBody();
-    StaBody* centralBody = STA_SOLAR_SYSTEM->lookup(myCentralBody);
-    if (centralBody)
-    {
-        environment->CentralBody()->setName(myCentralBody);
-    }
-    else
-    {
-        qWarning("Unknown central body");
-        return false;
-    }
+    QString centralBodyName = comboBoxCentralBody->currentText();
+    environment->CentralBody()->setName(centralBodyName);
 
-//    // The perturbations
-//    QSharedPointer<ScenarioPerturbationsType> perturbationsToCentralBody = environment->PerturbationsToCentralBody();
+    //myPerturbationsForces.saveValues(myCentralBody, perturbationsToCentralBody);
 
-//    if (perturbationsToCentralBody.isNull())
-//    {
-//        ScenarioPerturbationsType* perturbationsToCentralBody = new ScenarioPerturbationsType();
-//        environment->setPerturbationsToCentralBody(QSharedPointer<ScenarioPerturbationsType>(perturbationsToCentralBody));
-//    }
-
-
-//    if (DebrisRadioButton->isChecked())
-//        environment->PerturbationsToCentralBody()->setMicrometeoroids(true);
-//    else
-//        environment->PerturbationsToCentralBody()->setMicrometeoroids(false);
-
-//    if (GravityFieldRadioButton->isChecked())
-//    {
-//        environment->PerturbationsToCentralBody()->setGravityEffets(true);
-//        QString gravitymodel = GravityComboBox->itemData(GravityComboBox->currentIndex()).toString();
-//        gravitymodel.append(".stad");
-//        environment->CentralBody()->GravityModel()->setModelName(gravitymodel);
-//        environment->CentralBody()->GravityModel()->setNumberOfZonals(ZonalsSpinBox->value());
-//        environment->CentralBody()->GravityModel()->setNumberOfTesserals(m_tesserals);
-//    }
-//    else
-//        environment->PerturbationsToCentralBody()->setGravityEffets(false);
-
-//    if (AtmDragRadioButton->isChecked())
-//    {
-//        environment->PerturbationsToCentralBody()->setAtmosphereDrag(true);
-//        QString atmospheremodel = AtmosphereComboBox->itemData(AtmosphereComboBox->currentIndex()).toString();
-//        atmospheremodel.append(".stad");
-//        environment->CentralBody()->setAtmosphereModel(atmospheremodel);
-//    }
-//    else
-//        environment->PerturbationsToCentralBody()->setAtmosphereDrag(false);
-
-//    if (SolarPressureRadioButton->isChecked())
-//    {
-//        environment->PerturbationsToCentralBody()->setSolarPressure(true);
-//        if (AlbedoCheckBox->isChecked())
-//            environment->PerturbationsToCentralBody()->setAlbedo(true);
-//        else
-//        {
-//            environment->PerturbationsToCentralBody()->setAlbedo(false);
-//            AlbedoCheckBox->setChecked(false);
-//        }
-//        if (IRCheckBox->isChecked())
-//            environment->PerturbationsToCentralBody()->setIR(true);
-//        else
-//        {
-//            environment->PerturbationsToCentralBody()->setIR(false);
-//            IRCheckBox->setChecked(false);
-//        }
-//    }
-//    else
-//    {
-//        AlbedoCheckBox->setChecked(false);
-//        IRCheckBox->setChecked(false);
-//        environment->PerturbationsToCentralBody()->setSolarPressure(false);
-//        environment->PerturbationsToCentralBody()->setIR(false);
-//        environment->PerturbationsToCentralBody()->setAlbedo(false);
-//    }
-
-//    if (PertBodyRadioButton->isChecked())
-//    {
-//        environment->PerturbationsToCentralBody()->setThirdBody(true);
-//        QList<QString> myPerturbingBodyList = environment->PerturbationsToCentralBody()->perturbingBody();
-//        myPerturbingBodyList.clear(); // Reset the perturbing bodies list
-//        for (int j = 0; j < PertBodyListWidget->count(); j++)
-//        {
-//            StaBody* body = STA_SOLAR_SYSTEM->lookup(PertBodyListWidget->item(j)->text());
-//            if (body && body != centralBody)
-//                myPerturbingBodyList.append(body->name());
-//        }
-//        qDebug() << myPerturbingBodyList << endl;
-//        environment->PerturbationsToCentralBody()->setPerturbingBody(myPerturbingBodyList);
-//        qDebug() << environment->PerturbationsToCentralBody()->perturbingBody() << endl;
-//    }
-//    else
-//        environment->PerturbationsToCentralBody()->setThirdBody(false);
-
-//    environment->PerturbationsToCentralBody()->setUserDefined(false); // nothing for the moment
-
-    // Finally returning
     return true;
 }
 

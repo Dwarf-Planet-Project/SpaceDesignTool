@@ -28,6 +28,8 @@
 
 #include "ui_perturbationForces.h"
 
+#include "Scenario/scenario.h"
+
 #include <QDialog>
 
 class TesseralBox;
@@ -60,6 +62,11 @@ protected slots:
 //	void on_RemovePushButton_clicked(bool);
 
 public:
+
+    bool loadValues(ScenarioCentralBodyType* centralBody, ScenarioPerturbationsType* perturbationsToCentralBody);
+    bool saveValues(ScenarioCentralBodyType* centralBody, ScenarioPerturbationsType* perturbationsToCentralBody);
+
+
     TesseralBox* TesseralSpinBox;
     int m_tesserals;
 

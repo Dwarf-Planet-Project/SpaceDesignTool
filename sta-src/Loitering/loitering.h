@@ -90,6 +90,8 @@ public:
     //stoppingConditionsAttitudeDialog myStoppingConditionsAttitude; // To be finihsed by Catarina
 
 
+
+
 public slots:
     void disableIntegratorComboBox(int i);
 
