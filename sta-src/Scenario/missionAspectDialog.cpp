@@ -124,54 +124,54 @@ bool missionAspectDialog::loadValueArcModel(const QString arcModel)
 
 
 
-bool missionAspectDialog::loadValueCentralBody(const QString centralBody)
-{
-    // Moons of the solar system at http://www.windows.ucar.edu/tour/link=/our_solar_system/moons_table.html
-    if (centralBody == "Earth")
-        comboBoxCentralBody->setCurrentIndex(0);
-    else if (centralBody == "Moon")
-        comboBoxCentralBody->setCurrentIndex(1);
-    else if (centralBody == "Mercury")
-        comboBoxCentralBody->setCurrentIndex(2);
-    else if (centralBody == "Venus")
-        comboBoxCentralBody->setCurrentIndex(3);
-    else if (centralBody == "Mars")
-        comboBoxCentralBody->setCurrentIndex(4);
-    else if (centralBody == "Jupiter")
-        comboBoxCentralBody->setCurrentIndex(5);
-    else if (centralBody == "Saturn")
-        comboBoxCentralBody->setCurrentIndex(6);
-    else if (centralBody == "Uranus")
-        comboBoxCentralBody->setCurrentIndex(7);
-    else if (centralBody == "Neptune")
-        comboBoxCentralBody->setCurrentIndex(8);
-    else if (centralBody == "Pluto")
-        comboBoxCentralBody->setCurrentIndex(9);
-    else if (centralBody == "Sun")
-        comboBoxCentralBody->setCurrentIndex(10);
-    else if (centralBody == "Titan")
-        comboBoxCentralBody->setCurrentIndex(11);
-    else if (centralBody == "Europa")
-        comboBoxCentralBody->setCurrentIndex(12);
-    else if (centralBody == "Triton")
-        comboBoxCentralBody->setCurrentIndex(13);
-    else if (centralBody == "Enceladus")
-        comboBoxCentralBody->setCurrentIndex(14);
-    else
-        return false;
+//bool missionAspectDialog::loadValueCentralBody(const QString centralBody)
+//{
+//    // Moons of the solar system at http://www.windows.ucar.edu/tour/link=/our_solar_system/moons_table.html
+//    if (centralBody == "Earth")
+//        comboBoxCentralBody->setCurrentIndex(0);
+//    else if (centralBody == "Moon")
+//        comboBoxCentralBody->setCurrentIndex(1);
+//    else if (centralBody == "Mercury")
+//        comboBoxCentralBody->setCurrentIndex(2);
+//    else if (centralBody == "Venus")
+//        comboBoxCentralBody->setCurrentIndex(3);
+//    else if (centralBody == "Mars")
+//        comboBoxCentralBody->setCurrentIndex(4);
+//    else if (centralBody == "Jupiter")
+//        comboBoxCentralBody->setCurrentIndex(5);
+//    else if (centralBody == "Saturn")
+//        comboBoxCentralBody->setCurrentIndex(6);
+//    else if (centralBody == "Uranus")
+//        comboBoxCentralBody->setCurrentIndex(7);
+//    else if (centralBody == "Neptune")
+//        comboBoxCentralBody->setCurrentIndex(8);
+//    else if (centralBody == "Pluto")
+//        comboBoxCentralBody->setCurrentIndex(9);
+//    else if (centralBody == "Sun")
+//        comboBoxCentralBody->setCurrentIndex(10);
+//    else if (centralBody == "Titan")
+//        comboBoxCentralBody->setCurrentIndex(11);
+//    else if (centralBody == "Europa")
+//        comboBoxCentralBody->setCurrentIndex(12);
+//    else if (centralBody == "Triton")
+//        comboBoxCentralBody->setCurrentIndex(13);
+//    else if (centralBody == "Enceladus")
+//        comboBoxCentralBody->setCurrentIndex(14);
+//    else
+//        return false;
 
-    theCentralBody = centralBody;
-    return true;
-}
-
-
+//    theCentralBody = centralBody;
+//    return true;
+//}
 
 
-QString missionAspectDialog::saveValueCentralBody()
-{
-    theCentralBody = comboBoxCentralBody->currentText();
-    return theCentralBody;
-}
+
+
+//QString missionAspectDialog::saveValueCentralBody()
+//{
+//    theCentralBody = comboBoxCentralBody->currentText();
+//    return theCentralBody;
+//}
 
 
 QString missionAspectDialog::saveValueArcName()
@@ -197,25 +197,25 @@ QString missionAspectDialog::saveValueArcModel()
 
 
 
-bool missionAspectDialog::removePlanetsFromComboBoxForTLEs()
-{
-	// Just left the Earth
-	comboBoxCentralBody->removeItem(1);
-	comboBoxCentralBody->removeItem(2);
-	comboBoxCentralBody->removeItem(3);
-	comboBoxCentralBody->removeItem(4);
-	comboBoxCentralBody->removeItem(5);
-	comboBoxCentralBody->removeItem(6);
-	comboBoxCentralBody->removeItem(7);
-	comboBoxCentralBody->removeItem(8);
-	comboBoxCentralBody->removeItem(9);
-	comboBoxCentralBody->removeItem(10);
-	comboBoxCentralBody->removeItem(11);
-	comboBoxCentralBody->removeItem(12);
-	comboBoxCentralBody->removeItem(13);
-	comboBoxCentralBody->removeItem(14);
-	return true;
-}
+//bool missionAspectDialog::removePlanetsFromComboBoxForTLEs()
+//{
+//	// Just left the Earth
+//	comboBoxCentralBody->removeItem(1);
+//	comboBoxCentralBody->removeItem(2);
+//	comboBoxCentralBody->removeItem(3);
+//	comboBoxCentralBody->removeItem(4);
+//	comboBoxCentralBody->removeItem(5);
+//	comboBoxCentralBody->removeItem(6);
+//	comboBoxCentralBody->removeItem(7);
+//	comboBoxCentralBody->removeItem(8);
+//	comboBoxCentralBody->removeItem(9);
+//	comboBoxCentralBody->removeItem(10);
+//	comboBoxCentralBody->removeItem(11);
+//	comboBoxCentralBody->removeItem(12);
+//	comboBoxCentralBody->removeItem(13);
+//	comboBoxCentralBody->removeItem(14);
+//	return true;
+//}
 
 
 

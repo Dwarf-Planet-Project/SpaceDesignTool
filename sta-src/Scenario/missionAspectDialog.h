@@ -48,10 +48,10 @@ public:
     bool loadValueArcModel(const QString arcModel);
     QString saveValueArcModel();
 
-    bool loadValueCentralBody(const QString centralBody);
-    QString saveValueCentralBody();
+//    bool loadValueCentralBody(const QString centralBody);
+//    QString saveValueCentralBody();
 
-	bool removePlanetsFromComboBoxForTLEs();
+//	bool removePlanetsFromComboBoxForTLEs();
 
 private:
     QString theCentralBody;
