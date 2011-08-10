@@ -63,7 +63,7 @@ protected slots:
 
 public:
 
-    bool loadValues(ScenarioCentralBodyType* centralBody, ScenarioPerturbationsType* perturbationsToCentralBody);
+    bool loadValues(const ScenarioCentralBodyType* centralBody, const ScenarioPerturbationsType* perturbationsToCentralBody);
     bool saveValues(ScenarioCentralBodyType* centralBody, ScenarioPerturbationsType* perturbationsToCentralBody);
 
 

@@ -542,7 +542,7 @@ bool LoiteringDialog::loadValues(ScenarioEnvironmentType* environment) //-------
     comboBoxCentralBody->setCurrentText(centralBodyName);
 
     // The perturbations
-   // myPerturbationsForces.loadValues(myCentralBody, perturbationsToCentralBody);
+    myPerturbationsForces.loadValues(myCentralBody, perturbationsToCentralBody);
 
     return true;
 }
@@ -756,14 +756,19 @@ bool LoiteringDialog::saveValues(ScenarioElementIdentifierType* arcIdentifier)
 
 bool LoiteringDialog::saveValues(ScenarioEnvironmentType* environment)
 {
-    ScenarioCentralBodyType* myCentralBody = environment->CentralBody().data();
-    ScenarioPerturbationsType* perturbationsToCentralBody = environment->PerturbationsToCentralBody().data();
+    // Create the perturbations object if it doesn't exist already (it is
+    // empty by default.)
+    if (environment->PerturbationsToCentralBody().isNull())
+    {
+        environment->setPerturbationsToCentralBody(QSharedPointer<ScenarioPerturbationsType>(new ScenarioPerturbationsType()));
+    }
 
     // The central body
     QString centralBodyName = comboBoxCentralBody->currentText();
     environment->CentralBody()->setName(centralBodyName);
 
-    //myPerturbationsForces.saveValues(myCentralBody, perturbationsToCentralBody);
+    myPerturbationsForces.saveValues(environment->CentralBody().data(),
+                                     environment->PerturbationsToCentralBody().data());
 
     return true;
 }

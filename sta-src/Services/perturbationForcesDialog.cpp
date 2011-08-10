@@ -94,136 +94,100 @@ perturbationForcesDialog::~perturbationForcesDialog()
 
 
 
-bool perturbationForcesDialog::loadValues(ScenarioCentralBodyType* centralBody, ScenarioPerturbationsType* perturbationsToCentralBody)
+bool perturbationForcesDialog::loadValues(const ScenarioCentralBodyType* centralBody, const ScenarioPerturbationsType* perturbationsToCentralBody)
 {
-    qDebug() << "Entered perturbationForcesDialog" << endl;
     DebrisRadioButton->setChecked(false);
     GravityFieldRadioButton->setChecked(false);
     SolarPressureRadioButton->setChecked(false);
     AtmDragRadioButton->setChecked(false);
     ThirdBodyRadioButton->setChecked(false);
 
-    QSharedPointer<ScenarioCentralBodyType> myCentralBody(centralBody);
-    QSharedPointer<ScenarioPerturbationsType> myPerturbationsToCentralBody(perturbationsToCentralBody);
+    if (perturbationsToCentralBody == NULL)
+    {
+        return true;
+    }
 
-//    bool theAlbedo = myPerturbationsToCentralBody->albedo();
-//    bool theAtmosphericDrag = myPerturbationsToCentralBody->atmosphereDrag();
-//    bool theSolarPressure = myPerturbationsToCentralBody->solarPressure();
-//    bool theGravityEffects = myPerturbationsToCentralBody->gravityEffets();
-//    bool theDebris = myPerturbationsToCentralBody->micrometeoroids();
-//    bool the3rdBody = myPerturbationsToCentralBody->thirdBody();
-//    bool theIR = myPerturbationsToCentralBody->IR();
+    bool theAlbedo = perturbationsToCentralBody->albedo();
+    bool theAtmosphericDrag = perturbationsToCentralBody->atmosphereDrag();
+    bool theSolarPressure = perturbationsToCentralBody->solarPressure();
+    bool theGravityEffects = perturbationsToCentralBody->gravityEffets();
+    bool theDebris = perturbationsToCentralBody->micrometeoroids();
+    bool the3rdBody = perturbationsToCentralBody->thirdBody();
+    bool theIR = perturbationsToCentralBody->IR();
 
-    qDebug() << myCentralBody->Name() << endl;
+    DebrisRadioButton->setChecked(theDebris);
+    GravityFieldRadioButton->setChecked(theGravityEffects);
+    SolarPressureRadioButton->setChecked(theSolarPressure);
+    AtmDragRadioButton->setChecked(theAtmosphericDrag);
+    AlbedoCheckBox->setChecked(theAlbedo);
+    IRCheckBox->setChecked(theIR);
+    ThirdBodyRadioButton->setChecked(the3rdBody);
 
-//     if (theDebris)
-//    {
-//         qDebug() << "theDebris: YES" << endl;
-//     }
-//     else
-//     {
-//         qDebug() << "theDebris: NO" << endl;
-//     }
+    if (theGravityEffects)
+    {
+        GravityFieldRadioButton->setChecked(true);
+        if(!centralBody->GravityModel()->modelName().isEmpty())
+        {
+            QString gravitymodel = centralBody->GravityModel()->modelName();
+            gravitymodel.remove(".stad");
 
-//    if (theDebris)
-//        DebrisRadioButton->setChecked(true);
-//    else
-//        DebrisRadioButton->setChecked(false);
+            for (int i = 0; i < GravityEffectsModelComboBox->count(); i++)
+            {
+                if (GravityEffectsModelComboBox->itemData(i) == gravitymodel)
+                {
+                    GravityEffectsModelComboBox->setCurrentIndex(i);
+                    break;
+                }
+            }
+        }
 
-//    if (theGravityEffects)
-//    {
-//        GravityFieldRadioButton->setChecked(true);
-//        if(!centralBody->GravityModel()->modelName().isEmpty())
-//        {
-//            QString gravitymodel = centralBody->GravityModel()->modelName();
-//            gravitymodel.remove(".stad");
+        ZonalsSpinBox->setValue(centralBody->GravityModel()->numberOfZonals());
+        m_tesserals = centralBody->GravityModel()->numberOfTesserals();
+        TesseralSpinBox->setValue(m_tesserals);
+    } // ---- Gravity
 
-//            for (int i = 0; i < GravityEffectsModelComboBox->count(); i++)
-//            {
-//                if (GravityEffectsModelComboBox->itemData(i) == gravitymodel)
-//                {
-//                    GravityEffectsModelComboBox->setCurrentIndex(i);
-//                    break;
-//                }
-//            }
-//        }
+    if (theAtmosphericDrag)
+    {
+        AtmDragRadioButton->setChecked(true);
+        if(!centralBody->AtmosphereModel().isEmpty())
+        {
+            QString atmospheremodel = centralBody->AtmosphereModel();
+            atmospheremodel.remove(".stad");
 
-//        ZonalsSpinBox->setValue(centralBody->GravityModel()->numberOfZonals());
-//        m_tesserals = centralBody->GravityModel()->numberOfTesserals();
-//        TesseralSpinBox->setValue(m_tesserals);
-//    } // ---- Gravity
-//    else
-//    {
-//        GravityFieldRadioButton->setChecked(false);
-//    }
+            for (int i = 0; i < AtmosphereDragTypeComboBox->count(); i++)
+            {
+                if (AtmosphereDragTypeComboBox->itemData(i) == atmospheremodel)
+                {
+                    AtmosphereDragTypeComboBox->setCurrentIndex(i);
+                    break;
+                }
+            }
+        }
+    } // ---- Atmopsheric drag
 
+    if (the3rdBody)
+    {
+        QList<QString> perturbingBodyList = perturbationsToCentralBody->perturbingBody();
+        QString nameBody;
+        for (int j = 0; j < perturbingBodyList.size(); j++)
+        {
+            nameBody = perturbingBodyList.at(j);
+            QList<QListWidgetItem*> items = BodyListWidget->findItems(nameBody, Qt::MatchFixedString);
+            //if(!items.isEmpty() && nameBody != CentralBody()->Name())
+            if (nameBody != centralBody->Name())
+            {
+                PertBodyListWidget->addItem(nameBody);
+            }
+        }
+    } // --- the 3rd Bodies
 
-//    if (theSolarPressure)
-//        SolarPressureRadioButton->setChecked(true);
-//    else
-//        SolarPressureRadioButton->setChecked(false);
-
-//    if (theAtmosphericDrag)
-//    {
-//        AtmDragRadioButton->setChecked(true);
-//        if(!centralBody->AtmosphereModel().isEmpty())
-//        {
-//            QString atmospheremodel = centralBody->AtmosphereModel();
-//            atmospheremodel.remove(".stad");
-
-//            for (int i = 0; i < AtmosphereDragTypeComboBox->count(); i++)
-//            {
-//                if (AtmosphereDragTypeComboBox->itemData(i) == atmospheremodel)
-//                {
-//                    AtmosphereDragTypeComboBox->setCurrentIndex(i);
-//                    break;
-//                }
-//            }
-//        }
-//    } // ---- Atmopsheric drag
-//    else
-//        AtmDragRadioButton->setChecked(false);
-
-
-//    if (theAlbedo)
-//        AlbedoCheckBox->setChecked(true);
-//    else
-//        AlbedoCheckBox->setChecked(false);
-
-//    if (theIR)
-//        IRCheckBox->setChecked(true);
-//    else
-//        IRCheckBox->setChecked(false);
-
-//    if (the3rdBody)
-//    {
-//        QList<QString> perturbingBodyList = perturbationsToCentralBody->perturbingBody();
-//        QString nameBody;
-//        for (int j=0; j<perturbingBodyList.size(); j++)
-//        {
-//            nameBody = perturbingBodyList.at(j);
-//            QList<QListWidgetItem*> items = BodyListWidget->findItems(nameBody, Qt::MatchFixedString);
-//            //if(!items.isEmpty() && nameBody != CentralBody()->Name())
-//            if(nameBody != centralBody->Name())
-//                PertBodyListWidget->addItem(nameBody);
-//        }
-//        ThirdBodyRadioButton->setChecked(true);
-//    } // --- the 3rd Bodies
-//    else
-//    {
-//        ThirdBodyRadioButton->setChecked(true);
-//    }
-
-    qDebug() << "Exiting perturbationForcesDialog" << endl;
     return true;
-
 }
 
 
 
 bool perturbationForcesDialog::saveValues(ScenarioCentralBodyType* centralBody, ScenarioPerturbationsType* perturbationsToCentralBody)
 {
-
     if (DebrisRadioButton->isChecked())
         perturbationsToCentralBody->setMicrometeoroids(true);
     else
@@ -239,7 +203,9 @@ bool perturbationForcesDialog::saveValues(ScenarioCentralBodyType* centralBody, 
         centralBody->GravityModel()->setNumberOfTesserals(m_tesserals);
     }
     else
+    {
         perturbationsToCentralBody->setGravityEffets(false);
+    }
 
     if (AtmDragRadioButton->isChecked())
     {
@@ -249,7 +215,9 @@ bool perturbationForcesDialog::saveValues(ScenarioCentralBodyType* centralBody, 
         centralBody->setAtmosphereModel(atmospheremodel);
     }
     else
+    {
         perturbationsToCentralBody->setAtmosphereDrag(false);
+    }
 
     if (SolarPressureRadioButton->isChecked())
     {
