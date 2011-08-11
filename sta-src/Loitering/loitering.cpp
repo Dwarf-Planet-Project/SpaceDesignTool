@@ -533,16 +533,23 @@ bool LoiteringDialog::loadValues(ScenarioElementIdentifierType* arcIdentifier)
 
 bool LoiteringDialog::loadValues(ScenarioEnvironmentType* environment) //---------------------- <== Environment
 {
-
+    // Trajectory part
     ScenarioCentralBodyType* myCentralBody = environment->CentralBody().data();
     ScenarioPerturbationsType* perturbationsToCentralBody = environment->PerturbationsToCentralBody().data();
-
     // The central body
     QString centralBodyName = environment->CentralBody()->Name();
     comboBoxCentralBody->setCurrentText(centralBodyName);
+    // Attitude part: to be worked !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//    ScenarioCentralBodyType* myCentralBodyForAttitude = environment->CentralBody().data();
+//    ScenarioPerturbationsType* perturbationsToCentralBody = environment->PerturbationsToCentralBody().data();
+//    // The central body
+//    QString centralBodyName = environment->CentralBody()->Name();
+//    comboBoxCentralBody->setCurrentText(centralBodyName);
 
     // The perturbations
     myPerturbationsForces.loadValues(myCentralBody, perturbationsToCentralBody);
+    // Here it should be an identical call to the perturbation of the torques
+    //myPerturbationsTorques.loadValues(myCentralBody, perturbationsToCentralBody);
 
     return true;
 }
@@ -551,7 +558,7 @@ bool LoiteringDialog::loadValues(ScenarioTimeLine* timeLine)
 {
     trajectoryStartingEpoch->setDateTime(timeLine->StartTime());
     trajectoryEndingEpoch->setDateTime(timeLine->EndTime());
-    //TimeStepLineEdit->setText(QString::number(timeLine->StepTime()));
+    //TimeStepLineEdit->setText(QString::number(timeLine->StepTime()));   // deprecated
     attitudeStartingEpoch->setDateTime(timeLine->StartTime());
     attitudeEndingEpoch->setDateTime(timeLine->EndTime());
 
@@ -585,6 +592,7 @@ bool LoiteringDialog::loadValues(ScenarioPropagationPositionType* propagation)
 
 bool LoiteringDialog::loadValues(ScenarioInitialPositionType* initPosition)
 {
+    // Coordinate systems
     QString coordSysName = initPosition->CoordinateSystem().trimmed();
     sta::CoordinateSystem coordSys(coordSysName);
     if (!coordSys.valid())
@@ -666,6 +674,25 @@ bool LoiteringDialog::loadValues(ScenarioPropagationAttitudeType *propagation)
 
 bool LoiteringDialog::loadValues(ScenarioInitialAttitudeType* initAttitude)
 {
+    // Coordinate systems first
+    QString coordSysName = initAttitude->CoordinateSystem().trimmed();
+    sta::CoordinateSystem coordSys(coordSysName);
+    if (!coordSys.valid())
+    {
+        qDebug() << "Bad coordinate system '" << coordSysName << "' in scenario ";
+        coordSys = sta::CoordinateSystem(sta::COORDSYS_COG);  // Center of Gravity by default
+    }
+
+    // Set the coordinate system combo box value
+    for (int i = 0; i < CoordSystemAttitudeComboBox->count(); i++)
+    {
+        if (CoordSystemAttitudeComboBox->itemData(i) == coordSys.type())
+        {
+            CoordSystemAttitudeComboBox->setCurrentIndex(i);
+            break;
+        }
+    }
+
     // Load Euler angles 123 from schema into the GUI
     ScenarioAbstract6DOFAttitudeType* attitude = initAttitude->Abstract6DOFAttitude().data();
     ScenarioEulerType* Euler123 = dynamic_cast<ScenarioEulerType*>(attitude);
@@ -859,12 +886,12 @@ bool LoiteringDialog::saveValues(ScenarioInitialPositionType* initPos)
 
 bool LoiteringDialog::saveValues(ScenarioInitialAttitudeType* initAtt, ScenarioInitialAttitudeUsingQuaternionsType* initAttQuaternions)
 {
-//    sta::CoordinateSystemType coordSysType =
-//            sta::CoordinateSystemType(CoordSystemAttitudeComboBox->itemData(CoordSystemAttitudeComboBox->currentIndex()).toInt());
-//    initAtt->setCoordinateSystem(sta::CoordinateSystem(coordSysType).name());
+    // Coordinate system first
+    sta::CoordinateSystemType coordSysType =
+            sta::CoordinateSystemType(CoordSystemAttitudeComboBox->itemData(CoordSystemAttitudeComboBox->currentIndex()).toInt());
+    initAtt->setCoordinateSystem(sta::CoordinateSystem(coordSysType).name());
 
-    //qDebug() << "Comboboc index: " << AttitudeTypeComboBox->currentIndex() <<endl;
-
+    // Now the panels
     switch (AttitudeTypeComboBox->currentIndex())
     {
 
