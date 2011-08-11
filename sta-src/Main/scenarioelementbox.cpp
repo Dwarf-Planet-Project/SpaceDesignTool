@@ -457,6 +457,8 @@ static QByteArray spaceVehicleWithTrajectoryFragment(const QString& name, const 
         loiteringDefault = myMissionDefaults.MissionsDefaults_Meteosat8();
     else if (name == "Meteosat-9")
         loiteringDefault = myMissionDefaults.MissionsDefaults_Meteosat9();
+    else if (name == "GOCE")
+        loiteringDefault = myMissionDefaults.MissionsDefaults_GOCE();
     else if (name == "CryoSAT")
         loiteringDefault = myMissionDefaults.MissionsDefaults_Cryosat();
     else if (name == "Sentinel-1A")
@@ -828,6 +830,7 @@ ScenarioElementBox::ScenarioElementBox(QWidget* parent) :
     addESASatelliteItem(ESASatellitesItem, "Meteosat-7");
     addESASatelliteItem(ESASatellitesItem, "Meteosat-8");
     addESASatelliteItem(ESASatellitesItem, "Meteosat-9");
+    addESASatelliteItem(ESASatellitesItem, "GOCE");
     addESASatelliteItem(ESASatellitesItem, "CryoSAT");
     addESASatelliteItem(ESASatellitesItem, "Sentinel-1A");
     addESASatelliteItem(ESASatellitesItem, "SmallGEO");

@@ -786,7 +786,7 @@ bool LoiteringDialog::saveValues(ScenarioTimeLine* timeline)
 {
     timeline->setStartTime(trajectoryStartingEpoch->dateTime());
     timeline->setEndTime(trajectoryEndingEpoch->dateTime());
-    //timeline->setStepTime(TimeStepLineEdit->text().toDouble());
+    //timeline->setStepTime(TimeStepLineEdit->text().toDouble());  // deprecated
     timeline->setStartTime(attitudeStartingEpoch->dateTime());
     timeline->setEndTime(attitudeEndingEpoch->dateTime());
 

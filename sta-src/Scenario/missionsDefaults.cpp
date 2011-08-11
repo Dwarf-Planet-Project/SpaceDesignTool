@@ -25,7 +25,8 @@
  ------------------ Affiliation:  European Space Agency (ESA)    -------------------
  -----------------------------------------------------------------------------------
  Updated March 2011
- Update July 2011 by Guillermo
+ Updateed July 2011 by Guillermo
+ Updated August 2011 by Guillermo
 
 */
 
@@ -379,10 +380,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_GENERIC()
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
-    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setIntegrator("RK4");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
-    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setPropagator("QuaternionsESA");
+    loitering.PropagationAttitude()->setIntegrator("RK4");
     loitering.PropagationAttitude()->setTimeStep(60.0);
 
     loitering.Environment()->CentralBody()->setName("Earth");
@@ -463,6 +465,8 @@ ScenarioDeltaVType MissionsDefaults::MissionsDefaults_GENERIC_DELTAV()
     return deltaV;
 }
 
+
+
 //ALONSO.-
 // Generic RendezVous Manoeuvres
 ScenarioRendezVousManoeuvreType MissionsDefaults::MissionsDefaults_GENERIC_RENDEZVOUS()
@@ -529,11 +533,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_XMM()
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
     initPos->setSemiMajorAxis(133930);
-    initPos->setInclination(60.6);
+    initPos->setInclination(sta::degToRad(60.6));
     initPos->setEccentricity(0.6);
-    initPos->setRAAN(93.6);
-    initPos->setArgumentOfPeriapsis(112.6);
-    initPos->setTrueAnomaly(0.0);
+    initPos->setRAAN(sta::degToRad(93.6));
+    initPos->setArgumentOfPeriapsis(sta::degToRad(112.6));
+    initPos->setTrueAnomaly(sta::degToRad(0.0));
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
     QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
@@ -550,10 +554,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_XMM()
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
-    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setIntegrator("RK4");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
-    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setPropagator("QuaternionsESA");
+    loitering.PropagationAttitude()->setIntegrator("RK4");
     loitering.PropagationAttitude()->setTimeStep(60.0);
 
     loitering.Environment()->CentralBody()->setName("Earth");
@@ -579,11 +584,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_INTEGRAL()
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
     initPos->setSemiMajorAxis(87707.90078484899);
-    initPos->setInclination(53.05319831508738);
+    initPos->setInclination(sta::degToRad(53.05319831508738));
     initPos->setEccentricity(0.8234577927435308);
-    initPos->setRAAN(101.4890638402147);
-    initPos->setArgumentOfPeriapsis(302.4416289547550);
-    initPos->setTrueAnomaly(85.35622442451043);
+    initPos->setRAAN(sta::degToRad(101.4890638402147));
+    initPos->setArgumentOfPeriapsis(sta::degToRad(302.4416289547550));
+    initPos->setTrueAnomaly(sta::degToRad(85.35622442451043));
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
     QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
@@ -600,10 +605,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_INTEGRAL()
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
-    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setIntegrator("RK4");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
-    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setPropagator("QuaternionsESA");
+    loitering.PropagationAttitude()->setIntegrator("RK4");
     loitering.PropagationAttitude()->setTimeStep(60.0);
 
     loitering.Environment()->CentralBody()->setName("Earth");
@@ -628,11 +634,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_MEX()
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
     initPos->setSemiMajorAxis(9354.09);
-    initPos->setInclination(86.583);
+    initPos->setInclination(sta::degToRad(86.583));
     initPos->setEccentricity(0.606960);
-    initPos->setRAAN(228.774);
-    initPos->setArgumentOfPeriapsis(357.981);
-    initPos->setTrueAnomaly(0.001);
+    initPos->setRAAN(sta::degToRad(228.774));
+    initPos->setArgumentOfPeriapsis(sta::degToRad(357.981));
+    initPos->setTrueAnomaly(sta::degToRad(0.001));
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
     QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
@@ -649,10 +655,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_MEX()
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
-    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setIntegrator("RK4");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
-    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setPropagator("QuaternionsESA");
+    loitering.PropagationAttitude()->setIntegrator("RK4");
     loitering.PropagationAttitude()->setTimeStep(60.0);
 
     loitering.Environment()->CentralBody()->setName("Mars");
@@ -681,11 +688,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_VEX()
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
     initPos->setSemiMajorAxis(39468.195);
-    initPos->setInclination(89.99);
+    initPos->setInclination(sta::degToRad(89.99));
     initPos->setEccentricity(0.8403);
-    initPos->setRAAN(101.4890);
-    initPos->setArgumentOfPeriapsis(302.441);
-    initPos->setTrueAnomaly(85.356);
+    initPos->setRAAN(sta::degToRad(101.4890));
+    initPos->setArgumentOfPeriapsis(sta::degToRad(302.441));
+    initPos->setTrueAnomaly(sta::degToRad(85.356));
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
     QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
@@ -702,10 +709,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_VEX()
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
-    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setIntegrator("RK4");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
-    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setPropagator("QuaternionsESA");
+    loitering.PropagationAttitude()->setIntegrator("RK4");
     loitering.PropagationAttitude()->setTimeStep(60.0);
 
     loitering.Environment()->CentralBody()->setName("Venus");
@@ -750,11 +758,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Meteosat6()
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
     initPos->setSemiMajorAxis(42165.45042);
-    initPos->setInclination(9.78825);
+    initPos->setInclination(sta::degToRad(9.78825));
     initPos->setEccentricity(0.00018184);
-    initPos->setRAAN(45.2816);
-    initPos->setArgumentOfPeriapsis(316.10267);
-    initPos->setTrueAnomaly(237.05669);
+    initPos->setRAAN(sta::degToRad(45.2816));
+    initPos->setArgumentOfPeriapsis(sta::degToRad(316.10267));
+    initPos->setTrueAnomaly(sta::degToRad(237.05669));
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
     QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
@@ -771,10 +779,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Meteosat6()
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
-    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setIntegrator("RK4");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
-    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setPropagator("QuaternionsESA");
+    loitering.PropagationAttitude()->setIntegrator("RK4");
     loitering.PropagationAttitude()->setTimeStep(60.0);
 
     loitering.Environment()->CentralBody()->setName("Earth");
@@ -798,11 +807,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Meteosat7()
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
     initPos->setSemiMajorAxis(42166.95039);
-    initPos->setInclination(6.69800);
+    initPos->setInclination(sta::degToRad(6.69800));
     initPos->setEccentricity(0.00010777);
-    initPos->setRAAN(53.9191);
-    initPos->setArgumentOfPeriapsis(10.30276);
-    initPos->setTrueAnomaly(163.48669);
+    initPos->setRAAN(sta::degToRad(53.9191));
+    initPos->setArgumentOfPeriapsis(sta::degToRad(10.30276));
+    initPos->setTrueAnomaly(sta::degToRad(163.48669));
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
     QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
@@ -819,10 +828,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Meteosat7()
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
-    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setIntegrator("RK4");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
-    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setPropagator("QuaternionsESA");
+    loitering.PropagationAttitude()->setIntegrator("RK4");
     loitering.PropagationAttitude()->setTimeStep(60.0);
 
     loitering.Environment()->CentralBody()->setName("Earth");
@@ -845,11 +855,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Meteosat8()
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
     initPos->setSemiMajorAxis(42168.7623489);
-    initPos->setInclination(0.44495320676);
+    initPos->setInclination(sta::degToRad(0.44495320676));
     initPos->setEccentricity(0.00004342);
-    initPos->setRAAN(19.7636);
-    initPos->setArgumentOfPeriapsis(116.223918608);
-    initPos->setTrueAnomaly(41.8352738537);
+    initPos->setRAAN(sta::degToRad(19.7636));
+    initPos->setArgumentOfPeriapsis(sta::degToRad(116.223918608));
+    initPos->setTrueAnomaly(sta::degToRad(41.8352738537));
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
     QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
@@ -866,10 +876,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Meteosat8()
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
-    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setIntegrator("RK4");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
-    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setPropagator("QuaternionsESA");
+    loitering.PropagationAttitude()->setIntegrator("RK4");
     loitering.PropagationAttitude()->setTimeStep(60.0);
 
     loitering.Environment()->CentralBody()->setName("Earth");
@@ -892,11 +903,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Meteosat9()
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
     initPos->setSemiMajorAxis(42169.4843978);
-    initPos->setInclination(0.26696179904);
+    initPos->setInclination(sta::degToRad(0.26696179904));
     initPos->setEccentricity(0.00015129);
-    initPos->setRAAN(9.0532);
-    initPos->setArgumentOfPeriapsis(209.939388136);
-    initPos->setTrueAnomaly(309.256769134);
+    initPos->setRAAN(sta::degToRad(9.0532));
+    initPos->setArgumentOfPeriapsis(sta::degToRad(209.939388136));
+    initPos->setTrueAnomaly(sta::degToRad(309.256769134));
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
     QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
@@ -913,10 +924,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Meteosat9()
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
-    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setIntegrator("RK4");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
-    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setPropagator("QuaternionsESA");
+    loitering.PropagationAttitude()->setIntegrator("RK4");
     loitering.PropagationAttitude()->setTimeStep(60.0);
 
     loitering.Environment()->CentralBody()->setName("Earth");
@@ -939,11 +951,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_ERS2()
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
     initPos->setSemiMajorAxis(7159.5);
-    initPos->setInclination(98.543);
+    initPos->setInclination(sta::degToRad(98.543));
     initPos->setEccentricity(0.0001042);
-    initPos->setRAAN(0.0);
-    initPos->setArgumentOfPeriapsis(92.4836);
-    initPos->setTrueAnomaly(0.0);
+    initPos->setRAAN(sta::degToRad(0.0));
+    initPos->setArgumentOfPeriapsis(sta::degToRad(92.4836));
+    initPos->setTrueAnomaly(sta::degToRad(0.0));
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
     QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
@@ -960,10 +972,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_ERS2()
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
-    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setIntegrator("RK4");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
-    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setPropagator("QuaternionsESA");
+    loitering.PropagationAttitude()->setIntegrator("RK4");
     loitering.PropagationAttitude()->setTimeStep(60.0);
 
     loitering.Environment()->CentralBody()->setName("Earth");
@@ -986,11 +999,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_ENVISAT()
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
     initPos->setSemiMajorAxis(7159.4927);
-    initPos->setInclination(98.549387);
+    initPos->setInclination(sta::degToRad(98.549387));
     initPos->setEccentricity(0.001165);
-    initPos->setRAAN(0.0);
-    initPos->setArgumentOfPeriapsis(90.0);
-    initPos->setTrueAnomaly(0.0);
+    initPos->setRAAN(sta::degToRad(0.0));
+    initPos->setArgumentOfPeriapsis(sta::degToRad(90.0));
+    initPos->setTrueAnomaly(sta::degToRad(0.0));
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
     QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
@@ -1007,10 +1020,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_ENVISAT()
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
-    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setIntegrator("RK4");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
-    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setPropagator("QuaternionsESA");
+    loitering.PropagationAttitude()->setIntegrator("RK4");
     loitering.PropagationAttitude()->setTimeStep(60.0);
 
     loitering.Environment()->CentralBody()->setName("Earth");
@@ -1045,11 +1059,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Cryosat()
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
     initPos->setSemiMajorAxis(7095.348557673);
-    initPos->setInclination(92.000678420);
+    initPos->setInclination(sta::degToRad(92.000678420));
     initPos->setEccentricity(0.001406846);
-    initPos->setRAAN(129.997076727);
-    initPos->setArgumentOfPeriapsis(115.619512345);
-    initPos->setTrueAnomaly(283.899507188);
+    initPos->setRAAN(sta::degToRad(129.997076727));
+    initPos->setArgumentOfPeriapsis(sta::degToRad(115.619512345));
+    initPos->setTrueAnomaly(sta::degToRad(283.899507188));
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
     QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
@@ -1066,10 +1080,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Cryosat()
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
-    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setIntegrator("RK4");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
-    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setPropagator("QuaternionsESA");
+    loitering.PropagationAttitude()->setIntegrator("RK4");
     loitering.PropagationAttitude()->setTimeStep(60.0);
 
     loitering.Environment()->CentralBody()->setName("Earth");
@@ -1087,26 +1102,16 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Cryosat()
 
 ScenarioLoiteringType MissionsDefaults::MissionsDefaults_GOCE()
 {
-}
-
-ScenarioLoiteringType MissionsDefaults::MissionsDefaults_SMOS()
-{
-}
-
-
-
-ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Aeolus()
-{
     ScenarioLoiteringType loitering;
 
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
-    initPos->setSemiMajorAxis(6786.13);
-    initPos->setInclination(97.0638);
-    initPos->setEccentricity(0.0006);
-    initPos->setRAAN(100.651);
-    initPos->setArgumentOfPeriapsis(0.0);
-    initPos->setTrueAnomaly(0.0);
+    initPos->setSemiMajorAxis(6628.0);
+    initPos->setInclination(sta::degToRad(96.5));
+    initPos->setEccentricity(0.002);
+    initPos->setRAAN(sta::degToRad(0.0));
+    initPos->setArgumentOfPeriapsis(sta::degToRad(0.0));
+    initPos->setTrueAnomaly(sta::degToRad(0.0));
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
     QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
@@ -1123,10 +1128,65 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Aeolus()
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
-    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setIntegrator("RK4");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
-    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setPropagator("QuaternionsESA");
+    loitering.PropagationAttitude()->setIntegrator("RK4");
+    loitering.PropagationAttitude()->setTimeStep(60.0);
+
+    loitering.Environment()->CentralBody()->setName("Earth");
+    loitering.Environment()->CentralBody()->GravityModel()->setModelName("EGM2008");
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(1);
+    loitering.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(1);
+
+    loitering.ElementIdentifier()->setName("GOCE loitering");
+    loitering.ElementIdentifier()->setTheOrder(1);
+    loitering.ElementIdentifier()->setModelName("Default");
+    loitering.ElementIdentifier()->setColorName("Green");
+
+    return loitering;
+}
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_SMOS()
+{
+}
+
+
+
+ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Aeolus()
+{
+    ScenarioLoiteringType loitering;
+
+    loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
+    QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
+    initPos->setSemiMajorAxis(6786.13);
+    initPos->setInclination(sta::degToRad(97.0638));
+    initPos->setEccentricity(0.0006);
+    initPos->setRAAN(sta::degToRad(100.651));
+    initPos->setArgumentOfPeriapsis(sta::degToRad(0.0));
+    initPos->setTrueAnomaly(sta::degToRad(0.0));
+    loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
+
+    QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
+    QSharedPointer<ScenarioAbstract6DOFAttitudeType> eulers(initialEuler->Abstract6DOFAttitude());
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(eulers);
+
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> initialQuaternions(MissionsDefaults_InitialAttitudeVectorQuaternion());
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> quaternions(initialQuaternions->Abstract8DOFAttitude());
+    loitering.InitialAttitudeUsingQuaternions()->setAbstract8DOFAttitude(quaternions);
+
+    QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
+    loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
+    loitering.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
+    loitering.TimeLine()->setStepTime(60.0);
+
+    loitering.PropagationPosition()->setPropagator("TWO BODY");
+    loitering.PropagationPosition()->setIntegrator("RK4");
+    loitering.PropagationPosition()->setTimeStep(60.0);
+
+    loitering.PropagationAttitude()->setPropagator("QuaternionsESA");
+    loitering.PropagationAttitude()->setIntegrator("RK4");
     loitering.PropagationAttitude()->setTimeStep(60.0);
 
     loitering.Environment()->CentralBody()->setName("Earth");
@@ -1156,11 +1216,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Sentinel1A()
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
     initPos->setSemiMajorAxis(7064.23);
-    initPos->setInclination(98.1638);
+    initPos->setInclination(sta::degToRad(98.1638));
     initPos->setEccentricity(0.0006);
-    initPos->setRAAN(4.651);
-    initPos->setArgumentOfPeriapsis(0.0324);
-    initPos->setTrueAnomaly(2.56);
+    initPos->setRAAN(sta::degToRad(4.651));
+    initPos->setArgumentOfPeriapsis(sta::degToRad(0.0324));
+    initPos->setTrueAnomaly(sta::degToRad(2.56));
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
     QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
@@ -1177,10 +1237,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Sentinel1A()
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
-    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setIntegrator("RK4");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
-    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setPropagator("QuaternionsESA");
+    loitering.PropagationAttitude()->setIntegrator("RK4");
     loitering.PropagationAttitude()->setTimeStep(60.0);
 
     loitering.Environment()->CentralBody()->setName("Earth");
@@ -1221,11 +1282,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Artemis()
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
     initPos->setSemiMajorAxis(42164.1);
-    initPos->setInclination(8.0);
+    initPos->setInclination(sta::degToRad(8.0));
     initPos->setEccentricity(0.0);
-    initPos->setRAAN(21.5);
-    initPos->setArgumentOfPeriapsis(0.0);
-    initPos->setTrueAnomaly(0.0);
+    initPos->setRAAN(sta::degToRad(21.5));
+    initPos->setArgumentOfPeriapsis(sta::degToRad(0.0));
+    initPos->setTrueAnomaly(sta::degToRad(0.0));
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
     QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
@@ -1242,10 +1303,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Artemis()
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
-    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setIntegrator("RK4");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
-    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setPropagator("QuaternionsESA");
+    loitering.PropagationAttitude()->setIntegrator("RK4");
     loitering.PropagationAttitude()->setTimeStep(60.0);
 
     loitering.Environment()->CentralBody()->setName("Earth");
@@ -1272,11 +1334,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_SmallGEO()
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
     initPos->setSemiMajorAxis(42169.48);
-    initPos->setInclination(1.0);
+    initPos->setInclination(sta::degToRad(1.0));
     initPos->setEccentricity(0.0002);
-    initPos->setRAAN(9.0532);
-    initPos->setArgumentOfPeriapsis(121.74);
-    initPos->setTrueAnomaly(0.0);
+    initPos->setRAAN(sta::degToRad(9.0532));
+    initPos->setArgumentOfPeriapsis(sta::degToRad(121.74));
+    initPos->setTrueAnomaly(sta::degToRad(0.0));
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
     QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
@@ -1293,10 +1355,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_SmallGEO()
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
-    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setIntegrator("RK4");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
-    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setPropagator("QuaternionsESA");
+    loitering.PropagationAttitude()->setIntegrator("RK4");
     loitering.PropagationAttitude()->setTimeStep(60.0);
 
     loitering.Environment()->CentralBody()->setName("Earth");
@@ -1321,11 +1384,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_PROBA1()
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
     initPos->setSemiMajorAxis(6371.0+551.0);
-    initPos->setInclination(97.9);
+    initPos->setInclination(sta::degToRad(97.9));
     initPos->setEccentricity(0.0002);
-    initPos->setRAAN(9.0532);
-    initPos->setArgumentOfPeriapsis(121.74);
-    initPos->setTrueAnomaly(0.0);
+    initPos->setRAAN(sta::degToRad(9.0532));
+    initPos->setArgumentOfPeriapsis(sta::degToRad(121.74));
+    initPos->setTrueAnomaly(sta::degToRad(0.0));
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
     QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
@@ -1342,10 +1405,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_PROBA1()
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
-    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setIntegrator("RK4");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
-    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setPropagator("QuaternionsESA");
+    loitering.PropagationAttitude()->setIntegrator("RK4");
     loitering.PropagationAttitude()->setTimeStep(60.0);
 
     loitering.Environment()->CentralBody()->setName("Earth");
@@ -1368,11 +1432,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_PROBA2()
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
     initPos->setSemiMajorAxis(6371.0+728.0);
-    initPos->setInclination(98.2);
+    initPos->setInclination(sta::degToRad(98.2));
     initPos->setEccentricity(0.0002);
-    initPos->setRAAN(9.0532);
-    initPos->setArgumentOfPeriapsis(121.74);
-    initPos->setTrueAnomaly(0.0);
+    initPos->setRAAN(sta::degToRad(9.0532));
+    initPos->setArgumentOfPeriapsis(sta::degToRad(121.74));
+    initPos->setTrueAnomaly(sta::degToRad(0.0));
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
     QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
@@ -1389,10 +1453,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_PROBA2()
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
-    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setIntegrator("RK4");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
-    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setPropagator("QuaternionsESA");
+    loitering.PropagationAttitude()->setIntegrator("RK4");
     loitering.PropagationAttitude()->setTimeStep(60.0);
 
     loitering.Environment()->CentralBody()->setName("Earth");
@@ -1421,11 +1486,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_ISS()
     loitering.InitialPosition()->setCoordinateSystem("INERTIAL J2000");
     QSharedPointer<ScenarioKeplerianElementsType> initPos(new ScenarioKeplerianElementsType());
     initPos->setSemiMajorAxis(6378.0 + 450.1365);
-    initPos->setInclination(51.6651);
+    initPos->setInclination(sta::degToRad(51.6651));
     initPos->setEccentricity(0.0006);
-    initPos->setRAAN(12.4829);
-    initPos->setArgumentOfPeriapsis(45.0278);
-    initPos->setTrueAnomaly(87.3523);
+    initPos->setRAAN(sta::degToRad(12.4829));
+    initPos->setArgumentOfPeriapsis(sta::degToRad(45.0278));
+    initPos->setTrueAnomaly(sta::degToRad(87.3523));
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
     QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
@@ -1442,10 +1507,11 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_ISS()
     loitering.TimeLine()->setStepTime(60.0);
 
     loitering.PropagationPosition()->setPropagator("TWO BODY");
-    loitering.PropagationPosition()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationPosition()->setIntegrator("RK4");
     loitering.PropagationPosition()->setTimeStep(60.0);
 
-    loitering.PropagationAttitude()->setIntegrator("Runge-Kutta 3-4");
+    loitering.PropagationAttitude()->setPropagator("QuaternionsESA");
+    loitering.PropagationAttitude()->setIntegrator("RK4");
     loitering.PropagationAttitude()->setTimeStep(60.0);
 
     loitering.Environment()->CentralBody()->setName("Earth");
@@ -1511,6 +1577,7 @@ QList<QString> MissionsDefaults::esaDefaultLoiteringMissions()
             "METEOSAT7" <<
             "METEOSAT8" <<
             "METEOSAT9" <<
+            "GOCE" <<
             "CRYOSAT" <<
             "SENTINEL1A" <<
             "SMALLGEO" <<
