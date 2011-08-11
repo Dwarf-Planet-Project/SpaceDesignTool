@@ -603,7 +603,7 @@ bool LoiteringDialog::loadValues(ScenarioInitialPositionType* initPosition)
         }
     }
 
-    QString myBody = comboBoxCentralBody->currentText();      //qDebug() << myBody << endl;
+    QString myBody = comboBoxCentralBody->currentText();
     StaBody* mySTABody = STA_SOLAR_SYSTEM->lookup(myBody);
 
     // Load values from the schema into the GUI to the Keplerian elements
@@ -613,7 +613,6 @@ bool LoiteringDialog::loadValues(ScenarioInitialPositionType* initPosition)
     semimajorAxisEdit->setText(QString::number(elements->semiMajorAxis()));
     eccentricityEdit->setText(QString::number(elements->eccentricity()));
     inclinationEdit->setText(QString::number(sta::radToDeg(elements->inclination())));
-    //qDebug() << elements->inclination() << endl;
     raanEdit->setText(QString::number(sta::radToDeg(elements->RAAN())));
     argOfPeriapsisEdit->setText(QString::number(sta::radToDeg(elements->argumentOfPeriapsis())));
     trueAnomalyEdit->setText(QString::number(sta::radToDeg(elements->trueAnomaly())));
@@ -799,7 +798,6 @@ bool LoiteringDialog::saveValues(ScenarioInitialPositionType* initPos)
             keplerianElements->setSemiMajorAxis(semimajorAxisEdit->text().toDouble());
             keplerianElements->setEccentricity(eccentricityEdit->text().toDouble());
             keplerianElements->setInclination(sta::degToRad(inclinationEdit->text().toDouble()));
-            //qDebug() << inclinationEdit->text().toDouble() << endl;
             keplerianElements->setRAAN(sta::degToRad(raanEdit->text().toDouble()));
             keplerianElements->setArgumentOfPeriapsis(sta::degToRad(argOfPeriapsisEdit->text().toDouble()));
             keplerianElements->setTrueAnomaly(sta::degToRad(trueAnomalyEdit->text().toDouble()));
@@ -1172,8 +1170,16 @@ bool PropagateLoiteringTrajectory(ScenarioLoiteringType* loitering,
     //   - Keplerian elements for simple two-body propagation
     //   - A state vector for any other sort of propagation
     ScenarioAbstract6DOFPositionType* position = loitering->InitialPosition()->Abstract6DOFPosition().data();
-    sta::StateVector initialState = AbstractPositionToStateVector(position, centralBody);
-    sta::KeplerianElements initialStateKeplerian = AbstractPositionToKeplerianElements(position, centralBody);
+    sta::KeplerianElements initialStateKeplerian = AbstractPositionToKeplerianElements(position, centralBody);                                   
+    // We need to convert the Keplerian elements into Cartesian
+    double meanAnomaly = trueAnomalyTOmeanAnomaly(initialStateKeplerian.TrueAnomaly, initialStateKeplerian.Eccentricity);
+    sta::StateVector initialState = orbitalTOcartesian(centralBody->mu(),
+                                                       initialStateKeplerian.SemimajorAxis,
+                                                       initialStateKeplerian.Eccentricity,
+                                                       initialStateKeplerian.Inclination,
+                                                       initialStateKeplerian.ArgumentOfPeriapsis,
+                                                       initialStateKeplerian.AscendingNode,
+                                                       meanAnomaly);
 
     double mu = centralBody->mu();
 
