@@ -640,6 +640,16 @@ bool LoiteringDialog::loadValues(ScenarioInitialPositionType* initPosition)
 
 bool LoiteringDialog::loadValues(ScenarioPropagationAttitudeType *propagation)
 {
+    QString currentPropagator = propagation->propagator().trimmed();
+    for (int i = 0; i < PropagatorAttitudeComboBox->count(); i++)
+    {
+        if (PropagatorAttitudeComboBox->itemData(i) == currentPropagator)
+        {
+            PropagatorAttitudeComboBox->setCurrentIndex(i);
+            break;
+        }
+    }
+
     QString currentIntegrator = propagation->integrator().trimmed();
     for (int i = 0; i < IntegratorAttitudeComboBox->count(); i++)
     {
@@ -1123,8 +1133,8 @@ bool LoiteringDialog::saveValues(ScenarioInitialAttitudeType* initAtt, ScenarioI
 
 bool LoiteringDialog::saveValues(ScenarioPropagationPositionType* propagation)
 {
-    propagation->setIntegrator(IntegratorComboBox->itemData(IntegratorComboBox->currentIndex()).toString());
-    //    propagation->setPropagator(PropagatorComboBox->itemData(PropagatorComboBox->currentIndex()).toString());
+    propagation->setPropagator(PropagatorComboBox->itemData(PropagatorComboBox->currentIndex()).toString());
+    propagation->setIntegrator(IntegratorComboBox->itemData(IntegratorComboBox->currentIndex()).toString());  
     propagation->setTimeStep(IntStepEdit->text().toDouble());
 
     return true;
@@ -1132,6 +1142,7 @@ bool LoiteringDialog::saveValues(ScenarioPropagationPositionType* propagation)
 
 bool LoiteringDialog::saveValues(ScenarioPropagationAttitudeType* propagation)
 {
+    propagation->setPropagator(PropagatorAttitudeComboBox->itemData(PropagatorAttitudeComboBox->currentIndex()).toString());
     propagation->setIntegrator(IntegratorAttitudeComboBox->itemData(IntegratorAttitudeComboBox->currentIndex()).toString());
     propagation->setTimeStep(IntAttitudeStep->text().toDouble());
 
