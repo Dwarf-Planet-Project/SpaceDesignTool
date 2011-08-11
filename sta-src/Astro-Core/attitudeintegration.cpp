@@ -51,7 +51,7 @@ typedef Eigen::Matrix< double, 4, 1 > 	MyVector4d;
   *
   * @return derivBodyRates  body rates derivatives
   */
-void derivEulerEquation (Vector3d bodyRates, double time, VectorXd inertiaANDmoments, VectorXd& derivBodyRates)
+void derivEulerEquation (VectorXd bodyRates, double time, VectorXd inertiaANDmoments, VectorXd& derivBodyRates)
 {
     double p = bodyRates[0];
     double q = bodyRates[1];
@@ -109,10 +109,10 @@ void derivEulerEquation (Vector3d bodyRates, double time, VectorXd inertiaANDmom
   *
   * @return body rates      final body rates
   */
-Vector3d propagateEulerEquation(Vector3d& initbodyRates,
-                                  double time,
-                                  double timeStep,
-                                  Matrix3d& inertiaMatrix)
+Vector3d propagateEulerEquation(const VectorXd& initbodyRates,
+                                double time,
+                                double timeStep,
+                                const VectorXd& inertiaMatrix)
 {
     //Convert Vector3d to VectorSd so it can be fed to RK4
     VectorXd theBodyRates;
