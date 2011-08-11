@@ -95,7 +95,6 @@ QtiPlotMain::qtiClosed()
 void
 QtiPlotMain::createTable()
 {
-    qDebug() << "Create table!";
     AnalysisResult results = m_analysisParameterChooser->generateReport();
     if (results.isValid())
     {
