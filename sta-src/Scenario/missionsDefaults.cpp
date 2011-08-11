@@ -324,6 +324,8 @@ QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> MissionsDefaults::Mi
 
 
 
+
+
 //////////////////////////////////////// Generic Loitering /////////////////////////////////////////////////
 
 ScenarioLoiteringType MissionsDefaults::MissionsDefaults_GENERIC()
@@ -388,16 +390,16 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_GENERIC()
     loitering.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(0);
     loitering.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(0);
 
-     //loitering.Environment()->PerturbationsToCentralBody()->setAlbedo(false);
-//    loitering.Environment()->PerturbationsToCentralBody()->setAtmosphereDrag(false);
-//    loitering.Environment()->PerturbationsToCentralBody()->setCr(1);
-//    loitering.Environment()->PerturbationsToCentralBody()->setGravityEffets(false);
-//    loitering.Environment()->PerturbationsToCentralBody()->setIR(false);
-//    loitering.Environment()->PerturbationsToCentralBody()->setMicrometeoroids(false);
-//    //loitering.Environment()->PerturbationsToCentralBody()->setPerturbingBody("");
-//    loitering.Environment()->PerturbationsToCentralBody()->setSolarPressure(false);
-//    loitering.Environment()->PerturbationsToCentralBody()->setThirdBody(false);
-//    loitering.Environment()->PerturbationsToCentralBody()->setUserDefined(false);
+//     loitering.Environment()->PerturbationsToCentralBody()->setAlbedo(false);
+//     loitering.Environment()->PerturbationsToCentralBody()->setAtmosphereDrag(false);
+//     loitering.Environment()->PerturbationsToCentralBody()->setCr(1);
+//     loitering.Environment()->PerturbationsToCentralBody()->setGravityEffets(false);
+//     loitering.Environment()->PerturbationsToCentralBody()->setIR(false);
+//     loitering.Environment()->PerturbationsToCentralBody()->setMicrometeoroids(false);
+//     //loitering.Environment()->PerturbationsToCentralBody()->setPerturbingBody("");
+//     loitering.Environment()->PerturbationsToCentralBody()->setSolarPressure(false);
+//     loitering.Environment()->PerturbationsToCentralBody()->setThirdBody(false);
+//     loitering.Environment()->PerturbationsToCentralBody()->setUserDefined(false);
 
     loitering.ElementIdentifier()->setName("loitering arc");
     loitering.ElementIdentifier()->setTheOrder(1);
@@ -534,15 +536,13 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_XMM()
     initPos->setTrueAnomaly(0.0);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
-    QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+    QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
+    QSharedPointer<ScenarioAbstract6DOFAttitudeType> eulers(initialEuler->Abstract6DOFAttitude());
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(eulers);
+
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> initialQuaternions(MissionsDefaults_InitialAttitudeVectorQuaternion());
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> quaternions(initialQuaternions->Abstract8DOFAttitude());
+    loitering.InitialAttitudeUsingQuaternions()->setAbstract8DOFAttitude(quaternions);
 
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
@@ -586,15 +586,13 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_INTEGRAL()
     initPos->setTrueAnomaly(85.35622442451043);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
-    QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+    QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
+    QSharedPointer<ScenarioAbstract6DOFAttitudeType> eulers(initialEuler->Abstract6DOFAttitude());
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(eulers);
+
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> initialQuaternions(MissionsDefaults_InitialAttitudeVectorQuaternion());
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> quaternions(initialQuaternions->Abstract8DOFAttitude());
+    loitering.InitialAttitudeUsingQuaternions()->setAbstract8DOFAttitude(quaternions);
 
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
@@ -637,15 +635,13 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_MEX()
     initPos->setTrueAnomaly(0.001);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
-    QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+    QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
+    QSharedPointer<ScenarioAbstract6DOFAttitudeType> eulers(initialEuler->Abstract6DOFAttitude());
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(eulers);
+
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> initialQuaternions(MissionsDefaults_InitialAttitudeVectorQuaternion());
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> quaternions(initialQuaternions->Abstract8DOFAttitude());
+    loitering.InitialAttitudeUsingQuaternions()->setAbstract8DOFAttitude(quaternions);
 
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
@@ -692,15 +688,13 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_VEX()
     initPos->setTrueAnomaly(85.356);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
-    QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+    QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
+    QSharedPointer<ScenarioAbstract6DOFAttitudeType> eulers(initialEuler->Abstract6DOFAttitude());
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(eulers);
+
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> initialQuaternions(MissionsDefaults_InitialAttitudeVectorQuaternion());
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> quaternions(initialQuaternions->Abstract8DOFAttitude());
+    loitering.InitialAttitudeUsingQuaternions()->setAbstract8DOFAttitude(quaternions);
 
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
@@ -763,15 +757,13 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Meteosat6()
     initPos->setTrueAnomaly(237.05669);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
-    QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+    QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
+    QSharedPointer<ScenarioAbstract6DOFAttitudeType> eulers(initialEuler->Abstract6DOFAttitude());
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(eulers);
+
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> initialQuaternions(MissionsDefaults_InitialAttitudeVectorQuaternion());
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> quaternions(initialQuaternions->Abstract8DOFAttitude());
+    loitering.InitialAttitudeUsingQuaternions()->setAbstract8DOFAttitude(quaternions);
 
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
@@ -813,15 +805,13 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Meteosat7()
     initPos->setTrueAnomaly(163.48669);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
-    QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+    QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
+    QSharedPointer<ScenarioAbstract6DOFAttitudeType> eulers(initialEuler->Abstract6DOFAttitude());
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(eulers);
+
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> initialQuaternions(MissionsDefaults_InitialAttitudeVectorQuaternion());
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> quaternions(initialQuaternions->Abstract8DOFAttitude());
+    loitering.InitialAttitudeUsingQuaternions()->setAbstract8DOFAttitude(quaternions);
 
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
@@ -862,15 +852,13 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Meteosat8()
     initPos->setTrueAnomaly(41.8352738537);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
-    QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+    QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
+    QSharedPointer<ScenarioAbstract6DOFAttitudeType> eulers(initialEuler->Abstract6DOFAttitude());
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(eulers);
+
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> initialQuaternions(MissionsDefaults_InitialAttitudeVectorQuaternion());
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> quaternions(initialQuaternions->Abstract8DOFAttitude());
+    loitering.InitialAttitudeUsingQuaternions()->setAbstract8DOFAttitude(quaternions);
 
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
@@ -911,15 +899,13 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Meteosat9()
     initPos->setTrueAnomaly(309.256769134);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
-    QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+    QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
+    QSharedPointer<ScenarioAbstract6DOFAttitudeType> eulers(initialEuler->Abstract6DOFAttitude());
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(eulers);
+
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> initialQuaternions(MissionsDefaults_InitialAttitudeVectorQuaternion());
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> quaternions(initialQuaternions->Abstract8DOFAttitude());
+    loitering.InitialAttitudeUsingQuaternions()->setAbstract8DOFAttitude(quaternions);
 
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
@@ -960,15 +946,13 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_ERS2()
     initPos->setTrueAnomaly(0.0);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
-    QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+    QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
+    QSharedPointer<ScenarioAbstract6DOFAttitudeType> eulers(initialEuler->Abstract6DOFAttitude());
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(eulers);
+
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> initialQuaternions(MissionsDefaults_InitialAttitudeVectorQuaternion());
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> quaternions(initialQuaternions->Abstract8DOFAttitude());
+    loitering.InitialAttitudeUsingQuaternions()->setAbstract8DOFAttitude(quaternions);
 
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
@@ -1009,15 +993,13 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_ENVISAT()
     initPos->setTrueAnomaly(0.0);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
-    QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+    QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
+    QSharedPointer<ScenarioAbstract6DOFAttitudeType> eulers(initialEuler->Abstract6DOFAttitude());
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(eulers);
+
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> initialQuaternions(MissionsDefaults_InitialAttitudeVectorQuaternion());
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> quaternions(initialQuaternions->Abstract8DOFAttitude());
+    loitering.InitialAttitudeUsingQuaternions()->setAbstract8DOFAttitude(quaternions);
 
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
@@ -1070,6 +1052,14 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Cryosat()
     initPos->setTrueAnomaly(283.899507188);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
+    QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
+    QSharedPointer<ScenarioAbstract6DOFAttitudeType> eulers(initialEuler->Abstract6DOFAttitude());
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(eulers);
+
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> initialQuaternions(MissionsDefaults_InitialAttitudeVectorQuaternion());
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> quaternions(initialQuaternions->Abstract8DOFAttitude());
+    loitering.InitialAttitudeUsingQuaternions()->setAbstract8DOFAttitude(quaternions);
+
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
     loitering.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(8));
@@ -1119,6 +1109,14 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Aeolus()
     initPos->setTrueAnomaly(0.0);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
+    QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
+    QSharedPointer<ScenarioAbstract6DOFAttitudeType> eulers(initialEuler->Abstract6DOFAttitude());
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(eulers);
+
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> initialQuaternions(MissionsDefaults_InitialAttitudeVectorQuaternion());
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> quaternions(initialQuaternions->Abstract8DOFAttitude());
+    loitering.InitialAttitudeUsingQuaternions()->setAbstract8DOFAttitude(quaternions);
+
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
     loitering.TimeLine()->setEndTime(TheCurrentDateAndTime.addDays(1));
@@ -1165,15 +1163,13 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Sentinel1A()
     initPos->setTrueAnomaly(2.56);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
-    QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+    QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
+    QSharedPointer<ScenarioAbstract6DOFAttitudeType> eulers(initialEuler->Abstract6DOFAttitude());
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(eulers);
+
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> initialQuaternions(MissionsDefaults_InitialAttitudeVectorQuaternion());
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> quaternions(initialQuaternions->Abstract8DOFAttitude());
+    loitering.InitialAttitudeUsingQuaternions()->setAbstract8DOFAttitude(quaternions);
 
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
@@ -1232,15 +1228,13 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Artemis()
     initPos->setTrueAnomaly(0.0);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
-    QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+    QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
+    QSharedPointer<ScenarioAbstract6DOFAttitudeType> eulers(initialEuler->Abstract6DOFAttitude());
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(eulers);
+
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> initialQuaternions(MissionsDefaults_InitialAttitudeVectorQuaternion());
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> quaternions(initialQuaternions->Abstract8DOFAttitude());
+    loitering.InitialAttitudeUsingQuaternions()->setAbstract8DOFAttitude(quaternions);
 
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
@@ -1258,19 +1252,6 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_Artemis()
     loitering.Environment()->CentralBody()->GravityModel()->setModelName("EGM2008");
     loitering.Environment()->CentralBody()->GravityModel()->setNumberOfTesserals(1);
     loitering.Environment()->CentralBody()->GravityModel()->setNumberOfZonals(1);
-
-    /*
-    // Perturbations not required
-    loitering.Environment()->PerturbationsToCentralBody()->setAtmosphereDrag(false);
-    loitering.Environment()->PerturbationsToCentralBody()->setAlbedo(false);
-    loitering.Environment()->PerturbationsToCentralBody()->setSolarPressure(false);
-    loitering.Environment()->PerturbationsToCentralBody()->setCr(1.0);
-    loitering.Environment()->PerturbationsToCentralBody()->setIR(false);
-    loitering.Environment()->PerturbationsToCentralBody()->setMicrometeoroids(false);
-    loitering.Environment()->PerturbationsToCentralBody()->setThirdBody(false);
-    loitering.Environment()->PerturbationsToCentralBody()->setUserDefined(false);
-    loitering.Environment()->PerturbationsToCentralBody()->setThirdBody(false);
-    */
 
     loitering.ElementIdentifier()->setName("Artemis loitering");
     loitering.ElementIdentifier()->setTheOrder(1);
@@ -1298,15 +1279,13 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_SmallGEO()
     initPos->setTrueAnomaly(0.0);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
-    QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+    QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
+    QSharedPointer<ScenarioAbstract6DOFAttitudeType> eulers(initialEuler->Abstract6DOFAttitude());
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(eulers);
+
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> initialQuaternions(MissionsDefaults_InitialAttitudeVectorQuaternion());
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> quaternions(initialQuaternions->Abstract8DOFAttitude());
+    loitering.InitialAttitudeUsingQuaternions()->setAbstract8DOFAttitude(quaternions);
 
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
@@ -1349,15 +1328,13 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_PROBA1()
     initPos->setTrueAnomaly(0.0);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
-    QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+    QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
+    QSharedPointer<ScenarioAbstract6DOFAttitudeType> eulers(initialEuler->Abstract6DOFAttitude());
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(eulers);
+
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> initialQuaternions(MissionsDefaults_InitialAttitudeVectorQuaternion());
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> quaternions(initialQuaternions->Abstract8DOFAttitude());
+    loitering.InitialAttitudeUsingQuaternions()->setAbstract8DOFAttitude(quaternions);
 
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
@@ -1398,15 +1375,13 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_PROBA2()
     initPos->setTrueAnomaly(0.0);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
-    QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+    QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
+    QSharedPointer<ScenarioAbstract6DOFAttitudeType> eulers(initialEuler->Abstract6DOFAttitude());
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(eulers);
+
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> initialQuaternions(MissionsDefaults_InitialAttitudeVectorQuaternion());
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> quaternions(initialQuaternions->Abstract8DOFAttitude());
+    loitering.InitialAttitudeUsingQuaternions()->setAbstract8DOFAttitude(quaternions);
 
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
@@ -1453,15 +1428,13 @@ ScenarioLoiteringType MissionsDefaults::MissionsDefaults_ISS()
     initPos->setTrueAnomaly(87.3523);
     loitering.InitialPosition()->setAbstract6DOFPosition(initPos);
 
-    //loitering.InitialAttitude()->setCoordinateSystem("EULER 123");
-    QSharedPointer<ScenarioEulerType> initAtt(new ScenarioEulerType());
-    initAtt->setPhi(0.00000);
-    initAtt->setTheta(0.00000);
-    initAtt->setPsi(0.00000);
-    initAtt->setPhiDot(0.00000);
-    initAtt->setThetaDot(0.00000);
-    initAtt->setPsiDot(0.00000);
-    loitering.InitialAttitude()->setAbstract6DOFAttitude(initAtt);
+    QSharedPointer<ScenarioInitialAttitudeType> initialEuler(MissionsDefaults_InitialAttitudeVectorEuler());
+    QSharedPointer<ScenarioAbstract6DOFAttitudeType> eulers(initialEuler->Abstract6DOFAttitude());
+    loitering.InitialAttitude()->setAbstract6DOFAttitude(eulers);
+
+    QSharedPointer<ScenarioInitialAttitudeUsingQuaternionsType> initialQuaternions(MissionsDefaults_InitialAttitudeVectorQuaternion());
+    QSharedPointer<ScenarioAbstract8DOFAttitudeType> quaternions(initialQuaternions->Abstract8DOFAttitude());
+    loitering.InitialAttitudeUsingQuaternions()->setAbstract8DOFAttitude(quaternions);
 
     QDateTime TheCurrentDateAndTime = QDateTime::currentDateTime(); // Get the current epoch
     loitering.TimeLine()->setStartTime(TheCurrentDateAndTime);
