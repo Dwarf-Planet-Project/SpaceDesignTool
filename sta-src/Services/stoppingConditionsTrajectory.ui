@@ -1,292 +1,303 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>stoppingConditionsTrajectoryDialog</class>
- <widget class="QDialog" name="stoppingConditionsTrajectoryDialog">
-  <property name="windowModality">
-   <enum>Qt::ApplicationModal</enum>
-  </property>
+ <author>Guillermo Ortega (ESA)</author>
+ <class>stoppingConditionsTrajectoryDialogClass</class>
+ <widget class="QDialog" name="stoppingConditionsTrajectoryDialogClass">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>508</width>
-    <height>367</height>
+    <width>778</width>
+    <height>273</height>
    </rect>
   </property>
-  <property name="minimumSize">
-   <size>
-    <width>508</width>
-    <height>367</height>
-   </size>
-  </property>
-  <property name="maximumSize">
-   <size>
-    <width>1000</width>
-    <height>1000</height>
-   </size>
-  </property>
   <property name="windowTitle">
-   <string>Stopping Conditions</string>
+   <string>Stop conditions (Trajectory)</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="1" column="0" colspan="2">
-      <widget class="QTreeWidget" name="stopCondTreeWidget">
-       <column>
-        <property name="text">
-         <string>Name</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>CB</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Value</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Tolerance</string>
-        </property>
-       </column>
-      </widget>
-     </item>
-     <item row="0" column="0" colspan="2">
-      <layout class="QGridLayout" name="addStopCondLayout">
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="stopCondValueEdit"/>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="stopCondValueLabel">
-         <property name="text">
-          <string>Value: </string>
+  <property name="windowIcon">
+   <iconset resource="../../iconary/sta-icons.qrc">
+    <normaloff>:/icons/TicksButton.png</normaloff>:/icons/TicksButton.png</iconset>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="2">
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="0" column="0">
+      <layout class="QHBoxLayout" name="horizontal2ParametersChoiceTabWidget">
+       <item>
+        <widget class="QTreeWidget" name="treeWidgetStoppingConditionsTrajectoryToChoose">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>200</height>
+          </size>
          </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
          </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QLineEdit" name="stopCondTolEdit"/>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="stopCondTolLabel">
-         <property name="text">
-          <string>Tolerance: </string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="stopCondTypeLabel">
-         <property name="text">
-          <string>Condition type: </string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QComboBox" name="stopCondComboBox">
-         <item>
-          <property name="text">
-           <string>Periapsis Radius</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Ascending Node</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Body Distance</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QPushButton" name="stopCondAddButton">
-         <property name="text">
-          <string>  Add  </string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QComboBox" name="stopCondCentralBodyCombobox">
-         <property name="enabled">
+         <property name="alternatingRowColors">
           <bool>true</bool>
          </property>
-         <property name="accessibleName">
-          <string>comboBoxCentralBody</string>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::MultiSelection</enum>
          </property>
+         <property name="uniformRowHeights">
+          <bool>false</bool>
+         </property>
+         <property name="animated">
+          <bool>true</bool>
+         </property>
+         <attribute name="headerMinimumSectionSize">
+          <number>35</number>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Stopping condition choice</string>
+          </property>
+         </column>
          <item>
           <property name="text">
-           <string>Earth</string>
+           <string>Time</string>
           </property>
           <property name="icon">
            <iconset resource="../../iconary/sta-icons.qrc">
-            <normaloff>:/icons/ComboEarth.png</normaloff>:/icons/ComboEarth.png</iconset>
+            <normaloff>:/icons/TicksButton.png</normaloff>:/icons/TicksButton.png</iconset>
           </property>
+          <item>
+           <property name="text">
+            <string>Epoch</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1-day</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1-week</string>
+           </property>
+          </item>
          </item>
          <item>
           <property name="text">
-           <string>Moon</string>
+           <string>Distance</string>
           </property>
           <property name="icon">
            <iconset resource="../../iconary/sta-icons.qrc">
-            <normaloff>:/icons/ComboMoon.png</normaloff>:/icons/ComboMoon.png</iconset>
+            <normaloff>:/icons/FlyByTrajectory.png</normaloff>:/icons/FlyByTrajectory.png</iconset>
           </property>
+          <item>
+           <property name="text">
+            <string>to central body</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Periapsis radius</string>
+           </property>
+          </item>
          </item>
          <item>
           <property name="text">
-           <string>Mercury</string>
+           <string>Angle</string>
           </property>
           <property name="icon">
            <iconset resource="../../iconary/sta-icons.qrc">
-            <normaloff>:/icons/ComboMercury.png</normaloff>:/icons/ComboMercury.png</iconset>
+            <normaloff>:/icons/maneuvers-rendezvous.png</normaloff>:/icons/maneuvers-rendezvous.png</iconset>
           </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Venus</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../iconary/sta-icons.qrc">
-            <normaloff>:/icons/ComboVenus.png</normaloff>:/icons/ComboVenus.png</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Mars</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../iconary/sta-icons.qrc">
-            <normaloff>:/icons/ComboMars.png</normaloff>:/icons/ComboMars.png</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Jupiter</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../iconary/sta-icons.qrc">
-            <normaloff>:/icons/ComboJupiter.png</normaloff>:/icons/ComboJupiter.png</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Saturn</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../iconary/sta-icons.qrc">
-            <normaloff>:/icons/ComboSaturn.png</normaloff>:/icons/ComboSaturn.png</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Uranus</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../iconary/sta-icons.qrc">
-            <normaloff>:/icons/ComboUranus.png</normaloff>:/icons/ComboUranus.png</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Neptune</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../iconary/sta-icons.qrc">
-            <normaloff>:/icons/ComboNeptune.png</normaloff>:/icons/ComboNeptune.png</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Pluto</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../iconary/sta-icons.qrc">
-            <normaloff>:/icons/ComboPluto.png</normaloff>:/icons/ComboPluto.png</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Sun</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../iconary/sta-icons.qrc">
-            <normaloff>:/icons/ComboSun.png</normaloff>:/icons/ComboSun.png</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Titan</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../iconary/sta-icons.qrc">
-            <normaloff>:/icons/ComboTitan.png</normaloff>:/icons/ComboTitan.png</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Europa</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../iconary/sta-icons.qrc">
-            <normaloff>:/icons/ComboEuropa.png</normaloff>:/icons/ComboEuropa.png</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Triton</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../iconary/sta-icons.qrc">
-            <normaloff>:/icons/ComboTriton.png</normaloff>:/icons/ComboTriton.png</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Enceladus</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../iconary/sta-icons.qrc">
-            <normaloff>:/icons/ComboEnceladus.png</normaloff>:/icons/ComboEnceladus.png</iconset>
-          </property>
+          <item>
+           <property name="text">
+            <string>Ascending node</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1-orbit</string>
+           </property>
+          </item>
          </item>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="stopCondCentralBodyLabel">
-         <property name="text">
-          <string>Central Body: </string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="minimumSize">
+            <size>
+             <width>30</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>30</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="AddStoppingConditionsTrajectoryPushButton">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>50</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../../iconary/sta-icons.qrc">
+             <normaloff>:/icons/timeline-double.png</normaloff>:/icons/timeline-double.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="RemoveStoppingConditionsTrajectoryPushButton">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>50</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../../iconary/sta-icons.qrc">
+             <normaloff>:/icons/timeline-half.png</normaloff>:/icons/timeline-half.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="minimumSize">
+            <size>
+             <width>30</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>30</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
-       <item row="0" column="3">
-        <widget class="QPushButton" name="stopCondRemoveButton">
-         <property name="text">
-          <string>Remove</string>
+       <item>
+        <widget class="QTreeWidget" name="treeWidgetStoppingConditionsTrajectorySelected">
+         <property name="minimumSize">
+          <size>
+           <width>480</width>
+           <height>0</height>
+          </size>
          </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="uniformRowHeights">
+          <bool>true</bool>
+         </property>
+         <property name="animated">
+          <bool>true</bool>
+         </property>
+         <attribute name="headerCascadingSectionResizes">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="headerDefaultSectionSize">
+          <number>170</number>
+         </attribute>
+         <attribute name="headerHighlightSections">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="headerShowSortIndicator" stdset="0">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="headerStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Condition</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignJustify|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Value</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignJustify|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Tolerance</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignJustify|AlignVCenter</set>
+          </property>
+         </column>
         </widget>
        </item>
       </layout>
      </item>
     </layout>
    </item>
-   <item row="2" column="0">
-    <widget class="QDialogButtonBox" name="buttonBoxMissionAspect">
+   <item row="2" column="1">
+    <widget class="QDialogButtonBox" name="buttonBoxStoppingConditionsTrajectoryDialog">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -295,7 +306,7 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="1" column="0" colspan="2">
     <widget class="Line" name="line">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -304,41 +315,61 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>buttonBoxStoppingConditionsTrajectoryDialog</tabstop>
+ </tabstops>
  <resources>
   <include location="../../iconary/sta-icons.qrc"/>
  </resources>
  <connections>
   <connection>
-   <sender>buttonBoxMissionAspect</sender>
+   <sender>buttonBoxStoppingConditionsTrajectoryDialog</sender>
    <signal>accepted()</signal>
-   <receiver>stoppingConditionsTrajectoryDialog</receiver>
+   <receiver>stoppingConditionsTrajectoryDialogClass</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>341</x>
-     <y>333</y>
+     <x>93</x>
+     <y>678</y>
     </hint>
     <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
+     <x>325</x>
+     <y>185</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>buttonBoxMissionAspect</sender>
+   <sender>buttonBoxStoppingConditionsTrajectoryDialog</sender>
    <signal>rejected()</signal>
-   <receiver>stoppingConditionsTrajectoryDialog</receiver>
+   <receiver>stoppingConditionsTrajectoryDialogClass</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>409</x>
-     <y>333</y>
+     <x>93</x>
+     <y>680</y>
     </hint>
     <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
+     <x>135</x>
+     <y>0</y>
     </hint>
    </hints>
   </connection>
  </connections>
+ <designerdata>
+  <property name="gridDeltaX">
+   <number>5</number>
+  </property>
+  <property name="gridDeltaY">
+   <number>5</number>
+  </property>
+  <property name="gridSnapX">
+   <bool>true</bool>
+  </property>
+  <property name="gridSnapY">
+   <bool>true</bool>
+  </property>
+  <property name="gridVisible">
+   <bool>true</bool>
+  </property>
+ </designerdata>
 </ui>

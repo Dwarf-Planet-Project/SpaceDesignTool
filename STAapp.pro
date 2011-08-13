@@ -465,7 +465,9 @@ SERVICES_SOURCES = sta-src/Services/serviceTimeParameter.cpp \
                    sta-src/Services/serviceAngleUnit.cpp \
                    sta-src/Services/serviceDistanceUnit.cpp \
                    sta-src/Services/serviceDistanceRateUnit.cpp \
-                   sta-src/Services/serviceAngleRateUnit.cpp
+                   sta-src/Services/serviceAngleRateUnit.cpp \
+                   sta-src/Services/serviceEpoch.cpp \
+                   sta-src/Services/serviceGenericParameter.cpp
 SERVICES_HEADERS = sta-src/Services/serviceTimeParameter.h \
                    sta-src/Services/serviceTimeUnit.h \
                    sta-src/Services/stoppingConditionsTrajectoryDialog.h \
@@ -473,7 +475,9 @@ SERVICES_HEADERS = sta-src/Services/serviceTimeParameter.h \
                    sta-src/Services/serviceAngleUnit.h \
                    sta-src/Services/serviceDistanceUnit.h \
                    sta-src/Services/serviceDistanceRateUnit.h \
-                   sta-src/Services/serviceAngleRateUnit.h
+                   sta-src/Services/serviceAngleRateUnit.h \
+                   sta-src/Services/serviceEpoch.h \
+                   sta-src/Services/serviceGenericParameter.h
 SERVICES_FORMS =   sta-src/Services/serviceTimeParameter.ui \
                    sta-src/Services/serviceTimeUnit.ui \
                    sta-src/Services/stoppingConditionsTrajectory.ui \
@@ -481,7 +485,9 @@ SERVICES_FORMS =   sta-src/Services/serviceTimeParameter.ui \
                    sta-src/Services/serviceAngleUnit.ui \
                    sta-src/Services/serviceDistanceUnit.ui \
                    sta-src/Services/serviceDistanceRateUnit.ui \
-                   sta-src/Services/serviceAngleRateUnit.ui
+                   sta-src/Services/serviceAngleRateUnit.ui \
+                   sta-src/Services/serviceEpoch.ui \
+                   sta-src/Services/serviceGenericParameter.ui
 
 # ########### GL extension wrangler ################
 GLEW_SOURCES = thirdparty/glew/src/glew.c
