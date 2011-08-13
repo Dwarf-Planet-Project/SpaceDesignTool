@@ -1516,10 +1516,10 @@ bool PropagateLoiteringAttitude(ScenarioLoiteringType* loitering,
      mySatellite->System()->Structure()->SecondMomentsOfInertia()->yAxis(), mySatellite->System()->Structure()->SecondMomentsOfInertia()->zAxis(), mySatellite->System()->Structure()->MomentsOfInertia()->zAxis()};
     Matrix3d completeInertiaMatrix(inertiaMatrixCoeffs);
 
-    VectorXd inertiaMatrix;
-    inertiaMatrix(0,0) = mySatellite->System()->Structure()->MomentsOfInertia()->xAxis();
-    inertiaMatrix(0,1) = mySatellite->System()->Structure()->MomentsOfInertia()->yAxis();
-    inertiaMatrix(0,2) = mySatellite->System()->Structure()->MomentsOfInertia()->zAxis();
+//    VectorXd inertiaMatrix;
+//    inertiaMatrix(0,0) = mySatellite->System()->Structure()->MomentsOfInertia()->xAxis();
+//    inertiaMatrix(0,1) = mySatellite->System()->Structure()->MomentsOfInertia()->yAxis();
+//    inertiaMatrix(0,2) = mySatellite->System()->Structure()->MomentsOfInertia()->zAxis();
 //    inertiaMatrix(0,1) = mySatellite->System()->Structure()->SecondMomentsOfInertia()->xAxis();
 //    inertiaMatrix(0,2) = mySatellite->System()->Structure()->SecondMomentsOfInertia()->yAxis();
 //    inertiaMatrix(1,2) = mySatellite->System()->Structure()->SecondMomentsOfInertia()->zAxis();
@@ -1554,7 +1554,7 @@ bool PropagateLoiteringAttitude(ScenarioLoiteringType* loitering,
             // -- Integrating the attitude -- //
 
             //Integrating the body rates
-            Vector3d bodyRates = propagateEulerEquation(attitudeVector.myBodyRates, startTime, dt, inertiaMatrix);
+            Vector3d bodyRates = propagateEulerEquation(attitudeVector.myBodyRates, startTime, dt, completeInertiaMatrix);
 
             //Integrating the quaternions
             Quaterniond integratedQuaternions = propagateQUATERNIONS(attitudeVector.myQuaternion, startTime, dt, bodyRates);
@@ -1598,7 +1598,7 @@ bool PropagateLoiteringAttitude(ScenarioLoiteringType* loitering,
             // -- Integrating the attitude -- //
 
             //Integrating the body rates
-            Vector3d bodyRates = propagateEulerEquation(attitudeVector.myBodyRates, startTime, dt, inertiaMatrix);
+            Vector3d bodyRates = propagateEulerEquation(attitudeVector.myBodyRates, startTime, dt, completeInertiaMatrix);
 
             //Integrating the quaternions
             Quaterniond integratedQuaternions = propagateQUATERNIONS(attitudeVector.myQuaternion, startTime, dt, bodyRates);
