@@ -51,10 +51,10 @@ void eulerEquation(VectorXd &initBodyRates,
                    MatrixXd &inertialMatrix,
                    VectorXd &finalBodyRates);
 
-Vector3d propagateEulerEquation(const VectorXd& initbodyRates,
+Vector3d propagateEulerEquation(const Vector3d& initbodyRates,
                                 double time,
                                 double timeStep,
-                                const VectorXd& inertiaMatrix);
+                                const Matrix3d& inertiaMatrix);
 
 
 #endif // ATTITUDEINTEGRATION_H

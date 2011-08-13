@@ -109,10 +109,10 @@ void derivEulerEquation (VectorXd bodyRates, double time, VectorXd inertiaANDmom
   *
   * @return body rates      final body rates
   */
-Vector3d propagateEulerEquation(const VectorXd& initbodyRates,
+Vector3d propagateEulerEquation(const Vector3d& initbodyRates,
                                 double time,
                                 double timeStep,
-                                const VectorXd& inertiaMatrix)
+                                const Matrix3d& inertiaMatrix)
 {
     //Convert Vector3d to VectorSd so it can be fed to RK4
     VectorXd theBodyRates;
