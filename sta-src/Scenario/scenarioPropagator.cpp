@@ -141,8 +141,8 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
 
                 PropagateLoiteringTrajectory(loitering, sampleTimesTrajectory, samplesTrajectory, feedback);
 
-                //PropagationFeedback feedbackAttitude;
-                //PropagateLoiteringAttitude(loitering, sampleTimesAttitude, samplesAttitude, feedbackAttitude);
+                PropagationFeedback feedbackAttitude;
+                PropagateLoiteringAttitude(loitering, sampleTimesAttitude, samplesAttitude, feedbackAttitude);
 
                 // Recovering the last state vector
                 numberOFsamples = sampleTimesTrajectory.size();
