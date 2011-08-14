@@ -41,31 +41,10 @@ public:
 	perturbationForcesDialog( QWidget * parent = 0, Qt::WindowFlags f = 0 );
 	~perturbationForcesDialog();
 
-protected slots:
-//	void on_Dialog_accepted();
-//	void on_Dialog_rejected();
-//	void on_ZonalsSpinBox_valueChanged(int);
-//	void on_GravityEffectsModelComboBox_currentIndexChanged(int);
-//	void on_TesseralsEditBox_textChanged(const QString&);
-//	void on_AtmosphereDragTypeComboBox_currentIndexChanged(int);
-//	void on_dragDayF10Edit_textChanged(const QString&);
-//	void on_dragAvF10Edit_textChanged(const QString&);
-//	void on_dragGeomagEdit_textChanged(const QString&);
-//	void on_GravityFieldRadioButton_clicked(bool);
-//	void on_AtmDragRadioButton_clicked(bool);
-//	void on_SolarPressureRadioButton_clicked(bool);
-//	void on_DebrisRadioButton_clicked(bool);
-//	void on_AlbedoCheckBox_clicked(bool);
-//	void on_IRCheckBox_clicked(bool);
-//	void on_ThirdBodyRadioButton_clicked(bool);
-//	void on_AddPushButton_clicked(bool);
-//	void on_RemovePushButton_clicked(bool);
 
 public:
-
-    bool loadValues(const ScenarioCentralBodyType* centralBody, const ScenarioPerturbationsType* perturbationsToCentralBody);
-    bool saveValues(ScenarioCentralBodyType* centralBody, ScenarioPerturbationsType* perturbationsToCentralBody);
-
+    bool loadValues(const ScenarioCentralBodyType* centralBody, const ScenarioPerturbationsForceType* perturbationsToCentralBody);
+    bool saveValues(ScenarioCentralBodyType* centralBody, ScenarioPerturbationsForceType* perturbationsToCentralBody);
 
     TesseralBox* TesseralSpinBox;
     int m_tesserals;

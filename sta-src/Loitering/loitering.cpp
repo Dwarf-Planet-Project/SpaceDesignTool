@@ -535,7 +535,7 @@ bool LoiteringDialog::loadValues(ScenarioEnvironmentType* environment) //-------
 {
     // Trajectory part
     ScenarioCentralBodyType* myCentralBody = environment->CentralBody().data();
-    ScenarioPerturbationsType* perturbationsToCentralBody = environment->PerturbationsToCentralBody().data();
+    ScenarioPerturbationsForceType* perturbationsToCentralBody = environment->PerturbationsToCentralBody().data();
     // The central body
     QString centralBodyName = environment->CentralBody()->Name();
     comboBoxCentralBody->setCurrentText(centralBodyName);
@@ -796,7 +796,7 @@ bool LoiteringDialog::saveValues(ScenarioEnvironmentType* environment)
     // empty by default.)
     if (environment->PerturbationsToCentralBody().isNull())
     {
-        environment->setPerturbationsToCentralBody(QSharedPointer<ScenarioPerturbationsType>(new ScenarioPerturbationsType()));
+        environment->setPerturbationsToCentralBody(QSharedPointer<ScenarioPerturbationsForceType>(new ScenarioPerturbationsForceType()));
     }
 
     // The central body
@@ -1652,7 +1652,7 @@ void LoiteringDialog::on_perturbationForcesPushButton_clicked()
 
 void LoiteringDialog::on_perturbationTorquesPushButton_clicked()
 {
-    //myPerturbationsTorques.exec();
+    myPerturbationsTorques.exec();
 }
 
 

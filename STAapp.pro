@@ -462,6 +462,7 @@ SERVICES_SOURCES = sta-src/Services/serviceTimeParameter.cpp \
                    sta-src/Services/serviceTimeUnit.cpp \
                    sta-src/Services/stoppingConditionsTrajectoryDialog.cpp \
                    sta-src/Services/perturbationForcesDialog.cpp \
+                   sta-src/Services/perturbationTorquesDialog.cpp \
                    sta-src/Services/serviceAngleUnit.cpp \
                    sta-src/Services/serviceDistanceUnit.cpp \
                    sta-src/Services/serviceDistanceRateUnit.cpp \
@@ -472,6 +473,7 @@ SERVICES_HEADERS = sta-src/Services/serviceTimeParameter.h \
                    sta-src/Services/serviceTimeUnit.h \
                    sta-src/Services/stoppingConditionsTrajectoryDialog.h \
                    sta-src/Services/perturbationForcesDialog.h \
+                   sta-src/Services/perturbationTorquesDialog.h \
                    sta-src/Services/serviceAngleUnit.h \
                    sta-src/Services/serviceDistanceUnit.h \
                    sta-src/Services/serviceDistanceRateUnit.h \
@@ -482,6 +484,7 @@ SERVICES_FORMS =   sta-src/Services/serviceTimeParameter.ui \
                    sta-src/Services/serviceTimeUnit.ui \
                    sta-src/Services/stoppingConditionsTrajectory.ui \
                    sta-src/Services/perturbationForces.ui \
+                   sta-src/Services/perturbationTorques.ui \
                    sta-src/Services/serviceAngleUnit.ui \
                    sta-src/Services/serviceDistanceUnit.ui \
                    sta-src/Services/serviceDistanceRateUnit.ui \

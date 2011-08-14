@@ -94,9 +94,8 @@ perturbationForcesDialog::~perturbationForcesDialog()
 
 
 
-bool perturbationForcesDialog::loadValues(const ScenarioCentralBodyType* centralBody, const ScenarioPerturbationsType* perturbationsToCentralBody)
+bool perturbationForcesDialog::loadValues(const ScenarioCentralBodyType* centralBody, const ScenarioPerturbationsForceType* perturbationsToCentralBody)
 {
-    DebrisRadioButton->setChecked(false);
     GravityFieldRadioButton->setChecked(false);
     SolarPressureRadioButton->setChecked(false);
     AtmDragRadioButton->setChecked(false);
@@ -111,11 +110,9 @@ bool perturbationForcesDialog::loadValues(const ScenarioCentralBodyType* central
     bool theAtmosphericDrag = perturbationsToCentralBody->atmosphereDrag();
     bool theSolarPressure = perturbationsToCentralBody->solarPressure();
     bool theGravityEffects = perturbationsToCentralBody->gravityEffets();
-    bool theDebris = perturbationsToCentralBody->micrometeoroids();
     bool the3rdBody = perturbationsToCentralBody->thirdBody();
     bool theIR = perturbationsToCentralBody->IR();
 
-    DebrisRadioButton->setChecked(theDebris);
     GravityFieldRadioButton->setChecked(theGravityEffects);
     SolarPressureRadioButton->setChecked(theSolarPressure);
     AtmDragRadioButton->setChecked(theAtmosphericDrag);
@@ -173,7 +170,6 @@ bool perturbationForcesDialog::loadValues(const ScenarioCentralBodyType* central
         {
             nameBody = perturbingBodyList.at(j);
             QList<QListWidgetItem*> items = BodyListWidget->findItems(nameBody, Qt::MatchFixedString);
-            //if(!items.isEmpty() && nameBody != CentralBody()->Name())
             if (nameBody != centralBody->Name())
             {
                 PertBodyListWidget->addItem(nameBody);
@@ -186,13 +182,8 @@ bool perturbationForcesDialog::loadValues(const ScenarioCentralBodyType* central
 
 
 
-bool perturbationForcesDialog::saveValues(ScenarioCentralBodyType* centralBody, ScenarioPerturbationsType* perturbationsToCentralBody)
+bool perturbationForcesDialog::saveValues(ScenarioCentralBodyType* centralBody, ScenarioPerturbationsForceType* perturbationsToCentralBody)
 {
-    if (DebrisRadioButton->isChecked())
-        perturbationsToCentralBody->setMicrometeoroids(true);
-    else
-        perturbationsToCentralBody->setMicrometeoroids(false);
-
     if (GravityFieldRadioButton->isChecked())
     {
         perturbationsToCentralBody->setGravityEffets(true);
@@ -255,11 +246,8 @@ bool perturbationForcesDialog::saveValues(ScenarioCentralBodyType* centralBody, 
 
         for (int j = 0; j < PertBodyListWidget->count(); j++)
         {
-            //StaBody* body = STA_SOLAR_SYSTEM->lookup(PertBodyListWidget->item(j)->text());
-            //if (body && body != centralBody->Name()) myPerturbingBodyList.append(body->name());
             QString myBody = PertBodyListWidget->item(j)->text();
             if (myBody != centralBody->Name()) myPerturbingBodyList.append(myBody);
-
         }
 
         perturbationsToCentralBody->setPerturbingBody(myPerturbingBodyList);
@@ -270,101 +258,10 @@ bool perturbationForcesDialog::saveValues(ScenarioCentralBodyType* centralBody, 
         perturbationsToCentralBody->setThirdBody(false);
     }
 
-    perturbationsToCentralBody->setUserDefined(false); // nothing for the moment
-
     return true;
 }
 
 
-//void perturbationForcesDialog::on_Dialog_accepted()
-//{
-//	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-//}
-
-//void perturbationForcesDialog::on_Dialog_rejected()
-//{
-//	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-//}
-
-//void perturbationForcesDialog::on_ZonalsSpinBox_valueChanged(int)
-//{
-//	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-//}
-
-//void perturbationForcesDialog::on_GravityEffectsModelComboBox_currentIndexChanged(int)
-//{
-//	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-//}
-
-//void perturbationForcesDialog::on_TesseralsEditBox_textChanged(const QString&)
-//{
-//	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-//}
-
-//void perturbationForcesDialog::on_AtmosphereDragTypeComboBox_currentIndexChanged(int)
-//{
-//	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-//}
-
-//void perturbationForcesDialog::on_dragDayF10Edit_textChanged(const QString&)
-//{
-//	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-//}
-
-//void perturbationForcesDialog::on_dragAvF10Edit_textChanged(const QString&)
-//{
-//	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-//}
-
-//void perturbationForcesDialog::on_dragGeomagEdit_textChanged(const QString&)
-//{
-//	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-//}
-
-//void perturbationForcesDialog::on_GravityFieldRadioButton_clicked(bool)
-//{
-//	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-//}
-
-//void perturbationForcesDialog::on_AtmDragRadioButton_clicked(bool)
-//{
-//	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-//}
-
-//void perturbationForcesDialog::on_SolarPressureRadioButton_clicked(bool)
-//{
-//	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-//}
-
-//void perturbationForcesDialog::on_DebrisRadioButton_clicked(bool)
-//{
-//	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-//}
-
-//void perturbationForcesDialog::on_AlbedoCheckBox_clicked(bool)
-//{
-//	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-//}
-
-//void perturbationForcesDialog::on_IRCheckBox_clicked(bool)
-//{
-//	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-//}
-
-//void perturbationForcesDialog::on_ThirdBodyRadioButton_clicked(bool)
-//{
-//	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-//}
-
-//void perturbationForcesDialog::on_AddPushButton_clicked(bool)
-//{
-//	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-//}
-
-//void perturbationForcesDialog::on_RemovePushButton_clicked(bool)
-//{
-//	qWarning("TODO: %s	%d",__FILE__,__LINE__);
-//}
 
 
 void perturbationForcesDialog::addPerturbingPlanet()
@@ -379,8 +276,14 @@ void perturbationForcesDialog::addPerturbingPlanet()
 void perturbationForcesDialog::addPerturbingPlanet(QListWidgetItem* item)
 {
     QString text = item->text();
+    QIcon theIcon = item->icon();
+    int theRow;
     if(PertBodyListWidget->findItems(text,Qt::MatchExactly).isEmpty())
+    {
         PertBodyListWidget->addItem(text);
+        theRow = PertBodyListWidget->count();
+        PertBodyListWidget->item(theRow-1)->setIcon(theIcon);
+    }
 }
 
 void perturbationForcesDialog::removePerturbingPlanet()

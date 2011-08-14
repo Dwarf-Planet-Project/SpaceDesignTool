@@ -6,20 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>693</width>
-    <height>609</height>
+    <width>722</width>
+    <height>462</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>693</width>
-    <height>609</height>
-   </size>
-  </property>
-  <property name="maximumSize">
-   <size>
-    <width>693</width>
-    <height>609</height>
+    <width>722</width>
+    <height>462</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -91,6 +85,13 @@
                 </property>
                </widget>
               </item>
+              <item row="0" column="1">
+               <widget class="QComboBox" name="GravityEffectsModelComboBox">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
               <item row="1" column="0">
                <widget class="QLabel" name="ZonalsLabel">
                 <property name="text">
@@ -106,9 +107,15 @@
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
-                <property name="maximumSize">
+                <property name="minimumSize">
                  <size>
                   <width>50</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
                   <height>16777215</height>
                  </size>
                 </property>
@@ -136,13 +143,6 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
-               <widget class="QComboBox" name="GravityEffectsModelComboBox">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
              </layout>
             </item>
            </layout>
@@ -157,7 +157,7 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="0" column="0">
-           <layout class="QGridLayout" name="gridLayout_8">
+           <layout class="QFormLayout" name="formLayout">
             <item row="0" column="0">
              <widget class="QRadioButton" name="AtmDragRadioButton">
               <property name="text">
@@ -214,10 +214,13 @@
             <item row="2" column="1">
              <widget class="QLineEdit" name="dragDayF10Edit">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="text">
                <string/>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
              </widget>
             </item>
@@ -234,10 +237,13 @@
             <item row="3" column="1">
              <widget class="QLineEdit" name="dragAvF10Edit">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="text">
                <string/>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
              </widget>
             </item>
@@ -254,12 +260,285 @@
             <item row="4" column="1">
              <widget class="QLineEdit" name="dragGeomagEdit">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="text">
                <string/>
               </property>
              </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="0" column="1">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>3rd bodies</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_8">
+          <item row="0" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_7">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QRadioButton" name="ThirdBodyRadioButton">
+              <property name="text">
+               <string>3rd Body</string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normalon>:/icons/3rdbody_icon.png</normalon>
+               </iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>25</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="autoExclusive">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <widget class="QListWidget" name="BodyListWidget">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
+                </property>
+                <property name="selectionMode">
+                 <enum>QAbstractItemView::ExtendedSelection</enum>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Sun</string>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <italic>false</italic>
+                  </font>
+                 </property>
+                 <property name="background">
+                  <brush brushstyle="NoBrush">
+                   <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                   </color>
+                  </brush>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../iconary/sta-icons.qrc">
+                   <normaloff>:/icons/ComboSun.png</normaloff>:/icons/ComboSun.png</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Earth</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../iconary/sta-icons.qrc">
+                   <normaloff>:/icons/ComboEarth.png</normaloff>:/icons/ComboEarth.png</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Mercury</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../iconary/sta-icons.qrc">
+                   <normaloff>:/icons/ComboMercury.png</normaloff>:/icons/ComboMercury.png</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Venus</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../iconary/sta-icons.qrc">
+                   <normaloff>:/icons/ComboVenus.png</normaloff>:/icons/ComboVenus.png</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Mars</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../iconary/sta-icons.qrc">
+                   <normaloff>:/icons/ComboMars.png</normaloff>:/icons/ComboMars.png</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Jupiter</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../iconary/sta-icons.qrc">
+                   <normaloff>:/icons/ComboJupiter.png</normaloff>:/icons/ComboJupiter.png</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Saturn</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../iconary/sta-icons.qrc">
+                   <normaloff>:/icons/ComboSaturn.png</normaloff>:/icons/ComboSaturn.png</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Uranus</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../iconary/sta-icons.qrc">
+                   <normaloff>:/icons/ComboUranus.png</normaloff>:/icons/ComboUranus.png</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Neptune</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../iconary/sta-icons.qrc">
+                   <normaloff>:/icons/ComboNeptune.png</normaloff>:/icons/ComboNeptune.png</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Pluto</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../iconary/sta-icons.qrc">
+                   <normaloff>:/icons/ComboPluto.png</normaloff>:/icons/ComboPluto.png</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Moon</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../iconary/sta-icons.qrc">
+                   <normaloff>:/icons/ComboMoon.png</normaloff>:/icons/ComboMoon.png</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Deimos</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../iconary/sta-icons.qrc">
+                   <normaloff>:/icons/ComboDeimos.png</normaloff>:/icons/ComboDeimos.png</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Europa</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../iconary/sta-icons.qrc">
+                   <normaloff>:/icons/ComboEuropa.png</normaloff>:/icons/ComboEuropa.png</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Titan</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../iconary/sta-icons.qrc">
+                   <normaloff>:/icons/ComboTitan.png</normaloff>:/icons/ComboTitan.png</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Enceladus</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../iconary/sta-icons.qrc">
+                   <normaloff>:/icons/ComboEnceladus.png</normaloff>:/icons/ComboEnceladus.png</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Triton</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../iconary/sta-icons.qrc">
+                   <normaloff>:/icons/ComboTriton.png</normaloff>:/icons/ComboTriton.png</iconset>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_5">
+                <item>
+                 <widget class="QPushButton" name="AddPushButton">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>50</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../iconary/sta-icons.qrc">
+                    <normaloff>:/icons/timeline-double.png</normaloff>:/icons/timeline-double.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="RemovePushButton">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>50</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../iconary/sta-icons.qrc">
+                    <normaloff>:/icons/timeline-half.png</normaloff>:/icons/timeline-half.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QListWidget" name="PertBodyListWidget">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
+                </property>
+                <property name="selectionMode">
+                 <enum>QAbstractItemView::ExtendedSelection</enum>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </item>
@@ -287,22 +566,6 @@
                <size>
                 <width>25</width>
                 <height>25</height>
-               </size>
-              </property>
-              <property name="autoExclusive">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QRadioButton" name="DebrisRadioButton">
-              <property name="text">
-               <string>Micrometeoroids / Debris</string>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>40</width>
-                <height>40</height>
                </size>
               </property>
               <property name="autoExclusive">
@@ -386,269 +649,6 @@
        </item>
       </layout>
      </item>
-     <item row="0" column="1">
-      <widget class="QGroupBox" name="groupBox">
-       <property name="title">
-        <string>3rd bodies</string>
-       </property>
-       <layout class="QGridLayout" name="gridLayout_7">
-        <item row="0" column="0">
-         <layout class="QVBoxLayout" name="verticalLayout_6">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QRadioButton" name="ThirdBodyRadioButton">
-            <property name="text">
-             <string>3rd Body</string>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normalon>:/icons/3rdbody_icon.png</normalon>
-             </iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>25</width>
-              <height>25</height>
-             </size>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <widget class="QListWidget" name="BodyListWidget">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="selectionMode">
-               <enum>QAbstractItemView::ExtendedSelection</enum>
-              </property>
-              <item>
-               <property name="text">
-                <string>Sun</string>
-               </property>
-               <property name="font">
-                <font>
-                 <italic>false</italic>
-                </font>
-               </property>
-               <property name="background">
-                <brush brushstyle="NoBrush">
-                 <color alpha="255">
-                  <red>0</red>
-                  <green>0</green>
-                  <blue>0</blue>
-                 </color>
-                </brush>
-               </property>
-               <property name="icon">
-                <iconset resource="../../iconary/sta-icons.qrc">
-                 <normaloff>:/icons/ComboSun.png</normaloff>:/icons/ComboSun.png</iconset>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Earth</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../iconary/sta-icons.qrc">
-                 <normaloff>:/icons/ComboEarth.png</normaloff>:/icons/ComboEarth.png</iconset>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Mercury</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../iconary/sta-icons.qrc">
-                 <normaloff>:/icons/ComboMercury.png</normaloff>:/icons/ComboMercury.png</iconset>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Venus</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../iconary/sta-icons.qrc">
-                 <normaloff>:/icons/ComboVenus.png</normaloff>:/icons/ComboVenus.png</iconset>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Mars</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../iconary/sta-icons.qrc">
-                 <normaloff>:/icons/ComboMars.png</normaloff>:/icons/ComboMars.png</iconset>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Jupiter</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../iconary/sta-icons.qrc">
-                 <normaloff>:/icons/ComboJupiter.png</normaloff>:/icons/ComboJupiter.png</iconset>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Saturn</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../iconary/sta-icons.qrc">
-                 <normaloff>:/icons/ComboSaturn.png</normaloff>:/icons/ComboSaturn.png</iconset>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Uranus</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../iconary/sta-icons.qrc">
-                 <normaloff>:/icons/ComboUranus.png</normaloff>:/icons/ComboUranus.png</iconset>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Neptune</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../iconary/sta-icons.qrc">
-                 <normaloff>:/icons/ComboNeptune.png</normaloff>:/icons/ComboNeptune.png</iconset>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Pluto</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../iconary/sta-icons.qrc">
-                 <normaloff>:/icons/ComboPluto.png</normaloff>:/icons/ComboPluto.png</iconset>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Moon</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../iconary/sta-icons.qrc">
-                 <normaloff>:/icons/ComboMoon.png</normaloff>:/icons/ComboMoon.png</iconset>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Deimos</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../iconary/sta-icons.qrc">
-                 <normaloff>:/icons/ComboDeimos.png</normaloff>:/icons/ComboDeimos.png</iconset>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Europa</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../iconary/sta-icons.qrc">
-                 <normaloff>:/icons/ComboEuropa.png</normaloff>:/icons/ComboEuropa.png</iconset>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Titan</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../iconary/sta-icons.qrc">
-                 <normaloff>:/icons/ComboTitan.png</normaloff>:/icons/ComboTitan.png</iconset>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Enceladus</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../iconary/sta-icons.qrc">
-                 <normaloff>:/icons/ComboEnceladus.png</normaloff>:/icons/ComboEnceladus.png</iconset>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Triton</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../iconary/sta-icons.qrc">
-                 <normaloff>:/icons/ComboTriton.png</normaloff>:/icons/ComboTriton.png</iconset>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_4">
-              <item>
-               <widget class="QPushButton" name="AddPushButton">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>50</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="../../iconary/sta-icons.qrc">
-                  <normaloff>:/icons/timeline-double.png</normaloff>:/icons/timeline-double.png</iconset>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="RemovePushButton">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>50</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="../../iconary/sta-icons.qrc">
-                  <normaloff>:/icons/timeline-half.png</normaloff>:/icons/timeline-half.png</iconset>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <widget class="QListWidget" name="PertBodyListWidget">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="selectionMode">
-               <enum>QAbstractItemView::ExtendedSelection</enum>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-     </item>
     </layout>
    </item>
   </layout>
@@ -662,16 +662,6 @@
   <tabstop>dragDayF10Edit</tabstop>
   <tabstop>dragAvF10Edit</tabstop>
   <tabstop>dragGeomagEdit</tabstop>
-  <tabstop>SolarPressureRadioButton</tabstop>
-  <tabstop>AlbedoCheckBox</tabstop>
-  <tabstop>IRCheckBox</tabstop>
-  <tabstop>CrSpinBox</tabstop>
-  <tabstop>DebrisRadioButton</tabstop>
-  <tabstop>ThirdBodyRadioButton</tabstop>
-  <tabstop>BodyListWidget</tabstop>
-  <tabstop>PertBodyListWidget</tabstop>
-  <tabstop>AddPushButton</tabstop>
-  <tabstop>RemovePushButton</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>

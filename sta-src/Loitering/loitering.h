@@ -39,6 +39,7 @@
 #include "Astro-Core/attitudevector.h"
 
 #include "Services/perturbationForcesDialog.h"
+#include "Services/perturbationTorquesDialog.h"
 #include "Services/stoppingConditionsTrajectoryDialog.h"
 #include "Services/serviceDistanceUnit.h"
 #include "Services/serviceDistanceRateUnit.h"
@@ -85,7 +86,7 @@ public:
 public:
     missionAspectDialog loiteringAspect;
     perturbationForcesDialog myPerturbationsForces;
-    //perturbationTorquesDialog myPerturbationsTorques;  // To be finihsed by Catarina
+    perturbationTorquesDialog myPerturbationsTorques;
     stoppingConditionsTrajectoryDialog myStoppingConditionsTrajetory;
     //stoppingConditionsAttitudeDialog myStoppingConditionsAttitude; // To be finihsed by Catarina
 

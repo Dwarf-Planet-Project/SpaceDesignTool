@@ -2399,7 +2399,7 @@ of an earth satellite. The TLE can be used only by the SGP4 propagator model
                     <item row="9" column="1">
                      <widget class="QPushButton" name="perturbationTorquesPushButton">
                       <property name="enabled">
-                       <bool>false</bool>
+                       <bool>true</bool>
                       </property>
                       <property name="text">
                        <string>Torques</string>
