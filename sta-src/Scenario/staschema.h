@@ -44,7 +44,8 @@ class ScenarioPropagation;
 class ScenarioEnvironmentType;
 class ScenarioCentralBodyType;
 class ScenarioGravityModel;
-class ScenarioPerturbationsType;
+class ScenarioPerturbationsForceType;
+class ScenarioPerturbationsTorqueType;
 class ScenarioTrajectoryStoppingConditionType;
 class ScenarioAbstract3DOFPositionType;
 class ScenarioAbstract6DOFPositionType;
@@ -565,14 +566,14 @@ public:
     { return m_CentralBody; }
     void setCentralBody(QSharedPointer<ScenarioCentralBodyType> CentralBody)
     { m_CentralBody = CentralBody; }
-    QSharedPointer<ScenarioPerturbationsType> PerturbationsToCentralBody() const
+    QSharedPointer<ScenarioPerturbationsForceType> PerturbationsToCentralBody() const
     { return m_PerturbationsToCentralBody; }
-    void setPerturbationsToCentralBody(QSharedPointer<ScenarioPerturbationsType> PerturbationsToCentralBody)
+    void setPerturbationsToCentralBody(QSharedPointer<ScenarioPerturbationsForceType> PerturbationsToCentralBody)
     { m_PerturbationsToCentralBody = PerturbationsToCentralBody; }
 
 private:
     QSharedPointer<ScenarioCentralBodyType> m_CentralBody;
-    QSharedPointer<ScenarioPerturbationsType> m_PerturbationsToCentralBody;
+    QSharedPointer<ScenarioPerturbationsForceType> m_PerturbationsToCentralBody;
 };
 
 
@@ -650,14 +651,14 @@ private:
 };
 
 
-// ScenarioPerturbationsType
-class ScenarioPerturbationsType : public ScenarioObject
+// ScenarioPerturbationsForceType
+class ScenarioPerturbationsForceType : public ScenarioObject
 {
 public:
-    ScenarioPerturbationsType();
-    static ScenarioPerturbationsType* create(const QDomElement& e);
+    ScenarioPerturbationsForceType();
+    static ScenarioPerturbationsForceType* create(const QDomElement& e);
     virtual QString elementName() const
-    { return "PerturbationsType"; }
+    { return "PerturbationsForceType"; }
     virtual bool load(const QDomElement& e, QDomElement* nextElement);
     virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
 
@@ -686,10 +687,6 @@ public:
     { return m_Cr; }
     void setCr(int Cr)
     { m_Cr = Cr; }
-    bool micrometeoroids() const
-    { return m_micrometeoroids; }
-    void setMicrometeoroids(bool micrometeoroids)
-    { m_micrometeoroids = micrometeoroids; }
     bool thirdBody() const
     { return m_thirdBody; }
     void setThirdBody(bool thirdBody)
@@ -700,10 +697,18 @@ public:
     { return m_perturbingBody; }
     void setPerturbingBody(QList<QString> perturbingBody)
     { m_perturbingBody = perturbingBody; }
-    bool userDefined() const
-    { return m_userDefined; }
-    void setUserDefined(bool userDefined)
-    { m_userDefined = userDefined; }
+    double dailyF10_7() const
+    { return m_dailyF10_7; }
+    void setDailyF10_7(double dailyF10_7)
+    { m_dailyF10_7 = dailyF10_7; }
+    double averageF10_7() const
+    { return m_averageF10_7; }
+    void setAverageF10_7(double averageF10_7)
+    { m_averageF10_7 = averageF10_7; }
+    double geomagneticIndex() const
+    { return m_geomagneticIndex; }
+    void setGeomagneticIndex(double geomagneticIndex)
+    { m_geomagneticIndex = geomagneticIndex; }
 
 private:
     bool m_gravityEffets;
@@ -712,10 +717,38 @@ private:
     bool m_albedo;
     bool m_IR;
     int m_Cr;
-    bool m_micrometeoroids;
     bool m_thirdBody;
     QList<QString> m_perturbingBody;
-    bool m_userDefined;
+    double m_dailyF10_7;
+    double m_averageF10_7;
+    double m_geomagneticIndex;
+};
+
+
+// ScenarioPerturbationsTorqueType
+class ScenarioPerturbationsTorqueType : public ScenarioObject
+{
+public:
+    ScenarioPerturbationsTorqueType();
+    static ScenarioPerturbationsTorqueType* create(const QDomElement& e);
+    virtual QString elementName() const
+    { return "PerturbationsTorqueType"; }
+    virtual bool load(const QDomElement& e, QDomElement* nextElement);
+    virtual QDomElement toDomElement(QDomDocument& doc, const QString& elementName) const;
+
+    virtual QList<QSharedPointer<ScenarioObject> > children() const;
+    bool micrometeoroids() const
+    { return m_micrometeoroids; }
+    void setMicrometeoroids(bool micrometeoroids)
+    { m_micrometeoroids = micrometeoroids; }
+    bool microvibrations() const
+    { return m_microvibrations; }
+    void setMicrovibrations(bool microvibrations)
+    { m_microvibrations = microvibrations; }
+
+private:
+    bool m_micrometeoroids;
+    bool m_microvibrations;
 };
 
 

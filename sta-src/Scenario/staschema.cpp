@@ -658,7 +658,7 @@ bool ScenarioEnvironmentType::load(const QDomElement& e, QDomElement* next)
         m_CentralBody = QSharedPointer<ScenarioCentralBodyType>(ScenarioCentralBodyType::create(*next));
     *next = next->nextSiblingElement();
     if (next->tagName() == "tns:PerturbationsToCentralBody")
-        m_PerturbationsToCentralBody = QSharedPointer<ScenarioPerturbationsType>(ScenarioPerturbationsType::create(*next));
+        m_PerturbationsToCentralBody = QSharedPointer<ScenarioPerturbationsForceType>(ScenarioPerturbationsForceType::create(*next));
 if (!m_PerturbationsToCentralBody.isNull())
         *next = next->nextSiblingElement();
     return true;
@@ -812,17 +812,20 @@ QList<QSharedPointer<ScenarioObject> >ScenarioGravityModel::children() const
 
 
 
-// ScenarioPerturbationsType
-ScenarioPerturbationsType::ScenarioPerturbationsType() :
-    m_Cr(0)
+// ScenarioPerturbationsForceType
+ScenarioPerturbationsForceType::ScenarioPerturbationsForceType() :
+    m_Cr(0),
+    m_dailyF10_7(0.0),
+    m_averageF10_7(0.0),
+    m_geomagneticIndex(0.0)
 {
 }
 
-ScenarioPerturbationsType* ScenarioPerturbationsType::create(const QDomElement& e)
+ScenarioPerturbationsForceType* ScenarioPerturbationsForceType::create(const QDomElement& e)
 {
-    ScenarioPerturbationsType* v;
+    ScenarioPerturbationsForceType* v;
     {
-        v = new ScenarioPerturbationsType;
+        v = new ScenarioPerturbationsForceType;
         QDomElement nextElement = e.firstChildElement();
         v->load(e, &nextElement);
         return v;
@@ -830,7 +833,7 @@ ScenarioPerturbationsType* ScenarioPerturbationsType::create(const QDomElement& 
     return NULL;
 }
 
-bool ScenarioPerturbationsType::load(const QDomElement& e, QDomElement* next)
+bool ScenarioPerturbationsForceType::load(const QDomElement& e, QDomElement* next)
 {
     ScenarioObject::load(e, next);
     if (next->tagName() == "tns:gravityEffets")
@@ -863,11 +866,6 @@ bool ScenarioPerturbationsType::load(const QDomElement& e, QDomElement* next)
         m_Cr = parseInt(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
     }
-    if (next->tagName() == "tns:micrometeoroids")
-    {
-        m_micrometeoroids = parseBoolean(next->firstChild().toText().data());
-        *next = next->nextSiblingElement();
-    }
     if (next->tagName() == "tns:thirdBody")
     {
         m_thirdBody = parseBoolean(next->firstChild().toText().data());
@@ -875,15 +873,25 @@ bool ScenarioPerturbationsType::load(const QDomElement& e, QDomElement* next)
     }
         m_perturbingBody = parseStringList(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
-    if (next->tagName() == "tns:userDefined")
+    if (next->tagName() == "tns:dailyF10_7")
     {
-        m_userDefined = parseBoolean(next->firstChild().toText().data());
+        m_dailyF10_7 = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    if (next->tagName() == "tns:averageF10_7")
+    {
+        m_averageF10_7 = parseDouble(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    if (next->tagName() == "tns:geomagneticIndex")
+    {
+        m_geomagneticIndex = parseDouble(next->firstChild().toText().data());
         *next = next->nextSiblingElement();
     }
     return true;
 }
 
-QDomElement ScenarioPerturbationsType::toDomElement(QDomDocument& doc, const QString& elementName) const
+QDomElement ScenarioPerturbationsForceType::toDomElement(QDomDocument& doc, const QString& elementName) const
 {
     QDomElement e = ScenarioObject::toDomElement(doc, elementName);
     e.appendChild(createSimpleElement(doc, "tns:gravityEffets", m_gravityEffets));
@@ -892,14 +900,65 @@ QDomElement ScenarioPerturbationsType::toDomElement(QDomDocument& doc, const QSt
     e.appendChild(createSimpleElement(doc, "tns:albedo", m_albedo));
     e.appendChild(createSimpleElement(doc, "tns:IR", m_IR));
     e.appendChild(createSimpleElement(doc, "tns:Cr", m_Cr));
-    e.appendChild(createSimpleElement(doc, "tns:micrometeoroids", m_micrometeoroids));
     e.appendChild(createSimpleElement(doc, "tns:thirdBody", m_thirdBody));
     e.appendChild(createSimpleElement(doc, "tns:perturbingBody", m_perturbingBody));
-    e.appendChild(createSimpleElement(doc, "tns:userDefined", m_userDefined));
+    e.appendChild(createSimpleElement(doc, "tns:dailyF10_7", m_dailyF10_7));
+    e.appendChild(createSimpleElement(doc, "tns:averageF10_7", m_averageF10_7));
+    e.appendChild(createSimpleElement(doc, "tns:geomagneticIndex", m_geomagneticIndex));
     return e;
 }
 
-QList<QSharedPointer<ScenarioObject> >ScenarioPerturbationsType::children() const
+QList<QSharedPointer<ScenarioObject> >ScenarioPerturbationsForceType::children() const
+{
+    QList<QSharedPointer<ScenarioObject> > children;
+    return children;
+}
+
+
+
+
+// ScenarioPerturbationsTorqueType
+ScenarioPerturbationsTorqueType::ScenarioPerturbationsTorqueType()
+{
+}
+
+ScenarioPerturbationsTorqueType* ScenarioPerturbationsTorqueType::create(const QDomElement& e)
+{
+    ScenarioPerturbationsTorqueType* v;
+    {
+        v = new ScenarioPerturbationsTorqueType;
+        QDomElement nextElement = e.firstChildElement();
+        v->load(e, &nextElement);
+        return v;
+    }
+    return NULL;
+}
+
+bool ScenarioPerturbationsTorqueType::load(const QDomElement& e, QDomElement* next)
+{
+    ScenarioObject::load(e, next);
+    if (next->tagName() == "tns:micrometeoroids")
+    {
+        m_micrometeoroids = parseBoolean(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    if (next->tagName() == "tns:microvibrations")
+    {
+        m_microvibrations = parseBoolean(next->firstChild().toText().data());
+        *next = next->nextSiblingElement();
+    }
+    return true;
+}
+
+QDomElement ScenarioPerturbationsTorqueType::toDomElement(QDomDocument& doc, const QString& elementName) const
+{
+    QDomElement e = ScenarioObject::toDomElement(doc, elementName);
+    e.appendChild(createSimpleElement(doc, "tns:micrometeoroids", m_micrometeoroids));
+    e.appendChild(createSimpleElement(doc, "tns:microvibrations", m_microvibrations));
+    return e;
+}
+
+QList<QSharedPointer<ScenarioObject> >ScenarioPerturbationsTorqueType::children() const
 {
     QList<QSharedPointer<ScenarioObject> > children;
     return children;
