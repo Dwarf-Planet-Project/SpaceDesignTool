@@ -1103,6 +1103,8 @@ ThreeDView::contextMenuEvent(QContextMenuEvent* event)
             {
                 AxesVisualizer* axes = new AxesVisualizer(AxesVisualizer::BodyAxes, arrowSize);
                 axes->setVisibility(true);
+                axes->setLabelEnabled(true, ArrowGeometry::AllAxes);
+                axes->setLabelFont(m_labelFont.ptr());
                 hit->setVisualizer("body axes", axes);
             }
             else
@@ -1116,6 +1118,8 @@ ThreeDView::contextMenuEvent(QContextMenuEvent* event)
             {
                 AxesVisualizer* axes = new AxesVisualizer(AxesVisualizer::FrameAxes, arrowSize);
                 axes->setVisibility(true);
+                axes->setLabelEnabled(true, ArrowGeometry::AllAxes);
+                axes->setLabelFont(m_labelFont.ptr());
                 axes->arrows()->setOpacity(0.33f);
                 hit->setVisualizer("frame axes", axes);
             }
@@ -1130,6 +1134,9 @@ ThreeDView::contextMenuEvent(QContextMenuEvent* event)
             {
                 VelocityVisualizer* velocityVis = new VelocityVisualizer(arrowSize);
                 velocityVis->setVisibility(true);
+                velocityVis->setLabelEnabled(true);
+                velocityVis->setLabelText("Velocity");
+                velocityVis->setLabelFont(m_labelFont.ptr());
                 hit->setVisualizer("velocity", velocityVis);
             }
             else
@@ -1144,6 +1151,9 @@ ThreeDView::contextMenuEvent(QContextMenuEvent* event)
                 BodyDirectionVisualizer* vis = new BodyDirectionVisualizer(arrowSize, m_universe->findFirst("Sun"));
                 vis->setColor(Spectrum(1.0f, 1.0f, 0.5f));
                 vis->setVisibility(true);
+                vis->setLabelEnabled(true);
+                vis->setLabelText("Sun");
+                vis->setLabelFont(m_labelFont.ptr());
                 hit->setVisualizer("sun direction", vis);
             }
             else
@@ -1158,6 +1168,9 @@ ThreeDView::contextMenuEvent(QContextMenuEvent* event)
                 BodyDirectionVisualizer* vis = new BodyDirectionVisualizer(arrowSize, m_universe->findFirst("Earth"));
                 vis->setColor(Spectrum(0.5f, 0.5f, 1.0f));
                 vis->setVisibility(true);
+                vis->setLabelEnabled(true);
+                vis->setLabelText("Sun");
+                vis->setLabelFont(m_labelFont.ptr());
                 hit->setVisualizer("earth direction", vis);
             }
             else
