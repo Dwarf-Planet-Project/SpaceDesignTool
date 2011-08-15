@@ -1,5 +1,5 @@
 #
-# $Revision: 564 $ $Date: 2011-02-15 15:54:24 -0800 (Tue, 15 Feb 2011) $
+# $Revision: 603 $ $Date: 2011-04-13 17:06:42 -0700 (Wed, 13 Apr 2011) $
 #
 # Copyright by Astos Solutions GmbH, Germany
 #
@@ -29,6 +29,7 @@ add_definitions(
 set (CMAKE_OSX_SYSROOT /Developer/SDKs/MacOSX10.6.sdk)
 
 set (SRCS 
+    AlignedEllipsoid.cpp
     Arc.cpp
     ArrowGeometry.cpp
     ArrowVisualizer.cpp
@@ -51,12 +52,15 @@ set (SRCS
     FixedRotationModel.cpp
     Frame.cpp
     Framebuffer.cpp
+    GeneralEllipse.cpp
     Geometry.cpp
+    GlareOverlay.cpp
     GregorianDate.cpp
     HierarchicalTiledMap.cpp
     InertialFrame.cpp
     KeplerianTrajectory.cpp
     LabelGeometry.cpp
+    LabelVisualizer.cpp
     LightingEnvironment.cpp
     LightSource.cpp
     MapLayer.cpp
@@ -97,6 +101,8 @@ set (SRCS
     VertexSpec.cpp
     Visualizer.cpp
     WorldGeometry.cpp
+    internal/DefaultFont.cpp
+    internal/EclipseShadowVolumeSet.cpp
     internal/InputDataStream.cpp
     internal/OutputDataStream.cpp
     internal/ObjLoader.cpp

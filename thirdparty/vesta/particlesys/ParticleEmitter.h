@@ -1,25 +1,12 @@
-// ParticleEmitter.h
-//
-// Copyright (C) 2010 Chris Laurel <claurel@gmail.com>
-//
-// VESTA is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// Alternatively, you can redistribute it and/or
-// modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of
-// the License, or (at your option) any later version.
-//
-// VESTA is distributed in the hope that it will be useful, but WITHOUT ANY
-// WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-// FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License or the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public
-// License and a copy of the GNU General Public License along with
-// VESTA. If not, see <http://www.gnu.org/licenses/>.
+/*
+ * $Revision$ $Date$
+ *
+ * Copyright by Astos Solutions GmbH, Germany
+ *
+ * This file is published under the Astos Solutions Free Public License
+ * For details on copyright and terms of use see 
+ * http://www.astos.de/Astos_Solutions_Free_Public_License.html
+ */
 
 #ifndef _VESTA_PARTICLE_EMITTER_H_
 #define _VESTA_PARTICLE_EMITTER_H_
@@ -100,6 +87,7 @@ public:
     struct Particle
     {
         Eigen::Vector3f position;
+        Eigen::Vector3f velocity;
         Eigen::Vector3f color;
         float opacity;
         float size;
@@ -285,7 +273,64 @@ public:
         m_velocityVariation = variation;
     }
 
+    /** Get the trace length for particles. A non-zero trace length will
+      * cause the particle appear stretched along the direction of its
+      * velocity.
+      */
+    float traceLength() const
+    {
+        return m_traceLength;
+    }
+
+    /** Set the trace length for particles. A non-zero trace length will
+      * cause the particle appear stretched along the direction of its
+      * velocity. The length of the particle is the trace length multiplied
+      * the by the current particle speed.
+      */
+    void setTraceLength(float traceLength)
+    {
+        m_traceLength = traceLength;
+    }
+
     float boundingRadius() const;
+
+    /** Return true if this emitter produces self-luminous particles.
+      */
+    bool isEmissive() const
+    {
+        return m_emissive;
+    }
+
+    /** Set whether the particles produced by this emitter are self-luminous.
+      * By default, it is true; it should be set to false for particle systems
+      * meant to simulate smoke and dust.
+      */
+    void setEmissive(bool emissive)
+    {
+        m_emissive = emissive;
+    }
+
+    /** Get the phase asymmetry parameter. The value of phase asymmetry controls
+      * the way light is scattered by non-emissive particles. The default value of
+      * 0 indicates isotropic scattering.
+      *
+      * \see Material::setPhaseAsymmetry
+      */
+    float phaseAsymmetry() const
+    {
+        return m_phaseAsymmetry;
+    }
+
+    /** Set the phase asymmetry parameter. The value of phase asymmetry controls
+      * the way light is scattered by non-emissive particles. The default value of
+      * 0 indicates isotropic scattering.
+      *
+      * \see Material::setPhaseAsymmetry
+      */
+    void setPhaseAsymmetry(float phaseAsymmetry)
+    {
+        m_phaseAsymmetry = phaseAsymmetry;
+    }
 
 private:
     counted_ptr<InitialStateGenerator> m_generator;
@@ -309,6 +354,10 @@ private:
     unsigned int m_colorCount;
 
     float m_velocityVariation;
+    float m_traceLength;
+
+    bool m_emissive;
+    float m_phaseAsymmetry;
 };
 
 }

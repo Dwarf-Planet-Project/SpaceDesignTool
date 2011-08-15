@@ -1,5 +1,5 @@
 /*
- * $Revision: 559 $ $Date: 2010-12-13 06:33:07 -0800 (Mon, 13 Dec 2010) $
+ * $Revision: 597 $ $Date: 2011-03-31 09:25:53 -0700 (Thu, 31 Mar 2011) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -107,9 +107,16 @@ public:
       */
     void setLabelText(std::string text, unsigned int which);
 
-private:
-    void readTxfFile();
+    void setLabelFont(TextureFont* font);
 
+    /** Get the font used for drawing labels.
+      */
+    TextureFont* labelFont() const
+    {
+        return m_font.ptr();
+    }
+
+private:
     void buildArrowGeometry(float shaftLength,
                             float shaftRadius,
                             float headLength,
@@ -131,7 +138,7 @@ private:
     PrimitiveBatch* m_point;
     VertexArray* m_vertices;
 
-    TextureFont* m_font;
+    counted_ptr<TextureFont> m_font;
     std::string m_labels[3];
     bool m_labelsEnabled[3];
 };

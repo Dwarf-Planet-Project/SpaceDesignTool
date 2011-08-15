@@ -1,25 +1,12 @@
-// ParticleEmitter.cpp
-//
-// Copyright (C) 2010 Chris Laurel <claurel@gmail.com>
-//
-// VESTA is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// Alternatively, you can redistribute it and/or
-// modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of
-// the License, or (at your option) any later version.
-//
-// VESTA is distributed in the hope that it will be useful, but WITHOUT ANY
-// WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-// FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License or the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public
-// License and a copy of the GNU General Public License along with
-// VESTA. If not, see <http://www.gnu.org/licenses/>.
+/*
+ * $Revision$ $Date$
+ *
+ * Copyright by Astos Solutions GmbH, Germany
+ *
+ * This file is published under the Astos Solutions Free Public License
+ * For details on copyright and terms of use see 
+ * http://www.astos.de/Astos_Solutions_Free_Public_License.html
+ */
 
 #include "ParticleEmitter.h"
 #include "ParticleRenderer.h"
@@ -40,7 +27,10 @@ ParticleEmitter::ParticleEmitter() :
     m_force(Vector3f::Zero()),
     m_blockingPlaneEnabled(false),
     m_colorCount(1),
-    m_velocityVariation(0.0f)
+    m_velocityVariation(0.0f),
+    m_traceLength(0.0f),
+    m_emissive(true),
+    m_phaseAsymmetry(0.0f)
 {
     m_colorKeys[0] = Vector4f::Ones();
     m_generator = new PointGenerator();
@@ -119,7 +109,7 @@ ParticleEmitter::generateParticles(double simulationTime,
     // Scale factor used in color interpolation; subtract
     // a small value to avoid having to do an extra range
     // check for particles right at the end of their lifetimes.
-    float colorKeyScale = (float) m_colorCount - 0.00001f;
+    float colorKeyScale = float(m_colorCount) - 1.00001f;
 
     while (age < maxAge)
     {
@@ -163,11 +153,13 @@ ParticleEmitter::generateParticles(double simulationTime,
             int colorIndex = (unsigned int) s;
             float t = s - colorIndex;
             Vector4f interpolatedColor = (1 - t) * m_colorKeys[colorIndex] + t * m_colorKeys[colorIndex + 1];
+
             particle.color = interpolatedColor.start<3>();
             particle.opacity = interpolatedColor.w();
         }
 
         // Calculate particle position as p0 + v0*t + (1/2)at^2
+        particle.velocity = v0 + age * m_force;
         particle.position = p0 + age * (v0 + (age * 0.5f) * m_force);
 
         // Rotation (if enabled)

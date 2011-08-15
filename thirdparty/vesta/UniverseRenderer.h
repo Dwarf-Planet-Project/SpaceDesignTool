@@ -1,5 +1,5 @@
 /*
- * $Revision: 560 $ $Date: 2010-12-14 11:48:28 -0800 (Tue, 14 Dec 2010) $
+ * $Revision: 603 $ $Date: 2011-04-13 17:06:42 -0700 (Wed, 13 Apr 2011) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -28,6 +28,9 @@ class Observer;
 class RenderContext;
 class Framebuffer;
 class CubeMapFramebuffer;
+class EclipseShadowVolumeSet;
+class TextureFont;
+class GlareOverlay;
 
 /** UniverseRenderer draws views of a VESTA Universe using a 3D rendering
   * library. Views are drawn as sets at a particular time. A typical usage
@@ -102,6 +105,7 @@ public:
     RenderStatus renderShadowCubeMap(const LightingEnvironment* lighting,
                                      const Eigen::Vector3d& cameraPosition,
                                      CubeMapFramebuffer* cubeMap);
+    RenderStatus renderLightGlare(GlareOverlay* glareOverlay);
 
     Spectrum ambientLight() const
     {
@@ -122,7 +126,17 @@ public:
     {
         return m_shadowsEnabled;
     }
+
+    /** Return true if this renderer has eclipse shadows enabled
+      */
+    bool eclipseShadowsEnabled() const
+    {
+        return m_eclipseShadowsEnabled;
+    }
+
     void setShadowsEnabled(bool enable);
+    void setEclipseShadowsEnabled(bool enable);
+
     bool shadowsSupported() const;
     bool omniShadowsSupported() const;
 
@@ -141,6 +155,22 @@ public:
         return m_skyLayersEnabled;
     }
     void setSkyLayersEnabled(bool enable);
+
+    TextureFont* defaultFont() const;
+    void setDefaultFont(TextureFont* font);
+
+    void setDefaultSunEnabled(bool enabled);
+
+    /** Return whether the default sun light source is enabled.
+      *
+      * \see setDefaultSunEnabled
+      */
+    bool defaultSunEnabled() const
+    {
+        return m_defaultSunEnabled;
+    }
+
+    GlareOverlay* createGlareOverlay();
 
 public:
     struct VisibleItem
@@ -162,6 +192,7 @@ public:
     {
         const LightSource* lightSource;
         Eigen::Vector3d position;
+        double radius;
     };
 
     struct VisibleLightSourceItem
@@ -169,6 +200,8 @@ public:
         const LightSource* lightSource;
         Eigen::Vector3d position;
         Eigen::Vector3d cameraRelativePosition;
+        Eigen::Vector3f cameraSpacePosition;
+        float radius;
     };
 
     typedef std::vector<VisibleItem, Eigen::aligned_allocator<VisibleItem> > VisibleItemVector;
@@ -203,6 +236,7 @@ private:
                                           const DepthBufferSpan& span,
                                           const LightSource* light,
                                           const Eigen::Vector3d& lightPosition);
+    void setupEclipseShadows(const VisibleItem& item);
     void addVisibleItem(const Entity* entity,
                         const Geometry* geometry,
                         const Eigen::Vector3d& position,
@@ -237,8 +271,10 @@ private:
     std::vector<counted_ptr<CubeMapFramebuffer> > m_omniShadowMaps;
 
     bool m_shadowsEnabled;
+    bool m_eclipseShadowsEnabled;
     bool m_visualizersEnabled;
     bool m_skyLayersEnabled;
+    bool m_defaultSunEnabled;
     float m_depthRangeFront;
     float m_depthRangeBack;
 
@@ -250,6 +286,13 @@ private:
 
     const LightingEnvironment* m_lighting;
     counted_ptr<LightSource> m_sun;
+
+    counted_ptr<EclipseShadowVolumeSet> m_eclipseShadows;
+
+    bool m_viewIndependentInitializationRequired;
+
+    counted_ptr<TextureFont> m_defaultFont;
+    PlanarProjection m_lastProjection;
 };
 
 }

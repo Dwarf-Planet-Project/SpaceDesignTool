@@ -1,5 +1,5 @@
 /*
- * $Revision: 477 $ $Date: 2010-08-31 11:49:37 -0700 (Tue, 31 Aug 2010) $
+ * $Revision: 610 $ $Date: 2011-04-29 14:45:37 -0700 (Fri, 29 Apr 2011) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -165,7 +165,7 @@ MeshGeometry::renderShadow(RenderContext& rc,
             // buffer.
             // TODO: Textures with transparent parts aren't handled here
             unsigned int materialIndex = materials[j];
-            if (m_materials[materialIndex]->opacity() > 0.5f)
+            if (materialIndex >= m_materials.size() || m_materials[materialIndex]->opacity() > 0.5f)
             {
                 rc.drawPrimitives(*batches[j]);
             }
@@ -368,6 +368,150 @@ MeshGeometry::uniquifyVertices(float positionTolerance, float normalTolerance, f
 }
 
 
+#define TEST_PROPERTY(p0, p1) if ((p0) < (p1)) return true; else if ((p0) > (p1)) return false;
+
+static bool CompareSpectra(const Spectrum& s0, const Spectrum& s1)
+{
+    TEST_PROPERTY(s0.red(), s1.red());
+    TEST_PROPERTY(s0.green(), s1.green());
+    TEST_PROPERTY(s0.blue(), s1.blue());
+    return false;
+}
+
+#define TEST_COLOR_PROPERTY(c0, c1) if (CompareSpectra((c0), (c1))) return true; else if (CompareSpectra((c1), (c0))) return false;
+
+// This class enforces a strict ordering on materials. This is used to sort and
+// eliminate redundant materials, which often appear in mesh files. Once extra
+// materials are removed, small batches can be merged in to larger ones, thereby
+// reducing the number of draw calls and improving rendering performance.
+class MaterialOrderingPredicate
+{
+public:
+    MaterialOrderingPredicate() {}
+
+    bool operator()(const Material& m0, const Material& m1) const
+    {
+        TEST_PROPERTY((int) m0.brdf(), (int) m1.brdf());
+        TEST_PROPERTY(m0.opacity(), m1.opacity());
+        TEST_COLOR_PROPERTY(m0.diffuse(), m1.diffuse());
+        TEST_COLOR_PROPERTY(m0.specular(), m1.specular());
+        TEST_PROPERTY(m0.phongExponent(), m1.phongExponent());
+        TEST_PROPERTY(m0.fresnelReflectance(), m1.fresnelReflectance());
+        TEST_COLOR_PROPERTY(m0.emission(), m1.emission());
+        TEST_PROPERTY((int) m0.blendMode(), (int) m1.blendMode());
+        TEST_PROPERTY(m0.baseTexture(), m1.baseTexture());
+        TEST_PROPERTY(m0.normalTexture(), m1.normalTexture());
+        TEST_PROPERTY(m0.specularTexture(), m1.specularTexture());
+        TEST_PROPERTY((int) m0.specularModifier(), (int) m1.specularModifier());
+        return false;
+    }
+};
+
+#undef TEST_PROPERTY
+#undef TEST_COLOR_PROPERTY
+
+
+// Predicate to test materials for equality; the current implemtation just
+// uses the strict ordering predicate (i.e. if !(a < b) and !(b < a), then
+// a must equal b)
+class MaterialEqualityPredicate
+{
+public:
+    MaterialEqualityPredicate() {}
+
+    bool operator()(const Material& m0, const Material& m1) const
+    {
+        MaterialOrderingPredicate pred;
+        return !pred(m0, m1) && !pred(m1, m0);
+    }
+};
+
+
+struct MaterialRef
+{
+    unsigned int index;
+    Material* material;
+
+    bool operator<(const MaterialRef& other) const
+    {
+        MaterialOrderingPredicate pred;
+        return pred(*(this->material), *(other.material));
+    }
+};
+
+
+/** Optimize the mesh by eliminating redundant materials and combining multiple
+  * small primitive batches into larger ones. This can improve performance in two
+  * ways:
+  *   - the number of draw calls that must be issued to the graphics processor is reduced
+  *   - the number of graphics state transitions is reduced
+  *
+  * For the best mesh optimization, mergeMaterials should be called after mergeSubmeshes and
+  * uniquifyVertices.
+  *
+  * \return true if the optimization was successful (it should only ever fail in
+  *         out of memory conditions.)
+  */
+bool
+MeshGeometry::mergeMaterials()
+{
+    // Build the map that associates materials in the old material array with unique indices.
+    vector<MaterialRef> materialRefs(m_materials.size());
+    vector<unsigned int> materialMap(m_materials.size());
+    for (unsigned int i = 0; i < materialMap.size(); ++i)
+    {
+        materialRefs[i].index = i;
+        materialRefs[i].material = material(i);
+    }
+
+    sort(materialRefs.begin(), materialRefs.end());
+
+    vector<counted_ptr<Material> > mergedMaterials;
+
+    // Create a list of unique materials along with a map from old (non-unique) materials
+    // to merged materials.
+    MaterialEqualityPredicate eqPred;
+    unsigned int uniqueCount = 0;
+    for (unsigned int i = 0; i < materialRefs.size(); ++i)
+    {
+        if (i == 0 || !eqPred(*materialRefs[i].material, *materialRefs[i - 1].material))
+        {
+            uniqueCount++;
+            mergedMaterials.push_back(counted_ptr<Material>(materialRefs[i].material));
+        }
+        materialMap[materialRefs[i].index] = uniqueCount - 1;
+    }
+
+    bool reducedMaterialCount = mergedMaterials.size() < m_materials.size();
+    if (reducedMaterialCount)
+    {
+        VESTA_LOG("Merge materials reduced from %d to %d", m_materials.size(), uniqueCount);
+        m_materials = mergedMaterials;
+    }
+
+    for (vector<counted_ptr<Submesh> >::iterator iter = m_submeshes.begin(); iter != m_submeshes.end(); ++iter)
+    {
+        if (reducedMaterialCount)
+        {
+            const vector<unsigned int>& submeshMaterials = (*iter)->materials();
+            for (unsigned int i = 0; i < submeshMaterials.size(); ++i)
+            {
+                (*iter)->setMaterial(i, materialMap[submeshMaterials[i]]);
+            }
+        }
+
+        bool ok = iter->ptr()->mergeMaterials();
+        if (!ok)
+        {
+            VESTA_WARNING("Error occurred in while merging mesh materials.");
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
 // Create buffers required for drawing the mesh on hardware. This must be called
 // before rendering whenever the mesh has changed.
 //
@@ -484,51 +628,54 @@ Convert3DSMesh(Lib3dsFile* meshfile, TextureMapLoader* textureLoader)
     for (int meshIndex = 0; meshIndex < meshfile->nmeshes; ++meshIndex)
     {
         Lib3dsMesh* mesh = meshfile->meshes[meshIndex];
-        bool hasTextureCoords = mesh->texcos != 0;
-
-        // Generate normals for the mesh
-        float* normals = new float[mesh->nfaces * 9];
-        lib3ds_mesh_calculate_vertex_normals(mesh, (float(*)[3]) normals);
-
-        VertexPool vertexPool;
-
-        for (int faceIndex = 0; faceIndex < mesh->nfaces; ++faceIndex)
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                int vertexIndex = mesh->faces[faceIndex].index[i];
-                vertexPool.addVec3(mesh->vertices[vertexIndex]);
-                vertexPool.addVec3(&normals[(faceIndex * 3 + i) * 3]);
-
-                if (hasTextureCoords)
-                {
-                    // Invert the v texture coordinate, since 3ds uses a texture
-                    // coordinate system that is flipped with respect to OpenGL's
-                    vertexPool.addVec2(mesh->texcos[vertexIndex][0], 1.0f - mesh->texcos[vertexIndex][1]);
-                }
-            }
-        }
-
-        delete[] normals;
-
-        const VertexSpec* vertexSpec = hasTextureCoords ? &VertexSpec::PositionNormalTex : &VertexSpec::PositionNormal;
-        VertexArray* vertexArray = vertexPool.createVertexArray(mesh->nfaces * 3, *vertexSpec);
-        PrimitiveBatch* batch = new PrimitiveBatch(PrimitiveBatch::Triangles, mesh->nfaces);
-
-        // Get the material for the primitive batch
-        // TODO: This assumes that a single material is applied to the whole mesh; however,
-        // materials can be assigned per-face (but rarely are in most 3ds files.)
-        unsigned int materialIndex = Submesh::DefaultMaterialIndex;
         if (mesh->nfaces > 0)
         {
-            // Use the material of the first face
-            materialIndex = mesh->faces[0].material;
+            bool hasTextureCoords = mesh->texcos != 0;
+
+            // Generate normals for the mesh
+            float* normals = new float[mesh->nfaces * 9];
+            lib3ds_mesh_calculate_vertex_normals(mesh, (float(*)[3]) normals);
+
+            VertexPool vertexPool;
+
+            for (int faceIndex = 0; faceIndex < mesh->nfaces; ++faceIndex)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    int vertexIndex = mesh->faces[faceIndex].index[i];
+                    vertexPool.addVec3(mesh->vertices[vertexIndex]);
+                    vertexPool.addVec3(&normals[(faceIndex * 3 + i) * 3]);
+
+                    if (hasTextureCoords)
+                    {
+                        // Invert the v texture coordinate, since 3ds uses a texture
+                        // coordinate system that is flipped with respect to OpenGL's
+                        vertexPool.addVec2(mesh->texcos[vertexIndex][0], 1.0f - mesh->texcos[vertexIndex][1]);
+                    }
+                }
+            }
+
+            delete[] normals;
+
+            const VertexSpec* vertexSpec = hasTextureCoords ? &VertexSpec::PositionNormalTex : &VertexSpec::PositionNormal;
+            VertexArray* vertexArray = vertexPool.createVertexArray(mesh->nfaces * 3, *vertexSpec);
+            PrimitiveBatch* batch = new PrimitiveBatch(PrimitiveBatch::Triangles, mesh->nfaces);
+
+            // Get the material for the primitive batch
+            // TODO: This assumes that a single material is applied to the whole mesh; however,
+            // materials can be assigned per-face (but rarely are in most 3ds files.)
+            unsigned int materialIndex = Submesh::DefaultMaterialIndex;
+            if (mesh->nfaces > 0)
+            {
+                // Use the material of the first face
+                materialIndex = mesh->faces[0].material;
+            }
+
+            Submesh* submesh = new Submesh(vertexArray);
+            submesh->addPrimitiveBatch(batch, materialIndex);
+
+            meshGeometry->addSubmesh(submesh);
         }
-
-        Submesh* submesh = new Submesh(vertexArray);
-        submesh->addPrimitiveBatch(batch, materialIndex);
-
-        meshGeometry->addSubmesh(submesh);
     }
 
     return meshGeometry;

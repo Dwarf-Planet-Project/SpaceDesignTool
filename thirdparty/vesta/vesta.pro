@@ -12,6 +12,7 @@ LIB3DS_PATH = ../lib3ds
 GLEW_PATH = ../glew
 
 VESTA_SOURCES = \
+    $$VESTA_PATH/AlignedEllipsoid.cpp \
     $$VESTA_PATH/Arc.cpp \
     $$VESTA_PATH/ArrowGeometry.cpp \
     $$VESTA_PATH/ArrowVisualizer.cpp \
@@ -34,12 +35,15 @@ VESTA_SOURCES = \
     $$VESTA_PATH/FixedRotationModel.cpp \
     $$VESTA_PATH/Frame.cpp \
     $$VESTA_PATH/Framebuffer.cpp \
+    $$VESTA_PATH/GeneralEllipse.cpp \
     $$VESTA_PATH/Geometry.cpp \
+    $$VESTA_PATH/GlareOverlay.cpp \
     $$VESTA_PATH/GregorianDate.cpp \
     $$VESTA_PATH/HierarchicalTiledMap.cpp \
     $$VESTA_PATH/InertialFrame.cpp \
     $$VESTA_PATH/KeplerianTrajectory.cpp \
     $$VESTA_PATH/LabelGeometry.cpp \
+    $$VESTA_PATH/LabelVisualizer.cpp \
     $$VESTA_PATH/LightSource.cpp \
     $$VESTA_PATH/MapLayer.cpp \
     $$VESTA_PATH/MeshGeometry.cpp \
@@ -82,11 +86,14 @@ VESTA_SOURCES = \
     $$VESTA_PATH/Visualizer.cpp \
     $$VESTA_PATH/WorldGeometry.cpp \
     $$VESTA_PATH/interaction/ObserverController.cpp \
+    $$VESTA_PATH/internal/DefaultFont.cpp \
+    $$VESTA_PATH/internal/EclipseShadowVolumeSet.cpp \
     $$VESTA_PATH/internal/InputDataStream.cpp \
     $$VESTA_PATH/internal/ObjLoader.cpp \
     $$VESTA_PATH/internal/OutputDataStream.cpp
 
 VESTA_HEADERS = \
+    $$VESTA_PATH/AlignedEllipsoid.cpp \
     $$VESTA_PATH/Arc.h \
     $$VESTA_PATH/ArrowGeometry.h \
     $$VESTA_PATH/ArrowVisualizer.h \
@@ -114,7 +121,9 @@ VESTA_HEADERS = \
     $$VESTA_PATH/Frustum.h \
     $$VESTA_PATH/FixedPointTrajectory.h \
     $$VESTA_PATH/FixedRotationModel.h \
+    $$VESTA_PATH/GeneralEllipse.h \
     $$VESTA_PATH/Geometry.h \
+    $$VESTA_PATH/GlareOverlay.h \
     $$VESTA_PATH/GregorianDate.h \
     $$VESTA_PATH/HierarchicalTiledMap.h \
     $$VESTA_PATH/InertialFrame.h \
@@ -123,6 +132,7 @@ VESTA_HEADERS = \
     $$VESTA_PATH/JavaCallbackTrajectory.h \
     $$VESTA_PATH/KeplerianTrajectory.h \
     $$VESTA_PATH/LabelGeometry.h \
+    $$VESTA_PATH/LabelVisualizer.h \
     $$VESTA_PATH/LightSource.h \
     $$VESTA_PATH/MapLayer.h \
     $$VESTA_PATH/Material.h \
@@ -181,6 +191,8 @@ VESTA_HEADERS = \
     $$VESTA_PATH/WorldLayer.h \
     $$VESTA_PATH/interaction/ObserverController.h \
     $$VESTA_PATH/internal/AtomicInt.h \
+    $$VESTA_PATH/internal/DefaultFont.h \
+    $$VESTA_PATH/internal/EclipseShadowVolumeSet.h \
     $$VESTA_PATH/internal/InputDataStream.h \
     $$VESTA_PATH/internal/ObjLoader.h \
     $$VESTA_PATH/internal/OutputDataStream.h
@@ -317,5 +329,5 @@ macx {
      #CONFIG += x86
      #}
 
-     CONFIG += x86
+     #CONFIG += x86
 }

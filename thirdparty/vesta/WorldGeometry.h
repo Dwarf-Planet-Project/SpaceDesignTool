@@ -1,5 +1,5 @@
 /*
- * $Revision: 510 $ $Date: 2010-09-24 19:17:53 -0700 (Fri, 24 Sep 2010) $
+ * $Revision: 614 $ $Date: 2011-06-09 12:01:42 -0700 (Thu, 09 Jun 2011) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -50,6 +50,8 @@ public:
 
     virtual float nearPlaneDistance(const Eigen::Vector3f& cameraPosition) const;
 
+    virtual bool isOpaque() const;
+
     /** Get the lengths of the axes of the globe in kilometers. Note that these are
       * diameters, not radii.
       */
@@ -99,6 +101,15 @@ public:
     void setSpheroid(float radius, float oblateness);
     void setEllipsoid(const Eigen::Vector3f& axes);
 
+    /** isEllipsoidal always returns true for WorldGeometry.
+      */
+    virtual bool isEllipsoidal() const { return true; }
+
+    virtual AlignedEllipsoid ellipsoid() const
+    {
+        return AlignedEllipsoid(m_ellipsoidAxes.cast<double>() * 0.5);
+    }
+
     /** Get the global base texture.
       */
     TextureMap* baseMap() const
@@ -138,15 +149,7 @@ public:
         return m_emissive;
     }
 
-    /** Set whether this globe is self-luminous. If true, it
-      * will not have any shading applied. Emissive true is the
-      * appropriate setting for the Sun. Note that setting emissive
-      * to true will *not* make the object a light source.
-      */
-    void setEmissive(bool emissive)
-    {
-        m_emissive = emissive;
-    }
+    void setEmissive(bool emissive);
 
     Atmosphere* atmosphere() const;
 
@@ -231,6 +234,34 @@ public:
     bool hasLayers() const;
     void clearLayers();
 
+    /** Returns whether clouds are visible for all WorldGeometry objects.
+      */
+    static bool cloudLayersVisible()
+    {
+        return ms_cloudLayersVisible;
+    }
+
+    /** Set whether clouds are visible for all WorldGeometry objects.
+      */
+    static void setCloudLayersVisible(bool visible)
+    {
+        ms_cloudLayersVisible = visible;
+    }
+
+    /** Returns whether atmospheres are visible for all WorldGeometry objects.
+      */
+    static bool atmospheresVisible()
+    {
+        return ms_atmospheresVisible;
+    }
+
+    /** Set whether atmospheres are visible for all WorldGeometry objects.
+      */
+    static void setAtmospheresVisible(bool visible)
+    {
+        ms_atmospheresVisible = visible;
+    }
+
 protected:
     virtual bool handleRayPick(const Eigen::Vector3d& pickOrigin,
                                const Eigen::Vector3d& pickDirection,
@@ -269,6 +300,9 @@ private:
     float m_cloudAltitude;
 
     QuadtreeTileAllocator* m_tileAllocator;
+
+    static bool ms_atmospheresVisible;
+    static bool ms_cloudLayersVisible;
 };
 
 }

@@ -1,5 +1,5 @@
 /*
- * $Revision: 547 $ $Date: 2010-10-21 14:15:29 -0700 (Thu, 21 Oct 2010) $
+ * $Revision: 597 $ $Date: 2011-03-31 09:25:53 -0700 (Thu, 31 Mar 2011) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -148,7 +148,9 @@ public:
 
     enum
     {
-        MaxLights = 4
+        MaxLights = 4,
+        MaxEclipseShadows = 7,
+        MaxRingShadows = 1,
     };
 
     enum RendererOutput
@@ -170,8 +172,18 @@ public:
         unsigned int m_shadowMapCount;
         Eigen::Matrix4f m_shadowMapMatrices[MaxLights];
         counted_ptr<GLFramebuffer> m_shadowMaps[MaxLights];
+
         unsigned int m_omniShadowMapCount;
         counted_ptr<TextureMap> m_omniShadowMaps[MaxLights];
+
+        unsigned int m_eclipseShadowCount;
+        Eigen::Matrix4f m_eclipseShadowMatrices[MaxEclipseShadows];
+        Eigen::Vector2f m_eclipseShadowSlopes[MaxEclipseShadows];
+
+        unsigned int m_ringShadowCount;
+        Eigen::Matrix4f m_ringShadowMatrices[MaxRingShadows];
+        Eigen::Vector2f m_ringShadowRadii[MaxRingShadows];
+        counted_ptr<TextureMap> m_ringShadowTextures[MaxRingShadows];
 
         bool m_scatteringEnabled;
         ScatteringParameters m_scattering;
@@ -300,6 +312,11 @@ public:
     void setShadowMap(unsigned int index, GLFramebuffer* shadowMap);
     void setOmniShadowMapCount(unsigned int shadowCount);
     void setOmniShadowMap(unsigned int index, TextureMap* shadowCubeMap);
+    void setEclipseShadowCount(unsigned int shadowCount);
+    void setEclipseShadowMatrix(unsigned int index, const Eigen::Matrix4f& shadowMatrix, float umbraSlope, float penumbraSlope);
+    void setRingShadowCount(unsigned int shadowCount);
+    void setRingShadowMatrix(unsigned int index, const Eigen::Matrix4f& shadowMatrix, float innerRadius);
+    void setRingShadowTexture(unsigned int index, TextureMap* texture);
 
     void setScattering(bool enabled);
     void setScatteringParameters(const ScatteringParameters& scatteringParams);
@@ -331,6 +348,15 @@ public:
     {
         return m_vertexStreamBuffer.ptr();
     }
+
+    /** Get the default font. This font is used whenever drawText is called with a NULL font.
+      */
+    TextureFont* defaultFont()
+    {
+        return m_defaultFont.ptr();
+    }
+
+    void setDefaultFont(TextureFont* font);
 
     void unbindShader();
 
@@ -409,6 +435,8 @@ private:
     RendererOutput m_rendererOutput;
 
     static bool m_glInitialized;
+
+    counted_ptr<vesta::TextureFont> m_defaultFont;
 };
 
 }

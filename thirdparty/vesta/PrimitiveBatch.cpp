@@ -1,5 +1,5 @@
 /*
- * $Revision: 370 $ $Date: 2010-07-19 19:24:43 -0700 (Mon, 19 Jul 2010) $
+ * $Revision: 613 $ $Date: 2011-06-07 11:42:53 -0700 (Tue, 07 Jun 2011) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -111,7 +111,7 @@ PrimitiveBatch::PrimitiveBatch(PrimitiveType type, int primitiveCount, unsigned 
 {
     // Set this to a sensible value--even though it's not used internally for
     // unindexed data, an app author might call the indexSize() method.
-    m_indexSize = indexCount() <= MaxIndex16 ? Index16 : Index32;
+    m_indexSize = firstVertex + indexCount() <= MaxIndex16 ? Index16 : Index32;
 }
 
     
@@ -270,6 +270,10 @@ PrimitiveBatch::promoteTo32Bit()
             return false;
         }
     }
+    else
+    {
+        m_indexSize = Index32;
+    }
 
     return true;
 }
@@ -277,10 +281,16 @@ PrimitiveBatch::promoteTo32Bit()
 
 /** Remap indices using the specified map. Return true if successful,
   * false if there was an error.
+  *
+  * 32-bit indices will automatically be compacted to 16-bit indices
+  * if the maximum vertex index is less than 2^16. This reduces memory
+  * usage and can improve rendering performance.
   */
 bool
 PrimitiveBatch::remapIndices(const std::vector<v_uint32>& indexMap)
 {
+    v_uint32 maxVertexIndex = *max_element(indexMap.begin(), indexMap.end());
+
     if (!m_indexData)
     {
         bool ok = convertToIndexed();
@@ -295,12 +305,9 @@ PrimitiveBatch::remapIndices(const std::vector<v_uint32>& indexMap)
     if (m_indexSize == Index16)
     {
         // Check for vertex indices that are too large to fit in 16-bits
-        for (unsigned int i = 0; i < nIndices; ++i)
+        if (maxVertexIndex > MaxIndex16)
         {
-            if (indexMap[i] > MaxIndex16)
-            {
-                return false;
-            }
+            return false;
         }
 
         v_uint16* index16 = reinterpret_cast<v_uint16*>(m_indexData);
@@ -312,9 +319,34 @@ PrimitiveBatch::remapIndices(const std::vector<v_uint32>& indexMap)
     else
     {
         v_uint32* index32 = reinterpret_cast<v_uint32*>(m_indexData);
-        for (unsigned int i = 0; i < nIndices; ++i)
+        v_uint16* index16 = NULL;
+
+        if (maxVertexIndex <= MaxIndex16)
         {
-            index32[i] = indexMap[index32[i]];
+            // The remapped indices will fit in 16-bits. Optimize the index buffer
+            // by converting it form 32- to 16-bits. If the allocation fails for some
+            // reason, we'll skip the optimization
+            index16 = new v_uint16[nIndices];
+        }
+
+        if (index16)
+        {
+            for (unsigned int i = 0; i < nIndices; ++i)
+            {
+                index16[i] = v_uint16(indexMap[index32[i]]);
+            }
+
+            // Replace the old 32-bit indices with 16-bit indices
+            delete[] static_cast<v_uint32*>(m_indexData);
+            m_indexData = index16;
+            m_indexSize = Index16;
+        }
+        else
+        {
+            for (unsigned int i = 0; i < nIndices; ++i)
+            {
+                index32[i] = indexMap[index32[i]];
+            }
         }
     }
 
@@ -336,7 +368,7 @@ PrimitiveBatch::convertToIndexed()
 
     try
     {
-        if (m_firstVertex + nIndices > MaxIndex16)
+        if (m_indexSize == Index32)
         {
             v_uint32* indexData = new v_uint32[nIndices];
             for (unsigned int i = 0; i < nIndices; ++i)
@@ -344,7 +376,6 @@ PrimitiveBatch::convertToIndexed()
                 indexData[i] = m_firstVertex + i;
             }
             m_indexData = indexData;
-            m_indexSize = Index32;
         }
         else
         {
@@ -354,7 +385,6 @@ PrimitiveBatch::convertToIndexed()
                 indexData[i] = v_uint16(m_firstVertex + i);
             }
             m_indexData = indexData;
-            m_indexSize = Index16;
         }
     }
     catch (std::bad_alloc&)

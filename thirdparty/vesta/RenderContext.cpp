@@ -1,5 +1,5 @@
 /*
- * $Revision: 568 $ $Date: 2011-03-08 09:33:54 -0800 (Tue, 08 Mar 2011) $
+ * $Revision: 609 $ $Date: 2011-04-29 12:30:42 -0700 (Fri, 29 Apr 2011) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -67,6 +67,7 @@ static const unsigned int ScatterTextureUnit       = 7;
 static const unsigned int ReflectionTextureUnit    = 8;
 static const unsigned int OmniShadowTextureUnit1   = 9;
 static const unsigned int OmniShadowTextureUnit2   = 10;
+static const unsigned int RingShadowTextureUnit    = 11;
 
 static const unsigned int OmniShadowTextureUnits[3] =
 {
@@ -108,7 +109,10 @@ RenderContext::Environment::Environment() :
     m_ambientLight(0.0f, 0.0f, 0.0f),
     m_shadowMapCount(0),
     m_omniShadowMapCount(0),
-    m_scatteringEnabled(false)
+    m_eclipseShadowCount(0),
+    m_ringShadowCount(0),
+    m_scatteringEnabled(false),
+    m_sphericalGeometry(false)
 {
 }
 
@@ -926,6 +930,11 @@ computeShaderInfo(const Material* material,
         shaderInfo.setPointLightCount(pointLightCount);
         shaderInfo.setShadowCount(std::min(directionalLightCount, environment.m_shadowMapCount));
         shaderInfo.setOmniShadowCount(std::min(pointLightCount, environment.m_omniShadowMapCount));
+        shaderInfo.setEclipseShadowCount(environment.m_eclipseShadowCount);
+        if (environment.m_ringShadowCount > 0)
+        {
+            shaderInfo.setRingShadows(true);
+        }
     }
 
     // Set the texture properties for the shader. All textures
@@ -1080,6 +1089,14 @@ RenderContext::setShaderMaterial(const Material* material)
         shader->setConstant("objToWorldMat", objToWorldMat);
     }
 
+    if (shaderInfo.hasRingShadows() && m_environment.m_ringShadowTextures[0].isValid())
+    {
+        glActiveTexture(GL_TEXTURE0 + RingShadowTextureUnit);
+        glBindTexture(GL_TEXTURE_2D, m_environment.m_ringShadowTextures[0]->id());
+        glActiveTexture(GL_TEXTURE0);
+        shader->setSampler("ringShadowTex", RingShadowTextureUnit);
+    }
+
     // TODO: It might be more efficient to maintain the inverse modelview
     // matrix.
     Matrix4f inverseModelView = modelview().inverse();
@@ -1149,6 +1166,20 @@ RenderContext::setShaderMaterial(const Material* material)
     if (isViewDependent)
     {
         Vector3f eyePosition = (inverseModelView * Vector4f::UnitW()).start<3>();
+
+        // Clamp the eyePosition to a distance of 100 times the scale factor. This prevents
+        // precision related rendering errors at small fields of view. The visual result of
+        // this clamping is imperceptible.
+        float eyeDistance = eyePosition.norm();
+        if (eyeDistance > 100.0f)
+        {
+            // Currently, we only apply this correction for planets; for other objects, we
+            // can't make any assumptions about the range of vertex positions.
+            if (shaderInfo.isSpherical())
+            {
+                eyePosition *= 100.0f / eyeDistance;
+            }
+        }
         shader->setConstant("eyePosition", eyePosition);
     }
 
@@ -1260,7 +1291,7 @@ RenderContext::updateShaderTransformConstants()
         m_modelViewMatrixCurrent = true;
         if (m_shaderCapability != FixedFunction && m_rendererOutput == FragmentColor)
         {
-            // The shadow matrix must be updated whenever the modelview matrix changes; it is
+            // The shadow matrices must be updated whenever the modelview matrix changes; they are
             // the product of the model-to-world and world-to-shadow matrixes.
             if (m_currentShaderInfo.hasShadows())
             {
@@ -1270,6 +1301,28 @@ RenderContext::updateShaderTransformConstants()
                     shadowMatrices[i] = m_environment.m_shadowMapMatrices[i] * modelview();
                 }
                 m_currentShader->setConstantArray("shadowMatrix", shadowMatrices, m_environment.m_shadowMapCount);
+            }
+
+            if (m_currentShaderInfo.hasEclipseShadows())
+            {
+                Matrix4f shadowMatrices[MaxEclipseShadows];
+                for (unsigned int i = 0; i < m_environment.m_eclipseShadowCount; ++i)
+                {
+                    shadowMatrices[i] = m_environment.m_eclipseShadowMatrices[i] * modelview();
+                }
+                m_currentShader->setConstantArray("eclipseShadowMatrix", shadowMatrices, m_environment.m_eclipseShadowCount);
+                m_currentShader->setConstantArray("eclipseShadowSlopes", m_environment.m_eclipseShadowSlopes, m_environment.m_eclipseShadowCount);
+            }
+
+            if (m_currentShaderInfo.hasRingShadows())
+            {
+                Matrix4f shadowMatrices[MaxRingShadows];
+                for (unsigned int i = 0; i < m_environment.m_ringShadowCount; ++i)
+                {
+                    shadowMatrices[i] = m_environment.m_ringShadowMatrices[i] * modelview();
+                }
+                m_currentShader->setConstantArray("ringShadowMatrix", shadowMatrices, m_environment.m_ringShadowCount);
+                m_currentShader->setConstantArray("ringShadowRadii", m_environment.m_ringShadowRadii, m_environment.m_ringShadowCount);
             }
 
             // No special handling required for omnidirectional shadows; they're stored in
@@ -1470,6 +1523,73 @@ RenderContext::setOmniShadowMap(unsigned int index, TextureMap* shadowCubeMap)
 
 
 void
+RenderContext::setEclipseShadowCount(unsigned int count)
+{
+    if (count <= MaxEclipseShadows)
+    {
+        if (count != m_environment.m_eclipseShadowCount)
+        {
+            m_environment.m_eclipseShadowCount = count;
+            invalidateShaderState();
+        }
+    }
+}
+
+
+void
+RenderContext::setEclipseShadowMatrix(unsigned int index, const Eigen::Matrix4f& shadowMatrix, float umbraSlope, float penumbraSlope)
+{
+    if (index < MaxEclipseShadows)
+    {
+        m_environment.m_eclipseShadowMatrices[index] = shadowMatrix;
+        m_environment.m_eclipseShadowSlopes[index] = Vector2f(umbraSlope, penumbraSlope);
+    }
+}
+
+
+void
+RenderContext::setRingShadowCount(unsigned int count)
+{
+    if (count <= MaxRingShadows)
+    {
+        if (count != m_environment.m_ringShadowCount)
+        {
+            m_environment.m_ringShadowCount = count;
+            invalidateShaderState();
+        }
+    }
+}
+
+
+/** Set the matrix that maps from world coordinates to 'ring space', where the rings
+  * occupy a unit circle in the xy plane. The innerRadius is specified as a fraction
+  * of the radius of the outer boundary of the rings.
+  */
+void
+RenderContext::setRingShadowMatrix(unsigned int index, const Eigen::Matrix4f& shadowMatrix, float innerRadius)
+{
+    if (index < MaxRingShadows)
+    {
+        m_environment.m_ringShadowMatrices[index] = shadowMatrix;
+
+        // The x component of ringShadowRadii is the ring inner radius / outer radius. The
+        // y component is used to map from to te interval [0, 1] for texture mapping.
+        m_environment.m_ringShadowRadii[index] = Vector2f(innerRadius, 1.0f / (1.0f - innerRadius));
+    }
+}
+
+
+void
+RenderContext::setRingShadowTexture(unsigned int index, TextureMap* texture)
+{
+    if (index < MaxRingShadows)
+    {
+        m_environment.m_ringShadowTextures[index] = texture;
+    }
+}
+
+
+void
 RenderContext::setScattering(bool enabled)
 {
     if (enabled != m_environment.m_scatteringEnabled)
@@ -1552,6 +1672,18 @@ RenderContext::drawBillboard(const Vector3f& position, float size)
 void
 RenderContext::drawText(const Vector3f& position, const std::string& text, const TextureFont* font, const Spectrum& color, float opacity)
 {
+    if (!font)
+    {
+        // Use the default font if no font is specified
+        font = m_defaultFont.ptr();
+
+        // Abort if a default font hasn't been set
+        if (!font)
+        {
+            return;
+        }
+    }
+
     Material material;
     material.setDiffuse(color);
     material.setOpacity(opacity);
@@ -1785,32 +1917,119 @@ private:
 };
 
 
+class ParticleTraceRenderer : public ParticleRenderer
+{
+public:
+    ParticleTraceRenderer(RenderContext* rc, float* vertexStream, const Matrix3f& screenAlignTransform, float traceLength) :
+        m_rc(rc),
+        m_vertexStream(vertexStream),
+        m_screenAlignTransform(screenAlignTransform),
+        m_traceLength(traceLength)
+    {
+    }
+
+    virtual void renderParticles(const std::vector<ParticleEmitter::Particle>& particles)
+    {
+        // Render particles as screen-aligned quads. The quad surrounds a line that starts
+        // at the projected position and ends at the projected position plus the projected
+        // particle velocity. The length of the line is scaled by the trace length property.
+        // When trace length is zero, the line is undefined; in that case, a simple
+        // PointParticleRenderer should be used instead (it's also faster.)
+        Vector3f quadVertices[4];
+        Vector2f quadTexCoords[4] =
+        {
+            Vector2f(0.0f, 1.0f),
+            Vector2f(1.0f, 1.0f),
+            Vector2f(1.0f, 0.0f),
+            Vector2f(0.0f, 0.0f)
+        };
+
+        Vector3f screenX = m_screenAlignTransform.col(0);
+        Vector3f screenY = m_screenAlignTransform.col(1);
+        Vector3f screenZ = m_screenAlignTransform.col(2);
+
+        for (unsigned int i = 0; i < particles.size(); ++i)
+        {
+            const ParticleEmitter::Particle& particle = particles[i];
+            Vector3f v = particle.velocity * m_traceLength;
+            Vector3f u0(screenX.dot(v), screenY.dot(v), 0.0f);
+            Vector3f u1(-u0.y(), u0.x(), 0.0f);
+
+            float s = particle.size / u0.norm();
+
+            u1 *= s;
+            u0 = m_screenAlignTransform * u0;
+            u1 = m_screenAlignTransform * u1;
+            quadVertices[0] = -u1 - u0 * s;
+            quadVertices[1] = -u1 + u0 * (1.0f + s);
+            quadVertices[2] =  u1 + u0 * (1.0f + s);
+            quadVertices[3] =  u1 - u0 * s;
+
+            for (unsigned int j = 0; j < 4; ++j)
+            {
+                Vector3f vertex = particle.position + quadVertices[j];
+                unsigned int base = (i * 4 + j) * 10;
+                m_vertexStream[base + 0] = vertex.x();
+                m_vertexStream[base + 1] = vertex.y();
+                m_vertexStream[base + 2] = vertex.z();
+                m_vertexStream[base + 4] = quadTexCoords[j].x();
+                m_vertexStream[base + 5] = quadTexCoords[j].y();
+                m_vertexStream[base + 6] = particle.color.x();
+                m_vertexStream[base + 7] = particle.color.y();
+                m_vertexStream[base + 8] = particle.color.z();
+                m_vertexStream[base + 9] = particle.opacity;
+            }
+        }
+
+        m_rc->bindVertexArray(ParticleVertexSpec, m_vertexStream, ParticleVertexSpec.size());
+        glDrawArrays(GL_QUADS, 0, particles.size() * 4);
+    }
+
+private:
+    RenderContext* m_rc;
+    float* m_vertexStream;
+    Matrix3f m_screenAlignTransform;
+    float m_traceLength;
+};
+
+
 void
 RenderContext::drawParticles(ParticleEmitter* emitter, double clock)
 {
-    PointParticleRenderer particleRenderer(this,
-                                           m_vertexStream,
-                                           m_matrixStack[m_modelViewStackDepth].linear().transpose());
-
     glDisable(GL_LIGHTING);
     glDepthMask(GL_FALSE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-    // OpenGL point sprites limited by max point size, so we're using
-    // screen-aligned quads until a workaround is available.
-    // glEnable(GL_POINT_SPRITE_ARB);
-    // glTexEnvi(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE);
-
     setVertexInfo(ParticleVertexSpec);
     updateShaderState();
-    emitter->generateParticles(clock, m_particleBuffer->particles, &particleRenderer);
+
+    if (emitter->traceLength() != 0.0f)
+    {
+        ParticleTraceRenderer particleRenderer(this,
+                                               m_vertexStream,
+                                               m_matrixStack[m_modelViewStackDepth].linear().transpose(),
+                                               emitter->traceLength());
+        emitter->generateParticles(clock, m_particleBuffer->particles, &particleRenderer);
+    }
+    else
+    {
+        // OpenGL point sprites limited by max point size, so we're using
+        // screen-aligned quads until a workaround is available.
+        // glEnable(GL_POINT_SPRITE_ARB);
+        // glTexEnvi(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE);
+
+        PointParticleRenderer particleRenderer(this,
+                                               m_vertexStream,
+                                               m_matrixStack[m_modelViewStackDepth].linear().transpose());
+        emitter->generateParticles(clock, m_particleBuffer->particles, &particleRenderer);
+
+        //glDisable(GL_POINT_SPRITE_ARB);
+    }
 
     glEnable(GL_LIGHTING);
     glDepthMask(GL_TRUE);
     glDisable(GL_BLEND);
-
-    //glDisable(GL_POINT_SPRITE_ARB);
 }
 
 
@@ -1865,4 +2084,14 @@ RenderContext::setRendererOutput(RendererOutput output)
             m_cameraDistanceShader->bind();
         }
     }
+}
+
+
+/** Set the default font. This font is used for all drawText calls that
+  * specify a NULL font.
+  */
+void
+RenderContext::setDefaultFont(TextureFont* font)
+{
+    m_defaultFont = font;
 }

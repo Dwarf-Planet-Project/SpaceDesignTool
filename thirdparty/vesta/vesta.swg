@@ -1,5 +1,5 @@
 //
-// $Revision: 567 $ $Date: 2011-02-24 13:28:02 -0800 (Thu, 24 Feb 2011) $
+// $Revision: 607 $ $Date: 2011-04-16 13:45:21 -0700 (Sat, 16 Apr 2011) $
 //
 // Copyright by Astos Solutions GmbH, Germany
 //  
@@ -66,6 +66,7 @@
 #include "Observer.h"
 #include "StarCatalog.h"
 #include "UniverseRenderer.h"
+#include "GlareOverlay.h"
 #include "Atmosphere.h"
 
 // Utility classes
@@ -2038,6 +2039,21 @@ public:
 };
 
 
+%nodefaultctor GlareOverlay;
+
+class GlareOverlay
+{
+public:
+    ~GlareOverlay();
+
+    float adaptationRate() const;
+    void setAdaptationRate(float rate);
+    float glareSize();
+    void setGlareSize(float radiusInPixels);
+    void adjustBrightness();
+};
+
+
 class UniverseRenderer
 {
 public:
@@ -2080,6 +2096,10 @@ public:
                                      const Eigen::Vector3d& cameraPosition,
                                      CubeMapFramebuffer* cubeMap);
 
+    RenderStatus renderLightGlare(GlareOverlay* glareOverlay);
+    GlareOverlay* createGlareOverlay();
+
+
     Spectrum ambientLight() const;
     void setAmbientLight(const Spectrum& spectrum);
 
@@ -2096,6 +2116,7 @@ public:
 
     bool shadowsEnabled() const;
     void setShadowsEnabled(bool enable);
+    void setEclipseShadowsEnabled(bool enable);
     bool shadowsSupported() const;    
     bool omniShadowsSupported() const;
 };
@@ -2127,6 +2148,8 @@ public:
     void setGenerator(InitialStateGenerator* generator);
     float velocityVariation() const;
     void setVelocityVariation(float variation);
+    float traceLength() const;
+    void setTraceLength(float traceLength);
 
     float boundingRadius() const;
 };

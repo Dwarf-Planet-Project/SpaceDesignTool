@@ -1,5 +1,5 @@
 /*
- * $Revision: 510 $ $Date: 2010-09-24 19:17:53 -0700 (Fri, 24 Sep 2010) $
+ * $Revision: 614 $ $Date: 2011-06-09 12:01:42 -0700 (Thu, 09 Jun 2011) $
  *
  * Copyright by Astos Solutions GmbH, Germany
  *
@@ -45,6 +45,9 @@ static VertexSpec PositionNormalTexTangent(4, posNormTexTangentAttributes);
 
 static const float MaxTileSquareSize = 256.0f;  // size in pixels
 
+bool WorldGeometry::ms_atmospheresVisible = true;
+bool WorldGeometry::ms_cloudLayersVisible = true;
+
 
 WorldGeometry::WorldGeometry() :
     m_emissive(false),
@@ -54,6 +57,8 @@ WorldGeometry::WorldGeometry() :
     m_tileAllocator(NULL)
 {
     setClippingPolicy(Geometry::PreventClipping);
+    setShadowCaster(true);
+
     m_material = new Material();
     m_material->setDiffuse(Spectrum(1.0f, 1.0f, 1.0f));
 
@@ -172,6 +177,15 @@ AtmosphereShellDistance(const Vector3f& eyePosition, const Vector3f& ellipsoidAx
 void
 WorldGeometry::render(RenderContext& rc, double clock) const
 {
+    if (rc.pass() == RenderContext::TranslucentPass)
+    {
+        if (m_ringSystem.isValid())
+        {
+            m_ringSystem->render(rc, clock);
+        }
+        return;
+    }
+
     // Determine the level of detail
     float radius = maxRadius();
 
@@ -241,7 +255,7 @@ WorldGeometry::render(RenderContext& rc, double clock) const
 
     float atmosphereHeight = 0.0f;
 
-    if (!m_atmosphere.isNull())
+    if (!m_atmosphere.isNull() && ms_atmospheresVisible)
     {
         float r = maxRadius();
 
@@ -381,7 +395,7 @@ WorldGeometry::render(RenderContext& rc, double clock) const
     // Set vertex info for cloud layer rendering
     rc.setVertexInfo(VertexSpec::PositionNormalTex);
 
-    if (!m_cloudMap.isNull())
+    if (!m_cloudMap.isNull() && ms_cloudLayersVisible)
     {
         float scale = 1.0f + m_cloudAltitude / maxRadius();
 
@@ -435,7 +449,7 @@ WorldGeometry::render(RenderContext& rc, double clock) const
     }
 
     // Draw the atmosphere as a pixel shaded 'shell'
-    if (!m_atmosphere.isNull())
+    if (!m_atmosphere.isNull() && ms_atmospheresVisible)
     {
         // Scale the scattering parameters as well as the geometry
         float scale = 1.0f + atmosphereHeight;
@@ -537,11 +551,6 @@ WorldGeometry::render(RenderContext& rc, double clock) const
 #endif // DEBUG_QUADTREE
 
     rc.popModelView();
-
-    if (m_ringSystem.isValid())
-    {
-        m_ringSystem->render(rc, clock);
-    }
 }
 
 
@@ -1108,7 +1117,7 @@ WorldGeometry::boundingSphereRadius() const
         atmosphereHeight = m_atmosphere->transparentHeight();
     }
 
-    if (m_cloudMap.isValid())
+    if (m_cloudMap.isValid() && ms_cloudLayersVisible)
     {
         atmosphereHeight = max(atmosphereHeight, m_cloudAltitude);
     }
@@ -1158,6 +1167,22 @@ WorldGeometry::nearPlaneDistance(const Eigen::Vector3f& cameraPosition) const
     }
 
     return nearDistance;
+}
+
+
+bool
+WorldGeometry::isOpaque() const
+{
+    // Rings are the only translucent part of a world (we'll ignore the
+    // atmosphere for now.)
+    if (m_ringSystem.isValid())
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }
 
 
@@ -1217,6 +1242,19 @@ void
 WorldGeometry::setNormalMap(TextureMap* normalMap)
 {
     m_normalMap = normalMap;
+}
+
+
+/** Set whether this globe is self-luminous. If true, it
+  * will not have any shading applied. Emissive true is the
+  * appropriate setting for the Sun. Note that setting emissive
+  * to true will *not* make the object a light source.
+  */
+void
+WorldGeometry::setEmissive(bool emissive)
+{
+    m_emissive = emissive;
+    setShadowCaster(!emissive);
 }
 
 
@@ -1312,6 +1350,11 @@ WorldGeometry::setCloudMap(TextureMap* cloudMap)
 
 /** Set the ring system. Setting it to null indicates that the planet has no
   * ring system (the default state.)
+  *
+  * This method is retained for compatibility only. It is recommended instead
+  * to create a separate entity for rings rather setting them as a property
+  * of WorldGeometry. Rings will only cast shadows correctly when they are
+  * separate entities.
   */
 void
 WorldGeometry::setRingSystem(PlanetaryRings* rings)
