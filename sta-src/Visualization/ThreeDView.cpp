@@ -26,6 +26,8 @@
  */
 
 
+#include "FrameAxesVisualizer.h"
+
 #include <vesta/Universe.h>
 #include <vesta/UniverseRenderer.h>
 #include <vesta/Observer.h>
@@ -96,6 +98,7 @@ yearsToSecs(double julianYears)
 {
     return sta::daysToSecs(365.25 * julianYears);
 }
+
 
 static double BeginningOfTime = -yearsToSecs(200.0);  // 1900 CE
 static double EndOfTime = yearsToSecs(100.0);         // 2100 CE
@@ -339,6 +342,33 @@ public:
 
 private:
     const StaBody* m_body;
+};
+
+
+// StaCoordSysFrame adapts an STA inertial (or pseudo-inertial) frame for
+// use by VESTA.
+class StaCoordSysFrame : public vesta::Frame
+{
+public:
+    StaCoordSysFrame(const sta::CoordinateSystemType coordSys) :
+        m_coordSys(coordSys)
+    {
+    }
+
+    virtual Quaterniond orientation(double tsec) const
+    {
+        Matrix3d m = sta::CoordinateSystem(m_coordSys).rotToEmeJ2000(NULL, sta::SecJ2000ToMjd(tsec));
+        return Quaterniond(m);
+    }
+
+    virtual Vector3d angularVelocity(double /* tsec */) const
+    {
+        // Assume an inertial frame
+        return Vector3d::Zero();
+    }
+
+private:
+    sta::CoordinateSystemType m_coordSys;
 };
 
 
@@ -1050,8 +1080,7 @@ ThreeDView::contextMenuEvent(QContextMenuEvent* event)
 
         menu->addSeparator();
 
-        QAction* bodyAxesAction       = menu->addAction("Show Body Axes");
-        QAction* frameAxesAction      = menu->addAction("Show Frame Axes");
+        QMenu* frameMenu = menu->addMenu("Frames");
         QAction* velocityDirectionAction       = menu->addAction("Show Velocity Direction");
         QAction* sunDirectionAction   = menu->addAction("Show Sun Direction");
         QAction* earthDirectionAction = menu->addAction("Show Earth Direction");
@@ -1062,15 +1091,37 @@ ThreeDView::contextMenuEvent(QContextMenuEvent* event)
         QAction* fixedAction          = menu->addAction(tr("%1 Fixed Observer").arg(hit->name().c_str()));
         QAction* rotatingAction       = menu->addAction(tr("%1 Rotating Observer").arg(hit->name().c_str()));
 
+
+        QAction* bodyAxesAction       = frameMenu->addAction("Show Body-fixed Axes");
+        QAction* frameAxesAction      = frameMenu->addAction("Show Object Frame Axes");
+        QAction* icrfAxesAction       = frameMenu->addAction("Show ICRF Axes");
+        QAction* meanOfDateAxesAction = frameMenu->addAction("Show Mean of Date Frame Axes");
+        QAction* trueOfDateAxesAction = frameMenu->addAction("Show True of Date Frame Axes");
+        QAction* eclipticAxesAction   = frameMenu->addAction("Show Ecliptic Frame Axes");
+
         bool hasBodyAxes = hit->visualizer("body axes") != NULL;
         bool hasFrameAxes = hit->visualizer("frame axes") != NULL;
-        bool hasVelocityDirection = hit->visualizer("velocity") != NULL;
-        bool hasSunDirection = hit->visualizer("sun direction") != NULL;
-        bool hasEarthDirection = hit->visualizer("earth direction") != NULL;
+        bool hasIcrfAxes = hit->visualizer("icrf axes") != NULL;
+        bool hasModAxes = hit->visualizer("mean of date axes") != NULL;
+        bool hasTodAxes = hit->visualizer("true of date axes") != NULL;
+        bool hasEclipticAxes = hit->visualizer("ecliptic axes") != NULL;
+
         bodyAxesAction->setCheckable(true);
         bodyAxesAction->setChecked(hasBodyAxes);
         frameAxesAction->setCheckable(true);
         frameAxesAction->setChecked(hasFrameAxes);
+        icrfAxesAction->setCheckable(true);
+        icrfAxesAction->setChecked(hasIcrfAxes);
+        meanOfDateAxesAction->setCheckable(true);
+        meanOfDateAxesAction->setChecked(hasModAxes);
+        trueOfDateAxesAction->setCheckable(true);
+        trueOfDateAxesAction->setChecked(hasTodAxes);
+        eclipticAxesAction->setCheckable(true);
+        eclipticAxesAction->setChecked(hasEclipticAxes);
+
+        bool hasVelocityDirection = hit->visualizer("velocity") != NULL;
+        bool hasSunDirection = hit->visualizer("sun direction") != NULL;
+        bool hasEarthDirection = hit->visualizer("earth direction") != NULL;
         velocityDirectionAction->setCheckable(true);
         velocityDirectionAction->setChecked(hasVelocityDirection);
         sunDirectionAction->setCheckable(true);
@@ -1142,6 +1193,82 @@ ThreeDView::contextMenuEvent(QContextMenuEvent* event)
             else
             {
                 hit->removeVisualizer("velocity");
+            }
+        }
+        else if (chosenAction == icrfAxesAction)
+        {
+            if (chosenAction->isChecked())
+            {
+                FrameAxesVisualizer* axes = new FrameAxesVisualizer(new StaCoordSysFrame(sta::COORDSYS_ICRF), arrowSize);
+                axes->setVisibility(true);
+                axes->setLabelEnabled(true, ArrowGeometry::AllAxes);
+                axes->setLabelFont(m_labelFont.ptr());
+                axes->arrows()->setOpacity(0.5f);
+                axes->arrows()->setLabelText("ICRF x", ArrowGeometry::XAxis);
+                axes->arrows()->setLabelText("ICRF y", ArrowGeometry::YAxis);
+                axes->arrows()->setLabelText("ICRF z", ArrowGeometry::ZAxis);
+                hit->setVisualizer("icrf axes", axes);
+            }
+            else
+            {
+                hit->removeVisualizer("icrf axes");
+            }
+        }
+        else if (chosenAction == trueOfDateAxesAction)
+        {
+            if (chosenAction->isChecked())
+            {
+                FrameAxesVisualizer* axes = new FrameAxesVisualizer(new StaCoordSysFrame(sta::COORDSYS_TRUE_OF_DATE), arrowSize);
+                axes->setVisibility(true);
+                axes->setLabelEnabled(true, ArrowGeometry::AllAxes);
+                axes->setLabelFont(m_labelFont.ptr());
+                axes->arrows()->setOpacity(0.5f);
+                axes->arrows()->setLabelText("TOD x", ArrowGeometry::XAxis);
+                axes->arrows()->setLabelText("TOD y", ArrowGeometry::YAxis);
+                axes->arrows()->setLabelText("TOD z", ArrowGeometry::ZAxis);
+                hit->setVisualizer("true of date axes", axes);
+            }
+            else
+            {
+                hit->removeVisualizer("true of date axes");
+            }
+        }
+        else if (chosenAction == meanOfDateAxesAction)
+        {
+            if (chosenAction->isChecked())
+            {
+                FrameAxesVisualizer* axes = new FrameAxesVisualizer(new StaCoordSysFrame(sta::COORDSYS_MEAN_OF_DATE), arrowSize);
+                axes->setVisibility(true);
+                axes->setLabelEnabled(true, ArrowGeometry::AllAxes);
+                axes->setLabelFont(m_labelFont.ptr());
+                axes->arrows()->setOpacity(0.5f);
+                axes->arrows()->setLabelText("MOD x", ArrowGeometry::XAxis);
+                axes->arrows()->setLabelText("MOD y", ArrowGeometry::YAxis);
+                axes->arrows()->setLabelText("MOD z", ArrowGeometry::ZAxis);
+                hit->setVisualizer("mean of date axes", axes);
+            }
+            else
+            {
+                hit->removeVisualizer("mean of date axes");
+            }
+        }
+        else if (chosenAction == eclipticAxesAction)
+        {
+            if (chosenAction->isChecked())
+            {
+                FrameAxesVisualizer* axes = new FrameAxesVisualizer(new StaCoordSysFrame(sta::COORDSYS_ECLIPTIC_J2000), arrowSize);
+                axes->setVisibility(true);
+                axes->setLabelEnabled(true, ArrowGeometry::AllAxes);
+                axes->setLabelFont(m_labelFont.ptr());
+                axes->arrows()->setOpacity(0.5f);
+                axes->arrows()->setLabelText("Ecl x", ArrowGeometry::XAxis);
+                axes->arrows()->setLabelText("Ecl y", ArrowGeometry::YAxis);
+                axes->arrows()->setLabelText("Ecl z", ArrowGeometry::ZAxis);
+                hit->setVisualizer("ecliptic axes", axes);
+            }
+            else
+            {
+                hit->removeVisualizer("ecliptic axes");
             }
         }
         else if (chosenAction == sunDirectionAction)
