@@ -1,0 +1,11 @@
+newmtl inner
+Kd 0.15 1 0.15
+Tr 0.5
+illum 2
+
+newmtl outer
+Kd 0.15 0.15 1.0
+Tr 0.5
+illum 2
+
+
