@@ -35,12 +35,12 @@
 #include <QDebug>
 #include <QDockWidget>
 
+#include "thirdparty/qtiplot/qtiplot/src/ApplicationWindow.h"
+
 #include "qtiplotmain.h"
 #include "analysisParametersChoice.h"
 #include "Scenario/staschema.h"
 #include "Main/propagatedscenario.h"
-
-#include "thirdparty/qtiplot/qtiplot/src/ApplicationWindow.h"
 
 
 QtiPlotMain::QtiPlotMain(bool factorySettings, QWidget *parent) :
