@@ -36,6 +36,7 @@
 #include <Astro-Core/getGreenwichHourAngle.h>
 #include <Astro-Core/inertialTOfixed.h>
 #include <Astro-Core/constants.h>
+#include <Astro-Core/attitudevector.h>
 
 class ConstellationStudy;
 class QTemporaryFile;
@@ -52,6 +53,12 @@ public:
                sta::CoordinateSystem coordSys,
                QList<double> sampleTimes,
                QList<sta::StateVector> samples);
+    MissionArc(const StaBody* centralBody,
+               sta::CoordinateSystem coordSys,
+               QList<double> sampleTimes,
+               QList<sta::StateVector> samples,
+               QList<double> attitudeSampleTimes,
+               QList<staAttitude::AttitudeVector> attitudeSamples);
     ~MissionArc();
 
 	QString arcName() const { return m_ArcName; }
@@ -72,8 +79,20 @@ public:
     int trajectorySampleCount() const;
     sta::StateVector trajectorySample(int index) const;
     double trajectorySampleTime(int index) const;
-    
+
+    int attitudeSampleCount() const;
+    staAttitude::AttitudeVector attitudeSample(int index) const;
+    double attitudeSampleTime(int index) const;
+    bool getAttitude(double mjd, staAttitude::AttitudeVector* result) const;
+
     bool generateEphemerisFile();
+
+    /** Return true if this arc contains attitude information.
+      */
+    bool hasAttitude() const
+    {
+        return !m_attitudeSampleTimes.isEmpty();
+    }
 
 private:
     const StaBody* m_centralBody;
@@ -83,6 +102,8 @@ private:
 
     QList<double> m_sampleTimes;
     QList<sta::StateVector> m_samples;
+    QList<double> m_attitudeSampleTimes;
+    QList<staAttitude::AttitudeVector> m_attitudeSamples;
 
     QString m_ephemerisFile;
     QTemporaryFile* m_ephemerisTempFile;

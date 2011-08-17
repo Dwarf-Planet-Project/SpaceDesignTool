@@ -187,7 +187,9 @@ void scenarioPropagatorSatellite(ScenarioSC* vehicle, PropagationFeedback& feedb
                     MissionArc* arc = new MissionArc(centralBody,
                                                      coordSys,
                                                      sampleTimesTrajectory,
-                                                     samplesTrajectory);
+                                                     samplesTrajectory,
+                                                     sampleTimesAttitude,
+                                                     samplesAttitude);
 
                     // Loading arc color, name, and model
                     arc->setArcName(loitering->ElementIdentifier()->Name());

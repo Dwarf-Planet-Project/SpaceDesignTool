@@ -39,6 +39,7 @@
 #include "Constellations/cstudy.h"
 
 using namespace sta;
+using namespace staAttitude;
 using namespace Eigen;
 
 typedef Eigen::Matrix< double, 3, 3 > 	MyMatrix3d;
@@ -47,6 +48,11 @@ typedef Eigen::Matrix< double, 3, 1 > 	MyVector3d;
 
 /****** MissionArc ******/
 
+/** Create a new MissionArc with no attitude information.
+  *
+  * The list of sampleTimes and samples must have identical sizes (i.e. one
+  * time tag per state vector.)
+  */
 MissionArc::MissionArc(const StaBody* centralBody,
                        sta::CoordinateSystem coordSys,
                        QList<double> sampleTimes,
@@ -67,6 +73,38 @@ MissionArc::MissionArc(const StaBody* centralBody,
 }
 
 
+/** Create a new MissionArc with attitude states.
+  *
+  * The list of sampleTimes and samples must have identical sizes (i.e. one
+  * time tag per state vector.) The lists of attitude sample times and attitude
+  * vectors must also have the same size, though they may be different than the
+  * size of the list of trajectory samples.
+  */
+MissionArc::MissionArc(const StaBody* centralBody,
+                       sta::CoordinateSystem coordSys,
+                       QList<double> sampleTimes,
+                       QList<sta::StateVector> samples,
+                       QList<double> attitudeSampleTimes,
+                       QList<AttitudeVector> attitudeSamples) :
+    m_centralBody(centralBody),
+    m_coordSys(coordSys),
+    m_beginning(0.0),
+    m_ending(0.0),
+    m_sampleTimes(sampleTimes),
+    m_samples(samples),
+    m_attitudeSampleTimes(attitudeSampleTimes),
+    m_attitudeSamples(attitudeSamples),
+    m_ephemerisTempFile(NULL)
+{
+    Q_ASSERT(m_sampleTimes.size() == m_samples.size());
+    Q_ASSERT(m_samples.size() > 0);
+    Q_ASSERT(m_attitudeSampleTimes.size() == m_attitudeSamples.size());
+
+    m_beginning = m_sampleTimes.first();
+    m_ending = m_sampleTimes.last();
+}
+
+
 MissionArc::~MissionArc()
 {
     // deleting the QTemporaryFile objects will clean up the temp files
@@ -74,17 +112,18 @@ MissionArc::~MissionArc()
 }
 
 
-/*! Return the state vector for the trajectory at a specified time, using
+/** Return the state vector for the trajectory at a specified time, using
  *  cubic interpolation between sample times.
  *
- *  @param mjd: a modified Julian Date, TDB
- *  @param result: pointer to a state vector in which the result will be stored
+ *  \param mjd: a modified Julian Date, TDB
+ *  \param result: pointer to a state vector in which the result will be stored
  *
  *  The function returns true if the state vector could be calculated, and false
  *  if there was an error. Errors may result if this function is called before
- *  the the trajectory has been propagated, or if the requested time is not
+ *  the trajectory has been propagated, or if the requested time is not
  *  within the range of time over which trajectory is valid. The returned
- *  state vector is in whatever coordinate system was defined for the trajectory.
+ *  state vector is in the same coordinate system used to propagate this arc of
+ *  the trajectory.
  */
 bool
 MissionArc::getStateVector(double mjd,
@@ -140,7 +179,7 @@ MissionArc::getStateVector(double mjd,
 }
 
 
-/*! Return the number of samples in the trajectory.
+/** Return the number of samples in the trajectory.
  */
 int
 MissionArc::trajectorySampleCount() const
@@ -149,27 +188,124 @@ MissionArc::trajectorySampleCount() const
 }
 
 
-/*! Return the state vector at the specified sample index. The index
+/** Return the state vector at the specified sample index. The index
  *  must be >= 0 and less than the sample count.
  */
 sta::StateVector
 MissionArc::trajectorySample(int index) const
 {
+    Q_ASSERT(index < m_samples.size());
     return m_samples[index];
 }
 
 
-/*! Return the time stamp for the specified sample index. The index
+/** Return the time stamp for the specified sample index. The index
  *  must be >= 0 and less than the sample count.
  */
 double
 MissionArc::trajectorySampleTime(int index) const
 {
+    Q_ASSERT(index < m_sampleTimes.size());
     return m_sampleTimes[index];
 }
 
 
-/*! Write an ASCII ephemeris file for this mission arc. One record
+/** Return the number of attitude samples in this arc. Returns zero
+  * when attitude isn't available for the arc.
+  */
+int
+MissionArc::attitudeSampleCount() const
+{
+    return m_attitudeSamples.size();
+}
+
+
+/** Return the attitude vector at the specified. The index must be >= 0
+  * and less than the attitude sample count.
+  */
+AttitudeVector
+MissionArc::attitudeSample(int index) const
+{
+    Q_ASSERT(index < m_attitudeSamples.size());
+    return m_attitudeSamples[index];
+}
+
+
+/** Return the time stamp for the specified attiude sample index. The index
+ *  must be >= 0 and less than the attitude sample count.
+ */
+double
+MissionArc::attitudeSampleTime(int index) const
+{
+    Q_ASSERT(index < m_attitudeSampleTimes.size());
+    return m_attitudeSampleTimes[index];
+}
+
+
+/** Return the attitude vector for the arc at a specified time, using
+ *  spherical linear interpolation when the requested time lies between
+ *  two attitude time tags.
+ *
+ *  \param mjd: a modified Julian Date, TDB
+ *  \param result: pointer to an attitude vector in which the result will be stored
+ *
+ *  The function returns true if the attitude vector could be calculated, and false
+ *  if there was an error. Errors may result if this function is called before
+ *  the arc has been propagated, or if the requested time is not
+ *  within the range of time over which arc is valid. The returned
+ *  attitude vector is in the same coordinate system used when propagating
+ *  attitude.
+ */
+bool
+MissionArc::getAttitude(double mjd, AttitudeVector* result) const
+{
+    Q_ASSERT(m_attitudeSampleTimes.size() == m_attitudeSamples.size());
+
+    if (!m_attitudeSampleTimes.isEmpty() &&
+        mjd >= m_attitudeSampleTimes.first() &&
+        mjd <= m_attitudeSampleTimes.last())
+    {
+        int i = -1;
+        if (mjd == m_attitudeSampleTimes.first())
+        {
+            // Need special handling for the situation when requested time
+            // exactly equal to the first sample time.
+            i = 1;
+        }
+        else
+        {
+            QList<double>::const_iterator iter = qLowerBound(m_attitudeSampleTimes, mjd);
+
+            // This can only occur if the samples aren't sorted
+            Q_ASSERT(iter != m_attitudeSampleTimes.end());
+            Q_ASSERT(iter != m_attitudeSampleTimes.begin());
+
+            i = iter - m_attitudeSampleTimes.begin();
+        }
+
+        double h = m_attitudeSampleTimes[i] - m_attitudeSampleTimes[i - 1];
+        double t = (mjd - m_attitudeSampleTimes[i - 1]) / h;
+
+        // Perform spherical linear interpolation between quaternions; no interpolation
+        // is performed on the rates.
+        // TODO: Interpolate using the rates; in order to satisfy conditions at the sample
+        // times, we need at least cubic spherical interpolation.
+        Quaterniond q0 = m_attitudeSamples[i - 1].myQuaternion;
+        Quaterniond q1 = m_attitudeSamples[i].myQuaternion;
+
+        result->myBodyRates = m_attitudeSamples[i - 1].myBodyRates;
+        result->myQuaternion = q0.slerp(t, q1);
+
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+/** Write an ASCII ephemeris file for this mission arc. One record
  *  is written for each sample. The format of each record is:
  *
  * <mjd> <x> <y> <z> <vx> <vy> <vz>
