@@ -1,30 +1,28 @@
 ***************************************************************************
-*                 Space Trajectory Analysis (STA)                         *
+*                 Space Design Tool (SDT)                                 *
 *                                                                         *
-*  The “Space Trajectory Analysis” or STA software suite is conceived as  *
-*  a research tool to support the analysis phase of a space mission       *
-*  having the ability to analyze, determine, simulate, and visualize      *
-*  a wide range of space trajectories.                                    *
+*  The Space Design Tool or SDT software suite is based on the Space      *
+*  Trajectory Analysis or STA tool.  It was conceived as a research tool  *
+*  to support the analysis phase of a space mission having the ability    *
+*  to analyze, determine, simulate, and visualize a wide range of space   *
+*  trajectories.                                                          *
+*  SDT will at first update the code base and then extend the current     *
+*  functionality of STA. The original STA aims of promoting  the exchange *
+*  of technical ideas, and raising knowledge and competence in the areas  *
+*  of applied mathematics, space engineering, and informatics will        *
+*  continue.                                                              *
 *                                                                         *
-*  One of the STA aims is to promote the exchange of technical ideas,     *
-*  and raise knowledge and competence in the areas of applied             *
-*  mathematics, space engineering, and informatics.                       *
-*                                                                         *
-*              Copyright (c) 2005-2011, STA Steering Board                *
-*                                                                         *
-*-------------------------------------------------------------------------*
-*                STA web site: http://sta.forge.osor.eu                   *
 *                                                                         *
 *                                                                         *
 ***************************************************************************
-Last update April 2011
+Last update October 2014
 
 
 CONTENTS
 --------
   License
   Installing
-  STA Resources
+  SDT Resources
   Contributions
   Acknowledgements
  
@@ -42,22 +40,18 @@ In Linux: unzip and untar the bundle file (*.tar.gz) in any folder
 
 
 
-STA RESOURCES
+SDT RESOURCES
 ------------------
 
-STA Source Code (OSOR):
-  https://svn.forge.osor.eu/svn/sta/trunk
-[You need to be registered with the project to access the source repository]
+SDT Source Code:
+  https://github.com/hoehnp/SpaceDesignTool
+
 
 
 CONTRIBUTIONS
 -------------
 
 See the AUTHORS file
-
-STA email address:
-  <space.trajectory.analysis@gmail.com>
-
 
 
 Libraries and data used
@@ -80,10 +74,10 @@ Libraries and data used
 ACKNOWLEDGEMENTS
 ----------------
 
+The SDT Development Team wish to acknowledge the STA Development Team for its amazing work.
+
 The STA Development Team wish to acknowledge Chris Laurel who has supported this project since 2006.
 
-Special thanks go to all STA users who submit bug reports, suggestions, and
-fixes. 
 
 
-The STA Development Team
+The SDT Development Team
