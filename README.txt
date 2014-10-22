@@ -32,20 +32,11 @@ LICENSE
 See the license folder in this repository
 
 
-INSTALLING
-----------
-In windows: follow the instructions of the installer
-In MAC OS X: follow the instructions of the installer
-In Linux: unzip and untar the bundle file (*.tar.gz) in any folder
-
-
-
 SDT RESOURCES
 ------------------
 
 SDT Source Code:
   https://github.com/hoehnp/SpaceDesignTool
-
 
 
 CONTRIBUTIONS
@@ -68,7 +59,6 @@ Libraries and data used
 # STA uses the optimizer NSGA-II from the Kanpur Genetic Algorithms Laboratory (KanGAL) of the Indian Institute of Technology Kanpur. NSGA-II is copyright of Prof. Kalyanmoy Deb.
 # STA uses an adapted version of the source code of Qtiplot. QtiPlot is a computer program to analyze and visualize scientific data. The primary developer of the software package is Ion Vasilief, a freelance developer (http://en.wikipedia.org/wiki/QtiPlot).
 # STA uses Qwt library. The Qwt library contains GUI Components and utility classes which are primarily useful for programs with a technical background. Beside a 2D plot widget it provides scales, sliders, dials, compasses, thermometers, wheels and knobs to control or display values, arrays, or ranges of type double. The authors are Uwe Rathmann and Josef Wilgen (http://qwt.sourceforge.net/).
-
 
 
 ACKNOWLEDGEMENTS
