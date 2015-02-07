@@ -22,8 +22,8 @@ message(Qt version: $$[QT_VERSION])
 message(Qt is installed in $$[QT_INSTALL_PREFIX])
 
 #CONFIG += debug_and_release
-#CONFIG += Release
-#CONFIG += warn_off
+CONFIG += Release
+CONFIG += warn_off
 
 
 TARGET = STA
