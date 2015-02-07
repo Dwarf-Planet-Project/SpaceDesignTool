@@ -1,4 +1,4 @@
-QMAKE_PRL_BUILD_DIR = /home/patrick/Documents/STA/STA_git/thirdparty/vesta/
+QMAKE_PRL_BUILD_DIR = /home/patrick/Documents/software_projects/STA/SpaceDesignTool/thirdparty/vesta
 QMAKE_PRO_INPUT = vesta.pro
 QMAKE_PRL_TARGET = libvesta.a
 QMAKE_PRL_CONFIG = include_source_dir lex yacc warn_on uic resources qt warn_on release incremental link_prl gdb_dwarf_index def_files_disabled exceptions no_mocdepend release stl qt_no_framework static create_prl staticlib static moc thread
