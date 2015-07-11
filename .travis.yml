@@ -1,2 +1,5 @@
 language: c++
 
+script:
+        - qmake -recursive STA.pro
+        - make
