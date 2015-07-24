@@ -720,8 +720,7 @@ linux-g++ {
     QMAKE_CXXFLAGS_RELEASE = -ffast-math \
         -fexpensive-optimizations \
         -O3 \
-        -Bdynamic \
-	-fpermissive
+        -Bdynamic 
     INCLUDEPATH += $$LINUX_LIBRARIES_DIR
     INCLUDEPATH += /usr/include
     CXXFLAGS += -std=c++0x

@@ -331,3 +331,8 @@ macx {
 
      #CONFIG += x86
 }
+
+linux-g++ {
+    QMAKE_CXXFLAGS_RELEASE = -fpermissive  
+
+}
