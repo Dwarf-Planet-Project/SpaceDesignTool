@@ -4,7 +4,6 @@
 ** Copyright (C) Nate Robins, 1997
 **               Michael Wimmer, 1999
 **               Milan Ikits, 2002-2008
-**               Nigel Stewart, 2008-2013
 **
 ** visualinfo is a small utility that displays all available visuals,
 ** aka. pixelformats, in an OpenGL system along with renderer version
@@ -38,7 +37,7 @@
 #include <GL/wglew.h>
 #elif defined(__APPLE__) && !defined(GLEW_APPLE_GLX)
 #include <AGL/agl.h>
-#elif !defined(__HAIKU__)
+#else
 #include <GL/glxew.h>
 #endif
 
@@ -48,7 +47,7 @@ GLEWContext _glewctx;
 #  ifdef _WIN32
 WGLEWContext _wglewctx;
 #    define wglewGetContext() (&_wglewctx)
-#  elif !defined(__APPLE__) && !defined(__HAIKU__) || defined(GLEW_APPLE_GLX)
+#  elif !defined(__APPLE__) || defined(GLEW_APPLE_GLX)
 GLXEWContext _glxewctx;
 #    define glxewGetContext() (&_glxewctx)
 #  endif
@@ -62,7 +61,7 @@ typedef struct GLContextStruct
   HGLRC rc;
 #elif defined(__APPLE__) && !defined(GLEW_APPLE_GLX)
   AGLContext ctx, octx;
-#elif !defined(__HAIKU__)
+#else
   Display* dpy;
   XVisualInfo* vi;
   GLXContext ctx;
@@ -87,12 +86,12 @@ char* display = NULL;
 int visual = -1;
 
 FILE* file = 0;
+GLContext ctx;
 
 int 
 main (int argc, char** argv)
 {
   GLenum err;
-  GLContext ctx;
 
   /* ---------------------------------------------------------------------- */
   /* parse arguments */
@@ -130,7 +129,7 @@ main (int argc, char** argv)
   err = glewContextInit(glewGetContext());
 #  ifdef _WIN32
   err = err || wglewContextInit(wglewGetContext());
-#  elif !defined(__APPLE__) && !defined(__HAIKU__) || defined(GLEW_APPLE_GLX)
+#  elif !defined(__APPLE__) || defined(GLEW_APPLE_GLX)
   err = err || glxewContextInit(glxewGetContext());
 #  endif
 #else
@@ -146,15 +145,8 @@ main (int argc, char** argv)
   /* ---------------------------------------------------------------------- */
   /* open file */
 #if defined(_WIN32)
-  if (!displaystdout)
-  {
-#if defined(_MSC_VER) && (_MSC_VER >= 1400)
-    if (fopen_s(&file, "visualinfo.txt", "w") != 0)
-      file = stdout;
-#else
+  if (!displaystdout) 
     file = fopen("visualinfo.txt", "w");
-#endif
-  }
   if (file == NULL)
     file = stdout;
 #else
@@ -168,14 +160,11 @@ main (int argc, char** argv)
   fprintf(file, "OpenGL renderer string: %s\n", glGetString(GL_RENDERER));
   fprintf(file, "OpenGL version string: %s\n", glGetString(GL_VERSION));
   fprintf(file, "OpenGL extensions (GL_): \n");
-  PrintExtensions((const char*)glGetString(GL_EXTENSIONS));
-
-#ifndef GLEW_NO_GLU
+  PrintExtensions((char*)glGetString(GL_EXTENSIONS));
   /* GLU extensions */
   fprintf(file, "GLU version string: %s\n", gluGetString(GLU_VERSION));
   fprintf(file, "GLU extensions (GLU_): \n");
-  PrintExtensions((const char*)gluGetString(GLU_EXTENSIONS));
-#endif
+  PrintExtensions((char*)gluGetString(GLU_EXTENSIONS));
 
   /* ---------------------------------------------------------------------- */
   /* extensions string */
@@ -185,15 +174,11 @@ main (int argc, char** argv)
   {
     fprintf(file, "WGL extensions (WGL_): \n");
     PrintExtensions(wglGetExtensionsStringARB ? 
-                    (const char*)wglGetExtensionsStringARB(ctx.dc) :
-		    (const char*)wglGetExtensionsStringEXT());
+                    (char*)wglGetExtensionsStringARB(ctx.dc) :
+		    (char*)wglGetExtensionsStringEXT());
   }
 #elif defined(__APPLE__) && !defined(GLEW_APPLE_GLX)
   
-#elif defined(__HAIKU__)
-
-  /* TODO */
-
 #else
   /* GLX extensions */
   fprintf(file, "GLX extensions (GLX_): \n");
@@ -243,11 +228,7 @@ void PrintExtensions (const char* s)
       fprintf(file, "    %s\n", t);
       p++;
       i = (int)strlen(p);
-#if defined(_MSC_VER) && (_MSC_VER >= 1400)
-      strcpy_s(t, sizeof(t), p);
-#else
       strcpy(t, p);
-#endif
     }
     s++;
   }
@@ -369,8 +350,6 @@ VisualInfoARB (GLContext* ctx)
       else if (WGLEW_ATI_pixel_format_float && value[7] == WGL_TYPE_RGBA_FLOAT_ATI) fprintf(file, " f ");
       else if (value[7] == WGL_TYPE_RGBA_ARB) fprintf(file, " i ");
       else if (value[7] == WGL_TYPE_COLORINDEX_ARB) fprintf(file, " c ");
-      else if (value[7] == WGL_TYPE_RGBA_UNSIGNED_FLOAT_EXT) fprintf(file," p ");
-      else fprintf(file," ? ");
       /* double buffer */
       fprintf(file, " %c ", value[5] ? 'y' : '.');
       /* swap method */
@@ -598,7 +577,7 @@ VisualInfo (GLContext* ctx)
 #elif defined(__APPLE__) && !defined(GLEW_APPLE_GLX)
 
 void
-VisualInfo (GLContext* __attribute__((__unused__)) ctx)
+VisualInfo (GLContext* ctx)
 {
 /*
   int attrib[] = { AGL_RGBA, AGL_NONE };
@@ -612,16 +591,6 @@ VisualInfo (GLContext* __attribute__((__unused__)) ctx)
     pf = aglNextPixelFormat(pf);
   }
 */
-}
-
-/* ---------------------------------------------------------------------- */
-
-#elif defined(__HAIKU__)
-
-void
-VisualInfo (GLContext* ctx)
-{
-  /* TODO */
 }
 
 #else /* GLX */
@@ -1096,29 +1065,6 @@ void DestroyContext (GLContext* ctx)
   if (NULL == ctx) return;
   aglSetCurrentContext(ctx->octx);
   if (NULL != ctx->ctx) aglDestroyContext(ctx->ctx);
-}
-
-/* ------------------------------------------------------------------------ */
-
-#elif defined(__HAIKU__)
-
-void
-InitContext (GLContext* ctx)
-{
-  /* TODO */
-}
-
-GLboolean
-CreateContext (GLContext* ctx)
-{
-  /* TODO */
-  return GL_FALSE;
-}
-
-void
-DestroyContext (GLContext* ctx)
-{
-  /* TODO */
 }
 
 /* ------------------------------------------------------------------------ */
