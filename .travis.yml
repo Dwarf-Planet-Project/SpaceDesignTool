@@ -3,10 +3,10 @@ language: c++
 addons:
   apt:
     sources:
-    - kubuntu-backports
+    - debian-sid
     - ubuntu-toolchain-r-test
     packages:
-    - qt4-x11-4.8.2
+    - qt4-default
     - gcc-4.8
 
 compiler:
