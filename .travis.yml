@@ -6,6 +6,8 @@ addons:
     - kubuntu-backports
     packages:
     - qt4-x11
+    - gcc-4.8
+    - g++-4.8
 
 script:
         - qmake -recursive STA.pro
