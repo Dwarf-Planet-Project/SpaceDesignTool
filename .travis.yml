@@ -1,9 +1,9 @@
-language: cpp
+language: c++
 
 sudo: true
 
 compiler:
-  - gcc-4.8
+  - gcc
 
 gcc:
   - 4.8.4
@@ -15,6 +15,7 @@ before_install:
 install:
   - sudo apt-get install -qq opt-qt4-qmake opt-qt4-dev-tools
   - source /opt/qt-4.8/bin/qt-4.8-env.sh
+  - sudo ln -s /usr/lib/x86_64-linux-gnu/ /usr/lib/i386-linux-gnu
 
 script:
         - qmake -recursive STA.pro
