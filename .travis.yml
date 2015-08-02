@@ -9,6 +9,9 @@ addons:
     - qt4-x11
     - gcc-4.8
 
+compiler:
+  gcc-4.8
+
 script:
         - qmake -recursive STA.pro
         - make
