@@ -5,6 +5,9 @@ sudo: true
 compiler:
   - gcc-4.8
 
+gcc:
+  - 4.8.4
+
 before_install:
   - sudo add-apt-repository ppa:beineri/opt-qt486 -y
   - sudo apt-get update -qq
