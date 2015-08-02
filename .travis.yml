@@ -1,5 +1,12 @@
 language: c++
 
+addons:
+  apt:
+    sources:
+    - kubuntu-backports
+    packages:
+    - qt4-x11
+
 script:
         - qmake -recursive STA.pro
         - make
