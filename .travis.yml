@@ -6,7 +6,7 @@ addons:
     - kubuntu-backports
     - ubuntu-toolchain-r-test
     packages:
-    - qt4-x11
+    - qt4-x11-4.8.2
     - gcc-4.8
 
 compiler:

@@ -353,6 +353,7 @@ LAGRANGIAN_FORMS = sta-src/Lagrangian/lagrangianDialog.ui
 # ############# Visualization Module ##############
 VISUALIZATION_SOURCES = \
     sta-src/Visualization/ClippedDraw.cpp \
+    sta-src/Visualization/FrameAxesVisualizer.cpp \
     sta-src/Visualization/GroundTrack.cpp \
     sta-src/Visualization/GroundTrackPlotTool.cpp \
     sta-src/Visualization/GroundTrackView.cpp \
@@ -362,6 +363,7 @@ VISUALIZATION_SOURCES = \
 
 VISUALIZATION_HEADERS = \
     sta-src/Visualization/ClippedDraw.h \
+    sta-src/Visualization/FrameAxesVisualizer.h \
     sta-src/Visualization/GroundTrack.h \
     sta-src/Visualization/GroundTrackPlotTool.h \
     sta-src/Visualization/GroundTrackView.h \
@@ -736,6 +738,7 @@ linux-g++ {
     LIBS += $$PWD/thirdparty/qtiplot/3rdparty/qwt/lib/libqwt.so.5.2.2
     LIBS += $$PWD/thirdparty/qtiplot/3rdparty/qwtplot3d/lib/libqwtplot3d.so.1.0.0
     LIBS += $$PWD/thirdparty/qtiplot/libqtiplot.so.1.0.0
+    LIBS += -lGLU
     } else {
         # 32-bit Linux
     message("Warning: compiling a 32-bit linux version")
