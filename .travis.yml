@@ -1,12 +1,16 @@
 language: c++
 
-sudo: true
+addons:
+  apt:
+    sources:
+    - kubuntu-backports
+    - ubuntu-toolchain-r-test
+    packages:
+    - qt4-x11
+    - gcc-4.8
 
-before_script:
-  - sudo add-apt-repository ppa:kubuntu-backports -y
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r-test -y
-  - sudo apt-get update -q
-  - sudo apt-get install -q qt4-x11 gcc-4.8
+compiler:
+  gcc-4.8
 
 script:
         - qmake -recursive STA.pro
