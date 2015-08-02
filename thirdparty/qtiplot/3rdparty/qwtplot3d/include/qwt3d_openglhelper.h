@@ -8,6 +8,9 @@
 #include <QtOpenGL/qgl.h>
 #endif
 
+#include <GL/gl.h>
+#include <GL/glu.h>
+
 namespace Qwt3D
 {
 

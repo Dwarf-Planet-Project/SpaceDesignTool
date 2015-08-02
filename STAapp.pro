@@ -733,9 +733,9 @@ linux-g++ {
     LIBS += -lcspice
     LIBS += -lgsl
     LIBS += -lgslcblas
-    LIBS += $$PWD/lib/linux-x64/libqwt.so.5.2.2
-    LIBS += $$PWD/lib/linux-x64/libqwtplot3d.so.1.0.0
-    LIBS += $$PWD/lib/linux-x64/libqtiplot.so.1.0.0
+    LIBS += $$PWD/thirdparty/qtiplot/3rdparty/qwt/lib/libqwt.so.5.2.2
+    LIBS += $$PWD/thirdparty/qtiplot/3rdparty/qwtplot3d/lib/libqwtplot3d.so.1.0.0
+    LIBS += $$PWD/thirdparty/qtiplot/libqtiplot.so.1.0.0
     } else {
         # 32-bit Linux
     message("Warning: compiling a 32-bit linux version")
