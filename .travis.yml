@@ -5,9 +5,6 @@ sudo: true
 compiler:
   - gcc
 
-gcc:
-  - 4.8.4
-
 before_install:
   - sudo add-apt-repository ppa:beineri/opt-qt486 -y
   - sudo apt-get update -qq
@@ -18,5 +15,7 @@ install:
   - sudo ln -s /usr/lib/x86_64-linux-gnu/ /usr/lib/i386-linux-gnu
 
 script:
-        - qmake -recursive STA.pro
-        - make CXXFLAGS+=-fpermissive 
+  - export CXX=g++-4.8
+  - export CC=gcc-4.8
+  - qmake -recursive STA.pro
+  - make CXXFLAGS+=-fpermissive 
