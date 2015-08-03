@@ -722,12 +722,10 @@ linux-g++ {
     QMAKE_CXXFLAGS_RELEASE = -ffast-math \
         -fexpensive-optimizations \
         -O3 \
-	-fpermissive \
         -Bdynamic 
     INCLUDEPATH += $$LINUX_LIBRARIES_DIR
     INCLUDEPATH += /usr/include
     CXXFLAGS += -std=c++0x
-    CXXFLAGS += -fpermissive
 
     HARDWARE_PLATFORM = $$system(uname -a)
     contains( HARDWARE_PLATFORM, x86_64 ) {
