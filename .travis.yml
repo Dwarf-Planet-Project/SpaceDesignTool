@@ -18,5 +18,6 @@ install:
 script:
   - export CXX=g++-4.8
   - export CC=gcc-4.8
+  - gcc --version
   - qmake -recursive STA.pro
   - make CXXFLAGS+=-fpermissive 
