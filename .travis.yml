@@ -19,4 +19,4 @@ install:
 
 script:
         - qmake -recursive STA.pro
-        - make
+        - make CXXFLAGS+=-fpermissive 
