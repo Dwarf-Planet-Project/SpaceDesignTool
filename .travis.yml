@@ -14,10 +14,8 @@ install:
   - sudo apt-get install -qq opt-qt4-qmake opt-qt4-dev-tools g++-4.8
   - source /opt/qt-4.8/bin/qt-4.8-env.sh
   - sudo ln -s /usr/lib/x86_64-linux-gnu/ /usr/lib/i386-linux-gnu
-  - sudo rm -f /usr/bin/gcc
-  - sudo rm -f /usr/bin/g++
-  - sudo ln -s /usr/bin/gcc-4.8 /usr/bin/gcc
-  - sudo ln -s /usr/bin/g++-4.8 /usr/bin/g++
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50
 
 script:
   - gcc --version
