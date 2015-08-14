@@ -11,8 +11,10 @@ before_install:
   - sudo apt-get update -qq
 
 install:
-  - sudo apt-get install -qq opt-qt4-qmake opt-qt4-dev-tools g++-4.8
+  - sudo apt-get install -qq opt-qt4-qmake opt-qt4-dev-tools g++-4.8 libblas-dev libgsl0-dev -y
   - source /opt/qt-4.8/bin/qt-4.8-env.sh
+  - QMAKESPEC=/opt/qt-4.8/share/qt4/mkspecs/linux-g++
+  - export QMAKESPEC
   - sudo ln -s /usr/lib/x86_64-linux-gnu/ /usr/lib/i386-linux-gnu
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50
@@ -21,4 +23,4 @@ script:
   - gcc --version
   - g++ --version
   - qmake -recursive STA.pro
-  - make CXXFLAGS+=-fpermissive 
+  - make  
