@@ -733,9 +733,9 @@ linux-g++ {
     message("Warning: compiling a 64-bit linux version")
     LIBS += -L$$PWD/lib/linux-x64
     LIBS += -lcspice
+    LIBS += $$PWD/thirdparty/qtiplot/libqtiplot.so.1.0.0
     LIBS += -lgsl
     LIBS += -lgslcblas
-    LIBS += $$PWD/thirdparty/qtiplot/libqtiplot.so.1.0.0
     LIBS += $$PWD/thirdparty/qtiplot/3rdparty/qwt/lib/libqwt.so.5.2.2
     LIBS += $$PWD/thirdparty/qtiplot/3rdparty/qwtplot3d/lib/libqwtplot3d.so.1.0.0
     LIBS += -lGLU
