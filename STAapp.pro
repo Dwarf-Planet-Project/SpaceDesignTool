@@ -735,9 +735,9 @@ linux-g++ {
     LIBS += -lcspice
     LIBS += -lgsl
     LIBS += -lgslcblas
+    LIBS += $$PWD/thirdparty/qtiplot/libqtiplot.so.1.0.0
     LIBS += $$PWD/thirdparty/qtiplot/3rdparty/qwt/lib/libqwt.so.5.2.2
     LIBS += $$PWD/thirdparty/qtiplot/3rdparty/qwtplot3d/lib/libqwtplot3d.so.1.0.0
-    LIBS += $$PWD/thirdparty/qtiplot/libqtiplot.so.1.0.0
     LIBS += -lGLU
     } else {
         # 32-bit Linux
@@ -749,6 +749,7 @@ linux-g++ {
     LIBS += $$PWD/lib/linux-x86/libqwt.so.5.2.2
     LIBS += $$PWD/lib/linux-x86/libqwtplot3d.so.1.0.0
     LIBS += $$PWD/lib/linux-x86/libqtiplot.so.1.0.0
+    LIBS += -lGLU
     }
 }
 
