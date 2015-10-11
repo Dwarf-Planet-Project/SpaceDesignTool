@@ -25,6 +25,8 @@ message(Qt is installed in $$[QT_INSTALL_PREFIX])
 CONFIG += Release
 CONFIG += warn_off
 
+target.path += /opt/STA
+INSTALLS += target
 
 TARGET = STA
 
