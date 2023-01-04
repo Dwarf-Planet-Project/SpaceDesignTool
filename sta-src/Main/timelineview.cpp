@@ -322,7 +322,7 @@ void
 TimelineView::mousePressEvent(QMouseEvent* event)
 {
     m_mouseMotion = 0.0f;
-    m_lastMousePosition = event->posF();
+    m_lastMousePosition = event->pos();
 }
 
 
@@ -367,8 +367,8 @@ void
 TimelineView::mouseMoveEvent(QMouseEvent* event)
 {
     // Track total mouse motion so that we can distinguish click/release from drags
-    m_mouseMotion += (m_lastMousePosition - event->posF()).manhattanLength();
-    m_lastMousePosition = event->posF();
+    m_mouseMotion += (m_lastMousePosition - event->pos()).manhattanLength();
+    m_lastMousePosition = event->pos();
 
 
     int viewWidth = viewport()->size().width();

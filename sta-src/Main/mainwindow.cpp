@@ -30,6 +30,10 @@
 #include <QUrl> // Added by Guillermo to work with URLs
 #include <QXmlSchema>
 #include <QXmlSchemaValidator>
+#include <QDockWidget>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QDesktopWidget>
 
 #include <time.h>
 
@@ -909,7 +913,7 @@ void MainWindow::on_actionAnalyse_triggered()
     }
 
     m_qtiPlotFrame = new QtiPlotMain(false, this);
-    m_qtiPlotFrame->setName("STA Analysis");
+    //m_qtiPlotFrame->setName("STA Analysis");
     m_qtiPlotFrame->passTheSTAscenarioToQtiPlotMain(m_scenario, m_propagatedScenario);
 
     // Call QtiPlot to create a table from the analysis results

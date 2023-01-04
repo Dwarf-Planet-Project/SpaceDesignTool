@@ -30,6 +30,8 @@
 #define _EXTERNAL_H_
 
 #include <QDialog>
+#include <QFileDialog>
+#include <QMessageBox>
 #include "Scenario/scenario.h"
 
 #include "ui_external.h"

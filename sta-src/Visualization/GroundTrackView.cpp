@@ -40,6 +40,8 @@
 #include <QTextStream>
 #include <QtGui>
 #include <QGLWidget>
+#include <QMessageBox>
+#include <QFileDialog>
 #include <QDebug>
 #include <Eigen/Geometry>
 #include <cmath>
@@ -426,7 +428,8 @@ void GroundTrackView::saveImage()
     }
     */
     QPixmap image = QPixmap::grabWindow(this->winId());
-    QString defaultDir = QDesktopServices::storageLocation(QDesktopServices::PicturesLocation);
+    
+    QString defaultDir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
     QString fileName = QFileDialog::getSaveFileName(this,
                                                     tr("Save Image"),
                                                     defaultDir + "/sta.png",
@@ -546,7 +549,7 @@ void GroundTrackView::mouseMoveEvent(QMouseEvent* event)
 
     if (event->buttons() & Qt::LeftButton)
     {
-        QPointF position = event->posF();
+        QPointF position = event->pos();
         QPointF delta = position - m_lastMousePosition;
         m_lastMousePosition = position;
 
@@ -576,7 +579,7 @@ void GroundTrackView::mousePressEvent(QMouseEvent* event)
 
     if (event->button() == Qt::LeftButton)
     {
-        m_lastMousePosition = event->posF();
+        m_lastMousePosition = event->pos();
     }
     else
     {

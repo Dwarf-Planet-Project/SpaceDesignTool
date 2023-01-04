@@ -1216,7 +1216,7 @@ analysisParametersChoice::generateReport()
     QList<QTreeWidgetItem *> selected=TreeWidgetMissionArc->selectedItems();
     QList<QTreeWidgetItem *> selectedTimes=treeWidgetTimeSpecifications->selectedItems();
 
-    QString dataPath = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+    QString dataPath = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
 
     /*
     generates and displays the report with the user-specified data

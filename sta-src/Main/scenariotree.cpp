@@ -65,7 +65,8 @@
 #include <QtGui>
 #include <QHash>
 #include <iostream>
-
+#include <QMessageBox>
+#include <QVariant>
 
 int Lagrmode=-1;  // Guillermo says: take away this thing
 
@@ -246,8 +247,8 @@ ScenarioTree::ScenarioTree(QWidget *parent)
         }
     }
 
-    header()->setResizeMode(QHeaderView::ResizeToContents);
-    header()->setResizeMode(QHeaderView::Interactive);
+    header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    header()->setSectionResizeMode(QHeaderView::Interactive);
     header()->setDefaultSectionSize(200);
     header()->setCascadingSectionResizes(true);
 
@@ -1059,9 +1060,10 @@ void ScenarioTree::editItem(QTreeWidgetItem* item, int column)
     ScenarioObject* scenarioObject = NULL;
 
     QVariant data = item->data(0, ScenarioObjectRole);
-    if (qVariantCanConvert<void*>(data))
+//    if (qVariantCanConvert<void*>(data))
+    if (data.canConvert<void*>())
     {
-        void* pointer = qVariantValue<void*>(data);
+        void* pointer =  data.value<void*>();
         scenarioObject = reinterpret_cast<ScenarioObject*>(pointer);
     }
 
@@ -1191,9 +1193,9 @@ ScenarioObject* ScenarioTree::objectForItem(QTreeWidgetItem* item) const
     ScenarioObject* scenarioObject = NULL;
     QVariant data = item->data(0, ScenarioObjectRole);
 
-    if (qVariantCanConvert<void*>(data))
+    if (data.canConvert<void*>())
     {
-        void* pointer = qVariantValue<void*>(data);
+        void* pointer = data.value<void*>();
         scenarioObject = reinterpret_cast<ScenarioObject*>(pointer);
     }
 

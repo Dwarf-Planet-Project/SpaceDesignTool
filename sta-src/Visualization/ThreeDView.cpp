@@ -593,7 +593,7 @@ ThreeDView::initializeGL()
     StarsLayer* stars = dynamic_cast<StarsLayer*>(m_universe->layer("stars"));
     if (stars)
     {
-        QString renderer = QString::fromAscii(reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
+        QString renderer = QString::fromLatin1(reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
         if (renderer.contains("X1600"))
         {
             stars->setStyle(StarsLayer::PointStars);
@@ -901,7 +901,7 @@ ThreeDView::resizeGL(int width, int height)
 void
 ThreeDView::mousePressEvent(QMouseEvent *event)
 {
-    m_mousePosition = event->posF();
+    m_mousePosition = event->pos();
     m_mouseMotion = 0.0f;
 }
 
@@ -940,9 +940,9 @@ ThreeDView::mouseReleaseEvent(QMouseEvent* event)
 void
 ThreeDView::mouseMoveEvent(QMouseEvent *event)
 {
-    Vector2f delta(event->posF().x() - m_mousePosition.x(),
-                   event->posF().y() - m_mousePosition.y());
-    m_mousePosition = event->posF();
+    Vector2f delta(event->pos().x() - m_mousePosition.x(),
+                   event->pos().y() - m_mousePosition.y());
+    m_mousePosition = event->pos();
     m_mouseMotion += delta.norm();
 
     bool leftButton = (event->buttons() & Qt::LeftButton) != 0;

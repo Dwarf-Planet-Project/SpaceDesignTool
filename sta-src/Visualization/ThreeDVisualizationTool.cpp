@@ -107,7 +107,7 @@ void
 ThreeDVisualizationTool::saveImage()
 {
     QImage image = m_view->grabFrameBuffer(false);
-    QString defaultDir = QDesktopServices::storageLocation(QDesktopServices::PicturesLocation);
+    QString defaultDir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
     QString fileName = QFileDialog::getSaveFileName(this,
                                                     tr("Save Image"),
                                                     defaultDir + "/sta.png",

@@ -6,6 +6,7 @@
 
 class QDomElement;
 #include "stascenarioutil.h"
+#include <QSharedPointer>
 
 class ScenarioObject
 {

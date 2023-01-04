@@ -34,11 +34,11 @@ TARGET = STA
 QT += opengl
 QT += xml xmlpatterns
 QT += network
-QT += qt3support
 QT += svg
+QT += designer
+QT += printsupport
 
 CONFIG += assistant
-CONFIG += designer
 CONFIG += qt warn_off thread
 
 

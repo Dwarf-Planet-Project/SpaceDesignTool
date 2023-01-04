@@ -120,14 +120,20 @@ private:
     double Cps;
     QList<double> writeAeroList;
     bool writeGeom;
-    static const double IPM1=1.3604;
-    static const double IPM2=0.0962;
-    static const double IPM3=-0.5127;
-    static const double IPM4=-0.6722;
-    static const double IPM5=-0.3278;
-    static const double MaxIter=20;
+    static double IPM1;
+    static double IPM2;
+    static double IPM3;
+    static double IPM4;
+    static double IPM5;
+    static double MaxIter;
 
 
 };
 
+double AeroAnalysis::IPM1 = 1.3604;
+double AeroAnalysis::IPM2 = 0.0962;
+double AeroAnalysis::IPM3 = -0.5127;
+double AeroAnalysis::IPM4 = -0.6722;
+double AeroAnalysis::IPM5 = -0.3278;
+double AeroAnalysis::MaxIter = 20;
 #endif // AEROANALYSIS_H

@@ -156,7 +156,7 @@ SpiceEphemeris::stateVector(const StaBody* body,
 static void FurnishKernel(const QString& dir, const QString& kernelName)
 {
     QString pathName = dir + "/" + kernelName;
-    furnsh_c(pathName.toAscii().data());
+    furnsh_c(pathName.toLatin1().data());
 }
 
 

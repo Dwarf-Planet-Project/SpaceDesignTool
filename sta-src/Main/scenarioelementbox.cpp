@@ -70,7 +70,7 @@ ScenarioElementWidget::ScenarioElementWidget(QWidget* parent) :
     setAlternatingRowColors(true);
     setDragDropMode(DragOnly);
     setAutoFillBackground(true);
-    model()->setSupportedDragActions(Qt::CopyAction);
+//    model()->setSupportedDragActions(Qt::CopyAction);
 }
 
 

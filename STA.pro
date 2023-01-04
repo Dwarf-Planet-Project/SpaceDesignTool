@@ -34,7 +34,6 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     vesta \
-    qtiplot \
     STAapp
 
 STAapp.file = ./STAapp.pro

@@ -28,6 +28,9 @@
  */
 
 #include <QWidget>
+#include <QTextBrowser>
+#include <QPushButton>
+#include <QHBoxLayout>
 class QPushButton;
 class QTextBrowser;
 

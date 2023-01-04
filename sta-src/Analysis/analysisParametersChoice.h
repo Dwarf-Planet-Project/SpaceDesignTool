@@ -40,6 +40,9 @@
 #include <QTreeWidgetItem>
 #include <QObject>
 #include <QWidget>
+#include <QDateTimeEdit>
+#include <QDialogButtonBox>
+#include <QLabel>
 
 #include "Scenario/staschema.h"
 #include "Main/propagatedscenario.h"

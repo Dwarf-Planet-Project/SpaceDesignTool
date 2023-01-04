@@ -529,7 +529,7 @@ bool ReEntryDialog::saveValues(ScenarioEnvironmentType* environment)
     }
     else
     {
-        qWarning("Unknown central body %s", CentralBodyComboBox->currentText().toAscii().data());
+        qWarning("Unknown central body %s", CentralBodyComboBox->currentText().toLatin1().data());
         return false;
     }
 

@@ -315,7 +315,7 @@ bool
     double dt = loiteringTLE->TimeLine()->StepTime();
     tle_t tle;
 
-    int tleError = parse_elements(loiteringTLE->tleLine1().toAscii().data(), loiteringTLE->tleLine2().toAscii().data(), &tle);
+    int tleError = parse_elements(loiteringTLE->tleLine1().toLatin1().data(), loiteringTLE->tleLine2().toLatin1().data(), &tle);
 
     if (tleError != 0)
     {

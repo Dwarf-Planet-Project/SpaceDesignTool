@@ -1,3 +1,4 @@
 gen_doc/
 devel_doc/
 latex/
+*.so*

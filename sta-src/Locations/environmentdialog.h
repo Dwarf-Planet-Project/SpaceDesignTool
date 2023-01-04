@@ -28,6 +28,7 @@
 #include "ui_environmentDialog.h"
 
 #include <QDialog>
+#include <QDoubleValidator>
 
 #include "Scenario/staschema.h"
 #include "Coverage/commanalysis.h"

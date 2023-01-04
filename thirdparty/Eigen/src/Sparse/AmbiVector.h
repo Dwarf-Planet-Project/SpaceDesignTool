@@ -44,7 +44,7 @@ template<typename _Scalar> class AmbiVector
     void init(RealScalar estimatedDensity);
     void init(int mode);
 
-    void nonZeros() const;
+    int nonZeros() const;
 
     /** Specifies a sub-vector to work on */
     void setBounds(int start, int end) { m_start = start; m_end = end; }
@@ -133,7 +133,7 @@ template<typename _Scalar> class AmbiVector
 
 /** \returns the number of non zeros in the current sub vector */
 template<typename Scalar>
-void AmbiVector<Scalar>::nonZeros() const
+int AmbiVector<Scalar>::nonZeros() const
 {
   if (m_mode==IsSparse)
     return m_llSize;

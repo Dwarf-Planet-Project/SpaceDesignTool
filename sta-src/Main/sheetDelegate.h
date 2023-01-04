@@ -25,10 +25,10 @@
  */
 
 #include <QItemDelegate>
-#include <QtGui/QTreeWidget>
+#include <QTreeWidget>
 #include <QtCore/QAbstractItemModel>
-#include <QtGui/QStyle>
-#include <QtGui/QPainter>
+#include <QStyle>
+#include <QPainter>
 #include <QLineEdit>
 
 class SheetDelegate: public QItemDelegate

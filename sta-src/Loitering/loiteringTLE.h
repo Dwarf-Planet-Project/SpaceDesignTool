@@ -36,6 +36,7 @@
 #include "Scenario/missionAspectDialog.h"
 
 #include <QDialog>
+#include <QFileDialog>
 
 
 QT_BEGIN_NAMESPACE
