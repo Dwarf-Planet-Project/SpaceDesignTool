@@ -129,7 +129,7 @@ Submesh::mergeSubmeshes(const std::vector<Submesh*>& submeshes)
         if (s->vertices()->vertexSpec() != vertexSpec || s->vertices()->stride() != vertexStride)
         {
             VESTA_WARNING("MergeSubmeshes attempted on incompatible submeshes.");
-            return false;
+            return NULL;
         }
 
         vertexCount += s->vertices()->count();

@@ -79,7 +79,7 @@ MeshGeometry::render(RenderContext& rc,
             if (boundVertexBuffer)
             {
                 boundVertexBuffer->unbind();
-                boundVertexBuffer = false;
+                boundVertexBuffer = NULL;
             }
             rc.bindVertexArray(submesh.vertices());
         }
@@ -149,7 +149,7 @@ MeshGeometry::renderShadow(RenderContext& rc,
             if (boundVertexBuffer)
             {
                 boundVertexBuffer->unbind();
-                boundVertexBuffer = false;
+                boundVertexBuffer = NULL;
             }
             rc.bindVertexArray(submesh.vertices());
         }

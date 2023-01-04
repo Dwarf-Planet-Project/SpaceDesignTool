@@ -213,7 +213,7 @@ Framebuffer::CreateColorOnlyFramebuffer(unsigned int width,
     {
         VESTA_WARNING("Error creating framebuffer. %s is not a format supported by the graphics hardware.",
                       TextureMap::FormatName(format).c_str());
-        return false;
+        return NULL; //false;
     }
 
     Framebuffer* fb = new Framebuffer(width, height,
