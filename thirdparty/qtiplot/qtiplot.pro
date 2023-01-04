@@ -22,14 +22,14 @@ SUBDIRS += \
 
 qtiplot.file = ./qtiplotapp.pro
 
-QT += qt3support
 QT += network
 QT += xml xmlpatterns
 QT += opengl
 QT += svg
+QT += designer
+QT += printsupport
 
 CONFIG += assistant
-CONFIG += designer
 
 macx {
      # Guillermo: we use LLVM in MAC OS X instead of gcc (2X fast compilation)

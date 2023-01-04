@@ -33,8 +33,8 @@
 #define APPLICATION_H
 
 #include <QMainWindow>
-#include <q3listview.h>
-#include <QHttp>
+#include <QListView>
+#include <QNetworkAccessManager>
 #include <QFile>
 #include <QSplitter>
 #include <QDesktopServices>

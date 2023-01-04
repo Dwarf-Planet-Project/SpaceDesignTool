@@ -43,10 +43,9 @@ class QStackedWidget;
 class Matrix;
 class MatrixModel;
 
-#include <q3table.h>
-#include <q3header.h>
+#include <QTableWidget>
 
-class PreviewTable : public Q3Table
+class PreviewTable : public QTableWidget
 {
 public:
     PreviewTable(int numRows, int numCols, QWidget * parent = 0, const char * name = 0);

@@ -15,6 +15,7 @@
 #include "qwt_polygon.h"
 #include "qwt_double_rect.h"
 #include "qwt_double_interval.h"
+#include <QList>
 
 class QRect;
 

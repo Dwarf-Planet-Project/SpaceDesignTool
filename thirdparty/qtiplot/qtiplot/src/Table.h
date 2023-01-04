@@ -31,9 +31,8 @@
 #ifndef TABLE_H
 #define TABLE_H
 
-#include <q3table.h>
-#include <q3header.h>
-#include <Q3ValueList>
+#include <QTableWidget>
+#include <QList>
 #include <QVarLengthArray>
 
 #include "plot2D/Graph.h"
@@ -41,7 +40,7 @@
 #include "ScriptingEnv.h"
 #include "Script.h"
 
-class MyTable : public Q3Table
+class MyTable : public QTableWidget
 {
 public:
     MyTable(QWidget * parent = 0, const char * name = 0);

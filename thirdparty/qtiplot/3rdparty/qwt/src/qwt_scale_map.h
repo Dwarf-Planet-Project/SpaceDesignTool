@@ -13,6 +13,13 @@
 #include "qwt_global.h"
 #include "qwt_math.h"
 
+#if defined(Q_CC_MSVC)
+#  define QT_STATIC_CONST static
+#  define QT_STATIC_CONST_IMPL
+#else
+#  define QT_STATIC_CONST static const
+#  define QT_STATIC_CONST_IMPL const
+#endif
 /*!
    \brief Operations for linear or logarithmic (base 10) transformations
 */

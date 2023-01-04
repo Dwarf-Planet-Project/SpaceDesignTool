@@ -44,11 +44,11 @@
 ** 
 ****************************************************************************/
 
-#include <QtGui/QApplication>
+#include <QApplication>
 #include <QtCore/QString>
 #include <QtCore/QMap>
-#include <QtGui/QDesktopWidget>
-#include <QtGui/QPainter>
+#include <QDesktopWidget>
+#include <QPainter>
 #include <QtGui/QPaintEvent>
 
 #include "qtmmlwidget.h"
@@ -5446,7 +5446,7 @@ void QtMmlWidget::paintEvent(QPaintEvent *e)
     QFrame::paintEvent(e);
     QPainter p(this);
     if (e->rect().intersects(contentsRect()))
-        p.setClipRegion(e->region().intersect(contentsRect()));
+        p.setClipRegion(e->region().intersected(contentsRect()));
 
     QSize s = m_doc->size();
     int x = (width() - s.width())/2;

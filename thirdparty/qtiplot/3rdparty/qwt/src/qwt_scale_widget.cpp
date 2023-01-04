@@ -841,7 +841,7 @@ void QwtScaleWidget::getMinBorderDist(int &start, int &end) const
 */
 void QwtScaleWidget::fontChange(const QFont &oldFont)
 {
-    QWidget::fontChange( oldFont );
+    QWidget::setFont( oldFont );
     layoutScale();
 }
 

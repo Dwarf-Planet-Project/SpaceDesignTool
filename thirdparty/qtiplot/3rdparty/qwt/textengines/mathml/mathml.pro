@@ -25,7 +25,7 @@ isEmpty(VVERSION) {
 
 		TARGET    = qwtmathml$${SUFFIX_STR}
 		VERSION   = 1.0.0
-		QT       += xml
+		QT       += xml widgets
 
 		HEADERS = \
 			qwt_mathml_text_engine.h

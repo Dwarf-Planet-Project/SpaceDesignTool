@@ -46,7 +46,6 @@ TARGET         = qtiplot
 TEMPLATE       = lib
 
 CONFIG += assistant
-CONFIG += designer
 CONFIG += qt warn_off exceptions opengl thread
 #CONFIG += staticlib
 #CONFIG += create_prl
@@ -65,11 +64,12 @@ linux {
      DESTDIR = ../../lib/linux-x86
 }
 
-QT += qt3support
 QT += network
 QT += xml xmlpatterns
 QT += opengl
 QT += svg
+QT += designer
+QT += printsupport
 
 
 
