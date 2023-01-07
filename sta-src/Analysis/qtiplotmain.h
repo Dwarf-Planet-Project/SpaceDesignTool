@@ -33,6 +33,9 @@
 #include <QMainWindow>
 #include <QVariantList>
 #include <QSignalMapper>
+#include <QAction>
+#include <QTextEdit>
+#include <QLabel>
 
 #include "analysisParametersChoice.h"
 #include "Scenario/staschema.h"

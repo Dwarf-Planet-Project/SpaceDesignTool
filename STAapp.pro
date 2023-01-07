@@ -620,13 +620,23 @@ INCLUDEPATH += thirdparty
 INCLUDEPATH += thirdparty/glew/include
 INCLUDEPATH += thirdparty/qwtplot3d/include
 INCLUDEPATH += thirdparty/noradtle
-INCLUDEPATH += thirdparty/qtiplot
-INCLUDEPATH += thirdparty/qtiplot/qtiplot/src
-INCLUDEPATH += thirdparty/qtiplot/3rdparty/qwt/src
-INCLUDEPATH += thirdparty/qtiplot/3rdparty/liborigin
-INCLUDEPATH += thirdparty/qtiplot/3rdparty/gsl
-INCLUDEPATH += thirdparty/qtiplot/3rdparty/gsl/include
-INCLUDEPATH += thirdparty/qtiplot/3rdparty/muparser/include
+#INCLUDEPATH += thirdparty/qtiplot
+#INCLUDEPATH += thirdparty/qtiplot/qtiplot/src
+#INCLUDEPATH += thirdparty/qtiplot/3rdparty/qwt/src
+#INCLUDEPATH += thirdparty/qtiplot/3rdparty/liborigin
+#INCLUDEPATH += thirdparty/qtiplot/3rdparty/gsl
+#INCLUDEPATH += thirdparty/qtiplot/3rdparty/gsl/include
+#INCLUDEPATH += thirdparty/qtiplot/3rdparty/muparser/include
+INCLUDEPATH += thirdparty/scidavis
+INCLUDEPATH += thirdparty/scidavis/libscidavis/src
+INCLUDEPATH += thirdparty/scidavis/3rdparty/qwt/src
+INCLUDEPATH += thirdparty/scidavis/3rdparty/liborigin
+INCLUDEPATH += thirdparty/scidavis/3rdparty/gsl
+INCLUDEPATH += thirdparty/scidavis/3rdparty/gsl/include
+INCLUDEPATH += thirdparty/scidavis/3rdparty/muparser/include
+INCLUDEPATH += thirdparty/scidavis/libscidavis/src/future
+INCLUDEPATH += thirdparty/scidavis/build/libscidavis/libscidavis_autogen/include
+INCLUDEPATH += /usr/include/qwt5
 
 LIBS += -lvesta -Lthirdparty/vesta/build
 
@@ -722,10 +732,12 @@ linux-g++ {
     QMAKE_CXXFLAGS_RELEASE = -ffast-math \
         -fexpensive-optimizations \
         -O3 \
-        -Bdynamic 
+        -Bdynamic \
+	-DLEGACY_CODE_0_2_x
     INCLUDEPATH += $$LINUX_LIBRARIES_DIR
     INCLUDEPATH += /usr/include
     CXXFLAGS += -std=c++0x
+    PRE_TARGETDEPS += $$PWD/thirdparty/scidavis/build/libscidavis/libscidavis.a
 
     HARDWARE_PLATFORM = $$system(uname -a)
     contains( HARDWARE_PLATFORM, x86_64 ) {
@@ -733,11 +745,11 @@ linux-g++ {
     message("Warning: compiling a 64-bit linux version")
     LIBS += -L$$PWD/lib/linux-x64
     LIBS += -lcspice
-    LIBS += $$PWD/thirdparty/qtiplot/libqtiplot.so.1.0.0
+#    LIBS += $$PWD/thirdparty/qtiplot/libqtiplot.so.1.0.0
     LIBS += -lgsl
     LIBS += -lgslcblas
-    LIBS += $$PWD/thirdparty/qtiplot/3rdparty/qwt/lib/libqwt.so.5.2.2
-    LIBS += $$PWD/thirdparty/qtiplot/3rdparty/qwtplot3d/lib/libqwtplot3d.so.1.0.0
+#    LIBS += $$PWD/thirdparty/qtiplot/3rdparty/qwt/lib/libqwt.so.5.2.2
+#    LIBS += $$PWD/thirdparty/qtiplot/3rdparty/qwtplot3d/lib/libqwtplot3d.so.1.0.0
     LIBS += -lGLU
     } else {
         # 32-bit Linux

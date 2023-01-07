@@ -40,5 +40,3 @@ STAapp.file = ./STAapp.pro
 STAapp.depends = vesta
 
 vesta.subdir = thirdparty/vesta
-qtiplot.subdir = thirdparty/qtiplot
-

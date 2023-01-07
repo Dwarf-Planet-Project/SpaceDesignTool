@@ -35,7 +35,7 @@
 #include <QDebug>
 #include <QDockWidget>
 
-#include "thirdparty/qtiplot/qtiplot/src/ApplicationWindow.h"
+#include "thirdparty/scidavis/libscidavis/src/ApplicationWindow.h"
 
 #include "qtiplotmain.h"
 #include "analysisParametersChoice.h"
@@ -108,8 +108,8 @@ QtiPlotMain::createTable()
 void
 QtiPlotMain::initQtiPlot()
 {
-    m_appWindow = new ApplicationWindow(false);
-    m_appWindow->restoreApplicationGeometry();
+    m_appWindow = new ApplicationWindow();
+    //m_appWindow->restoreApplicationGeometry();
     connect(m_appWindow, SIGNAL(destroyed()), this, SLOT(qtiClosed()));
 
     // We want to change the function of the new table action so that it creates

@@ -1133,3 +1133,10 @@ bool AeroAnalysis::fromPressureWriteList(double currentMach)
     return fromList;
 }
 
+double AeroAnalysis::IPM1 = 1.3604;
+double AeroAnalysis::IPM2 = 0.0962;
+double AeroAnalysis::IPM3 = -0.5127;
+double AeroAnalysis::IPM4 = -0.6722;
+double AeroAnalysis::IPM5 = -0.3278;
+double AeroAnalysis::MaxIter = 20;
+
