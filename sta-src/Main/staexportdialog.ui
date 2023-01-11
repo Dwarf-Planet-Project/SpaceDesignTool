@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>sta::ExportDialog</class>
- <widget class="QDialog" name="ExportDialog">
+ <class>staExportDialog</class>
+ <widget class="QDialog" name="staExportDialog">
   <property name="windowModality">
    <enum>Qt::ApplicationModal</enum>
   </property>
@@ -101,7 +101,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>ExportDialog</receiver>
+   <receiver>staExportDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -117,7 +117,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>ExportDialog</receiver>
+   <receiver>staExportDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

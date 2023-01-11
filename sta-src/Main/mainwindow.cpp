@@ -70,7 +70,7 @@
 #include "Loitering/loiteringTLE.h"
 #include "SEM/sem.h"
 //#include "Analysis/analysis.h"
-#include "exportdialog.h"
+#include "staexportdialog.h"
 
 #include "Calculator/STAcalculator.h"
 #include "Help/HelpBrowser.h"
@@ -672,7 +672,7 @@ void MainWindow::on_actionExport_triggered()
         return;
     }
 
-    sta::ExportDialog exportDialog(m_propagatedScenario, this);
+    staExportDialog exportDialog(m_propagatedScenario, this);
     if (exportDialog.exec() == QDialog::Accepted)
     {
         QString fileName = QFileDialog::getSaveFileName(this, tr("Export File"),
