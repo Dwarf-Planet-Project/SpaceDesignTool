@@ -644,7 +644,7 @@ DEFINES += EIGEN_USE_NEW_STDVECTOR
 
 ########################################## Windows ######################################################
 win32 {
-    # Removing teh SSL support to allow proper compilation in Windows
+    # Removing the SSL support to allow proper compilation in Windows
     DEFINES += QT_NO_SSL
 
     # SPICE support
@@ -737,32 +737,13 @@ linux-g++ {
     INCLUDEPATH += $$LINUX_LIBRARIES_DIR
     INCLUDEPATH += /usr/include
     CXXFLAGS += -std=c++0x
-    PRE_TARGETDEPS += $$PWD/thirdparty/scidavis/build/libscidavis/libscidavis.a
 
-    HARDWARE_PLATFORM = $$system(uname -a)
-    contains( HARDWARE_PLATFORM, x86_64 ) {
-        # 64-bit Linux
-    message("Warning: compiling a 64-bit linux version")
     LIBS += -L$$PWD/lib/linux-x64
     LIBS += -lcspice
-#    LIBS += $$PWD/thirdparty/qtiplot/libqtiplot.so.1.0.0
     LIBS += -lgsl
     LIBS += -lgslcblas
-#    LIBS += $$PWD/thirdparty/qtiplot/3rdparty/qwt/lib/libqwt.so.5.2.2
-#    LIBS += $$PWD/thirdparty/qtiplot/3rdparty/qwtplot3d/lib/libqwtplot3d.so.1.0.0
     LIBS += -lGLU
-    } else {
-        # 32-bit Linux
-    message("Warning: compiling a 32-bit linux version")
-    LIBS += -L$$PWD/lib/linux-x86
-    LIBS += -lcspice
-    LIBS += $$PWD/lib/linux-x86/libqtiplot.so.1.0.0
-    LIBS += -lgsl
-    LIBS += -lgslcblas
-    LIBS += $$PWD/lib/linux-x86/libqwt.so.5.2.2
-    LIBS += $$PWD/lib/linux-x86/libqwtplot3d.so.1.0.0
-    LIBS += -lGLU
-    }
+    LIBS += $$PWD/thirdparty/scidavis/build/libscidavis/libscidavis.a
 }
 
 
