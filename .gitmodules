@@ -1,0 +1,3 @@
+[submodule "thirdparty/scidavis"]
+	path = thirdparty/scidavis
+	url = git@github.com:SciDAVis/scidavis.git
