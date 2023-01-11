@@ -27,25 +27,27 @@
 #ifndef _STA_EXPORT_DIALOG_H_
 #define _STA_EXPORT_DIALOG_H_
 
-#include <QWidget>
-#include <QIODevice>
-#include "ui_exportdialog.h"
-
-
-class PropagatedScenario;
-
-class ExportDialog : public QDialog, private Ui_ExportDialog
+namespace sta
 {
-    Q_OBJECT
-    
-public:
-    ExportDialog(PropagatedScenario* m_scenario, QWidget* parent = NULL);
-    ~ExportDialog();
+	#include <QWidget>
+	#include <QIODevice>
+	#include "ui_exportdialog.h"
 
-    bool exportTrajectory(QIODevice* out);
 
-private:
-    PropagatedScenario* m_scenario;
+	class PropagatedScenario;
+
+	class ExportDialog : public QDialog, private Ui_ExportDialog
+	{
+	    Q_OBJECT
+	    
+	public:
+	    ExportDialog(PropagatedScenario* m_scenario, QWidget* parent = NULL);
+	    ~ExportDialog();
+
+	    bool exportTrajectory(QIODevice* out);
+
+	private:
+	    PropagatedScenario* m_scenario;
 };
-
+}
 #endif // _STA_EXPORT_DIALOG_H_

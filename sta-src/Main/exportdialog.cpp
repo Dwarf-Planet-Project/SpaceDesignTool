@@ -24,63 +24,65 @@
  ------------------ E-mail: (claurel@gmail.com) ----------------------------
  */
 
-#include "exportdialog.h"
-#include "propagatedscenario.h"
-#include "Astro-Core/date.h"
-#include <QTextStream>
-
-
-ExportDialog::ExportDialog(PropagatedScenario* scenario, QWidget* parent) :
-    QDialog(parent),
-    m_scenario(scenario)
+namespace sta
 {
-    setupUi(this);
+	#include "exportdialog.h"
+	#include "propagatedscenario.h"
+	#include "Astro-Core/date.h"
+	#include <QTextStream>
 
-    const QList<SpaceObject*>& spaceObjects = m_scenario->spaceObjects();
-    int index = 0;
-    foreach (SpaceObject* obj, spaceObjects)
-    {
-        if (!obj->mission().isEmpty())
-        {
-            vehicleCombo->addItem(obj->name(), index);
-        }
-        index++;
-    }
 
-    arcCombo->addItem("All");
+	ExportDialog::ExportDialog(PropagatedScenario* scenario, QWidget* parent) :
+	    QDialog(parent),
+	    m_scenario(scenario)
+	{
+	    setupUi(this);
+
+	    const QList<SpaceObject*>& spaceObjects = m_scenario->spaceObjects();
+	    int index = 0;
+	    foreach (SpaceObject* obj, spaceObjects)
+	    {
+		if (!obj->mission().isEmpty())
+		{
+		    vehicleCombo->addItem(obj->name(), index);
+		}
+		index++;
+	    }
+
+	    arcCombo->addItem("All");
+	}
+
+
+	ExportDialog::~ExportDialog()
+	{
+	}
+
+
+	bool
+	ExportDialog::exportTrajectory(QIODevice* out)
+	{
+	    QTextStream outStream(out);
+
+	    int selectedIndex = vehicleCombo->itemData(vehicleCombo->currentIndex()).toInt();
+	    if (selectedIndex >= 0 && selectedIndex < m_scenario->spaceObjects().size())
+	    {
+		SpaceObject* obj = m_scenario->spaceObjects().at(selectedIndex);
+		foreach (MissionArc* arc, obj->mission())
+		{
+		    int stateVectorCount = arc->trajectorySampleCount();
+		    for (int i = 0; i < stateVectorCount; i++)
+		    {
+			double mjd = arc->trajectorySampleTime(i);
+			sta::StateVector state = arc->trajectorySample(i);
+			outStream.setRealNumberPrecision(14);
+			outStream << sta::MjdToJd(mjd) << ", ";
+			outStream.setRealNumberPrecision(12);
+			outStream << state.position.x() << ", " << state.position.y() << ", " << state.position.z() << ", ";
+			outStream << state.velocity.x() << ", " << state.velocity.y() << ", " << state.velocity.z() << "\n";
+		    }
+		}
+	    }
+
+	    return true;
+	}
 }
-
-
-ExportDialog::~ExportDialog()
-{
-}
-
-
-bool
-ExportDialog::exportTrajectory(QIODevice* out)
-{
-    QTextStream outStream(out);
-
-    int selectedIndex = vehicleCombo->itemData(vehicleCombo->currentIndex()).toInt();
-    if (selectedIndex >= 0 && selectedIndex < m_scenario->spaceObjects().size())
-    {
-        SpaceObject* obj = m_scenario->spaceObjects().at(selectedIndex);
-        foreach (MissionArc* arc, obj->mission())
-        {
-            int stateVectorCount = arc->trajectorySampleCount();
-            for (int i = 0; i < stateVectorCount; i++)
-            {
-                double mjd = arc->trajectorySampleTime(i);
-                sta::StateVector state = arc->trajectorySample(i);
-                outStream.setRealNumberPrecision(14);
-                outStream << sta::MjdToJd(mjd) << ", ";
-                outStream.setRealNumberPrecision(12);
-                outStream << state.position.x() << ", " << state.position.y() << ", " << state.position.z() << ", ";
-                outStream << state.velocity.x() << ", " << state.velocity.y() << ", " << state.velocity.z() << "\n";
-            }
-        }
-    }
-
-    return true;
-}
-

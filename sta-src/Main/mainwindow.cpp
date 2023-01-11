@@ -672,7 +672,7 @@ void MainWindow::on_actionExport_triggered()
         return;
     }
 
-    ExportDialog exportDialog(m_propagatedScenario, this);
+    sta::ExportDialog exportDialog(m_propagatedScenario, this);
     if (exportDialog.exec() == QDialog::Accepted)
     {
         QString fileName = QFileDialog::getSaveFileName(this, tr("Export File"),
